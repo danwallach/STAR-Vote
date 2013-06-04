@@ -671,8 +671,7 @@ public class RenderingUtils {
 
 
             if (!text2.equals("")) {   // If the selection represents a Presidential election.
-                drawPosition = Math.max(0,  candidateNameEndPos - lineWidth(selection.split("$"), font));
-                graphs.drawString(text + ":", drawPosition, heightPos);
+                graphs.drawString(text + ":", padding, heightPos);
                 heightPos += lineHeight(text, font);
                 selection = text2;
             }
