@@ -599,9 +599,15 @@ public class Button extends Label implements IFocusable {
      */
     public IViewImage getDefaultImage() {
         if (_defaultImage == null) {
-            _defaultImage = _factory.makeImage( imagePath( _vars,
-                getUniqueID(), _viewManager.getSize(), _viewManager
-                        .getLanguage() ) );
+
+            if (getUniqueID().contains("B"))
+            {
+                _defaultImage = _factory.makeImage(imageToggleButtonPath(_vars, getUniqueID() + "_review", _viewManager.getLanguage()));
+            }
+            else
+            {
+                _defaultImage = _factory.makeImage( imagePath( _vars, getUniqueID(), _viewManager.getSize(), _viewManager.getLanguage() ));
+            }
         }
         return _defaultImage;
     }

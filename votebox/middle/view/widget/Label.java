@@ -228,8 +228,6 @@ public class Label implements IDrawable {
      *            This is the vars object that has the ballot bath.
      * @param uid
      *            This is the image's unique id
-     * @param size
-     *            This is the image's size index
      * @param lang
      *            This is the image's language abbreviation.
      * @return This method returns the path to the image.
