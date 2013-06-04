@@ -414,25 +414,25 @@ public class RenderingUtils {
 				writePos = lineWidth;
 				lineWidth += wordWidth;
 
-        // TODO: this code does do what the comment above says it does! 
-        // It doesn't jump down a line on it's own! add this!
+                // TODO: this code does do what the comment above says it does!
+                // It doesn't jump down a line on it's own! add this!
 
-        // if the width of our word is longer than the entire line space,
-        // break it up.
-        if(wordWidth > wrappedImage.getWidth()) {
-          String remainingStr = word;
-          while(remainingStr.length() > wrappedImage.getWidth()) {
-            graphs.drawString(remainingStr.substring(0, wrappedImage.getWidth()),
-                writePos, heightPos);
-            remainingStr= remainingStr.substring(wrappedImage.getWidth());
-            // we've just written one whole line. put our position variables back
-            // at the beginning
-            heightPos+= wordHeight;
-            writePos= padding;
-            lineWidth= padding;
-          }
+                // if the width of our word is longer than the entire line space,
+                // break it up.
+                if(wordWidth > wrappedImage.getWidth()) {
+                    String remainingStr = word;
+                    while(remainingStr.length() > wrappedImage.getWidth()) {
+                        graphs.drawString(remainingStr.substring(0, wrappedImage.getWidth()),
+                            writePos, heightPos);
+                        remainingStr= remainingStr.substring(wrappedImage.getWidth());
+                        // we've just written one whole line. put our position variables back
+                        // at the beginning
+                        heightPos+= wordHeight;
+                        writePos= padding;
+                        lineWidth= padding;
+                    }
 
-        } else if (word.equals("\n") || word.equals("<newline>")) {
+                } else if (word.equals("\n") || word.equals("<newline>")) {
 					maxWidth = Math.max(lineWidth, maxWidth);
 					heightPos += wordHeight;
 					writePos = padding;
@@ -642,7 +642,7 @@ public class RenderingUtils {
             }
 
             graphs.drawString(text, candidateNameEndPos - (selectionLength - vicePresidentNameLength) - presidentNameLength, heightPos);
-            heightPos += lineHeight(text, font);
+            heightPos += lineHeight(text, nf);
         }
         else {
             if (!party.equals("")) {
@@ -683,8 +683,7 @@ public class RenderingUtils {
             graphs.drawString(selection, padding, heightPos); //height based on an appropriate spacing of up to a 3 digit number
             graphs.setFont(font);
 
-            wrappedImage = wrappedImage.getSubimage(0, 0, Math.max(wrappingWidth,selectionLength), heightPos
-                    + padding);
+            wrappedImage = wrappedImage.getSubimage(0, 0, Math.max(wrappingWidth,selectionLength), 2 * heightPos);
 
 
             return copy(wrappedImage);

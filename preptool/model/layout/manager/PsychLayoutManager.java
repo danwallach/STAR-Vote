@@ -1728,8 +1728,13 @@ public class PsychLayoutManager extends ALayoutManager {
     		cardPage.setBackgroundLabel(background.getUID());
 
     		for (Component cmp : frame.getAllComponents()) {
-    			Spacer s = (Spacer) cmp;
+    			int componentHeight = cmp.getHeight();
+                Spacer s = (Spacer) cmp;
     			s.updatePosition();
+                if (componentHeight > 38)
+                {
+                    s.getComponent().setYPos(s.getComponent().getYPos() - 20);
+                }
     			cardPage.getComponents().add(s.getComponent());
     		}
     		reviewPages.add(cardPage);
