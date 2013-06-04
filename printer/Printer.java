@@ -145,7 +145,7 @@ public class Printer {
         }
         */
 
-        System.out.println("There are " + choiceToImage.keySet().size() + " entries in the mapping right after loadImagesForVVPAT is called.");
+        //System.out.println("There are " + choiceToImage.keySet().size() + " entries in the mapping right after loadImagesForVVPAT is called.");
 		final List<String> choices = new ArrayList<String>();
 
         ArrayList<ChoicePair> correctedBallot = correctBallot(ballot);
@@ -183,7 +183,7 @@ public class Printer {
             String currentImageKey = choices.get(i);
             /* NEW CODE. */
             Image currentRaceTitleImage = raceTitlePairs.get(i).getImage();
-            System.out.println("Attempting to get mapping for key \"" + currentImageKey + "\"");
+            //System.out.println("Attempting to get mapping for key \"" + currentImageKey + "\"");
             Image img = choiceToImage.get(currentImageKey);
 
 			totalSize += img.getHeight(null);
@@ -223,7 +223,7 @@ public class Printer {
 				while(totalSize < pageFormat.getImageableHeight() && choiceIndex < choices.size()){
                     //Image titleImg = (raceTitlePairs1.remove(0)).getImage();
 					Image img = choiceToImage.get(choices.get(choiceIndex));
-                    System.out.println("Now drawing " + choices.get(choiceIndex));
+                    //System.out.println("Now drawing " + choices.get(choiceIndex));
 
                     //Random scaling factor of 1/2
                     //Image outTitle = titleImg.getScaledInstance(_constants.getPrintableWidthForVVPAT(), _constants.getPrintableHeightForVVPAT()/(2*(choices.size()+titlePairsSize)), Image.SCALE_AREA_AVERAGING);
@@ -271,12 +271,12 @@ public class Printer {
         {
             List<String> currentRace = _races.get(raceIdx);
             Boolean existingSelectedOption = false;
-            System.out.println("Labels in current race: ");
+            //System.out.println("Labels in current race: ");
 
             for (int labelIdx = 0; labelIdx < currentRace.size(); labelIdx++)
             {
                 String currentLabel = currentRace.get(labelIdx);
-                System.out.println(currentLabel);
+                //System.out.println(currentLabel);
                 for (int choiceIdx = 0; choiceIdx < rawBallot.size(); choiceIdx++)
                 {
                     ListExpression currentChoice = (ListExpression)rawBallot.get(choiceIdx);
@@ -306,11 +306,11 @@ public class Printer {
         }
 
         // Print the updated ballot (for consistency checking).
-        System.out.println("Corrected ballot:");
+        //System.out.println("Corrected ballot:");
         for (int i = 0; i < updatedBallot.size(); i++)
         {
             ChoicePair currentItem = updatedBallot.get(i);
-            System.out.println(currentItem.getLabel() + ":" + currentItem.getStatus());
+            //System.out.println(currentItem.getLabel() + ":" + currentItem.getStatus());
         }
         return updatedBallot;
     }

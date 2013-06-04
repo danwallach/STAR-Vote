@@ -219,10 +219,10 @@ public class Properties {
         if (type.equals( "Integer" )) {
             try {
                 Integer integerValue = Integer.parseInt(value);
-                if (integerValue.intValue() == -1)
+                /*if (integerValue.intValue() == -1)
                 {
                     System.out.println("Attempting to map the " + key + " to -1");
-                }
+                }*/
                 _properties.put( key, integerValue );
             }
             catch (NumberFormatException e) {

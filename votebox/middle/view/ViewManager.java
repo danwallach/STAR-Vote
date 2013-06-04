@@ -146,7 +146,7 @@ public class ViewManager implements IViewManager {
      *            Draw this page number to this display.
      */
     public void drawPage(int pagenum) {
-        System.out.println("Trying to draw page number " + pagenum);
+        //System.out.println("Trying to draw page number " + pagenum);
         _view.clearDisplay();
         
         if(pagenum != _page)
@@ -344,7 +344,7 @@ public class ViewManager implements IViewManager {
         int newPage = _layout.getProperties().getInteger(
                 Properties.OVERRIDE_CANCEL_PAGE);
         int currentPage = _page;
-        System.out.println("Trying to draw page " + newPage);
+        //System.out.println("Trying to draw page " + newPage);
         drawPage(newPage);
         return currentPage;
     }
@@ -361,7 +361,7 @@ public class ViewManager implements IViewManager {
         int newPage = _layout.getProperties().getInteger(
                 Properties.OVERRIDE_CAST_PAGE);
         int currentPage = _page;
-        System.out.println("Trying to draw page " + newPage);
+        //System.out.println("Trying to draw page " + newPage);
         drawPage(newPage);
         return currentPage;
     }
@@ -520,7 +520,7 @@ public class ViewManager implements IViewManager {
      */
     public void nextPage() {
         if (_page + 1 < _layout.getPages().size()) {
-            System.out.println("Trying to draw page " + (_page + 1));
+            //System.out.println("Trying to draw page " + (_page + 1));
             drawPage( _page + 1 );
         }
     }
@@ -531,7 +531,7 @@ public class ViewManager implements IViewManager {
      */
     public void previousPage() {
         if (_page - 1 >= 0) {
-            System.out.println("Trying to draw page " + (_page - 1));
+            //System.out.println("Trying to draw page " + (_page - 1));
             drawPage( _page - 1 );
         }
     }
@@ -575,7 +575,7 @@ public class ViewManager implements IViewManager {
      */
     public RenderPage getCurrentPage() {
         List<RenderPage> pages = _layout.getPages();
-        System.out.println("Page:" + _page);
+        //System.out.println("Page:" + _page);
         return pages.get( _page );
     }
 
@@ -608,7 +608,7 @@ public class ViewManager implements IViewManager {
         if ( _supportedLanguages.contains(lang) ) {
             _language = lang;
             makePages();
-            System.out.println("Trying to draw page " + _page);
+            //System.out.println("Trying to draw page " + _page);
             drawPage( _page );
         }
     }
@@ -623,7 +623,7 @@ public class ViewManager implements IViewManager {
     public void setSize(int size) {
         _mediaSize = size;
         makePages();
-        System.out.println("Trying to draw page " + _page);
+        //System.out.println("Trying to draw page " + _page);
         drawPage( _page );
     }
 

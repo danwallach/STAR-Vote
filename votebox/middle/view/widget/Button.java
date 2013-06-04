@@ -245,7 +245,7 @@ public class Button extends Label implements IFocusable {
                                         + context.getUniqueID()
                                         + " attempted to jump to new page, but the button does not define a page.",
                                 null );
-                    System.out.println("Trying to draw page " + pagenum);
+                    //System.out.println("Trying to draw page " + pagenum);
                     viewManager.drawPage( pagenum );
                 }
             };
@@ -280,7 +280,7 @@ public class Button extends Label implements IFocusable {
                     try {
                         int jumpToPage = Button.this.getParent()
                                 .getParent().lookupPage( uid );
-                        System.out.println("Trying to draw page " + jumpToPage);
+                        //System.out.println("Trying to draw page " + jumpToPage);
                         viewManager.drawPage( jumpToPage );
                     }
                     catch (UnknownUIDException e) {
@@ -396,7 +396,7 @@ public class Button extends Label implements IFocusable {
                                 Integer tempInteger = tempProperties.getInteger(tempCurrentProperty);
                                 //pagenum = context.getProperties().getInteger(Properties.NO_SELECTION_PAGE_NUMBER );
                                 pagenum = tempInteger;
-                                System.out.println("The value of pagenum has changed to " + pagenum);
+                                //System.out.println("The value of pagenum has changed to " + pagenum);
                             }
                             catch (IncorrectTypeException e) {
                                 throw new BallotBoxViewException(
@@ -411,7 +411,7 @@ public class Button extends Label implements IFocusable {
                                             + context.getUniqueID()
                                             + " attempted to jump to the no selection alert page, but the button does not define a page.",
                                     null );
-                        System.out.println("Trying to draw page " + pagenum);
+                        //System.out.println("Trying to draw page " + pagenum);
                         viewManager.drawPage(pagenum);
                 	}
                 	else {
@@ -462,7 +462,7 @@ public class Button extends Label implements IFocusable {
                                         + context.getUniqueID()
                                         + " attempted to jump to new page, but the button does not define a page.",
                                 null );
-                    System.out.println("Trying to draw page " + pagenum);
+                    //System.out.println("Trying to draw page " + pagenum);
                     viewManager.drawPage( pagenum );
                 }
             };
@@ -544,7 +544,7 @@ public class Button extends Label implements IFocusable {
     @Override
     public IViewImage getReviewImage() {
         if (_reviewImage == null) {
-            System.out.println("> Button is attempting to open image with UID: " + getUniqueID() + " by passing: " + _vars.getBallotPath() + " | " + getUniqueID() + "_review_" + " | " + _viewManager.getSize() + " | " + _viewManager.getLanguage());
+            //System.out.println("> Button is attempting to open image with UID: " + getUniqueID() + " by passing: " + _vars.getBallotPath() + " | " + getUniqueID() + "_review_" + " | " + _viewManager.getSize() + " | " + _viewManager.getLanguage());
             _reviewImage = _factory.makeImage( imagePath( _vars, getUniqueID()
                     + "_review_", _viewManager.getSize(), _viewManager
                     .getLanguage() ) );

@@ -248,7 +248,7 @@ public abstract class
                 if (!uids.contains(l.getUID())) {
                     try {
                         BufferedImage img = l.execute(getImageVisitor());
-                        System.out.println(location + l.getUID() + "_1_" + langShortName + ".png\nThe UID is: " + l.getUID());
+                        //System.out.println(location + l.getUID() + "_1_" + langShortName + ".png\nThe UID is: " + l.getUID());
                         ImageIO.write(img, "png", new File(location
                                 + l.getUID() + "_1_" + langShortName + ".png"));
                     } catch (IOException e) {

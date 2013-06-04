@@ -229,14 +229,8 @@ public class ToggleButton extends Label implements IFocusable {
     @Override
     public IViewImage getReviewImage() {
         if (_reviewImage == null) {
-            System.out.println("> ToggleButton is attempting to open image with UID: " + getUniqueID() + " by passing: " + _vars.getBallotPath() + " | " + getUniqueID() + "_review" + " | " + _viewManager.getSize() + " | " + _viewManager.getLanguage());
-            // This is a hack. If it works, make it more elegant by either adding an if statement that deals with
-            // calls from ToggleButton differently than it deals with calls from any other class
-            // OR create another function, called imageToggleButtonPath, which returns the desired path.
-            String path = _vars.getBallotPath() + "/media/vvpat/" + getUniqueID() + "_review" + "_" + _viewManager.getLanguage() + ".png";
-            _reviewImage = _factory.makeImage( /*imagePath( _vars, getUniqueID()
-                    + "_review", _viewManager.getSize(), _viewManager
-                    .getLanguage() )*/ path );
+            //System.out.println("> ToggleButton is attempting to open image with UID: " + getUniqueID() + " by passing: " + _vars.getBallotPath() + " | " + getUniqueID() + "_review" + " | " + _viewManager.getSize() + " | " + _viewManager.getLanguage());
+            _reviewImage = _factory.makeImage( imageToggleButtonPath( _vars, getUniqueID() + "_review", _viewManager.getLanguage() ));
         }
         return _reviewImage;
     }

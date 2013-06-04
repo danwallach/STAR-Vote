@@ -14,7 +14,7 @@
     <ignored path=".idea/workspace.xml" />
     <file path="/fragment.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370279088009" ignored="false" />
     <file path="/printer.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369322211698" ignored="false" />
-    <file path="/a.dummy" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370355269620" ignored="false" />
+    <file path="/a.dummy" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370358142036" ignored="false" />
     <file path="/*.regexp" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370300002098" ignored="false" />
     <file path="/IAdapter.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369258761957" ignored="false" />
     <file path="/Model.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369772161062" ignored="false" />
@@ -45,11 +45,11 @@
     <file path="/RenderingUtils.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370299510849" ignored="false" />
     <file path="/AWTView.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370013836469" ignored="false" />
     <file path="/PrintButton.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369939044393" ignored="false" />
-    <file path="/ToggleButton.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370357292793" ignored="false" />
+    <file path="/ToggleButton.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370358039224" ignored="false" />
     <file path="/RaceTitlePair.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369945268870" ignored="false" />
     <file path="$PROJECT_DIR$/tmp/ballots/ballot0/data/ballotbox.cfg" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370300535964" ignored="false" />
     <file path="$PROJECT_DIR$/tmp/ballots/ballot0/data/layout_1_en.xml" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370301706614" ignored="false" />
-    <file path="/Label.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370355998757" ignored="false" />
+    <file path="/Label.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370357972549" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -64,6 +64,7 @@
     <disable_hints />
   </component>
   <component name="DebuggerManager">
+    <ui_properties default_suspend_policy="SuspendAll" default_condition_enabled="true" />
     <breakpoint_any default_suspend_policy="SuspendAll" default_condition_enabled="true">
       <breakpoint>
         <option name="NOTIFY_CAUGHT" value="true" />
@@ -100,7 +101,6 @@
         <option name="LOG_MESSAGE" value="" />
       </breakpoint>
     </breakpoint_any>
-    <ui_properties default_suspend_policy="SuspendAll" default_condition_enabled="true" />
     <line_breakpoints default_suspend_policy="SuspendAll" default_condition_enabled="true">
       <breakpoint url="file://$PROJECT_DIR$/printer/Printer.java" line="129" class="printer.Printer" package="printer">
         <option name="ENABLED" value="true" />
@@ -160,7 +160,7 @@
       <file leaf-file-name="Label.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/votebox/middle/view/widget/Label.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="218" column="91" selection-start="7299" selection-end="7352" vertical-scroll-proportion="0.0">
+            <state line="237" column="59" selection-start="8069" selection-end="8069" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -169,34 +169,34 @@
       <file leaf-file-name="Button.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/votebox/middle/view/widget/Button.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="546" column="174" selection-start="22585" selection-end="22585" vertical-scroll-proportion="0.0">
+            <state line="546" column="14" selection-start="22425" selection-end="22425" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ToggleButton.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="Printer.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/printer/Printer.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="312" column="14" selection-start="11891" selection-end="11891" vertical-scroll-proportion="0.94892913">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ToggleButton.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/votebox/middle/view/widget/ToggleButton.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="272" column="60" selection-start="9599" selection-end="9599" vertical-scroll-proportion="0.5588235">
+            <state line="231" column="254" selection-start="8162" selection-end="8162" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="IDrawable.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/votebox/middle/view/IDrawable.java">
+      <file leaf-file-name="ActionParser.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/actionparser/ActionParser.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="59" column="25" selection-start="2491" selection-end="2491" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="IFocusable.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/votebox/middle/view/IFocusable.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="35" column="17" selection-start="1723" selection-end="1723" vertical-scroll-proportion="0.0">
+            <state line="132" column="56" selection-start="4100" selection-end="4100" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -222,20 +222,20 @@
         <option value="$PROJECT_DIR$/votebox/middle/ballot/BallotParser.java" />
         <option value="$PROJECT_DIR$/tap/BallotImageHelper.java" />
         <option value="$PROJECT_DIR$/preptool/model/layout/manager/PsychLayoutManager.java" />
-        <option value="$PROJECT_DIR$/printer/Printer.java" />
         <option value="$PROJECT_DIR$/preptool/model/layout/manager/RenderingUtils.java" />
-        <option value="$PROJECT_DIR$/preptool/model/layout/manager/ALayoutManager.java" />
-        <option value="$PROJECT_DIR$/votebox/middle/view/widget/Button.java" />
         <option value="$PROJECT_DIR$/votebox/middle/view/widget/Label.java" />
         <option value="$PROJECT_DIR$/votebox/middle/view/widget/ToggleButton.java" />
+        <option value="$PROJECT_DIR$/votebox/middle/view/widget/Button.java" />
+        <option value="$PROJECT_DIR$/preptool/model/layout/manager/ALayoutManager.java" />
+        <option value="$PROJECT_DIR$/printer/Printer.java" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="64" />
-    <option name="y" value="-4" />
-    <option name="width" value="1857" />
-    <option name="height" value="1205" />
+    <option name="x" value="1366" />
+    <option name="y" value="-116" />
+    <option name="width" value="1921" />
+    <option name="height" value="1081" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -294,7 +294,6 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
       <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
@@ -396,6 +395,7 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -412,12 +412,12 @@
     <property name="MemberChooser.copyJavadoc" value="false" />
     <property name="GoToClass.toSaveIncludeLibraries" value="false" />
     <property name="restartRequiresConfirmation" value="true" />
-    <property name="FullScreen" value="false" />
     <property name="MemberChooser.showClasses" value="true" />
+    <property name="FullScreen" value="false" />
     <property name="GoToClass.includeLibraries" value="false" />
-    <property name="dynamic.classpath" value="false" />
-    <property name="options.splitter.details.proportions" value="0.2" />
     <property name="options.searchVisible" value="true" />
+    <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="dynamic.classpath" value="false" />
   </component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
@@ -437,6 +437,19 @@
       <option name="SHMEM_ADDRESS" value="javadebug" />
       <option name="HOST" value="localhost" />
       <option name="PORT" value="5005" />
+      <method />
+    </configuration>
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <module name="" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="HTML_FILE_NAME" />
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <option name="VM_PARAMETERS" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
       <method />
     </configuration>
     <configuration default="true" type="TestNG" factoryName="TestNG">
@@ -464,19 +477,6 @@
       <envs />
       <properties />
       <listeners />
-      <method />
-    </configuration>
-    <configuration default="true" type="Applet" factoryName="Applet">
-      <module name="" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="HTML_FILE_NAME" />
-      <option name="HTML_USED" value="false" />
-      <option name="WIDTH" value="400" />
-      <option name="HEIGHT" value="300" />
-      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
-      <option name="VM_PARAMETERS" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
       <method />
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
@@ -641,28 +641,28 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="64" y="-4" width="1857" height="1205" extended-state="6" />
+    <frame x="1366" y="-116" width="1921" height="1081" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.31493506" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.397351" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="11" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32502708" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32389048" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.14648977" sideWeight="0.6450216" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.35489833" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.14685315" sideWeight="0.6850649" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.35497835" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31533477" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Analyze Dataflow to" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32899022" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32502708" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.39924315" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
@@ -736,16 +736,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/preptool/model/layout/Label.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="120" column="23" selection-start="3097" selection-end="3097" vertical-scroll-proportion="-1.5964326" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/preptool/model/layout/ILayoutComponentVisitor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="56" column="15" selection-start="1728" selection-end="1728" vertical-scroll-proportion="0.05239688" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/votebox/middle/view/ViewManager.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="61" column="34" selection-start="2629" selection-end="2629" vertical-scroll-proportion="0.018952062">
@@ -773,11 +763,6 @@
         <state line="146" column="35" selection-start="4905" selection-end="4919" vertical-scroll-proportion="0.018952062" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/preptool/model/layout/manager/ALayoutManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="283" column="26" selection-start="10176" selection-end="10176" vertical-scroll-proportion="0.018888889" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/votebox/middle/view/IViewManager.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="112" column="8" selection-start="2998" selection-end="2998" vertical-scroll-proportion="0.58444446">
@@ -788,13 +773,6 @@
     <entry file="file://$PROJECT_DIR$/votebox/middle/view/widget/FocusedButtonState.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="35" column="21" selection-start="1306" selection-end="1306" vertical-scroll-proportion="0.4194079">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/votebox/middle/view/IDrawable.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="59" column="25" selection-start="2491" selection-end="2491" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
@@ -819,13 +797,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/votebox/middle/view/widget/Button.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="546" column="174" selection-start="22585" selection-end="22585" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/votebox/middle/view/IFocusable.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="35" column="17" selection-start="1723" selection-end="1723" vertical-scroll-proportion="0.0">
@@ -833,16 +804,51 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/votebox/middle/view/IDrawable.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="59" column="25" selection-start="2491" selection-end="2491" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/votebox/middle/view/widget/Label.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="218" column="91" selection-start="7299" selection-end="7352" vertical-scroll-proportion="0.0">
+        <state line="237" column="59" selection-start="8069" selection-end="8069" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/votebox/middle/view/widget/ToggleButton.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="272" column="60" selection-start="9599" selection-end="9599" vertical-scroll-proportion="0.5588235">
+        <state line="231" column="254" selection-start="8162" selection-end="8162" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/actionparser/ActionParser.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="132" column="56" selection-start="4100" selection-end="4100" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/preptool/model/layout/manager/ALayoutManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="250" column="26" selection-start="8840" selection-end="8840" vertical-scroll-proportion="0.33278418">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/votebox/middle/view/widget/Button.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="546" column="14" selection-start="22425" selection-end="22425" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/printer/Printer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="312" column="14" selection-start="11891" selection-end="11891" vertical-scroll-proportion="0.94892913">
           <folding />
         </state>
       </provider>

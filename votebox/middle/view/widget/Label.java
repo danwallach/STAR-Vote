@@ -106,7 +106,7 @@ public class Label implements IDrawable {
      */
     public IViewImage getReviewImage() {
         if (_reviewImage == null) {
-            System.out.println("> Label is attempting to open image with UID: " + _uniqueID + " by passing: " + _vars.getBallotPath() + " | " + _uniqueID + "_review" + " | " + _viewManager.getSize() + " | " + _viewManager.getLanguage());
+            //System.out.println("> Label is attempting to open image with UID: " + _uniqueID + " by passing: " + _vars.getBallotPath() + " | " + _uniqueID + "_review" + " | " + _viewManager.getSize() + " | " + _viewManager.getLanguage());
             _reviewImage = _factory.makeImage( imagePath( _vars, _uniqueID
                     + "_review", _viewManager.getSize(), _viewManager
                     .getLanguage() ) );
@@ -215,8 +215,27 @@ public class Label implements IDrawable {
      */
     protected String imagePath(IBallotVars vars, String uid, int size,
             String lang) {
-        System.out.println("The actual function, imagePath, is trying to open: " + vars.getBallotPath() + "/media/" + uid + "_" + size + "_" + lang + ".png");
+        //System.out.println("The actual function, imagePath, is trying to open: " + vars.getBallotPath() + "/media/" + uid + "_" + size + "_" + lang + ".png");
         return vars.getBallotPath() + "/media/" + uid + "_" + size + "_" + lang + ".png";
+    }
+
+    /**
+     * Construct the full path to an image given several paramters.
+     * It loads an image to represent the selected options (except No Selection)
+     * for the review page.
+     *
+     * @param vars
+     *            This is the vars object that has the ballot bath.
+     * @param uid
+     *            This is the image's unique id
+     * @param size
+     *            This is the image's size index
+     * @param lang
+     *            This is the image's language abbreviation.
+     * @return This method returns the path to the image.
+     */
+    protected String imageToggleButtonPath (IBallotVars vars, String uid, String lang) {
+        return vars.getBallotPath() + "/media/vvpat/" + uid + "_" + lang + ".png";
     }
 
     /**
