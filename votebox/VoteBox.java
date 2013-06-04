@@ -128,8 +128,6 @@ public class VoteBox {
         if (_constants.getViewImplementation().equals("AWT")) {
             // run fullscreen on OSX only
             _factory = new AWTViewFactory(_constants.getUseWindowedView(), _constants.getAllowUIScaling());
-        } else if (_constants.getViewImplementation().equals("SDL")) {
-        	_factory = new VoteboxSDLViewFactory(_constants);
         }else
             throw new RuntimeException(
                     "Unknown view implementation defined in configuration");
@@ -505,10 +503,7 @@ public class VoteBox {
 
 
 
-        if(_constants.getViewImplementation().equals("SDL"))
-        	inactiveUI = new VoteBoxSDLInactiveUI(this, _constants);
-        else
-        	inactiveUI = new VoteBoxInactiveUI(this);
+        inactiveUI = new VoteBoxInactiveUI(this);
         
         inactiveUI.setVisible(true);
 
