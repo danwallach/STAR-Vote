@@ -10,9 +10,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="26d876ad-6b77-4796-b9d0-ead84066c769" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/log.out" afterPath="$PROJECT_DIR$/log.out" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/votebox/middle/view/widget/Button.java" afterPath="$PROJECT_DIR$/votebox/middle/view/widget/Button.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/votebox/middle/view/widget/Label.java" afterPath="$PROJECT_DIR$/votebox/middle/view/widget/Label.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/supervisor/model/Model.java" afterPath="$PROJECT_DIR$/supervisor/model/Model.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="STAR-Vote.iws" />
@@ -22,7 +20,7 @@
     <file path="/a.dummy" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370358142036" ignored="false" />
     <file path="/*.regexp" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370363856978" ignored="false" />
     <file path="/IAdapter.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369258761957" ignored="false" />
-    <file path="/Model.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369772161062" ignored="false" />
+    <file path="/Model.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370384485375" ignored="false" />
     <file path="/CommitBallotEvent.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369413068321" ignored="false" />
     <file path="$PROJECT_DIR$/sim/utils/Time.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369261529307" ignored="false" />
     <file path="/NIZKsPerformanceTest.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369261905322" ignored="false" />
@@ -55,7 +53,7 @@
     <file path="$PROJECT_DIR$/tmp/ballots/ballot0/data/ballotbox.cfg" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370300535964" ignored="false" />
     <file path="$PROJECT_DIR$/tmp/ballots/ballot0/data/layout_1_en.xml" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370301706614" ignored="false" />
     <file path="/Label.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370369156357" ignored="false" />
-    <file path="/Dummy.txt" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370370432747" ignored="false" />
+    <file path="/Dummy.txt" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370384374737" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -166,16 +164,25 @@
       <file leaf-file-name="Label.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/votebox/middle/view/widget/Label.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="218" column="90" selection-start="7282" selection-end="7356" vertical-scroll-proportion="0.0">
+            <state line="215" column="90" selection-start="7282" selection-end="7356" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Button.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="Button.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/votebox/middle/view/widget/Button.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="604" column="79" selection-start="24298" selection-end="24298" vertical-scroll-proportion="0.66211605">
+            <state line="610" column="79" selection-start="24564" selection-end="24564" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Model.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/supervisor/model/Model.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="939" column="44" selection-start="34820" selection-end="34820" vertical-scroll-proportion="0.63829786">
               <folding />
             </state>
           </provider>
@@ -230,10 +237,7 @@
         <entry file="file://$PROJECT_DIR$/printer/Printer.java">
           <provider selected="true" editor-type-id="text-editor">
             <state line="281" column="31" selection-start="10446" selection-end="10446" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="e#6981#9622#0" expanded="true" />
-                <element signature="e#9616#9617#0" expanded="true" />
-              </folding>
+              <folding />
             </state>
           </provider>
         </entry>
@@ -242,15 +246,6 @@
         <entry file="file://$PROJECT_DIR$/votebox/AuditoriumParams.java">
           <provider selected="true" editor-type-id="text-editor">
             <state line="98" column="28" selection-start="4174" selection-end="4174" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ActionParser.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/actionparser/ActionParser.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="132" column="56" selection-start="4100" selection-end="4100" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -274,7 +269,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/preptool/model/layout/ToggleButton.java" />
         <option value="$PROJECT_DIR$/preptool/model/layout/ILayoutComponentVisitor.java" />
         <option value="$PROJECT_DIR$/preptool/model/layout/PrintButton.java" />
         <option value="$PROJECT_DIR$/printer/RaceTitlePair.java" />
@@ -290,14 +284,15 @@
         <option value="$PROJECT_DIR$/printer/Printer.java" />
         <option value="$PROJECT_DIR$/votebox/middle/view/widget/Label.java" />
         <option value="$PROJECT_DIR$/votebox/middle/view/widget/Button.java" />
+        <option value="$PROJECT_DIR$/supervisor/model/Model.java" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="1366" />
-    <option name="y" value="-116" />
-    <option name="width" value="1921" />
-    <option name="height" value="1081" />
+    <option name="x" value="-8" />
+    <option name="y" value="-8" />
+    <option name="width" value="1382" />
+    <option name="height" value="744" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -356,6 +351,7 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="PackagesPane" />
       <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
@@ -465,13 +461,44 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="supervisor" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="STAR-Vote" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="STAR-Vote" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="supervisor" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="model" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="STAR-Vote" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="STAR-Vote" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="printer" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -488,12 +515,12 @@
     <property name="MemberChooser.copyJavadoc" value="false" />
     <property name="GoToClass.toSaveIncludeLibraries" value="false" />
     <property name="restartRequiresConfirmation" value="true" />
-    <property name="MemberChooser.showClasses" value="true" />
     <property name="FullScreen" value="false" />
+    <property name="MemberChooser.showClasses" value="true" />
     <property name="GoToClass.includeLibraries" value="false" />
-    <property name="options.searchVisible" value="true" />
-    <property name="options.splitter.details.proportions" value="0.2" />
     <property name="dynamic.classpath" value="false" />
+    <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="options.searchVisible" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
@@ -513,19 +540,6 @@
       <option name="SHMEM_ADDRESS" value="javadebug" />
       <option name="HOST" value="localhost" />
       <option name="PORT" value="5005" />
-      <method />
-    </configuration>
-    <configuration default="true" type="Applet" factoryName="Applet">
-      <module name="" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="HTML_FILE_NAME" />
-      <option name="HTML_USED" value="false" />
-      <option name="WIDTH" value="400" />
-      <option name="HEIGHT" value="300" />
-      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
-      <option name="VM_PARAMETERS" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
       <method />
     </configuration>
     <configuration default="true" type="TestNG" factoryName="TestNG">
@@ -553,6 +567,19 @@
       <envs />
       <properties />
       <listeners />
+      <method />
+    </configuration>
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <module name="" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="HTML_FILE_NAME" />
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <option name="VM_PARAMETERS" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
       <method />
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
@@ -726,28 +753,28 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="1366" y="-116" width="1921" height="1081" extended-state="0" />
-    <editor active="true" />
+    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
+    <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31317493" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.397351" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="11" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32359308" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32389048" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.14631522" sideWeight="0.6764069" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.14621212" sideWeight="0.6764069" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3538961" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31317493" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Analyze Dataflow to" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32899022" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32359308" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.39924315" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
@@ -824,26 +851,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/votebox/VoteBox.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="619" column="53" selection-start="26216" selection-end="26216" vertical-scroll-proportion="-6.824013">
-          <folding>
-            <element signature="e#3820#4028#0" expanded="true" />
-            <element signature="e#4017#4018#0" expanded="true" />
-            <element signature="e#6759#8359#0" expanded="true" />
-            <element signature="e#8344#8345#0" expanded="true" />
-            <element signature="e#11054#12017#0" expanded="true" />
-            <element signature="e#11994#11995#0" expanded="true" />
-            <element signature="e#12255#13244#0" expanded="true" />
-            <element signature="e#13231#13232#0" expanded="true" />
-            <element signature="e#13534#16570#0" expanded="true" />
-            <element signature="e#16555#16556#0" expanded="true" />
-            <element signature="e#17869#18694#0" expanded="true" />
-            <element signature="e#18683#18684#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/votebox/middle/view/IFocusable.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="35" column="17" selection-start="1723" selection-end="1723" vertical-scroll-proportion="0.0">
@@ -892,10 +899,7 @@
     <entry file="file://$PROJECT_DIR$/printer/Printer.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="281" column="31" selection-start="10446" selection-end="10446" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="e#6981#9622#0" expanded="true" />
-            <element signature="e#9616#9617#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -922,7 +926,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/votebox/middle/view/widget/Label.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="218" column="90" selection-start="7282" selection-end="7356" vertical-scroll-proportion="0.0">
+        <state line="215" column="90" selection-start="7282" selection-end="7356" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
@@ -943,7 +947,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/votebox/middle/view/widget/Button.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="604" column="79" selection-start="24298" selection-end="24298" vertical-scroll-proportion="0.66211605">
+        <state line="610" column="79" selection-start="24564" selection-end="24564" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/supervisor/model/Model.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="939" column="44" selection-start="34820" selection-end="34820" vertical-scroll-proportion="0.63829786">
           <folding />
         </state>
       </provider>

@@ -942,4 +942,8 @@ public class Model {
         activePins.add(pin);
         return pin;
     }
+
+    public void deactivatePin(int pin){
+        if(activePins.contains(pin)) activePins.remove(pin);
+    }
 }
