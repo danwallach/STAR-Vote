@@ -10,7 +10,272 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="26d876ad-6b77-4796-b9d0-ead84066c769" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/preptool/model/layout/manager/RenderingUtils.java" afterPath="$PROJECT_DIR$/preptool/model/layout/manager/RenderingUtils.java" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/votebox/sdl/SDL.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/votebox/sdl/SDLConstants.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/votebox/sdl/SDLEnum.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/votebox/sdl/SDLJNI.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/votebox/sdl/SWIGTYPE_p_SDL_Color.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/votebox/sdl/SWIGTYPE_p_SDL_Event.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/votebox/sdl/SWIGTYPE_p_SDL_PixelFormat.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/votebox/sdl/SWIGTYPE_p_SDL_Rect.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/votebox/sdl/SWIGTYPE_p_SDL_Surface.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/votebox/sdl/wrap/SDL.i" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/votebox/sdl/wrap/SDL_wrap.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/votebox/sdl/wrap/build_info.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/votebox/sdl/wrap/headers/SDL.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/votebox/sdl/wrap/headers/SDL_active.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/votebox/sdl/wrap/headers/SDL_audio.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/votebox/sdl/wrap/headers/SDL_byteorder.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/votebox/sdl/wrap/headers/SDL_cdrom.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/votebox/sdl/wrap/headers/SDL_config.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/votebox/sdl/wrap/headers/SDL_cpuinfo.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/votebox/sdl/wrap/headers/SDL_endian.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/votebox/sdl/wrap/headers/SDL_error.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/votebox/sdl/wrap/headers/SDL_events.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/votebox/sdl/wrap/headers/SDL_getenv.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/votebox/sdl/wrap/headers/SDL_image.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/votebox/sdl/wrap/headers/SDL_joystick.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/votebox/sdl/wrap/headers/SDL_keyboard.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/votebox/sdl/wrap/headers/SDL_keysym.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/votebox/sdl/wrap/headers/SDL_loadso.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/votebox/sdl/wrap/headers/SDL_main.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/votebox/sdl/wrap/headers/SDL_mouse.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/votebox/sdl/wrap/headers/SDL_mutex.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/votebox/sdl/wrap/headers/SDL_name.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/votebox/sdl/wrap/headers/SDL_opengl.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/votebox/sdl/wrap/headers/SDL_platform.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/votebox/sdl/wrap/headers/SDL_quit.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/votebox/sdl/wrap/headers/SDL_rwops.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/votebox/sdl/wrap/headers/SDL_stdinc.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/votebox/sdl/wrap/headers/SDL_syswm.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/votebox/sdl/wrap/headers/SDL_thread.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/votebox/sdl/wrap/headers/SDL_timer.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/votebox/sdl/wrap/headers/SDL_types.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/votebox/sdl/wrap/headers/SDL_version.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/votebox/sdl/wrap/headers/SDL_video.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/votebox/sdl/wrap/headers/begin_code.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/votebox/sdl/wrap/headers/close_code.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/votebox/sdl/wrap/vbWrapper.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/votebox/sdl/wrap/vbWrapper.h" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B10_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B10_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B10_focusedSelected_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B10_focusedSelected_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B10_focused_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B10_focused_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B10_printable_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B10_printable_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B10_printable_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B10_printable_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/B10_printable_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/B10_printable_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B10_review_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B10_review_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B10_review_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B10_review_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/B10_review_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/B10_review_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B10_selected_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B10_selected_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B11_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B11_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B11_focusedSelected_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B11_focusedSelected_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B11_focused_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B11_focused_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B11_printable_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B11_printable_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B11_printable_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B11_printable_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/B11_printable_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/B11_printable_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B11_review_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B11_review_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B11_review_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B11_review_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/B11_review_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/B11_review_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B11_selected_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B11_selected_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B1_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B1_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/B1_printable_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/B1_printable_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/B1_review_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/B1_review_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B2_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B2_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B2_focusedSelected_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B2_focusedSelected_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B2_focused_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B2_focused_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B2_printable_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B2_printable_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B2_printable_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B2_printable_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/B2_printable_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/B2_printable_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B2_review_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B2_review_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B2_review_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B2_review_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/B2_review_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/B2_review_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B2_selected_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B2_selected_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B3_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B3_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B3_focusedSelected_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B3_focusedSelected_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B3_focused_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B3_focused_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B3_printable_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B3_printable_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B3_printable_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B3_printable_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/B3_printable_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/B3_printable_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B3_review_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B3_review_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B3_review_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B3_review_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/B3_review_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/B3_review_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B3_selected_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B3_selected_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B4_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B4_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B4_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B4_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/B4_printable_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/B4_printable_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/B4_review_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/B4_review_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B5_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B5_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B5_focusedSelected_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B5_focusedSelected_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B5_focused_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B5_focused_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B5_printable_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B5_printable_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B5_printable_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B5_printable_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/B5_printable_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/B5_printable_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B5_review_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B5_review_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B5_review_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B5_review_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/B5_review_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/B5_review_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B5_selected_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B5_selected_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B6_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B6_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B6_focusedSelected_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B6_focusedSelected_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B6_focused_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B6_focused_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B6_printable_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B6_printable_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B6_printable_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B6_printable_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/B6_printable_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/B6_printable_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B6_review_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B6_review_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B6_review_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B6_review_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/B6_review_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/B6_review_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B6_selected_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B6_selected_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B7_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B7_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B7_focusedSelected_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B7_focusedSelected_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B7_focused_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B7_focused_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B7_printable_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B7_printable_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B7_printable_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B7_printable_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/B7_printable_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/B7_printable_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B7_review_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B7_review_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B7_review_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B7_review_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/B7_review_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/B7_review_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B7_selected_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B7_selected_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B8_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B8_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B8_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B8_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/B8_printable_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/B8_printable_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/B8_review_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/B8_review_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B9_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B9_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B9_focusedSelected_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B9_focusedSelected_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B9_focused_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B9_focused_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B9_printable_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B9_printable_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B9_printable_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B9_printable_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/B9_printable_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/B9_printable_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B9_review_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B9_review_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B9_review_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B9_review_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/B9_review_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/B9_review_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B9_selected_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/B9_selected_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L10_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L10_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L10_focused_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L10_focused_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L12_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L12_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L12_focused_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L12_focused_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L13_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L13_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L13_focused_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L13_focused_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L14_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L14_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L14_focused_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L14_focused_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L15_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L15_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L16_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L16_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L17_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L17_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L19_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L19_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L1_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L1_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L20_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L20_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L21_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L21_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L22_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L22_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L23_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L23_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L24_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L24_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L25_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L25_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L26_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L26_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L27_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L27_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L28_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L28_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L29_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L29_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L2_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L2_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L30_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L30_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L31_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L31_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L32_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L32_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L33_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L33_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L34_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L34_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L35_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L35_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L35_focused_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L35_focused_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L36_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L36_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L36_focused_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L36_focused_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L37_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L37_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L38_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L38_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L39_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L39_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L39_focused_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L39_focused_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L3_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L3_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L40_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L40_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L40_focused_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L40_focused_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L41_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L41_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L42_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L42_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L43_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L43_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L43_focused_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L43_focused_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L44_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L44_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L44_focused_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L44_focused_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L45_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L45_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L46_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L46_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L47_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L47_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L48_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L48_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L48_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L48_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/L48_printable_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/L48_printable_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/L48_review_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/L48_review_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L49_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L49_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L49_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L49_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/L49_printable_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/L49_printable_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/L49_review_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/L49_review_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L4_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L4_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L50_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L50_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L50_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L50_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/L50_printable_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/L50_printable_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/L50_review_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/L50_review_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L51_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L51_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L52_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L52_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L53_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L53_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L54_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L54_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L55_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L55_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L56_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L56_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L57_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L57_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L58_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L58_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L59_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L59_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L5_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L5_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L60_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L60_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L61_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L61_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L62_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L62_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L62_focused_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L62_focused_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L63_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L63_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L63_focused_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L63_focused_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L64_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L64_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L65_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L65_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L66_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L66_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L66_focused_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L66_focused_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L67_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L67_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L67_focused_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L67_focused_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L68_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L68_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L69_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L69_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L6_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L6_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L70_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L70_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L71_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L71_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L72_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L72_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L73_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L73_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L73_focused_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L73_focused_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L74_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L74_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L75_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L75_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L76_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L76_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L77_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L77_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L77_focused_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L77_focused_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L78_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L78_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L79_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L79_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L7_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L7_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L80_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L80_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L81_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L81_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L81_focused_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L81_focused_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L82_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L82_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L83_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L83_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L84_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L84_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L85_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L85_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L85_focused_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L85_focused_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L86_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L86_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L87_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L87_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L88_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L88_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L89_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L89_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L89_focused_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L89_focused_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L8_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L8_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L90_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L90_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L91_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L91_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L92_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L92_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L93_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L93_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L93_focused_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L93_focused_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L9_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L9_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L9_focused_1_en.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/L9_focused_1_en.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/accept.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/accept.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/ballot.zip" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/ballot.zip" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/log.out" afterPath="$PROJECT_DIR$/log.out" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/spoil.png" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/media/vvpat/spoil.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/superlog.out" afterPath="$PROJECT_DIR$/superlog.out" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tmp/ballots/ballot0/data/layout_1_en.xml" afterPath="$PROJECT_DIR$/tmp/ballots/ballot0/data/layout_1_en.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="STAR-Vote.iws" />
@@ -18,7 +283,7 @@
     <file path="/fragment.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370279088009" ignored="false" />
     <file path="/printer.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369322211698" ignored="false" />
     <file path="/a.dummy" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370371125006" ignored="false" />
-    <file path="/*.regexp" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370363856978" ignored="false" />
+    <file path="/*.regexp" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370374584204" ignored="false" />
     <file path="/IAdapter.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369258761957" ignored="false" />
     <file path="/Model.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369772161062" ignored="false" />
     <file path="/CommitBallotEvent.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369413068321" ignored="false" />
@@ -51,9 +316,8 @@
     <file path="/ToggleButton.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370358039224" ignored="false" />
     <file path="/RaceTitlePair.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369945268870" ignored="false" />
     <file path="$PROJECT_DIR$/tmp/ballots/ballot0/data/ballotbox.cfg" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370300535964" ignored="false" />
-    <file path="$PROJECT_DIR$/tmp/ballots/ballot0/data/layout_1_en.xml" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370301706614" ignored="false" />
     <file path="/Label.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370369156357" ignored="false" />
-    <file path="/Dummy.txt" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370370455522" ignored="false" />
+    <file path="/Dummy.txt" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370372559872" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -68,7 +332,6 @@
     <disable_hints />
   </component>
   <component name="DebuggerManager">
-    <ui_properties default_suspend_policy="SuspendAll" default_condition_enabled="true" />
     <breakpoint_any default_suspend_policy="SuspendAll" default_condition_enabled="true">
       <breakpoint>
         <option name="NOTIFY_CAUGHT" value="true" />
@@ -152,6 +415,7 @@
         <option name="LOG_MESSAGE" value="" />
       </breakpoint>
     </line_breakpoints>
+    <ui_properties default_suspend_policy="SuspendAll" default_condition_enabled="true" />
     <breakpoint_rules />
     <ui_properties />
   </component>
@@ -161,28 +425,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="Label.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/votebox/middle/view/widget/Label.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="218" column="90" selection-start="7282" selection-end="7356" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Button.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/votebox/middle/view/widget/Button.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="604" column="79" selection-start="24298" selection-end="24298" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="RenderingUtils.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="RenderingUtils.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/preptool/model/layout/manager/RenderingUtils.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="673" column="44" selection-start="22664" selection-end="22674" vertical-scroll-proportion="0.48861647">
+            <state line="702" column="29" selection-start="23620" selection-end="23630" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -191,7 +437,16 @@
       <file leaf-file-name="ALayoutManager.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/preptool/model/layout/manager/ALayoutManager.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="250" column="26" selection-start="8840" selection-end="8840" vertical-scroll-proportion="0.0">
+            <state line="280" column="43" selection-start="9999" selection-end="9999" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="PrintButton.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/preptool/model/layout/PrintButton.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="94" column="25" selection-start="2290" selection-end="2290" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -200,7 +455,61 @@
       <file leaf-file-name="PsychLayoutManager.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/preptool/model/layout/manager/PsychLayoutManager.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="57" column="13" selection-start="2022" selection-end="2022" vertical-scroll-proportion="0.0">
+            <state line="555" column="52" selection-start="21032" selection-end="21032" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Message.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/auditorium/Message.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="33" column="13" selection-start="1272" selection-end="1272" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ChallengeEvent.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/votebox/events/ChallengeEvent.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="35" column="13" selection-start="1280" selection-end="1280" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CastCommittedBallotEvent.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/votebox/events/CastCommittedBallotEvent.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="50" column="38" selection-start="1970" selection-end="1970" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="RenderPage.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/votebox/middle/view/RenderPage.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="42" column="13" selection-start="1591" selection-end="1591" vertical-scroll-proportion="-4.8969073">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="AAuditoriumLayer.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/auditorium/AAuditoriumLayer.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="32" column="22" selection-start="1205" selection-end="1205" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="AuditoriumHost.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/auditorium/AuditoriumHost.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="70" column="55" selection-start="2816" selection-end="2816" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -244,10 +553,10 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="1366" />
-    <option name="y" value="-116" />
-    <option name="width" value="1921" />
-    <option name="height" value="1081" />
+    <option name="x" value="64" />
+    <option name="y" value="-4" />
+    <option name="width" value="1857" />
+    <option name="height" value="1205" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -419,86 +728,6 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="STAR-Vote" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="STAR-Vote" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="preptool" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="STAR-Vote" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="STAR-Vote" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="preptool" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="model" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="STAR-Vote" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="STAR-Vote" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="preptool" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="model" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="layout" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="STAR-Vote" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="STAR-Vote" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="preptool" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="model" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="layout" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="manager" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
         </subPane>
       </pane>
       <pane id="PackagesPane" />
@@ -518,19 +747,19 @@
     <property name="MemberChooser.copyJavadoc" value="false" />
     <property name="GoToClass.toSaveIncludeLibraries" value="false" />
     <property name="restartRequiresConfirmation" value="true" />
-    <property name="MemberChooser.showClasses" value="true" />
     <property name="FullScreen" value="false" />
+    <property name="MemberChooser.showClasses" value="true" />
     <property name="GoToClass.includeLibraries" value="false" />
-    <property name="options.searchVisible" value="true" />
-    <property name="options.splitter.details.proportions" value="0.2" />
     <property name="dynamic.classpath" value="false" />
+    <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="options.searchVisible" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="preptool.model.layout.manager" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.preptool">
+  <component name="RunManager" selected="Application.Votebox">
     <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
       <module name="" />
       <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m" />
@@ -543,19 +772,6 @@
       <option name="SHMEM_ADDRESS" value="javadebug" />
       <option name="HOST" value="localhost" />
       <option name="PORT" value="5005" />
-      <method />
-    </configuration>
-    <configuration default="true" type="Applet" factoryName="Applet">
-      <module name="" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="HTML_FILE_NAME" />
-      <option name="HTML_USED" value="false" />
-      <option name="WIDTH" value="400" />
-      <option name="HEIGHT" value="300" />
-      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
-      <option name="VM_PARAMETERS" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
       <method />
     </configuration>
     <configuration default="true" type="TestNG" factoryName="TestNG">
@@ -583,6 +799,19 @@
       <envs />
       <properties />
       <listeners />
+      <method />
+    </configuration>
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <module name="" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="HTML_FILE_NAME" />
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <option name="VM_PARAMETERS" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
       <method />
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
@@ -760,13 +989,13 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="1366" y="-116" width="1921" height="1081" extended-state="0" />
-    <editor active="true" />
+    <frame x="64" y="-4" width="1857" height="1205" extended-state="6" />
+    <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31317493" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.31315044" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.397351" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="11" side_tool="true" content_ui="tabs" />
@@ -777,8 +1006,8 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.14631522" sideWeight="0.6461039" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3538961" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.20121615" sideWeight="0.6868496" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3528855" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Analyze Dataflow to" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32899022" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
@@ -858,63 +1087,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/votebox/middle/view/IDrawable.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="59" column="25" selection-start="2491" selection-end="2491" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/votebox/vb.conf">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="17" column="36" selection-start="464" selection-end="464" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/votebox/middle/view/widget/ToggleButton.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="231" column="254" selection-start="8162" selection-end="8162" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/actionparser/ActionParser.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="132" column="56" selection-start="4100" selection-end="4100" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/votebox/AuditoriumParams.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="98" column="28" selection-start="4174" selection-end="4174" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/printer/Printer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="281" column="31" selection-start="10446" selection-end="10446" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="e#6981#9622#0" expanded="true" />
-            <element signature="e#9616#9617#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/votebox/middle/Properties.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="37" column="13" selection-start="1614" selection-end="1614" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/votebox/middle/view/widget/AButtonState.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="59" column="37" selection-start="2076" selection-end="2076" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/votebox/middle/view/widget/DefaultButtonState.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="64" column="29" selection-start="2150" selection-end="2150" vertical-scroll-proportion="0.0">
@@ -943,13 +1115,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/preptool/model/layout/manager/ALayoutManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="250" column="26" selection-start="8840" selection-end="8840" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/votebox/middle/view/AWTImage.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="64" column="0" selection-start="2107" selection-end="2107" vertical-scroll-proportion="0.31719533">
@@ -957,16 +1122,79 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/preptool/model/layout/manager/PsychLayoutManager.java">
+    <entry file="jar:///usr/lib/jvm/java-1.7.0-openjdk-amd64/jre/lib/rt.jar!/java/awt/Graphics2D.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="57" column="13" selection-start="2022" selection-end="2022" vertical-scroll-proportion="0.0">
+        <state line="23" column="25" selection-start="1126" selection-end="1126" vertical-scroll-proportion="0.33282673">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/preptool/model/layout/manager/RenderingUtils.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="673" column="44" selection-start="22664" selection-end="22674" vertical-scroll-proportion="0.48861647">
+        <state line="702" column="29" selection-start="23620" selection-end="23630" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/preptool/model/layout/manager/ALayoutManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="280" column="43" selection-start="9999" selection-end="9999" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/preptool/model/layout/PrintButton.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="94" column="25" selection-start="2290" selection-end="2290" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/preptool/model/layout/manager/PsychLayoutManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="555" column="52" selection-start="21032" selection-end="21032" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/auditorium/AAuditoriumLayer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="32" column="22" selection-start="1205" selection-end="1205" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/auditorium/AuditoriumHost.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="70" column="55" selection-start="2816" selection-end="2816" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/auditorium/Message.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="33" column="13" selection-start="1272" selection-end="1272" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/votebox/events/ChallengeEvent.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="35" column="13" selection-start="1280" selection-end="1280" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/votebox/events/CastCommittedBallotEvent.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="50" column="38" selection-start="1970" selection-end="1970" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/votebox/middle/view/RenderPage.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="42" column="13" selection-start="1591" selection-end="1591" vertical-scroll-proportion="-4.8969073">
           <folding />
         </state>
       </provider>
