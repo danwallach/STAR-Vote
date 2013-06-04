@@ -34,18 +34,13 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.math.BigInteger;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.Timer;
+import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 
 import supervisor.model.AMachine;
@@ -72,6 +67,10 @@ public class ActiveUI extends JPanel {
     private JLabel pollsOpenLbl;
 
     private JButton leftButton;
+
+    private JButton ballotButton;
+
+    private JButton pinButton;
 
     private JPanel mainPanel;
 
@@ -201,7 +200,7 @@ public class ActiveUI extends JPanel {
             }
         });
 
-        JButton ballotButton = new MyJButton("Select Ballot");
+        ballotButton = new MyJButton("Select Ballot");
         ballotButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int answer = ballotLocChooser.showOpenDialog(ActiveUI.this);
@@ -236,8 +235,20 @@ public class ActiveUI extends JPanel {
             }
         });
         c.ipady = 150;
-        c.gridy = 2;
+        c.gridy = 3;
         leftPanel.add(leftButton, c);
+
+        pinButton = new JButton("Generate Pin");
+        pinButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                int pin = model.generatePin();
+
+                JOptionPane.showMessageDialog(null, "Your pin is: " + (new DecimalFormat("0000").format(pin)));
+            }
+        });
+        c.ipady = 50;
+        c.gridy = 2;
+        leftPanel.add(pinButton, c);
     }
 
     private void initializeMainPanel() {

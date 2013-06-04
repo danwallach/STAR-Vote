@@ -64,6 +64,8 @@ public class Model {
 
     private ObservableEvent machinesChangedObs;
 
+    private ArrayList<Integer> activePins;
+
     private VoteBoxAuditoriumConnector auditorium;
 
     private int mySerial;
@@ -131,6 +133,7 @@ public class Model {
         ballotLocation = "ballot.zip";
         tallier = new Tallier();
         bids = new HashMap<String, ASExpression>();
+        activePins = new ArrayList<Integer>();
         statusTimer = new Timer(300000, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (isConnected()) {
@@ -926,5 +929,17 @@ public class Model {
      */
     public IAuditoriumParams getParams(){
         return auditoriumParams;
+    }
+
+    /**
+     * A method that will generate a random pin for the voter to enter into his votebox machine
+     */
+    public int generatePin(){
+        Random rand = (new Random());
+        int pin = rand.nextInt(10000);
+        while(activePins.contains(pin))
+            pin = rand.nextInt(10000);
+        activePins.add(pin);
+        return pin;
     }
 }
