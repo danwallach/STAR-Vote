@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="UTF-8"?><Layout>
+<Property name="OverrideCancelPage" type="Integer" value="11"/>
+<Property name="OverrideCastPage" type="Integer" value="12"/>
+<Property name="ResponsePage" type="Integer" value="13"/>
+<Page>
+<Property name="BackgroundLabel" type="String" value="L20"/>
+<Label uid="L20" x="0" y="0"/>
+<Label uid="L33" x="229" y="0"/>
+<Label uid="L34" x="698" y="690"/>
+<Button uid="L9" x="847" y="725">
+<Property name="ButtonStrategy" type="String" value="NextPage"/>
+</Button>
+<Label uid="L5" x="0" y="0"/>
+<Label uid="L2" x="0" y="186"/>
+<Label uid="L3" x="0" y="371"/>
+<Label uid="L4" x="9" y="602"/>
+<Label uid="L35" x="309" y="167"/>
+</Page>
+<Page>
+<Property name="BackgroundLabel" type="String" value="L20"/>
+<Label uid="L20" x="0" y="0"/>
+<Label uid="L37" x="229" y="0"/>
+<Label uid="L19" x="296" y="58"/>
+<Label uid="L38" x="225" y="690"/>
+<Button uid="L10" x="275" y="695">
+<Property name="ButtonStrategy" type="String" value="PreviousPage"/>
+</Button>
+<Label uid="L15" x="771" y="690"/>
+<Button uid="L39" x="846" y="725">
+<Property name="ButtonStrategy" type="String" value="NextPageRequireSelection"/>
+<Property name="NoSelectionPageNumber" type="Integer" value="-1"/>
+<Property name="ParentCard" type="String" value="B22"/>
+</Button>
+<Label uid="L15" x="771" y="690"/>
+<Button uid="L9" x="847" y="725">
+<Property name="ButtonStrategy" type="String" value="NextPage"/>
+</Button>
+<Label uid="L1" x="0" y="1"/>
+<Label uid="L6" x="0" y="193"/>
+<Label uid="L3" x="0" y="371"/>
+<Label uid="L4" x="9" y="602"/>
+<Label uid="L36" x="328" y="318"/>
+<ToggleButtonGroup>
+<Property name="ToggleButtonGroupStrategy" type="String" value="Race"/>
+<ToggleButton uid="B23" x="328" y="376"/>
+<ToggleButton uid="B24" x="328" y="438"/>
+</ToggleButtonGroup>
+</Page>
+<Page>
+<Property name="BackgroundLabel" type="String" value="L20"/>
+<Label uid="L20" x="0" y="0"/>
+<Label uid="L41" x="229" y="0"/>
+<Label uid="L19" x="296" y="58"/>
+<Label uid="L16" x="225" y="690"/>
+<Button uid="L10" x="275" y="695">
+<Property name="ButtonStrategy" type="String" value="PreviousPage"/>
+</Button>
+<Label uid="L15" x="771" y="690"/>
+<Button uid="L42" x="846" y="725">
+<Property name="ButtonStrategy" type="String" value="NextPageRequireSelection"/>
+<Property name="NoSelectionPageNumber" type="Integer" value="-1"/>
+<Property name="ParentCard" type="String" value="B25"/>
+</Button>
+<Label uid="L15" x="771" y="690"/>
+<Button uid="L9" x="847" y="725">
+<Property name="ButtonStrategy" type="String" value="NextPage"/>
+</Button>
+<Label uid="L1" x="0" y="1"/>
+<Label uid="L6" x="0" y="193"/>
+<Label uid="L3" x="0" y="371"/>
+<Label uid="L4" x="9" y="602"/>
+<Label uid="L40" x="328" y="304"/>
+<ToggleButtonGroup>
+<Property name="ToggleButtonGroupStrategy" type="String" value="Race"/>
+<ToggleButton uid="B26" x="328" y="398"/>
+<ToggleButton uid="B27" x="328" y="437"/>
+<ToggleButton uid="B28" x="328" y="476"/>
+</ToggleButtonGroup>
+</Page>
+<Page>
+<Property name="BackgroundLabel" type="String" value="L20"/>
+<Label uid="L20" x="0" y="0"/>
+<Label uid="L44" x="229" y="0"/>
+<Label uid="L19" x="296" y="58"/>
+<Label uid="L16" x="225" y="690"/>
+<Button uid="L10" x="275" y="695">
+<Property name="ButtonStrategy" type="String" value="PreviousPage"/>
+</Button>
+<Label uid="L45" x="683" y="690"/>
+<Button uid="L46" x="847" y="725">
+<Property name="ButtonStrategy" type="String" value="NextPageRequireSelection"/>
+<Property name="NoSelectionPageNumber" type="Integer" value="-1"/>
+<Property name="ParentCard" type="String" value="B29"/>
+</Button>
+<Label uid="L45" x="683" y="690"/>
+<Button uid="L9" x="847" y="725">
+<Property name="ButtonStrategy" type="String" value="NextPage"/>
+</Button>
+<Label uid="L1" x="0" y="1"/>
+<Label uid="L6" x="0" y="193"/>
+<Label uid="L3" x="0" y="371"/>
+<Label uid="L4" x="9" y="602"/>
+<Label uid="L43" x="328" y="322"/>
+<ToggleButtonGroup>
+<Property name="ToggleButtonGroupStrategy" type="String" value="Race"/>
+<ToggleButton uid="B30" x="328" y="380"/>
+<ToggleButton uid="B31" x="328" y="419"/>
+<ToggleButton uid="B32" x="328" y="458"/>
+</ToggleButtonGroup>
+</Page>
+<Page>
+<Property name="BackgroundLabel" type="String" value="L20"/>
+<Label uid="L20" x="0" y="0"/>
+<Label uid="L59" x="244" y="0"/>
+<Label uid="L65" x="244" y="58"/>
+<Label uid="L60" x="244" y="690"/>
+<Button uid="L10" x="275" y="695">
+<Property name="ButtonStrategy" type="String" value="PreviousPage"/>
+</Button>
+<Label uid="L61" x="923" y="690"/>
+<Button uid="L9" x="847" y="725">
+<Property name="ButtonStrategy" type="String" value="NextPage"/>
+</Button>
+<Label uid="L1" x="0" y="1"/>
+<Label uid="L2" x="0" y="186"/>
+<Label uid="L7" x="0" y="386"/>
+<Label uid="L4" x="9" y="602"/>
+<Button uid="L62" x="373" y="361">
+<Property name="ButtonStrategy" type="String" value="GoToPage"/>
+<Property name="PageNumber" type="Integer" value="8"/>
+</Button>
+<Button uid="B22" x="573" y="361">
+<Property name="ButtonStrategy" type="String" value="GoToPage"/>
+<Property name="PageNumber" type="Integer" value="8"/>
+</Button>
+<Button uid="L63" x="373" y="400">
+<Property name="ButtonStrategy" type="String" value="GoToPage"/>
+<Property name="PageNumber" type="Integer" value="9"/>
+</Button>
+<Button uid="B25" x="573" y="400">
+<Property name="ButtonStrategy" type="String" value="GoToPage"/>
+<Property name="PageNumber" type="Integer" value="9"/>
+</Button>
+<Button uid="L64" x="373" y="429">
+<Property name="ButtonStrategy" type="String" value="GoToPage"/>
+<Property name="PageNumber" type="Integer" value="10"/>
+</Button>
+<Button uid="B29" x="573" y="429">
+<Property name="ButtonStrategy" type="String" value="GoToPage"/>
+<Property name="PageNumber" type="Integer" value="10"/>
+</Button>
+<Property name="IsReviewPage" type="String" value="yes"/>
+</Page>
+<Page>
+<Property name="BackgroundLabel" type="String" value="L20"/>
+<Label uid="L20" x="0" y="0"/>
+<Label uid="L66" x="225" y="0"/>
+<Label uid="L67" x="225" y="660"/>
+<Button uid="L10" x="275" y="695">
+<Property name="ButtonStrategy" type="String" value="PreviousPage"/>
+</Button>
+<Label uid="L68" x="913" y="660"/>
+<Button uid="L13" x="837" y="695">
+<Property name="ButtonStrategy" type="String" value="CommitBallot"/>
+</Button>
+<Label uid="L1" x="0" y="1"/>
+<Label uid="L2" x="0" y="186"/>
+<Label uid="L3" x="0" y="371"/>
+<Label uid="L8" x="0" y="556"/>
+<Label uid="L69" x="359" y="296"/>
+</Page>
+<Page>
+<Property name="BackgroundLabel" type="String" value="L21"/>
+<Label uid="L21" x="0" y="0"/>
+<Label uid="L70" x="116" y="0"/>
+<Label uid="L71" x="314" y="58"/>
+<Button uid="L14" x="432" y="389">
+<Property name="ButtonStrategy" type="String" value="Challenge"/>
+</Button>
+<Button uid="L12" x="447" y="478">
+<Property name="ButtonStrategy" type="String" value="CastBallot"/>
+</Button>
+</Page>
+<Page>
+<Property name="BackgroundLabel" type="String" value="L21"/>
+<Label uid="L21" x="0" y="0"/>
+<Label uid="L72" x="116" y="0"/>
+<Label uid="L73" x="240" y="400"/>
+</Page>
+<Page>
+<Property name="BackgroundLabel" type="String" value="L20"/>
+<Label uid="L20" x="0" y="0"/>
+<Label uid="L48" x="229" y="0"/>
+<Label uid="L19" x="296" y="58"/>
+<Label uid="L17" x="473" y="690"/>
+<Button uid="L49" x="586" y="725">
+<Property name="ButtonStrategy" type="String" value="GoToPageRequireSelection"/>
+<Property name="PageNumber" type="Integer" value="4"/>
+<Property name="NoSelectionPageNumber" type="Integer" value="4"/>
+<Property name="ParentCard" type="String" value="B22"/>
+</Button>
+<Label uid="L17" x="473" y="690"/>
+<Button uid="L50" x="586" y="725">
+<Property name="ButtonStrategy" type="String" value="GoToPage"/>
+<Property name="PageNumber" type="Integer" value="4"/>
+</Button>
+<Label uid="L1" x="0" y="1"/>
+<Label uid="L6" x="0" y="193"/>
+<Label uid="L3" x="0" y="371"/>
+<Label uid="L4" x="9" y="602"/>
+<Label uid="L47" x="328" y="318"/>
+<ToggleButtonGroup>
+<Property name="ToggleButtonGroupStrategy" type="String" value="Race"/>
+<ToggleButton uid="B23" x="328" y="376"/>
+<ToggleButton uid="B24" x="328" y="438"/>
+</ToggleButtonGroup>
+</Page>
+<Page>
+<Property name="BackgroundLabel" type="String" value="L20"/>
+<Label uid="L20" x="0" y="0"/>
+<Label uid="L52" x="229" y="0"/>
+<Label uid="L19" x="296" y="58"/>
+<Label uid="L17" x="473" y="690"/>
+<Button uid="L53" x="586" y="725">
+<Property name="ButtonStrategy" type="String" value="GoToPageRequireSelection"/>
+<Property name="PageNumber" type="Integer" value="4"/>
+<Property name="NoSelectionPageNumber" type="Integer" value="4"/>
+<Property name="ParentCard" type="String" value="B25"/>
+</Button>
+<Label uid="L17" x="473" y="690"/>
+<Button uid="L54" x="586" y="725">
+<Property name="ButtonStrategy" type="String" value="GoToPage"/>
+<Property name="PageNumber" type="Integer" value="4"/>
+</Button>
+<Label uid="L1" x="0" y="1"/>
+<Label uid="L6" x="0" y="193"/>
+<Label uid="L3" x="0" y="371"/>
+<Label uid="L4" x="9" y="602"/>
+<Label uid="L51" x="328" y="304"/>
+<ToggleButtonGroup>
+<Property name="ToggleButtonGroupStrategy" type="String" value="Race"/>
+<ToggleButton uid="B26" x="328" y="398"/>
+<ToggleButton uid="B27" x="328" y="437"/>
+<ToggleButton uid="B28" x="328" y="476"/>
+</ToggleButtonGroup>
+</Page>
+<Page>
+<Property name="BackgroundLabel" type="String" value="L20"/>
+<Label uid="L20" x="0" y="0"/>
+<Label uid="L56" x="229" y="0"/>
+<Label uid="L19" x="296" y="58"/>
+<Label uid="L17" x="473" y="690"/>
+<Button uid="L57" x="586" y="725">
+<Property name="ButtonStrategy" type="String" value="GoToPageRequireSelection"/>
+<Property name="PageNumber" type="Integer" value="4"/>
+<Property name="NoSelectionPageNumber" type="Integer" value="4"/>
+<Property name="ParentCard" type="String" value="B29"/>
+</Button>
+<Label uid="L17" x="473" y="690"/>
+<Button uid="L58" x="586" y="725">
+<Property name="ButtonStrategy" type="String" value="GoToPage"/>
+<Property name="PageNumber" type="Integer" value="4"/>
+</Button>
+<Label uid="L1" x="0" y="1"/>
+<Label uid="L6" x="0" y="193"/>
+<Label uid="L3" x="0" y="371"/>
+<Label uid="L4" x="9" y="602"/>
+<Label uid="L55" x="328" y="322"/>
+<ToggleButtonGroup>
+<Property name="ToggleButtonGroupStrategy" type="String" value="Race"/>
+<ToggleButton uid="B30" x="328" y="380"/>
+<ToggleButton uid="B31" x="328" y="419"/>
+<ToggleButton uid="B32" x="328" y="458"/>
+</ToggleButtonGroup>
+</Page>
+<Page>
+<Property name="BackgroundLabel" type="String" value="L21"/>
+<Label uid="L21" x="0" y="0"/>
+<Label uid="L74" x="111" y="0"/>
+<Label uid="L75" x="233" y="58"/>
+<Button uid="L76" x="392" y="374">
+<Property name="ButtonStrategy" type="String" value="OverrideCancelConfirm"/>
+</Button>
+<Button uid="L77" x="386" y="463">
+<Property name="ButtonStrategy" type="String" value="OverrideCancelDeny"/>
+</Button>
+</Page>
+<Page>
+<Property name="BackgroundLabel" type="String" value="L21"/>
+<Label uid="L21" x="0" y="0"/>
+<Label uid="L78" x="116" y="0"/>
+<Label uid="L79" x="259" y="58"/>
+<Button uid="L80" x="409" y="389">
+<Property name="ButtonStrategy" type="String" value="OverrideCastConfirm"/>
+</Button>
+<Button uid="L81" x="391" y="478">
+<Property name="ButtonStrategy" type="String" value="OverrideCastDeny"/>
+</Button>
+</Page>
+<Page>
+<Property name="BackgroundLabel" type="String" value="L21"/>
+<Label uid="L21" x="0" y="0"/>
+<Label uid="L82" x="116" y="0"/>
+<Label uid="L83" x="181" y="400"/>
+</Page>
+<Page>
+<Property name="BackgroundLabel" type="String" value="L21"/>
+<Label uid="L21" x="0" y="0"/>
+<Label uid="L84" x="116" y="0"/>
+<Label uid="L86" x="351" y="690"/>
+<Button uid="L87" x="474" y="725">
+<Property name="ButtonStrategy" type="String" value="GoToPage"/>
+<Property name="PageNumber" type="Integer" value="1"/>
+</Button>
+<Label uid="L85" x="123" y="356"/>
+</Page>
+<Page>
+<Property name="BackgroundLabel" type="String" value="L21"/>
+<Label uid="L21" x="0" y="0"/>
+<Label uid="L88" x="116" y="0"/>
+<Label uid="L90" x="351" y="690"/>
+<Button uid="L91" x="474" y="725">
+<Property name="ButtonStrategy" type="String" value="GoToPage"/>
+<Property name="PageNumber" type="Integer" value="2"/>
+</Button>
+<Label uid="L89" x="123" y="356"/>
+</Page>
+<Page>
+<Property name="BackgroundLabel" type="String" value="L21"/>
+<Label uid="L21" x="0" y="0"/>
+<Label uid="L92" x="116" y="0"/>
+<Label uid="L94" x="351" y="690"/>
+<Button uid="L95" x="474" y="725">
+<Property name="ButtonStrategy" type="String" value="GoToPage"/>
+<Property name="PageNumber" type="Integer" value="3"/>
+</Button>
+<Label uid="L93" x="123" y="356"/>
+</Page>
+<Page>
+<Property name="BackgroundLabel" type="String" value="L21"/>
+<Label uid="L21" x="0" y="0"/>
+<Label uid="L96" x="116" y="0"/>
+<Label uid="L98" x="351" y="690"/>
+<Button uid="L99" x="474" y="725">
+<Property name="ButtonStrategy" type="String" value="GoToPage"/>
+<Property name="PageNumber" type="Integer" value="7"/>
+</Button>
+<Label uid="L97" x="123" y="356"/>
+</Page>
+<Page>
+<Property name="BackgroundLabel" type="String" value="L21"/>
+<Label uid="L21" x="0" y="0"/>
+<Label uid="L100" x="116" y="0"/>
+<Label uid="L102" x="351" y="690"/>
+<Button uid="L103" x="474" y="725">
+<Property name="ButtonStrategy" type="String" value="GoToPage"/>
+<Property name="PageNumber" type="Integer" value="8"/>
+</Button>
+<Label uid="L101" x="123" y="356"/>
+</Page>
+<Page>
+<Property name="BackgroundLabel" type="String" value="L21"/>
+<Label uid="L21" x="0" y="0"/>
+<Label uid="L104" x="116" y="0"/>
+<Label uid="L106" x="351" y="690"/>
+<Button uid="L107" x="474" y="725">
+<Property name="ButtonStrategy" type="String" value="GoToPage"/>
+<Property name="PageNumber" type="Integer" value="9"/>
+</Button>
+<Label uid="L105" x="123" y="356"/>
+</Page>
+</Layout>
