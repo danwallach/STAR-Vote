@@ -217,7 +217,7 @@ public class Printer {
 					choiceIndex++;
 				}
 
-				totalSize = 0;
+				totalSize = 25;
                 int printX = (int)pageFormat.getImageableX();
 
 				while(totalSize < pageFormat.getImageableHeight() && choiceIndex < choices.size()){
