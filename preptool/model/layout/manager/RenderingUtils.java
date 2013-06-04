@@ -658,6 +658,7 @@ public class RenderingUtils {
         //If this is a race name and not a candidate
         if (uid.contains("L"))
         {
+            Font temp = font.deriveFont(12.0f);
             String[] split = selection.split("\n");
             text = split[0];
 
@@ -666,20 +667,25 @@ public class RenderingUtils {
 
             selectionLength = lineWidth(selection.split("$"), font);
 
-            graphs.setFont(font);
+            graphs.setFont(temp);
 
 
 
             if (!text2.equals("")) {   // If the selection represents a Presidential election.
+
+                graphs.setFont(temp);
                 graphs.drawString(text + ":", padding, heightPos);
                 heightPos += lineHeight(text, font);
                 selection = text2;
+
             }
 
             graphs.drawString(selection, padding, heightPos); //height based on an appropriate spacing of up to a 3 digit number
+            graphs.setFont(font);
 
             wrappedImage = wrappedImage.getSubimage(0, 0, Math.max(wrappingWidth,selectionLength), heightPos
                     + padding);
+
 
             return copy(wrappedImage);
 

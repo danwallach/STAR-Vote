@@ -236,7 +236,7 @@ public class Printer {
                         printWidth /= 2;
 
                     //TODO This really doesn't work, need to fix...
-                    Image outImage = img.getScaledInstance(printWidth, _constants.getPrintableHeightForVVPAT()/(2*choices.size()), Image.SCALE_SMOOTH);
+                    Image outImage = img.getScaledInstance(printWidth, img.getHeight(null), Image.SCALE_SMOOTH);
 
                     //graphics.drawImage(outTitle, (int)pageFormat.getImageableX(), totalSize, null);
 					graphics.drawImage(outImage,
