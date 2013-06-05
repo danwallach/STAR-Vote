@@ -709,7 +709,7 @@ public class PsychLayoutManager extends ALayoutManager {
             //System.out.println("PsychLayout's forPrintButton");
             int size = 1;
 
-            int fontsize = (size + 1) * FONT_SIZE_MULTIPLE;
+            int fontsize = (size + 2) * FONT_SIZE_MULTIPLE;
             if (pb.isIncreasedFontSize()) {
                 fontsize += 4;
             }

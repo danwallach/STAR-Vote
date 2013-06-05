@@ -227,12 +227,13 @@ public class Printer {
 
 				totalSize = 25;
                 int printX = (int)pageFormat.getImageableX();
+                int counter = 0;
 
 				while(totalSize < pageFormat.getImageableHeight() && choiceIndex < choices.size()){
                     //Image titleImg = (raceTitlePairs1.remove(0)).getImage();
 					BufferedImage img = (BufferedImage)choiceToImage.get(choices.get(choiceIndex));
-                    BufferedImage titleImg = (BufferedImage)fActualRaceNamePairs.remove(0).getImage();
-
+                    BufferedImage titleImg = (BufferedImage)fActualRaceNamePairs.get(counter).getImage();
+                    counter++;
 
                     //Useful constants for image scaling and printing
                     int printWidth = _constants.getPrintableWidthForVVPAT();
@@ -248,15 +249,17 @@ public class Printer {
                     BufferedImage outTitle = getScaledInstance(titleImg, printWidth, scaledHeight, RenderingHints.VALUE_INTERPOLATION_BICUBIC, true);
 
 
-					graphics.drawImage(outImage,
+                    graphics.drawImage(outTitle,
                             printX,
                             totalSize,
                             null);
 
-                    graphics.drawImage(outTitle,
+					graphics.drawImage(outImage,
                             printX,
-                            totalSize + outImage.getHeight(null),
+                            totalSize + outTitle.getHeight(null),
                             null);
+
+
 
                     //totalSize += outTitle.getHeight(null);
 					totalSize += outImage.getHeight(null) + outTitle.getHeight(null);
@@ -291,7 +294,7 @@ public class Printer {
             }
         }
         ArrayList<RaceTitlePair> sortedRaceNameImagePairs = new ArrayList<RaceTitlePair> ();
-        Integer[] sortedRaceNumIDArray = (Integer []) raceNumericIDs.toArray();
+        Integer[] sortedRaceNumIDArray = raceNumericIDs.toArray(new Integer[0]);
         Arrays.sort(sortedRaceNumIDArray);
 
         for (Integer ID:sortedRaceNumIDArray)
