@@ -62,6 +62,8 @@ public class PsychLayoutManager extends ALayoutManager {
      * race are to be drawn.
      */
     private static final int RACE_DESCRIPTION_WIDTH = 600;
+    private static final int PRESIDENTIAL_RACE_LABEL_COMPONENT_HEIGHT = 40;
+    private static final int PRESIDENTIAL_RACE_SHIFT_HEIGHT = 10;
 
     /**
      * Width of each candidate or contest on the VVPAT (RenderButton).
@@ -1727,15 +1729,108 @@ public class PsychLayoutManager extends ALayoutManager {
     		cardPage.getComponents().add(background);
     		cardPage.setBackgroundLabel(background.getUID());
 
-    		for (Component cmp : frame.getAllComponents()) {
+            // This variable is used to shift down all the race labels that come after a presidential election label.
+            int yShift = 0;
+            int currentIndex = 0;
+            Component[] componentsArray = frame.getAllComponents();
+    		for (Component cmp : componentsArray) {
     			int componentHeight = cmp.getHeight();
                 Spacer s = (Spacer) cmp;
-    			s.updatePosition();
-                if (componentHeight > 38)
+                //System.out.println("UID: " + s.getComponent().getUID() + ". Height: " + componentHeight);
+                s.updatePosition();
+                if (componentHeight == PRESIDENTIAL_RACE_LABEL_COMPONENT_HEIGHT) // This detects either a presidential race label or a presidential race selection.
                 {
-                    s.getComponent().setYPos(s.getComponent().getYPos() - 20);
+                    // Use the old shift length.
+                    s.getComponent().setYPos(s.getComponent().getYPos() + yShift);
+                    if (s.getComponent().getUID().contains("B"))  // This uniquely detects presidential race selections. They always follow a label, so the latter of the two should set the yShift.
+                    {
+                        //System.out.println("UID " + s.getComponent().getUID() + " is a presidential election. Updating yShift from " + yShift + " to " + (yShift + PRESIDENTIAL_RACE_SHIFT_HEIGHT));
+                        // Update the shift length.
+                        yShift += PRESIDENTIAL_RACE_SHIFT_HEIGHT;
+                    }
+                    cardPage.getComponents().add(s.getComponent());
+                    currentIndex++;
+                    continue;
                 }
-    			cardPage.getComponents().add(s.getComponent());
+                /**
+                 * Shift everything down except the button labels.
+                 * They are descriptions of the buttons on the current page and they should remain where they are.
+                 * Normally, the review page card would contain components that have UIDs that alternate between L and B.
+                 * The only two exceptions are the button labels:
+                 *      The first button label comes after a B but before an L.
+                 *      The second button label comes after an L but before an L.
+                 *      No other component meets these conditions.
+                 */
+                // Detect if these are button labels.
+                Boolean condition1 = false;
+                Boolean condition2 = false;
+
+                if (yShift > 0)
+                {
+                    //Spacer s2 = (Spacer) componentsArray[currentIndex];
+                    //System.out.println("UID: " + s2.getComponent().getUID() + ". ACTUAL UID: " + s.getComponent().getUID());
+                    if ((currentIndex > 0) && (currentIndex < componentsArray.length-1))
+                    {
+                        Boolean c1sub1 = ((Spacer) componentsArray[currentIndex]).getComponent().getUID().contains("L");
+                        Boolean c1sub2 = ((Spacer) componentsArray[currentIndex-1]).getComponent().getUID().contains("B");
+                        Boolean c1sub3 = ((Spacer) componentsArray[currentIndex+1]).getComponent().getUID().contains("L");
+                        condition1 = c1sub1 && c1sub2 && c1sub3;
+                        /*System.out.println("\tCONDITION 1:");
+                        System.out.println("\tElement at index i's UID, " + ((Spacer) componentsArray[currentIndex]).getComponent().getUID() + ", contains L. <--" + c1sub1.toString());
+                        System.out.println("\tElement at index i-1's UID, " + ((Spacer) componentsArray[currentIndex-1]).getComponent().getUID() + ", contains B. <--" + c1sub2.toString());
+                        System.out.println("\tElement at index i+1's UID, " + ((Spacer) componentsArray[currentIndex+1]).getComponent().getUID() + ", contains L. <--" + c1sub3.toString());
+                        System.out.println("\tCondition 1 got set to " + condition1.toString());*/
+
+                        Boolean c2sub1 = ((Spacer) componentsArray[currentIndex]).getComponent().getUID().contains("L");
+                        Boolean c2sub2 = ((Spacer) componentsArray[currentIndex-1]).getComponent().getUID().contains("L");
+                        Boolean c2sub3 = ((Spacer) componentsArray[currentIndex+1]).getComponent().getUID().contains("L");
+                        condition2 = c2sub1 && c2sub2 && c2sub3;
+                        /*System.out.println("\tCONDITION 2:");
+                        System.out.println("\tElement at index i's UID, " + ((Spacer) componentsArray[currentIndex]).getComponent().getUID() + ", contains L. <--" + c2sub1.toString());
+                        System.out.println("\tElement at index i-1's UID, " + ((Spacer) componentsArray[currentIndex-1]).getComponent().getUID() + ", contains L. <--" + c2sub2.toString());
+                        System.out.println("\tElement at index i+1's UID, " + ((Spacer) componentsArray[currentIndex+1]).getComponent().getUID() + ", contains L. <--" + c2sub3.toString());
+                        System.out.println("\tCondition 2 got set to " + condition2.toString());*/
+                    }
+                    else
+                    {
+                        if (currentIndex == 0)
+                        {
+                            Boolean c1sub1 = ((Spacer) componentsArray[currentIndex]).getComponent().getUID().contains("L");
+                            Boolean c1sub2 = ((Spacer) componentsArray[currentIndex+1]).getComponent().getUID().contains("L");
+                            condition1 = c1sub1 && c1sub2;
+                            /*System.out.println("\tCONDITION 1:");
+                            System.out.println("\tElement at index i's UID, " + ((Spacer) componentsArray[currentIndex]).getComponent().getUID() + ", contains L. <--" + c1sub1.toString());
+                            System.out.println("\tElement at index i+1's UID, " + ((Spacer) componentsArray[currentIndex+1]).getComponent().getUID() + ", contains L. <--" + c1sub2.toString());
+                            System.out.println("\tCondition 1 got set to " + condition1.toString());*/
+
+                        }
+                        if (currentIndex == componentsArray.length - 1)
+                        {
+                            Boolean c2sub1 = ((Spacer) componentsArray[currentIndex]).getComponent().getUID().contains("L");
+                            Boolean c2sub2 = ((Spacer) componentsArray[currentIndex-1]).getComponent().getUID().contains("L");
+                            condition2 = c2sub1 && c2sub2;
+                            /*System.out.println("\tCONDITION 2:");
+                            System.out.println("\tElement at index i's UID, " + ((Spacer) componentsArray[currentIndex]).getComponent().getUID() + ", contains L. <--" + c2sub1.toString());
+                            System.out.println("\tElement at index i-1's UID, " + ((Spacer) componentsArray[currentIndex-1]).getComponent().getUID() + ", contains L. <--" + c2sub2.toString());
+                            System.out.println("\tCondition 2 got set to " + condition2.toString());*/
+                        }
+                    }
+
+
+                    /*System.out.println("=====\n\tFor UID " + s.getComponent().getUID() + ", the variables are: ");
+                    System.out.println("\t\tcondition1: " + condition1.toString());
+                    System.out.println("\t\tcondition2: " + condition2.toString());*/
+                }
+
+                // Now check if they are button labels. If yes, leave them alone. If no, shift them down.
+                if(!condition1 && !condition2)
+                {
+                    //System.out.println("Shifting UID " + s.getComponent().getUID() + " " + yShift + " units down because of a presidential race.");
+                    s.getComponent().setYPos(s.getComponent().getYPos() + yShift);
+                }
+
+                cardPage.getComponents().add(s.getComponent());
+                currentIndex++;
     		}
     		reviewPages.add(cardPage);
     		if (position < ballot.getCards().size())
