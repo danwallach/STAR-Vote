@@ -248,13 +248,6 @@ public class Printer {
                     BufferedImage outTitle = getScaledInstance(titleImg, printWidth, scaledHeight, RenderingHints.VALUE_INTERPOLATION_BICUBIC, true);
 
 
-                    try{
-                        ImageIO.write(outImage, "PNG", new File("BALLOT_IMAGE.png"));
-                        //ImageIO.write(outImage, "PNG", new File("SCALED_BALLOT_IMAGE.png"));
-                    }catch (IOException e){
-                        new RuntimeException(e);
-                    }
-
 					graphics.drawImage(outImage,
                             printX,
                             totalSize,
