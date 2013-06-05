@@ -28,6 +28,11 @@ package printer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
+import java.awt.image.AffineTransformOp;
+import java.awt.AlphaComposite;
+import java.awt.image.renderable.RenderableImage;
 import java.awt.print.*;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -35,6 +40,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.print.attribute.standard.PrinterName;
 import javax.swing.Timer;
 
@@ -222,7 +228,17 @@ public class Printer {
 
 				while(totalSize < pageFormat.getImageableHeight() && choiceIndex < choices.size()){
                     //Image titleImg = (raceTitlePairs1.remove(0)).getImage();
-					Image img = choiceToImage.get(choices.get(choiceIndex));
+					BufferedImage img = (BufferedImage)choiceToImage.get(choices.get(choiceIndex));
+
+
+                    //Useful constants for image scaling and printing
+                    int printWidth = _constants.getPrintableWidthForVVPAT();
+                    if(_constants.getUseTwoColumns())
+                        printWidth /= 2;
+
+                    float scaledWidthFactor =     (1.0f*printWidth/img.getWidth(null));
+                    int scaledHeight = Math.round(img.getHeight(null)*scaledWidthFactor);
+
                     //System.out.println("Now drawing " + choices.get(choiceIndex));
 
                     //Random scaling factor of 1/2
@@ -230,19 +246,48 @@ public class Printer {
                     //Image outImage = img.getScaledInstance(_constants.getPrintableWidthForVVPAT(), _constants.getPrintableHeightForVVPAT()/(2*(choices.size()+titlePairsSize)), Image.SCALE_AREA_AVERAGING);
 
 
-                    int printWidth = _constants.getPrintableWidthForVVPAT();
 
-                    if(_constants.getUseTwoColumns())
-                        printWidth /= 2;
+
+                    BufferedImage outImage = getScaledInstance(img, printWidth, scaledHeight, RenderingHints.VALUE_INTERPOLATION_BICUBIC, true);
+
+
+
+                    //Want to scale the height with respect to the width only
+
+
+                    //System.out.println(height);
+
 
                     //TODO This really doesn't work, need to fix...
-                    Image outImage = img.getScaledInstance(printWidth, img.getHeight(null), Image.SCALE_SMOOTH);
 
-                    //graphics.drawImage(outTitle, (int)pageFormat.getImageableX(), totalSize, null);
+                    //BufferedImage outImage = new BufferedImage(printWidth, scaledHeight, BufferedImage.TYPE_INT_ARGB);
+//                    Graphics2D g = outImage.createGraphics();
+//                    g.drawImage(img, 0, 0, printWidth, scaledHeight, null);
+//                    g.dispose();
+//                    g.setComposite(AlphaComposite.Src);
+//                    g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+//                    g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+//                    g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+
+//                    AffineTransform at = new AffineTransform();
+//                    at.scale(scaledWidthFactor,scaledWidthFactor);
+//                    AffineTransformOp scaleOp = new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR);
+//                    outImage = scaleOp.filter(outImage, null);
+
+                    //System.out.println("Image " + img + " | Height " + outImage.getHeight() + " | Width " + outImage.getWidth());
+
+                    try{
+                        ImageIO.write(outImage, "PNG", new File("BALLOT_IMAGE.png"));
+                        //ImageIO.write(outImage, "PNG", new File("SCALED_BALLOT_IMAGE.png"));
+                    }catch (IOException e){
+                        new RuntimeException(e);
+                    }
+
 					graphics.drawImage(outImage,
-							printX,
-							totalSize,
-							null);
+                            printX,
+                            totalSize,
+                            null);
 
                     //totalSize += outTitle.getHeight(null);
 					totalSize += outImage.getHeight(null);
@@ -380,4 +425,78 @@ public class Printer {
 			return;
 		}
 	}
+
+    /**
+     * Convenience method that returns a scaled instance of the
+     * provided {@code BufferedImage}.
+     *
+     * @param img the original image to be scaled
+     * @param targetWidth the desired width of the scaled instance,
+     *    in pixels
+     * @param targetHeight the desired height of the scaled instance,
+     *    in pixels
+     * @param hint one of the rendering hints that corresponds to
+     *    {@code RenderingHints.KEY_INTERPOLATION} (e.g.
+     *    {@code RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR},
+     *    {@code RenderingHints.VALUE_INTERPOLATION_BILINEAR},
+     *    {@code RenderingHints.VALUE_INTERPOLATION_BICUBIC})
+     * @param higherQuality if true, this method will use a multi-step
+     *    scaling technique that provides higher quality than the usual
+     *    one-step technique (only useful in downscaling cases, where
+     *    {@code targetWidth} or {@code targetHeight} is
+     *    smaller than the original dimensions, and generally only when
+     *    the {@code BILINEAR} hint is specified)
+     * @return a scaled version of the original {@code BufferedImage}
+     *
+     * Taken from  https://today.java.net/pub/a/today/2007/04/03/perils-of-image-getscaledinstance.html
+     */
+    public BufferedImage getScaledInstance(BufferedImage img,
+                                           int targetWidth,
+                                           int targetHeight,
+                                           Object hint,
+                                           boolean higherQuality)
+    {
+        int type = (img.getTransparency() == Transparency.OPAQUE) ?
+                BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB;
+        BufferedImage ret = (BufferedImage)img;
+        int w, h;
+        if (higherQuality) {
+            // Use multi-step technique: start with original size, then
+            // scale down in multiple passes with drawImage()
+            // until the target size is reached
+            w = img.getWidth();
+            h = img.getHeight();
+        } else {
+            // Use one-step technique: scale directly from original
+            // size to target size with a single drawImage() call
+            w = targetWidth;
+            h = targetHeight;
+        }
+
+        do {
+            if (higherQuality && w > targetWidth) {
+                w /= 2;
+                if (w < targetWidth) {
+                    w = targetWidth;
+                }
+            }
+
+            if (higherQuality && h > targetHeight) {
+                h /= 2;
+                if (h < targetHeight) {
+                    h = targetHeight;
+                }
+            }
+
+            BufferedImage tmp = new BufferedImage(w, h, type);
+            Graphics2D g2 = tmp.createGraphics();
+            g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, hint);
+            g2.drawImage(ret, 0, 0, w, h, null);
+            g2.dispose();
+
+            ret = tmp;
+        } while (w != targetWidth || h != targetHeight);
+
+        return ret;
+    }
 }
