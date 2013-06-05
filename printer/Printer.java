@@ -259,7 +259,7 @@ public class Printer {
 
 
                     //TODO This really doesn't work, need to fix...
-
+                    // Useless comment that enables GIT pushing.
                     //BufferedImage outImage = new BufferedImage(printWidth, scaledHeight, BufferedImage.TYPE_INT_ARGB);
 //                    Graphics2D g = outImage.createGraphics();
 //                    g.drawImage(img, 0, 0, printWidth, scaledHeight, null);
