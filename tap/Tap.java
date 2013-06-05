@@ -132,7 +132,13 @@ public class Tap {
 			public void votebox(VoteBoxEvent e) {}
             public void ballotscanner(BallotScannerEvent e) {}
             public void ballotScanned(BallotScannedEvent e) {}
-		});
+
+            @Override
+            public void pinEntered(PinEnteredEvent event) { }
+
+            @Override
+            public void invalidPin(InvalidPinEvent event) {}
+        });
 		
 		try{
 			System.out.println("Connecting to auditorium...");

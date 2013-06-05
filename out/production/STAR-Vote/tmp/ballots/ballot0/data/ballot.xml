@@ -4,38 +4,41 @@
 <ListElement value="en"/>
 </ListProperty>
 <Property name="MaxImageSize" type="Integer" value="1"/>
-<Card uid="B22">
+<Card uid="B1">
 <Property name="CardStrategy" type="String" value="RadioButton"/>
-<Property name="TitleLabelUID" type="String" value="L37"/>
-<SelectableCardElement uid="B23"/>
-<SelectableCardElement uid="B24"/>
+<Property name="TitleLabelUID" type="String" value="L26"/>
+<SelectableCardElement uid="B2"/>
+<SelectableCardElement uid="B3"/>
 <ListProperty name="RaceGroup" type="String">
-<ListElement value="B23"/>
-<ListElement value="B24"/>
+<ListElement value="B1"/>
+<ListElement value="B2"/>
+<ListElement value="B3"/>
 </ListProperty>
 </Card>
-<Card uid="B25">
+<Card uid="B4">
 <Property name="CardStrategy" type="String" value="RadioButton"/>
-<Property name="TitleLabelUID" type="String" value="L41"/>
-<SelectableCardElement uid="B26"/>
-<SelectableCardElement uid="B27"/>
-<SelectableCardElement uid="B28"/>
+<Property name="TitleLabelUID" type="String" value="L29"/>
+<SelectableCardElement uid="B5"/>
+<SelectableCardElement uid="B6"/>
+<SelectableCardElement uid="B7"/>
 <ListProperty name="RaceGroup" type="String">
-<ListElement value="B26"/>
-<ListElement value="B27"/>
-<ListElement value="B28"/>
+<ListElement value="B4"/>
+<ListElement value="B5"/>
+<ListElement value="B6"/>
+<ListElement value="B7"/>
 </ListProperty>
 </Card>
-<Card uid="B29">
+<Card uid="B8">
 <Property name="CardStrategy" type="String" value="RadioButton"/>
-<Property name="TitleLabelUID" type="String" value="L44"/>
-<SelectableCardElement uid="B30"/>
-<SelectableCardElement uid="B31"/>
-<SelectableCardElement uid="B32"/>
+<Property name="TitleLabelUID" type="String" value="L31"/>
+<SelectableCardElement uid="B9"/>
+<SelectableCardElement uid="B10"/>
+<SelectableCardElement uid="B11"/>
 <ListProperty name="RaceGroup" type="String">
-<ListElement value="B30"/>
-<ListElement value="B31"/>
-<ListElement value="B32"/>
+<ListElement value="B8"/>
+<ListElement value="B9"/>
+<ListElement value="B10"/>
+<ListElement value="B11"/>
 </ListProperty>
 </Card>
 </Ballot>
