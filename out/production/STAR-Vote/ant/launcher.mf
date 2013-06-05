@@ -1,1 +1,0 @@
-Main-Class: votebox/middle/datacollection/Launcher
