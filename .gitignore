@@ -1,4 +1,5 @@
-# Ignore the temp directory #
-###########################
+#  Ignore the temp directory #
+#  Ignore the out directory  #
+##############################
 tmp
 out
