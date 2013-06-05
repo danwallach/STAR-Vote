@@ -143,6 +143,7 @@ public class Printer {
 		final Map<String, Image> choiceToImage = BallotImageHelper.loadImagesForVVPAT(_currentBallotFile);
         final Map<String, Image> raceTitles = BallotImageHelper.loadBallotTitles(_currentBallotFile);
 
+        ArrayList<RaceTitlePair> actualRaceNameImagePairs = getRaceNameImagePairs(choiceToImage);
         /*
         System.out.println("The races are:");
         for (String label:raceTitles.keySet())
@@ -308,6 +309,30 @@ public class Printer {
 
 		printOnVVPAT(printedBallot);
 	}
+
+    private ArrayList<RaceTitlePair> getRaceNameImagePairs(Map<String, Image> imageMap) {
+        // This ArrayList holds all the numeric IDs that correspond to race labels.
+        // If a race label's image has UID L50, then this ArrayList will hold 50 to represent that race label.
+        ArrayList<Integer> raceNumericIDs = new ArrayList<Integer> ();
+        for (String UID:imageMap.keySet())
+        {
+            if (UID.contains("L"))
+            {
+                System.out.println("Adding numeric ID " + UID.substring(1) + " to the list of numeric IDs.");
+                raceNumericIDs.add(new Integer(UID.substring(1)));
+            }
+        }
+        ArrayList<RaceTitlePair> sortedRaceNameImagePairs = new ArrayList<RaceTitlePair> ();
+        Integer[] sortedRaceNumIDArray = (Integer []) raceNumericIDs.toArray();
+        Arrays.sort(sortedRaceNumIDArray);
+
+        for (Integer ID:sortedRaceNumIDArray)
+        {
+            String currentKey = "L" + ID.toString();
+            sortedRaceNameImagePairs.add(new RaceTitlePair(currentKey, imageMap.get(currentKey)));
+        }
+        return sortedRaceNameImagePairs;
+    }
 
     private ArrayList<ChoicePair> correctBallot(ListExpression rawBallot) {
         // List of races is called: _races
