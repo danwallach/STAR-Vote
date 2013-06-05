@@ -210,4 +210,16 @@ public interface VoteBoxEventListener {
      */
     public void ballotScanned(BallotScannedEvent e);
 
+    /**
+     * called to signal the input of a pin
+     */
+
+    public void pinEntered(PinEnteredEvent event);
+
+    /**
+     * called to signal that the input pin is invalid
+     */
+
+    public void invalidPin(InvalidPinEvent event);
+
 }

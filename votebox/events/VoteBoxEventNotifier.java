@@ -188,4 +188,14 @@ public class VoteBoxEventNotifier implements VoteBoxEventListener {
             l.ballotScanned(e);
     }
 
+    public void pinEntered(PinEnteredEvent e) {
+        for (VoteBoxEventListener l : listeners)
+            l.pinEntered(e);
+    }
+
+    public void invalidPin(InvalidPinEvent e){
+        for (VoteBoxEventListener l : listeners)
+            l.invalidPin(e);
+    }
+
 }

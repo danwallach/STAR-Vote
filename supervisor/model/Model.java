@@ -64,7 +64,7 @@ public class Model {
 
     private ObservableEvent machinesChangedObs;
 
-    private ArrayList<Integer> activePins;
+    private ArrayList<Integer> validPins;
 
     private VoteBoxAuditoriumConnector auditorium;
 
@@ -133,7 +133,7 @@ public class Model {
         ballotLocation = "ballot.zip";
         tallier = new Tallier();
         bids = new HashMap<String, ASExpression>();
-        activePins = new ArrayList<Integer>();
+        validPins = new ArrayList<Integer>();
         statusTimer = new Timer(300000, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (isConnected()) {
@@ -897,6 +897,25 @@ public class Model {
                 }
             }
 
+            public void pinEntered(PinEnteredEvent e){
+                if(isPollsOpen()) {
+                    if(validPins.contains(e.getPin())) {
+                        validPins.remove(e.getPin());
+                        try {
+                            authorize(e.getSerial());
+                        }
+                        catch(IOException ex) {
+                            System.out.println(ex.getMessage());
+                        }
+                    }
+                    else {
+                        auditorium.announce(new InvalidPinEvent(mySerial, e.getNonce()));
+                    }
+                }
+            }
+
+            public void invalidPin(InvalidPinEvent e) {}
+
         });
 
         try {
@@ -937,13 +956,9 @@ public class Model {
     public int generatePin(){
         Random rand = (new Random());
         int pin = rand.nextInt(10000);
-        while(activePins.contains(pin))
+        while(validPins.contains(pin))
             pin = rand.nextInt(10000);
-        activePins.add(pin);
+        validPins.add(pin);
         return pin;
-    }
-
-    public void deactivatePin(int pin){
-        if(activePins.contains(pin)) activePins.remove(pin);
     }
 }
