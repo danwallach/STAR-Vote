@@ -522,12 +522,12 @@ public class Button extends Label implements IFocusable {
         catch (UnknownUIDException e) {
             throw new BallotBoxViewException(
                     "While attempting to connect uid " + getUniqueID()
-                            + " with a ballot element, an error occured.", e );
+                            + " with a ballot element, an error occurred.", e );
         }
         catch (NonCardException e) {
             throw new BallotBoxViewException(
                     "While attempting to connect uid " + getUniqueID()
-                            + " with a ballot element, an error occured.", e );
+                            + " with a ballot element, an error occurred.", e );
         }
         catch (CardException e) {
             throw new BallotBoxViewException(

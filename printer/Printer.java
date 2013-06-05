@@ -143,29 +143,11 @@ public class Printer {
 		final Map<String, Image> choiceToImage = BallotImageHelper.loadImagesForVVPAT(_currentBallotFile);
         final Map<String, Image> raceTitles = BallotImageHelper.loadBallotTitles(_currentBallotFile);
 
-        /*
-        System.out.println("The races are:");
-        for (String label:raceTitles.keySet())
-        {
-            System.out.println("Race: " + label + " corresponds to image: " + raceTitles.get(label).toString());
-        }
-        */
-
         //System.out.println("There are " + choiceToImage.keySet().size() + " entries in the mapping right after loadImagesForVVPAT is called.");
 		final List<String> choices = new ArrayList<String>();
 
         ArrayList<ChoicePair> correctedBallot = correctBallot(ballot);
 
-        /* This for loop uses the original ballot, which does not account for No Selections. */
-        /*
-        System.out.println("Choices in old ballot:");
-		for(int i = 0; i < ballot.size(); i++){
-			ListExpression choice = (ListExpression)ballot.get(i);
-            System.out.println("Choice: " + choice.get(0).toString() + ":" + choice.get(1).toString());
-			if(choice.get(1).toString().equals("1"))
-				choices.add(choice.get(0).toString());
-		}
-		*/
 
         /* This for loop uses the corrected ballot, which accounts for No Selections. */
         for(int i = 0; i < correctedBallot.size(); i++)
@@ -239,43 +221,10 @@ public class Printer {
                     float scaledWidthFactor =     (1.0f*printWidth/img.getWidth(null));
                     int scaledHeight = Math.round(img.getHeight(null)*scaledWidthFactor);
 
-                    //System.out.println("Now drawing " + choices.get(choiceIndex));
-
-                    //Random scaling factor of 1/2
-                    //Image outTitle = titleImg.getScaledInstance(_constants.getPrintableWidthForVVPAT(), _constants.getPrintableHeightForVVPAT()/(2*(choices.size()+titlePairsSize)), Image.SCALE_AREA_AVERAGING);
-                    //Image outImage = img.getScaledInstance(_constants.getPrintableWidthForVVPAT(), _constants.getPrintableHeightForVVPAT()/(2*(choices.size()+titlePairsSize)), Image.SCALE_AREA_AVERAGING);
-
-
-
-
                     BufferedImage outImage = getScaledInstance(img, printWidth, scaledHeight, RenderingHints.VALUE_INTERPOLATION_BICUBIC, true);
 
 
 
-                    //Want to scale the height with respect to the width only
-
-
-                    //System.out.println(height);
-
-
-                    //TODO This really doesn't work, need to fix...
-                    // Useless comment that enables GIT pushing.
-                    //BufferedImage outImage = new BufferedImage(printWidth, scaledHeight, BufferedImage.TYPE_INT_ARGB);
-//                    Graphics2D g = outImage.createGraphics();
-//                    g.drawImage(img, 0, 0, printWidth, scaledHeight, null);
-//                    g.dispose();
-//                    g.setComposite(AlphaComposite.Src);
-//                    g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-//                    g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-//                    g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-
-//                    AffineTransform at = new AffineTransform();
-//                    at.scale(scaledWidthFactor,scaledWidthFactor);
-//                    AffineTransformOp scaleOp = new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR);
-//                    outImage = scaleOp.filter(outImage, null);
-
-                    //System.out.println("Image " + img + " | Height " + outImage.getHeight() + " | Width " + outImage.getWidth());
 
                     try{
                         ImageIO.write(outImage, "PNG", new File("BALLOT_IMAGE.png"));
