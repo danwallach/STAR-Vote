@@ -199,6 +199,7 @@ public class Printer {
         }
 
 		final int fTotalSize = totalSize;
+        final ArrayList<RaceTitlePair> fActualRaceNamePairs = actualRaceNameImagePairs;
 
 		Printable printedBallot = new Printable(){
 
@@ -230,6 +231,7 @@ public class Printer {
 				while(totalSize < pageFormat.getImageableHeight() && choiceIndex < choices.size()){
                     //Image titleImg = (raceTitlePairs1.remove(0)).getImage();
 					BufferedImage img = (BufferedImage)choiceToImage.get(choices.get(choiceIndex));
+                    BufferedImage titleImg = (BufferedImage)fActualRaceNamePairs.remove(0).getImage();
 
 
                     //Useful constants for image scaling and printing
@@ -240,43 +242,11 @@ public class Printer {
                     float scaledWidthFactor =     (1.0f*printWidth/img.getWidth(null));
                     int scaledHeight = Math.round(img.getHeight(null)*scaledWidthFactor);
 
-                    //System.out.println("Now drawing " + choices.get(choiceIndex));
-
-                    //Random scaling factor of 1/2
-                    //Image outTitle = titleImg.getScaledInstance(_constants.getPrintableWidthForVVPAT(), _constants.getPrintableHeightForVVPAT()/(2*(choices.size()+titlePairsSize)), Image.SCALE_AREA_AVERAGING);
-                    //Image outImage = img.getScaledInstance(_constants.getPrintableWidthForVVPAT(), _constants.getPrintableHeightForVVPAT()/(2*(choices.size()+titlePairsSize)), Image.SCALE_AREA_AVERAGING);
-
-
 
 
                     BufferedImage outImage = getScaledInstance(img, printWidth, scaledHeight, RenderingHints.VALUE_INTERPOLATION_BICUBIC, true);
+                    BufferedImage outTitle = getScaledInstance(titleImg, printWidth, scaledHeight, RenderingHints.VALUE_INTERPOLATION_BICUBIC, true);
 
-
-
-                    //Want to scale the height with respect to the width only
-
-
-                    //System.out.println(height);
-
-
-                    //TODO This really doesn't work, need to fix...
-                    // Useless comment that enables GIT pushing.
-                    //BufferedImage outImage = new BufferedImage(printWidth, scaledHeight, BufferedImage.TYPE_INT_ARGB);
-//                    Graphics2D g = outImage.createGraphics();
-//                    g.drawImage(img, 0, 0, printWidth, scaledHeight, null);
-//                    g.dispose();
-//                    g.setComposite(AlphaComposite.Src);
-//                    g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-//                    g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-//                    g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-
-//                    AffineTransform at = new AffineTransform();
-//                    at.scale(scaledWidthFactor,scaledWidthFactor);
-//                    AffineTransformOp scaleOp = new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR);
-//                    outImage = scaleOp.filter(outImage, null);
-
-                    //System.out.println("Image " + img + " | Height " + outImage.getHeight() + " | Width " + outImage.getWidth());
 
                     try{
                         ImageIO.write(outImage, "PNG", new File("BALLOT_IMAGE.png"));
@@ -290,8 +260,13 @@ public class Printer {
                             totalSize,
                             null);
 
+                    graphics.drawImage(outTitle,
+                            printX,
+                            totalSize + outImage.getHeight(null),
+                            null);
+
                     //totalSize += outTitle.getHeight(null);
-					totalSize += outImage.getHeight(null);
+					totalSize += outImage.getHeight(null) + outTitle.getHeight(null);
 					choiceIndex++;
 
                     //If we reach the end of a column and are printing in two columns, go back to the top with an offset of printwidth

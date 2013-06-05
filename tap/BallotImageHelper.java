@@ -98,6 +98,8 @@ public class BallotImageHelper {
 					if(sub == -1) continue;           //Ballot names will always have underscores
 					
 					id = id.substring(0, sub);
+
+                    System.out.println("Getting image " + id);
 					
 					vvpatMap.put(id, ImageIO.read(file.getInputStream(entry)));
 				}
