@@ -526,7 +526,8 @@ public class VoteBox {
                     OverrideCancelEvent.getMatcher(), OverrideCastEvent.getMatcher(),
                     PollsOpenQEvent.getMatcher(), BallotCountedEvent.getMatcher(),
                     ChallengeEvent.getMatcher(), ChallengeResponseEvent.getMatcher(),
-                    AuthorizedToCastWithNIZKsEvent.getMatcher());
+                    AuthorizedToCastWithNIZKsEvent.getMatcher(), PinEnteredEvent.getMatcher(),
+                    InvalidPinEvent.getMatcher());
         } catch (NetworkException e1) {
         	//NetworkException represents a recoverable error
         	//  so just note it and continue
@@ -588,6 +589,7 @@ public class VoteBox {
                     }
                 }
                 if (!found) broadcastStatus();
+                promptForPin("Enter Authentication PIN");
             }
 
             /**
@@ -879,7 +881,7 @@ public class VoteBox {
 
             public void pinEntered(PinEnteredEvent e) {}
             public void invalidPin(InvalidPinEvent e) {
-                promptForPin("You have entered an invalid PIN. Please enter a valid PIN.");
+                promptForPin("Invalid PIN: Enter Valid PIN");
             }
 
 
@@ -936,8 +938,14 @@ public class VoteBox {
                     JOptionPane.OK_CANCEL_OPTION,
                     JOptionPane.PLAIN_MESSAGE);
         }
-        int pin = Integer.parseInt(limitedField.getText());
-        validatePin(pin);
+
+
+        try{
+            int pin = Integer.parseInt(limitedField.getText());
+            validatePin(pin);
+        }catch(NumberFormatException nfe){
+            promptForPin("Invalid PIN: Enter 4-digit PIN");
+        }
     }
 
     public void validatePin(int pin) {
