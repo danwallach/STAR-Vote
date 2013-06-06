@@ -1734,7 +1734,7 @@ public class PsychLayoutManager extends ALayoutManager {
     		for (Component cmp : componentsArray) {
     			int componentHeight = cmp.getHeight();
                 Spacer s = (Spacer) cmp;
-                System.out.println("UID: " + s.getComponent().getUID() + ". Height: " + componentHeight + " | Width: " + cmp.getWidth());
+                //System.out.println("UID: " + s.getComponent().getUID() + ". Height: " + componentHeight + " | Width: " + cmp.getWidth());
                 s.updatePosition();
                 if (componentHeight == PRESIDENTIAL_RACE_LABEL_COMPONENT_HEIGHT) // This detects either a presidential race label or a presidential race selection.
                 {

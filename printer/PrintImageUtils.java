@@ -1,5 +1,11 @@
 package printer;
 
+import net.sourceforge.barbecue.Barcode;
+import net.sourceforge.barbecue.BarcodeException;
+import net.sourceforge.barbecue.BarcodeFactory;
+import net.sourceforge.barbecue.BarcodeImageHandler;
+import net.sourceforge.barbecue.output.OutputException;
+
 import javax.imageio.ImageIO;
 import javax.sound.midi.SysexMessage;
 import java.awt.*;
@@ -246,5 +252,28 @@ public class PrintImageUtils {
         } while (w != targetWidth || h != targetHeight);
 
         return ret;
+    }
+
+    /**
+     * A method for generating a barcode of some text
+     *
+     * @param string - the string to be converted to barcode, will be a bid in this case
+     * @return - an image representing the barcode to be drawn on a ballot
+     */
+    public static BufferedImage getBarcode(String string){
+        try {
+            Barcode bar = BarcodeFactory.createCode128(string);
+
+            BufferedImage code = BarcodeImageHandler.getImage(bar);
+
+            return code;
+
+
+        } catch (BarcodeException e) {
+            throw new RuntimeException(e);
+        } catch (OutputException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 }

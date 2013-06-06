@@ -26,42 +26,25 @@
 package printer;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.awt.image.AffineTransformOp;
-import java.awt.AlphaComposite;
-import java.awt.image.renderable.RenderableImage;
 import java.awt.print.*;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 
-import javax.imageio.ImageIO;
 import javax.print.attribute.standard.PrinterName;
-import javax.swing.Timer;
 
-import edu.uconn.cse.adder.PublicKey;
 
 import sexpression.*;
 import tap.BallotImageHelper;
 import votebox.AuditoriumParams;
-import votebox.crypto.*;
-import votebox.events.*;
-import votebox.middle.*;
-import votebox.middle.ballot.Ballot;
-import votebox.middle.driver.*;
-import votebox.middle.view.*;
 import auditorium.*;
-import auditorium.Event;
-
 
 import javax.print.PrintService;
+
+import net.sourceforge.barbecue.Barcode;
 
 /**
  * This class handles all print calls made by Voteboxes, Supervisors and any future additions that will need to print
@@ -245,8 +228,12 @@ public class Printer {
                 graphics.drawString(dateFormat.format(date), printX, totalSize+graphics.getFont().getSize());
                 totalSize += graphics.getFont().getSize();
 
+                //Generate a barcode of the bid
+                BufferedImage barcode = PrintImageUtils.getBarcode(fbid);
+
                 Font ocra = new Font("OCR A Extended", Font.PLAIN, 16);
                 printHeight = printHeight - ocra.getSize();
+                int printWidth = _constants.getPrintableWidthForVVPAT();
 
 
                 //Find the minimum amount of whitespace to be trimmed off title images
@@ -259,16 +246,20 @@ public class Printer {
 
                 }
 
-				while(totalSize < pageFormat.getImageableHeight() && choiceIndex < choices.size()){
+                if(_constants.getUseTwoColumns())
+                    printWidth /= 2;
+
+                int initialHeight = totalSize;
+
+				while(totalSize < _constants.getPrintableHeightForVVPAT() && choiceIndex < choices.size()){
                     //Image titleImg = (raceTitlePairs1.remove(0)).getImage();
 					BufferedImage img = (BufferedImage)choiceToImage.get(choices.get(choiceIndex));
                     BufferedImage titleImg = (BufferedImage)fActualRaceNamePairs.get(counter).getImage();
                     counter++;
 
                     //Useful constants for image scaling and printing
-                    int printWidth = _constants.getPrintableWidthForVVPAT();
-                    if(_constants.getUseTwoColumns())
-                        printWidth /= 2;
+
+
 
                     float scaledWidthFactor =     (1.0f*printWidth/img.getWidth(null));
                     int scaledHeight = Math.round(img.getHeight(null)*scaledWidthFactor);
@@ -279,6 +270,7 @@ public class Printer {
                     titleImg = PrintImageUtils.trimImage(titleImg, true, maxToTrim);
 
                     BufferedImage outImage = PrintImageUtils.getScaledInstance(img, printWidth, scaledHeight, RenderingHints.VALUE_INTERPOLATION_BICUBIC, true);
+
 //                    try{
 //                        ImageIO.write(outImage, "PNG", new File("SCALED_IMAGE.png"));
 //                    }
@@ -305,14 +297,18 @@ public class Printer {
 					choiceIndex++;
 
                     //If we reach the end of a column and are printing in two columns, go back to the top with an offset of printwidth
-                    if(totalSize > pageFormat.getImageableHeight() - outImage.getHeight(null) && _constants.getUseTwoColumns()){
-                        totalSize = 0;
+                    if(totalSize + outImage.getHeight(null) + outTitle.getHeight(null) >= _constants.getPrintableHeightForVVPAT() - barcode.getHeight(null)
+                            && _constants.getUseTwoColumns()){
+                        totalSize = initialHeight;
                         printX += printWidth;
 
                     }
 				}
                 graphics.setFont(ocra);
                 graphics.drawString(fbid, (int)pageFormat.getImageableX(), _constants.getPrintableHeightForVVPAT()-ocra.getSize());
+
+                graphics.drawImage(barcode, printWidth, _constants.getPrintableHeightForVVPAT()-barcode.getHeight(null), null);
+
 				return Printable.PAGE_EXISTS;
 			}
 
