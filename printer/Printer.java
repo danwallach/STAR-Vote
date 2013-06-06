@@ -183,7 +183,6 @@ public class Printer {
         }
 
         final ArrayList<RaceTitlePair> raceTitlePairs1 = raceTitlePairs;
-        final int titlePairsSize = raceTitlePairs.size();
 
 		int totalSize = 0;
 		for(int i = 0; i < choices.size(); i++) {
@@ -229,6 +228,16 @@ public class Printer {
                 int printX = (int)pageFormat.getImageableX();
                 int counter = 0;
 
+                //Find the minimum amount of whitespace to be trimmed off title images
+                int maxToTrim = Integer.MAX_VALUE;
+                for(RaceTitlePair rtp : fActualRaceNamePairs){
+                    BufferedImage title = (BufferedImage)rtp.getImage();
+
+                    maxToTrim = Math.min(PrintImageUtils.getImageTrim(title, true), maxToTrim);
+
+
+                }
+
 				while(totalSize < pageFormat.getImageableHeight() && choiceIndex < choices.size()){
                     //Image titleImg = (raceTitlePairs1.remove(0)).getImage();
 					BufferedImage img = (BufferedImage)choiceToImage.get(choices.get(choiceIndex));
@@ -246,11 +255,12 @@ public class Printer {
 
                     //Remove trailing whitespace to allow for better scaling
                     //Only the title image will have trailing whitespace due to rendering
-                    titleImg = (BufferedImage)PrintImageUtils.trimImage(titleImg);
+                    titleImg = PrintImageUtils.trimImage(titleImg, true, maxToTrim);
 
                     BufferedImage outImage = PrintImageUtils.getScaledInstance(img, printWidth, scaledHeight, RenderingHints.VALUE_INTERPOLATION_BICUBIC, true);
-                    BufferedImage outTitle = PrintImageUtils.getScaledInstance(titleImg, printWidth, scaledHeight, RenderingHints.VALUE_INTERPOLATION_BICUBIC, true);
-
+                    System.out.println("Now scaling a title image");
+                    BufferedImage outTitle = PrintImageUtils.getScaledInstance(titleImg, printWidth/2, titleImg.getHeight()/2, RenderingHints.VALUE_INTERPOLATION_BICUBIC, false);
+                    System.out.println("Done scaling");
 
                     graphics.drawImage(outTitle,
                             printX,
