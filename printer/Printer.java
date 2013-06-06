@@ -145,6 +145,8 @@ public class Printer {
 		final Map<String, Image> choiceToImage = BallotImageHelper.loadImagesForVVPAT(_currentBallotFile);
         final Map<String, Image> raceTitles = BallotImageHelper.loadBallotTitles(_currentBallotFile);
 
+        final String fbid = bid;
+
         ArrayList<RaceTitlePair> actualRaceNameImagePairs = getRaceNameImagePairs(choiceToImage);
         /*
         System.out.println("The races are:");
@@ -227,6 +229,8 @@ public class Printer {
 
                 totalSize = 25;
                 int printX = (int)pageFormat.getImageableX();
+                int printHeight = _constants.getPrintableHeightForVVPAT();
+
                 int counter = 0;
 
                 //Print the date and title of the election at the top of the page
@@ -240,6 +244,9 @@ public class Printer {
 
                 graphics.drawString(dateFormat.format(date), printX, totalSize+graphics.getFont().getSize());
                 totalSize += graphics.getFont().getSize();
+
+                Font ocra = new Font("OCR A Extended", Font.PLAIN, 16);
+                printHeight = printHeight - ocra.getSize();
 
 
                 //Find the minimum amount of whitespace to be trimmed off title images
@@ -304,7 +311,8 @@ public class Printer {
 
                     }
 				}
-
+                graphics.setFont(ocra);
+                graphics.drawString(fbid, (int)pageFormat.getImageableX(), _constants.getPrintableHeightForVVPAT()-ocra.getSize());
 				return Printable.PAGE_EXISTS;
 			}
 

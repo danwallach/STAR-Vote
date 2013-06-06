@@ -732,9 +732,9 @@ public class RenderingUtils {
         graphs.setColor(Color.BLACK);
         graphs.setStroke(new BasicStroke(padding / 2));
 
+        //split "1" because it gives a nice line width. It's sort of a hack...
+        graphs.drawLine(writePos + lineWidth(("1").split(""), nf), heightPos + fontsize/2, Math.max(wrappingWidth,selectionLength), heightPos + fontsize/2);
 
-        graphs.drawLine(0, heightPos + fontsize/2, Math.max(wrappingWidth,selectionLength), heightPos + fontsize/2);
-        graphs.drawLine(0, heightPos + fontsize/2 + padding/2, Math.max(wrappingWidth,selectionLength), heightPos + fontsize/2 + padding/2);
 
         wrappedImage = wrappedImage.getSubimage(0, 0, Math.max(wrappingWidth,selectionLength), heightPos
                 + padding);
