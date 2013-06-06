@@ -37,6 +37,8 @@ import java.awt.print.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 
@@ -139,7 +141,7 @@ public class Printer {
      *
      * @param ballot - the choices to print, in the form ((race-id choice) ...)
      */
-	public void printCommittedBallot(ListExpression ballot) {
+	public void printCommittedBallot(ListExpression ballot, String bid) {
 		final Map<String, Image> choiceToImage = BallotImageHelper.loadImagesForVVPAT(_currentBallotFile);
         final Map<String, Image> raceTitles = BallotImageHelper.loadBallotTitles(_currentBallotFile);
 
@@ -182,7 +184,6 @@ public class Printer {
             raceTitlePairs.add(new RaceTitlePair(raceTitleLabel, raceTitles.get(raceTitleLabel)));
         }
 
-        final ArrayList<RaceTitlePair> raceTitlePairs1 = raceTitlePairs;
 
 		int totalSize = 0;
 		for(int i = 0; i < choices.size(); i++) {
@@ -224,9 +225,22 @@ public class Printer {
 					choiceIndex++;
 				}
 
-				totalSize = 25;
+                totalSize = 25;
                 int printX = (int)pageFormat.getImageableX();
                 int counter = 0;
+
+                //Print the date and title of the election at the top of the page
+                Font font = new Font("ARIAL Unicode", Font.PLAIN, 10);
+                graphics.setFont(font);
+                graphics.drawString(_constants.getElectionName(), printX, totalSize+graphics.getFont().getSize());
+                totalSize += graphics.getFont().getSize();
+
+                DateFormat dateFormat = new SimpleDateFormat("MMMM d, y");
+                Date date = new Date();
+
+                graphics.drawString(dateFormat.format(date), printX, totalSize+graphics.getFont().getSize());
+                totalSize += graphics.getFont().getSize();
+
 
                 //Find the minimum amount of whitespace to be trimmed off title images
                 int maxToTrim = Integer.MAX_VALUE;

@@ -276,7 +276,7 @@ public class VoteBox {
 
                         List<List<String>> races = currentDriver.getBallotAdapter().getRaceGroups();
                         printer = new Printer(_currentBallotFile, races);
-						printer.printCommittedBallot(ballot);
+						printer.printCommittedBallot(ballot, bid);
 
 					} catch (AuditoriumCryptoException e) {
 						Bugout.err("Crypto error trying to commit ballot: "+e.getMessage());
