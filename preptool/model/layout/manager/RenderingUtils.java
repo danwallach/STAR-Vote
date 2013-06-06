@@ -817,4 +817,25 @@ public class RenderingUtils {
 
 	}
 
+    /**
+     * This method draws a box in a given context, with the upper left corner at the location given.
+     * @param graphicsObject - the context (graphics object) on which to draw the box
+     * @param upperLeftX - the X coordinate of the upper-left corner
+     * @param upperLeftY - the Y coordinate of the upper-left corner
+     * @param size - the length of a side of the box
+     * @param selected - whether or not the box should be filled in
+     */
+    public static void drawBox(Graphics graphicsObject, int upperLeftX, int upperLeftY, int size, Boolean selected)
+    {
+        graphicsObject.drawRect(upperLeftX, upperLeftY, size, size);
+        if (selected)
+        {
+            for (int i = 0; i < size; i = i + 5)
+            {
+                graphicsObject.drawLine(upperLeftX+i, upperLeftY, upperLeftX, upperLeftY+i);
+                graphicsObject.drawLine(upperLeftX+i, upperLeftY+size, upperLeftX+size, upperLeftY+i);
+            }
+        }
+    }
+
 }
