@@ -691,23 +691,29 @@ public class RenderingUtils {
         }
 
 
-            //Get rid of all underscores and letters in UID's
-            if(uid.contains("_"))
-                uid = uid.substring(1, uid.indexOf("_"));
-            else
-                uid = uid.substring(1);
+        //Get rid of all underscores and letters in UID's
+        if(uid.contains("_"))
+            uid = uid.substring(1, uid.indexOf("_"));
+        else
+            uid = uid.substring(1);
 
-            graphs.drawString(uid, writePos, heightPos);
+        graphs.drawString(uid, writePos, heightPos);
 
-            Font boxFont = new Font(font.getName(), font.getStyle(), font.getSize() + 20);
-            graphs.setFont(boxFont);
-            graphs.drawString(box, boxPos, heightPos);
 
-            if (selected) {
 
-                graphs.drawString(filledSelection, boxPos, heightPos);
+        /* This is where the box is being drawn. */
+        drawBox(graphs, boxPos, heightPos, 20, selected);
 
-            }
+        /*Font boxFont = new Font(font.getName(), font.getStyle(), font.getSize() + 20);
+        graphs.setFont(boxFont);
+        graphs.drawString(box, boxPos, heightPos);
+
+        if (selected) {
+
+            graphs.drawString(filledSelection, boxPos, heightPos);
+
+        }*/
+
 
 
         graphs.setFont(nf);
@@ -825,7 +831,7 @@ public class RenderingUtils {
      * @param size - the length of a side of the box
      * @param selected - whether or not the box should be filled in
      */
-    public static void drawBox(Graphics graphicsObject, int upperLeftX, int upperLeftY, int size, Boolean selected)
+    public static void drawBox(Graphics2D graphicsObject, int upperLeftX, int upperLeftY, int size, Boolean selected)
     {
         graphicsObject.drawRect(upperLeftX, upperLeftY, size, size);
         if (selected)
