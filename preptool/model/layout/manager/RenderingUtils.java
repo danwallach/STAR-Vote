@@ -30,6 +30,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 
 /**
@@ -836,13 +837,53 @@ public class RenderingUtils {
      */
     public static void drawBox(Graphics2D graphicsObject, int upperLeftX, int upperLeftY, int width, int height, Boolean selected)
     {
+        // Drawing the empty box.
         graphicsObject.drawRect(upperLeftX, upperLeftY, width, height);
+
+
         if (selected)
         {
-            for (int i = 0; i < width; i = i + 5)
+            ArrayList<Integer> startXs = new ArrayList<Integer> ();
+            ArrayList<Integer> startYs = new ArrayList<Integer> ();
+            ArrayList<Integer> endXs = new ArrayList<Integer> ();
+            ArrayList<Integer> endYs = new ArrayList<Integer> ();
+
+            // Building the list of start positions for the fill lines.
+            int offsetX = 0;
+            int offsetY = 0;
+            while (offsetX < width)
             {
-                graphicsObject.drawLine(upperLeftX+i, upperLeftY, upperLeftX, upperLeftY+i);
-                graphicsObject.drawLine(upperLeftX+i, upperLeftY+height, upperLeftX+width, upperLeftY+i);
+                startXs.add(new Integer(upperLeftX+offsetX));
+                startYs.add(new Integer(upperLeftY+offsetY));
+                offsetX += 5;
+            }
+            while (offsetY < height)
+            {
+                startXs.add(new Integer(upperLeftX+offsetX));
+                startYs.add(new Integer(upperLeftY+offsetY));
+                offsetY += 5;
+            }
+
+            // Building the list of end positions for the fill lines.
+            offsetX = 0;
+            offsetY = 0;
+            while (offsetY < height)
+            {
+                endXs.add(new Integer(upperLeftX+offsetX));
+                endYs.add(new Integer(upperLeftY+offsetY));
+                offsetY += 5;
+            }
+            while (offsetX < width)
+            {
+                endXs.add(new Integer(upperLeftX+offsetX));
+                endYs.add(new Integer(upperLeftY+offsetY));
+                offsetX += 5;
+            }
+
+            // Drawing the fill lines.
+            for (int i = 0; i < startXs.size(); i++)
+            {
+                graphicsObject.drawLine(startXs.get(i), startYs.get(i), endXs.get(i), endYs.get(i));
             }
         }
     }
