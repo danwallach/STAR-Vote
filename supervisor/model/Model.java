@@ -466,7 +466,8 @@ public class Model {
                     EncryptedCastBallotEvent.getMatcher(), CommitBallotEvent.getMatcher(),
                     CastCommittedBallotEvent.getMatcher(), ChallengeResponseEvent.getMatcher(),
                     ChallengeEvent.getMatcher(), EncryptedCastBallotWithNIZKsEvent.getMatcher(),
-                    AuthorizedToCastWithNIZKsEvent.getMatcher(), AdderChallengeEvent.getMatcher());
+                    AuthorizedToCastWithNIZKsEvent.getMatcher(), AdderChallengeEvent.getMatcher(),
+                    PinEnteredEvent.getMatcher(), InvalidPinEvent.getMatcher());
         } catch (NetworkException e1) {
             throw new RuntimeException(e1);
         }
@@ -900,7 +901,8 @@ public class Model {
             public void pinEntered(PinEnteredEvent e){
                 if(isPollsOpen()) {
                     if(validPins.contains(e.getPin())) {
-                        validPins.remove(e.getPin());
+                        System.out.println("VALID!");
+                        validPins.remove((Integer)e.getPin());
                         try {
                             authorize(e.getSerial());
                         }
@@ -910,6 +912,7 @@ public class Model {
                     }
                     else {
                         auditorium.announce(new InvalidPinEvent(mySerial, e.getNonce()));
+                        System.out.println("INVALID!");
                     }
                 }
             }
