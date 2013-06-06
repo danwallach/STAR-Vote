@@ -63,7 +63,7 @@ public class PsychLayoutManager extends ALayoutManager {
      */
     private static final int RACE_DESCRIPTION_WIDTH = 600;
     private static final int PRESIDENTIAL_RACE_LABEL_COMPONENT_HEIGHT = 40;
-    private static final int PRESIDENTIAL_RACE_SHIFT_HEIGHT = 10;
+    private static final int PRESIDENTIAL_RACE_SHIFT_HEIGHT = 20; // To fix P9, turn this number into a formula that accounts for font size.
 
     /**
      * Width of each candidate or contest on the VVPAT (RenderButton).
@@ -1736,7 +1736,7 @@ public class PsychLayoutManager extends ALayoutManager {
     		for (Component cmp : componentsArray) {
     			int componentHeight = cmp.getHeight();
                 Spacer s = (Spacer) cmp;
-                //System.out.println("UID: " + s.getComponent().getUID() + ". Height: " + componentHeight);
+                System.out.println("UID: " + s.getComponent().getUID() + ". Height: " + componentHeight + " | Width: " + cmp.getWidth());
                 s.updatePosition();
                 if (componentHeight == PRESIDENTIAL_RACE_LABEL_COMPONENT_HEIGHT) // This detects either a presidential race label or a presidential race selection.
                 {

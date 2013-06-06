@@ -48,12 +48,12 @@ public class CommitBallotEvent implements IAnnounceEvent {
 
         public IAnnounceEvent match(int serial, ASExpression sexp) {
             HashMap<String, ASExpression> result = pattern.namedMatch(sexp);
-            System.out.println("Keys in mapping:");
+/*            System.out.println("Keys in mapping:");
             for (String i: result.keySet())
             {
                 System.out.println(i + ":" + result.get(i).toString());
             }
-            System.out.println("End of list of keys.");
+            System.out.println("End of list of keys.");*/
             if (result != NamedNoMatch.SINGLETON)
                 return new CommitBallotEvent(serial, result.get("nonce"), result
                         .get("ballot"), result.get("bid"));

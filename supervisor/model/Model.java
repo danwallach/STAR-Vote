@@ -340,6 +340,11 @@ public class Model {
      */
     public void overrideCancel(int node) {
         byte[] nonce = ((VoteBoxBooth) getMachineForSerial(node)).getNonce();
+        if (nonce == null)
+        {
+            System.err.println("ERROR: VoteBox machine has no associated nonce!");
+            throw new RuntimeException("VoteBox machine has no associated nonce!");
+        }
         auditorium.announce(new OverrideCancelEvent(mySerial, node, nonce));
     }
 
