@@ -258,9 +258,14 @@ public class Printer {
                     titleImg = PrintImageUtils.trimImage(titleImg, true, maxToTrim);
 
                     BufferedImage outImage = PrintImageUtils.getScaledInstance(img, printWidth, scaledHeight, RenderingHints.VALUE_INTERPOLATION_BICUBIC, true);
-                    System.out.println("Now scaling a title image");
-                    BufferedImage outTitle = PrintImageUtils.getScaledInstance(titleImg, printWidth/2, titleImg.getHeight()/2, RenderingHints.VALUE_INTERPOLATION_BICUBIC, false);
-                    System.out.println("Done scaling");
+//                    try{
+//                        ImageIO.write(outImage, "PNG", new File("SCALED_IMAGE.png"));
+//                    }
+//                    catch (IOException e){
+//                        new RuntimeException(e);
+//                    }
+
+                    BufferedImage outTitle = PrintImageUtils.getScaledInstance(titleImg, (printWidth*2)/3, (titleImg.getHeight()*2)/3, RenderingHints.VALUE_INTERPOLATION_BICUBIC, false);
 
                     graphics.drawImage(outTitle,
                             printX,

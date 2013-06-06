@@ -33,21 +33,18 @@ public class PrintImageUtils {
         BufferedImage outImage;
 
         if(trimFromEnd){
-            System.out.println("Trying to flip");
+
             outImage = flipImage(image);
-            System.out.println("Flipped");
 
             outImage = trimImageHelper(outImage, maxToTrim);
-            System.out.println("Trimmed");
 
             outImage = flipImage(outImage);
-            System.out.println("Flipped back");
+
         }
         else{
             outImage = trimImageHelper(image, maxToTrim);
         }
 
-        System.out.println(outImage);
         return outImage;
     }
 
