@@ -706,10 +706,8 @@ public class PsychLayoutManager extends ALayoutManager {
         }
 
 		public BufferedImage forPrintButton(PrintButton pb, Boolean... param) {
-            //System.out.println("PsychLayout's forPrintButton");
-            int size = 1;
 
-            int fontsize = (size + 2) * FONT_SIZE_MULTIPLE;
+            int fontsize = 2 * FONT_SIZE_MULTIPLE; //efectively makes the font size 16
             if (pb.isIncreasedFontSize()) {
                 fontsize += 4;
             }
