@@ -1,5 +1,7 @@
-#  Ignore the temp directory #
-#  Ignore the out directory  #
-##############################
+#  Ignore the temp directory     #
+#  Ignore the out directory      #
+#  Ignore the idea workspace xml #
+##################################
 tmp
 out
+.idea
