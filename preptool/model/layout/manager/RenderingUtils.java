@@ -46,7 +46,13 @@ public class RenderingUtils {
 	 */
 	public static final int MAX_BUTTON_WIDTH = 600;
 	public static final int MAX_BUTTON_HEIGHT = 100;
-	
+
+    /**
+     * The dimensions of the selection box.
+     */
+    public static final int SELECTION_BOX_WIDTH = 30;
+    public static final int SELECTION_BOX_HEIGHT = 20;
+
 	/**
 	 * The standard font to use
 	 */
@@ -628,7 +634,7 @@ public class RenderingUtils {
 
         int heightPos = padding + baseline;
         int writePos = padding;
-        int boxPos = wrappingWidth - 30;
+        int boxPos = wrappingWidth - SELECTION_BOX_WIDTH - 1;
         int candidateNameEndPos = boxPos - 10;
 
 
@@ -703,9 +709,8 @@ public class RenderingUtils {
 
 
         /* This is where the box is being drawn. */
-        int boxWidth = 30;
-        int boxHeight = 20;
-        drawBox(graphs, boxPos, heightPos - boxHeight, boxWidth, boxHeight, selected);
+        drawBox(graphs, boxPos, heightPos - SELECTION_BOX_HEIGHT, SELECTION_BOX_WIDTH, SELECTION_BOX_HEIGHT, selected);
+
 
         /*Font boxFont = new Font(font.getName(), font.getStyle(), font.getSize() + 20);
         graphs.setFont(boxFont);
