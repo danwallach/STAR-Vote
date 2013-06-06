@@ -702,7 +702,9 @@ public class RenderingUtils {
 
 
         /* This is where the box is being drawn. */
-        drawBox(graphs, boxPos, heightPos, 20, selected);
+        int boxWidth = 30;
+        int boxHeight = 20;
+        drawBox(graphs, boxPos, heightPos - boxHeight, boxWidth, boxHeight, selected);
 
         /*Font boxFont = new Font(font.getName(), font.getStyle(), font.getSize() + 20);
         graphs.setFont(boxFont);
@@ -828,18 +830,19 @@ public class RenderingUtils {
      * @param graphicsObject - the context (graphics object) on which to draw the box
      * @param upperLeftX - the X coordinate of the upper-left corner
      * @param upperLeftY - the Y coordinate of the upper-left corner
-     * @param size - the length of a side of the box
+     * @param width - the width of the box
+     * @param height - the height of the box
      * @param selected - whether or not the box should be filled in
      */
-    public static void drawBox(Graphics2D graphicsObject, int upperLeftX, int upperLeftY, int size, Boolean selected)
+    public static void drawBox(Graphics2D graphicsObject, int upperLeftX, int upperLeftY, int width, int height, Boolean selected)
     {
-        graphicsObject.drawRect(upperLeftX, upperLeftY, size, size);
+        graphicsObject.drawRect(upperLeftX, upperLeftY, width, height);
         if (selected)
         {
-            for (int i = 0; i < size; i = i + 5)
+            for (int i = 0; i < width; i = i + 5)
             {
                 graphicsObject.drawLine(upperLeftX+i, upperLeftY, upperLeftX, upperLeftY+i);
-                graphicsObject.drawLine(upperLeftX+i, upperLeftY+size, upperLeftX+size, upperLeftY+i);
+                graphicsObject.drawLine(upperLeftX+i, upperLeftY+height, upperLeftX+width, upperLeftY+i);
             }
         }
     }
