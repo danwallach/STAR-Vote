@@ -1,0 +1,22 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="preptool">
+    <output-path>$PROJECT_DIR$/out/artifacts/preptool</output-path>
+    <root id="archive" name="preptool.jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/preptool/controller/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="module-output" name="STAR-Vote" />
+      <element id="library" level="project" name="keys" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/bsh.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/jdom.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/javacv.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/javase.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/javacpp.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/jl1.0.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/zxing-core.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/junit-4.3.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/weberknecht-0.1.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/javacv-windows-x86_64.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
