@@ -820,7 +820,7 @@ public class Model {
                 					maxlabel = (int)Math.max(maxlabel, ma.getLabel());
                 			}//for
                 			
-                			auditorium.announce(new AssignLabelEvent(mySerial, e.getSerial(), maxlabel + 1));
+                                auditorium.announce(new AssignLabelEvent(mySerial, e.getSerial(), maxlabel + 1));
                 			return;
                 		}
                 	}
@@ -841,6 +841,12 @@ public class Model {
                         }
                         auditorium.announce(new AssignLabelEvent(mySerial, e
                                 .getSerial(), maxlabel + 1));
+                    }
+                    if(pollsOpen){
+                        openPolls();
+                    }
+                    else{
+                        auditorium.announce(new PollsClosedEvent(mySerial, new Date().getTime()));
                     }
                 }
             }
@@ -901,7 +907,6 @@ public class Model {
             public void pinEntered(PinEnteredEvent e){
                 if(isPollsOpen()) {
                     if(validPins.contains(e.getPin())) {
-                        System.out.println("VALID!");
                         validPins.remove((Integer)e.getPin());
                         try {
                             authorize(e.getSerial());
@@ -912,7 +917,6 @@ public class Model {
                     }
                     else {
                         auditorium.announce(new InvalidPinEvent(mySerial, e.getNonce()));
-                        System.out.println("INVALID!");
                     }
                 }
             }

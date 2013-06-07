@@ -610,6 +610,7 @@ public class VoteBox {
              * the VoteBox runtime. Also announce the new status.
              */
             public void authorizedToCast(AuthorizedToCastEvent e) {
+                System.out.println("auth event YAY!");
                 if (e.getNode() == mySerial) {
                     if (voting || currentDriver != null && killVBTimer == null)
                         throw new RuntimeException(
@@ -661,8 +662,10 @@ public class VoteBox {
              * then shows the inactive screen. Also responds with its status.
              */
             public void ballotReceived(BallotReceivedEvent e) {
+                System.out.println("1");
                 if (e.getNode() == mySerial
                         && Arrays.equals(e.getNonce(), nonce)) {
+                    System.out.println("2");
                     if (!committedBallot && _constants.getUseCommitChallengeModel())
                         throw new RuntimeException(
                                 "Someone said the ballot was received, but this machine hasn't committed it yet. Maybe the supervisor is misconfigured (not using challenge-commit model)?");
@@ -673,6 +676,7 @@ public class VoteBox {
                     
                     currentDriver.getView().nextPage();
                     if(!_constants.getUseCommitChallengeModel()){
+                        System.out.println("3");
                     	nonce = null;
                     	voting = false;
                     	finishedVoting = false;
@@ -680,15 +684,18 @@ public class VoteBox {
                     	broadcastStatus();
                     	killVBTimer = new Timer(_constants.getViewRestartTimeout(), new ActionListener() {
                     		public void actionPerformed(ActionEvent arg0) {
+                                System.out.println("4");
                     			currentDriver.kill();
                     			currentDriver = null;
                     			inactiveUI.setVisible(true);
                     			killVBTimer = null;
                                 promptForPin("Enter Voting Authentication PIN");
-                    		};
+                    		}
                     	});
+                        System.out.println("5");
                     	killVBTimer.setRepeats(false);
                     	killVBTimer.start();
+                        System.out.println("6");
                     }//if
                 }
             }
@@ -706,7 +713,6 @@ public class VoteBox {
             }
 
             public void lastPollsOpen(LastPollsOpenEvent e) {
-                // NO-OP
             }
 
             /**
@@ -788,7 +794,9 @@ public class VoteBox {
             }
 
             public void pollsOpen(PollsOpenEvent e) {
-                promptForPin("Enter Authentication PIN");
+                if(!voting){
+                    promptForPin("Enter Authentication PIN");
+                }
             }
 
             /**
@@ -796,6 +804,7 @@ public class VoteBox {
              * and replies with a last-polls-open message if an appropriate
              * polls-open message is found.
              */
+
             public void pollsOpenQ(PollsOpenQEvent e) {
                 if (e.getSerial() != mySerial) {
                     // TODO: Search the log and extract an appropriate
@@ -906,44 +915,44 @@ public class VoteBox {
     }
 
     public void promptForPin(String message) {
-        JTextField limitedField = new JTextField(new PlainDocument() {
-            private int limit=4;
-            public void insertString(int offs, String str, AttributeSet attr) throws BadLocationException {
-                if(str == null)
-                    return;
-                if((getLength() + str.length()) <= this.limit) {
-                    super.insertString(offs, str, attr);
+            JTextField limitedField = new JTextField(new PlainDocument() {
+                private int limit=4;
+                public void insertString(int offs, String str, AttributeSet attr) throws BadLocationException {
+                    if(str == null)
+                        return;
+                    if((getLength() + str.length()) <= this.limit) {
+                        super.insertString(offs, str, attr);
+                    }
                 }
-            }
-        }, "", 5);
+            }, "", 5);
 
-        Object[] msg = {
-                message, limitedField
-        };
-        int pinResult = JOptionPane.showConfirmDialog(
-                (JFrame)inactiveUI,
-                msg,
-                "Authorization Required",
-                JOptionPane.OK_CANCEL_OPTION,
-                JOptionPane.PLAIN_MESSAGE);
-
-
-        while(pinResult != JOptionPane.OK_OPTION) {
-            pinResult = JOptionPane.showConfirmDialog(
+            Object[] msg = {
+                    message, limitedField
+            };
+            int pinResult = JOptionPane.showConfirmDialog(
                     (JFrame)inactiveUI,
                     msg,
                     "Authorization Required",
                     JOptionPane.OK_CANCEL_OPTION,
                     JOptionPane.PLAIN_MESSAGE);
-        }
 
 
-        try{
-            int pin = Integer.parseInt(limitedField.getText());
-            validatePin(pin);
-        }catch(NumberFormatException nfe){
-            promptForPin("Invalid PIN: Enter 4-digit PIN");
-        }
+            while(pinResult != JOptionPane.OK_OPTION) {
+                pinResult = JOptionPane.showConfirmDialog(
+                        (JFrame)inactiveUI,
+                        msg,
+                        "Authorization Required",
+                        JOptionPane.OK_CANCEL_OPTION,
+                        JOptionPane.PLAIN_MESSAGE);
+            }
+
+
+            try{
+                int pin = Integer.parseInt(limitedField.getText());
+                validatePin(pin);
+            }catch(NumberFormatException nfe){
+                promptForPin("Invalid PIN: Enter 4-digit PIN");
+            }
     }
 
     public void validatePin(int pin) {
