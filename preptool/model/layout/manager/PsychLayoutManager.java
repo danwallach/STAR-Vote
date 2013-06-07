@@ -707,14 +707,14 @@ public class PsychLayoutManager extends ALayoutManager {
 
 		public BufferedImage forPrintButton(PrintButton pb, Boolean... param) {
 
-            int fontsize = 2 * FONT_SIZE_MULTIPLE; //efectively makes the font size 16
+            int fontsize = FONT_SIZE_MULTIPLE; //effectively makes the font size 8
             if (pb.isIncreasedFontSize()) {
                 fontsize += 4;
             }
 
             return RenderingUtils.renderPrintButton( pb.getUID(),
                     pb.getText(), pb.getSecondLine(), pb.getParty(), fontsize,
-                    600, pb.isBold(), true);       //Chose 600 because it seemed nice
+                    281, pb.isBold(), true);       //Chose 281 because it suits our printing well
 		}
     };
 

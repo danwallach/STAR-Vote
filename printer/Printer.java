@@ -269,8 +269,8 @@ public class Printer {
                     //Only the title image will have trailing whitespace due to rendering
                     titleImg = PrintImageUtils.trimImage(titleImg, true, maxToTrim);
 
-                    BufferedImage outImage = PrintImageUtils.getScaledInstance(img, printWidth, scaledHeight, RenderingHints.VALUE_INTERPOLATION_BICUBIC, true);
-                    System.out.println("Images:\n\tSize: " + outImage.getWidth() + "x" + outImage.getHeight());
+//                    BufferedImage outImage = PrintImageUtils.getScaledInstance(img, printWidth, scaledHeight, RenderingHints.VALUE_INTERPOLATION_BICUBIC, true);
+//                    System.out.println("Images:\n\tSize: " + outImage.getWidth() + "x" + outImage.getHeight());
 
 //                    try{
 //                        ImageIO.write(outImage, "PNG", new File("SCALED_IMAGE.png"));
@@ -280,13 +280,13 @@ public class Printer {
 //                    }
 
                     BufferedImage outTitle = PrintImageUtils.getScaledInstance(titleImg, (printWidth*2)/3, (titleImg.getHeight()*2)/3, RenderingHints.VALUE_INTERPOLATION_BICUBIC, false);
-                    System.out.println("Titles:\n\tSize: " + outImage.getWidth() + "x" + outImage.getHeight());
+                    System.out.println("Titles:\n\tSize: " + img.getWidth() + "x" + img.getHeight());
                     graphics.drawImage(outTitle,
                             printX,
                             totalSize,
                             null);
 
-					graphics.drawImage(outImage,
+					graphics.drawImage(img,
                             printX,
                             totalSize + outTitle.getHeight(null),
                             null);
@@ -294,11 +294,11 @@ public class Printer {
 
 
                     //totalSize += outTitle.getHeight(null);
-					totalSize += outImage.getHeight(null) + outTitle.getHeight(null);
+					totalSize += img.getHeight(null) + outTitle.getHeight(null);
 					choiceIndex++;
 
                     //If we reach the end of a column and are printing in two columns, go back to the top with an offset of printwidth
-                    if(totalSize + outImage.getHeight(null) + outTitle.getHeight(null) >= _constants.getPrintableHeightForVVPAT() - barcode.getHeight(null)
+                    if(totalSize + img.getHeight(null) + outTitle.getHeight(null) >= _constants.getPrintableHeightForVVPAT() - barcode.getHeight(null)
                             && _constants.getUseTwoColumns()){
                         totalSize = initialHeight;
                         printX += printWidth;

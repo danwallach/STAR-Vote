@@ -50,8 +50,8 @@ public class RenderingUtils {
     /**
      * The dimensions of the selection box.
      */
-    public static final int SELECTION_BOX_WIDTH = 30;
-    public static final int SELECTION_BOX_HEIGHT = 20;
+    public static final int SELECTION_BOX_WIDTH = 15;
+    public static final int SELECTION_BOX_HEIGHT = 10;
 
 	/**
 	 * The standard font to use
@@ -608,7 +608,7 @@ public class RenderingUtils {
 
 
 
-        Font nf = new Font("OCR A Extended", Font.PLAIN, 20);
+        Font nf = new Font("OCR A Extended", Font.PLAIN, 12);
 
 
         String box = "\u25a1"; // box character
@@ -635,7 +635,7 @@ public class RenderingUtils {
         int heightPos = padding + baseline;
         int writePos = padding;
         int boxPos = wrappingWidth - SELECTION_BOX_WIDTH - 1;
-        int candidateNameEndPos = boxPos - 10;
+        int candidateNameEndPos = boxPos - 2;
 
 
         String selection = "";
@@ -665,6 +665,7 @@ public class RenderingUtils {
         //If this is a race name and not a candidate
         if (uid.contains("L"))
         {
+            wrappingWidth = 400;
             Font temp = font.deriveFont(12.0f);
             String[] split = selection.split("\n");
             text = split[0];
@@ -730,7 +731,7 @@ public class RenderingUtils {
 
 
         graphs.setColor(Color.BLACK);
-        graphs.setStroke(new BasicStroke(padding / 2));
+        graphs.setStroke(new BasicStroke(padding / 4));
 
         //split "1" because it gives a nice line width. It's sort of a hack...
         graphs.drawLine(writePos + lineWidth(("1").split(""), nf), heightPos + fontsize/2, Math.max(wrappingWidth,selectionLength), heightPos + fontsize/2);
