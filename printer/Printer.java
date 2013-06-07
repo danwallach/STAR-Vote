@@ -63,63 +63,6 @@ public class Printer {
 
     /**
      * If a VVPAT is connected,
-     *   print a message indicating that this ballot is "spoiled" and will not be counted."
-     */
-    /*protected void printBallotSpoiled() {
-
-    	//TODO: Change this to use prerendered images (pulled from ballot, probably) rather than bringing Java font rendering code into
-    	//      VoteBox
-		Printable spoiled = new Printable(){
-			public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
-				if(pageIndex != 0) return Printable.NO_SUCH_PAGE;
-
-				String text = "BALLOT SPOILED";
-				FontRenderContext context = new FontRenderContext(new AffineTransform(), false, true);
-
-				Rectangle2D bounds = graphics.getFont().getStringBounds(text, context);
-
-				while(bounds.getWidth() < pageFormat.getImageableWidth()){
-					text = "*" + text+ "*";
-					bounds = graphics.getFont().getStringBounds(text, context);
-				}
-
-				graphics.drawString(text, (int)pageFormat.getImageableX(), (int)bounds.getHeight());
-
-				return Printable.PAGE_EXISTS;
-			}
-		};
-
-		printOnVVPAT(spoiled);
-	}*/
-
-    /**
-     * If a VVPAT is connected,
-     *   print a "confirmation" of the ballot being counted.
-     */
-    /*protected void printBallotCastConfirmation() {
-    	//TODO: Make this use prerendered elements instead of Font
-    	Printable confirmed = new Printable(){
-			public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
-				if(pageIndex != 0) return Printable.NO_SUCH_PAGE;
-
-				String text = "--BALLOT CAST--";
-				FontRenderContext context = new FontRenderContext(new AffineTransform(), false, true);
-
-				Rectangle2D bounds = graphics.getFont().getStringBounds(text, context);
-
-				int x = (int)(pageFormat.getImageableWidth()/2  - bounds.getWidth() / 2);
-
-				graphics.drawString(text, x + (int)pageFormat.getImageableX(), (int)bounds.getHeight());
-
-				return Printable.PAGE_EXISTS;
-			}
-		};
-
-		printOnVVPAT(confirmed);
-	}*/
-
-    /**
-     * If a VVPAT is connected,
      *   print the voter's choices.
      *
      * @param ballot - the choices to print, in the form ((race-id choice) ...)
@@ -131,29 +74,10 @@ public class Printer {
         final String fbid = bid;
 
         ArrayList<RaceTitlePair> actualRaceNameImagePairs = getRaceNameImagePairs(choiceToImage);
-        /*
-        System.out.println("The races are:");
-        for (String label:raceTitles.keySet())
-        {
-            System.out.println("Race: " + label + " corresponds to image: " + raceTitles.get(label).toString());
-        }
-        */
 
-        //System.out.println("There are " + choiceToImage.keySet().size() + " entries in the mapping right after loadImagesForVVPAT is called.");
 		final List<String> choices = new ArrayList<String>();
 
         ArrayList<ChoicePair> correctedBallot = correctBallot(ballot);
-
-        /* This for loop uses the original ballot, which does not account for No Selections. */
-        /*
-        System.out.println("Choices in old ballot:");
-		for(int i = 0; i < ballot.size(); i++){
-			ListExpression choice = (ListExpression)ballot.get(i);
-            System.out.println("Choice: " + choice.get(0).toString() + ":" + choice.get(1).toString());
-			if(choice.get(1).toString().equals("1"))
-				choices.add(choice.get(0).toString());
-		}
-		*/
 
         /* This for loop uses the corrected ballot, which accounts for No Selections. */
         for(int i = 0; i < correctedBallot.size(); i++)
@@ -173,14 +97,9 @@ public class Printer {
 		int totalSize = 0;
 		for(int i = 0; i < choices.size(); i++) {
             String currentImageKey = choices.get(i);
-            /* NEW CODE. */
-            Image currentRaceTitleImage = raceTitlePairs.get(i).getImage();
-            //System.out.println("Attempting to get mapping for key \"" + currentImageKey + "\"");
             Image img = choiceToImage.get(currentImageKey);
 
 			totalSize += img.getHeight(null);
-            /* NEW CODE. */
-            //totalSize += currentRaceTitleImage.getHeight(null);
         }
 
 		final int fTotalSize = totalSize;
@@ -250,34 +169,18 @@ public class Printer {
                     printWidth /= 2;
 
                 int initialHeight = totalSize;
+                int column = 1;
 
 				while(totalSize < _constants.getPrintableHeightForVVPAT() && choiceIndex < choices.size()){
-                    //Image titleImg = (raceTitlePairs1.remove(0)).getImage();
+
 					BufferedImage img = (BufferedImage)choiceToImage.get(choices.get(choiceIndex));
                     BufferedImage titleImg = (BufferedImage)fActualRaceNamePairs.get(counter).getImage();
                     counter++;
-
-                    //Useful constants for image scaling and printing
-
-
-
-                    float scaledWidthFactor =     (1.0f*printWidth/img.getWidth(null));
-                    int scaledHeight = Math.round(img.getHeight(null)*scaledWidthFactor);
-
 
                     //Remove trailing whitespace to allow for better scaling
                     //Only the title image will have trailing whitespace due to rendering
                     titleImg = PrintImageUtils.trimImage(titleImg, true, maxToTrim);
 
-//                    BufferedImage outImage = PrintImageUtils.getScaledInstance(img, printWidth, scaledHeight, RenderingHints.VALUE_INTERPOLATION_BICUBIC, true);
-//                    System.out.println("Images:\n\tSize: " + outImage.getWidth() + "x" + outImage.getHeight());
-
-//                    try{
-//                        ImageIO.write(outImage, "PNG", new File("SCALED_IMAGE.png"));
-//                    }
-//                    catch (IOException e){
-//                        new RuntimeException(e);
-//                    }
 
                     BufferedImage outTitle = PrintImageUtils.getScaledInstance(titleImg, (printWidth*2)/3, (titleImg.getHeight()*2)/3, RenderingHints.VALUE_INTERPOLATION_BICUBIC, false);
                     System.out.println("Titles:\n\tSize: " + img.getWidth() + "x" + img.getHeight());
@@ -292,16 +195,21 @@ public class Printer {
                             null);
 
 
-
-                    //totalSize += outTitle.getHeight(null);
 					totalSize += img.getHeight(null) + outTitle.getHeight(null);
 					choiceIndex++;
 
                     //If we reach the end of a column and are printing in two columns, go back to the top with an offset of printwidth
                     if(totalSize + img.getHeight(null) + outTitle.getHeight(null) >= _constants.getPrintableHeightForVVPAT() - barcode.getHeight(null)
-                            && _constants.getUseTwoColumns()){
+                            && _constants.getUseTwoColumns() && column == 1){
                         totalSize = initialHeight;
                         printX += printWidth;
+                        column = 2;
+
+                    } else if (totalSize + img.getHeight(null) + outTitle.getHeight(null) >= _constants.getPrintableHeightForVVPAT() - barcode.getHeight(null)
+                            && _constants.getUseTwoColumns() && column == 2){
+                        totalSize = initialHeight;
+                        printX =  (int) pageFormat.getImageableX();
+                        column = 1;
 
                     }
 				}
@@ -326,7 +234,6 @@ public class Printer {
         {
             if (UID.contains("L"))
             {
-                //System.out.println("Adding numeric ID " + UID.substring(1) + " to the list of numeric IDs.");
                 raceNumericIDs.add(new Integer(UID.substring(1)));
             }
         }
@@ -349,12 +256,10 @@ public class Printer {
         {
             List<String> currentRace = _races.get(raceIdx);
             Boolean existingSelectedOption = false;
-            //System.out.println("Labels in current race: ");
 
             for (int labelIdx = 0; labelIdx < currentRace.size(); labelIdx++)
             {
                 String currentLabel = currentRace.get(labelIdx);
-                //System.out.println(currentLabel);
                 for (int choiceIdx = 0; choiceIdx < rawBallot.size(); choiceIdx++)
                 {
                     ListExpression currentChoice = (ListExpression)rawBallot.get(choiceIdx);
@@ -384,11 +289,9 @@ public class Printer {
         }
 
         // Print the updated ballot (for consistency checking).
-        //System.out.println("Corrected ballot:");
         for (int i = 0; i < updatedBallot.size(); i++)
         {
             ChoicePair currentItem = updatedBallot.get(i);
-            //System.out.println(currentItem.getLabel() + ":" + currentItem.getStatus());
         }
         return updatedBallot;
     }
