@@ -527,7 +527,7 @@ public class VoteBox {
                     PollsOpenQEvent.getMatcher(), BallotCountedEvent.getMatcher(),
                     ChallengeEvent.getMatcher(), ChallengeResponseEvent.getMatcher(),
                     AuthorizedToCastWithNIZKsEvent.getMatcher(), PinEnteredEvent.getMatcher(),
-                    InvalidPinEvent.getMatcher());
+                    InvalidPinEvent.getMatcher(), PollsOpenEvent.getMatcher());
         } catch (NetworkException e1) {
         	//NetworkException represents a recoverable error
         	//  so just note it and continue
@@ -589,7 +589,6 @@ public class VoteBox {
                     }
                 }
                 if (!found) broadcastStatus();
-                promptForPin("Enter Authentication PIN");
             }
 
             /**
@@ -789,7 +788,7 @@ public class VoteBox {
             }
 
             public void pollsOpen(PollsOpenEvent e) {
-                // NO-OP
+                promptForPin("Enter Authentication PIN");
             }
 
             /**
@@ -921,7 +920,6 @@ public class VoteBox {
         Object[] msg = {
                 message, limitedField
         };
-
         int pinResult = JOptionPane.showConfirmDialog(
                 (JFrame)inactiveUI,
                 msg,
