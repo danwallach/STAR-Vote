@@ -270,6 +270,7 @@ public class Printer {
                     titleImg = PrintImageUtils.trimImage(titleImg, true, maxToTrim);
 
                     BufferedImage outImage = PrintImageUtils.getScaledInstance(img, printWidth, scaledHeight, RenderingHints.VALUE_INTERPOLATION_BICUBIC, true);
+                    System.out.println("Images:\n\tSize: " + outImage.getWidth() + "x" + outImage.getHeight());
 
 //                    try{
 //                        ImageIO.write(outImage, "PNG", new File("SCALED_IMAGE.png"));
@@ -279,7 +280,7 @@ public class Printer {
 //                    }
 
                     BufferedImage outTitle = PrintImageUtils.getScaledInstance(titleImg, (printWidth*2)/3, (titleImg.getHeight()*2)/3, RenderingHints.VALUE_INTERPOLATION_BICUBIC, false);
-
+                    System.out.println("Titles:\n\tSize: " + outImage.getWidth() + "x" + outImage.getHeight());
                     graphics.drawImage(outTitle,
                             printX,
                             totalSize,
@@ -325,7 +326,7 @@ public class Printer {
         {
             if (UID.contains("L"))
             {
-                System.out.println("Adding numeric ID " + UID.substring(1) + " to the list of numeric IDs.");
+                //System.out.println("Adding numeric ID " + UID.substring(1) + " to the list of numeric IDs.");
                 raceNumericIDs.add(new Integer(UID.substring(1)));
             }
         }

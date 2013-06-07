@@ -99,7 +99,7 @@ public class BallotImageHelper {
 					
 					id = id.substring(0, sub);
 
-                    System.out.println("Getting image " + id);
+                    //System.out.println("Getting image " + id);
 					
 					vvpatMap.put(id, ImageIO.read(file.getInputStream(entry)));
 				}
