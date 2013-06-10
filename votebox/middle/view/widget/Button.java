@@ -545,6 +545,7 @@ public class Button extends Label implements IFocusable {
     public IViewImage getReviewImage() {
         if (_reviewImage == null) {
             //System.out.println("> Button is attempting to open image with UID: " + getUniqueID() + " by passing: " + _vars.getBallotPath() + " | " + getUniqueID() + "_review_" + " | " + _viewManager.getSize() + " | " + _viewManager.getLanguage());
+            System.out.println("3");
             _reviewImage = _factory.makeImage( imagePath( _vars, getUniqueID()
                     + "_review_", _viewManager.getSize(), _viewManager
                     .getLanguage() ) );
@@ -604,10 +605,15 @@ public class Button extends Label implements IFocusable {
             {
                 _defaultImage = _factory.makeImage(imageToggleButtonPath(_vars, getUniqueID() + "_review", _viewManager.getLanguage()));
             }
-            else
-            {
+//            else if(!(getUniqueID().contains("9") || getUniqueID().contains("36")))
+//            {
+//                System.out.println("1");
+//                _defaultImage = _factory.makeImage(imageToggleButtonPath( _vars, getUniqueID() + "_review", _viewManager.getLanguage() ));
+//            }
+            else{
                 _defaultImage = _factory.makeImage( imagePath( _vars, getUniqueID(), _viewManager.getSize(), _viewManager.getLanguage() ));
             }
+
         }
         return _defaultImage;
     }
@@ -619,6 +625,7 @@ public class Button extends Label implements IFocusable {
      */
     public IViewImage getFocusedImage() {
         if (_focusedImage == null) {
+            System.out.println("2");
             _focusedImage = _factory.makeImage( imagePath( _vars, getUniqueID()
                     + "_focused", _viewManager.getSize(), _viewManager
                     .getLanguage() ) );

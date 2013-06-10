@@ -60,6 +60,8 @@ public class Printer {
     private File _currentBallotFile;
     private List<List<String>> _races;
 
+    public static int counter = 0;
+
     public Printer(File ballotFile,List<List<String>> races) {
         _constants = new AuditoriumParams("vb.conf");
         _currentBallotFile =  ballotFile;
@@ -83,6 +85,7 @@ public class Printer {
 		final List<String> choices = new ArrayList<String>();
 
         ArrayList<ChoicePair> correctedBallot = correctBallot(ballot);
+
 
         /* This for loop uses the corrected ballot, which accounts for No Selections. */
         for(int i = 0; i < correctedBallot.size(); i++)
@@ -113,6 +116,8 @@ public class Printer {
 		Printable printedBallot = new Printable(){
 
 			public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
+
+                System.out.println(counter++);
 
                 int numPages = fTotalSize / (int)pageFormat.getImageableHeight();
 				if(fTotalSize % (int)pageFormat.getImageableHeight() != 0)
@@ -200,7 +205,7 @@ public class Printer {
 
 
                 g.scale(xScale , yScale);
-                g.scale(1/xScale, 1/yScale);
+
 
 				while(totalSize < _constants.getPrintableHeightForVVPAT() && choiceIndex < choices.size()){
 
@@ -242,6 +247,7 @@ public class Printer {
 
 
 
+
 					totalSize += img.getHeight(null) + outTitle.getHeight(null);
 					choiceIndex++;
 
@@ -266,10 +272,10 @@ public class Printer {
 
 				}
 
-                graphics.setFont(ocra);
-                graphics.drawString(fbid, (int)pageFormat.getImageableX(), _constants.getPrintableHeightForVVPAT()-ocra.getSize());
+                g.setFont(ocra);
+                g.drawString(fbid, (int)pageFormat.getImageableX(), _constants.getPrintableHeightForVVPAT()-ocra.getSize());
 
-                graphics.drawImage(barcode, printWidth, _constants.getPrintableHeightForVVPAT()-barcode.getHeight(null), null);
+                g.drawImage(barcode, printWidth, _constants.getPrintableHeightForVVPAT()-barcode.getHeight(null), null);
 
 
 				return Printable.PAGE_EXISTS;

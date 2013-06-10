@@ -89,13 +89,17 @@ public class Label implements IDrawable {
      */
     public IViewImage getImage() {
         if (_image == null) {
-            if (_uniqueID.equals( "reviewtitle" ))
+            if (_uniqueID.equals( "reviewtitle" )) {
+                System.out.println("4");
                 _image = _factory.makeImage( imagePath( _vars, _uniqueID
                         + Integer.toString( _ballot.numSelections() ),
                     _viewManager.getSize(), _viewManager.getLanguage() ) );
-            else
+            }
+            else{
+                System.out.println("5");
                 _image = _factory.makeImage( imagePath( _vars, _uniqueID,
                     _viewManager.getSize(), _viewManager.getLanguage() ) );
+            }
         }
 
         return _image;
@@ -107,6 +111,7 @@ public class Label implements IDrawable {
     public IViewImage getReviewImage() {
         if (_reviewImage == null) {
             //System.out.println("> Label is attempting to open image with UID: " + _uniqueID + " by passing: " + _vars.getBallotPath() + " | " + _uniqueID + "_review" + " | " + _viewManager.getSize() + " | " + _viewManager.getLanguage());
+            System.out.println("6");
             _reviewImage = _factory.makeImage( imagePath( _vars, _uniqueID
                     + "_review", _viewManager.getSize(), _viewManager
                     .getLanguage() ) );
@@ -215,7 +220,7 @@ public class Label implements IDrawable {
      */
     protected String imagePath(IBallotVars vars, String uid, int size,
             String lang) {
-        //System.out.println("The actual function, imagePath, is trying to open: " + vars.getBallotPath() + "/media/" + uid + "_" + size + "_" + lang + ".png");
+        System.out.println("The actual function, imagePath, is trying to open: " + vars.getBallotPath() + "/media/" + uid + "_" + size + "_" + lang + ".png");
         return vars.getBallotPath() + "/media/" + uid + "_" + size + "_" + lang + ".png";
     }
 

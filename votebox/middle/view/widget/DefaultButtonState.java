@@ -62,6 +62,7 @@ public class DefaultButtonState extends AButtonState {
      */
     @Override
     public IViewImage getImage(Button context) {
+
         return context.getDefaultImage();
     }
 }

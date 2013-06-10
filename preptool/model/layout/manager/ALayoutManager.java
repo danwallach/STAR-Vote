@@ -226,7 +226,9 @@ public abstract class
             }
 
             public Void forButton(Button b, Object... param) {
+                System.out.println(">>> forButton attempting to be called");
                 if (!uids.contains(b.getUID())) {
+                    System.out.println(">>> forButton being called on " + b.getUID());
                     try {
                         BufferedImage img = b.execute(getImageVisitor());
                         ImageIO.write(img, "png", new File(location
@@ -273,6 +275,7 @@ public abstract class
                 else
                     uuid = uid;
 
+                System.out.println(">>> forReviewButton being called on " + uid);
 
 
                 //We only want to reformat candidates as no selection, not races, etc
@@ -304,19 +307,22 @@ public abstract class
                     //forPrintButton(pb, param);
                 }
 
-                BufferedImage imageRead = null;
-                try {
-                    imageRead = ImageIO.read(new File(location
-                            + uid + "_1_"
-                            + langShortName + ".png"));
-                }
-                catch (Exception ie){
-                    System.out.println("Image " + uuid + " does not exist!");
-                    System.out.println(ie.getMessage());
-                }
-
+//                BufferedImage imageRead = null;
+//                try {
+//                    imageRead = ImageIO.read(new File(location
+//                            + uid + "_1_"
+//                            + langShortName + ".png"));
+//                }
+//                catch (Exception ie){
+//                    System.out.println("Image " + uuid + " does not exist!");
+//                    System.out.println(ie.getMessage());
+//                }
 
                 BufferedImage image = rb.execute(getImageVisitor());
+             ;
+
+
+
 
                 File file = new File(location);
                 file = new File(file, "vvpat");
@@ -325,6 +331,10 @@ public abstract class
 
                 file = new File(file, uuid+"_review_"+langShortName+".png");
                 try{
+                    ImageIO.write(image, "png", new File(location + uid
+                            + "_1_" + langShortName + ".png"));
+                    ImageIO.write(image, "png", new File(location + uid
+                            + "_" + langShortName + ".png"));
                     boolean write = ImageIO.write(image, "png", file);
                 }
                 catch (IOException ie){
@@ -382,6 +392,7 @@ public abstract class
                                 + "_printable", tb.getText(),
                                 getSizeVisitor());
 
+
                         //Added party info for ZH study here. [dsandler]
 						review.setAuxText(tb.getParty());
                         review.setBoxed(false);
@@ -420,7 +431,7 @@ public abstract class
 			public Void forPrintButton(PrintButton pb, Object... param) {
 
 
-                //Since not all uids are of equal length/dont' have underscores...
+                //Since not all uids are of equal length/don't have underscores...
                 String uid = pb.getUID();
                 //System.out.println("Print processing uid " + uid);
 
@@ -440,34 +451,35 @@ public abstract class
                                 + "_" + langShortName + ".png"));
 
 
-                        /**
-                         * Renders the VVPAT equivalent of the review button.
-                         */
-                        BufferedImage image = null;
-                        try{
-                            image = ImageIO.read(new File(location
-                                    + uid + "_1_"
-                                    + langShortName + ".png"));
-                        }
-                        //If there isn't a focused selected version of the selection, it must be a None selection
-                        //Therefore we need to find another version of it
-                        catch(Exception e){
-                            String imageName = location
-                                    + uuid + "_1_"
-                                    + langShortName + ".png";
-                            System.out.println(imageName);
 
-                            try {
-
-                                image = ImageIO.read(new File(imageName));
-                            }
-                            catch (Exception ie){
-
-                                System.out.println("Image " + uuid + " does not exist!");
-                                return null;
-                            }
-
-                        }
+//                        /**
+//                         * Renders the VVPAT equivalent of the review button.
+//                         */
+//                        BufferedImage image = null;
+//                        try{
+//                            image = ImageIO.read(new File(location
+//                                    + uid + "_1_"
+//                                    + langShortName + ".png"));
+//                        }
+//                        //If there isn't a focused selected version of the selection, it must be a None selection
+//                        //Therefore we need to find another version of it
+//                        catch(Exception e){
+//                            String imageName = location
+//                                    + uuid + "_1_"
+//                                    + langShortName + ".png";
+//                            System.out.println(imageName);
+//
+//                            try {
+//
+//                                image = ImageIO.read(new File(imageName));
+//                            }
+//                            catch (Exception ie){
+//
+//                                System.out.println("Image " + uuid + " does not exist!");
+//                                return null;
+//                            }
+//
+//                        }
 
                         File file = new File(location);
                         file = new File(file, "vvpat");
@@ -476,7 +488,7 @@ public abstract class
 
                         file = new File(file, uuid+"_printable_"+langShortName+".png");
 
-                        ImageIO.write(image, "png", file);
+                        ImageIO.write(img, "png", file);
 
                     } catch (IOException e) {
                         throw new RuntimeException(e);
