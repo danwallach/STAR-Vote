@@ -213,11 +213,27 @@ public class Printer {
                         column = 1;
 
                     }
+
+
+                    Graphics2D g = (Graphics2D) graphics;
+                    double xScale = 0.24;
+                    double yScale = 0.24;
+                    double xMargin = (pageFormat.getImageableWidth() - img.getWidth()*xScale)/2;
+                    double yMargin = (pageFormat.getImageableHeight() - img.getHeight()*yScale)/2;
+                    g.translate(pageFormat.getImageableX() + xMargin,
+                            pageFormat.getImageableY() + yMargin);
+
+                    g.scale(xScale , yScale );
+                    g.drawImage(img, 20, 20, null);
+
 				}
                 graphics.setFont(ocra);
                 graphics.drawString(fbid, (int)pageFormat.getImageableX(), _constants.getPrintableHeightForVVPAT()-ocra.getSize());
 
                 graphics.drawImage(barcode, printWidth, _constants.getPrintableHeightForVVPAT()-barcode.getHeight(null), null);
+
+
+
 
 				return Printable.PAGE_EXISTS;
 			}

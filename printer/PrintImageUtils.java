@@ -404,8 +404,31 @@ public class PrintImageUtils {
             ret = tmp;
         } while (w != targetWidth || h != targetHeight);
 
+
         return ret;
     }
+
+    /**
+     *  A class that will return a higher dpi image so that printing isn't hideous
+     *
+     *  @param image - the image to be scaled properly
+     *  @param printWidth - width of the printable image
+     *  @param printHeight - height of the printable image
+     *  @return printImg - the image that will be printed
+     */
+    public static BufferedImage getImageForPrinting(BufferedImage image,
+                                                    int printWidth,
+                                                    int printHeight){
+
+        BufferedImage printImg = null;
+
+
+
+
+        return printImg;
+
+    }
+
 
     /**
      * A method for generating a barcode of some text
