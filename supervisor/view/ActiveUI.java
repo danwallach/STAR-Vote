@@ -43,6 +43,7 @@ import java.util.Observer;
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 
+import printer.Printer;
 import supervisor.model.AMachine;
 import supervisor.model.Model;
 import votebox.AuditoriumParams;
@@ -242,8 +243,10 @@ public class ActiveUI extends JPanel {
         pinButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int pin = model.generatePin();
-
-                JOptionPane.showMessageDialog(null, "Your pin is: " + (new DecimalFormat("0000").format(pin)));
+                Printer printer = new Printer();
+                String strPin;
+                printer.printPin(strPin = (new DecimalFormat("0000")).format(pin));
+                JOptionPane.showMessageDialog(null, "Your pin is: " + strPin);
             }
         });
         c.ipady = 50;
