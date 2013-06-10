@@ -34,6 +34,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.print.attribute.HashPrintJobAttributeSet;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttribute;
@@ -112,7 +113,8 @@ public class Printer {
 		Printable printedBallot = new Printable(){
 
 			public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
-				int numPages = fTotalSize / (int)pageFormat.getImageableHeight();
+
+                int numPages = fTotalSize / (int)pageFormat.getImageableHeight();
 				if(fTotalSize % (int)pageFormat.getImageableHeight() != 0)
 					numPages++;
 
@@ -183,10 +185,22 @@ public class Printer {
                 }
 
                 if(_constants.getUseTwoColumns())
-                    printWidth /= 2;
+                    printWidth = _constants.getPrintableWidthForVVPAT()/2;
 
                 int initialHeight = totalSize;
                 int column = 1;
+
+                Graphics2D g = (Graphics2D) graphics;
+                double xScale = .24;
+                double yScale = .24;
+                double xMargin = (pageFormat.getImageableWidth() - ((BufferedImage)choiceToImage.get(choices.get(1))).getWidth()*xScale)/2;
+                double yMargin = (pageFormat.getImageableHeight() - ((BufferedImage)choiceToImage.get(choices.get(1))).getHeight()*yScale)/2;
+                g.translate(pageFormat.getImageableX() + xMargin,
+                        pageFormat.getImageableY() + yMargin);
+
+
+                g.scale(xScale , yScale);
+                g.scale(1/xScale, 1/yScale);
 
 				while(totalSize < _constants.getPrintableHeightForVVPAT() && choiceIndex < choices.size()){
 
@@ -204,34 +218,28 @@ public class Printer {
 
 
                     BufferedImage outTitle = PrintImageUtils.getScaledInstance(titleImg, (printWidth*2)/3, (titleImg.getHeight()*2)/3, RenderingHints.VALUE_INTERPOLATION_BICUBIC, false);
-
-//                    Graphics2D g = (Graphics2D) graphics;
-//                    double xScale = 0.24;
-//                    double yScale = 0.24;
-//                    double xMargin = (pageFormat.getImageableWidth() - img.getWidth()*xScale)/2;
-//                    double yMargin = (pageFormat.getImageableHeight() - img.getHeight()*yScale)/2;
-//                    g.translate(pageFormat.getImageableX() + xMargin,
-//                            pageFormat.getImageableY() + yMargin);
 //
-//
-//                    double xTitleMargin = (pageFormat.getImageableWidth() - outTitle.getWidth()*xScale)/2;
-//                    double yTitleMargin = (pageFormat.getImageableHeight() - titleImg.getHeight()*yScale)/2;
-//                    g.translate(pageFormat.getImageableX() + xMargin,
-//                            pageFormat.getImageableY() + yMargin);
-
-//                    g.scale(xScale , yScale );
 
 
-                    System.out.println("Titles:\n\tSize: " + img.getWidth() + "x" + img.getHeight());
-                    graphics.drawImage(outTitle,
+                    g.drawImage(outTitle,
                             printX,
                             totalSize,
                             null);
 
-					graphics.drawImage(img,
+                    System.out.println("Drew a race title!");
+
+					g.drawImage(img,
                             printX,
-                            totalSize + outTitle.getHeight(null),
+                            totalSize + (int)Math.round(outTitle.getHeight(null)),
                             null);
+
+                    System.out.println("Drew a selection!");
+
+                    if(counter >= fActualRaceNamePairs.size())
+                        System.out.println("Drew last race and selection");
+
+
+
 
 
 					totalSize += img.getHeight(null) + outTitle.getHeight(null);
@@ -257,20 +265,22 @@ public class Printer {
 
 
 				}
+
                 graphics.setFont(ocra);
                 graphics.drawString(fbid, (int)pageFormat.getImageableX(), _constants.getPrintableHeightForVVPAT()-ocra.getSize());
 
                 graphics.drawImage(barcode, printWidth, _constants.getPrintableHeightForVVPAT()-barcode.getHeight(null), null);
 
 
-
-
 				return Printable.PAGE_EXISTS;
+
 			}
 
 		};
 
 		printOnVVPAT(printedBallot);
+
+
 	}
 
     private ArrayList<RaceTitlePair> getRaceNameImagePairs(Map<String, Image> imageMap) {
@@ -406,15 +416,15 @@ public class Printer {
             int leftInset = (_constants.getPaperWidthForVVPAT() - _constants.getPrintableWidthForVVPAT()) / 2;
             int topInset = (_constants.getPaperHeightForVVPAT() - _constants.getPrintableHeightForVVPAT()) / 2;
 
+
             paper.setImageableArea(leftInset, topInset, imageableWidth, imageableHeight);
 
             pf.setPaper(paper);
 
             job.setPrintable(toPrint, pf);
 
-            System.out.println("Now printing in higher resolution!");
 
-            job.print(aset);
+            job.print();
 
 		} catch (PrinterException e) {
 			Bugout.err("VVPAT printing failed: "+e.getMessage());

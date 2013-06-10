@@ -48,10 +48,16 @@ public class RenderingUtils {
 	public static final int MAX_BUTTON_HEIGHT = 100;
 
     /**
+     * Scaling factor for high dpi printed images
+     * Choose this value based on a 360 dpi printer and the fact that java's default is 72 dpi and 360/72 is a whole number
+     */
+    public static final int DPI_SCALE_FACTOR = 360/72;
+
+    /**
      * The dimensions of the selection box.
      */
-    public static final int SELECTION_BOX_WIDTH = 15;
-    public static final int SELECTION_BOX_HEIGHT = 10;
+    public static final int SELECTION_BOX_WIDTH = 15*DPI_SCALE_FACTOR;
+    public static final int SELECTION_BOX_HEIGHT = 10*DPI_SCALE_FACTOR;
 
 	/**
 	 * The standard font to use
@@ -599,6 +605,7 @@ public class RenderingUtils {
         if (wrappingWidth == 600 && !uid.contains("_printable"))
             System.out.println(">>>>>>>> " + uid);
         */
+        fontsize *= DPI_SCALE_FACTOR;
         Font font = new Font(FONT_NAME, (bold) ? Font.BOLD : Font.PLAIN,
                 fontsize);
 
@@ -606,15 +613,19 @@ public class RenderingUtils {
             selected = false;
         }
 
+        //Scale the wrapping width
+        wrappingWidth *= DPI_SCALE_FACTOR;
 
 
-        Font nf = new Font("OCR A Extended", Font.PLAIN, 12);
+
+
+        Font nf = new Font("OCR A Extended", Font.PLAIN, 12*DPI_SCALE_FACTOR);
 
 
         String box = "\u25a1"; // box character
         String filledSelection = "\u25a8"; // filled box character
 
-        BufferedImage wrappedImage = new BufferedImage(1000, 1000,
+        BufferedImage wrappedImage = new BufferedImage(1000*DPI_SCALE_FACTOR, 1000*DPI_SCALE_FACTOR,
                 BufferedImage.TYPE_INT_ARGB);
 
         Graphics2D graphs = wrappedImage.createGraphics();
@@ -624,18 +635,18 @@ public class RenderingUtils {
         graphs.setFont(nf);
         graphs.setColor(Color.BLACK); // Could make this a variable
 
-        int baseline = graphs.getFontMetrics().getAscent();
+        int baseline = graphs.getFontMetrics().getAscent()*DPI_SCALE_FACTOR;
 
         /* Useful data attributes. */
-        int padding = 10;
+        int padding = 10*DPI_SCALE_FACTOR;
 
         int presidentNameLength = lineWidth(text.split("$"), nf);
         int vicePresidentNameLength = lineWidth(text2.split("$"), nf);
 
         int heightPos = padding + baseline;
         int writePos = padding;
-        int boxPos = wrappingWidth - SELECTION_BOX_WIDTH - 1;
-        int candidateNameEndPos = boxPos - 2;
+        int boxPos = wrappingWidth - SELECTION_BOX_WIDTH - DPI_SCALE_FACTOR;
+        int candidateNameEndPos = boxPos - 2*DPI_SCALE_FACTOR;
 
 
         String selection = "";
@@ -665,8 +676,8 @@ public class RenderingUtils {
         //If this is a race name and not a candidate
         if (uid.contains("L"))
         {
-            wrappingWidth = 400;
-            Font temp = font.deriveFont(12.0f);
+            wrappingWidth = 400*DPI_SCALE_FACTOR;
+            Font temp = font.deriveFont(12.0f*DPI_SCALE_FACTOR);
             String[] split = selection.split("\n");
             text = split[0];
 
@@ -683,7 +694,7 @@ public class RenderingUtils {
 
                 graphs.setFont(temp);
                 graphs.drawString(text + ":", padding, heightPos);
-                heightPos += lineHeight(text, font);
+                heightPos += lineHeight(text, font)*DPI_SCALE_FACTOR;
                 selection = text2;
 
             }
@@ -710,7 +721,7 @@ public class RenderingUtils {
 
 
         /* This is where the box is being drawn. */
-        drawBox(graphs, boxPos, heightPos - SELECTION_BOX_HEIGHT, SELECTION_BOX_WIDTH, SELECTION_BOX_HEIGHT, selected);
+        drawBox(graphs, boxPos, (heightPos - SELECTION_BOX_HEIGHT), SELECTION_BOX_WIDTH, SELECTION_BOX_HEIGHT, selected);
 
 
         /*Font boxFont = new Font(font.getName(), font.getStyle(), font.getSize() + 20);
@@ -737,8 +748,8 @@ public class RenderingUtils {
         graphs.drawLine(writePos + lineWidth(("1").split(""), nf), heightPos + fontsize/2, Math.max(wrappingWidth,selectionLength), heightPos + fontsize/2);
 
 
-        wrappedImage = wrappedImage.getSubimage(0, 0, Math.max(wrappingWidth,selectionLength), heightPos
-                + padding);
+       wrappedImage = wrappedImage.getSubimage(0, 0, Math.max(wrappingWidth,selectionLength), (heightPos
+                + padding)*DPI_SCALE_FACTOR);
 
         return copy(wrappedImage);
     }
