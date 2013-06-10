@@ -560,6 +560,7 @@ public class VoteBox {
                     		currentDriver = null;
                     		inactiveUI.setVisible(true);
                     		killVBTimer = null;
+                            promptForPin("Enter Voting Authentication PIN");
                     	};
                     });
                     killVBTimer.setRepeats(false);
@@ -662,10 +663,8 @@ public class VoteBox {
              * then shows the inactive screen. Also responds with its status.
              */
             public void ballotReceived(BallotReceivedEvent e) {
-                System.out.println("1");
                 if (e.getNode() == mySerial
                         && Arrays.equals(e.getNonce(), nonce)) {
-                    System.out.println("2");
                     if (!committedBallot && _constants.getUseCommitChallengeModel())
                         throw new RuntimeException(
                                 "Someone said the ballot was received, but this machine hasn't committed it yet. Maybe the supervisor is misconfigured (not using challenge-commit model)?");
@@ -676,7 +675,6 @@ public class VoteBox {
                     
                     currentDriver.getView().nextPage();
                     if(!_constants.getUseCommitChallengeModel()){
-                        System.out.println("3");
                     	nonce = null;
                     	voting = false;
                     	finishedVoting = false;
@@ -684,7 +682,6 @@ public class VoteBox {
                     	broadcastStatus();
                     	killVBTimer = new Timer(_constants.getViewRestartTimeout(), new ActionListener() {
                     		public void actionPerformed(ActionEvent arg0) {
-                                System.out.println("4");
                     			currentDriver.kill();
                     			currentDriver = null;
                     			inactiveUI.setVisible(true);
@@ -692,10 +689,8 @@ public class VoteBox {
                                 promptForPin("Enter Voting Authentication PIN");
                     		}
                     	});
-                        System.out.println("5");
                     	killVBTimer.setRepeats(false);
                     	killVBTimer.start();
-                        System.out.println("6");
                     }//if
                 }
             }
@@ -878,6 +873,7 @@ public class VoteBox {
                     		currentDriver = null;
                     		inactiveUI.setVisible(true);
                     		killVBTimer = null;
+                            promptForPin("Enter Voting Authentication PIN");
                     	};
                     });
                     killVBTimer.setRepeats(false);
