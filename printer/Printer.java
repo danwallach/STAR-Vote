@@ -154,11 +154,13 @@ public class Printer {
 
 
                 //Find the minimum amount of whitespace to be trimmed off title images
-                int maxToTrim = Integer.MAX_VALUE;
+                int maxToTrimHorizontally = Integer.MAX_VALUE;
+                int maxToTrimVertically = Integer.MAX_VALUE;
                 for(RaceTitlePair rtp : fActualRaceNamePairs){
                     BufferedImage title = (BufferedImage)rtp.getImage();
 
-                    maxToTrim = Math.min(PrintImageUtils.getHorizontalImageTrim(title, true), maxToTrim);
+                    maxToTrimHorizontally = Math.min(PrintImageUtils.getHorizontalImageTrim(title, true), maxToTrimHorizontally);
+                    maxToTrimVertically = Math.min(PrintImageUtils.getVerticalImageTrim(title, true), maxToTrimVertically);
 
 
                 }
@@ -177,7 +179,8 @@ public class Printer {
 
                     //Remove trailing whitespace to allow for better scaling
                     //Only the title image will have trailing whitespace due to rendering
-                    titleImg = PrintImageUtils.trimImage(titleImg, true, maxToTrim);
+                    titleImg = PrintImageUtils.trimImageHorizontally(titleImg, true, maxToTrimHorizontally);
+                    titleImg = PrintImageUtils.trimImageVertically(titleImg, true, maxToTrimVertically);
 
 
                     BufferedImage outTitle = PrintImageUtils.getScaledInstance(titleImg, (printWidth*2)/3, (titleImg.getHeight()*2)/3, RenderingHints.VALUE_INTERPOLATION_BICUBIC, false);

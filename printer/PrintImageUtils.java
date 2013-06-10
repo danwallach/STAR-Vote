@@ -29,7 +29,7 @@ public class PrintImageUtils {
      * This was taken from BallotImageHelper
      */
 
-    public static BufferedImage trimImage(BufferedImage image, boolean trimFromEnd, int maxToTrim) {
+    public static BufferedImage trimImageHorizontally(BufferedImage image, boolean trimFromEnd, int maxToTrim) {
 
         BufferedImage outImage;
 
@@ -44,6 +44,37 @@ public class PrintImageUtils {
         }
         else{
             outImage = trimImageHorizontallyHelper(image, maxToTrim);
+        }
+
+        return outImage;
+    }
+
+    /**
+     * Trims the given image so that there is no trailing white/transparent block.
+     *
+     * @param image - Image to trim
+     * @param trimFromBelow - If true, the image should have whitespace from below the non-empty space removed instead of that from above
+     * @param maxToTrim - the maximum amount of whitespace to trim, necessary for uniform scaling later on
+     * @return trimmed image
+     *
+     * This was taken from BallotImageHelper
+     */
+
+    public static BufferedImage trimImageVertically(BufferedImage image, boolean trimFromBelow, int maxToTrim) {
+
+        BufferedImage outImage;
+
+        if(trimFromBelow){
+
+            outImage = flipImageVertically(image);
+
+            outImage = trimImageVerticallyHelper(outImage, maxToTrim);
+
+            outImage = flipImageVertically(outImage);
+
+        }
+        else{
+            outImage = trimImageVerticallyHelper(image, maxToTrim);
         }
 
         return outImage;
@@ -200,6 +231,34 @@ public class PrintImageUtils {
     }
 
     /**
+     * A method that determines how much whitespace will be trimmed off an image
+     *
+     * @param image - image to be evaluated for trimming
+     * @param flipped - whether or not the image is being trimmed from below or above
+     * @return the amount of whitespace that will be trimmed
+     */
+    public static int getVerticalImageTrim(BufferedImage image, boolean flipped){
+        BufferedImage outImage;
+        int whitespace = -1;
+
+        if(flipped){
+
+            outImage = flipImageVertically(image);
+
+
+            whitespace = getVerticalImageTrimHelper(outImage);
+
+            ;
+        }
+        else{
+            whitespace = getVerticalImageTrimHelper(image);
+        }
+
+        return whitespace;
+
+    }
+
+    /**
      * A method that determines how much whitespace (columns) will be trimmed off an image.
      *
      * @param image - image to be trimmed
@@ -243,7 +302,7 @@ public class PrintImageUtils {
      * @param image - image to be trimmed
      * @return the amount of whitespace that will be trimmed
      */
-    private static int getVerticalImageTrimHelper(BufferedImage image, int maxToTrim){
+    private static int getVerticalImageTrimHelper(BufferedImage image){
         try{
             int[] pix = new int[image.getWidth() * image.getHeight()];
             PixelGrabber grab = new PixelGrabber(image, 0, 0, image.getWidth(), image.getHeight(), pix, 0, image.getWidth());
