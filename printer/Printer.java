@@ -34,6 +34,11 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 
+import javax.print.attribute.HashPrintJobAttributeSet;
+import javax.print.attribute.HashPrintRequestAttributeSet;
+import javax.print.attribute.PrintRequestAttribute;
+import javax.print.attribute.PrintRequestAttributeSet;
+import javax.print.attribute.standard.PrintQuality;
 import javax.print.attribute.standard.PrinterName;
 
 
@@ -43,6 +48,7 @@ import votebox.AuditoriumParams;
 import auditorium.*;
 
 import javax.print.PrintService;
+import javax.print.attribute.standard.PrinterResolution;
 
 /**
  * This class handles all print calls made by Voteboxes, Supervisors and any future additions that will need to print
@@ -184,6 +190,24 @@ public class Printer {
 
 
                     BufferedImage outTitle = PrintImageUtils.getScaledInstance(titleImg, (printWidth*2)/3, (titleImg.getHeight()*2)/3, RenderingHints.VALUE_INTERPOLATION_BICUBIC, false);
+
+//                    Graphics2D g = (Graphics2D) graphics;
+//                    double xScale = 0.24;
+//                    double yScale = 0.24;
+//                    double xMargin = (pageFormat.getImageableWidth() - img.getWidth()*xScale)/2;
+//                    double yMargin = (pageFormat.getImageableHeight() - img.getHeight()*yScale)/2;
+//                    g.translate(pageFormat.getImageableX() + xMargin,
+//                            pageFormat.getImageableY() + yMargin);
+//
+//
+//                    double xTitleMargin = (pageFormat.getImageableWidth() - outTitle.getWidth()*xScale)/2;
+//                    double yTitleMargin = (pageFormat.getImageableHeight() - titleImg.getHeight()*yScale)/2;
+//                    g.translate(pageFormat.getImageableX() + xMargin,
+//                            pageFormat.getImageableY() + yMargin);
+
+//                    g.scale(xScale , yScale );
+
+
                     System.out.println("Titles:\n\tSize: " + img.getWidth() + "x" + img.getHeight());
                     graphics.drawImage(outTitle,
                             printX,
@@ -215,16 +239,8 @@ public class Printer {
                     }
 
 
-                    Graphics2D g = (Graphics2D) graphics;
-                    double xScale = 0.24;
-                    double yScale = 0.24;
-                    double xMargin = (pageFormat.getImageableWidth() - img.getWidth()*xScale)/2;
-                    double yMargin = (pageFormat.getImageableHeight() - img.getHeight()*yScale)/2;
-                    g.translate(pageFormat.getImageableX() + xMargin,
-                            pageFormat.getImageableY() + yMargin);
 
-                    g.scale(xScale , yScale );
-                    g.drawImage(img, 20, 20, null);
+
 
 				}
                 graphics.setFont(ocra);
@@ -347,36 +363,51 @@ public class Printer {
 			return;
 		}
 
+
 		PrinterJob job = PrinterJob.getPrinterJob();
 
+        PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
+        PrinterResolution pr = new PrinterResolution(300, 300, PrinterResolution.DPI);
+
+        aset.add(pr);
+        aset.add(PrintQuality.HIGH);
+
+
+
+
 		try {
-			job.setPrintService(vvpat);
+
+            PageFormat pf = job.getPageFormat(aset);
+            Paper paper = pf.getPaper();
+
+
+
+            job.setPrintService(vvpat) ;
+
+            paper.setSize(_constants.getPaperWidthForVVPAT(), _constants.getPaperHeightForVVPAT());
+
+            int imageableWidth = _constants.getPrintableWidthForVVPAT();
+            int imageableHeight = _constants.getPrintableHeightForVVPAT();
+
+            int leftInset = (_constants.getPaperWidthForVVPAT() - _constants.getPrintableWidthForVVPAT()) / 2;
+            int topInset = (_constants.getPaperHeightForVVPAT() - _constants.getPrintableHeightForVVPAT()) / 2;
+
+            paper.setImageableArea(leftInset, topInset, imageableWidth, imageableHeight);
+
+            pf.setPaper(paper);
+
+            job.setPrintable(toPrint, pf);
+
+            System.out.println("Now printing in higher resolution!");
+
+            job.print(aset);
+
 		} catch (PrinterException e) {
 			Bugout.err("VVPAT printing failed: "+e.getMessage());
 			return;
 		}
 
-		Paper paper = new Paper();
-		paper.setSize(_constants.getPaperWidthForVVPAT(), _constants.getPaperHeightForVVPAT());
 
-		int imageableWidth = _constants.getPrintableWidthForVVPAT();
-		int imageableHeight = _constants.getPrintableHeightForVVPAT();
-
-		int leftInset = (_constants.getPaperWidthForVVPAT() - _constants.getPrintableWidthForVVPAT()) / 2;
-		int topInset = (_constants.getPaperHeightForVVPAT() - _constants.getPrintableHeightForVVPAT()) / 2;
-
-		paper.setImageableArea(leftInset, topInset, imageableWidth, imageableHeight);
-		PageFormat pageFormat = new PageFormat();
-		pageFormat.setPaper(paper);
-
-		job.setPrintable(toPrint, pageFormat);
-
-		try {
-			job.print();
-		} catch (PrinterException e) {
-			Bugout.err("VVPAT printing failed: "+e.getMessage());
-			return;
-		}
 	}
 
 
