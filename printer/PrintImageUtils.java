@@ -104,7 +104,7 @@ public class PrintImageUtils {
             PixelGrabber grab = new PixelGrabber(image, 0, 0, image.getWidth(), image.getHeight(), pix, 0, image.getWidth());
             if(!grab.grabPixels()) return image;
 
-            int lastClearRow = 0;
+            int lastClearColumn = 0;
             out:
             for(int x = 1; x < image.getWidth(); x++){
                 for(int y = 0; y < image.getHeight(); y++){
@@ -121,10 +121,10 @@ public class PrintImageUtils {
 
                     break out;
                 }//for
-                lastClearRow = x;
+                lastClearColumn = x;
             }//for
 
-            int trimmable = Math.min(lastClearRow, maxToTrim);
+            int trimmable = Math.min(lastClearColumn, maxToTrim);
 
             return image.getSubimage(trimmable, 0, image.getWidth() - trimmable, image.getHeight());
         }catch(InterruptedException e){ return image; }
@@ -178,7 +178,7 @@ public class PrintImageUtils {
      * @param flipped - whether or not the image is being trimmed from the end or beginning
      * @return the amount of whitespace that will be trimmed
      */
-    public static int getImageTrim(BufferedImage image, boolean flipped){
+    public static int getHorizontalImageTrim(BufferedImage image, boolean flipped){
         BufferedImage outImage;
         int whitespace = -1;
 
@@ -211,7 +211,7 @@ public class PrintImageUtils {
             PixelGrabber grab = new PixelGrabber(image, 0, 0, image.getWidth(), image.getHeight(), pix, 0, image.getWidth());
             if(!grab.grabPixels()) return -1;
 
-            int lastClearRow = 0;
+            int lastClearColumn = 0;
             out:
             for(int x = 1; x < image.getWidth(); x++){
                 for(int y = 0; y < image.getHeight(); y++){
@@ -228,11 +228,11 @@ public class PrintImageUtils {
 
                     break out;
                 }//for
-                lastClearRow = x;
+                lastClearColumn = x;
 
             }//for
 
-            return lastClearRow;
+            return lastClearColumn;
         }catch(InterruptedException e){ return -1; }
 
     }

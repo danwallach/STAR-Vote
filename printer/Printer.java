@@ -44,8 +44,6 @@ import auditorium.*;
 
 import javax.print.PrintService;
 
-import net.sourceforge.barbecue.Barcode;
-
 /**
  * This class handles all print calls made by Voteboxes, Supervisors and any future additions that will need to print
  */
@@ -160,7 +158,7 @@ public class Printer {
                 for(RaceTitlePair rtp : fActualRaceNamePairs){
                     BufferedImage title = (BufferedImage)rtp.getImage();
 
-                    maxToTrim = Math.min(PrintImageUtils.getImageTrim(title, true), maxToTrim);
+                    maxToTrim = Math.min(PrintImageUtils.getHorizontalImageTrim(title, true), maxToTrim);
 
 
                 }
