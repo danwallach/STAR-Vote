@@ -6,20 +6,15 @@ import net.sourceforge.barbecue.BarcodeFactory;
 import net.sourceforge.barbecue.BarcodeImageHandler;
 import net.sourceforge.barbecue.output.OutputException;
 
-import javax.imageio.ImageIO;
-import javax.sound.midi.SysexMessage;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.PixelGrabber;
-import java.awt.image.RenderedImage;
-import java.io.File;
-import java.io.IOException;
 
 /**
  * A class which provides image manipulation support for printing
  *
- * @author Matt Bernhard
+ * @author Matt Bernhard, Mircea Berechet
  */
 public class PrintImageUtils {
 
@@ -40,15 +35,15 @@ public class PrintImageUtils {
 
         if(trimFromEnd){
 
-            outImage = flipImage(image);
+            outImage = flipImageHorizontally(image);
 
-            outImage = trimImageHelper(outImage, maxToTrim);
+            outImage = trimImageHorizontallyHelper(outImage, maxToTrim);
 
-            outImage = flipImage(outImage);
+            outImage = flipImageHorizontally(outImage);
 
         }
         else{
-            outImage = trimImageHelper(image, maxToTrim);
+            outImage = trimImageHorizontallyHelper(image, maxToTrim);
         }
 
         return outImage;
@@ -60,7 +55,7 @@ public class PrintImageUtils {
      * @param image - image to be flipped
      * @return - a flipped image
      */
-    private static BufferedImage flipImage(BufferedImage image){
+    private static BufferedImage flipImageHorizontally(BufferedImage image){
         BufferedImage flipped = new BufferedImage(image.getWidth(), image.getHeight(), image.getType());
         AffineTransform tran = AffineTransform.getTranslateInstance(image.getWidth(), 0);
         AffineTransform flip = AffineTransform.getScaleInstance(-1d, 1d);
@@ -76,13 +71,34 @@ public class PrintImageUtils {
     }
 
     /**
-     * A helper method which actually trims an image
+     * A method which will flip an image with respect to its x-axis
+     *
+     * @param image - image to be flipped
+     * @return - a flipped image
+     */
+    private static BufferedImage flipImageVertically(BufferedImage image){
+        BufferedImage flipped = new BufferedImage(image.getWidth(), image.getHeight(), image.getType());
+        AffineTransform tran = AffineTransform.getTranslateInstance(0, image.getHeight());
+        AffineTransform flip = AffineTransform.getScaleInstance(1d, -1d);
+        tran.concatenate(flip);
+
+        Graphics2D g = flipped.createGraphics();
+        g.setTransform(tran);
+        g.drawImage(image, 0, 0, null);
+        g.dispose();
+
+        return flipped;
+
+    }
+
+    /**
+     * A helper method which actually trims an image. This method trims columns.
      *
      * @param image - image to be trimmed
      * @param maxToTrim - the maximum whitespace that can be trimmed off this image
      * @return - a trimmed image
      */
-    private static BufferedImage trimImageHelper(BufferedImage image, int maxToTrim){
+    private static BufferedImage trimImageHorizontallyHelper(BufferedImage image, int maxToTrim){
         try{
             int[] pix = new int[image.getWidth() * image.getHeight()];
             PixelGrabber grab = new PixelGrabber(image, 0, 0, image.getWidth(), image.getHeight(), pix, 0, image.getWidth());
@@ -114,6 +130,47 @@ public class PrintImageUtils {
         }catch(InterruptedException e){ return image; }
     }
 
+
+    /**
+     * A helper method which actually trims an image. This method trims rows.
+     *
+     * @param image - image to be trimmed
+     * @param maxToTrim - the maximum whitespace that can be trimmed off this image
+     * @return - a trimmed image
+     */
+    private static BufferedImage trimImageVerticallyHelper(BufferedImage image, int maxToTrim){
+        try{
+            int[] pix = new int[image.getWidth() * image.getHeight()];
+            PixelGrabber grab = new PixelGrabber(image, 0, 0, image.getWidth(), image.getHeight(), pix, 0, image.getWidth());
+            if(!grab.grabPixels()) return image;
+
+            int lastClearRow = 0;
+            out:
+            for(int y = 1; y < image.getHeight(); y++){
+                for(int x = 0; x < image.getWidth(); x++){
+
+                    int i = y*image.getWidth() + x;
+                    int pixel = pix[i];
+
+                    int alpha = (pixel >> 24) & 0xff;
+                    int red   = (pixel >> 16) & 0xff;
+                    int green = (pixel >>  8) & 0xff;
+                    int blue  = (pixel      ) & 0xff;
+
+                    if(alpha == 0) continue;
+                    if(red == 255 && green == 255 && blue == 255) continue;
+
+                    break out;
+                }//for
+                lastClearRow = y;
+            }//for
+
+            int trimmable = Math.min(lastClearRow, maxToTrim);
+
+            return image.getSubimage(0, trimmable, image.getWidth(), image.getHeight() - trimmable);
+        }catch(InterruptedException e){ return image; }
+    }
+
     /**
      * A method that determines how much whitespace will be trimmed off an image
      *
@@ -127,15 +184,15 @@ public class PrintImageUtils {
 
         if(flipped){
 
-            outImage = flipImage(image);
+            outImage = flipImageHorizontally(image);
 
 
-            whitespace = getImageTrimHelper(outImage);
+            whitespace = getHorizontalImageTrimHelper(outImage);
 
 ;
         }
         else{
-            whitespace = getImageTrimHelper(image);
+            whitespace = getHorizontalImageTrimHelper(image);
         }
 
         return whitespace;
@@ -143,12 +200,12 @@ public class PrintImageUtils {
     }
 
     /**
-     * A method that determines how much whitespace will be trimmed off an image
+     * A method that determines how much whitespace (columns) will be trimmed off an image.
      *
      * @param image - image to be trimmed
      * @return the amount of whitespace that will be trimmed
      */
-    private static int getImageTrimHelper(BufferedImage image){
+    private static int getHorizontalImageTrimHelper(BufferedImage image){
         try{
             int[] pix = new int[image.getWidth() * image.getHeight()];
             PixelGrabber grab = new PixelGrabber(image, 0, 0, image.getWidth(), image.getHeight(), pix, 0, image.getWidth());
@@ -178,6 +235,43 @@ public class PrintImageUtils {
             return lastClearRow;
         }catch(InterruptedException e){ return -1; }
 
+    }
+
+    /**
+     * A method that determines how much whitespace (rows) will be trimmed off an image.
+     *
+     * @param image - image to be trimmed
+     * @return the amount of whitespace that will be trimmed
+     */
+    private static int getVerticalImageTrimHelper(BufferedImage image, int maxToTrim){
+        try{
+            int[] pix = new int[image.getWidth() * image.getHeight()];
+            PixelGrabber grab = new PixelGrabber(image, 0, 0, image.getWidth(), image.getHeight(), pix, 0, image.getWidth());
+            if(!grab.grabPixels()) return -1;
+
+            int lastClearRow = 0;
+            out:
+            for(int y = 1; y < image.getHeight(); y++){
+                for(int x = 0; x < image.getWidth(); x++){
+
+                    int i = y*image.getWidth() + x;
+                    int pixel = pix[i];
+
+                    int alpha = (pixel >> 24) & 0xff;
+                    int red   = (pixel >> 16) & 0xff;
+                    int green = (pixel >>  8) & 0xff;
+                    int blue  = (pixel      ) & 0xff;
+
+                    if(alpha == 0) continue;
+                    if(red == 255 && green == 255 && blue == 255) continue;
+
+                    break out;
+                }//for
+                lastClearRow = y;
+            }//for
+
+            return lastClearRow;
+        }catch(InterruptedException e){ return -1; }
     }
 
     /**
