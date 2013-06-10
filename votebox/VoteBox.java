@@ -527,7 +527,8 @@ public class VoteBox {
                     PollsOpenQEvent.getMatcher(), BallotCountedEvent.getMatcher(),
                     ChallengeEvent.getMatcher(), ChallengeResponseEvent.getMatcher(),
                     AuthorizedToCastWithNIZKsEvent.getMatcher(), PinEnteredEvent.getMatcher(),
-                    InvalidPinEvent.getMatcher(), PollsOpenEvent.getMatcher());
+                    InvalidPinEvent.getMatcher(), PollsOpenEvent.getMatcher(),
+                    PollStatusEvent.getMatcher());
         } catch (NetworkException e1) {
         	//NetworkException represents a recoverable error
         	//  so just note it and continue
@@ -886,6 +887,12 @@ public class VoteBox {
             public void pinEntered(PinEnteredEvent e) {}
             public void invalidPin(InvalidPinEvent e) {
                 promptForPin("Invalid PIN: Enter Valid PIN");
+            }
+
+            public void pollStatus(PollStatusEvent pollStatusEvent) {
+                if(!voting && pollStatusEvent.getPollStatus() == 1){
+                    promptForPin("Enter Authentication PIN");
+                }
             }
 
 

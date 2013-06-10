@@ -467,7 +467,8 @@ public class Model {
                     CastCommittedBallotEvent.getMatcher(), ChallengeResponseEvent.getMatcher(),
                     ChallengeEvent.getMatcher(), EncryptedCastBallotWithNIZKsEvent.getMatcher(),
                     AuthorizedToCastWithNIZKsEvent.getMatcher(), AdderChallengeEvent.getMatcher(),
-                    PinEnteredEvent.getMatcher(), InvalidPinEvent.getMatcher());
+                    PinEnteredEvent.getMatcher(), InvalidPinEvent.getMatcher(),
+                    PollStatusEvent.getMatcher());
         } catch (NetworkException e1) {
             throw new RuntimeException(e1);
         }
@@ -828,25 +829,22 @@ public class Model {
                 
                 if (e.getLabel() > 0)
                     booth.setLabel(e.getLabel());
-                else if (activated) {
-                    if (booth.getLabel() > 0)
-                        auditorium.announce(new AssignLabelEvent(mySerial, e
-                                .getSerial(), booth.getLabel()));
-                    else {
-                        int maxlabel = 0;
-                        for (AMachine ma : machines) {
-                            if (ma instanceof VoteBoxBooth
-                                    && ((VoteBoxBooth) ma).getLabel() > maxlabel)
-                                maxlabel = ((VoteBoxBooth) ma).getLabel();
+                else {
+                    if (activated) {
+                        if (booth.getLabel() > 0)
+                            auditorium.announce(new AssignLabelEvent(mySerial, e
+                                    .getSerial(), booth.getLabel()));
+                        else {
+                            int maxlabel = 0;
+                            for (AMachine ma : machines) {
+                                if (ma instanceof VoteBoxBooth
+                                        && ((VoteBoxBooth) ma).getLabel() > maxlabel)
+                                    maxlabel = ((VoteBoxBooth) ma).getLabel();
+                            }
+                            auditorium.announce(new AssignLabelEvent(mySerial, e
+                                    .getSerial(), maxlabel + 1));
                         }
-                        auditorium.announce(new AssignLabelEvent(mySerial, e
-                                .getSerial(), maxlabel + 1));
-                    }
-                    if(pollsOpen){
-                        openPolls();
-                    }
-                    else{
-                        auditorium.announce(new PollsClosedEvent(mySerial, new Date().getTime()));
+                        auditorium.announce(new PollStatusEvent(mySerial, e.getSerial(), pollsOpen ? 1:0 ));
                     }
                 }
             }
@@ -922,6 +920,10 @@ public class Model {
             }
 
             public void invalidPin(InvalidPinEvent e) {}
+
+            public void pollStatus(PollStatusEvent pollStatusEvent) {
+                pollsOpen = pollStatusEvent.getPollStatus()==1;
+            }
 
         });
 

@@ -138,6 +138,11 @@ public class VoteBoxEventNotifier implements VoteBoxEventListener {
             l.pollsOpenQ(e);
     }
 
+    public void pollStatus(PollStatusEvent e) {
+        for (VoteBoxEventListener l : listeners)
+            l.pollStatus(e);
+    }
+
     /**
      * Removes a listener from this notifier.
      * 

@@ -222,4 +222,9 @@ public interface VoteBoxEventListener {
 
     public void invalidPin(InvalidPinEvent event);
 
+    /**
+     * called to tell new box about the status of the polls (open or closed)
+     */
+
+    public void pollStatus(PollStatusEvent pollStatusEvent);
 }
