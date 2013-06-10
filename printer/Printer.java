@@ -160,15 +160,26 @@ public class Printer {
 
 
                 //Find the minimum amount of whitespace to be trimmed off title images
-                int maxToTrimHorizontally = Integer.MAX_VALUE;
-                int maxToTrimVertically = Integer.MAX_VALUE;
+                int maxToTrimTitleHorizontally = Integer.MAX_VALUE;
+                int maxToTrimTitleVertically = Integer.MAX_VALUE;
                 for(RaceTitlePair rtp : fActualRaceNamePairs){
                     BufferedImage title = (BufferedImage)rtp.getImage();
 
-                    maxToTrimHorizontally = Math.min(PrintImageUtils.getHorizontalImageTrim(title, true), maxToTrimHorizontally);
-                    maxToTrimVertically = Math.min(PrintImageUtils.getVerticalImageTrim(title, true), maxToTrimVertically);
+                    maxToTrimTitleHorizontally = Math.min(PrintImageUtils.getHorizontalImageTrim(title, true), maxToTrimTitleHorizontally);
+                    maxToTrimTitleVertically = Math.min(PrintImageUtils.getVerticalImageTrim(title, true), maxToTrimTitleVertically);
 
 
+                }
+
+                //Find the minimum amount of whitespace to be trimmed off selection images
+                int maxToTrimSelectionHorizontally = Integer.MAX_VALUE;
+                int maxToTrimSelectionVertically = Integer.MAX_VALUE;
+                for(String choice :choices)
+                {
+                    BufferedImage selection = (BufferedImage) choiceToImage.get(choice);
+
+                    maxToTrimSelectionHorizontally = Math.min(PrintImageUtils.getHorizontalImageTrim(selection, false), maxToTrimSelectionHorizontally);
+                    maxToTrimSelectionVertically = Math.min(PrintImageUtils.getVerticalImageTrim(selection, false), maxToTrimSelectionVertically);
                 }
 
                 if(_constants.getUseTwoColumns())
@@ -185,8 +196,11 @@ public class Printer {
 
                     //Remove trailing whitespace to allow for better scaling
                     //Only the title image will have trailing whitespace due to rendering
-                    titleImg = PrintImageUtils.trimImageHorizontally(titleImg, true, maxToTrimHorizontally);
-                    titleImg = PrintImageUtils.trimImageVertically(titleImg, true, maxToTrimVertically);
+                    titleImg = PrintImageUtils.trimImageHorizontally(titleImg, true, maxToTrimTitleHorizontally);
+                    titleImg = PrintImageUtils.trimImageVertically(titleImg, true, maxToTrimTitleVertically);
+
+                    //Remove whitespace above the selection image.
+                    img = PrintImageUtils.trimImageVertically(img, false, maxToTrimSelectionVertically);
 
 
                     BufferedImage outTitle = PrintImageUtils.getScaledInstance(titleImg, (printWidth*2)/3, (titleImg.getHeight()*2)/3, RenderingHints.VALUE_INTERPOLATION_BICUBIC, false);
