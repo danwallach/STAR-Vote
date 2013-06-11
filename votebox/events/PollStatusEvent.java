@@ -32,7 +32,7 @@ public class PollStatusEvent implements IAnnounceEvent{
                         .toString() );
                 int pollsOpen = Integer.parseInt( ((ListExpression) res).get( 1 )
                         .toString() );
-                return new AssignLabelEvent( serial, node, pollsOpen);
+                return new PollStatusEvent(serial, node, pollsOpen);
             }
             return null;
         }
@@ -86,7 +86,7 @@ public class PollStatusEvent implements IAnnounceEvent{
 
     public ASExpression toSExp() {
         return new ListExpression(
-                StringExpression.makeString( "poll_status" ), StringExpression
+                StringExpression.makeString( "poll-status" ), StringExpression
                 .makeString( Integer.toString( node ) ),
                 StringExpression.makeString( Integer.toString( pollsOpen ) ) );
     }
