@@ -640,6 +640,7 @@ public class RenderingUtils {
 
         graphs.scale(1.0/DPI_SCALE_FACTOR, 1.0/DPI_SCALE_FACTOR);
 
+
         graphs.setFont(nf);
         graphs.setColor(Color.BLACK); // Could make this a variable
 
@@ -703,7 +704,7 @@ public class RenderingUtils {
 
                 graphs.setFont(temp);
                 graphs.drawString(text + ":", padding, heightPos);
-                heightPos += lineHeight(text, font)*DPI_SCALE_FACTOR;
+                heightPos += lineHeight(text, font);
                 selection = text2;
 
             }
@@ -720,8 +721,14 @@ public class RenderingUtils {
             wrappedImage = PrintImageUtils.trimImageVertically(wrappedImage, true, Integer.MAX_VALUE); // Below
             // No Left/Right trimming, because it is done in the Printer class.
 
-            //wrappedImage = PrintImageUtils.getScaledInstance(wrappedImage, wrappedImage.getWidth()/DPI_SCALE_FACTOR,
-//                    wrappedImage.getHeight()/DPI_SCALE_FACTOR, RenderingHints.VALUE_INTERPOLATION_BICUBIC, true);
+
+//            wrappedImage = PrintImageUtils.getScaledInstance(wrappedImage, wrappedImage.getWidth()/DPI_SCALE_FACTOR,
+//                    wrappedImage.getHeight()/DPI_SCALE_FACTOR, RenderingHints.VALUE_INTERPOLATION_BILINEAR, true);
+//
+//            System.out.println("Scaling the trimmed image");
+//            Graphics2D scaleG = (Graphics2D)wrappedImage.getGraphics();
+//            scaleG.scale(1.0/DPI_SCALE_FACTOR, 1.0/DPI_SCALE_FACTOR);
+
 
             return copy(wrappedImage);
 
@@ -774,8 +781,14 @@ public class RenderingUtils {
         wrappedImage = PrintImageUtils.trimImageVertically(wrappedImage, false, Integer.MAX_VALUE);
         wrappedImage = PrintImageUtils.trimImageVertically(wrappedImage, true, Integer.MAX_VALUE); // Below
 
+
+//
+//        System.out.println("Scaling the trimmed image");
+//        Graphics2D scaleG = (Graphics2D)wrappedImage.getGraphics();
+//        scaleG.scale(1.0/DPI_SCALE_FACTOR, 1.0/DPI_SCALE_FACTOR);
+//
 //        wrappedImage = PrintImageUtils.getScaledInstance(wrappedImage, wrappedImage.getWidth()/DPI_SCALE_FACTOR,
-//                wrappedImage.getHeight()/DPI_SCALE_FACTOR, RenderingHints.VALUE_INTERPOLATION_BICUBIC, true);
+//            wrappedImage.getHeight()/DPI_SCALE_FACTOR, RenderingHints.VALUE_INTERPOLATION_BILINEAR, true);
 
         return copy(wrappedImage);
     }

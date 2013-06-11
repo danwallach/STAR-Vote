@@ -204,13 +204,11 @@ public class Printer {
                 double yScale = .2;
                 double xMargin = (pageFormat.getImageableWidth() - ((BufferedImage)choiceToImage.get(choices.get(1))).getWidth()*xScale)/2;
                 double yMargin = (pageFormat.getImageableHeight() - ((BufferedImage)choiceToImage.get(choices.get(1))).getHeight()*yScale)/2;
-//                g.translate(pageFormat.getImageableX(), pageFormat.getImageableY() + totalSize);
-//                g.scale(xScale , yScale);
-
-
+                g.translate(pageFormat.getImageableX(), pageFormat.getImageableY() + totalSize);
+                g.scale(xScale , yScale);
 
                 int counter = 0;
-				while(totalSize < _constants.getPrintableHeightForVVPAT() && counter < choices.size()){
+				while(totalSize < _constants.getPrintableHeightForVVPAT()*DPI_SCALE && counter < choices.size()){
 
 					BufferedImage img = (BufferedImage)choiceToImage.get(choices.get(counter));
                     BufferedImage titleImg = (BufferedImage)fActualRaceNamePairs.get(counter).getImage();
@@ -231,13 +229,13 @@ public class Printer {
 
 
 
-                    graphics.drawImage(titleImg,
+                    g.drawImage(titleImg,
                             printX,
                             totalSize,
                             null);
 
 
-					graphics.drawImage(img,
+					g.drawImage(img,
                             printX,
                             totalSize + Math.round(titleImg.getHeight(null)),
                             null);
@@ -257,7 +255,6 @@ public class Printer {
                             && _constants.getUseTwoColumns() && column == 2){
                         totalSize = initialHeight;
                         printX =  (int) pageFormat.getImageableX();
-                        pageIndex++;
                         column = 1;
 
                     }
