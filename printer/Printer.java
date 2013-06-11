@@ -128,23 +128,22 @@ public class Printer {
 
 				int choiceIndex = 0;
 				int totalSize = 0;
-				while(pageIndex != 0){
+				while(pageIndex != 0){ // Why? TODO
 					totalSize += choiceToImage.get(choices.get(choiceIndex)).getHeight(null);
 
 					if(totalSize > pageFormat.getImageableHeight()){
 						totalSize = 0;
 						choiceIndex--;
-						pageIndex--;
+						pageIndex--; // Why is this going backwards? TODO
 					}
 
 					choiceIndex++;
 				}
 
-                totalSize = 25;
+                totalSize = 25;  // Random? It represents spacing from the top of the page. Should be a variable, read from the configuration file.  TODO
                 int printX = (int)pageFormat.getImageableX();
-                int printHeight = _constants.getPrintableHeightForVVPAT();
+                int printHeight = _constants.getPrintableHeightForVVPAT(); // What is this used for? TODO
 
-                int counter = 0;
 
                 //Print the date and title of the election at the top of the page
                 Font font = new Font("ARIAL Unicode", Font.PLAIN, 10);
@@ -154,7 +153,6 @@ public class Printer {
 
                 DateFormat dateFormat = new SimpleDateFormat("MMMM d, y");
                 Date date = new Date();
-
                 graphics.drawString(dateFormat.format(date), printX, totalSize+graphics.getFont().getSize());
                 totalSize += graphics.getFont().getSize();
 
@@ -162,7 +160,7 @@ public class Printer {
                 BufferedImage barcode = PrintImageUtils.getBarcode(fbid);
 
                 Font ocra = new Font("OCR A Extended", Font.PLAIN, 16);
-                printHeight = printHeight - ocra.getSize();
+                printHeight = printHeight - ocra.getSize();  // Value is updated, but never used TODO
                 int printWidth = _constants.getPrintableWidthForVVPAT();
 
 
@@ -195,6 +193,8 @@ public class Printer {
                 int initialHeight = totalSize;
                 int column = 1;
 
+
+                // Scaling down the graphics object, to improve print quality. The factor is 72/300 on both x and y dimensions.
                 Graphics2D g = (Graphics2D) graphics;
                 double xScale = .24;
                 double yScale = .24;
@@ -202,11 +202,11 @@ public class Printer {
                 double yMargin = (pageFormat.getImageableHeight() - ((BufferedImage)choiceToImage.get(choices.get(1))).getHeight()*yScale)/2;
                 g.translate(pageFormat.getImageableX() + xMargin,
                         pageFormat.getImageableY() + yMargin);
-
-
                 g.scale(xScale , yScale);
 
 
+
+                int counter = 0;
 				while(totalSize < _constants.getPrintableHeightForVVPAT() && choiceIndex < choices.size()){
 
 					BufferedImage img = (BufferedImage)choiceToImage.get(choices.get(choiceIndex));
@@ -272,9 +272,10 @@ public class Printer {
 
 				}
 
+
+                // Draw the barcode and the ballot ID.
                 g.setFont(ocra);
                 g.drawString(fbid, (int)pageFormat.getImageableX(), _constants.getPrintableHeightForVVPAT()-ocra.getSize());
-
                 g.drawImage(barcode, printWidth, _constants.getPrintableHeightForVVPAT()-barcode.getHeight(null), null);
 
 
