@@ -85,7 +85,7 @@ public class BallotImageHelper {
 				
 				if(entry.getName().endsWith("vvpat/accept.png"))
 					vvpatMap.put("accept", ImageIO.read(file.getInputStream(entry)));
-				
+
 				if(entry.getName().endsWith("vvpat/spoil.png"))
 					vvpatMap.put("spoil", ImageIO.read(file.getInputStream(entry)));
 				
