@@ -138,6 +138,11 @@ public class VoteBoxEventNotifier implements VoteBoxEventListener {
             l.pollsOpenQ(e);
     }
 
+    public void pollStatus(PollStatusEvent e) {
+        for (VoteBoxEventListener l : listeners)
+            l.pollStatus(e);
+    }
+
     /**
      * Removes a listener from this notifier.
      * 
@@ -186,6 +191,16 @@ public class VoteBoxEventNotifier implements VoteBoxEventListener {
     public void ballotScanned(BallotScannedEvent e) {
         for (VoteBoxEventListener l : listeners)
             l.ballotScanned(e);
+    }
+
+    public void pinEntered(PinEnteredEvent e) {
+        for (VoteBoxEventListener l : listeners)
+            l.pinEntered(e);
+    }
+
+    public void invalidPin(InvalidPinEvent e){
+        for (VoteBoxEventListener l : listeners)
+            l.invalidPin(e);
     }
 
 }

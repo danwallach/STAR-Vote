@@ -63,7 +63,7 @@ public class AssignLabelEvent implements IAnnounceEvent {
                 return new AssignLabelEvent( serial, node, label );
             }
             return null;
-        };
+        }
     };
 
     /**
