@@ -29,6 +29,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.print.*;
 import java.io.File;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
