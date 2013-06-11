@@ -704,7 +704,7 @@ public class RenderingUtils {
 
                 graphs.setFont(temp);
                 graphs.drawString(text + ":", padding, heightPos);
-                heightPos += lineHeight(text, font)*DPI_SCALE_FACTOR;
+                heightPos += lineHeight(text, font);
                 selection = text2;
 
             }
