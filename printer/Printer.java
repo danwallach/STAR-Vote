@@ -126,21 +126,8 @@ public class Printer {
 				if(pageIndex >= numPages)
 					return Printable.NO_SUCH_PAGE;
 
-				int choiceIndex = 0;
-				int totalSize = 0;
-				while(pageIndex != 0){ // Why? TODO
-					totalSize += choiceToImage.get(choices.get(choiceIndex)).getHeight(null);
 
-					if(totalSize > pageFormat.getImageableHeight()){
-						totalSize = 0;
-						choiceIndex--;
-						pageIndex--; // Why is this going backwards? TODO
-					}
-
-					choiceIndex++;
-				}
-
-                totalSize = _constants.getPrintableVerticalMargin();
+                int totalSize = _constants.getPrintableVerticalMargin();
                 int printX = (int)pageFormat.getImageableX();
 
 
@@ -157,6 +144,7 @@ public class Printer {
                 totalSize += graphics.getFont().getSize();
 
                 //Generate a barcode of the bid
+                //Do it here so we can use height of the barcode for laying out other components on the printout
                 BufferedImage barcode = PrintImageUtils.getBarcode(fbid);
 
                 Font ocra = new Font("OCR A Extended", Font.PLAIN, 16);
@@ -201,18 +189,18 @@ public class Printer {
                 double yScale = .24;
                 double xMargin = (pageFormat.getImageableWidth() - ((BufferedImage)choiceToImage.get(choices.get(1))).getWidth()*xScale)/2;
                 double yMargin = (pageFormat.getImageableHeight() - ((BufferedImage)choiceToImage.get(choices.get(1))).getHeight()*yScale)/2;
-                g.translate(pageFormat.getImageableX() + xMargin,
-                        pageFormat.getImageableY() + yMargin);
+//                g.translate(pageFormat.getImageableX() + xMargin,
+//                        pageFormat.getImageableY() + yMargin);
                 g.scale(xScale , yScale);
 
 
 
                 int counter = 0;
-				while(totalSize < _constants.getPrintableHeightForVVPAT() && choiceIndex < choices.size()){
+				while(totalSize < _constants.getPrintableHeightForVVPAT() && counter < choices.size()){
 
-					BufferedImage img = (BufferedImage)choiceToImage.get(choices.get(choiceIndex));
+					BufferedImage img = (BufferedImage)choiceToImage.get(choices.get(counter));
                     BufferedImage titleImg = (BufferedImage)fActualRaceNamePairs.get(counter).getImage();
-                    counter++;
+
 
                     //Remove trailing whitespace to allow for better scaling
                     //Only the title image will have trailing whitespace due to rendering
@@ -223,11 +211,12 @@ public class Printer {
                     img = PrintImageUtils.trimImageVertically(img, false, maxToTrimSelectionVertically);
 
 
-                    BufferedImage outTitle = PrintImageUtils.getScaledInstance(titleImg, (printWidth*2)/3, (titleImg.getHeight()*2)/3, RenderingHints.VALUE_INTERPOLATION_BICUBIC, false);
-//
+                    //BufferedImage outImage = PrintImageUtils.getScaledInstance(img,(printWidth*2)/3, (titleImg.getHeight()*2)/3, RenderingHints.VALUE_INTERPOLATION_BICUBIC, false );
+                    //BufferedImage outTitle = PrintImageUtils.getScaledInstance(titleImg, (printWidth*2)/3, (titleImg.getHeight()*2)/3, RenderingHints.VALUE_INTERPOLATION_BICUBIC, false);
 
 
-                    g.drawImage(outTitle,
+
+                    g.drawImage(titleImg,
                             printX,
                             totalSize,
                             null);
@@ -236,7 +225,7 @@ public class Printer {
 
 					g.drawImage(img,
                             printX,
-                            totalSize + (int)Math.round(outTitle.getHeight(null)),
+                            totalSize + (int)Math.round(titleImg.getHeight(null)),
                             null);
 
                     System.out.println("Drew a selection!");
@@ -249,17 +238,17 @@ public class Printer {
 
 
 
-					totalSize += img.getHeight(null) + outTitle.getHeight(null);
-					choiceIndex++;
+					totalSize += img.getHeight(null) + titleImg.getHeight(null);
+                    counter++;
 
                     //If we reach the end of a column and are printing in two columns, go back to the top with an offset of printwidth
-                    if(totalSize + img.getHeight(null) + outTitle.getHeight(null) >= _constants.getPrintableHeightForVVPAT() - barcode.getHeight(null)
+                    if(totalSize + img.getHeight(null) + titleImg.getHeight(null) >= _constants.getPrintableHeightForVVPAT() - barcode.getHeight(null)
                             && _constants.getUseTwoColumns() && column == 1){
                         totalSize = initialHeight;
                         printX += printWidth;
                         column = 2;
 
-                    } else if (totalSize + img.getHeight(null) + outTitle.getHeight(null) >= _constants.getPrintableHeightForVVPAT() - barcode.getHeight(null)
+                    } else if (totalSize + img.getHeight(null) + titleImg.getHeight(null) >= _constants.getPrintableHeightForVVPAT() - barcode.getHeight(null)
                             && _constants.getUseTwoColumns() && column == 2){
                         totalSize = initialHeight;
                         printX =  (int) pageFormat.getImageableX();
@@ -275,9 +264,9 @@ public class Printer {
 
 
                 // Draw the barcode and the ballot ID.
-                g.setFont(ocra);
-                g.drawString(fbid, (int)pageFormat.getImageableX(), _constants.getPrintableHeightForVVPAT()-ocra.getSize());
-                g.drawImage(barcode, printWidth, _constants.getPrintableHeightForVVPAT()-barcode.getHeight(null), null);
+                graphics.setFont(ocra);
+                graphics.drawString(fbid, (int)pageFormat.getImageableX(), _constants.getPrintableHeightForVVPAT()-ocra.getSize());
+                graphics.drawImage(barcode, printWidth, _constants.getPrintableHeightForVVPAT()-barcode.getHeight(null), null);
 
 
 				return Printable.PAGE_EXISTS;
