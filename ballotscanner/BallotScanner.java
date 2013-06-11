@@ -243,13 +243,9 @@ public class BallotScanner {
       public void ballotscanner(BallotScannerEvent e) {}
       public void votebox(VoteBoxEvent e) {}
       public void ballotScanned(BallotScannedEvent e) {}
-
-        @Override
-        public void pinEntered(PinEnteredEvent event) {}
-
-        @Override
-        public void invalidPin(InvalidPinEvent event) {}
-
+      public void pinEntered(PinEnteredEvent event) {}
+      public void invalidPin(InvalidPinEvent event) {}
+      public void pollStatus(PollStatusEvent pollStatusEvent) {}
 
     });
 
