@@ -486,9 +486,9 @@ public abstract class
                         if(!file.exists())
                             file.mkdirs();
 
-                        file = new File(file, uuid+"_printable_"+langShortName+".jpg");
+                        file = new File(file, uuid+"_printable_"+langShortName+".png");
 
-                        ImageIO.write(img, "jpeg", file);
+                        ImageIO.write(img, "png", file);
 
                     } catch (IOException e) {
                         throw new RuntimeException(e);
