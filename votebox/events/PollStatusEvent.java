@@ -86,7 +86,7 @@ public class PollStatusEvent implements IAnnounceEvent{
 
     public ASExpression toSExp() {
         return new ListExpression(
-                StringExpression.makeString( "poll_status" ), StringExpression
+                StringExpression.makeString( "poll-status" ), StringExpression
                 .makeString( Integer.toString( node ) ),
                 StringExpression.makeString( Integer.toString( pollsOpen ) ) );
     }
