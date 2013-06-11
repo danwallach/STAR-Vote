@@ -90,13 +90,11 @@ public class Label implements IDrawable {
     public IViewImage getImage() {
         if (_image == null) {
             if (_uniqueID.equals( "reviewtitle" )) {
-                System.out.println("4");
                 _image = _factory.makeImage( imagePath( _vars, _uniqueID
                         + Integer.toString( _ballot.numSelections() ),
                     _viewManager.getSize(), _viewManager.getLanguage() ) );
             }
             else{
-                System.out.println("5");
                 _image = _factory.makeImage( imagePath( _vars, _uniqueID,
                     _viewManager.getSize(), _viewManager.getLanguage() ) );
             }
@@ -111,7 +109,6 @@ public class Label implements IDrawable {
     public IViewImage getReviewImage() {
         if (_reviewImage == null) {
             //System.out.println("> Label is attempting to open image with UID: " + _uniqueID + " by passing: " + _vars.getBallotPath() + " | " + _uniqueID + "_review" + " | " + _viewManager.getSize() + " | " + _viewManager.getLanguage());
-            System.out.println("6");
             _reviewImage = _factory.makeImage( imagePath( _vars, _uniqueID
                     + "_review", _viewManager.getSize(), _viewManager
                     .getLanguage() ) );

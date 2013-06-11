@@ -226,9 +226,9 @@ public abstract class
             }
 
             public Void forButton(Button b, Object... param) {
-                System.out.println(">>> forButton attempting to be called");
+                //System.out.println(">>> forButton attempting to be called");
                 if (!uids.contains(b.getUID())) {
-                    System.out.println(">>> forButton being called on " + b.getUID());
+                    //System.out.println(">>> forButton being called on " + b.getUID());
                     try {
                         BufferedImage img = b.execute(getImageVisitor());
                         ImageIO.write(img, "png", new File(location
@@ -275,7 +275,7 @@ public abstract class
                 else
                     uuid = uid;
 
-                System.out.println(">>> forReviewButton being called on " + uid);
+                //System.out.println(">>> forReviewButton being called on " + uid);
 
 
                 //We only want to reformat candidates as no selection, not races, etc

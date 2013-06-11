@@ -22,6 +22,8 @@
 
 package preptool.model.layout.manager;
 
+import printer.PrintImageUtils;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.font.FontRenderContext;
@@ -704,6 +706,10 @@ public class RenderingUtils {
 
             wrappedImage = wrappedImage.getSubimage(0, 0, Math.max(wrappingWidth,selectionLength), 2 * heightPos);
 
+            //Trim the image.
+            wrappedImage = PrintImageUtils.trimImageVertically(wrappedImage, false, Integer.MAX_VALUE); // Above
+            wrappedImage = PrintImageUtils.trimImageVertically(wrappedImage, true, Integer.MAX_VALUE); // Below
+            // No Left/Right trimming, because it is done in the Printer class.
 
             return copy(wrappedImage);
 
@@ -747,9 +753,11 @@ public class RenderingUtils {
         //split "1" because it gives a nice line width. It's sort of a hack...
         graphs.drawLine(writePos + lineWidth(("1").split(""), nf), heightPos + fontsize/2, Math.max(wrappingWidth,selectionLength), heightPos + fontsize/2);
 
+        //This should automatically trim the image, removing all the whitespace below the image.
+        wrappedImage = wrappedImage.getSubimage(0, 0, Math.max(wrappingWidth,selectionLength), heightPos + padding);
 
-       wrappedImage = wrappedImage.getSubimage(0, 0, Math.max(wrappingWidth,selectionLength), (heightPos
-                + padding)*DPI_SCALE_FACTOR);
+        //Need to also remove whitespace above the image.
+        wrappedImage = PrintImageUtils.trimImageVertically(wrappedImage, false, Integer.MAX_VALUE);
 
         return copy(wrappedImage);
     }

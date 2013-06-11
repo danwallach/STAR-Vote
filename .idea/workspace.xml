@@ -6,24 +6,25 @@
     </artifacts-to-build>
   </component>
   <component name="BookmarkManager">
-    <bookmark url="file://$PROJECT_DIR$/preptool/model/layout/manager/RenderingUtils.java" line="558" />
+    <bookmark url="file://$PROJECT_DIR$/preptool/model/layout/manager/RenderingUtils.java" line="560" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="26d876ad-6b77-4796-b9d0-ead84066c769" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/log.out" afterPath="$PROJECT_DIR$/log.out" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/superlog.out" afterPath="$PROJECT_DIR$/superlog.out" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/preptool/model/layout/manager/ALayoutManager.java" afterPath="$PROJECT_DIR$/preptool/model/layout/manager/ALayoutManager.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/votebox/middle/view/widget/Button.java" afterPath="$PROJECT_DIR$/votebox/middle/view/widget/Button.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/votebox/middle/view/widget/DefaultButtonState.java" afterPath="$PROJECT_DIR$/votebox/middle/view/widget/DefaultButtonState.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/votebox/middle/view/widget/Label.java" afterPath="$PROJECT_DIR$/votebox/middle/view/widget/Label.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/printer/Printer.java" afterPath="$PROJECT_DIR$/printer/Printer.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/preptool/model/layout/manager/RenderingUtils.java" afterPath="$PROJECT_DIR$/preptool/model/layout/manager/RenderingUtils.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="STAR-Vote.iws" />
     <ignored path=".idea/workspace.xml" />
     <file path="/fragment.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370456202081" ignored="false" />
     <file path="/printer.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369322211698" ignored="false" />
-    <file path="/a.dummy" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370901479152" ignored="false" />
-    <file path="/*.regexp" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370469295632" ignored="false" />
+    <file path="/a.dummy" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370960742892" ignored="false" />
+    <file path="/*.regexp" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370960800296" ignored="false" />
     <file path="/IAdapter.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369258761957" ignored="false" />
     <file path="/Model.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370537747026" ignored="false" />
     <file path="/CommitBallotEvent.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369413068321" ignored="false" />
@@ -49,13 +50,13 @@
     <file path="/BallotResultParser.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369778023577" ignored="false" />
     <file path="/PsychLayoutManager.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370534941089" ignored="false" />
     <file path="/BallotParser.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370036369566" ignored="false" />
-    <file path="/RenderingUtils.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370899830728" ignored="false" />
+    <file path="/RenderingUtils.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370960544842" ignored="false" />
     <file path="/AWTView.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370013836469" ignored="false" />
     <file path="/PrintButton.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369939044393" ignored="false" />
     <file path="/ToggleButton.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370358039224" ignored="false" />
     <file path="/RaceTitlePair.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369945268870" ignored="false" />
     <file path="/Label.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370901082820" ignored="false" />
-    <file path="/Dummy.txt" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370900208545" ignored="false" />
+    <file path="/Dummy.txt" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370958981586" ignored="false" />
     <file path="/ALayoutComponent.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370380215222" ignored="false" />
     <file path="/PrintImageUtils.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370880262959" ignored="false" />
     <file path="/DefaultButtonState.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370901784343" ignored="false" />
@@ -73,6 +74,7 @@
     <disable_hints />
   </component>
   <component name="DebuggerManager">
+    <ui_properties default_suspend_policy="SuspendAll" default_condition_enabled="true" />
     <breakpoint_any default_suspend_policy="SuspendAll" default_condition_enabled="true">
       <breakpoint>
         <option name="NOTIFY_CAUGHT" value="true" />
@@ -156,7 +158,6 @@
         <option name="LOG_MESSAGE" value="&#13;&#13;JAVA" />
       </breakpoint>
     </line_breakpoints>
-    <ui_properties default_suspend_policy="SuspendAll" default_condition_enabled="true" />
     <breakpoint_rules />
     <ui_properties />
   </component>
@@ -169,20 +170,17 @@
       <file leaf-file-name="PrintImageUtils.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/printer/PrintImageUtils.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="244" column="21" selection-start="8214" selection-end="8214" vertical-scroll-proportion="0.0">
+            <state line="76" column="48" selection-start="2363" selection-end="2388" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Printer.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="Printer.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/printer/Printer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="114" column="99" selection-start="4043" selection-end="4044" vertical-scroll-proportion="0.33947772">
-              <folding>
-                <element signature="e#4073#11130#0" expanded="true" />
-                <element signature="e#11124#11125#0" expanded="true" />
-              </folding>
+            <state line="77" column="48" selection-start="2635" selection-end="2635" vertical-scroll-proportion="0.0">
+              <folding />
             </state>
           </provider>
         </entry>
@@ -190,39 +188,8 @@
       <file leaf-file-name="RenderingUtils.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/preptool/model/layout/manager/RenderingUtils.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="382" column="180" selection-start="12910" selection-end="12910" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="n#!!doc" expanded="true" />
-                <element signature="imports" expanded="true" />
-                <element signature="e#29311#29320#0" expanded="true" />
-                <element signature="e#29379#29388#0" expanded="true" />
-                <element signature="e#29445#29454#0" expanded="true" />
-                <element signature="e#29511#29520#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="PsychLayoutManager.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/preptool/model/layout/manager/PsychLayoutManager.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="71" column="29" selection-start="2629" selection-end="2629" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="e#21930#21954#0" expanded="true" />
-                <element signature="e#26478#26497#0" expanded="true" />
-                <element signature="e#44625#44652#1" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ALayoutManager.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/preptool/model/layout/manager/ALayoutManager.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="335" column="107" selection-start="12225" selection-end="12225" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="e#7080#7094#0" expanded="true" />
-              </folding>
+            <state line="711" column="33" selection-start="24466" selection-end="24466" vertical-scroll-proportion="0.0">
+              <folding />
             </state>
           </provider>
         </entry>
@@ -230,34 +197,19 @@
       <file leaf-file-name="Button.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/votebox/middle/view/widget/Button.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="612" column="12" selection-start="24723" selection-end="24723" vertical-scroll-proportion="0.0">
-              <folding />
+            <state line="423" column="30" selection-start="17366" selection-end="17366" vertical-scroll-proportion="0.0">
+              <folding>
+                <element signature="e#17366#19532#0" expanded="true" />
+                <element signature="e#19517#19518#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="DefaultButtonState.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/votebox/middle/view/widget/DefaultButtonState.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="65" column="31" selection-start="2153" selection-end="2153" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ToggleButton.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/votebox/middle/view/widget/ToggleButton.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="236" column="100" selection-start="8343" selection-end="8343" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Label.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="Label.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/votebox/middle/view/widget/Label.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="113" column="33" selection-start="3930" selection-end="3930" vertical-scroll-proportion="0.0">
+            <state line="56" column="51" selection-start="2064" selection-end="2064" vertical-scroll-proportion="0.5192308">
               <folding />
             </state>
           </provider>
@@ -290,21 +242,21 @@
         <option value="$PROJECT_DIR$/tap/BallotImageHelper.java" />
         <option value="$PROJECT_DIR$/preptool/model/layout/ALayoutComponent.java" />
         <option value="$PROJECT_DIR$/printer/PrintImageUtils.java" />
-        <option value="$PROJECT_DIR$/preptool/model/layout/manager/RenderingUtils.java" />
-        <option value="$PROJECT_DIR$/votebox/middle/view/widget/Label.java" />
         <option value="$PROJECT_DIR$/votebox/middle/view/widget/DefaultButtonState.java" />
-        <option value="$PROJECT_DIR$/votebox/middle/view/widget/Button.java" />
         <option value="$PROJECT_DIR$/preptool/model/layout/manager/PsychLayoutManager.java" />
-        <option value="$PROJECT_DIR$/preptool/model/layout/manager/ALayoutManager.java" />
         <option value="$PROJECT_DIR$/printer/Printer.java" />
+        <option value="$PROJECT_DIR$/preptool/model/layout/manager/ALayoutManager.java" />
+        <option value="$PROJECT_DIR$/preptool/model/layout/manager/RenderingUtils.java" />
+        <option value="$PROJECT_DIR$/votebox/middle/view/widget/Button.java" />
+        <option value="$PROJECT_DIR$/votebox/middle/view/widget/Label.java" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="64" />
-    <option name="y" value="-4" />
-    <option name="width" value="1857" />
-    <option name="height" value="1205" />
+    <option name="x" value="1366" />
+    <option name="y" value="-116" />
+    <option name="width" value="1921" />
+    <option name="height" value="1080" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -375,8 +327,8 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="PackagesPane" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -537,7 +489,7 @@
       <recent name="preptool.model.layout.manager" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Votebox">
+  <component name="RunManager" selected="Application.preptool">
     <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
       <module name="" />
       <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m" />
@@ -855,13 +807,13 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="64" y="-4" width="1857" height="1205" extended-state="6" />
+    <frame x="1366" y="-116" width="1921" height="1080" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32900432" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3112583" sideWeight="0.4997236" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3109426" sideWeight="0.4997236" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.397351" sideWeight="0.4997236" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.35950804" sideWeight="0.5002764" order="11" side_tool="true" content_ui="tabs" />
@@ -872,8 +824,8 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24959655" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.19955777" sideWeight="0.64049196" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.35950804" sideWeight="0.4997236" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.19903174" sideWeight="0.6413868" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.35861322" sideWeight="0.4997236" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Analyze Dataflow to" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32899022" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
@@ -1002,43 +954,13 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/supervisor/Supervisor.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="29" column="31" selection-start="1194" selection-end="1210" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/votebox/middle/view/widget/ToggleButton.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="236" column="100" selection-start="8343" selection-end="8343" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/votebox/middle/view/widget/Label.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="113" column="33" selection-start="3930" selection-end="3930" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="29" column="31" selection-start="1194" selection-end="1210" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/votebox/middle/view/widget/DefaultButtonState.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="65" column="31" selection-start="2153" selection-end="2153" vertical-scroll-proportion="0.0">
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/preptool/model/layout/manager/RenderingUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="382" column="180" selection-start="12910" selection-end="12910" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-            <element signature="imports" expanded="true" />
-            <element signature="e#29311#29320#0" expanded="true" />
-            <element signature="e#29379#29388#0" expanded="true" />
-            <element signature="e#29445#29454#0" expanded="true" />
-            <element signature="e#29511#29520#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1049,47 +971,64 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/printer/PrintImageUtils.java">
+    <entry file="file://$PROJECT_DIR$/votebox/middle/view/widget/ToggleButton.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="244" column="21" selection-start="8214" selection-end="8214" vertical-scroll-proportion="0.0">
+        <state line="236" column="100" selection-start="8343" selection-end="8343" vertical-scroll-proportion="0.01923077">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/preptool/model/layout/manager/PsychLayoutManager.java">
+    <entry file="file://$PROJECT_DIR$/printer/Printer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="71" column="29" selection-start="2629" selection-end="2629" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="e#21930#21954#0" expanded="true" />
-            <element signature="e#26478#26497#0" expanded="true" />
-            <element signature="e#44625#44652#1" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/votebox/middle/view/widget/Button.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="612" column="12" selection-start="24723" selection-end="24723" vertical-scroll-proportion="0.0">
+        <state line="77" column="48" selection-start="2635" selection-end="2635" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/preptool/model/layout/manager/ALayoutManager.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="335" column="107" selection-start="12225" selection-end="12225" vertical-scroll-proportion="0.0">
+        <state line="277" column="18" selection-start="9948" selection-end="9948" vertical-scroll-proportion="0.0">
           <folding>
-            <element signature="e#7080#7094#0" expanded="true" />
+            <element signature="n#!!doc" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/printer/Printer.java">
+    <entry file="file://$PROJECT_DIR$/preptool/model/layout/manager/PsychLayoutManager.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="114" column="99" selection-start="4043" selection-end="4044" vertical-scroll-proportion="0.33947772">
+        <state line="1775" column="26" selection-start="67096" selection-end="67096" vertical-scroll-proportion="0.57866186">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/printer/PrintImageUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="76" column="48" selection-start="2363" selection-end="2388" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/preptool/model/layout/manager/RenderingUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="711" column="33" selection-start="24466" selection-end="24466" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/votebox/middle/view/widget/Button.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="423" column="30" selection-start="17366" selection-end="17366" vertical-scroll-proportion="0.0">
           <folding>
-            <element signature="e#4073#11130#0" expanded="true" />
-            <element signature="e#11124#11125#0" expanded="true" />
+            <element signature="e#17366#19532#0" expanded="true" />
+            <element signature="e#19517#19518#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/votebox/middle/view/widget/Label.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="56" column="51" selection-start="2064" selection-end="2064" vertical-scroll-proportion="0.5192308">
+          <folding />
         </state>
       </provider>
     </entry>

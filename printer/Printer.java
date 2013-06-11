@@ -82,7 +82,7 @@ public class Printer {
 
         ArrayList<RaceTitlePair> actualRaceNameImagePairs = getRaceNameImagePairs(choiceToImage);
 
-		final List<String> choices = new ArrayList<String>();
+        final List<String> choices = new ArrayList<String>();
 
         ArrayList<ChoicePair> correctedBallot = correctBallot(ballot);
 
