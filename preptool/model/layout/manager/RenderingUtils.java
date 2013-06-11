@@ -638,7 +638,7 @@ public class RenderingUtils {
                 RenderingHints.VALUE_ANTIALIAS_ON);
 
 
-//        graphs.scale(1.0/DPI_SCALE_FACTOR, 1.0/DPI_SCALE_FACTOR);
+        graphs.scale(1.0/DPI_SCALE_FACTOR, 1.0/DPI_SCALE_FACTOR);
 
 
         graphs.setFont(nf);

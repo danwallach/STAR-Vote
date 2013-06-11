@@ -207,8 +207,6 @@ public class Printer {
                 g.translate(pageFormat.getImageableX(), pageFormat.getImageableY() + totalSize);
                 g.scale(xScale , yScale);
 
-
-
                 int counter = 0;
 				while(totalSize < _constants.getPrintableHeightForVVPAT()*DPI_SCALE && counter < choices.size()){
 
