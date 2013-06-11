@@ -140,9 +140,9 @@ public class Printer {
 					choiceIndex++;
 				}
 
-                totalSize = 25;  // Random? It represents spacing from the top of the page. Should be a variable, read from the configuration file.  TODO
+                totalSize = _constants.getPrintableVerticalMargin();
                 int printX = (int)pageFormat.getImageableX();
-                int printHeight = _constants.getPrintableHeightForVVPAT(); // What is this used for? TODO
+
 
 
                 //Print the date and title of the election at the top of the page
@@ -160,7 +160,8 @@ public class Printer {
                 BufferedImage barcode = PrintImageUtils.getBarcode(fbid);
 
                 Font ocra = new Font("OCR A Extended", Font.PLAIN, 16);
-                printHeight = printHeight - ocra.getSize();  // Value is updated, but never used TODO
+
+
                 int printWidth = _constants.getPrintableWidthForVVPAT();
 
 

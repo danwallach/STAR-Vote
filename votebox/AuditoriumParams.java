@@ -97,6 +97,10 @@ public class AuditoriumParams implements IAuditoriumParams,
     //Default imageable area for VVPAT.  Based off of Star TPS800 model printer.
     public static final int PRINTABLE_WIDTH_FOR_VVPAT = 239;
     public static final int PRINTABLE_HEIGHT_FOR_VVPAT = 311;
+
+    public static final int PRINTABLE_VERTICAL_MARGIN  = 25;
+    public static final int PRINTABLE_HORIZONTAL_MARGIN  = 25;
+
     
     //By default, we don't enable NIZKs.
     public static final boolean ENABLE_NIZKS = false;
@@ -316,8 +320,27 @@ public class AuditoriumParams implements IAuditoriumParams,
 		
 		return PRINTABLE_WIDTH_FOR_VVPAT;
 	}
-	
-	public boolean getEnableNIZKs() {
+
+    public int getPrintableVerticalMargin() {
+        try{
+            if(_config.containsKey("PRINTABLE_VERTICAL_MARGIN"))
+                return Integer.parseInt(_config.get("PRINTABLE_VERTICAL_MARGIN"));
+        }catch(NumberFormatException e){}
+
+        return PRINTABLE_VERTICAL_MARGIN;
+    }
+
+    public int getPrintableHorizontalMargin() {
+        try{
+            if(_config.containsKey("PRINTABLE_HORIZONTAL_MARGIN"))
+                return Integer.parseInt(_config.get("PRINTABLE_HORIZONTAL_MARGIN"));
+        }catch(NumberFormatException e){}
+
+        return PRINTABLE_HORIZONTAL_MARGIN;
+    }
+
+
+    public boolean getEnableNIZKs() {
 		if(_config.containsKey("ENABLE_NIZKS"))
 			return Boolean.parseBoolean(_config.get("ENABLE_NIZKS"));
 		
