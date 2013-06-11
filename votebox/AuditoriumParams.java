@@ -101,6 +101,9 @@ public class AuditoriumParams implements IAuditoriumParams,
     public static final int PRINTABLE_VERTICAL_MARGIN  = 25;
     public static final int PRINTABLE_HORIZONTAL_MARGIN  = 25;
 
+    public static final int PRINTER_DEFAULT_DPI = 300;
+    public static final int JAVA_DEFAULT_DPI = 72;
+
     
     //By default, we don't enable NIZKs.
     public static final boolean ENABLE_NIZKS = false;
@@ -337,6 +340,24 @@ public class AuditoriumParams implements IAuditoriumParams,
         }catch(NumberFormatException e){}
 
         return PRINTABLE_HORIZONTAL_MARGIN;
+    }
+
+    public int getPrinterDefaultDpi() {
+        try{
+            if(_config.containsKey("PRINTER_DEFAULT_DPI"))
+                return Integer.parseInt(_config.get("PRINTER_DEFAULT_DPI"));
+        }catch(NumberFormatException e){}
+
+        return PRINTER_DEFAULT_DPI;
+    }
+
+    public int getJavaDefaultDpi() {
+        try{
+            if(_config.containsKey("JAVA_DEFAULT_DPI"))
+                return Integer.parseInt(_config.get("JAVA_DEFAULT_DPI"));
+        }catch(NumberFormatException e){}
+
+        return JAVA_DEFAULT_DPI;
     }
 
 

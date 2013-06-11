@@ -34,6 +34,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import printer.PrintImageUtils;
+
 
 /**
  * A set of static functions useful for rendering different types of layout
@@ -631,11 +633,16 @@ public class RenderingUtils {
                 BufferedImage.TYPE_INT_ARGB);
 
         Graphics2D graphs = wrappedImage.createGraphics();
+
         graphs.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
 
+
+        graphs.scale(1.0/DPI_SCALE_FACTOR, 1.0/DPI_SCALE_FACTOR);
+
         graphs.setFont(nf);
         graphs.setColor(Color.BLACK); // Could make this a variable
+
 
         int baseline = graphs.getFontMetrics().getAscent()*DPI_SCALE_FACTOR;
 
@@ -706,10 +713,15 @@ public class RenderingUtils {
 
             wrappedImage = wrappedImage.getSubimage(0, 0, Math.max(wrappingWidth,selectionLength), 2 * heightPos);
 
+
+
             //Trim the image.
             wrappedImage = PrintImageUtils.trimImageVertically(wrappedImage, false, Integer.MAX_VALUE); // Above
             wrappedImage = PrintImageUtils.trimImageVertically(wrappedImage, true, Integer.MAX_VALUE); // Below
             // No Left/Right trimming, because it is done in the Printer class.
+
+            //wrappedImage = PrintImageUtils.getScaledInstance(wrappedImage, wrappedImage.getWidth()/DPI_SCALE_FACTOR,
+//                    wrappedImage.getHeight()/DPI_SCALE_FACTOR, RenderingHints.VALUE_INTERPOLATION_BICUBIC, true);
 
             return copy(wrappedImage);
 
@@ -753,11 +765,17 @@ public class RenderingUtils {
         //split "1" because it gives a nice line width. It's sort of a hack...
         graphs.drawLine(writePos + lineWidth(("1").split(""), nf), heightPos + fontsize/2, Math.max(wrappingWidth,selectionLength), heightPos + fontsize/2);
 
-        //This should automatically trim the image, removing all the whitespace below the image.
+        //This should automatically trim the image, sadly, it doesn't
         wrappedImage = wrappedImage.getSubimage(0, 0, Math.max(wrappingWidth,selectionLength), heightPos + padding);
 
-        //Need to also remove whitespace above the image.
+
+
+        //Need to also remove whitespace above and below the image.
         wrappedImage = PrintImageUtils.trimImageVertically(wrappedImage, false, Integer.MAX_VALUE);
+        wrappedImage = PrintImageUtils.trimImageVertically(wrappedImage, true, Integer.MAX_VALUE); // Below
+
+//        wrappedImage = PrintImageUtils.getScaledInstance(wrappedImage, wrappedImage.getWidth()/DPI_SCALE_FACTOR,
+//                wrappedImage.getHeight()/DPI_SCALE_FACTOR, RenderingHints.VALUE_INTERPOLATION_BICUBIC, true);
 
         return copy(wrappedImage);
     }

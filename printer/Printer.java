@@ -62,10 +62,13 @@ public class Printer {
 
     public static int counter = 0;
 
+    public static int DPI_SCALE;
+
     public Printer(File ballotFile,List<List<String>> races) {
         _constants = new AuditoriumParams("vb.conf");
         _currentBallotFile =  ballotFile;
         _races = races;
+        DPI_SCALE = _constants.getPrinterDefaultDpi()/_constants.getJavaDefaultDpi();
     }
 
     /**
@@ -130,6 +133,7 @@ public class Printer {
                 int totalSize = _constants.getPrintableVerticalMargin();
                 int printX = (int)pageFormat.getImageableX();
 
+                int printWidth = _constants.getPrintableWidthForVVPAT();
 
 
                 //Print the date and title of the election at the top of the page
@@ -149,8 +153,12 @@ public class Printer {
 
                 Font ocra = new Font("OCR A Extended", Font.PLAIN, 16);
 
+                // Draw the barcode and the ballot ID.
+                graphics.setFont(ocra);
+                graphics.drawString(fbid, (int)pageFormat.getImageableX(), _constants.getPrintableHeightForVVPAT()-ocra.getSize());
+                graphics.drawImage(barcode, printWidth/2, _constants.getPrintableHeightForVVPAT()-barcode.getHeight(null), null);
 
-                int printWidth = _constants.getPrintableWidthForVVPAT();
+
 
 
                 //Find the minimum amount of whitespace to be trimmed off title images
@@ -179,19 +187,20 @@ public class Printer {
                 if(_constants.getUseTwoColumns())
                     printWidth = _constants.getPrintableWidthForVVPAT()/2;
 
+                printWidth  *= DPI_SCALE;
+
                 int initialHeight = totalSize;
                 int column = 1;
 
 
                 // Scaling down the graphics object, to improve print quality. The factor is 72/300 on both x and y dimensions.
                 Graphics2D g = (Graphics2D) graphics;
-                double xScale = .24;
-                double yScale = .24;
+                double xScale = .2;
+                double yScale = .2;
                 double xMargin = (pageFormat.getImageableWidth() - ((BufferedImage)choiceToImage.get(choices.get(1))).getWidth()*xScale)/2;
                 double yMargin = (pageFormat.getImageableHeight() - ((BufferedImage)choiceToImage.get(choices.get(1))).getHeight()*yScale)/2;
-//                g.translate(pageFormat.getImageableX() + xMargin,
-//                        pageFormat.getImageableY() + yMargin);
-                g.scale(xScale , yScale);
+//                g.translate(pageFormat.getImageableX(), pageFormat.getImageableY() + totalSize);
+//                g.scale(xScale , yScale);
 
 
 
@@ -210,48 +219,40 @@ public class Printer {
                     //Remove whitespace above the selection image.
                     img = PrintImageUtils.trimImageVertically(img, false, maxToTrimSelectionVertically);
 
+//                    System.out.println("Now scaling " + choices.get(counter) + "'s outImage.");
+//                    BufferedImage outImage = PrintImageUtils.getScaledInstance(img,(printWidth*2)/3, (titleImg.getHeight()*2)/3, RenderingHints.VALUE_INTERPOLATION_BICUBIC, true );
+//                    System.out.println("Now scaling " + fActualRaceNamePairs.get(counter).getLabel() + "'s outImage.");
+//                    BufferedImage outTitle = PrintImageUtils.getScaledInstance(titleImg, (printWidth*2)/3, (titleImg.getHeight()*2)/3, RenderingHints.VALUE_INTERPOLATION_BICUBIC, true);
 
-                    //BufferedImage outImage = PrintImageUtils.getScaledInstance(img,(printWidth*2)/3, (titleImg.getHeight()*2)/3, RenderingHints.VALUE_INTERPOLATION_BICUBIC, false );
-                    //BufferedImage outTitle = PrintImageUtils.getScaledInstance(titleImg, (printWidth*2)/3, (titleImg.getHeight()*2)/3, RenderingHints.VALUE_INTERPOLATION_BICUBIC, false);
 
 
-
-                    g.drawImage(titleImg,
+                    graphics.drawImage(titleImg,
                             printX,
                             totalSize,
                             null);
 
-                    System.out.println("Drew a race title!");
 
-					g.drawImage(img,
+					graphics.drawImage(img,
                             printX,
-                            totalSize + (int)Math.round(titleImg.getHeight(null)),
+                            totalSize + Math.round(titleImg.getHeight(null)),
                             null);
-
-                    System.out.println("Drew a selection!");
-
-                    if(counter >= fActualRaceNamePairs.size())
-                        System.out.println("Drew last race and selection");
-
-
-
-
 
 
 					totalSize += img.getHeight(null) + titleImg.getHeight(null);
                     counter++;
 
                     //If we reach the end of a column and are printing in two columns, go back to the top with an offset of printwidth
-                    if(totalSize + img.getHeight(null) + titleImg.getHeight(null) >= _constants.getPrintableHeightForVVPAT() - barcode.getHeight(null)
+                    if(totalSize + img.getHeight(null) + titleImg.getHeight(null) >= (_constants.getPrintableHeightForVVPAT() - barcode.getHeight(null)) * DPI_SCALE
                             && _constants.getUseTwoColumns() && column == 1){
                         totalSize = initialHeight;
                         printX += printWidth;
                         column = 2;
 
-                    } else if (totalSize + img.getHeight(null) + titleImg.getHeight(null) >= _constants.getPrintableHeightForVVPAT() - barcode.getHeight(null)
+                    } else if (totalSize + img.getHeight(null) + titleImg.getHeight(null) >= (_constants.getPrintableHeightForVVPAT() - barcode.getHeight(null)) * DPI_SCALE
                             && _constants.getUseTwoColumns() && column == 2){
                         totalSize = initialHeight;
                         printX =  (int) pageFormat.getImageableX();
+                        pageIndex++;
                         column = 1;
 
                     }
@@ -263,10 +264,8 @@ public class Printer {
 				}
 
 
-                // Draw the barcode and the ballot ID.
-                graphics.setFont(ocra);
-                graphics.drawString(fbid, (int)pageFormat.getImageableX(), _constants.getPrintableHeightForVVPAT()-ocra.getSize());
-                graphics.drawImage(barcode, printWidth, _constants.getPrintableHeightForVVPAT()-barcode.getHeight(null), null);
+
+
 
 
 				return Printable.PAGE_EXISTS;
