@@ -68,6 +68,7 @@ public class VoteBox {
     private final int mySerial;
     private boolean connected;
     private boolean voting;
+    private boolean promptingForPin;
     private boolean override;
     private boolean committedBallot;
     private boolean finishedVoting;
@@ -137,6 +138,8 @@ public class VoteBox {
         }else
             throw new RuntimeException(
                     "Unknown view implementation defined in configuration");
+
+        promptingForPin = false;
     }
 
     /**
@@ -885,6 +888,7 @@ public class VoteBox {
             }
 
             public void pollStatus(PollStatusEvent pollStatusEvent) {
+                System.out.println("Recieved Poll Status event and the polls are " + (pollStatusEvent.getPollStatus() == 1 ? "open":"closed"));
                 if(!voting && pollStatusEvent.getPollStatus() == 1){
                     promptForPin("Enter Authentication PIN");
                 }
@@ -913,6 +917,8 @@ public class VoteBox {
     }
 
     public void promptForPin(String message) {
+            if(promptingForPin) return;
+            promptingForPin = true;
             JTextField limitedField = new JTextField(new PlainDocument() {
                 private int limit=4;
                 public void insertString(int offs, String str, AttributeSet attr) throws BadLocationException {
@@ -949,8 +955,10 @@ public class VoteBox {
                 int pin = Integer.parseInt(limitedField.getText());
                 validatePin(pin);
             }catch(NumberFormatException nfe){
+                promptingForPin = false;
                 promptForPin("Invalid PIN: Enter 4-digit PIN");
             }
+            promptingForPin = false;
     }
 
     public void validatePin(int pin) {

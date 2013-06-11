@@ -421,8 +421,8 @@ public class Printer {
 				break;
 			}//if
 		}//for
-
-        System.out.println(vvpat.getName());
+        if(vvpat == null) System.out.println("No available printers");
+        else System.out.println(vvpat.getName());
 
 		if(vvpat == null){
 			Bugout.msg("VVPAT is configured, but not detected as ready.");
