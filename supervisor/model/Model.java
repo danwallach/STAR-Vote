@@ -64,6 +64,8 @@ public class Model {
 
     private ObservableEvent machinesChangedObs;
 
+    private ArrayList<Integer> validPins;
+
     private VoteBoxAuditoriumConnector auditorium;
 
     private int mySerial;
@@ -131,6 +133,7 @@ public class Model {
         ballotLocation = "ballot.zip";
         tallier = new Tallier();
         bids = new HashMap<String, ASExpression>();
+        validPins = new ArrayList<Integer>();
         statusTimer = new Timer(300000, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (isConnected()) {
@@ -468,7 +471,9 @@ public class Model {
                     EncryptedCastBallotEvent.getMatcher(), CommitBallotEvent.getMatcher(),
                     CastCommittedBallotEvent.getMatcher(), ChallengeResponseEvent.getMatcher(),
                     ChallengeEvent.getMatcher(), EncryptedCastBallotWithNIZKsEvent.getMatcher(),
-                    AuthorizedToCastWithNIZKsEvent.getMatcher(), AdderChallengeEvent.getMatcher());
+                    AuthorizedToCastWithNIZKsEvent.getMatcher(), AdderChallengeEvent.getMatcher(),
+                    PinEnteredEvent.getMatcher(), InvalidPinEvent.getMatcher(),
+                    PollStatusEvent.getMatcher());
         } catch (NetworkException e1) {
             throw new RuntimeException(e1);
         }
@@ -822,7 +827,7 @@ public class Model {
                 					maxlabel = (int)Math.max(maxlabel, ma.getLabel());
                 			}//for
                 			
-                			auditorium.announce(new AssignLabelEvent(mySerial, e.getSerial(), maxlabel + 1));
+                                auditorium.announce(new AssignLabelEvent(mySerial, e.getSerial(), maxlabel + 1));
                 			return;
                 		}
                 	}
@@ -830,19 +835,22 @@ public class Model {
                 
                 if (e.getLabel() > 0)
                     booth.setLabel(e.getLabel());
-                else if (activated) {
-                    if (booth.getLabel() > 0)
-                        auditorium.announce(new AssignLabelEvent(mySerial, e
-                                .getSerial(), booth.getLabel()));
-                    else {
-                        int maxlabel = 0;
-                        for (AMachine ma : machines) {
-                            if (ma instanceof VoteBoxBooth
-                                    && ((VoteBoxBooth) ma).getLabel() > maxlabel)
-                                maxlabel = ((VoteBoxBooth) ma).getLabel();
+                else {
+                    if (activated) {
+                        if (booth.getLabel() > 0)
+                            auditorium.announce(new AssignLabelEvent(mySerial, e
+                                    .getSerial(), booth.getLabel()));
+                        else {
+                            int maxlabel = 0;
+                            for (AMachine ma : machines) {
+                                if (ma instanceof VoteBoxBooth
+                                        && ((VoteBoxBooth) ma).getLabel() > maxlabel)
+                                    maxlabel = ((VoteBoxBooth) ma).getLabel();
+                            }
+                            auditorium.announce(new AssignLabelEvent(mySerial, e
+                                    .getSerial(), maxlabel + 1));
                         }
-                        auditorium.announce(new AssignLabelEvent(mySerial, e
-                                .getSerial(), maxlabel + 1));
+                        auditorium.announce(new PollStatusEvent(mySerial, e.getSerial(), pollsOpen ? 1:0 ));
                     }
                 }
             }
@@ -900,6 +908,29 @@ public class Model {
                 }
             }
 
+            public void pinEntered(PinEnteredEvent e){
+                if(isPollsOpen()) {
+                    if(validPins.contains(e.getPin())) {
+                        validPins.remove((Integer)e.getPin());
+                        try {
+                            authorize(e.getSerial());
+                        }
+                        catch(IOException ex) {
+                            System.out.println(ex.getMessage());
+                        }
+                    }
+                    else {
+                        auditorium.announce(new InvalidPinEvent(mySerial, e.getNonce()));
+                    }
+                }
+            }
+
+            public void invalidPin(InvalidPinEvent e) {}
+
+            public void pollStatus(PollStatusEvent pollStatusEvent) {
+                pollsOpen = pollStatusEvent.getPollStatus()==1;
+            }
+
         });
 
         try {
@@ -932,5 +963,17 @@ public class Model {
      */
     public IAuditoriumParams getParams(){
         return auditoriumParams;
+    }
+
+    /**
+     * A method that will generate a random pin for the voter to enter into his votebox machine
+     */
+    public int generatePin(){
+        Random rand = (new Random());
+        int pin = rand.nextInt(10000);
+        while(validPins.contains(pin))
+            pin = rand.nextInt(10000);
+        validPins.add(pin);
+        return pin;
     }
 }

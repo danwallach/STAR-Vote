@@ -68,6 +68,10 @@ public class Printer {
         _races = races;
     }
 
+    public Printer(){
+        _constants = new AuditoriumParams("supervisor.conf");
+    }
+
     /**
      * If a VVPAT is connected,
      *   print the voter's choices.
@@ -350,6 +354,48 @@ public class Printer {
         return updatedBallot;
     }
 
+    //this class prints the pin for the user given measurements for a POS terminal printer
+    public void printPin(String userPin){
+
+        final String pin = userPin;
+        Printable printedPin = new Printable(){
+
+            public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
+                //print is called by Java until NO_SUCH_PAGE is returned
+                if(pageIndex>0)
+                    return Printable.NO_SUCH_PAGE;
+
+                Image stateSeal = null;
+                try {
+                    stateSeal = ImageIO.read(new File("images//images//seal_tx.png"));
+                } catch (IOException e) {
+                    System.out.print("Could not find TX state seal image");
+                    e.printStackTrace();
+                }
+                //numbers are measurements for standard font
+                int pageWidth = _constants.getPaperWidthForVVPAT();
+                int pageHeight = _constants.getPaperHeightForVVPAT();
+                int printableWidth = _constants.getPrintableWidthForVVPAT();
+                int printableHeight = _constants.getPrintableHeightForVVPAT();
+
+                int imgWidth = pageWidth*3/4;
+                int imgHeight = pageWidth*3/4;
+                int pinStartX = printableWidth/2 - 54;
+                int pinStartY = printableHeight - 15;
+                int imgStartX = pageWidth/2-imgWidth/2;
+                int imgStartY = printableHeight-imgHeight-40;
+
+                graphics.drawImage(stateSeal, imgStartX, imgStartY, imgWidth, imgHeight, null);
+                graphics.drawString("Your PIN is: "+ pin, pinStartX, pinStartY);
+
+                return Printable.PAGE_EXISTS;
+            }
+
+        };
+
+        printOnVVPAT(printedPin);
+    }
+
     /**
      * Prints onto the attached VVPAT printer, if possible.
      * @param toPrint - the Printable to print.
@@ -364,7 +410,6 @@ public class Printer {
 
         for(PrintService printer : printers){
             System.out.println(printer.getName());
-
         }
 
 		PrintService vvpat = null;

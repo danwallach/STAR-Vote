@@ -29,7 +29,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.*;
 
+import javax.swing.*;
 import javax.swing.Timer;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.PlainDocument;
 
 import edu.uconn.cse.adder.PublicKey;
 
@@ -81,6 +85,8 @@ public class VoteBox {
     private  Printer printer;
 
     private Random rand;
+
+    private byte[] pinNonce;
 
     private File _currentBallotFile;
     
@@ -515,7 +521,9 @@ public class VoteBox {
                     OverrideCancelEvent.getMatcher(), OverrideCastEvent.getMatcher(),
                     PollsOpenQEvent.getMatcher(), BallotCountedEvent.getMatcher(),
                     ChallengeEvent.getMatcher(), ChallengeResponseEvent.getMatcher(),
-                    AuthorizedToCastWithNIZKsEvent.getMatcher());
+                    AuthorizedToCastWithNIZKsEvent.getMatcher(), PinEnteredEvent.getMatcher(),
+                    InvalidPinEvent.getMatcher(), PollsOpenEvent.getMatcher(),
+                    PollStatusEvent.getMatcher());
         } catch (NetworkException e1) {
         	//NetworkException represents a recoverable error
         	//  so just note it and continue
@@ -548,6 +556,7 @@ public class VoteBox {
                     		currentDriver = null;
                     		inactiveUI.setVisible(true);
                     		killVBTimer = null;
+                            promptForPin("Enter Voting Authentication PIN");
                     	};
                     });
                     killVBTimer.setRepeats(false);
@@ -598,6 +607,7 @@ public class VoteBox {
              * the VoteBox runtime. Also announce the new status.
              */
             public void authorizedToCast(AuthorizedToCastEvent e) {
+                System.out.println("auth event YAY!");
                 if (e.getNode() == mySerial) {
                     if (voting || currentDriver != null && killVBTimer == null)
                         throw new RuntimeException(
@@ -672,7 +682,8 @@ public class VoteBox {
                     			currentDriver = null;
                     			inactiveUI.setVisible(true);
                     			killVBTimer = null;
-                    		};
+                                promptForPin("Enter Voting Authentication PIN");
+                    		}
                     	});
                     	killVBTimer.setRepeats(false);
                     	killVBTimer.start();
@@ -693,7 +704,6 @@ public class VoteBox {
             }
 
             public void lastPollsOpen(LastPollsOpenEvent e) {
-                // NO-OP
             }
 
             /**
@@ -775,7 +785,9 @@ public class VoteBox {
             }
 
             public void pollsOpen(PollsOpenEvent e) {
-                // NO-OP
+                if(!voting){
+                    promptForPin("Enter Authentication PIN");
+                }
             }
 
             /**
@@ -783,6 +795,7 @@ public class VoteBox {
              * and replies with a last-polls-open message if an appropriate
              * polls-open message is found.
              */
+
             public void pollsOpenQ(PollsOpenQEvent e) {
                 if (e.getSerial() != mySerial) {
                     // TODO: Search the log and extract an appropriate
@@ -856,6 +869,7 @@ public class VoteBox {
                     		currentDriver = null;
                     		inactiveUI.setVisible(true);
                     		killVBTimer = null;
+                            promptForPin("Enter Voting Authentication PIN");
                     	};
                     });
                     killVBTimer.setRepeats(false);
@@ -863,6 +877,19 @@ public class VoteBox {
             	}//if
 
             }
+
+
+            public void pinEntered(PinEnteredEvent e) {}
+            public void invalidPin(InvalidPinEvent e) {
+                promptForPin("Invalid PIN: Enter Valid PIN");
+            }
+
+            public void pollStatus(PollStatusEvent pollStatusEvent) {
+                if(!voting && pollStatusEvent.getPollStatus() == 1){
+                    promptForPin("Enter Authentication PIN");
+                }
+            }
+
 
             public void ballotScanned(BallotScannedEvent e) {
                 // NO-OP
@@ -884,6 +911,56 @@ public class VoteBox {
 
         statusTimer.start();
     }
+
+    public void promptForPin(String message) {
+            JTextField limitedField = new JTextField(new PlainDocument() {
+                private int limit=4;
+                public void insertString(int offs, String str, AttributeSet attr) throws BadLocationException {
+                    if(str == null)
+                        return;
+                    if((getLength() + str.length()) <= this.limit) {
+                        super.insertString(offs, str, attr);
+                    }
+                }
+            }, "", 5);
+
+            Object[] msg = {
+                    message, limitedField
+            };
+            int pinResult = JOptionPane.showConfirmDialog(
+                    (JFrame)inactiveUI,
+                    msg,
+                    "Authorization Required",
+                    JOptionPane.OK_CANCEL_OPTION,
+                    JOptionPane.PLAIN_MESSAGE);
+
+
+            while(pinResult != JOptionPane.OK_OPTION) {
+                pinResult = JOptionPane.showConfirmDialog(
+                        (JFrame)inactiveUI,
+                        msg,
+                        "Authorization Required",
+                        JOptionPane.OK_CANCEL_OPTION,
+                        JOptionPane.PLAIN_MESSAGE);
+            }
+
+
+            try{
+                int pin = Integer.parseInt(limitedField.getText());
+                validatePin(pin);
+            }catch(NumberFormatException nfe){
+                promptForPin("Invalid PIN: Enter 4-digit PIN");
+            }
+    }
+
+    public void validatePin(int pin) {
+        byte[] pinNonce = new byte[256];
+        for (int i = 0; i < 256; i++)
+            pinNonce[i] = (byte) (Math.random() * 256);
+        this.pinNonce = pinNonce;
+        auditorium.announce(new PinEnteredEvent(mySerial, pin, pinNonce));
+    }
+
 
     /**
      * A getter method to send the BallotFile to the printer
