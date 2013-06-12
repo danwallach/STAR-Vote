@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.*;
 
+import javax.swing.*;
 import javax.swing.Timer;
 
 import edu.uconn.cse.adder.PrivateKey;
@@ -969,8 +970,12 @@ public class Model {
     //adds a new ballot to the ballot manager
     public void addBallot(File fileIn) {
         String fileName = fileIn.getName();
+        try{
         int precinct = Integer.parseInt(fileName.substring(fileName.length()-7,fileName.length()-4));
         bManager.addBallot(precinct, fileIn.getAbsolutePath());
+        }catch(NumberFormatException e){
+            JOptionPane.showMessageDialog(null, "Please choose a valid ballot");
+        }
     }
 
     public int generatePin(int precinct){
