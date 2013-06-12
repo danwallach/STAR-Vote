@@ -6,4 +6,7 @@ tmp
 out
 *.class
 *.out
+*.pdf
+*.zip
+*.bal
 
