@@ -906,6 +906,7 @@ public class Model {
                 } else {
                     throw new IllegalStateException("got ballot scanned message for invalid BID");
                 }
+                //TODO checking to make sure I branched successfully
             }
 
             public void pinEntered(PinEnteredEvent e){
