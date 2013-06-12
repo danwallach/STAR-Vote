@@ -9,8 +9,7 @@
     <bookmark url="file://$PROJECT_DIR$/preptool/model/layout/manager/RenderingUtils.java" line="562" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="26d876ad-6b77-4796-b9d0-ead84066c769" name="Default" comment="Fixed our box rendering (and did math!)">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/preptool/model/layout/manager/RenderingUtils.java" afterPath="$PROJECT_DIR$/preptool/model/layout/manager/RenderingUtils.java" />
+    <list default="true" id="26d876ad-6b77-4796-b9d0-ead84066c769" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="STAR-Vote.iws" />
@@ -50,7 +49,7 @@
     <file path="/ToggleButton.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370358039224" ignored="false" />
     <file path="/RaceTitlePair.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369945268870" ignored="false" />
     <file path="/Label.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370901082820" ignored="false" />
-    <file path="/Dummy.txt" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371057431071" ignored="false" />
+    <file path="/Dummy.txt" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371061652109" ignored="false" />
     <file path="/ALayoutComponent.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370380215222" ignored="false" />
     <file path="/PrintImageUtils.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370880262959" ignored="false" />
     <file path="/DefaultButtonState.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370901784343" ignored="false" />
@@ -200,7 +199,7 @@
       <file leaf-file-name="RenderingUtils.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/preptool/model/layout/manager/RenderingUtils.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="58" column="46" selection-start="2106" selection-end="2106" vertical-scroll-proportion="0.5972435">
+            <state line="64" column="27" selection-start="2310" selection-end="2310" vertical-scroll-proportion="0.7350689">
               <folding>
                 <element signature="e#30120#30129#0" expanded="true" />
               </folding>
@@ -380,38 +379,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="votebox" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="STAR-Vote" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="STAR-Vote" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="preptool" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="view" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="STAR-Vote" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="STAR-Vote" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="preptool" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -782,7 +749,11 @@
       <created>1371056159319</created>
       <updated>1371056159319</updated>
     </task>
-    <option name="localTasksCounter" value="33" />
+    <task id="LOCAL-00033" summary="Fixed our box rendering (and did math!)">
+      <created>1371061656988</created>
+      <updated>1371061656988</updated>
+    </task>
+    <option name="localTasksCounter" value="34" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -1019,7 +990,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/preptool/model/layout/manager/RenderingUtils.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="58" column="46" selection-start="2106" selection-end="2106" vertical-scroll-proportion="0.5972435">
+        <state line="64" column="27" selection-start="2310" selection-end="2310" vertical-scroll-proportion="0.7350689">
           <folding>
             <element signature="e#30120#30129#0" expanded="true" />
           </folding>
