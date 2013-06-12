@@ -206,8 +206,7 @@ public class ActiveUI extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 int answer = ballotLocChooser.showOpenDialog(ActiveUI.this);
                 if (answer == JFileChooser.APPROVE_OPTION) {
-                    model.setBallotLocation(ballotLocChooser.getSelectedFile()
-                            .getAbsolutePath());
+                    model.addBallot(ballotLocChooser.getSelectedFile());
                 }
             }
         });
@@ -242,7 +241,8 @@ public class ActiveUI extends JPanel {
         pinButton = new JButton("Generate Pin");
         pinButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                int pin = model.generatePin();
+                int precinct = (Integer) JOptionPane.showInputDialog(null, "Please choose a precinct", " Pin Generator", JOptionPane.QUESTION_MESSAGE, null, model.getSelections(), model.getInitialSelection());
+                int pin = model.generatePin(precinct);
                 Printer printer = new Printer();
                 String strPin;
                 printer.printPin(strPin = (new DecimalFormat("0000")).format(pin));
@@ -274,4 +274,5 @@ public class ActiveUI extends JPanel {
         } else
             model.openPolls();
     }
+
 }
