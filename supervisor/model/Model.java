@@ -97,6 +97,8 @@ public class Model {
 
     private BallotManager bManager;
 
+    private ArrayList<Integer> expectedBallots;
+
     //private Key privateKey = null;
 
     /**
@@ -130,7 +132,9 @@ public class Model {
         activatedObs = new ObservableEvent();
         connectedObs = new ObservableEvent();
         pollsOpenObs = new ObservableEvent();
-        bManager = new BallotManager();        keyword = "";
+        expectedBallots = new ArrayList<Integer>();
+        bManager = new BallotManager();
+        keyword = "";
         ballotLocation = "ballot.zip";
         tallier = new Tallier();
         bids = new HashMap<String, ASExpression>();
@@ -473,7 +477,7 @@ public class Model {
                     ChallengeEvent.getMatcher(), EncryptedCastBallotWithNIZKsEvent.getMatcher(),
                     AuthorizedToCastWithNIZKsEvent.getMatcher(), AdderChallengeEvent.getMatcher(),
                     PinEnteredEvent.getMatcher(), InvalidPinEvent.getMatcher(),
-                    PollStatusEvent.getMatcher());
+                    PollStatusEvent.getMatcher(), BallotPrintedEvent.getMatcher());
         } catch (NetworkException e1) {
             throw new RuntimeException(e1);
         }
@@ -931,6 +935,12 @@ public class Model {
 
             public void pollStatus(PollStatusEvent pollStatusEvent) {
                 pollsOpen = pollStatusEvent.getPollStatus()==1;
+            }
+
+
+            public void ballotPrinted(BallotPrintedEvent ballotPrintedEvent) {
+                expectedBallots.add(Integer.valueOf(ballotPrintedEvent.getBID()));
+                System.out.println("V"  + expectedBallots);
             }
 
         });
