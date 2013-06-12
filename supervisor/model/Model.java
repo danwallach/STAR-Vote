@@ -32,6 +32,7 @@ import java.util.*;
 
 import javax.swing.Timer;
 
+import ballotscanner.BallotScannerMachine;
 import edu.uconn.cse.adder.PrivateKey;
 import edu.uconn.cse.adder.PublicKey;
 
@@ -726,8 +727,7 @@ public class Model {
              */
             public void pollsOpenQ(PollsOpenQEvent e) {
                 if (e.getSerial() != mySerial) {
-                    // TODO: Search the log and extract an appropriate
-                    // polls-open message
+                    // TODO: Search the log and extract an appropriate polls-open message
 
                     ASExpression res = null;
                     if (res != null && res != NoMatch.SINGLETON) {
@@ -748,9 +748,31 @@ public class Model {
              * hasn't been seen, and updates its status if it has.
              */
             public void ballotscanner(BallotScannerEvent e) {
-                //NO-OP until scanner is further implemented
-                //TODO Finish this method
+                AMachine m = getMachineForSerial(e.getSerial());
+                if (m != null && !(m instanceof BallotScannerMachine))
+                    throw new IllegalStateException(
+                            "Machine "
+                                    + e.getSerial()
+                                    + " is not a ballotscanner, but broadcasted ballotscanner message");
+                if (m == null) {
+                    m = new BallotScannerMachine(e.getSerial(),
+                            e.getSerial() == mySerial);
+                    machines.add(m);
+                    machinesChangedObs.notifyObservers();
+                }
+                BallotScannerMachine bsm = (BallotScannerMachine) m;
+                if (e.getStatus().equals("active")) {
+                    bsm.setStatus(SupervisorMachine.ACTIVE);
+                    if (e.getSerial() != mySerial)
+                        setActivated(false);
+                } else if (e.getStatus().equals("inactive"))
+                    bsm.setStatus(SupervisorMachine.INACTIVE);
+                else
+                    throw new IllegalStateException(
+                            "Invalid BallotScanner Status: " + e.getStatus());
+                bsm.setOnline(true);
             }
+
 
 
             /**
@@ -906,7 +928,7 @@ public class Model {
                 } else {
                     throw new IllegalStateException("got ballot scanned message for invalid BID");
                 }
-                //TODO checking to make sure I branched successfully
+
             }
 
             public void pinEntered(PinEnteredEvent e){

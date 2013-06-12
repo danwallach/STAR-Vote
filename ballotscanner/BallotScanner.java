@@ -34,7 +34,7 @@ public class BallotScanner {
   private long lastFoundTime = 0;
 
   // keeps the path to the "ballot scanned" mp3
-  private final String bsMp3Path = "sound/ballotscanned.mp3";
+  private String bsMp3Path; //= "sound/ballotscanned.mp3"; move to the .conf file
 
   // keeps the mp3Player
   private Player mp3Player;
@@ -57,6 +57,10 @@ public class BallotScanner {
    */
   public BallotScanner(int serial) {
     _constants = new AuditoriumParams("bs.conf");
+
+      if(_constants.useScanConfirmationSound()){
+        bsMp3Path = _constants.getConfirmationSoundPath();
+      }
 
     if(serial != -1)
       mySerial = serial;
@@ -149,19 +153,22 @@ public class BallotScanner {
 
       if(currentTime - lastFoundTime> DELAY_TIME) {
         if(lastFoundBID != null) {
-          System.out.println(lastFoundBID);
+          System.out.println(lastFoundBID);  //TODO Is this needed?
           lastFoundTime = System.currentTimeMillis();
           auditorium.announce(new BallotScannedEvent(mySerial, lastFoundBID));
 
           // prepare the mp3Player
+            //TODO Should we play a sound?
           try {
             FileInputStream fileInputStream = new FileInputStream(bsMp3Path);
             BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
             mp3Player = new Player(bufferedInputStream);
           }
           catch (Exception e) {
-            System.out.println("Problem playing audio: " + bsMp3Path);
-            System.out.println(e);
+            if(!_constants.useScanConfirmationSound()){
+                System.out.println("Problem playing audio: " + bsMp3Path);
+                System.out.println(e);
+            }
           }
 
           // play the sound
