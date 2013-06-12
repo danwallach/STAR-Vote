@@ -638,7 +638,7 @@ public class RenderingUtils {
                 RenderingHints.VALUE_ANTIALIAS_ON);
 
 
-        graphs.scale(1.0/DPI_SCALE_FACTOR, 1.0/DPI_SCALE_FACTOR);
+        //graphs.scale(1.0/DPI_SCALE_FACTOR, 1.0/DPI_SCALE_FACTOR);
 
 
         graphs.setFont(nf);
@@ -746,7 +746,7 @@ public class RenderingUtils {
 
 
         /* This is where the box is being drawn. */
-        drawBox(graphs, boxPos, (heightPos - SELECTION_BOX_HEIGHT), SELECTION_BOX_WIDTH, SELECTION_BOX_HEIGHT, selected);
+        drawBox(graphs, boxPos, (heightPos - SELECTION_BOX_HEIGHT), SELECTION_BOX_WIDTH, SELECTION_BOX_HEIGHT, selected, padding/8);
 
 
         /*Font boxFont = new Font(font.getName(), font.getStyle(), font.getSize() + 20);
@@ -890,15 +890,21 @@ public class RenderingUtils {
      * @param width - the width of the box
      * @param height - the height of the box
      * @param selected - whether or not the box should be filled in
+     * @param thickness - the line thickness of the box
      */
-    public static void drawBox(Graphics2D graphicsObject, int upperLeftX, int upperLeftY, int width, int height, Boolean selected)
+    public static void drawBox(Graphics2D graphicsObject, int upperLeftX, int upperLeftY, int width, int height, Boolean selected, int thickness)
     {
+
+        graphicsObject.setStroke(new BasicStroke(thickness));
         // Drawing the empty box.
         graphicsObject.drawRect(upperLeftX, upperLeftY, width, height);
 
-
         if (selected)
         {
+            //determines how many lines get drawn in the box
+            int denominator = 3;
+            float slope = (1.0f*height)/width;
+
             ArrayList<Integer> startXs = new ArrayList<Integer> ();
             ArrayList<Integer> startYs = new ArrayList<Integer> ();
             ArrayList<Integer> endXs = new ArrayList<Integer> ();
@@ -911,13 +917,13 @@ public class RenderingUtils {
             {
                 startXs.add(new Integer(upperLeftX+offsetX));
                 startYs.add(new Integer(upperLeftY+offsetY));
-                offsetX += 5;
+                offsetX += width/denominator;
             }
             while (offsetY < height)
             {
                 startXs.add(new Integer(upperLeftX+offsetX));
                 startYs.add(new Integer(upperLeftY+offsetY));
-                offsetY += 5;
+                offsetY += height/denominator;
             }
 
             // Building the list of end positions for the fill lines.
@@ -927,19 +933,46 @@ public class RenderingUtils {
             {
                 endXs.add(new Integer(upperLeftX+offsetX));
                 endYs.add(new Integer(upperLeftY+offsetY));
-                offsetY += 5;
+                offsetY += height/denominator;
             }
             while (offsetX < width)
             {
-                endXs.add(new Integer(upperLeftX+offsetX));
-                endYs.add(new Integer(upperLeftY+offsetY));
-                offsetX += 5;
+                int endX = new Integer(upperLeftX+offsetX);
+                int endY = new Integer(upperLeftY+offsetY);
+
+                endXs.add(endX);
+                endYs.add(endY);
+                offsetX += width/denominator;
             }
+
 
             // Drawing the fill lines.
             for (int i = 0; i < startXs.size(); i++)
             {
-                graphicsObject.drawLine(startXs.get(i), startYs.get(i), endXs.get(i), endYs.get(i));
+                int startX = startXs.get(i);
+                int startY = startYs.get(i);
+                int endX = endXs.get(i);
+                int endY = endYs.get(i);
+
+                //Correct for overflow vertically
+                if(endY > upperLeftY + height){
+                    int newY = upperLeftY + height;
+                    int newX = Math.round((endY - newY)/slope) + endX;
+
+                    endX = newX;
+                    endY = newY;
+
+                }
+                //Correct for overflow horizontally (note that there should never be overflow in both cases)
+                else if(endX > upperLeftX + width){
+                    int newX = upperLeftX + width;
+                    int newY = Math.round((endX - newX)/slope) + endY;
+
+                    endX = newX;
+                    endY = newY;
+                }
+
+                graphicsObject.drawLine(startX, startY, endX, endY);
             }
         }
     }
