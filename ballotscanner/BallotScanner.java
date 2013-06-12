@@ -253,6 +253,8 @@ public class BallotScanner {
       public void pinEntered(PinEnteredEvent event) {}
       public void invalidPin(InvalidPinEvent event) {}
       public void pollStatus(PollStatusEvent pollStatusEvent) {}
+      public void ballotPrinted(BallotPrintedEvent ballotPrintedEvent) {}
+
 
     });
 

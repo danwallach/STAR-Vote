@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.*;
 
+import javax.swing.*;
 import javax.swing.Timer;
 
 import ballotscanner.BallotScannerMachine;
@@ -65,8 +66,6 @@ public class Model {
 
     private ObservableEvent machinesChangedObs;
 
-    private ArrayList<Integer> validPins;
-
     private VoteBoxAuditoriumConnector auditorium;
 
     private int mySerial;
@@ -96,7 +95,11 @@ public class Model {
     private IAuditoriumParams auditoriumParams;
 
     private HashMap<String, ASExpression> bids;
-    
+
+    private BallotManager bManager;
+
+    private ArrayList<Integer> expectedBallots;
+
     //private Key privateKey = null;
 
     /**
@@ -130,11 +133,12 @@ public class Model {
         activatedObs = new ObservableEvent();
         connectedObs = new ObservableEvent();
         pollsOpenObs = new ObservableEvent();
+        expectedBallots = new ArrayList<Integer>();
+        bManager = new BallotManager();
         keyword = "";
         ballotLocation = "ballot.zip";
         tallier = new Tallier();
         bids = new HashMap<String, ASExpression>();
-        validPins = new ArrayList<Integer>();
         statusTimer = new Timer(300000, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (isConnected()) {
@@ -474,7 +478,7 @@ public class Model {
                     ChallengeEvent.getMatcher(), EncryptedCastBallotWithNIZKsEvent.getMatcher(),
                     AuthorizedToCastWithNIZKsEvent.getMatcher(), AdderChallengeEvent.getMatcher(),
                     PinEnteredEvent.getMatcher(), InvalidPinEvent.getMatcher(),
-                    PollStatusEvent.getMatcher());
+                    PollStatusEvent.getMatcher(), BallotPrintedEvent.getMatcher());
         } catch (NetworkException e1) {
             throw new RuntimeException(e1);
         }
@@ -933,9 +937,11 @@ public class Model {
 
             public void pinEntered(PinEnteredEvent e){
                 if(isPollsOpen()) {
-                    if(validPins.contains(e.getPin())) {
-                        validPins.remove((Integer)e.getPin());
+                    String ballot = bManager.getBallotByPin(e.getPin());
+                    if(ballot!=null){
                         try {
+                            System.out.println(ballot + "!");
+                            setBallotLocation(ballot);
                             authorize(e.getSerial());
                         }
                         catch(IOException ex) {
@@ -952,6 +958,12 @@ public class Model {
 
             public void pollStatus(PollStatusEvent pollStatusEvent) {
                 pollsOpen = pollStatusEvent.getPollStatus()==1;
+            }
+
+
+            public void ballotPrinted(BallotPrintedEvent ballotPrintedEvent) {
+                expectedBallots.add(Integer.valueOf(ballotPrintedEvent.getBID()));
+                System.out.println("V"  + expectedBallots);
             }
 
         });
@@ -988,15 +1000,31 @@ public class Model {
         return auditoriumParams;
     }
 
+    //adds a new ballot to the ballot manager
+    public void addBallot(File fileIn) {
+        String fileName = fileIn.getName();
+        try{
+        int precinct = Integer.parseInt(fileName.substring(fileName.length()-7,fileName.length()-4));
+        bManager.addBallot(precinct, fileIn.getAbsolutePath());
+        }catch(NumberFormatException e){
+            JOptionPane.showMessageDialog(null, "Please choose a valid ballot");
+        }
+    }
+
+    public int generatePin(int precinct){
+        return bManager.generatePin(precinct);
+    }
+
+    public Integer[] getSelections(){
+        return bManager.getSelections();
+    }
+
+    public Integer getInitialSelection(){
+        return bManager.getInitialSelection();
+    }
+
     /**
      * A method that will generate a random pin for the voter to enter into his votebox machine
      */
-    public int generatePin(){
-        Random rand = (new Random());
-        int pin = rand.nextInt(10000);
-        while(validPins.contains(pin))
-            pin = rand.nextInt(10000);
-        validPins.add(pin);
-        return pin;
-    }
+
 }

@@ -227,4 +227,9 @@ public interface VoteBoxEventListener {
      */
 
     public void pollStatus(PollStatusEvent pollStatusEvent);
+
+    /**
+     * called to inform the supervisor that a ballot has been printed and needs to be scanned
+     */
+    public void ballotPrinted(BallotPrintedEvent ballotPrintedEvent);
 }

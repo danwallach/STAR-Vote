@@ -203,4 +203,9 @@ public class VoteBoxEventNotifier implements VoteBoxEventListener {
             l.invalidPin(e);
     }
 
+    public void ballotPrinted(BallotPrintedEvent e){
+        for(VoteBoxEventListener l : listeners)
+            l.ballotPrinted(e);
+    }
+
 }
