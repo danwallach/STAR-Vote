@@ -714,7 +714,7 @@ public class PsychLayoutManager extends ALayoutManager {
 
             return RenderingUtils.renderPrintButton( pb.getUID(),
                     pb.getText(), pb.getSecondLine(), pb.getParty(), fontsize,
-                    281, pb.isBold(), true);       //Chose 281 because it suits our printing well
+                    281, false, true);       //Chose 281 because it suits our printing well
 		}
     };
 

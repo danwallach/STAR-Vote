@@ -686,7 +686,7 @@ public class RenderingUtils {
         //If this is a race name and not a candidate
         if (uid.contains("L"))
         {
-            wrappingWidth = 400*DPI_SCALE_FACTOR;
+            wrappingWidth = 250*DPI_SCALE_FACTOR; //Arbitrary size!
             Font temp = font.deriveFont(12.0f*DPI_SCALE_FACTOR);
             String[] split = selection.split("\n");
             text = split[0];

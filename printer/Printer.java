@@ -127,8 +127,6 @@ public class Printer {
 
 			public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
 
-                System.out.println(counter++);
-
                 int numPages = fTotalSize / (int)pageFormat.getImageableHeight();
 				if(fTotalSize % (int)pageFormat.getImageableHeight() != 0)
 					numPages++;
@@ -152,7 +150,7 @@ public class Printer {
                 DateFormat dateFormat = new SimpleDateFormat("MMMM d, y");
                 Date date = new Date();
                 graphics.drawString(dateFormat.format(date), printX, totalSize+graphics.getFont().getSize());
-                totalSize += graphics.getFont().getSize();
+                totalSize += graphics.getFont().getSize() + 5; //Add a little space between the date and title
 
                 //Generate a barcode of the bid
                 //Do it here so we can use height of the barcode for laying out other components on the printout
@@ -194,7 +192,7 @@ public class Printer {
                 if(_constants.getUseTwoColumns())
                     printWidth = _constants.getPrintableWidthForVVPAT()/2;
 
-                printWidth  *= DPI_SCALE;
+
 
                 int initialHeight = totalSize;
                 int column = 1;
@@ -206,13 +204,13 @@ public class Printer {
                 double yScale = .2;
                 double xMargin = (pageFormat.getImageableWidth() - ((BufferedImage)choiceToImage.get(choices.get(1))).getWidth()*xScale)/2;
                 double yMargin = (pageFormat.getImageableHeight() - ((BufferedImage)choiceToImage.get(choices.get(1))).getHeight()*yScale)/2;
-                g.translate(pageFormat.getImageableX(), pageFormat.getImageableY() + totalSize);
-                g.scale(xScale , yScale);
+//                g.translate(pageFormat.getImageableX(), pageFormat.getImageableY() + totalSize);
+//                g.scale(xScale , yScale);
 
                 int columnPrintableWidth = printWidth - printX;
 
                 int counter = 0;
-				while(totalSize < _constants.getPrintableHeightForVVPAT()*DPI_SCALE && counter < choices.size()){
+				while(totalSize < _constants.getPrintableHeightForVVPAT() && counter < choices.size()){
 
 					BufferedImage img = (BufferedImage)choiceToImage.get(choices.get(counter));
                     BufferedImage titleImg = (BufferedImage)fActualRaceNamePairs.get(counter).getImage();
@@ -220,7 +218,7 @@ public class Printer {
 
                     //Remove trailing whitespace to allow for better scaling
                     //Only the title image will have trailing whitespace due to rendering
-                    //titleImg = PrintImageUtils.trimImageHorizontally(titleImg, true, maxToTrimTitleHorizontally);
+                    titleImg = PrintImageUtils.trimImageHorizontally(titleImg, true, maxToTrimTitleHorizontally);
                     titleImg = PrintImageUtils.trimImageVertically(titleImg, true, maxToTrimTitleVertically);
 
                     //Remove whitespace above the selection image.
@@ -231,8 +229,8 @@ public class Printer {
                     int targetSelectionHeight = Math.round(img.getHeight() * percentageScaling);
 
 //                    System.out.println("Now scaling " + choices.get(counter) + "'s outImage.");
-                    BufferedImage outImage = PrintImageUtils.getScaledInstance(img,columnPrintableWidth, targetSelectionHeight, RenderingHints.VALUE_INTERPOLATION_BICUBIC, true );
-//                    System.out.println("Now scaling " + fActualRaceNamePairs.get(counter).getLabel() + "'s outImage.");
+//                    BufferedImage outImage = PrintImageUtils.getScaledInstance(img,columnPrintableWidth, targetSelectionHeight, RenderingHints.VALUE_INTERPOLATION_BICUBIC, true );
+////                    System.out.println("Now scaling " + fActualRaceNamePairs.get(counter).getLabel() + "'s outImage.");
                     BufferedImage outTitle = PrintImageUtils.getScaledInstance(titleImg, columnPrintableWidth, targetTitleHeight, RenderingHints.VALUE_INTERPOLATION_BICUBIC, true);
 
 
@@ -243,23 +241,23 @@ public class Printer {
                             null);
 
 
-					g.drawImage(outImage,
+					g.drawImage(img,
                             printX,
                             totalSize + Math.round(outTitle.getHeight(null)),
                             null);
 
 
-					totalSize += outImage.getHeight(null) + outTitle.getHeight(null);
+					totalSize += img.getHeight(null) + outTitle.getHeight(null) + 5;
                     counter++;
 
                     //If we reach the end of a column and are printing in two columns, go back to the top with an offset of printwidth
-                    if(totalSize + outImage.getHeight(null) + outTitle.getHeight(null) >= (_constants.getPrintableHeightForVVPAT() - barcode.getHeight(null)) * DPI_SCALE
+                    if(totalSize + img.getHeight(null) + outTitle.getHeight(null) >= (_constants.getPrintableHeightForVVPAT() - barcode.getHeight(null))
                             && _constants.getUseTwoColumns() && column == 1){
                         totalSize = initialHeight;
                         printX += printWidth;
                         column = 2;
 
-                    } else if (totalSize + outImage.getHeight(null) + outTitle.getHeight(null) >= (_constants.getPrintableHeightForVVPAT() - barcode.getHeight(null)) * DPI_SCALE
+                    } else if (totalSize + img.getHeight(null) + outTitle.getHeight(null) >= (_constants.getPrintableHeightForVVPAT() - barcode.getHeight(null))
                             && _constants.getUseTwoColumns() && column == 2){
                         totalSize = initialHeight;
                         printX =  (int) pageFormat.getImageableX();
