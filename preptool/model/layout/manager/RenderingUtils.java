@@ -55,7 +55,7 @@ public class RenderingUtils {
      * Scaling factor for high dpi printed images
      * Choose this value based on a 360 dpi printer and the fact that java's default is 72 dpi and 360/72 is a whole number
      */
-    public static final int DPI_SCALE_FACTOR = 360/72;
+    public static final int DPI_SCALE_FACTOR = Math.round(1.0f*300/72);
 
     /**
      * The dimensions of the selection box.
@@ -629,16 +629,23 @@ public class RenderingUtils {
         String box = "\u25a1"; // box character
         String filledSelection = "\u25a8"; // filled box character
 
-        BufferedImage wrappedImage = new BufferedImage(1000*DPI_SCALE_FACTOR, 1000*DPI_SCALE_FACTOR,
+
+        int selectionLength = lineWidth(text.split(""), nf);
+
+        int imageLength = Math.max(1000, selectionLength);
+
+
+
+        BufferedImage wrappedImage = new BufferedImage(imageLength*DPI_SCALE_FACTOR, 1000*DPI_SCALE_FACTOR,
                 BufferedImage.TYPE_INT_ARGB);
+
+
+
 
         Graphics2D graphs = wrappedImage.createGraphics();
 
         graphs.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
-
-
-        //graphs.scale(1.0/DPI_SCALE_FACTOR, 1.0/DPI_SCALE_FACTOR);
 
 
         graphs.setFont(nf);
@@ -660,7 +667,7 @@ public class RenderingUtils {
 
 
         String selection = "";
-        int selectionLength = 0;
+
         int drawPosition = 0;
 
         if (!text2.equals("")) {   // If the selection represents a Presidential election.
@@ -702,7 +709,7 @@ public class RenderingUtils {
 
             if (!text2.equals("")) {   // If the selection represents a Presidential election.
 
-                graphs.setFont(temp);
+
                 graphs.drawString(text + ":", padding, heightPos);
                 heightPos += lineHeight(text, font);
                 selection = text2;
@@ -720,14 +727,6 @@ public class RenderingUtils {
             wrappedImage = PrintImageUtils.trimImageVertically(wrappedImage, false, Integer.MAX_VALUE); // Above
             wrappedImage = PrintImageUtils.trimImageVertically(wrappedImage, true, Integer.MAX_VALUE); // Below
             // No Left/Right trimming, because it is done in the Printer class.
-
-
-//            wrappedImage = PrintImageUtils.getScaledInstance(wrappedImage, wrappedImage.getWidth()/DPI_SCALE_FACTOR,
-//                    wrappedImage.getHeight()/DPI_SCALE_FACTOR, RenderingHints.VALUE_INTERPOLATION_BILINEAR, true);
-//
-//            System.out.println("Scaling the trimmed image");
-//            Graphics2D scaleG = (Graphics2D)wrappedImage.getGraphics();
-//            scaleG.scale(1.0/DPI_SCALE_FACTOR, 1.0/DPI_SCALE_FACTOR);
 
 
             return copy(wrappedImage);
@@ -749,18 +748,6 @@ public class RenderingUtils {
         drawBox(graphs, boxPos, (heightPos - SELECTION_BOX_HEIGHT), SELECTION_BOX_WIDTH, SELECTION_BOX_HEIGHT, selected, padding/8);
 
 
-        /*Font boxFont = new Font(font.getName(), font.getStyle(), font.getSize() + 20);
-        graphs.setFont(boxFont);
-        graphs.drawString(box, boxPos, heightPos);
-
-        if (selected) {
-
-            graphs.drawString(filledSelection, boxPos, heightPos);
-
-        }*/
-
-
-
         graphs.setFont(nf);
         drawPosition = Math.max(0,  candidateNameEndPos - lineWidth(selection.split("$"), nf));
         graphs.drawString(selection, drawPosition, heightPos); //height based on an appropriate spacing of up to a 3 digit number
@@ -780,15 +767,6 @@ public class RenderingUtils {
         //Need to also remove whitespace above and below the image.
         wrappedImage = PrintImageUtils.trimImageVertically(wrappedImage, false, Integer.MAX_VALUE);
         wrappedImage = PrintImageUtils.trimImageVertically(wrappedImage, true, Integer.MAX_VALUE); // Below
-
-
-//
-//        System.out.println("Scaling the trimmed image");
-//        Graphics2D scaleG = (Graphics2D)wrappedImage.getGraphics();
-//        scaleG.scale(1.0/DPI_SCALE_FACTOR, 1.0/DPI_SCALE_FACTOR);
-//
-//        wrappedImage = PrintImageUtils.getScaledInstance(wrappedImage, wrappedImage.getWidth()/DPI_SCALE_FACTOR,
-//            wrappedImage.getHeight()/DPI_SCALE_FACTOR, RenderingHints.VALUE_INTERPOLATION_BILINEAR, true);
 
         return copy(wrappedImage);
     }
