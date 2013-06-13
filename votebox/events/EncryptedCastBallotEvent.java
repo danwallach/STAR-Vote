@@ -44,13 +44,13 @@ public class EncryptedCastBallotEvent extends CastBallotEvent{
      */
     private static MatcherRule MATCHER = new MatcherRule() {
         private ASExpression pattern = ASExpression
-                .make("(encrypted-cast-ballot %nonce:#string %ballot:#any)");
+                .make("(encrypted-cast-ballot %nonce:#string %ballot:#any %bid:#string)");
 
         public IAnnounceEvent match(int serial, ASExpression sexp) {
             HashMap<String, ASExpression> result = pattern.namedMatch(sexp);
             if (result != NamedNoMatch.SINGLETON)
                 return new EncryptedCastBallotEvent(serial, result.get("nonce"), result
-                        .get("ballot"));
+                        .get("ballot"), result.get("bid"));
 
             return null;
         };
@@ -72,8 +72,8 @@ public class EncryptedCastBallotEvent extends CastBallotEvent{
      * @param ballot
      *            the encrypted ballot, as an array of bytes
      */
-    public EncryptedCastBallotEvent(int serial, ASExpression nonce, ASExpression ballot) {
-        super(serial, nonce, ballot);
+    public EncryptedCastBallotEvent(int serial, ASExpression nonce, ASExpression ballot, ASExpression bid) {
+        super(serial, nonce, ballot, bid);
     }
 
 	/**

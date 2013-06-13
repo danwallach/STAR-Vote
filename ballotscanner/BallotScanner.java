@@ -2,8 +2,8 @@ package ballotscanner;
 
 import auditorium.NetworkException;
 import com.google.zxing.BinaryBitmap;
-import com.google.zxing.DecodeHintType;
 import javazoom.jl.player.Player;
+import sexpression.*;
 import supervisor.model.ObservableEvent;
 import votebox.AuditoriumParams;
 import votebox.events.*;
@@ -22,7 +22,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Observer;
 
 public class BallotScanner {
@@ -37,6 +36,8 @@ public class BallotScanner {
     private Timer statusTimer;
     private boolean activated;
     private ObservableEvent activatedObs;
+    private JFrame frame;
+    private boolean confirmed = false;
 
     // stores the last found result obtained from a successful code scan
     private String lastFoundBID = "";
@@ -45,13 +46,17 @@ public class BallotScanner {
     private long lastFoundTime = 0;
 
     // keeps the path to the "ballot scanned" mp3
-    private String bsMp3Path = "sound/ballotscanned.mp3"; //move to the .conf file
+    private String bsMp3Path;// = "sound/ballotscanned.mp3"; //move to the .conf file
 
     // keeps the mp3Player
     private Player mp3Player;
 
     // how long a result is stored in memory before it is cleared
     private final long DELAY_TIME = 5000;
+
+    //An event to signal that a ballot has been scanned
+    private BallotScannedEvent e;
+
 
     /**
      * Equivalent to new BallotScanner(-1).
@@ -92,6 +97,12 @@ public class BallotScanner {
                 }
             }
         });
+
+        //Set up the JFrame confirmation screen
+        frame = new JFrame();
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setLocationRelativeTo(null);
+        frame.setLocation((int)Math.round(frame.getLocation().getX()) - 175, (int)Math.round(frame.getLocation().getY()) - 175);
     }
 
     /**
@@ -155,10 +166,6 @@ public class BallotScanner {
 
         MultiFormatDecoder decoder = new MultiFormatDecoder();
 
-        JFrame frame = new JFrame();
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setLocationRelativeTo(null);
-        frame.setLocation((int)Math.round(frame.getLocation().getX()) - 175, (int)Math.round(frame.getLocation().getY()) - 175);
 
         while (true) {
             long currentTime = System.currentTimeMillis();
@@ -202,6 +209,51 @@ public class BallotScanner {
                         }
                     }.start();
 
+                    e = new BallotScannedEvent(mySerial, lastFoundBID);
+                    auditorium.announce(e);
+
+                    while(!confirmed){
+                        if(frame.isVisible()) //reset the confirmed variable once the jframe has shown
+                            confirmed = false;
+                    }
+
+
+                }
+            }
+        }
+    }
+
+    /**
+     * Main method which right now just goes into an infinite while loop, constantly scanning
+     */
+    public void start() {
+
+        try {
+            auditorium = new VoteBoxAuditoriumConnector(mySerial,
+                    _constants
+                    //, add matcher rules here
+            );
+        } catch (NetworkException e1) {
+            //NetworkException represents a recoverable error
+            //  so just note it and continue
+            System.out.println("Recoverable error occurred: " + e1.getMessage());
+            e1.printStackTrace(System.err);
+        }
+
+        try {
+            auditorium.connect();
+            auditorium.announce(getStatus());
+        } catch (NetworkException e1) {
+            throw new RuntimeException(e1);
+        }
+
+        auditorium.addListener(new VoteBoxEventListener() {
+            public void ballotCounted(BallotCountedEvent e) {
+            }
+
+            //When a cast ballot is seen, build a JFRAME Displaying confirmation or denial
+            public void castBallot(CastBallotEvent event) {
+                if(event.getBid().equals(lastFoundBID)){
 
                     DateFormat dateFormat = new SimpleDateFormat("MMMM d, y");
                     Date date = new Date();
@@ -237,45 +289,47 @@ public class BallotScanner {
 
                     frame.setVisible(true);
 
+                }  else{
+                    DateFormat dateFormat = new SimpleDateFormat("MMMM d, y");
+                    Date date = new Date();
+
+                    //Code which will display a confirmation screen
+
+                    JPanel panel = new JPanel();
+                    JLabel imageLabel = new JLabel();
+                    JLabel textLabel = new JLabel("Ballot " + lastFoundBID + " was NOT cast.");
+                    JLabel text2Label = new JLabel("Please ensure that this is the correct ballot or seek assistance from an election official.");
+                    JLabel dateLabel = new JLabel(dateFormat.format(date));
+
+
+                    BufferedImage rejected = null;
+
+                    try{
+                        File file = new File("images/rejected.png");
+                        rejected = ImageIO.read(file);
+                    } catch (IOException e){
+                        System.out.println("Rejection image could not be loaded!");
+                        throw new RuntimeException(e);
+                    }
+                    ImageIcon rejectionIcon = new ImageIcon(rejected);
 
 
 
+                    imageLabel.setIcon(rejectionIcon);
+                    panel.add(imageLabel);
+                    panel.setPreferredSize(new Dimension(350, 350));
+                    panel.add(textLabel);
+                    panel.add(text2Label);
+                    panel.add(dateLabel);
+                    frame.add(panel);
+                    frame.pack();
 
+                    frame.setVisible(true);
+
+                    confirmed = true;
 
                 }
-            }
-        }
-    }
 
-    /**
-     * Main method which right now just goes into an infinite while loop, constantly scanning
-     */
-    public void start() {
-
-        try {
-            auditorium = new VoteBoxAuditoriumConnector(mySerial,
-                    _constants
-                    //, add matcher rules here
-            );
-        } catch (NetworkException e1) {
-            //NetworkException represents a recoverable error
-            //  so just note it and continue
-            System.out.println("Recoverable error occured: " + e1.getMessage());
-            e1.printStackTrace(System.err);
-        }
-
-        try {
-            auditorium.connect();
-            auditorium.announce(getStatus());
-        } catch (NetworkException e1) {
-            throw new RuntimeException(e1);
-        }
-
-        auditorium.addListener(new VoteBoxEventListener() {
-            public void ballotCounted(BallotCountedEvent e) {
-            }
-
-            public void castBallot(CastBallotEvent e) {
             }
 
             public void challenge(ChallengeEvent e) {

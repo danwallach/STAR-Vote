@@ -44,19 +44,20 @@ public class CastBallotEvent implements IAnnounceEvent {
     private int _serial;
     private ASExpression _nonce;
     private ASExpression _ballot;
+    private ASExpression _bid;
 
     /**
      * Matcher for the CastBallotEvent
      */
     private static MatcherRule MATCHER = new MatcherRule() {
         private ASExpression pattern = ASExpression
-                .make("(cast-ballot %nonce:#string %ballot:#any)");
+                .make("(commit-ballot %nonce:#string %ballot:#any %bid:#string)");
 
         public IAnnounceEvent match(int serial, ASExpression sexp) {
             HashMap<String, ASExpression> result = pattern.namedMatch(sexp);
             if (result != NamedNoMatch.SINGLETON)
                 return new CastBallotEvent(serial, result.get("nonce"), result
-                        .get("ballot"));
+                        .get("ballot"), result.get("bid"));
 
             return null;
         };
@@ -79,11 +80,21 @@ public class CastBallotEvent implements IAnnounceEvent {
      *            the nonce
      * @param ballot
      *            the encrypted ballot, as an array of bytes
+     * @param bid
+     *            The ballot's id
      */
-    public CastBallotEvent(int serial, ASExpression nonce, ASExpression ballot) {
+    public CastBallotEvent(int serial, ASExpression nonce, ASExpression ballot, ASExpression bid) {
         _serial = serial;
         _nonce = nonce;
         _ballot = ballot;
+        _bid = bid;
+    }
+
+    /**
+     * @return the ballot's id
+     */
+    public ASExpression getBid(){
+        return _bid;
     }
 
     /**
@@ -116,6 +127,6 @@ public class CastBallotEvent implements IAnnounceEvent {
      */
     public ASExpression toSExp() {
         return new ListExpression(StringExpression.makeString("cast-ballot"),
-                _nonce, _ballot);
+                _nonce, _ballot, _bid);
     }
 }
