@@ -222,15 +222,17 @@ public class VoteBoxBoothView extends AMachineView {
             protectedCountLabel.setText("Protected Count: "
                     + m.getProtectedCount());
             button.removeAll();
-            button.setEnabled(true);
             if (machine.getStatus() == VoteBoxBooth.IN_USE) {
+                button.setEnabled(true);
                 button.setVisible(true);
                 updateBackground(Color.YELLOW);
                 statusLabel.setText("In Use");
                 button.add(new MyJLabel("Override"), c);
             } else{
-                button.setVisible(false);
                 button.setEnabled(false);
+                button.setVisible(false);
+                updateBackground(Color.lightGray);
+                statusLabel.setText("Ready");
             }
 
             batteryLabel.setVisible(true);
