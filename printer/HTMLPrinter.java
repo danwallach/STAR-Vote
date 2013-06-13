@@ -99,7 +99,7 @@ public class HTMLPrinter {
     {
         try
         {
-            // Creates the container for the column(s) of images.
+            // Creates the container for the columns of images.
             writer.write("<div id = \"container\" style = \"background-color:#CCFF00;width:750px;height:792px;\">\n");
 
             // Creates the left and right margins.
@@ -143,7 +143,7 @@ public class HTMLPrinter {
                 for (String imageName : right_column)
                 {
                     // Load in the image.
-                    writer.write("<img src = \"" + pathToBallotVVPATFolder + imageName + "\" alt = \"Image did not load properly\" width = \"250\">\n");
+                    writer.write("<img src = \"" + pathToBallotVVPATFolder + imageName + "\" alt = \"Image did not load properly\" width = \"303\">\n");
                     // Leave an empty line after selection images.
                     if (isSelectionImage)
                     {
@@ -162,7 +162,7 @@ public class HTMLPrinter {
             writer.write("</div>\n");
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-            // End of the container for the column(s).
+            // End of the container for the columns.
             writer.write("</div>\n");
         }
         catch (IOException e)
@@ -185,7 +185,52 @@ public class HTMLPrinter {
      */
     private static void generatorHelperForOneColumn (BufferedWriter writer, String pathToBallotVVPATFolder, ArrayList<String>... imageNames)
     {
-        System.out.println("Not implemented! USE TWO COLUMNS.");
+        try
+        {
+            // Creates the container for the column of images.
+            writer.write("<div id = \"container\" style = \"background-color:#CCFF00;width:750px;height:792px;\">\n");
+
+            // Creates the left and right margins.
+            writer.write("<div id = \"left_margin\" style = \"background-color:#000000;width:72px;float:left\"><br></div>\n");
+            writer.write("<div id = \"right_margin\" style = \"background-color:#000000;width:72px;float:right\"><br></div>\n");
+
+            // Column ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+            // Create the column.
+            writer.write("<div id = \"column\" style=\"background-color:#ABCDEF;width:606px;float:left;\">\n");
+
+            // Put images in the column.
+            ArrayList<String> column = imageNames[0];
+            Boolean isSelectionImage = false; // Used to leave an empty line after every selectionImage
+            for (String imageName : column)
+            {
+                // Load in the image.
+                writer.write("<img src = \"" + pathToBallotVVPATFolder + imageName + "\" alt = \"Image did not load properly\" width = \"606\">\n");
+                // Leave an empty line after selection images.
+                if (isSelectionImage)
+                {
+                    writer.write("<br>\n<br>\n");
+                }
+                // Set the flag for selection images and reset it for label/title images.
+                isSelectionImage = !isSelectionImage;
+            }
+
+            // End of the column.
+            writer.write("</div>\n");
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            // End of the container for the column.
+            writer.write("</div>\n");
+        }
+        catch (IOException e)
+        {
+            System.out.println("HTML File Generator Error: Unable to write to file.");
+        }
+
+        // If there are more columns to be printed, call this helper again on the rest of the columns.
+        if (imageNames.length > 1)
+        {
+            generatorHelperForTwoColumns(writer, pathToBallotVVPATFolder, Arrays.copyOfRange(imageNames, 1, imageNames.length - 1));
+        }
     }
 }
 
