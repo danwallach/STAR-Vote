@@ -52,6 +52,8 @@ import auditorium.*;
 import javax.print.PrintService;
 import javax.print.attribute.standard.PrinterResolution;
 
+import printer.HTMLPrinter;
+
 /**
  * This class handles all print calls made by Voteboxes, Supervisors and any future additions that will need to print
  */
@@ -139,7 +141,23 @@ public class Printer {
                 int printX = (int)pageFormat.getImageableX();
 
                 int printWidth = _constants.getPrintableWidthForVVPAT();
-
+/*
+                ArrayList<String> a1 = new ArrayList<String>();
+                a1.add("L168_printable_en.png");
+                a1.add("B1_printable_en.png");
+                a1.add("L169_printable_en.png");
+                a1.add("B2_printable_en.png");
+                ArrayList<String> a2 = new ArrayList<String>();
+                a2.add("L170_printable_en.png");
+                a2.add("B3_printable_en.png");
+                a2.add("L171_printable_en.png");
+                a2.add("B4_printable_en.png");
+                ArrayList<String> a3 = new ArrayList<String>();
+                a3.add("L172_printable_en.png");
+                a3.add("B5_printable_en.png");
+                a3.add("L173_printable_en.png");
+                a3.add("B6_printable_en.png");
+                HTMLPrinter.generateHTMLFile("C:\\Users\\Mircea\\Desktop\\b.html", true, "C:\\Users\\Mircea\\Desktop\\long_ballot_correct\\media\\vvpat\\", a1, a2, a3);*/
 
                 //Print the date and title of the election at the top of the page
                 Font font = new Font("ARIAL Unicode", Font.PLAIN, 10);

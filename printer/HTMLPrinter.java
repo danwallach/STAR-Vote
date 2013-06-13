@@ -22,6 +22,7 @@ public class HTMLPrinter {
      */
     public static void generateHTMLFile (String filename, Boolean useTwoColumns, String pathToBallotVVPATFolder, ArrayList<String>... imageNames)
     {
+        System.out.println("Attempting to create an html file at " + filename);
         File file = new File(filename);
 
         // If the file does not exist, then create it.
@@ -81,6 +82,10 @@ public class HTMLPrinter {
 
             // End of file.
             writer.write("</html>\n");
+
+            writer.flush();
+            writer.close();
+            System.out.println("It should have generated an html file.");
         }
         catch (IOException e)
         {
@@ -173,7 +178,7 @@ public class HTMLPrinter {
         // If there are more columns to be printed, call this helper again on the rest of the columns.
         if (imageNames.length > 2)
         {
-            generatorHelperForTwoColumns(writer, pathToBallotVVPATFolder, Arrays.copyOfRange(imageNames, 2, imageNames.length - 1));
+            generatorHelperForTwoColumns(writer, pathToBallotVVPATFolder, Arrays.copyOfRange(imageNames, 2, imageNames.length));
         }
     }
 
@@ -229,7 +234,7 @@ public class HTMLPrinter {
         // If there are more columns to be printed, call this helper again on the rest of the columns.
         if (imageNames.length > 1)
         {
-            generatorHelperForTwoColumns(writer, pathToBallotVVPATFolder, Arrays.copyOfRange(imageNames, 1, imageNames.length - 1));
+            generatorHelperForTwoColumns(writer, pathToBallotVVPATFolder, Arrays.copyOfRange(imageNames, 1, imageNames.length));
         }
     }
 }
