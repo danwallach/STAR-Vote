@@ -98,13 +98,14 @@ public class AuditoriumParams implements IAuditoriumParams,
     public static final int PRINTABLE_WIDTH_FOR_VVPAT = 239;
     public static final int PRINTABLE_HEIGHT_FOR_VVPAT = 311;
 
+    //Configurable margins, may not bee needed?
     public static final int PRINTABLE_VERTICAL_MARGIN  = 25;
     public static final int PRINTABLE_HORIZONTAL_MARGIN  = 25;
 
+    //Configurable DPI
     public static final int PRINTER_DEFAULT_DPI = 300;
     public static final int JAVA_DEFAULT_DPI = 72;
-
-    
+                          
     //By default, we don't enable NIZKs.
     public static final boolean ENABLE_NIZKS = false;
     
@@ -120,10 +121,14 @@ public class AuditoriumParams implements IAuditoriumParams,
     
     public static final boolean DEFAULT_ALLOW_UI_SCALING = true;
 
-    public static final String ELECTION_NAME = "Harris County General Election";
+    public static final String ELECTION_NAME = "Rice University General Election";
 
     //Setting which determines whethere ballots will be printed using two columns
     public static final boolean USE_TWO_COLUMNS = true;
+    
+    //Settings for the ballotScanner
+    public static final boolean USE_SCAN_CONFIRMATION_SOUND = false;
+    public static final String SCAN_CONFIRMATION_SOUND_PATH = "sound/ballotscanned.mp3";
     
     private final HashMap<String, String> _config;
 
@@ -233,14 +238,14 @@ public class AuditoriumParams implements IAuditoriumParams,
 	
 	public String getEloTouchScreenDevice(){
 		if(_config.containsKey("ELO_TOUCH_SCREEN_DEVICE"))
-			return (String)_config.get("ELO_TOUCH_SCREEN_DEVICE");
+			return _config.get("ELO_TOUCH_SCREEN_DEVICE");
 		
 		return ELO_TOUCH_SCREEN_DEVICE;
 	}//getEloTouchScreenDevice
 	
 	public int getViewRestartTimeout(){
 		if(_config.containsKey("VIEW_RESTART_TIMEOUT"))
-			return Integer.parseInt((String)_config.get("VIEW_RESTART_TIMEOUT"));
+			return Integer.parseInt(_config.get("VIEW_RESTART_TIMEOUT"));
 		
 		return VIEW_RESTART_TIMEOUT;
 	}//getViewRestartTimeout
@@ -248,42 +253,42 @@ public class AuditoriumParams implements IAuditoriumParams,
 
 	public int getDefaultSerialNumber() {
 		if(_config.containsKey("DEFAULT_SERIAL_NUMBER"))
-			return Integer.parseInt((String)_config.get("DEFAULT_SERIAL_NUMBER"));
+			return Integer.parseInt(_config.get("DEFAULT_SERIAL_NUMBER"));
 		
 		return DEFAULT_SERIAL_NUMBER;
 	}
 	
 	public String getReportAddress(){
 		if(_config.containsKey("DEFAULT_REPORT_ADDRESS"))
-			return (String)_config.get("DEFAULT_REPORT_ADDRESS");
+			return _config.get("DEFAULT_REPORT_ADDRESS");
 		
 		return DEFAULT_REPORT_ADDRESS;
 	}
 	
 	public int getChallengePort(){
 		if(_config.containsKey("DEFAULT_CHALLENGE_PORT"))
-			return Integer.parseInt((String)_config.get("DEFAULT_CHALLENGE_PORT"));
+			return Integer.parseInt(_config.get("DEFAULT_CHALLENGE_PORT"));
 		
 		return DEFAULT_CHALLENGE_PORT;
 	}
 	
 	public int getHttpPort(){
 		if(_config.containsKey("DEFAULT_HTTP_PORT"))
-			return Integer.parseInt((String)_config.get("DEFAULT_HTTP_PORT"));
+			return Integer.parseInt(_config.get("DEFAULT_HTTP_PORT"));
 		
 		return DEFAULT_HTTP_PORT;
 	}
 	
 	public String getChallengeBallotFile(){
 		if(_config.containsKey("DEFAULT_BALLOT_FILE"))
-			return (String)_config.get("DEFAULT_BALLOT_FILE");
+			return _config.get("DEFAULT_BALLOT_FILE");
 		
 		return DEFAULT_BALLOT_FILE;
 	}
 	
 	public String getPrinterForVVPAT() {
 		if(_config.containsKey("PRINTER_FOR_VVPAT"))
-			return (String)_config.get("PRINTER_FOR_VVPAT");
+			return _config.get("PRINTER_FOR_VVPAT");
 		
 		return PRINTER_FOR_VVPAT;
 	}
@@ -405,7 +410,7 @@ public class AuditoriumParams implements IAuditoriumParams,
 
     public String getElectionName(){
         if(_config.containsKey("ELECTION_NAME"))
-            return (String)_config.get("ELECTION_NAME");
+            return _config.get("ELECTION_NAME");
 
         return ELECTION_NAME;
     }
@@ -415,6 +420,20 @@ public class AuditoriumParams implements IAuditoriumParams,
             return Boolean.parseBoolean(_config.get("USE_TWO_COLUMNS"));
 
         return USE_TWO_COLUMNS;
+    }
+
+    public boolean useScanConfirmationSound(){
+        if(_config.containsKey("USE_SCAN_CONFIRMATION_SOUND"))
+            return Boolean.parseBoolean(_config.get("USE_SCAN_CONFIRMATION_SOUND"));
+
+        return USE_TWO_COLUMNS;
+    }
+
+    public String getConfirmationSoundPath(){
+        if(_config.containsKey("SCAN_CONFIRMATION_SOUND_PATH"))
+            return _config.get("SCAN_CONFIRMATION_SOUND_PATH");
+
+        return ELECTION_NAME;
     }
 	
     /**

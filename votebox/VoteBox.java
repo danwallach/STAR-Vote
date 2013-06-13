@@ -286,7 +286,8 @@ public class VoteBox {
                         List<List<String>> races = currentDriver.getBallotAdapter().getRaceGroups();
                         printer = new Printer(_currentBallotFile, races);
 						printer.printCommittedBallot(ballot, bid);
-
+                        auditorium.announce(new BallotPrintedEvent(mySerial, bid,
+                                nonce));
 					} catch (AuditoriumCryptoException e) {
 						Bugout.err("Crypto error trying to commit ballot: "+e.getMessage());
 						e.printStackTrace();
@@ -892,6 +893,11 @@ public class VoteBox {
                 if(!voting && pollStatusEvent.getPollStatus() == 1){
                     promptForPin("Enter Authentication PIN");
                 }
+            }
+
+            @Override
+            public void ballotPrinted(BallotPrintedEvent ballotPrintedEvent) {
+                // NO-OP
             }
 
 
