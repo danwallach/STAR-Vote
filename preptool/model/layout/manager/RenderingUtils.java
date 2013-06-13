@@ -636,7 +636,7 @@ public class RenderingUtils {
 
 
 
-        BufferedImage wrappedImage = new BufferedImage(imageLength*DPI_SCALE_FACTOR, 1000*DPI_SCALE_FACTOR,
+        BufferedImage wrappedImage = new BufferedImage(1000*DPI_SCALE_FACTOR, 1000*DPI_SCALE_FACTOR,
                 BufferedImage.TYPE_INT_ARGB);
 
 
