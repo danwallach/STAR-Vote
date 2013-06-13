@@ -10,11 +10,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="26d876ad-6b77-4796-b9d0-ead84066c769" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/superlog.out" afterPath="$PROJECT_DIR$/superlog.out" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/votebox/AuditoriumParams.java" afterPath="$PROJECT_DIR$/votebox/AuditoriumParams.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ballotscanner/BallotScanner.java" afterPath="$PROJECT_DIR$/ballotscanner/BallotScanner.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ballotscanner/FrameGrabberWebcam.java" afterPath="$PROJECT_DIR$/ballotscanner/FrameGrabberWebcam.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ballotscanner/MultiFormatDecoder.java" afterPath="$PROJECT_DIR$/ballotscanner/MultiFormatDecoder.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="STAR-Vote.iws" />
@@ -54,7 +50,7 @@
     <file path="/ToggleButton.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370358039224" ignored="false" />
     <file path="/RaceTitlePair.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369945268870" ignored="false" />
     <file path="/Label.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370901082820" ignored="false" />
-    <file path="/Dummy.txt" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371142777263" ignored="false" />
+    <file path="/Dummy.txt" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371147214487" ignored="false" />
     <file path="/ALayoutComponent.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370380215222" ignored="false" />
     <file path="/PrintImageUtils.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370880262959" ignored="false" />
     <file path="/DefaultButtonState.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370901784343" ignored="false" />
@@ -848,7 +844,11 @@
       <created>1371079062134</created>
       <updated>1371079062134</updated>
     </task>
-    <option name="localTasksCounter" value="36" />
+    <task id="LOCAL-00036" summary="Got the ballot scanner mostly working, still getting event&#10;stuff worked out.">
+      <created>1371147226829</created>
+      <updated>1371147226829</updated>
+    </task>
+    <option name="localTasksCounter" value="37" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -940,7 +940,7 @@
     <option name="WRAP_WHEN_TYPING_REACHES_RIGHT_MARGIN" value="false" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="Merged and also finally got OpenCV working. Scanning should sorta function. Hopefully." />
+    <option name="LAST_COMMIT_MESSAGE" value="Got the ballot scanner mostly working, still getting event&#10;stuff worked out." />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="false" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -954,7 +954,6 @@
     <option name="UPDATE_FILTER_BY_SCOPE" value="false" />
     <option name="SHOW_FILE_HISTORY_AS_TREE" value="false" />
     <option name="FILE_HISTORY_SPLITTER_PROPORTION" value="0.6" />
-    <MESSAGE value="Stripped out SDL code since we don't use it (again)" />
     <MESSAGE value="Added code for shifting the images up/down in a Component." />
     <MESSAGE value="Fixed all the issues with shifting. The only remaining TODO would be setting the PRESIDENTIAL_RACE_LABEL_COMPONENT_HEIGHT attribute, in PsychLayoutManager.java." />
     <MESSAGE value="Updated print scaling code, added a method to scale more smoothly" />
@@ -979,6 +978,7 @@
     <MESSAGE value="Changing our image formats! Yay!" />
     <MESSAGE value="Fixed our box rendering (and did math!)" />
     <MESSAGE value="Merged and also finally got OpenCV working. Scanning should sorta function. Hopefully." />
+    <MESSAGE value="Got the ballot scanner mostly working, still getting event&#10;stuff worked out." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
