@@ -319,7 +319,7 @@ public class VoteBox {
         			//Object[] arg = (Object[])argTemp;
         			
         			auditorium.announce(new CastCommittedBallotEvent(mySerial,
-        					StringExpression.makeString(nonce)));
+        					StringExpression.makeString(nonce), StringExpression.makeString(bid)));
         			
         			BallotEncrypter.SINGLETON.clear();
         			
@@ -383,7 +383,7 @@ public class VoteBox {
                     if (!_constants.getCastBallotEncryptionEnabled()) {
                         auditorium.announce(new CastBallotEvent(mySerial,
                                 StringExpression.makeString(nonce),
-                                (ASExpression) arg[0]));
+                                (ASExpression) arg[0], StringExpression.makeString(bid)));
                     } else {
                         //Else, use the EncryptedCastBallotEvent with a properly encrypted ballot
                         try {
@@ -392,13 +392,13 @@ public class VoteBox {
 
                                 auditorium.announce(new EncryptedCastBallotEvent(mySerial,
                                         StringExpression.makeString(nonce),
-                                        BallotEncrypter.SINGLETON.getRecentEncryptedBallot()));
+                                        BallotEncrypter.SINGLETON.getRecentEncryptedBallot(), StringExpression.makeString(bid)));
                             } else {
                                 BallotEncrypter.SINGLETON.encryptWithProof((ListExpression) arg[0], (List<List<String>>) arg[1], (PublicKey) _constants.getKeyStore().loadAdderKey("public"));
 
                                 auditorium.announce(new EncryptedCastBallotWithNIZKsEvent(mySerial,
                                         StringExpression.makeString(nonce),
-                                        BallotEncrypter.SINGLETON.getRecentEncryptedBallot()));
+                                        BallotEncrypter.SINGLETON.getRecentEncryptedBallot(), StringExpression.makeString(bid)));
                             }//if
                         } catch (AuditoriumCryptoException e) {
                             System.err.println("Encryption Error: " + e.getMessage());

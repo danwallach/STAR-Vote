@@ -36,6 +36,7 @@ public class FrameGrabberWebcam implements IWebcam {
       // grab image, and convert it to a BinaryBitmap as a BufferedImageLuminanceSource
       IplImage img = frameGrabber.grab();
       if(img!=null) {
+
         LuminanceSource source = new BufferedImageLuminanceSource(img.getBufferedImage());
         BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
 
