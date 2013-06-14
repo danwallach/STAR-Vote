@@ -287,6 +287,7 @@ public class VoteBox {
                         List<List<String>> races = currentDriver.getBallotAdapter().getRaceGroups();
                         printer = new Printer(_currentBallotFile, races);
 						printer.printCommittedBallot(ballot, bid);
+                        printer.printedReciept(bid);
                         auditorium.announce(new BallotPrintedEvent(mySerial, bid,
                                 nonce));
 					} catch (AuditoriumCryptoException e) {
