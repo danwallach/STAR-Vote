@@ -1,23 +1,23 @@
 /**
-  * This file is part of VoteBox.
-  * 
-  * VoteBox is free software: you can redistribute it and/or modify
-  * it under the terms of the GNU General Public License version 3 as published by
-  * the Free Software Foundation.
-  * 
-  * You should have received a copy of the GNU General Public License
-  * along with VoteBox, found in the root of any distribution or
-  * repository containing all or part of VoteBox.
-  * 
-  * THIS SOFTWARE IS PROVIDED BY WILLIAM MARSH RICE UNIVERSITY, HOUSTON,
-  * TX AND IS PROVIDED 'AS IS' AND WITHOUT ANY EXPRESS, IMPLIED OR
-  * STATUTORY WARRANTIES, INCLUDING, BUT NOT LIMITED TO, WARRANTIES OF
-  * ACCURACY, COMPLETENESS, AND NONINFRINGEMENT.  THE SOFTWARE USER SHALL
-  * INDEMNIFY, DEFEND AND HOLD HARMLESS RICE UNIVERSITY AND ITS FACULTY,
-  * STAFF AND STUDENTS FROM ANY AND ALL CLAIMS, ACTIONS, DAMAGES, LOSSES,
-  * LIABILITIES, COSTS AND EXPENSES, INCLUDING ATTORNEYS' FEES AND COURT
-  * COSTS, DIRECTLY OR INDIRECTLY ARISING OUR OF OR IN CONNECTION WITH
-  * ACCESS OR USE OF THE SOFTWARE.
+ * This file is part of VoteBox.
+ *
+ * VoteBox is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3 as published by
+ * the Free Software Foundation.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with VoteBox, found in the root of any distribution or
+ * repository containing all or part of VoteBox.
+ *
+ * THIS SOFTWARE IS PROVIDED BY WILLIAM MARSH RICE UNIVERSITY, HOUSTON,
+ * TX AND IS PROVIDED 'AS IS' AND WITHOUT ANY EXPRESS, IMPLIED OR
+ * STATUTORY WARRANTIES, INCLUDING, BUT NOT LIMITED TO, WARRANTIES OF
+ * ACCURACY, COMPLETENESS, AND NONINFRINGEMENT.  THE SOFTWARE USER SHALL
+ * INDEMNIFY, DEFEND AND HOLD HARMLESS RICE UNIVERSITY AND ITS FACULTY,
+ * STAFF AND STUDENTS FROM ANY AND ALL CLAIMS, ACTIONS, DAMAGES, LOSSES,
+ * LIABILITIES, COSTS AND EXPENSES, INCLUDING ATTORNEYS' FEES AND COURT
+ * COSTS, DIRECTLY OR INDIRECTLY ARISING OUR OF OR IN CONNECTION WITH
+ * ACCESS OR USE OF THE SOFTWARE.
  */
 
 package votebox.events;
@@ -38,33 +38,33 @@ import sexpression.StringExpression;
  * @author Montrose
  */
 public class EncryptedCastBallotEvent extends CastBallotEvent{
-	
+
     /**
      * Matcher for the EncryptedCastBallotEvent
      */
     private static MatcherRule MATCHER = new MatcherRule() {
         private ASExpression pattern = ASExpression
-                .make("(encrypted-cast-ballot %nonce:#string %ballot:#any %bid:#string)");
+                .make("(encrypted-cast-ballot %nonce:#string %ballot:#any)");
 
         public IAnnounceEvent match(int serial, ASExpression sexp) {
             HashMap<String, ASExpression> result = pattern.namedMatch(sexp);
             if (result != NamedNoMatch.SINGLETON)
                 return new EncryptedCastBallotEvent(serial, result.get("nonce"), result
-                        .get("ballot"), result.get("bid"));
+                        .get("ballot"));
 
             return null;
         };
     };
-	
+
     /**
-     * 
+     *
      * @return a MatcherRule for parsing this event type.
      */
     public static MatcherRule getMatcher(){
-    	return MATCHER;
+        return MATCHER;
     }//getMatcher
-    
-	/**
+
+    /**
      * @param serial
      *            the serial number of the sender
      * @param nonce
@@ -72,16 +72,16 @@ public class EncryptedCastBallotEvent extends CastBallotEvent{
      * @param ballot
      *            the encrypted ballot, as an array of bytes
      */
-    public EncryptedCastBallotEvent(int serial, ASExpression nonce, ASExpression ballot, ASExpression bid) {
-        super(serial, nonce, ballot, bid);
+    public EncryptedCastBallotEvent(int serial, ASExpression nonce, ASExpression ballot) {
+        super(serial, nonce, ballot);
     }
 
-	/**
+    /**
      * @see votebox.events.IAnnounceEvent#toSExp()
      */
-	public ASExpression toSExp() {
-		return new ListExpression(StringExpression.makeString("encrypted-cast-ballot"),
+    public ASExpression toSExp() {
+        return new ListExpression(StringExpression.makeString("encrypted-cast-ballot"),
                 getNonce(), getBallot());
-	}
-	
+    }
+
 }

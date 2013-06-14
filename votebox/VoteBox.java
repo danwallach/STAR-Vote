@@ -322,7 +322,7 @@ public class VoteBox {
                     //Object[] arg = (Object[])argTemp;
 
                     auditorium.announce(new CastCommittedBallotEvent(mySerial,
-                            StringExpression.makeString(nonce), StringExpression.makeString(bid)));
+                            StringExpression.makeString(nonce)));
 
                     BallotEncrypter.SINGLETON.clear();
 

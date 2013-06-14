@@ -572,7 +572,7 @@ public class Model {
                                 .getSerial(), ((StringExpression) e.getNonce())
                                 .getBytes()));
                     	
-                    	//Otheriwse, we need to count the whole thing.
+                    	//Otherwise, we need to count the whole thing.
                         VoteBoxBooth booth = (VoteBoxBooth) m;
                         booth.setPublicCount(booth.getPublicCount() + 1);
                         booth.setProtectedCount(booth.getProtectedCount() + 1);
@@ -927,7 +927,7 @@ public class Model {
                     ASExpression nonce = bids.get(bid);
                     BallotStore.castBallot(e.getBID(), nonce);
                     // used to be in voteBox registerForCommit listener.
-                    auditorium.announce(new CastBallotEvent(serial, nonce, StringExpression.EMPTY, StringExpression.make(bid)));
+                    auditorium.announce(new CastCommittedBallotEvent(serial, nonce));
                     // that should trigger my own castBallot listener.
                 } else {
                     throw new IllegalStateException("got ballot scanned message for invalid BID");

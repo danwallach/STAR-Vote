@@ -252,7 +252,7 @@ public class BallotScanner {
 
             //When a cast ballot is seen, build a JFRAME Displaying confirmation or denial
             public void castBallot(CastBallotEvent event) {
-                if(event.getBid().equals(lastFoundBID)){
+                if("HAHAHAH".equals(lastFoundBID)){
 
                     DateFormat dateFormat = new SimpleDateFormat("MMMM d, y");
                     Date date = new Date();

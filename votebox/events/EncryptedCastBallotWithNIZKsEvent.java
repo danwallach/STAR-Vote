@@ -9,37 +9,37 @@ import sexpression.StringExpression;
 
 public class EncryptedCastBallotWithNIZKsEvent extends EncryptedCastBallotEvent {
 
-	/**
+    /**
      * Matcher for the EncryptedCastBallotEvent
      */
     private static MatcherRule MATCHER = new MatcherRule() {
         private ASExpression pattern = ASExpression
-                .make("(encrypted-cast-ballot-with-nizks %nonce:#string %ballot:#any %bid:#string)");
+                .make("(encrypted-cast-ballot-with-nizks %nonce:#string %ballot:#any)");
 
         public IAnnounceEvent match(int serial, ASExpression sexp) {
             HashMap<String, ASExpression> result = pattern.namedMatch(sexp);
             if (result != NamedNoMatch.SINGLETON)
                 return new EncryptedCastBallotWithNIZKsEvent(serial, result.get("nonce"), result
-                        .get("ballot"), result.get("bid"));
+                        .get("ballot"));
 
             return null;
         };
     };
-	
+
     /**
-     * 
+     *
      * @return a MatcherRule for parsing this event type.
      */
     public static MatcherRule getMatcher(){
-    	return MATCHER;
+        return MATCHER;
     }//getMatcher
-    
-    public EncryptedCastBallotWithNIZKsEvent(int serial, ASExpression nonce, ASExpression ballot, ASExpression bid){
-    	super(serial, nonce, ballot, bid);
+
+    public EncryptedCastBallotWithNIZKsEvent(int serial, ASExpression nonce, ASExpression ballot){
+        super(serial, nonce, ballot);
     }
-    
+
     public ASExpression toSExp(){
-    	return new ListExpression(StringExpression.makeString("encrypted-cast-ballot-with-nizks"),
+        return new ListExpression(StringExpression.makeString("encrypted-cast-ballot-with-nizks"),
                 getNonce(), getBallot());
     }
 }

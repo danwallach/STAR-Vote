@@ -40,12 +40,12 @@ public class CastCommittedBallotEvent extends CastBallotEvent {
 
 	private static MatcherRule MATCHER = new MatcherRule() {
         private ASExpression pattern = ASExpression
-                .make("(cast-committed-ballot %nonce:#string %bid:#string)");
+                .make("(cast-committed-ballot %nonce:#string)");
 
         public IAnnounceEvent match(int serial, ASExpression sexp) {
             HashMap<String, ASExpression> result = pattern.namedMatch(sexp);
             if (result != NamedNoMatch.SINGLETON)
-                return new CastCommittedBallotEvent(serial, result.get("nonce"), result.get("bid"));
+                return new CastCommittedBallotEvent(serial, result.get("nonce"));
 
             return null;
         };
@@ -64,10 +64,9 @@ public class CastCommittedBallotEvent extends CastBallotEvent {
      * 
      * @param serial - Serial number of the machine sending the message
      * @param nonce - Nonce of the voting transaction in question.
-     * @param bid - the ballot id
      */
-	public CastCommittedBallotEvent(int serial, ASExpression nonce, ASExpression bid) {
-		super(serial, nonce, StringExpression.EMPTY, bid);
+	public CastCommittedBallotEvent(int serial, ASExpression nonce) {
+		super(serial, nonce, StringExpression.EMPTY);
 	}
 	
 	/**

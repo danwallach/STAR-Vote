@@ -75,13 +75,13 @@ public class Supervisor {
         view = new View(model);
         view.setVisible(true);
 
-        String keyword = "";
+     /*   String keyword = "";
         while (keyword == null || keyword.equals(""))
             keyword = JOptionPane.showInputDialog(view,
                     "Please enter today's election keyword:", "Keyword",
                     JOptionPane.QUESTION_MESSAGE);
         model.setKeyword(keyword);
-
+*/
         view.display();
         model.start();
     }
