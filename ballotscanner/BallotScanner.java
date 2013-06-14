@@ -348,40 +348,42 @@ public class BallotScanner {
 
             public void ballotAccepted(BallotScanAcceptedEvent event){
 
+                //If this event corresponds with our last scanned ballot, display a confirmation message
+                if(lastFoundBID.equals(event.getBID())){
+                    DateFormat dateFormat = new SimpleDateFormat("MMMM d, y");
+                    Date date = new Date();
 
-                DateFormat dateFormat = new SimpleDateFormat("MMMM d, y");
-                Date date = new Date();
+                    //Code which will display a confirmation screen
 
-                //Code which will display a confirmation screen
-
-                JPanel panel = new JPanel();
-                JLabel imageLabel = new JLabel();
-                JLabel textLabel = new JLabel("Ballot " + lastFoundBID + " confirmed and cast on ");
-                JLabel dateLabel = new JLabel(dateFormat.format(date));
+                    JPanel panel = new JPanel();
+                    JLabel imageLabel = new JLabel();
+                    JLabel textLabel = new JLabel("Ballot " + lastFoundBID + " confirmed and cast on ");
+                    JLabel dateLabel = new JLabel(dateFormat.format(date));
 
 
-                BufferedImage confirmed = null;
+                    BufferedImage confirmed = null;
 
-                try{
-                    File file = new File("images/confirmation.png");
-                    confirmed = ImageIO.read(file);
-                } catch (IOException e){
-                    System.out.println("Confirmation image could not be loaded!");
-                    throw new RuntimeException(e);
+                    try{
+                        File file = new File("images/confirmation.png");
+                        confirmed = ImageIO.read(file);
+                    } catch (IOException e){
+                        System.out.println("Confirmation image could not be loaded!");
+                        throw new RuntimeException(e);
+                    }
+                    ImageIcon confirmationIcon = new ImageIcon(confirmed);
+
+
+
+                    imageLabel.setIcon(confirmationIcon);
+                    panel.add(imageLabel);
+                    panel.setPreferredSize(new Dimension(350, 350));
+                    panel.add(textLabel);
+                    panel.add(dateLabel);
+                    frame.add(panel);
+                    frame.pack();
+
+                    frame.setVisible(true);
                 }
-                ImageIcon confirmationIcon = new ImageIcon(confirmed);
-
-
-
-                imageLabel.setIcon(confirmationIcon);
-                panel.add(imageLabel);
-                panel.setPreferredSize(new Dimension(350, 350));
-                panel.add(textLabel);
-                panel.add(dateLabel);
-                frame.add(panel);
-                frame.pack();
-
-                frame.setVisible(true);
 
             }
 
