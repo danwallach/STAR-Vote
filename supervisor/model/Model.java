@@ -929,6 +929,7 @@ public class Model {
                     // used to be in voteBox registerForCommit listener.
                     auditorium.announce(new CastCommittedBallotEvent(serial, nonce));
                     // that should trigger my own castBallot listener.
+                   auditorium.announce(new BallotScanAcceptedEvent(StringExpression.makeString(bid)));
                 } else {
                     auditorium.announce(new BallotScanRejectedEvent(StringExpression.makeString(bid)));
                 }

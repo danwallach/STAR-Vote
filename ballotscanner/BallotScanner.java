@@ -230,7 +230,7 @@ public class BallotScanner {
 
         try {
             auditorium = new VoteBoxAuditoriumConnector(mySerial,
-                    _constants, CastCommittedBallotEvent.getMatcher()
+                    _constants, BallotScanAcceptedEvent.getMatcher()
                     , BallotScanRejectedEvent.getMatcher()
             );
         } catch (NetworkException e1) {
@@ -346,8 +346,7 @@ public class BallotScanner {
             public void ballotPrinted(BallotPrintedEvent ballotPrintedEvent) {
             }
 
-            //When a committed ballot is cast after being scanned, confirm
-            public void castCommittedBallot(CastCommittedBallotEvent event){
+            public void ballotAccepted(BallotScanAcceptedEvent event){
 
 
                 DateFormat dateFormat = new SimpleDateFormat("MMMM d, y");
@@ -384,50 +383,51 @@ public class BallotScanner {
 
                 frame.setVisible(true);
 
-
             }
 
             public void ballotRejected(BallotScanRejectedEvent event){
-                DateFormat dateFormat = new SimpleDateFormat("MMMM d, y");
-                Date date = new Date();
+                //If our ballot was rejected, display a message
+                if(lastFoundBID.equals(event.getBID())){
+                    DateFormat dateFormat = new SimpleDateFormat("MMMM d, y");
+                    Date date = new Date();
 
-                //Code which will display a confirmation screen
+                    //Code which will display a confirmation screen
 
-                JPanel panel = new JPanel();
-                JLabel imageLabel = new JLabel();
-                JLabel textLabel = new JLabel("Ballot " + lastFoundBID + " was NOT cast.");
-                JLabel text2Label = new JLabel("Please ensure that this is the correct ballot or seek assistance from an election official.");
-                JLabel dateLabel = new JLabel(dateFormat.format(date));
+                    JPanel panel = new JPanel();
+                    JLabel imageLabel = new JLabel();
+                    JLabel textLabel = new JLabel("Ballot " + lastFoundBID + " was NOT cast.");
+                    JLabel text2Label = new JLabel("Please ensure that this is the correct ballot or seek assistance from an election official.");
+                    JLabel dateLabel = new JLabel(dateFormat.format(date));
 
 
-                BufferedImage rejected = null;
+                    BufferedImage rejected = null;
 
-                try{
-                    File file = new File("images/rejected.png");
-                    rejected = ImageIO.read(file);
-                } catch (IOException e){
-                    System.out.println("Rejection image could not be loaded!");
-                    throw new RuntimeException(e);
+                    try{
+                        File file = new File("images/rejected.png");
+                        rejected = ImageIO.read(file);
+                    } catch (IOException e){
+                        System.out.println("Rejection image could not be loaded!");
+                        throw new RuntimeException(e);
+                    }
+                    ImageIcon rejectionIcon = new ImageIcon(rejected);
+
+
+
+                    imageLabel.setIcon(rejectionIcon);
+                    panel.add(imageLabel);
+                    panel.setPreferredSize(new Dimension(350, 350));
+                    panel.add(textLabel);
+                    panel.add(text2Label);
+                    panel.add(dateLabel);
+                    frame.add(panel);
+                    frame.pack();
+
+                    frame.setVisible(true);
+
+                    confirmed = true;
+
                 }
-                ImageIcon rejectionIcon = new ImageIcon(rejected);
-
-
-
-                imageLabel.setIcon(rejectionIcon);
-                panel.add(imageLabel);
-                panel.setPreferredSize(new Dimension(350, 350));
-                panel.add(textLabel);
-                panel.add(text2Label);
-                panel.add(dateLabel);
-                frame.add(panel);
-                frame.pack();
-
-                frame.setVisible(true);
-
-                confirmed = true;
-
             }
-
 
 
         });
