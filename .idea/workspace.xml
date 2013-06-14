@@ -51,9 +51,9 @@
     <file path="/ToggleButton.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370358039224" ignored="false" />
     <file path="/RaceTitlePair.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369945268870" ignored="false" />
     <file path="/Label.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370369156357" ignored="false" />
-    <file path="/Dummy.txt" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371225329349" ignored="false" />
+    <file path="/Dummy.txt" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371225569262" ignored="false" />
     <file path="/ALayoutComponent.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370380215222" ignored="false" />
-    <file path="/HTMLPrinter.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371225518333" ignored="false" />
+    <file path="/HTMLPrinter.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371227901936" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -177,7 +177,7 @@
       <file leaf-file-name="HTMLPrinter.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/printer/HTMLPrinter.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="240" column="35" selection-start="10985" selection-end="10985" vertical-scroll-proportion="0.6024499">
+            <state line="254" column="45" selection-start="11415" selection-end="11415" vertical-scroll-proportion="0.88641423">
               <folding />
             </state>
           </provider>
@@ -642,7 +642,11 @@
       <created>1371225342419</created>
       <updated>1371225342419</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="Modified the HTMLPrinter so that it adds a space between the container divs.">
+      <created>1371225581701</created>
+      <updated>1371225581701</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -734,7 +738,7 @@
     <option name="WRAP_WHEN_TYPING_REACHES_RIGHT_MARGIN" value="false" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added code in the Printer class that builds a 3-column HTML file." />
+    <option name="LAST_COMMIT_MESSAGE" value="Modified the HTMLPrinter so that it adds a space between the container divs." />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="false" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -761,6 +765,7 @@
     <MESSAGE value="Fixed a possible IndexOutOfBounds exception in the HTMLPrinter code." />
     <MESSAGE value="Added layout variables to HTMLPrinter, to replace its hard-coded output dimensions." />
     <MESSAGE value="Added code in the Printer class that builds a 3-column HTML file." />
+    <MESSAGE value="Modified the HTMLPrinter so that it adds a space between the container divs." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -875,7 +880,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/printer/HTMLPrinter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="240" column="35" selection-start="10985" selection-end="10985" vertical-scroll-proportion="0.6024499">
+        <state line="254" column="45" selection-start="11415" selection-end="11415" vertical-scroll-proportion="0.88641423">
           <folding />
         </state>
       </provider>

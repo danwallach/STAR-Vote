@@ -28,7 +28,7 @@ public class HTMLPrinter {
      * @param pathToBallotVVPATFolder - The path to the vvpat folder in the ballot files
      * @param imageNames - ArrayLists of file names for images. One ArrayList per column.
      */
-    public static void generateHTMLFile (String filename, Boolean useTwoColumns, String pathToBallotVVPATFolder, ArrayList<String>... imageNames)
+    public static void generateHTMLFile (String filename, Boolean useTwoColumns, Boolean printFriendly, String pathToBallotVVPATFolder, ArrayList<String>... imageNames)
     {
         System.out.println("Attempting to create an html file at " + filename);
         File file = new File(filename);
@@ -78,11 +78,11 @@ public class HTMLPrinter {
 
             if (!useTwoColumns) // Ballot printing uses one-column format
             {
-                generatorHelperForOneColumn(writer, pathToBallotVVPATFolder, imageNames);
+                generatorHelperForOneColumn(writer, printFriendly, pathToBallotVVPATFolder, imageNames);
             }
             else // Ballot printing uses two-column format
             {
-                generatorHelperForTwoColumns(writer, pathToBallotVVPATFolder, imageNames);
+                generatorHelperForTwoColumns(writer, printFriendly, pathToBallotVVPATFolder, imageNames);
             }
 
             // End of body.
@@ -108,20 +108,37 @@ public class HTMLPrinter {
      * @param pathToBallotVVPATFolder - The path to the vvpat folder in the ballot files
      * @param imageNames - ArrayLists of file names for images. One ArrayList per column.
      */
-    private static void generatorHelperForTwoColumns (BufferedWriter writer, String pathToBallotVVPATFolder, ArrayList<String>... imageNames)
+    private static void generatorHelperForTwoColumns (BufferedWriter writer, Boolean printFriendly, String pathToBallotVVPATFolder, ArrayList<String>... imageNames)
     {
         try
         {
-            // Creates the container for the columns of images.
-            writer.write("<div id = \"container\" style = \"background-color:#CCFF00;width:" + CONTAINER_WIDTH + "px;height:" + CONTAINER_HEIGHT + "px;\">\n");
+            if (printFriendly)
+            {
+                // Creates the container for the columns of images.
+                writer.write("<div id = \"container\" style = \"background-color:#FFFFFF;width:" + CONTAINER_WIDTH + "px;height:" + CONTAINER_HEIGHT + "px;\">\n");
+            }
+            else
+            {
+                // Creates the container for the columns of images.
+                writer.write("<div id = \"container\" style = \"background-color:#CCFF00;width:" + CONTAINER_WIDTH + "px;height:" + CONTAINER_HEIGHT + "px;\">\n");
 
-            // Creates the left and right margins.
-            writer.write("<div id = \"left_margin\" style = \"background-color:#000000;width:" + LEFT_MARGIN_WIDTH + "px;float:left\"><br></div>\n");
-            writer.write("<div id = \"right_margin\" style = \"background-color:#000000;width:" + RIGHT_MARGIN_WIDTH + "px;float:right\"><br></div>\n");
+                // Creates the left and right margins.
+                writer.write("<div id = \"left_margin\" style = \"background-color:#000000;width:" + LEFT_MARGIN_WIDTH + "px;float:left\"><br></div>\n");
+                writer.write("<div id = \"right_margin\" style = \"background-color:#000000;width:" + RIGHT_MARGIN_WIDTH + "px;float:right\"><br></div>\n");
+            }
 
             // Left Column //////////////////////////////////////////////////////////////////////////////////////////////////////
-            // Create the left column.
-            writer.write("<div id = \"left_column\" style=\"background-color:#ABCDEF;width:" + TWO_COLUMNS_COLUMN_SIZE + "px;float:left;\">\n");
+
+            if (printFriendly)
+            {
+                // Create the left column.
+                writer.write("<div id = \"left_column\" style=\"background-color:#FFFFFF;width:" + TWO_COLUMNS_COLUMN_SIZE + "px;float:left;\">\n");
+            }
+            else
+            {
+                // Create the left column.
+                writer.write("<div id = \"left_column\" style=\"background-color:#ABCDEF;width:" + TWO_COLUMNS_COLUMN_SIZE + "px;float:left;\">\n");
+            }
 
             // Put images in the left column.
             ArrayList<String> left_column = imageNames[0];
@@ -144,8 +161,16 @@ public class HTMLPrinter {
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
             // Right Column /////////////////////////////////////////////////////////////////////////////////////////////////////
-            // Create the right column.
-            writer.write("<div id = \"right_column\" style=\"background-color:#FEDCBA;width:" + TWO_COLUMNS_COLUMN_SIZE + "px;float:right;\">\n");
+            if (printFriendly)
+            {
+                // Create the right column.
+                writer.write("<div id = \"right_column\" style=\"background-color:#FFFFFF;width:" + TWO_COLUMNS_COLUMN_SIZE + "px;float:left;\">\n");
+            }
+            else
+            {
+                // Create the right column.
+                writer.write("<div id = \"right_column\" style=\"background-color:#FEDCBA;width:" + TWO_COLUMNS_COLUMN_SIZE + "px;float:right;\">\n");
+            }
 
             // Put images in the right column.
             // It might be the case that there is an odd number of columns. Check if imageNames[1] throws an IndexOutOfBounds Exception.
@@ -189,7 +214,7 @@ public class HTMLPrinter {
         // If there are more columns to be printed, call this helper again on the rest of the columns.
         if (imageNames.length > 2)
         {
-            generatorHelperForTwoColumns(writer, pathToBallotVVPATFolder, Arrays.copyOfRange(imageNames, 2, imageNames.length));
+            generatorHelperForTwoColumns(writer, printFriendly, pathToBallotVVPATFolder, Arrays.copyOfRange(imageNames, 2, imageNames.length));
         }
     }
 
@@ -199,20 +224,36 @@ public class HTMLPrinter {
      * @param pathToBallotVVPATFolder - The path to the vvpat folder in the ballot files
      * @param imageNames - ArrayLists of file names for images. One ArrayList per column.
      */
-    private static void generatorHelperForOneColumn (BufferedWriter writer, String pathToBallotVVPATFolder, ArrayList<String>... imageNames)
+    private static void generatorHelperForOneColumn (BufferedWriter writer, Boolean printFriendly, String pathToBallotVVPATFolder, ArrayList<String>... imageNames)
     {
         try
         {
-            // Creates the container for the columns of images.
-            writer.write("<div id = \"container\" style = \"background-color:#CCFF00;width:" + CONTAINER_WIDTH + "px;height:" + CONTAINER_HEIGHT + "px;\">\n");
+            if (printFriendly)
+            {
+                // Creates the container for the columns of images.
+                writer.write("<div id = \"container\" style = \"background-color:#FFFFFF;width:" + CONTAINER_WIDTH + "px;height:" + CONTAINER_HEIGHT + "px;\">\n");
+            }
+            else
+            {
+                // Creates the container for the columns of images.
+                writer.write("<div id = \"container\" style = \"background-color:#CCFF00;width:" + CONTAINER_WIDTH + "px;height:" + CONTAINER_HEIGHT + "px;\">\n");
 
-            // Creates the left and right margins.
-            writer.write("<div id = \"left_margin\" style = \"background-color:#000000;width:" + LEFT_MARGIN_WIDTH + "px;float:left\"><br></div>\n");
-            writer.write("<div id = \"right_margin\" style = \"background-color:#000000;width:" + RIGHT_MARGIN_WIDTH + "px;float:right\"><br></div>\n");
+                // Creates the left and right margins.
+                writer.write("<div id = \"left_margin\" style = \"background-color:#000000;width:" + LEFT_MARGIN_WIDTH + "px;float:left\"><br></div>\n");
+                writer.write("<div id = \"right_margin\" style = \"background-color:#000000;width:" + RIGHT_MARGIN_WIDTH + "px;float:right\"><br></div>\n");
+            }
 
             // Column ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-            // Create the column.
-            writer.write("<div id = \"column\" style=\"background-color:#ABCDEF;width:" + ONE_COLUMN_COLUMN_SIZE + "px;float:left;\">\n");
+            if (printFriendly)
+            {
+                // Create the column.
+                writer.write("<div id = \"column\" style=\"background-color:#FFFFFF;width:" + ONE_COLUMN_COLUMN_SIZE + "px;float:left;\">\n");
+            }
+            else
+            {
+                // Create the column.
+                writer.write("<div id = \"column\" style=\"background-color:#ABCDEF;width:" + ONE_COLUMN_COLUMN_SIZE + "px;float:left;\">\n");
+            }
 
             // Put images in the column.
             ArrayList<String> column = imageNames[0];
@@ -248,7 +289,7 @@ public class HTMLPrinter {
         // If there are more columns to be printed, call this helper again on the rest of the columns.
         if (imageNames.length > 1)
         {
-            generatorHelperForTwoColumns(writer, pathToBallotVVPATFolder, Arrays.copyOfRange(imageNames, 1, imageNames.length));
+            generatorHelperForTwoColumns(writer, printFriendly, pathToBallotVVPATFolder, Arrays.copyOfRange(imageNames, 1, imageNames.length));
         }
     }
 }
