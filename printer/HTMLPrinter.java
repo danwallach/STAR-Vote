@@ -18,7 +18,8 @@ public class HTMLPrinter {
     public final static int CONTAINER_HEIGHT = 792;
     public final static int LEFT_MARGIN_WIDTH = 72;
     public final static int RIGHT_MARGIN_WIDTH = 72;
-    public final static int TWO_COLUMNS_COLUMN_SIZE = (CONTAINER_WIDTH - LEFT_MARGIN_WIDTH - RIGHT_MARGIN_WIDTH) / 2;
+    // Randomly subtracting a 3, to make it all print on one page. Page margins are difficult to bypass when printing from the command line.
+    public final static int TWO_COLUMNS_COLUMN_SIZE = (CONTAINER_WIDTH - LEFT_MARGIN_WIDTH - RIGHT_MARGIN_WIDTH) / 2 - 3;
     public final static int ONE_COLUMN_COLUMN_SIZE = CONTAINER_WIDTH - LEFT_MARGIN_WIDTH - RIGHT_MARGIN_WIDTH;
 
     /**
@@ -150,7 +151,11 @@ public class HTMLPrinter {
                 // Leave an empty line after selection images.
                 if (isSelectionImage)
                 {
-                    writer.write("<br>\n<br>\n");
+                    // Add selection separator.
+                    // New separator:
+                    writer.write("<div id = \"bar\" style = \"background-color:#000000;width:" + TWO_COLUMNS_COLUMN_SIZE + "px;\"><hr></div>\n");
+                    // Old separator:
+                    // writer.write("<br>\n<br>\n");
                 }
                 // Set the flag for selection images and reset it for label/title images.
                 isSelectionImage = !isSelectionImage;
@@ -185,7 +190,11 @@ public class HTMLPrinter {
                     // Leave an empty line after selection images.
                     if (isSelectionImage)
                     {
-                        writer.write("<br>\n<br>\n");
+                        // Add selection separator.
+                        // New separator:
+                        writer.write("<div id = \"bar\" style = \"background-color:#000000;width:" + TWO_COLUMNS_COLUMN_SIZE + "px;\"><hr></div>\n");
+                        // Old separator:
+                        // writer.write("<br>\n<br>\n");
                     }
                     // Set the flag for selection images and reset it for label/title images.
                     isSelectionImage = !isSelectionImage;
@@ -265,7 +274,11 @@ public class HTMLPrinter {
                 // Leave an empty line after selection images.
                 if (isSelectionImage)
                 {
-                    writer.write("<br>\n<br>\n");
+                    // Add selection separator.
+                    // New separator:
+                    writer.write("<div id = \"bar\" style = \"background-color:#000000;width:" + ONE_COLUMN_COLUMN_SIZE + "px;\"><hr></div>\n");
+                    // Old separator:
+                    // writer.write("<br>\n<br>\n");
                 }
                 // Set the flag for selection images and reset it for label/title images.
                 isSelectionImage = !isSelectionImage;

@@ -169,10 +169,6 @@ public class Printer {
                 column1.add("B12_printable_en.png");
                 column1.add("L184_printable_en.png");
                 column1.add("B13_printable_en.png");
-                column1.add("L185_printable_en.png");
-                column1.add("B14_printable_en.png");
-                column1.add("L186_printable_en.png");
-                column1.add("B15_printable_en.png");
                 ArrayList<String> column2 = new ArrayList<String>();
                 column2.add("L187_printable_en.png");
                 column2.add("B16_printable_en.png");
@@ -200,10 +196,6 @@ public class Printer {
                 column2.add("B4_printable_en.png");
                 column2.add("L172_printable_en.png");
                 column2.add("B5_printable_en.png");
-                column2.add("L173_printable_en.png");
-                column2.add("B6_printable_en.png");
-                column2.add("L174_printable_en.png");
-                column2.add("B7_printable_en.png");
                 ArrayList<String> column3 = new ArrayList<String>();
                 column3.add("L175_printable_en.png");
                 column3.add("B8_printable_en.png");
@@ -231,11 +223,7 @@ public class Printer {
                 column3.add("B19_printable_en.png");
                 column3.add("L191_printable_en.png");
                 column3.add("B20_printable_en.png");
-                column3.add("L196_printable_en.png");
-                column3.add("B21_printable_en.png");
-                column3.add("L197_printable_en.png");
-                column3.add("B22_printable_en.png");
-                HTMLPrinter.generateHTMLFile("C:\\Users\\Mircea\\Desktop\\b.html", true, "C:\\Users\\Mircea\\Desktop\\long_ballot_correct\\media\\vvpat\\", column1, column2, column3);*/
+                HTMLPrinter.generateHTMLFile("C:\\Users\\Mircea\\Desktop\\b.html", true, true, "C:\\Users\\Mircea\\Desktop\\long_ballot_correct\\media\\vvpat\\", column1, column2);*/
 
                 //Print the date and title of the election at the top of the page
                 Font font = new Font("ARIAL Unicode", Font.PLAIN, 10);

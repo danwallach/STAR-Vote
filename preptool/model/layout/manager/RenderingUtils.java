@@ -753,11 +753,12 @@ public class RenderingUtils {
         graphs.drawString(selection, drawPosition, heightPos); //height based on an appropriate spacing of up to a 3 digit number
 
 
+        /*// This bottom line will be instead drawn directly in the HTML file.
         graphs.setColor(Color.BLACK);
         graphs.setStroke(new BasicStroke(padding / 4));
 
         //split "1" because it gives a nice line width. It's sort of a hack...
-        graphs.drawLine(writePos + lineWidth(("1").split(""), nf), heightPos + fontsize/2, wrappingWidth/*Math.max(wrappingWidth,selectionLength)*/, heightPos + fontsize/2);
+        graphs.drawLine(writePos + lineWidth(("1").split(""), nf), heightPos + fontsize/2, wrappingWidth*//*Math.max(wrappingWidth,selectionLength)*//*, heightPos + fontsize/2);*/
 
         //This should automatically trim the image, sadly, it doesn't
         wrappedImage = wrappedImage.getSubimage(0, 0, wrappingWidth/*Math.max(wrappingWidth,selectionLength)*/, heightPos + padding);
