@@ -177,6 +177,9 @@ public class HTMLPrinter {
 
             // End of the container for the columns.
             writer.write("</div>\n");
+
+            // Add a space between divs.
+            writer.write("<br>\n");
         }
         catch (IOException e)
         {
@@ -233,6 +236,9 @@ public class HTMLPrinter {
 
             // End of the container for the column.
             writer.write("</div>\n");
+
+            // Add a space between divs.
+            writer.write("<br>\n");
         }
         catch (IOException e)
         {

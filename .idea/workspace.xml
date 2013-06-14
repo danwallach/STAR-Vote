@@ -10,8 +10,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="26d876ad-6b77-4796-b9d0-ead84066c769" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/log.out" afterPath="$PROJECT_DIR$/log.out" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/printer/Printer.java" afterPath="$PROJECT_DIR$/printer/Printer.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/printer/HTMLPrinter.java" afterPath="$PROJECT_DIR$/printer/HTMLPrinter.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/vb.conf" afterPath="$PROJECT_DIR$/vb.conf" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
@@ -52,9 +51,9 @@
     <file path="/ToggleButton.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370358039224" ignored="false" />
     <file path="/RaceTitlePair.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369945268870" ignored="false" />
     <file path="/Label.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370369156357" ignored="false" />
-    <file path="/Dummy.txt" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371223957764" ignored="false" />
+    <file path="/Dummy.txt" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371225329349" ignored="false" />
     <file path="/ALayoutComponent.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370380215222" ignored="false" />
-    <file path="/HTMLPrinter.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371223857936" ignored="false" />
+    <file path="/HTMLPrinter.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371225518333" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -162,10 +161,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="Printer.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="Printer.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/printer/Printer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="227" column="77" selection-start="9523" selection-end="9523" vertical-scroll-proportion="0.4131403">
+            <state line="227" column="77" selection-start="9523" selection-end="9523" vertical-scroll-proportion="0.0">
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#4436#17034#0" expanded="true" />
@@ -175,10 +174,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="HTMLPrinter.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="HTMLPrinter.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/printer/HTMLPrinter.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="219" column="163" selection-start="10178" selection-end="10178" vertical-scroll-proportion="0.0">
+            <state line="240" column="35" selection-start="10985" selection-end="10985" vertical-scroll-proportion="0.6024499">
               <folding />
             </state>
           </provider>
@@ -217,8 +216,8 @@
         <option value="$PROJECT_DIR$/votebox/events/CommitBallotEvent.java" />
         <option value="$PROJECT_DIR$/supervisor/model/Model.java" />
         <option value="$PROJECT_DIR$/preptool/model/layout/manager/PsychLayoutManager.java" />
-        <option value="$PROJECT_DIR$/printer/HTMLPrinter.java" />
         <option value="$PROJECT_DIR$/printer/Printer.java" />
+        <option value="$PROJECT_DIR$/printer/HTMLPrinter.java" />
       </list>
     </option>
   </component>
@@ -639,7 +638,11 @@
       <created>1371223980017</created>
       <updated>1371223980017</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="Added code in the Printer class that builds a 3-column HTML file.">
+      <created>1371225342419</created>
+      <updated>1371225342419</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -731,7 +734,7 @@
     <option name="WRAP_WHEN_TYPING_REACHES_RIGHT_MARGIN" value="false" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added layout variables to HTMLPrinter, to replace its hard-coded output dimensions." />
+    <option name="LAST_COMMIT_MESSAGE" value="Added code in the Printer class that builds a 3-column HTML file." />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="false" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -757,6 +760,7 @@
     <MESSAGE value="Fixed rendering. It now renders all the selection images to be the same size." />
     <MESSAGE value="Fixed a possible IndexOutOfBounds exception in the HTMLPrinter code." />
     <MESSAGE value="Added layout variables to HTMLPrinter, to replace its hard-coded output dimensions." />
+    <MESSAGE value="Added code in the Printer class that builds a 3-column HTML file." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -858,21 +862,21 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/printer/HTMLPrinter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="219" column="163" selection-start="10178" selection-end="10178" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/printer/Printer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="227" column="77" selection-start="9523" selection-end="9523" vertical-scroll-proportion="0.4131403">
+        <state line="227" column="77" selection-start="9523" selection-end="9523" vertical-scroll-proportion="0.0">
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#4436#17034#0" expanded="true" />
             <element signature="e#17028#17029#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/printer/HTMLPrinter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="240" column="35" selection-start="10985" selection-end="10985" vertical-scroll-proportion="0.6024499">
+          <folding />
         </state>
       </provider>
     </entry>
