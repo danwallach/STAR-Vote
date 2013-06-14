@@ -10,8 +10,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="26d876ad-6b77-4796-b9d0-ead84066c769" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/votebox/events/BallotScannedEvent.java" afterPath="$PROJECT_DIR$/votebox/events/BallotScannedEvent.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/votebox/events/BallotScanRejectedEvent.java" afterPath="$PROJECT_DIR$/votebox/events/BallotScanRejectedEvent.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ballotscanner/BallotScanner.java" afterPath="$PROJECT_DIR$/ballotscanner/BallotScanner.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/supervisor/model/Model.java" afterPath="$PROJECT_DIR$/supervisor/model/Model.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="STAR-Vote.iws" />
@@ -21,7 +22,7 @@
     <file path="/a.dummy" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371239124131" ignored="false" />
     <file path="/*.regexp" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371160842782" ignored="false" />
     <file path="/IAdapter.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369258761957" ignored="false" />
-    <file path="/Model.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371241877903" ignored="false" />
+    <file path="/Model.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371242920376" ignored="false" />
     <file path="/CommitBallotEvent.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369413068321" ignored="false" />
     <file path="$PROJECT_DIR$/sim/utils/Time.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369261529307" ignored="false" />
     <file path="/NIZKsPerformanceTest.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369261905322" ignored="false" />
@@ -51,18 +52,18 @@
     <file path="/ToggleButton.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370358039224" ignored="false" />
     <file path="/RaceTitlePair.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369945268870" ignored="false" />
     <file path="/Label.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370901082820" ignored="false" />
-    <file path="/Dummy.txt" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371241735135" ignored="false" />
+    <file path="/Dummy.txt" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371242403837" ignored="false" />
     <file path="/ALayoutComponent.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370380215222" ignored="false" />
     <file path="/PrintImageUtils.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370880262959" ignored="false" />
     <file path="/DefaultButtonState.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370901784343" ignored="false" />
-    <file path="/BallotScanner.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371241574626" ignored="false" />
+    <file path="/BallotScanner.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371242508092" ignored="false" />
     <file path="/FrameGrabberWebcam.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371067468047" ignored="false" />
     <file path="/MultiFormatDecoder.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371138597521" ignored="false" />
     <file path="/CastBallotEvent.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371148995425" ignored="false" />
     <file path="/EncryptedCastBallotEvent.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371149661083" ignored="false" />
     <file path="/CastCommittedBallotEvent.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371230112942" ignored="false" />
     <file path="/EncryptedCastBallotWithNIZKsEvent.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371235822489" ignored="false" />
-    <file path="/BallotScanRejectedEvent.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371238662245" ignored="false" />
+    <file path="/BallotScanRejectedEvent.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371242886375" ignored="false" />
     <file path="/BallotScanConfirmedEvent.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371238790940" ignored="false" />
     <file path="/VoteBoxEventListener.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371240517375" ignored="false" />
     <file path="/Tap.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371240709063" ignored="false" />
@@ -173,10 +174,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="Model.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="Model.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/supervisor/model/Model.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="76" column="29" selection-start="2590" selection-end="2599" vertical-scroll-proportion="-8.08">
+            <state line="936" column="43" selection-start="35824" selection-end="35863" vertical-scroll-proportion="0.33227345">
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -207,7 +208,7 @@
       <file leaf-file-name="BallotScanRejectedEvent.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/votebox/events/BallotScanRejectedEvent.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="9" column="10" selection-start="143" selection-end="143" vertical-scroll-proportion="0.0">
+            <state line="75" column="67" selection-start="1924" selection-end="1924" vertical-scroll-proportion="0.0">
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -215,10 +216,19 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="BallotScanner.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="BallotScannedEvent.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/votebox/events/BallotScannedEvent.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="20" column="4" selection-start="466" selection-end="765" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="BallotScanner.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ballotscanner/BallotScanner.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="235" column="20" selection-start="6969" selection-end="6969" vertical-scroll-proportion="0.44234592">
+            <state line="395" column="80" selection-start="11953" selection-end="11953" vertical-scroll-proportion="-126.4">
               <folding />
             </state>
           </provider>
@@ -228,15 +238,6 @@
         <entry file="file://$PROJECT_DIR$/votebox/events/VoteBoxEventNotifier.java">
           <provider selected="true" editor-type-id="text-editor">
             <state line="190" column="53" selection-start="5621" selection-end="5621" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="BallotScannedEvent.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/votebox/events/BallotScannedEvent.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="18" column="36" selection-start="429" selection-end="429" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -275,16 +276,16 @@
         <option value="$PROJECT_DIR$/votebox/events/VoteBoxAuditoriumConnector.java" />
         <option value="$PROJECT_DIR$/votebox/middle/ballot/RadioButton.java" />
         <option value="$PROJECT_DIR$/votebox/middle/ballot/StraightTicket.java" />
-        <option value="$PROJECT_DIR$/votebox/events/BallotScanRejectedEvent.java" />
         <option value="$PROJECT_DIR$/votebox/events/BallotScanConfirmedEvent.java" />
         <option value="$PROJECT_DIR$/votebox/events/BallotScanAcceptedEvent.java" />
         <option value="$PROJECT_DIR$/votebox/events/VoteBoxEventListener.java" />
         <option value="$PROJECT_DIR$/votebox/VoteBox.java" />
         <option value="$PROJECT_DIR$/tap/Tap.java" />
         <option value="$PROJECT_DIR$/votebox/events/VoteBoxEventNotifier.java" />
-        <option value="$PROJECT_DIR$/supervisor/model/Model.java" />
-        <option value="$PROJECT_DIR$/ballotscanner/BallotScanner.java" />
         <option value="$PROJECT_DIR$/votebox/events/BallotScannedEvent.java" />
+        <option value="$PROJECT_DIR$/ballotscanner/BallotScanner.java" />
+        <option value="$PROJECT_DIR$/votebox/events/BallotScanRejectedEvent.java" />
+        <option value="$PROJECT_DIR$/supervisor/model/Model.java" />
       </list>
     </option>
   </component>
@@ -934,7 +935,11 @@
       <created>1371241740123</created>
       <updated>1371241740123</updated>
     </task>
-    <option name="localTasksCounter" value="45" />
+    <task id="LOCAL-00045" summary="Fixed matcher issues">
+      <created>1371242409052</created>
+      <updated>1371242409052</updated>
+    </task>
+    <option name="localTasksCounter" value="46" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -976,7 +981,7 @@
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32946378" sideWeight="0.64333016" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.19900498" sideWeight="0.64333016" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3566698" sideWeight="0.4997236" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3566698" sideWeight="0.4997236" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Analyze Dataflow to" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32899022" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
@@ -1026,7 +1031,7 @@
     <option name="WRAP_WHEN_TYPING_REACHES_RIGHT_MARGIN" value="false" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="Readded a matcher" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed matcher issues" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="false" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -1040,7 +1045,6 @@
     <option name="UPDATE_FILTER_BY_SCOPE" value="false" />
     <option name="SHOW_FILE_HISTORY_AS_TREE" value="false" />
     <option name="FILE_HISTORY_SPLITTER_PROPORTION" value="0.6" />
-    <MESSAGE value="Updated/fixed drawing position for the box." />
     <MESSAGE value="Cleaned up the code." />
     <MESSAGE value="Removed .idea from git ignore list." />
     <MESSAGE value="Added support for vertical image trimming." />
@@ -1065,6 +1069,7 @@
     <MESSAGE value="Added some comments" />
     <MESSAGE value="updated events again" />
     <MESSAGE value="Readded a matcher" />
+    <MESSAGE value="Fixed matcher issues" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1143,32 +1148,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/supervisor/model/Model.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="76" column="29" selection-start="2590" selection-end="2599" vertical-scroll-proportion="-8.08">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/votebox/events/VoteBoxEventListener.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="243" column="58" selection-start="6228" selection-end="6228" vertical-scroll-proportion="0.86097944">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/votebox/events/VoteBoxEventNotifier.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="190" column="53" selection-start="5621" selection-end="5621" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/votebox/events/BallotScannedEvent.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="18" column="36" selection-start="429" selection-end="429" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
@@ -1180,19 +1162,42 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/votebox/events/VoteBoxEventNotifier.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="190" column="53" selection-start="5621" selection-end="5621" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ballotscanner/BallotScanner.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="395" column="80" selection-start="11953" selection-end="11953" vertical-scroll-proportion="-126.4">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/votebox/events/BallotScannedEvent.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="20" column="4" selection-start="466" selection-end="765" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/votebox/events/BallotScanRejectedEvent.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="9" column="10" selection-start="143" selection-end="143" vertical-scroll-proportion="0.0">
+        <state line="75" column="67" selection-start="1924" selection-end="1924" vertical-scroll-proportion="0.0">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ballotscanner/BallotScanner.java">
+    <entry file="file://$PROJECT_DIR$/supervisor/model/Model.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="235" column="20" selection-start="6969" selection-end="6969" vertical-scroll-proportion="0.44234592">
-          <folding />
+        <state line="936" column="43" selection-start="35824" selection-end="35863" vertical-scroll-proportion="0.33227345">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

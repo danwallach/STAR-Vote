@@ -13,24 +13,24 @@ import java.util.HashMap;
  */
 public class BallotScanRejectedEvent implements IAnnounceEvent {
 
-    private ASExpression _bid;
+    private String _bid;
 
     /**
      * The matcher for the BallotReceivedEvent.
      */
     private static MatcherRule MATCHER = new MatcherRule() {
         private ASExpression pattern = new ListExpression( StringExpression
-                .makeString("ballot-rejected %bid:#string"));
+                .makeString("ballot-rejected"), StringWildcard.SINGLETON);
 
         public IAnnounceEvent match(int serial, ASExpression sexp) {
-
-            HashMap<String, ASExpression> result = pattern.namedMatch(sexp);
-            if (result != NamedNoMatch.SINGLETON) {
-                return new BallotScanRejectedEvent(result.get("bid"));
-
+            ASExpression res = pattern.match(sexp);
+            if (res != NoMatch.SINGLETON) {
+                String BID = ((ListExpression) res).get(0).toString();
+                return new BallotScanRejectedEvent(serial,  BID );
             }
+
             return null;
-        };
+        }
     };
 
     /**
@@ -47,7 +47,7 @@ public class BallotScanRejectedEvent implements IAnnounceEvent {
      * @param bid
      *          The rejected ballot's id
      */
-    public BallotScanRejectedEvent(ASExpression bid) {
+    public BallotScanRejectedEvent(int serial, String bid) {
         _bid = bid;
     }
 
@@ -55,7 +55,7 @@ public class BallotScanRejectedEvent implements IAnnounceEvent {
      * @return the ballot id
      */
     public String getBID(){
-        return _bid.toString();
+        return _bid;
     }
 
     /**
@@ -77,6 +77,6 @@ public class BallotScanRejectedEvent implements IAnnounceEvent {
 
         return new ListExpression( StringExpression
                 .makeString( "ballot-rejected" ),
-                _bid );
+                StringExpression.makeString(_bid) );
     }
 }

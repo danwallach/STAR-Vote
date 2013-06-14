@@ -392,6 +392,9 @@ public class BallotScanner {
             }
 
             public void ballotRejected(BallotScanRejectedEvent event){
+                System.out.println("Rejected event: Event BID: " + event.getBID());
+                System.out.println("Rejected event: Last BID: " + lastFoundBID);
+
                 //If our ballot was rejected, display a message
                 if(lastFoundBID.equals(event.getBID())){
                     DateFormat dateFormat = new SimpleDateFormat("MMMM d, y");

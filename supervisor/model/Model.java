@@ -934,7 +934,7 @@ public class Model {
                     auditorium.announce(new BallotScanAcceptedEvent(StringExpression.makeString(bid)));
                 } else {
                     System.out.println("Sending scan rejection!");
-                    auditorium.announce(new BallotScanRejectedEvent(StringExpression.makeString(bid)));
+                    auditorium.announce(new BallotScanRejectedEvent(mySerial, bid));
                 }
 
             }
