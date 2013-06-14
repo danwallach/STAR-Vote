@@ -911,6 +911,14 @@ public class VoteBox {
                 // NO-OP
             }
 
+            public void ballotAccepted(BallotScanAcceptedEvent e){
+                // NO-OP
+            }
+
+            public void ballotRejected(BallotScanRejectedEvent e){
+                // NO-OP
+            }
+
         });
 
         try {

@@ -929,8 +929,10 @@ public class Model {
                     // used to be in voteBox registerForCommit listener.
                     auditorium.announce(new CastCommittedBallotEvent(serial, nonce));
                     // that should trigger my own castBallot listener.
-                   auditorium.announce(new BallotScanAcceptedEvent(StringExpression.makeString(bid)));
+                    System.out.println("Sending scan confirmation!");
+                    auditorium.announce(new BallotScanAcceptedEvent(StringExpression.makeString(bid)));
                 } else {
+                    System.out.println("Sending scan rejection!");
                     auditorium.announce(new BallotScanRejectedEvent(StringExpression.makeString(bid)));
                 }
 
@@ -965,6 +967,14 @@ public class Model {
             public void ballotPrinted(BallotPrintedEvent ballotPrintedEvent) {
                 expectedBallots.add(Integer.valueOf(ballotPrintedEvent.getBID()));
                 System.out.println("V"  + expectedBallots);
+            }
+
+            public void ballotAccepted(BallotScanAcceptedEvent e){
+                //NO-OP
+            }
+
+            public void ballotRejected(BallotScanRejectedEvent e){
+                //NO-OP
             }
 
         });
