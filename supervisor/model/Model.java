@@ -927,7 +927,7 @@ public class Model {
                     ASExpression nonce = bids.get(bid);
                     BallotStore.castBallot(e.getBID(), nonce);
                     // used to be in voteBox registerForCommit listener.
-                    auditorium.announce(new CastCommittedBallotEvent(serial, nonce, StringExpression.make(bid)));
+                    auditorium.announce(new CastBallotEvent(serial, nonce, StringExpression.EMPTY, StringExpression.make(bid)));
                     // that should trigger my own castBallot listener.
                 } else {
                     throw new IllegalStateException("got ballot scanned message for invalid BID");

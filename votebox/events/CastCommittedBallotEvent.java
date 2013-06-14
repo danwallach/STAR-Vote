@@ -31,7 +31,7 @@ import sexpression.StringExpression;
 
 /**
  * Class used to indicate that the previously committed ballot (corresponding to a nonce) is not
- * being challeneged, and should instead be tallied.
+ * being challenged, and should instead be tallied.
  * 
  * @author Montrose
  *
