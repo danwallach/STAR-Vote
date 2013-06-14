@@ -16,7 +16,7 @@ public class BallotScannedEvent implements IAnnounceEvent {
    */
   private static MatcherRule MATCHER = new MatcherRule() {
     private ASExpression pattern = new ListExpression( StringExpression
-        .makeString( "ballot-accepted" ), StringWildcard.SINGLETON);
+        .makeString( "ballot-scanned" ), StringWildcard.SINGLETON);
 
     public IAnnounceEvent match(int serial, ASExpression sexp) {
       ASExpression res = pattern.match( sexp );

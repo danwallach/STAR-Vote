@@ -232,8 +232,8 @@ public class BallotScanner {
 
         try {
             auditorium = new VoteBoxAuditoriumConnector(mySerial,
-                    _constants, BallotScanAcceptedEvent.getMatcher()
-                    , BallotScanRejectedEvent.getMatcher()
+                    _constants, BallotScanAcceptedEvent.getMatcher(),
+                    BallotScanRejectedEvent.getMatcher()
             );
         } catch (NetworkException e1) {
             //NetworkException represents a recoverable error
