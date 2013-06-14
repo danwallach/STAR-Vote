@@ -157,7 +157,7 @@ public class VoteBoxAuditoriumConnector {
                     catch (NetworkException e1) {
                     	//NetworkException represents a recoverable error
                     	//  so just note it and continue
-                        System.out.println("Recoverable error occured: "+e1.getMessage());
+                        System.out.println("Recoverable error occurred: "+e1.getMessage());
                         e1.printStackTrace(System.err);
                     }
                 }

@@ -73,7 +73,7 @@ public class RadioButton extends ACardStrategy {
 							e);
 				} catch (DeselectionException e) {
 					throw new CardStrategyException(
-							"An error occured in the view while trying to deselect an element: "
+							"An error occurred in the view while trying to deselect an element: "
 									+ e.getMessage(), e);
 				}
 

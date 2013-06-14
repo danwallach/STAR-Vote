@@ -122,7 +122,7 @@ public class BallotResultParser {
 		Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler(){
 			public void uncaughtException(Thread t, Throwable e) {
 				final JDialog dialog = new JDialog();
-				dialog.setTitle("An unexpected error occured");
+				dialog.setTitle("An unexpected error occurred");
 				dialog.setSize(800,600);
 				dialog.setLayout(new BorderLayout());
 				dialog.add(new JLabel("Please include the following as well as the involved _ballot & .zip files in a bug report."), BorderLayout.NORTH);
