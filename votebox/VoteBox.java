@@ -511,8 +511,6 @@ public class VoteBox{
      */
     public void start() {
 
-
-
         inactiveUI = new VoteBoxInactiveUI(this);
         
         inactiveUI.setVisible(true);

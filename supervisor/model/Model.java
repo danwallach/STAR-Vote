@@ -594,7 +594,8 @@ public class Model {
              * see if it exists, and set it to online if so. Also increment the
              * number of connections.
              */
-            public void joined(JoinEvent e) {            	
+            public void joined(JoinEvent e) {
+                System.out.println("MACHINE JOINED!");
                 AMachine m = getMachineForSerial(e.getSerial());
                 if (m != null) {
                     m.setOnline(true);
@@ -628,6 +629,8 @@ public class Model {
                 AMachine m = getMachineForSerial(e.getSerial());
                 if (m != null) {
                     m.setOnline(false);
+                }else{
+                    throw new RuntimeException("WARNING: Machine left without having been registered");
                 }
                 numConnected--;
                 if (numConnected == 0) {
@@ -831,6 +834,7 @@ public class Model {
                                     + " is not a booth, but broadcasted votebox message");
                 if (m == null) {
                     m = new VoteBoxBooth(e.getSerial());
+                    System.out.println("Vote Box Added: " + m);
                     machines.add(m);
                     machinesChangedObs.notifyObservers();
                 }

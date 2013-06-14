@@ -122,5 +122,4 @@ public class VoteBoxBooth extends AMachine {
         this.publicCount = publicCount;
         obs.notifyObservers();
     }
-
 }

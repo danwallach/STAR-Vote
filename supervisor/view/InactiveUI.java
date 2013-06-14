@@ -39,6 +39,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import ballotscanner.BallotScannerMachine;
 import supervisor.model.AMachine;
 import supervisor.model.Model;
 import supervisor.model.SupervisorMachine;
@@ -133,17 +134,24 @@ public class InactiveUI extends JPanel {
 
         c.gridy = 1;
         c.insets = new Insets(0, 0, 0, 0);
-        if (model.isConnected()) {
+        if (model.isConnected()){
             int supervisors = 0;
             int booths = 0;
+            int scanners = 0;
+            System.out.println(model.getMachines().size() + " " + model.getNumConnected());
             for (AMachine m : model.getMachines()) {
-                if (m instanceof SupervisorMachine) {
-                    if (m.getSerial() != model.getMySerial()) ++supervisors;
-                } else if (m instanceof VoteBoxBooth) ++booths;
+                System.out.println(m);
+                if (m instanceof SupervisorMachine && m.isOnline() && m.getSerial() != model.getMySerial()) {
+                    supervisors++;
+                } else if (m instanceof VoteBoxBooth && m.isOnline()){
+                    booths++;
+                } else if (m instanceof BallotScannerMachine && m.isOnline()){
+                    scanners++;
+                }
             }
-            int unknown = model.getNumConnected() - supervisors - booths;
+            int unknown = model.getNumConnected() - supervisors - booths - scanners;
             String str = "(" + supervisors + " supervisors, " + booths
-                    + " booths";
+                    + " booths, " + scanners + " scanners";
             if (unknown > 0)
                 str += ", " + unknown + " unknown)";
             else
