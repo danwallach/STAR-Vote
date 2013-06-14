@@ -230,7 +230,8 @@ public class BallotScanner {
 
         try {
             auditorium = new VoteBoxAuditoriumConnector(mySerial,
-                    _constants, CastBallotEvent.getMatcher()
+                    _constants, CastCommittedBallotEvent.getMatcher()
+                    , BallotScanRejectedEvent.getMatcher()
             );
         } catch (NetworkException e1) {
             //NetworkException represents a recoverable error
@@ -250,85 +251,8 @@ public class BallotScanner {
             public void ballotCounted(BallotCountedEvent e) {
             }
 
-            //When a cast ballot is seen, build a JFRAME Displaying confirmation or denial
+
             public void castBallot(CastBallotEvent event) {
-                if("HAHAHAH".equals(lastFoundBID)){
-
-                    DateFormat dateFormat = new SimpleDateFormat("MMMM d, y");
-                    Date date = new Date();
-
-                    //Code which will display a confirmation screen
-
-                    JPanel panel = new JPanel();
-                    JLabel imageLabel = new JLabel();
-                    JLabel textLabel = new JLabel("Ballot " + lastFoundBID + " confirmed and cast on ");
-                    JLabel dateLabel = new JLabel(dateFormat.format(date));
-
-
-                    BufferedImage confirmed = null;
-
-                    try{
-                        File file = new File("images/confirmation.png");
-                        confirmed = ImageIO.read(file);
-                    } catch (IOException e){
-                        System.out.println("Confirmation image could not be loaded!");
-                        throw new RuntimeException(e);
-                    }
-                    ImageIcon confirmationIcon = new ImageIcon(confirmed);
-
-
-
-                    imageLabel.setIcon(confirmationIcon);
-                    panel.add(imageLabel);
-                    panel.setPreferredSize(new Dimension(350, 350));
-                    panel.add(textLabel);
-                    panel.add(dateLabel);
-                    frame.add(panel);
-                    frame.pack();
-
-                    frame.setVisible(true);
-
-                }  else{
-                    DateFormat dateFormat = new SimpleDateFormat("MMMM d, y");
-                    Date date = new Date();
-
-                    //Code which will display a confirmation screen
-
-                    JPanel panel = new JPanel();
-                    JLabel imageLabel = new JLabel();
-                    JLabel textLabel = new JLabel("Ballot " + lastFoundBID + " was NOT cast.");
-                    JLabel text2Label = new JLabel("Please ensure that this is the correct ballot or seek assistance from an election official.");
-                    JLabel dateLabel = new JLabel(dateFormat.format(date));
-
-
-                    BufferedImage rejected = null;
-
-                    try{
-                        File file = new File("images/rejected.png");
-                        rejected = ImageIO.read(file);
-                    } catch (IOException e){
-                        System.out.println("Rejection image could not be loaded!");
-                        throw new RuntimeException(e);
-                    }
-                    ImageIcon rejectionIcon = new ImageIcon(rejected);
-
-
-
-                    imageLabel.setIcon(rejectionIcon);
-                    panel.add(imageLabel);
-                    panel.setPreferredSize(new Dimension(350, 350));
-                    panel.add(textLabel);
-                    panel.add(text2Label);
-                    panel.add(dateLabel);
-                    frame.add(panel);
-                    frame.pack();
-
-                    frame.setVisible(true);
-
-                    confirmed = true;
-
-                }
-
             }
 
             public void challenge(ChallengeEvent e) {
@@ -421,6 +345,89 @@ public class BallotScanner {
 
             public void ballotPrinted(BallotPrintedEvent ballotPrintedEvent) {
             }
+
+            //When a committed ballot is cast after being scanned, confirm
+            public void castCommittedBallot(CastCommittedBallotEvent event){
+
+
+                DateFormat dateFormat = new SimpleDateFormat("MMMM d, y");
+                Date date = new Date();
+
+                //Code which will display a confirmation screen
+
+                JPanel panel = new JPanel();
+                JLabel imageLabel = new JLabel();
+                JLabel textLabel = new JLabel("Ballot " + lastFoundBID + " confirmed and cast on ");
+                JLabel dateLabel = new JLabel(dateFormat.format(date));
+
+
+                BufferedImage confirmed = null;
+
+                try{
+                    File file = new File("images/confirmation.png");
+                    confirmed = ImageIO.read(file);
+                } catch (IOException e){
+                    System.out.println("Confirmation image could not be loaded!");
+                    throw new RuntimeException(e);
+                }
+                ImageIcon confirmationIcon = new ImageIcon(confirmed);
+
+
+
+                imageLabel.setIcon(confirmationIcon);
+                panel.add(imageLabel);
+                panel.setPreferredSize(new Dimension(350, 350));
+                panel.add(textLabel);
+                panel.add(dateLabel);
+                frame.add(panel);
+                frame.pack();
+
+                frame.setVisible(true);
+
+
+            }
+
+            public void ballotRejected(BallotScanRejectedEvent event){
+                DateFormat dateFormat = new SimpleDateFormat("MMMM d, y");
+                Date date = new Date();
+
+                //Code which will display a confirmation screen
+
+                JPanel panel = new JPanel();
+                JLabel imageLabel = new JLabel();
+                JLabel textLabel = new JLabel("Ballot " + lastFoundBID + " was NOT cast.");
+                JLabel text2Label = new JLabel("Please ensure that this is the correct ballot or seek assistance from an election official.");
+                JLabel dateLabel = new JLabel(dateFormat.format(date));
+
+
+                BufferedImage rejected = null;
+
+                try{
+                    File file = new File("images/rejected.png");
+                    rejected = ImageIO.read(file);
+                } catch (IOException e){
+                    System.out.println("Rejection image could not be loaded!");
+                    throw new RuntimeException(e);
+                }
+                ImageIcon rejectionIcon = new ImageIcon(rejected);
+
+
+
+                imageLabel.setIcon(rejectionIcon);
+                panel.add(imageLabel);
+                panel.setPreferredSize(new Dimension(350, 350));
+                panel.add(textLabel);
+                panel.add(text2Label);
+                panel.add(dateLabel);
+                frame.add(panel);
+                frame.pack();
+
+                frame.setVisible(true);
+
+                confirmed = true;
+
+            }
+
 
 
         });

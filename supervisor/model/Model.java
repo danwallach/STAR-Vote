@@ -930,7 +930,7 @@ public class Model {
                     auditorium.announce(new CastCommittedBallotEvent(serial, nonce));
                     // that should trigger my own castBallot listener.
                 } else {
-                    throw new IllegalStateException("got ballot scanned message for invalid BID");
+                    auditorium.announce(new BallotScanRejectedEvent(StringExpression.makeString(bid)));
                 }
 
             }
