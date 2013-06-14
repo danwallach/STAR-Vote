@@ -102,7 +102,7 @@ public class BallotScanner {
         frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setLocationRelativeTo(null);
-        frame.setLocation((int)Math.round(frame.getLocation().getX()) - 175, (int)Math.round(frame.getLocation().getY()) - 175);
+        frame.setLocation((int)Math.round(frame.getLocation().getX()) - 300, (int)Math.round(frame.getLocation().getY()) - 300);
     }
 
     /**
@@ -168,6 +168,7 @@ public class BallotScanner {
 
 
         while (true) {
+            wait = false;
             long currentTime = System.currentTimeMillis();
             BinaryBitmap bitmap = webcam.getBitmap();
 
@@ -378,7 +379,7 @@ public class BallotScanner {
 
                     imageLabel.setIcon(confirmationIcon);
                     panel.add(imageLabel);
-                    panel.setPreferredSize(new Dimension(350, 350));
+                    panel.setPreferredSize(new Dimension(600, 600));
                     panel.add(textLabel);
                     panel.add(dateLabel);
                     frame.add(panel);
@@ -424,7 +425,7 @@ public class BallotScanner {
 
                     imageLabel.setIcon(rejectionIcon);
                     panel.add(imageLabel);
-                    panel.setPreferredSize(new Dimension(350, 350));
+                    panel.setPreferredSize(new Dimension(600, 600));
                     panel.add(textLabel);
                     panel.add(text2Label);
                     panel.add(dateLabel);
