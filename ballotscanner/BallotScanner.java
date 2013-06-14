@@ -2,6 +2,8 @@ package ballotscanner;
 
 import auditorium.NetworkException;
 import com.google.zxing.BinaryBitmap;
+import com.googlecode.javacv.CanvasFrame;
+import com.googlecode.javacv.cpp.opencv_core;
 import javazoom.jl.player.Player;
 import sexpression.*;
 import supervisor.model.ObservableEvent;
@@ -38,6 +40,10 @@ public class BallotScanner {
     private ObservableEvent activatedObs;
     private JFrame frame;
     private boolean wait = true;
+    private boolean skip = false;
+
+    private DateFormat dateFormat = new SimpleDateFormat("MMMM d, y");
+    private Date date = new Date();
 
     // stores the last found result obtained from a successful code scan
     private String lastFoundBID = "";
@@ -54,8 +60,6 @@ public class BallotScanner {
     // how long a result is stored in memory before it is cleared
     private final long DELAY_TIME = 5000;
 
-    //An event to signal that a ballot has been scanned
-    private BallotScannedEvent e;
 
 
     /**
@@ -99,7 +103,7 @@ public class BallotScanner {
         });
 
         //Set up the JFrame confirmation screen
-        frame = new JFrame();
+        frame = new JFrame("STAR-Vote Ballot Scanner");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         frame.setLocation((int)Math.round(frame.getLocation().getX()) - 300, (int)Math.round(frame.getLocation().getY()) - 300);
@@ -165,14 +169,37 @@ public class BallotScanner {
         webcam.startCapture();
 
         MultiFormatDecoder decoder = new MultiFormatDecoder();
+        ImageIcon logo;
 
+        try{
+            logo = new ImageIcon(ImageIO.read(new File("images/logo.png")));
+        } catch(IOException e) {
+            logo = null;
+            System.out.println("Icon could not be loaded!");
+            new RuntimeException(e);
+        }
+
+
+
+        JPanel panel = new JPanel();
+        panel.setPreferredSize(new Dimension(600, 600));
+        JLabel image = new JLabel(logo);
+        panel.add(image);
+        panel.add(new JLabel("Please scan your ballot"));
+        panel.add(new JLabel(dateFormat.format(date)));
+        frame.add(panel);
+        frame.pack();
+        frame.setVisible(true);
 
         while (true) {
             wait = false;
             long currentTime = System.currentTimeMillis();
             BinaryBitmap bitmap = webcam.getBitmap();
 
-            if(frame.isVisible())
+
+
+            //Skip over code if a scan is pending confirmation or rejection
+            if(skip)
                 continue;
 
 
@@ -353,15 +380,16 @@ public class BallotScanner {
 
                 //If this event corresponds with our last scanned ballot, display a confirmation message
                 if(lastFoundBID.equals(event.getBID())){
-                    DateFormat dateFormat = new SimpleDateFormat("MMMM d, y");
-                    Date date = new Date();
+
+
 
                     //Code which will display a confirmation screen
-
+                    frame.setVisible(false);
+                    frame = new JFrame("STAR-Vote Ballot Scanner");
                     JPanel panel = new JPanel();
                     JLabel imageLabel = new JLabel();
-                    JLabel textLabel = new JLabel("Ballot " + lastFoundBID + " confirmed and cast on ");
-                    JLabel dateLabel = new JLabel(dateFormat.format(date));
+                    JLabel textLabel = new JLabel("Ballot " + lastFoundBID + " confirmed and cast");
+
 
 
                     BufferedImage confirmed = null;
@@ -381,11 +409,16 @@ public class BallotScanner {
                     panel.add(imageLabel);
                     panel.setPreferredSize(new Dimension(600, 600));
                     panel.add(textLabel);
-                    panel.add(dateLabel);
                     frame.add(panel);
                     frame.pack();
 
                     frame.setVisible(true);
+
+                    //If the frame is closed, start over
+                    if(!frame.isVisible())
+                        wait = false;
+
+
 
 
                 }
@@ -398,16 +431,17 @@ public class BallotScanner {
 
                 //If our ballot was rejected, display a message
                 if(lastFoundBID.equals(event.getBID())){
-                    DateFormat dateFormat = new SimpleDateFormat("MMMM d, y");
-                    Date date = new Date();
 
-                    //Code which will display a confirmation screen
+
+                    //Code which will display a rejection screen
+                    frame.setVisible(false);
+                    frame = new JFrame("STAR-Vote Ballot Scanner");
 
                     JPanel panel = new JPanel();
                     JLabel imageLabel = new JLabel();
                     JLabel textLabel = new JLabel("Ballot " + lastFoundBID + " was NOT cast.");
                     JLabel text2Label = new JLabel("Please ensure that this is the correct ballot or seek assistance from an election official.");
-                    JLabel dateLabel = new JLabel(dateFormat.format(date));
+
 
 
                     BufferedImage rejected = null;
@@ -428,11 +462,14 @@ public class BallotScanner {
                     panel.setPreferredSize(new Dimension(600, 600));
                     panel.add(textLabel);
                     panel.add(text2Label);
-                    panel.add(dateLabel);
                     frame.add(panel);
                     frame.pack();
 
                     frame.setVisible(true);
+
+                    //If the frame is closed, start over
+                    if(!frame.isVisible())
+                        wait = false;
 
                 }
             }

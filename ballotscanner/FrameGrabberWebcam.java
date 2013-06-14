@@ -51,6 +51,7 @@ public class FrameGrabberWebcam implements IWebcam {
     }
   }
 
+
   /**
    * Tells the webcam to start capturing
    */
