@@ -37,7 +37,7 @@ public class BallotScanner {
     private boolean activated;
     private ObservableEvent activatedObs;
     private JFrame frame;
-    private boolean confirmed = false;
+    private boolean wait = true;
 
     // stores the last found result obtained from a successful code scan
     private String lastFoundBID = "";
@@ -180,13 +180,16 @@ public class BallotScanner {
             if (currentTime - lastFoundTime > DELAY_TIME) {
                 if (lastFoundBID != null) {
                     System.out.println(lastFoundBID);  //TODO Is this needed?
+
+                    auditorium.announce(new BallotScannedEvent(mySerial, lastFoundBID));
+
+
                     lastFoundTime = System.currentTimeMillis();
                     auditorium.announce(new BallotScannedEvent(mySerial, lastFoundBID));
                     bsMp3Path = _constants.getConfirmationSoundPath();
 
                     // prepare the mp3Player
-                    //TODO Should we play a sound?
-                    try {
+                     try {
 
                         FileInputStream fileInputStream = new FileInputStream(bsMp3Path);
                         BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
@@ -209,12 +212,11 @@ public class BallotScanner {
                         }
                     }.start();
 
-                    e = new BallotScannedEvent(mySerial, lastFoundBID);
-                    auditorium.announce(e);
 
-                    while(!confirmed){
+
+                    while(wait){
                         if(frame.isVisible()) //reset the confirmed variable once the jframe has shown
-                            confirmed = false;
+                            wait = false;
                     }
 
 
@@ -383,6 +385,8 @@ public class BallotScanner {
                     frame.pack();
 
                     frame.setVisible(true);
+
+
                 }
 
             }
@@ -425,8 +429,6 @@ public class BallotScanner {
                     frame.pack();
 
                     frame.setVisible(true);
-
-                    confirmed = true;
 
                 }
             }

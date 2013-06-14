@@ -478,7 +478,8 @@ public class Model {
                     ChallengeEvent.getMatcher(), EncryptedCastBallotWithNIZKsEvent.getMatcher(),
                     AuthorizedToCastWithNIZKsEvent.getMatcher(), AdderChallengeEvent.getMatcher(),
                     PinEnteredEvent.getMatcher(), InvalidPinEvent.getMatcher(),
-                    PollStatusEvent.getMatcher(), BallotPrintedEvent.getMatcher());
+                    PollStatusEvent.getMatcher(), BallotPrintedEvent.getMatcher(),
+                    BallotScannedEvent.getMatcher());
         } catch (NetworkException e1) {
             throw new RuntimeException(e1);
         }
