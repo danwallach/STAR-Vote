@@ -13,6 +13,14 @@ import java.util.Arrays;
  */
 public class HTMLPrinter {
 
+    /* All sizes are in pixels. */
+    public final static int CONTAINER_WIDTH = 750;
+    public final static int CONTAINER_HEIGHT = 792;
+    public final static int LEFT_MARGIN_WIDTH = 72;
+    public final static int RIGHT_MARGIN_WIDTH = 72;
+    public final static int TWO_COLUMNS_COLUMN_SIZE = (CONTAINER_WIDTH - LEFT_MARGIN_WIDTH - RIGHT_MARGIN_WIDTH) / 2;
+    public final static int ONE_COLUMN_COLUMN_SIZE = CONTAINER_WIDTH - LEFT_MARGIN_WIDTH - RIGHT_MARGIN_WIDTH;
+
     /**
      * Generates a HTML file that will be used to print a voter's selections.
      * @param filename - The name of the HTML file to be written
@@ -105,15 +113,15 @@ public class HTMLPrinter {
         try
         {
             // Creates the container for the columns of images.
-            writer.write("<div id = \"container\" style = \"background-color:#CCFF00;width:750px;height:792px;\">\n");
+            writer.write("<div id = \"container\" style = \"background-color:#CCFF00;width:" + CONTAINER_WIDTH + "px;height:" + CONTAINER_HEIGHT + "px;\">\n");
 
             // Creates the left and right margins.
-            writer.write("<div id = \"left_margin\" style = \"background-color:#000000;width:72px;float:left\"><br></div>\n");
-            writer.write("<div id = \"right_margin\" style = \"background-color:#000000;width:72px;float:right\"><br></div>\n");
+            writer.write("<div id = \"left_margin\" style = \"background-color:#000000;width:" + LEFT_MARGIN_WIDTH + "px;float:left\"><br></div>\n");
+            writer.write("<div id = \"right_margin\" style = \"background-color:#000000;width:" + RIGHT_MARGIN_WIDTH + "px;float:right\"><br></div>\n");
 
             // Left Column //////////////////////////////////////////////////////////////////////////////////////////////////////
             // Create the left column.
-            writer.write("<div id = \"left_column\" style=\"background-color:#ABCDEF;width:303px;float:left;\">\n");
+            writer.write("<div id = \"left_column\" style=\"background-color:#ABCDEF;width:" + TWO_COLUMNS_COLUMN_SIZE + "px;float:left;\">\n");
 
             // Put images in the left column.
             ArrayList<String> left_column = imageNames[0];
@@ -121,7 +129,7 @@ public class HTMLPrinter {
             for (String imageName : left_column)
             {
                 // Load in the image.
-                writer.write("<img src = \"" + pathToBallotVVPATFolder + imageName + "\" alt = \"Image did not load properly\" width = \"250\">\n");
+                writer.write("<img src = \"" + pathToBallotVVPATFolder + imageName + "\" alt = \"Image did not load properly\" width = \"" + TWO_COLUMNS_COLUMN_SIZE + "\">\n");
                 // Leave an empty line after selection images.
                 if (isSelectionImage)
                 {
@@ -137,7 +145,7 @@ public class HTMLPrinter {
 
             // Right Column /////////////////////////////////////////////////////////////////////////////////////////////////////
             // Create the right column.
-            writer.write("<div id = \"right_column\" style=\"background-color:#FEDCBA;width:303px;float:right;\">\n");
+            writer.write("<div id = \"right_column\" style=\"background-color:#FEDCBA;width:" + TWO_COLUMNS_COLUMN_SIZE + "px;float:right;\">\n");
 
             // Put images in the right column.
             // It might be the case that there is an odd number of columns. Check if imageNames[1] throws an IndexOutOfBounds Exception.
@@ -148,7 +156,7 @@ public class HTMLPrinter {
                 for (String imageName : right_column)
                 {
                     // Load in the image.
-                    writer.write("<img src = \"" + pathToBallotVVPATFolder + imageName + "\" alt = \"Image did not load properly\" width = \"303\">\n");
+                    writer.write("<img src = \"" + pathToBallotVVPATFolder + imageName + "\" alt = \"Image did not load properly\" width = \"" + TWO_COLUMNS_COLUMN_SIZE + "\">\n");
                     // Leave an empty line after selection images.
                     if (isSelectionImage)
                     {
@@ -192,16 +200,16 @@ public class HTMLPrinter {
     {
         try
         {
-            // Creates the container for the column of images.
-            writer.write("<div id = \"container\" style = \"background-color:#CCFF00;width:750px;height:792px;\">\n");
+            // Creates the container for the columns of images.
+            writer.write("<div id = \"container\" style = \"background-color:#CCFF00;width:" + CONTAINER_WIDTH + "px;height:" + CONTAINER_HEIGHT + "px;\">\n");
 
             // Creates the left and right margins.
-            writer.write("<div id = \"left_margin\" style = \"background-color:#000000;width:72px;float:left\"><br></div>\n");
-            writer.write("<div id = \"right_margin\" style = \"background-color:#000000;width:72px;float:right\"><br></div>\n");
+            writer.write("<div id = \"left_margin\" style = \"background-color:#000000;width:" + LEFT_MARGIN_WIDTH + "px;float:left\"><br></div>\n");
+            writer.write("<div id = \"right_margin\" style = \"background-color:#000000;width:" + RIGHT_MARGIN_WIDTH + "px;float:right\"><br></div>\n");
 
             // Column ///////////////////////////////////////////////////////////////////////////////////////////////////////////
             // Create the column.
-            writer.write("<div id = \"column\" style=\"background-color:#ABCDEF;width:606px;float:left;\">\n");
+            writer.write("<div id = \"column\" style=\"background-color:#ABCDEF;width:" + ONE_COLUMN_COLUMN_SIZE + "px;float:left;\">\n");
 
             // Put images in the column.
             ArrayList<String> column = imageNames[0];
@@ -209,7 +217,7 @@ public class HTMLPrinter {
             for (String imageName : column)
             {
                 // Load in the image.
-                writer.write("<img src = \"" + pathToBallotVVPATFolder + imageName + "\" alt = \"Image did not load properly\" width = \"606\">\n");
+                writer.write("<img src = \"" + pathToBallotVVPATFolder + imageName + "\" alt = \"Image did not load properly\" width = \"" + ONE_COLUMN_COLUMN_SIZE + "\">\n");
                 // Leave an empty line after selection images.
                 if (isSelectionImage)
                 {

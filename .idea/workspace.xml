@@ -10,9 +10,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="26d876ad-6b77-4796-b9d0-ead84066c769" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/log.out" afterPath="$PROJECT_DIR$/log.out" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/printer/HTMLPrinter.java" afterPath="$PROJECT_DIR$/printer/HTMLPrinter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/printer/Printer.java" afterPath="$PROJECT_DIR$/printer/Printer.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/vb.conf" afterPath="$PROJECT_DIR$/vb.conf" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
@@ -53,9 +51,9 @@
     <file path="/ToggleButton.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370358039224" ignored="false" />
     <file path="/RaceTitlePair.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369945268870" ignored="false" />
     <file path="/Label.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370369156357" ignored="false" />
-    <file path="/Dummy.txt" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371145225551" ignored="false" />
+    <file path="/Dummy.txt" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371223212705" ignored="false" />
     <file path="/ALayoutComponent.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370380215222" ignored="false" />
-    <file path="/HTMLPrinter.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371148687972" ignored="false" />
+    <file path="/HTMLPrinter.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371223857936" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -169,8 +167,6 @@
             <state line="145" column="156" selection-start="5113" selection-end="5113" vertical-scroll-proportion="0.0">
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#4436#12783#0" expanded="true" />
-                <element signature="e#12777#12778#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -179,7 +175,7 @@
       <file leaf-file-name="HTMLPrinter.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/printer/HTMLPrinter.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="203" column="34" selection-start="8852" selection-end="8852" vertical-scroll-proportion="0.16703786">
+            <state line="219" column="163" selection-start="10178" selection-end="10178" vertical-scroll-proportion="4.0512247">
               <folding />
             </state>
           </provider>
@@ -218,8 +214,8 @@
         <option value="$PROJECT_DIR$/votebox/events/CommitBallotEvent.java" />
         <option value="$PROJECT_DIR$/supervisor/model/Model.java" />
         <option value="$PROJECT_DIR$/preptool/model/layout/manager/PsychLayoutManager.java" />
-        <option value="$PROJECT_DIR$/printer/HTMLPrinter.java" />
         <option value="$PROJECT_DIR$/printer/Printer.java" />
+        <option value="$PROJECT_DIR$/printer/HTMLPrinter.java" />
       </list>
     </option>
   </component>
@@ -298,7 +294,7 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -365,7 +361,7 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -382,12 +378,12 @@
     <property name="MemberChooser.copyJavadoc" value="false" />
     <property name="GoToClass.toSaveIncludeLibraries" value="false" />
     <property name="restartRequiresConfirmation" value="true" />
-    <property name="MemberChooser.showClasses" value="true" />
     <property name="FullScreen" value="false" />
+    <property name="MemberChooser.showClasses" value="true" />
     <property name="GoToClass.includeLibraries" value="false" />
-    <property name="options.searchVisible" value="true" />
-    <property name="options.splitter.details.proportions" value="0.2" />
     <property name="dynamic.classpath" value="false" />
+    <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="options.searchVisible" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
@@ -407,19 +403,6 @@
       <option name="SHMEM_ADDRESS" value="javadebug" />
       <option name="HOST" value="localhost" />
       <option name="PORT" value="5005" />
-      <method />
-    </configuration>
-    <configuration default="true" type="Applet" factoryName="Applet">
-      <module name="" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="HTML_FILE_NAME" />
-      <option name="HTML_USED" value="false" />
-      <option name="WIDTH" value="400" />
-      <option name="HEIGHT" value="300" />
-      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
-      <option name="VM_PARAMETERS" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
       <method />
     </configuration>
     <configuration default="true" type="TestNG" factoryName="TestNG">
@@ -447,6 +430,19 @@
       <envs />
       <properties />
       <listeners />
+      <method />
+    </configuration>
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <module name="" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="HTML_FILE_NAME" />
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <option name="VM_PARAMETERS" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
       <method />
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
@@ -632,7 +628,11 @@
       <created>1371145237969</created>
       <updated>1371145237969</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Fixed a possible IndexOutOfBounds exception in the HTMLPrinter code.">
+      <created>1371149428865</created>
+      <updated>1371149428865</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -667,7 +667,6 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3517316" sideWeight="0.50026894" order="11" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32792208" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3225108" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32355723" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -678,6 +677,7 @@
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3116883" sideWeight="0.49973103" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Analyze Dataflow to" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32899022" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3225108" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.39924315" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
@@ -724,7 +724,7 @@
     <option name="WRAP_WHEN_TYPING_REACHES_RIGHT_MARGIN" value="false" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed rendering. It now renders all the selection images to be the same size." />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed a possible IndexOutOfBounds exception in the HTMLPrinter code." />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="false" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -748,6 +748,7 @@
     <MESSAGE value="Updated print scaling code, added a method to scale more smoothly" />
     <MESSAGE value="Fixed the bug related to the override nonce. Instead of crashing without sending any useful information, the system now prints an error message and throws a Runtime Exception." />
     <MESSAGE value="Fixed rendering. It now renders all the selection images to be the same size." />
+    <MESSAGE value="Fixed a possible IndexOutOfBounds exception in the HTMLPrinter code." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -763,9 +764,7 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/votebox/VoteBox.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="276" column="76" selection-start="10255" selection-end="10271" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="276" column="76" selection-start="10255" selection-end="10271" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/votebox/middle/ballot/IBallotLookupAdapter.java">
@@ -775,23 +774,17 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/votebox/middle/driver/Driver.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="120" column="25" selection-start="3614" selection-end="3614" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="120" column="25" selection-start="3614" selection-end="3614" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/preptool/model/layout/manager/ALayoutManager.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="381" column="41" selection-start="14121" selection-end="14127" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="381" column="41" selection-start="14121" selection-end="14127" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/tap/BallotImageHelper.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="97" column="42" selection-start="3517" selection-end="3517" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="97" column="42" selection-start="3517" selection-end="3517" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/votebox/middle/view/widget/ToggleButton.java">
@@ -813,9 +806,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/votebox/events/CommitBallotEvent.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="53" column="46" selection-start="2048" selection-end="2048" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="53" column="46" selection-start="2048" selection-end="2048" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/supervisor/model/Model.java">
@@ -848,9 +839,7 @@
     </entry>
     <entry file="jar://C:/Program Files/Java/jdk1.7.0_21/src.zip!/java/util/ArrayList.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="381" column="0" selection-start="14078" selection-end="14078" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="381" column="0" selection-start="14078" selection-end="14078" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/printer/Printer.java">
@@ -858,15 +847,13 @@
         <state line="145" column="156" selection-start="5113" selection-end="5113" vertical-scroll-proportion="0.0">
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#4436#12783#0" expanded="true" />
-            <element signature="e#12777#12778#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/printer/HTMLPrinter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="203" column="34" selection-start="8852" selection-end="8852" vertical-scroll-proportion="0.16703786">
+        <state line="219" column="163" selection-start="10178" selection-end="10178" vertical-scroll-proportion="4.0512247">
           <folding />
         </state>
       </provider>
