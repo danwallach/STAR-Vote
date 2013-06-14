@@ -153,9 +153,10 @@ public class HTMLPrinter {
                 {
                     // Add selection separator.
                     // New separator:
-                    writer.write("<div id = \"bar\" style = \"background-color:#000000;width:" + TWO_COLUMNS_COLUMN_SIZE + "px;\"><hr></div>\n");
-                    // Old separator:
+                    writer.write("<img src = \"" + pathToBallotVVPATFolder + "LineSeparator.png\" alt = \"Image not found\" width = \"" + (TWO_COLUMNS_COLUMN_SIZE - 12) + "\" height = \"2\" align = \"right\">\n<br>\n<br>\n");
+                    // Old separators:
                     // writer.write("<br>\n<br>\n");
+                    // writer.write("<div id = \"bar\" style = \"background-color:#000000;width:" + TWO_COLUMNS_COLUMN_SIZE + "px;\"><hr></div>\n");
                 }
                 // Set the flag for selection images and reset it for label/title images.
                 isSelectionImage = !isSelectionImage;
@@ -192,9 +193,10 @@ public class HTMLPrinter {
                     {
                         // Add selection separator.
                         // New separator:
-                        writer.write("<div id = \"bar\" style = \"background-color:#000000;width:" + TWO_COLUMNS_COLUMN_SIZE + "px;\"><hr></div>\n");
-                        // Old separator:
+                        writer.write("<img src = \"" + pathToBallotVVPATFolder + "LineSeparator.png\" alt = \"Image not found\" width = \"" + (TWO_COLUMNS_COLUMN_SIZE - 12) + "\" height = \"2\" align = \"right\">\n<br>\n<br>\n");
+                        // Old separators:
                         // writer.write("<br>\n<br>\n");
+                        // writer.write("<div id = \"bar\" style = \"background-color:#000000;width:" + TWO_COLUMNS_COLUMN_SIZE + "px;\"><hr></div>\n");
                     }
                     // Set the flag for selection images and reset it for label/title images.
                     isSelectionImage = !isSelectionImage;
@@ -276,9 +278,10 @@ public class HTMLPrinter {
                 {
                     // Add selection separator.
                     // New separator:
-                    writer.write("<div id = \"bar\" style = \"background-color:#000000;width:" + ONE_COLUMN_COLUMN_SIZE + "px;\"><hr></div>\n");
-                    // Old separator:
+                    writer.write("<img src = \"" + pathToBallotVVPATFolder + "LineSeparator.png\" alt = \"Image not found\" width = \"" + (ONE_COLUMN_COLUMN_SIZE - 12) + "\" height = \"2\" align = \"right\">\n<br>\n<br>\n");
+                    // Old separators:
                     // writer.write("<br>\n<br>\n");
+                    // writer.write("<div id = \"bar\" style = \"background-color:#000000;width:" + TWO_COLUMNS_COLUMN_SIZE + "px;\"><hr></div>\n");
                 }
                 // Set the flag for selection images and reset it for label/title images.
                 isSelectionImage = !isSelectionImage;
