@@ -45,8 +45,6 @@ import javax.print.attribute.standard.PrintQuality;
 import javax.print.attribute.standard.PrinterName;
 
 
-import net.glxn.qrgen.QRCode;
-import net.glxn.qrgen.image.ImageType;
 import sexpression.*;
 import tap.BallotImageHelper;
 import votebox.AuditoriumParams;
