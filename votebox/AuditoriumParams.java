@@ -128,7 +128,7 @@ public class AuditoriumParams implements IAuditoriumParams,
     
     //Settings for the ballotScanner
     public static final boolean USE_SCAN_CONFIRMATION_SOUND = false;
-    public static final String SCAN_CONFIRMATION_SOUND_PATH = "sound/ballotscanned.mp3";
+    public static final String SCAN_CONFIRMATION_SOUND_PATH = "sound/test.mp3";
     
     private final HashMap<String, String> _config;
 
