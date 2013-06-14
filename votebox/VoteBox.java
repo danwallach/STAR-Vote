@@ -58,7 +58,7 @@ import printer.*;
  * 
  * @author derrley, cshaw
  */
-public class VoteBox {
+public class VoteBox{
 
     private final AuditoriumParams _constants;
     private final IViewFactory _factory;

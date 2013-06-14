@@ -20,10 +20,6 @@ import java.util.Observer;
  */
 public class BallotScannerMachineView extends AMachineView{
 
-    private Model model;
-
-    private ActiveUI view;
-
     private BallotScannerMachine machine;
 
     private JLabel scannerLabel;
@@ -33,9 +29,8 @@ public class BallotScannerMachineView extends AMachineView{
     private JLabel statusLabel;
 
 
-    public BallotScannerMachineView(Model m, ActiveUI v, BallotScannerMachine b){
-        model = m;
-        view = v;
+    public BallotScannerMachineView(BallotScannerMachine b){
+
         machine = b;
 
         setLayout(new GridBagLayout());
@@ -60,6 +55,12 @@ public class BallotScannerMachineView extends AMachineView{
         c.gridy = 2;
         c.insets = new Insets(0, 0, 0, 0);
         add(statusLabel, c);
+
+        JLabel currentLabel = new MyJLabel("");
+        c.gridy = 3;
+        c.weighty = 1;
+        c.anchor = GridBagConstraints.PAGE_START;
+        add(currentLabel, c);
 
         setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
         setSize(180, 160);
