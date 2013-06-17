@@ -370,7 +370,12 @@ public class BallotScanner {
             public void pollStatus(PollStatusEvent pollStatusEvent) {
             }
 
-            public void ballotPrinted(BallotPrintedEvent ballotPrintedEvent) {
+            public void ballotPrintSuccess(BallotPrintSuccessEvent e) {
+            }
+
+            @Override
+            public void ballotPrintFail(BallotPrintFailEvent ballotPrintFailEvent) {
+                //To change body of implemented methods use File | Settings | File Templates.
             }
 
             public void ballotAccepted(BallotScanAcceptedEvent event){
@@ -469,6 +474,10 @@ public class BallotScanner {
                         wait = false;*/
 
                 }
+            }
+
+
+            public void ballotPrinting(BallotPrintingEvent ballotPrintingEvent) {
             }
 
 

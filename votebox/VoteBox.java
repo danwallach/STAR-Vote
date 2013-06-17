@@ -285,6 +285,8 @@ public class VoteBox{
         				}
 
                         List<List<String>> races = currentDriver.getBallotAdapter().getRaceGroups();
+                        auditorium.announce(new BallotPrintingEvent(mySerial, bid,
+                                nonce));
                         printer = new Printer(_currentBallotFile, races);
 						printer.printCommittedBallot(ballot, bid);
                         printer.printedReciept(bid);
@@ -292,8 +294,7 @@ public class VoteBox{
                         //By this time, the voter is done voting
                         finishedVoting = true;
 
-                        auditorium.announce(new BallotPrintedEvent(mySerial, bid,
-                                nonce));
+
 					} catch (AuditoriumCryptoException e) {
 						Bugout.err("Crypto error trying to commit ballot: "+e.getMessage());
 						e.printStackTrace();
@@ -531,7 +532,8 @@ public class VoteBox{
                     ChallengeEvent.getMatcher(), ChallengeResponseEvent.getMatcher(),
                     AuthorizedToCastWithNIZKsEvent.getMatcher(), PinEnteredEvent.getMatcher(),
                     InvalidPinEvent.getMatcher(), PollsOpenEvent.getMatcher(),
-                    PollStatusEvent.getMatcher(), BallotPrintedEvent.getMatcher());
+                    PollStatusEvent.getMatcher(), BallotPrintingEvent.getMatcher(),
+                    BallotPrintSuccessEvent.getMatcher(), BallotPrintFailEvent.getMatcher());
         } catch (NetworkException e1) {
         	//NetworkException represents a recoverable error
         	//  so just note it and continue
@@ -899,12 +901,14 @@ public class VoteBox{
             }
 
            @Override
-            public void ballotPrinted(BallotPrintedEvent ballotPrintedEvent) {
-               System.out.println("Ballot printed event generated!");
-                if (ballotPrintedEvent.getBID() == bid
-                        && Arrays.equals(ballotPrintedEvent.getNonce(), nonce)) {
+            public void ballotPrinting(BallotPrintingEvent ballotPrintingEvent) {
+                // NO-OP
+            }
 
-                    System.out.println(">>> It was an event for this ballot!");
+            //This indicates that the ballot was successfully printed and the voting session can safely end
+            public void ballotPrintSuccess(BallotPrintSuccessEvent e){
+                if (e.getBID() == bid
+                        && Arrays.equals(e.getNonce(), nonce)) {
 
                     //This should also never happen...
                     if (!finishedVoting)
@@ -917,15 +921,11 @@ public class VoteBox{
                         return;
                     }
 
-                    System.out.println(">>> Getting next page!");
-
-                    System.out.println(">>> Got next page!");
 
                     nonce = null;
                     voting = false;
                     finishedVoting = false;
                     committedBallot = false;
-                    System.out.println(">>> Broadcasting status!");
                     broadcastStatus();
                     killVBTimer = new Timer(_constants.getViewRestartTimeout(), new ActionListener() {
                         public void actionPerformed(ActionEvent arg0) {
@@ -942,7 +942,10 @@ public class VoteBox{
                     killVBTimer.start();
                 }//if
 
+            }
 
+            public void ballotPrintFail(BallotPrintFailEvent e){
+                // Should implement something to indicate the print failed
             }
 
 

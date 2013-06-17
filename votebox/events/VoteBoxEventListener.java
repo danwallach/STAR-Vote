@@ -229,11 +229,6 @@ public interface VoteBoxEventListener {
     public void pollStatus(PollStatusEvent pollStatusEvent);
 
     /**
-     * called to inform the supervisor that a ballot has been printed and needs to be scanned
-     */
-    public void ballotPrinted(BallotPrintedEvent ballotPrintedEvent);
-
-    /**
      * Supervisor confirmation that a scanned ballot has been cast
      */
     public void ballotAccepted(BallotScanAcceptedEvent e);
@@ -243,5 +238,18 @@ public interface VoteBoxEventListener {
      */
     public void ballotRejected(BallotScanRejectedEvent e);
 
+    /**
+     * Votebox message that a ballot has been submitted for printing
+     */
+    public void ballotPrinting(BallotPrintingEvent ballotPrintingEvent);
 
+    /**
+     * called to inform the supervisor that a ballot has been successfully printed and needs to be scanned
+     */
+    public void ballotPrintSuccess(BallotPrintSuccessEvent ballotPrintSuccessEvent);
+
+    /**
+     * called to inform the supervisor that a ballot has not been successfully printed
+     */
+    public void ballotPrintFail(BallotPrintFailEvent ballotPrintFailEvent);
 }
