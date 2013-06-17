@@ -35,9 +35,7 @@ import java.util.Stack;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import javax.swing.ImageIcon;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -549,6 +547,8 @@ public class Model {
      */
     public void previewBallot(final View view) {
         try {
+
+
             final File tempDir = File.createTempFile( "votebox", "" );
             tempDir.delete();
             tempDir.mkdir();
@@ -580,6 +580,7 @@ public class Model {
                     }
                 }
             };
+
             export( view, tempDir.getAbsolutePath(), whenDone, true );
 
         }
