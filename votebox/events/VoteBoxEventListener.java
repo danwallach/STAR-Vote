@@ -232,4 +232,16 @@ public interface VoteBoxEventListener {
      * called to inform the supervisor that a ballot has been printed and needs to be scanned
      */
     public void ballotPrinted(BallotPrintedEvent ballotPrintedEvent);
+
+    /**
+     * Supervisor confirmation that a scanned ballot has been cast
+     */
+    public void ballotAccepted(BallotScanAcceptedEvent e);
+
+    /**
+     * Supervisor message that a scanned ballot has been rejected
+     */
+    public void ballotRejected(BallotScanRejectedEvent e);
+
+
 }

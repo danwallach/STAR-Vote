@@ -9,7 +9,7 @@ import sexpression.StringExpression;
 
 public class EncryptedCastBallotWithNIZKsEvent extends EncryptedCastBallotEvent {
 
-	/**
+    /**
      * Matcher for the EncryptedCastBallotEvent
      */
     private static MatcherRule MATCHER = new MatcherRule() {
@@ -25,21 +25,21 @@ public class EncryptedCastBallotWithNIZKsEvent extends EncryptedCastBallotEvent 
             return null;
         };
     };
-	
+
     /**
-     * 
+     *
      * @return a MatcherRule for parsing this event type.
      */
     public static MatcherRule getMatcher(){
-    	return MATCHER;
+        return MATCHER;
     }//getMatcher
-    
+
     public EncryptedCastBallotWithNIZKsEvent(int serial, ASExpression nonce, ASExpression ballot){
-    	super(serial, nonce, ballot);
+        super(serial, nonce, ballot);
     }
-    
+
     public ASExpression toSExp(){
-    	return new ListExpression(StringExpression.makeString("encrypted-cast-ballot-with-nizks"),
+        return new ListExpression(StringExpression.makeString("encrypted-cast-ballot-with-nizks"),
                 getNonce(), getBallot());
     }
 }

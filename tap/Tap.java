@@ -136,6 +136,8 @@ public class Tap {
             public void ballotPrinted(BallotPrintedEvent ballotPrintedEvent) {}
             public void pinEntered(PinEnteredEvent event) { }
             public void invalidPin(InvalidPinEvent event) {}
+            public void ballotAccepted(BallotScanAcceptedEvent e){}
+            public void ballotRejected(BallotScanRejectedEvent e){}
 
         });
 		

@@ -1,9 +1,8 @@
 package ballotscanner;
 
-import com.google.zxing.BinaryBitmap;
-import com.google.zxing.MultiFormatReader;
-import com.google.zxing.NotFoundException;
-import com.google.zxing.Result;
+import com.google.zxing.*;
+
+import java.util.Hashtable;
 
 /**
  * User: Aaron
@@ -17,11 +16,16 @@ public class MultiFormatDecoder implements IDecoder {
   // reader for decoding
   private MultiFormatReader reader;
 
+  private Hashtable<DecodeHintType, Object> hints;
+
   /**
    * Constructor for the decoder
    */
   public MultiFormatDecoder() {
     reader = new MultiFormatReader();
+    hints = new Hashtable<DecodeHintType, Object>();
+    hints.put(DecodeHintType.TRY_HARDER, Boolean.TRUE);
+
   }
 
   /**
@@ -31,7 +35,7 @@ public class MultiFormatDecoder implements IDecoder {
    */
   public String decode(BinaryBitmap bitmap) {
     try {
-      Result result = reader.decode(bitmap);
+      Result result = reader.decode(bitmap, hints);
       return result.getText();
     }
     catch(NotFoundException e) {

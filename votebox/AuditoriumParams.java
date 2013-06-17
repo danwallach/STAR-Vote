@@ -128,7 +128,7 @@ public class AuditoriumParams implements IAuditoriumParams,
     
     //Settings for the ballotScanner
     public static final boolean USE_SCAN_CONFIRMATION_SOUND = false;
-    public static final String SCAN_CONFIRMATION_SOUND_PATH = "sound/ballotscanned.mp3";
+    public static final String SCAN_CONFIRMATION_SOUND_PATH = "sound/test.mp3";
     
     private final HashMap<String, String> _config;
 
@@ -426,14 +426,14 @@ public class AuditoriumParams implements IAuditoriumParams,
         if(_config.containsKey("USE_SCAN_CONFIRMATION_SOUND"))
             return Boolean.parseBoolean(_config.get("USE_SCAN_CONFIRMATION_SOUND"));
 
-        return USE_TWO_COLUMNS;
+        return USE_SCAN_CONFIRMATION_SOUND;
     }
 
     public String getConfirmationSoundPath(){
         if(_config.containsKey("SCAN_CONFIRMATION_SOUND_PATH"))
             return _config.get("SCAN_CONFIRMATION_SOUND_PATH");
 
-        return ELECTION_NAME;
+        return SCAN_CONFIRMATION_SOUND_PATH;
     }
 	
     /**

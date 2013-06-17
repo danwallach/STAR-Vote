@@ -26,6 +26,7 @@
 package printer;
 
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.print.*;
 import java.io.File;
@@ -434,6 +435,67 @@ public class Printer {
             ChoicePair currentItem = updatedBallot.get(i);
         }
         return updatedBallot;
+    }
+    public void printedReciept(String bID){
+
+        final String bid = bID;
+        Printable printedReciept = new Printable(){
+
+            public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
+                //print is called by Java until NO_SUCH_PAGE is returned
+                if(pageIndex>0)
+                    return Printable.NO_SUCH_PAGE;
+
+
+                int pageWidth = _constants.getPaperWidthForVVPAT();
+                int pageHeight = _constants.getPaperHeightForVVPAT();
+                int printableWidth = _constants.getPrintableWidthForVVPAT();
+                int printableHeight = _constants.getPrintableHeightForVVPAT();
+
+                int xBound = _constants.getPrintableHeightForVVPAT()-111;
+
+                int y = 250;
+                graphics.setFont(new Font("Arial", 0, 16));
+                printCenteredText("Thank you for voting!", xBound, y, graphics);
+                y+=30;
+                graphics.setFont(new Font("Arial", 0, 12));
+                printCenteredText("District: "+ AuditoriumParams.ELECTION_NAME, xBound, y, graphics);
+                y+=20;
+                DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                Date date = new Date();
+                printCenteredText("Date: "+ dateFormat.format(date), xBound, y, graphics);
+                y+=30;
+                printCenteredText("Your ballot is currently printing", xBound, y, graphics);
+                y+=20;
+                printCenteredText("If you wish to cast your ballot, scan it in the scanner at this voting location", xBound, y, graphics);
+                y+=20;
+                printCenteredText("If you wish to challenge your ballot, take it home and scan the QRCode below", xBound, y, graphics);
+                y+=20;
+                QRCodeGenerator qGen = new QRCodeGenerator();
+                BufferedImage i = qGen.getImage(bid);
+                int imgStartX = xBound/2-i.getWidth()/2;
+                graphics.drawImage(i,imgStartX,y,null);
+
+                return Printable.PAGE_EXISTS;
+            }
+
+        };
+
+        printOnVVPAT(printedReciept);
+    }
+
+    private void printCenteredText(String s, int xBound, int y, Graphics g){
+        FontMetrics fm = g.getFontMetrics();
+        Rectangle2D rect = fm.getStringBounds(s, g);
+        int sLength = (int) rect.getWidth();
+        if(sLength>fm.getStringBounds(s,g).getWidth()){
+            printCenteredText(s.substring(0, sLength-1), xBound, (int) (y), g);
+            printCenteredText(s.substring(sLength, s.length()), xBound, (int) (y+rect.getHeight()+5), g);
+        }
+        else{
+            int sXStart = xBound/2 - sLength/2;
+            g.drawString(s, sXStart, y);
+        }
     }
 
     //this class prints the pin for the user given measurements for a POS terminal printer

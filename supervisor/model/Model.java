@@ -478,7 +478,8 @@ public class Model {
                     ChallengeEvent.getMatcher(), EncryptedCastBallotWithNIZKsEvent.getMatcher(),
                     AuthorizedToCastWithNIZKsEvent.getMatcher(), AdderChallengeEvent.getMatcher(),
                     PinEnteredEvent.getMatcher(), InvalidPinEvent.getMatcher(),
-                    PollStatusEvent.getMatcher(), BallotPrintedEvent.getMatcher());
+                    PollStatusEvent.getMatcher(), BallotPrintedEvent.getMatcher(),
+                    BallotScannedEvent.getMatcher());
         } catch (NetworkException e1) {
             throw new RuntimeException(e1);
         }
@@ -572,7 +573,7 @@ public class Model {
                                 .getSerial(), ((StringExpression) e.getNonce())
                                 .getBytes()));
                     	
-                    	//Otheriwse, we need to count the whole thing.
+                    	//Otherwise, we need to count the whole thing.
                         VoteBoxBooth booth = (VoteBoxBooth) m;
                         booth.setPublicCount(booth.getPublicCount() + 1);
                         booth.setProtectedCount(booth.getProtectedCount() + 1);
@@ -929,8 +930,11 @@ public class Model {
                     // used to be in voteBox registerForCommit listener.
                     auditorium.announce(new CastCommittedBallotEvent(serial, nonce));
                     // that should trigger my own castBallot listener.
+                    System.out.println("Sending scan confirmation!");
+                    auditorium.announce(new BallotScanAcceptedEvent(StringExpression.makeString(bid)));
                 } else {
-                    throw new IllegalStateException("got ballot scanned message for invalid BID");
+                    System.out.println("Sending scan rejection!");
+                    auditorium.announce(new BallotScanRejectedEvent(mySerial, bid));
                 }
 
             }
@@ -966,6 +970,14 @@ public class Model {
                 System.out.println("V"  + expectedBallots);
             }
 
+            public void ballotAccepted(BallotScanAcceptedEvent e){
+                //NO-OP
+            }
+
+            public void ballotRejected(BallotScanRejectedEvent e){
+                //NO-OP
+            }
+
         });
 
         try {
@@ -974,7 +986,7 @@ public class Model {
         } catch (NetworkException e1) {
         	//NetworkException represents a recoverable error
         	//  so just note it and continue
-            System.out.println("Recoverable error occured: "+e1.getMessage());
+            System.out.println("Recoverable error occurred: "+e1.getMessage());
             e1.printStackTrace(System.err);
         }
 

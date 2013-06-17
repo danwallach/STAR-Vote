@@ -207,7 +207,7 @@ public class VoteBox {
 
 
         //If we're using the commit-challenge model, we need to register for the commit & challenge events.
-        if(_constants.getUseCommitChallengeModel()){
+        //if(_constants.getUseCommitChallengeModel()){
         	
         	//Listen for challenges ui events.  When received, discard the ballot (as the vote is no longer countable)
         	//   and reply with the random key needed to decrypt this particular vote
@@ -250,6 +250,7 @@ public class VoteBox {
 
         		@SuppressWarnings("unchecked")
 				public void update(Observable o, Object argTemp) {
+                    System.out.println("The ballot was committed!");
         			if (!connected)
         				throw new RuntimeException(
         						"Attempted to cast ballot when not connected to any machines");
@@ -286,6 +287,7 @@ public class VoteBox {
                         List<List<String>> races = currentDriver.getBallotAdapter().getRaceGroups();
                         printer = new Printer(_currentBallotFile, races);
 						printer.printCommittedBallot(ballot, bid);
+                        printer.printedReciept(bid);
                         auditorium.announce(new BallotPrintedEvent(mySerial, bid,
                                 nonce));
 					} catch (AuditoriumCryptoException e) {
@@ -299,34 +301,34 @@ public class VoteBox {
         	//Rather than actually send the ballot out, just send the nonce (which can identify the whole
         	//transaction).
         	//Clean up the encryptor afterwards so as to destroy the random number needed for challenging.
+            //TODO This code doens't do anything?
         	currentDriver.getView().registerForCastBallot(new Observer(){
 
-				public void update(Observable o, Object argTemp) {
-					if (!connected)
-        				throw new RuntimeException(
-        						"Attempted to cast ballot when not connected to any machines");
-        			if (!voting || currentDriver == null)
-        				throw new RuntimeException(
-        						"VoteBox attempted to cast ballot, but was not currently voting");
-        			if (finishedVoting)
-        				throw new RuntimeException(
-        						"This machine has already finished voting, but attempted to vote again");
+                public void update(Observable o, Object argTemp) {
+                    if (!connected)
+                        throw new RuntimeException(
+                                "Attempted to cast ballot when not connected to any machines");
+                    if (!voting || currentDriver == null)
+                        throw new RuntimeException(
+                                "VoteBox attempted to cast ballot, but was not currently voting");
+                    if (finishedVoting)
+                        throw new RuntimeException(
+                                "This machine has already finished voting, but attempted to vote again");
 
-        			finishedVoting = true;
-        			++publicCount;
-        			++protectedCount;
-        			
-        			//Object[] arg = (Object[])argTemp;
-        			
-        			auditorium.announce(new CastCommittedBallotEvent(mySerial,
-        					StringExpression.makeString(nonce)));
-        			
-        			BallotEncrypter.SINGLETON.clear();
-        			
-        			//printBallotCastConfirmation();
-				}
-        		
-        	});
+                    finishedVoting = true;
+                    ++publicCount;
+                    ++protectedCount;
+
+                    //Object[] arg = (Object[])argTemp;
+
+                    auditorium.announce(new CastCommittedBallotEvent(mySerial,
+                            StringExpression.makeString(nonce)));
+
+                    BallotEncrypter.SINGLETON.clear();
+
+                }
+
+            });
         	
         	/**
         	 * If we're using piecemeal encryption, we need to listen for each page change.
@@ -353,14 +355,14 @@ public class VoteBox {
         			}
         		});
         	}
-        }else{
+        /*}else{
         	//If we're not using the challenge-commit model, we still need to handle "cast" ui events.
         	//Here we role the commit triggered encryption in with casting (provided encryption is enabled).
         	currentDriver.getView().registerForCastBallot(new Observer() {
-                /**
+                *//**
                  * Makes sure that the booth is in a correct state to cast a ballot,
                  * then announce the cast-ballot message (also increment counters)
-                 */
+                 *//*
                 @SuppressWarnings("unchecked")
                 public void update(Observable o, Object argTemp) {
                     if (!connected)
@@ -383,7 +385,7 @@ public class VoteBox {
                     if (!_constants.getCastBallotEncryptionEnabled()) {
                         auditorium.announce(new CastBallotEvent(mySerial,
                                 StringExpression.makeString(nonce),
-                                (ASExpression) arg[0]));
+                                (ASExpression) arg[0], StringExpression.makeString(bid)));
                     } else {
                         //Else, use the EncryptedCastBallotEvent with a properly encrypted ballot
                         try {
@@ -392,13 +394,13 @@ public class VoteBox {
 
                                 auditorium.announce(new EncryptedCastBallotEvent(mySerial,
                                         StringExpression.makeString(nonce),
-                                        BallotEncrypter.SINGLETON.getRecentEncryptedBallot()));
+                                        BallotEncrypter.SINGLETON.getRecentEncryptedBallot(), StringExpression.makeString(bid)));
                             } else {
                                 BallotEncrypter.SINGLETON.encryptWithProof((ListExpression) arg[0], (List<List<String>>) arg[1], (PublicKey) _constants.getKeyStore().loadAdderKey("public"));
 
                                 auditorium.announce(new EncryptedCastBallotWithNIZKsEvent(mySerial,
                                         StringExpression.makeString(nonce),
-                                        BallotEncrypter.SINGLETON.getRecentEncryptedBallot()));
+                                        BallotEncrypter.SINGLETON.getRecentEncryptedBallot(), StringExpression.makeString(bid)));
                             }//if
                         } catch (AuditoriumCryptoException e) {
                             System.err.println("Encryption Error: " + e.getMessage());
@@ -411,7 +413,7 @@ public class VoteBox {
                     //printBallotCastConfirmation();
                 }
             });
-        }//if
+        }//if*/
         
         currentDriver.getView().registerForOverrideCancelConfirm(
                 new Observer() {
@@ -531,7 +533,7 @@ public class VoteBox {
         } catch (NetworkException e1) {
         	//NetworkException represents a recoverable error
         	//  so just note it and continue
-            System.out.println("Recoverable error occured: "+e1.getMessage());
+            System.out.println("Recoverable error occurred: "+e1.getMessage());
             e1.printStackTrace(System.err);
         }
 
@@ -906,6 +908,14 @@ public class VoteBox {
             }
 
             public void ballotscanner(BallotScannerEvent e) {
+                // NO-OP
+            }
+
+            public void ballotAccepted(BallotScanAcceptedEvent e){
+                // NO-OP
+            }
+
+            public void ballotRejected(BallotScanRejectedEvent e){
                 // NO-OP
             }
 

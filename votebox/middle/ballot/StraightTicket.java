@@ -171,13 +171,13 @@ public class StraightTicket extends ACardStrategy {
 							sce.getUniqueID());
 				} catch (UnknownUIDException e) {
 					throw new CardStrategyException(
-							"When executing straight ticket behavior, an error occured: "
+							"When executing straight ticket behavior, an error occurred: "
 									+ e.getMessage()
 									+ " This probably means that there is no ToggleButton defined that corresponds with a particular ballot element.",
 							e);
 				} catch (SelectionException e) {
 					throw new CardStrategyException(
-							"When executing straight ticket behavior, an error occured in the view: "
+							"When executing straight ticket behavior, an error occurred in the view: "
 									+ e.getMessage(), e);
 				}
 			}
@@ -242,7 +242,7 @@ public class StraightTicket extends ACardStrategy {
 									+ e.getMessage(), e);
 				} catch (DeselectionException e) {
 					throw new CardStrategyException(
-							"When executing straight ticket behavior, an error occured in the view: "
+							"When executing straight ticket behavior, an error occurred in the view: "
 									+ e.getMessage(), e);
 				}
 			}

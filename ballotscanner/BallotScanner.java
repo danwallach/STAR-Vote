@@ -2,277 +2,497 @@ package ballotscanner;
 
 import auditorium.NetworkException;
 import com.google.zxing.BinaryBitmap;
+import com.googlecode.javacv.CanvasFrame;
+import com.googlecode.javacv.cpp.opencv_core;
 import javazoom.jl.player.Player;
+import sexpression.*;
 import supervisor.model.ObservableEvent;
 import votebox.AuditoriumParams;
 import votebox.events.*;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Observer;
 
 public class BallotScanner {
 
-  private final AuditoriumParams _constants;
+    private final AuditoriumParams _constants;
 
 
-  private int numConnections;
-  private VoteBoxAuditoriumConnector auditorium;
-  private final int mySerial;
-  private boolean connected;
-  private Timer statusTimer;
-  private boolean activated;
-  private ObservableEvent activatedObs;
+    private int numConnections;
+    private VoteBoxAuditoriumConnector auditorium;
+    private final int mySerial;
+    private boolean connected;
+    private Timer statusTimer;
+    private boolean activated;
+    private ObservableEvent activatedObs;
+    private JFrame frame;
+    private boolean wait = true;
+    private boolean skip = false;
 
-  // stores the last found result obtained from a successful code scan
-  private String lastFoundBID = "";
+    private DateFormat dateFormat = new SimpleDateFormat("MMMM d, y");
+    private Date date = new Date();
 
-  // stores the last time a code was found
-  private long lastFoundTime = 0;
+    // stores the last found result obtained from a successful code scan
+    private String lastFoundBID = "";
 
-  // keeps the path to the "ballot scanned" mp3
-  private String bsMp3Path; //= "sound/ballotscanned.mp3"; move to the .conf file
+    // stores the last time a code was found
+    private long lastFoundTime = 0;
 
-  // keeps the mp3Player
-  private Player mp3Player;
+    // keeps the path to the "ballot scanned" mp3
+    private String bsMp3Path;// = "sound/ballotscanned.mp3"; //move to the .conf file
 
-  // how long a result is stored in memory before it is cleared
-  private final long DELAY_TIME = 5000;
+    // keeps the mp3Player
+    private Player mp3Player;
 
-  /**
-   * Equivalent to new BallotScanner(-1).
-   */
-  public BallotScanner() {
-    this(-1);
-  }
+    // how long a result is stored in memory before it is cleared
+    private final long DELAY_TIME = 5000;
 
-  /**
-   * Constructs a new instance of a persistent ballot scanner.  This
-   * implementation runs in the background, on an auditorium network.
-   * @param serial
-   *          the serial number of the votebox
-   */
-  public BallotScanner(int serial) {
-    _constants = new AuditoriumParams("bs.conf");
 
-      if(_constants.useScanConfirmationSound()){
-        bsMp3Path = _constants.getConfirmationSoundPath();
-      }
 
-    if(serial != -1)
-      mySerial = serial;
-    else
-      mySerial = _constants.getDefaultSerialNumber();
+    /**
+     * Equivalent to new BallotScanner(-1).
+     */
+    public BallotScanner() {
+        this(-1);
+    }
 
-    if(mySerial == -1)
-      throw new RuntimeException("usage: BallotScanner <machineID>");
+    /**
+     * Constructs a new instance of a persistent ballot scanner.  This
+     * implementation runs in the background, on an auditorium network.
+     *
+     * @param serial the serial number of the votebox
+     */
+    public BallotScanner(int serial) {
+        _constants = new AuditoriumParams("bs.conf");
 
-    numConnections = 0;
-
-    activatedObs = new ObservableEvent();
-
-    statusTimer = new Timer(300000, new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        if (isConnected()) {
-          auditorium.announce(getStatus());
+        if (_constants.useScanConfirmationSound()) {
+            bsMp3Path = _constants.getConfirmationSoundPath();
         }
-      }
-    });
-  }
 
-  /**
-   * Register to be notified when this BallotScanner's active status changes
-   *
-   * @param obs
-   *            the observer
-   */
-  public void registerForActivated(Observer obs) {
-    activatedObs.addObserver(obs);
-  }
+        if (serial != -1)
+            mySerial = serial;
+        else
+            mySerial = _constants.getDefaultSerialNumber();
 
-  /**
-   * Returns this booth's status as a VoteBoxEvent, used for periodic
-   * broadcasts
-   *
-   * @return the status
-   */
-  public BallotScannerEvent getStatus() {
-    BallotScannerEvent event;
-    // choosing to not require bs to be activated (for now)
+        if (mySerial == -1)
+            throw new RuntimeException("usage: BallotScanner <machineID>");
+
+        numConnections = 0;
+
+        activatedObs = new ObservableEvent();
+
+        statusTimer = new Timer(300000, new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (isConnected()) {
+                    auditorium.announce(getStatus());
+                }
+            }
+        });
+
+        //Set up the JFrame confirmation screen
+        frame = new JFrame("STAR-Vote Ballot Scanner");
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setLocationRelativeTo(null);
+        frame.setLocation((int)Math.round(frame.getLocation().getX()) - 300, (int)Math.round(frame.getLocation().getY()) - 300);
+    }
+
+    /**
+     * Register to be notified when this BallotScanner's active status changes
+     *
+     * @param obs the observer
+     */
+    public void registerForActivated(Observer obs) {
+        activatedObs.addObserver(obs);
+    }
+
+    /**
+     * Returns this booth's status as a VoteBoxEvent, used for periodic
+     * broadcasts
+     *
+     * @return the status
+     */
+    public BallotScannerEvent getStatus() {
+        BallotScannerEvent event;
+        // choosing to not require bs to be activated (for now)
 //    if (isActivated()) {
-      event = new BallotScannerEvent(mySerial,"active");
+        event = new BallotScannerEvent(mySerial, "active");
 //    }
 //    else {
 //      event = new BallotScannerEvent(mySerial,"inactive");
 //    }
-    return event;
-  }
+        return event;
+    }
 
-  /**
-   * @return whether this BallotScanner is active
-   */
-  public boolean isActivated() {
-    return activated;
-  }
+    /**
+     * @return whether this BallotScanner is active
+     */
+    public boolean isActivated() {
+        return activated;
+    }
 
-  /**
-   * Sets this BallotScanner's active status
-   *
-   * @param activated
-   *            the activated to set
-   */
-  public void setActivated(boolean activated) {
-    this.activated = activated;
-    activatedObs.notifyObservers();
-  }
+    /**
+     * Sets this BallotScanner's active status
+     *
+     * @param activated the activated to set
+     */
+    public void setActivated(boolean activated) {
+        this.activated = activated;
+        activatedObs.notifyObservers();
+    }
 
-  /**
-   * @return whether this ballot scanner is connected to any machines
-   */
-  public boolean isConnected() {
-    return connected;
-  }
+    /**
+     * @return whether this ballot scanner is connected to any machines
+     */
+    public boolean isConnected() {
+        return connected;
+    }
 
-  /**
-   * method that starts the scanning process
-   */
-  public void beginScanning() {
-    IWebcam webcam = new FrameGrabberWebcam();
+    /**
+     * method that starts the scanning process
+     */
+    public void beginScanning() {
+        IWebcam webcam = new FrameGrabberWebcam();
 
-    webcam.startCapture();
+        webcam.startCapture();
 
-    MultiFormatDecoder decoder = new MultiFormatDecoder();
+        MultiFormatDecoder decoder = new MultiFormatDecoder();
+        ImageIcon logo;
 
-    while (true) {
-      long currentTime = System.currentTimeMillis();
-      BinaryBitmap bitmap = webcam.getBitmap();
-      lastFoundBID = decoder.decode(bitmap);
-
-      if(currentTime - lastFoundTime> DELAY_TIME) {
-        if(lastFoundBID != null) {
-          System.out.println(lastFoundBID);  //TODO Is this needed?
-          lastFoundTime = System.currentTimeMillis();
-          auditorium.announce(new BallotScannedEvent(mySerial, lastFoundBID));
-
-          // prepare the mp3Player
-            //TODO Should we play a sound?
-          try {
-            FileInputStream fileInputStream = new FileInputStream(bsMp3Path);
-            BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
-            mp3Player = new Player(bufferedInputStream);
-          }
-          catch (Exception e) {
-            if(!_constants.useScanConfirmationSound()){
-                System.out.println("Problem playing audio: " + bsMp3Path);
-                System.out.println(e);
-            }
-          }
-
-          // play the sound
-          new Thread() {
-            public void run() {
-              try {
-                mp3Player.play();
-              }
-              catch (Exception e) {
-                System.out.println(e);
-              }
-            }
-          }.start();
+        try{
+            logo = new ImageIcon(ImageIO.read(new File("images/logo.png")));
+        } catch(IOException e) {
+            logo = null;
+            System.out.println("Icon could not be loaded!");
+            new RuntimeException(e);
         }
-      }
+
+
+
+        JPanel panel = new JPanel();
+        panel.setPreferredSize(new Dimension(600, 600));
+        JLabel image = new JLabel(logo);
+        panel.add(image);
+        panel.add(new JLabel("Please scan your ballot"));
+        panel.add(new JLabel(dateFormat.format(date)));
+        frame.add(panel);
+        frame.pack();
+        frame.setVisible(true);
+
+        while (true) {
+            wait = false;
+            long currentTime = System.currentTimeMillis();
+            BinaryBitmap bitmap = webcam.getBitmap();
+
+
+
+            //Skip over code if a scan is pending confirmation or rejection
+            if(skip)
+                continue;
+
+
+            lastFoundBID = decoder.decode(bitmap);
+
+            if (currentTime - lastFoundTime > DELAY_TIME) {
+                if (lastFoundBID != null) {
+                    System.out.println(lastFoundBID);  //TODO Is this needed?
+
+                    auditorium.announce(new BallotScannedEvent(mySerial, lastFoundBID));
+
+
+                    lastFoundTime = System.currentTimeMillis();
+                    auditorium.announce(new BallotScannedEvent(mySerial, lastFoundBID));
+                    bsMp3Path = _constants.getConfirmationSoundPath();
+
+                    // prepare the mp3Player
+                     try {
+
+                        FileInputStream fileInputStream = new FileInputStream(bsMp3Path);
+                        BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
+                        mp3Player = new Player(bufferedInputStream);
+                    } catch (Exception e) {
+                        if (!_constants.useScanConfirmationSound()) {
+                            System.out.println("Problem playing audio: " + bsMp3Path);
+                            System.out.println(e);
+                        }
+                    }
+
+                    // play the sound
+                    new Thread() {
+                        public void run() {
+                            try {
+                                mp3Player.play();
+                            } catch (Exception e) {
+                                System.out.println(e);
+                            }
+                        }
+                    }.start();
+
+
+
+                    while(wait){
+                        if(frame.isVisible()) //reset the confirmed variable once the jframe has shown
+                            wait = false;
+                    }
+
+
+                }
+            }
+        }
     }
-  }
 
-  /**
-   * Main method which right now just goes into an infinite while loop, constantly scanning
-   */
-  public void start() {
+    /**
+     * Main method which right now just goes into an infinite while loop, constantly scanning
+     */
+    public void start() {
 
-    try {
-      auditorium = new VoteBoxAuditoriumConnector(mySerial,
-          _constants
-          //, add matcher rules here
-        );
-    } catch (NetworkException e1) {
-      //NetworkException represents a recoverable error
-      //  so just note it and continue
-      System.out.println("Recoverable error occured: "+e1.getMessage());
-      e1.printStackTrace(System.err);
+        try {
+            auditorium = new VoteBoxAuditoriumConnector(mySerial,
+                    _constants, BallotScanAcceptedEvent.getMatcher(),
+                    BallotScanRejectedEvent.getMatcher()
+            );
+        } catch (NetworkException e1) {
+            //NetworkException represents a recoverable error
+            //  so just note it and continue
+            System.out.println("Recoverable error occurred: " + e1.getMessage());
+            e1.printStackTrace(System.err);
+        }
+
+        try {
+            auditorium.connect();
+            auditorium.announce(getStatus());
+        } catch (NetworkException e1) {
+            throw new RuntimeException(e1);
+        }
+
+        auditorium.addListener(new VoteBoxEventListener() {
+            public void ballotCounted(BallotCountedEvent e) {
+            }
+
+
+            public void castBallot(CastBallotEvent event) {
+            }
+
+            public void challenge(ChallengeEvent e) {
+            }
+
+            public void commitBallot(CommitBallotEvent e) {
+            }
+
+            public void activated(ActivatedEvent e) {
+            }
+
+            public void assignLabel(AssignLabelEvent e) {
+            }
+
+            public void authorizedToCast(AuthorizedToCastEvent e) {
+            }
+
+            public void ballotReceived(BallotReceivedEvent e) {
+            }
+
+            public void challengeResponse(ChallengeResponseEvent e) {
+            }
+
+            /**
+             * Increment the number of connections
+             */
+            public void joined(JoinEvent e) {
+                ++numConnections;
+                connected = true;
+            }
+
+            public void lastPollsOpen(LastPollsOpenEvent e) {
+            }
+
+            /**
+             * Decrement the number of connections
+             */
+            public void left(LeaveEvent e) {
+                --numConnections;
+                if (numConnections == 0) connected = false;
+            }
+
+            public void overrideCancel(OverrideCancelEvent e) {
+            }
+
+            public void overrideCancelConfirm(OverrideCancelConfirmEvent e) {
+            }
+
+            public void overrideCancelDeny(OverrideCancelDenyEvent e) {
+            }
+
+            public void overrideCast(OverrideCastEvent e) {
+            }
+
+            public void overrideCastConfirm(OverrideCastConfirmEvent e) {
+            }
+
+            public void overrideCastDeny(OverrideCastDenyEvent e) {
+            }
+
+            public void pollsClosed(PollsClosedEvent e) {
+            }
+
+            public void pollsOpen(PollsOpenEvent e) {
+            }
+
+            public void pollsOpenQ(PollsOpenQEvent e) {
+            }
+
+            public void supervisor(SupervisorEvent e) {
+            }
+
+            public void ballotscanner(BallotScannerEvent e) {
+            }
+
+            public void votebox(VoteBoxEvent e) {
+            }
+
+            public void ballotScanned(BallotScannedEvent e) {
+            }
+
+            public void pinEntered(PinEnteredEvent event) {
+            }
+
+            public void invalidPin(InvalidPinEvent event) {
+            }
+
+            public void pollStatus(PollStatusEvent pollStatusEvent) {
+            }
+
+            public void ballotPrinted(BallotPrintedEvent ballotPrintedEvent) {
+            }
+
+            public void ballotAccepted(BallotScanAcceptedEvent event){
+
+                //If this event corresponds with our last scanned ballot, display a confirmation message
+                if(lastFoundBID.equals(event.getBID())){
+
+
+
+                    //Code which will display a confirmation screen
+                    frame.setVisible(false);
+                    frame = new JFrame("STAR-Vote Ballot Scanner");
+                    JPanel panel = new JPanel();
+                    JLabel imageLabel = new JLabel();
+                    JLabel textLabel = new JLabel("Ballot " + lastFoundBID + " confirmed and cast");
+
+
+
+                    BufferedImage confirmed = null;
+
+                    try{
+                        File file = new File("images/confirmation.png");
+                        confirmed = ImageIO.read(file);
+                    } catch (IOException e){
+                        System.out.println("Confirmation image could not be loaded!");
+                        throw new RuntimeException(e);
+                    }
+                    ImageIcon confirmationIcon = new ImageIcon(confirmed);
+
+
+
+                    imageLabel.setIcon(confirmationIcon);
+                    panel.add(imageLabel);
+                    panel.setPreferredSize(new Dimension(600, 600));
+                    panel.add(textLabel);
+                    frame.add(panel);
+                    frame.pack();
+
+                    frame.setVisible(true);
+
+                    //If the frame is closed, start over
+                    if(!frame.isVisible())
+                        wait = false;
+
+
+
+
+                }
+
+            }
+
+            public void ballotRejected(BallotScanRejectedEvent event){
+                System.out.println("Rejected event: Event BID: " + event.getBID());
+                System.out.println("Rejected event: Last BID: " + lastFoundBID);
+
+                //If our ballot was rejected, display a message
+                if(lastFoundBID.equals(event.getBID())){
+
+
+                    //Code which will display a rejection screen
+                    frame.setVisible(false);
+                    frame = new JFrame("STAR-Vote Ballot Scanner");
+
+                    JPanel panel = new JPanel();
+                    JLabel imageLabel = new JLabel();
+                    JLabel textLabel = new JLabel("Ballot " + lastFoundBID + " was NOT cast.");
+                    JLabel text2Label = new JLabel("Please ensure that this is the correct ballot or seek assistance from an election official.");
+
+
+
+                    BufferedImage rejected = null;
+
+                    try{
+                        File file = new File("images/rejected.png");
+                        rejected = ImageIO.read(file);
+                    } catch (IOException e){
+                        System.out.println("Rejection image could not be loaded!");
+                        throw new RuntimeException(e);
+                    }
+                    ImageIcon rejectionIcon = new ImageIcon(rejected);
+
+
+
+                    imageLabel.setIcon(rejectionIcon);
+                    panel.add(imageLabel);
+                    panel.setPreferredSize(new Dimension(600, 600));
+                    panel.add(textLabel);
+                    panel.add(text2Label);
+                    frame.add(panel);
+                    frame.pack();
+
+                    frame.setVisible(true);
+
+                    //If the frame is closed, start over
+                    if(!frame.isVisible())
+                        wait = false;
+
+                }
+            }
+
+
+        });
+
+        statusTimer.start();
+
+        beginScanning();
     }
 
-    try {
-      auditorium.connect();
-      auditorium.announce(getStatus());
+    /**
+     * Main entry point into the program. If an argument is given, it will be
+     * the serial number, otherwise VoteBox will load a serial from its config file.
+     *
+     * @param args
+     */
+    public static void main(String[] args) {
+        if (args.length == 1)
+            new BallotScanner(Integer.parseInt(args[0])).start();
+        else
+            //Tell VoteBox to refer to its config file for the serial number
+            new BallotScanner().start();
     }
-    catch (NetworkException e1) {
-      throw new RuntimeException(e1);
-    }
-
-    auditorium.addListener(new VoteBoxEventListener() {
-      public void ballotCounted(BallotCountedEvent e){}
-      public void castBallot(CastBallotEvent e) {}
-      public void challenge(ChallengeEvent e) {}
-      public void commitBallot(CommitBallotEvent e) {}
-      public void activated(ActivatedEvent e) {}
-      public void assignLabel(AssignLabelEvent e) {}
-      public void authorizedToCast(AuthorizedToCastEvent e) {}
-      public void ballotReceived(BallotReceivedEvent e) {}
-      public void challengeResponse(ChallengeResponseEvent e) {}
-      /**
-       * Increment the number of connections
-       */
-      public void joined(JoinEvent e) {
-        ++numConnections;
-        connected = true;
-      }
-      public void lastPollsOpen(LastPollsOpenEvent e) {}
-      /**
-       * Decrement the number of connections
-       */
-      public void left(LeaveEvent e) {
-        --numConnections;
-        if (numConnections == 0) connected = false;
-      }
-      public void overrideCancel(OverrideCancelEvent e) {}
-      public void overrideCancelConfirm(OverrideCancelConfirmEvent e) {}
-      public void overrideCancelDeny(OverrideCancelDenyEvent e) {}
-      public void overrideCast(OverrideCastEvent e) {}
-      public void overrideCastConfirm(OverrideCastConfirmEvent e) {}
-      public void overrideCastDeny(OverrideCastDenyEvent e) {}
-      public void pollsClosed(PollsClosedEvent e) {}
-      public void pollsOpen(PollsOpenEvent e) {}
-      public void pollsOpenQ(PollsOpenQEvent e) {}
-      public void supervisor(SupervisorEvent e) {}
-      public void ballotscanner(BallotScannerEvent e) {}
-      public void votebox(VoteBoxEvent e) {}
-      public void ballotScanned(BallotScannedEvent e) {}
-      public void pinEntered(PinEnteredEvent event) {}
-      public void invalidPin(InvalidPinEvent event) {}
-      public void pollStatus(PollStatusEvent pollStatusEvent) {}
-      public void ballotPrinted(BallotPrintedEvent ballotPrintedEvent) {}
-
-
-    });
-
-    statusTimer.start();
-
-    beginScanning();
-  }
-
-  /**
-   * Main entry point into the program. If an argument is given, it will be
-   * the serial number, otherwise VoteBox will load a serial from its config file.
-   * @param args
-   */
-  public static void main(String[] args) {
-    if (args.length == 1)
-      new BallotScanner(Integer.parseInt(args[0])).start();
-    else
-      //Tell VoteBox to refer to its config file for the serial number
-      new BallotScanner().start();
-  }
 }

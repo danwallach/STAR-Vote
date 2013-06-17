@@ -208,4 +208,15 @@ public class VoteBoxEventNotifier implements VoteBoxEventListener {
             l.ballotPrinted(e);
     }
 
+    public void ballotAccepted(BallotScanAcceptedEvent e){
+        for(VoteBoxEventListener l : listeners)
+            l.ballotAccepted(e);
+    }
+
+    public void ballotRejected(BallotScanRejectedEvent e){
+        System.out.println("Rejected!");
+        for(VoteBoxEventListener l : listeners)
+            l.ballotRejected(e);
+    }
+
 }
