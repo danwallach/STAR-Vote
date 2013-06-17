@@ -38,12 +38,9 @@ public class BallotScanner {
     private Timer statusTimer;
     private boolean activated;
     private ObservableEvent activatedObs;
-    private JFrame frame;
+    private BallotScannerUI frame;
     private boolean wait = true;
     private boolean skip = false;
-
-    private DateFormat dateFormat = new SimpleDateFormat("MMMM d, y");
-    private Date date = new Date();
 
     // stores the last found result obtained from a successful code scan
     private String lastFoundBID = "";
@@ -103,10 +100,7 @@ public class BallotScanner {
         });
 
         //Set up the JFrame confirmation screen
-        frame = new JFrame("STAR-Vote Ballot Scanner");
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setLocationRelativeTo(null);
-        frame.setLocation((int)Math.round(frame.getLocation().getX()) - 300, (int)Math.round(frame.getLocation().getY()) - 300);
+        frame = new BallotScannerUI();
     }
 
     /**
@@ -169,13 +163,12 @@ public class BallotScanner {
         webcam.startCapture();
 
         MultiFormatDecoder decoder = new MultiFormatDecoder();
-        ImageIcon logo;
 
-        try{
+        /*try{
             logo = new ImageIcon(ImageIO.read(new File("images/logo.png")));
         } catch(IOException e) {
             logo = null;
-            System.out.println("Icon could not be loaded!");
+            System.out.println("BallotScannerUI: Logo Icon could not be loaded!");
             new RuntimeException(e);
         }
 
@@ -186,10 +179,13 @@ public class BallotScanner {
         JLabel image = new JLabel(logo);
         panel.add(image);
         panel.add(new JLabel("Please scan your ballot"));
-        panel.add(new JLabel(dateFormat.format(date)));
+        panel.add(new JLabel(dateFormat.format(date)
+
+
+        ));
         frame.add(panel);
         frame.pack();
-        frame.setVisible(true);
+        frame.setVisible(true);*/
 
         while (true) {
             wait = false;
