@@ -1154,6 +1154,8 @@ public class View extends JFrame {
                 previewButtonPressed();
             }
         } );
+
+        previewButton.setEnabled(false);
         toolbar.add( previewButton );
         
         try {
@@ -1228,6 +1230,7 @@ public class View extends JFrame {
     	prefMenu.add( font );
     	
     	final JCheckBoxMenuItem challenge = new JCheckBoxMenuItem("Use Commit-Challenge Model");
+        challenge.setState(true);
     	challenge.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				model.setCommitChallenge(challenge.getState());

@@ -38,7 +38,7 @@ public class Code128Decoder {
             return result.getText();
         }
         catch(NotFoundException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             return null;
         } catch (FormatException e) {
             e.printStackTrace();
