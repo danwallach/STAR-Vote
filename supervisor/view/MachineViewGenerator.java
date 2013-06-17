@@ -24,6 +24,7 @@ package supervisor.view;
 
 import java.util.HashMap;
 
+import ballotscanner.BallotScannerMachine;
 import supervisor.model.AMachine;
 import supervisor.model.Model;
 import supervisor.model.SupervisorMachine;
@@ -72,6 +73,8 @@ public class MachineViewGenerator {
                 mv = new SupervisorMachineView((SupervisorMachine) m);
             } else if (m instanceof VoteBoxBooth) {
                 mv = new VoteBoxBoothView(model, view, (VoteBoxBooth) m);
+            } else if (m instanceof BallotScannerMachine){
+                mv = new BallotScannerMachineView((BallotScannerMachine)m);
             }
             views.put(m, mv);
             return mv;

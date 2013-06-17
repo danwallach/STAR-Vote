@@ -231,7 +231,7 @@ public class VoteBoxBoothView extends AMachineView {
             } else{
                 button.setEnabled(false);
                 button.setVisible(false);
-                updateBackground(Color.lightGray);
+                updateBackground(Color.white);
                 statusLabel.setText("Ready");
             }
 

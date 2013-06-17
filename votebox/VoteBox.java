@@ -58,7 +58,7 @@ import printer.*;
  * 
  * @author derrley, cshaw
  */
-public class VoteBox {
+public class VoteBox{
 
     private final AuditoriumParams _constants;
     private final IViewFactory _factory;
@@ -512,8 +512,6 @@ public class VoteBox {
      * Starts Auditorium, registers the listener, and connects to the network.
      */
     public void start() {
-
-
 
         inactiveUI = new VoteBoxInactiveUI(this);
         
