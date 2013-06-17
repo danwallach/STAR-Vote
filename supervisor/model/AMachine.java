@@ -22,6 +22,8 @@
 
 package supervisor.model;
 
+import ballotscanner.BallotScannerMachine;
+
 import java.util.Observer;
 
 /**
@@ -133,4 +135,15 @@ public abstract class AMachine implements Comparable {
         obs.notifyObservers();
     }
 
+    public String toString(){
+        String res = "";
+        if(this instanceof SupervisorMachine){
+            res = "SupervisorMachine{serial =  " + serial + " status = " + ((status==4)?"ACTIVE":"INACTIVE") + "}";
+        } else if(this instanceof VoteBoxBooth){
+            res = "VoteBoxBooth{serial = " + serial + " status = " + ((status==1)? "IN-USE": "READY") + "}";
+        } else if(this instanceof BallotScannerMachine){
+            res = "ballotScannerMachine{serial = " + serial + " status = " + ((status == 6)?"ACTIVE":"INACTIVE") + "}";
+        }
+        return res;
+    }
 }

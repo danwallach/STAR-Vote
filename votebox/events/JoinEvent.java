@@ -28,7 +28,7 @@ package votebox.events;
  * no sexpression form.
  * @author cshaw
  */
-public class JoinEvent {
+public class JoinEvent{
     
 	private int serial;
 
