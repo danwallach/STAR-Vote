@@ -486,11 +486,9 @@ public class Model {
                     AuthorizedToCastWithNIZKsEvent.getMatcher(), AdderChallengeEvent.getMatcher(),
                     PinEnteredEvent.getMatcher(), InvalidPinEvent.getMatcher(),
                     PollStatusEvent.getMatcher(), BallotPrintedEvent.getMatcher(),
-<<<<<<< HEAD
                     BallotScannedEvent.getMatcher());
-=======
-                    BallotScannerEvent.getMatcher());
->>>>>>> ScannerUI
+
+
         } catch (NetworkException e1) {
             throw new RuntimeException(e1);
         }
