@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 /**
  * A class which provides tools to write images to HTML files. Might be useful in printing higher quality images.
@@ -48,7 +49,7 @@ public class HTMLPrinter {
      * @param lineSeparatorFilePath - The path to the line separator file. This can be a 10x10 solid black PNG. The HTML code resizes it to the correct dimensions.
      * @param imageNames - ArrayLists of file names for images. One ArrayList per column.
      */
-    public static void generateHTMLFile (String filename, Boolean useTwoColumns, Boolean printFriendly, String pathToBallotVVPATFolder, AuditoriumParams ballotConstants, String ballotID, String barcodeFilePath, String lineSeparatorFilePath, ArrayList<String>... imageNames)
+    public static void generateHTMLFile (String filename, Boolean useTwoColumns, Boolean printFriendly, String pathToBallotVVPATFolder, AuditoriumParams ballotConstants, String ballotID, String barcodeFilePath, String lineSeparatorFilePath, List<ArrayList<String>> imageNames)
     {
         System.out.println("Attempting to create an html file at " + filename);
         File file = new File(filename);
@@ -144,7 +145,7 @@ public class HTMLPrinter {
      * @param pathToBallotVVPATFolder - The path to the vvpat folder in the ballot files
      * @param imageNames - ArrayLists of file names for images. One ArrayList per column.
      */
-    private static void generatorHelperForTwoColumns (BufferedWriter writer, Boolean printFriendly, String pathToBallotVVPATFolder, ArrayList<String>... imageNames)
+    private static void generatorHelperForTwoColumns (BufferedWriter writer, Boolean printFriendly, String pathToBallotVVPATFolder, List<ArrayList<String>> imageNames)
     {
         try
         {
@@ -197,7 +198,7 @@ public class HTMLPrinter {
             }
 
             // Put images in the left column.
-            ArrayList<String> left_column = imageNames[0];
+            ArrayList<String> left_column = imageNames.get(0);
             Boolean isSelectionImage = false; // Used to leave an empty line after every selectionImage
             for (String imageName : left_column)
             {
@@ -237,7 +238,7 @@ public class HTMLPrinter {
             // It might be the case that there is an odd number of columns. Check if imageNames[1] throws an IndexOutOfBounds Exception.
             try
             {
-                ArrayList<String> right_column = imageNames[1];
+                ArrayList<String> right_column = imageNames.get(1);
                 isSelectionImage = false; // Used to leave an empty line after every selectionImage
                 for (String imageName : right_column)
                 {
@@ -295,9 +296,9 @@ public class HTMLPrinter {
         }
 
         // If there are more columns to be printed, call this helper again on the rest of the columns.
-        if (imageNames.length > 2)
+        if (imageNames.size() > 2)
         {
-            generatorHelperForTwoColumns(writer, printFriendly, pathToBallotVVPATFolder, Arrays.copyOfRange(imageNames, 2, imageNames.length));
+            generatorHelperForTwoColumns(writer, printFriendly, pathToBallotVVPATFolder, imageNames.subList(2,imageNames.size()));
         }
     }
 
@@ -308,7 +309,7 @@ public class HTMLPrinter {
      * @param pathToBallotVVPATFolder - The path to the vvpat folder in the ballot files
      * @param imageNames - ArrayLists of file names for images. One ArrayList per column.
      */
-    private static void generatorHelperForOneColumn (BufferedWriter writer, Boolean printFriendly, String pathToBallotVVPATFolder, ArrayList<String>... imageNames)
+    private static void generatorHelperForOneColumn (BufferedWriter writer, Boolean printFriendly, String pathToBallotVVPATFolder, List<ArrayList<String>> imageNames)
     {
         try
         {
@@ -361,7 +362,7 @@ public class HTMLPrinter {
             }
 
             // Put images in the column.
-            ArrayList<String> column = imageNames[0];
+            ArrayList<String> column = imageNames.get(0);
             Boolean isSelectionImage = false; // Used to leave an empty line after every selectionImage
             for (String imageName : column)
             {
@@ -414,9 +415,9 @@ public class HTMLPrinter {
         }
 
         // If there are more columns to be printed, call this helper again on the rest of the columns.
-        if (imageNames.length > 1)
+        if (imageNames.size() > 1)
         {
-            generatorHelperForTwoColumns(writer, printFriendly, pathToBallotVVPATFolder, Arrays.copyOfRange(imageNames, 1, imageNames.length));
+            generatorHelperForOneColumn(writer, printFriendly, pathToBallotVVPATFolder, imageNames.subList(1, imageNames.size()));
         }
     }
 }
