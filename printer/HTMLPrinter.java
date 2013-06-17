@@ -1,11 +1,16 @@
 package printer;
 
+import votebox.AuditoriumParams;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 
 /**
  * A class which provides tools to write images to HTML files. Might be useful in printing higher quality images.
@@ -22,8 +27,14 @@ public class HTMLPrinter {
     public final static int TWO_COLUMNS_COLUMN_SIZE = (CONTAINER_WIDTH - LEFT_MARGIN_WIDTH - RIGHT_MARGIN_WIDTH) / 2 - 3;
     public final static int ONE_COLUMN_COLUMN_SIZE = CONTAINER_WIDTH - LEFT_MARGIN_WIDTH - RIGHT_MARGIN_WIDTH;
 
-    // The line separator to be used.
-    public static String LINE_SEPARATOR = "LineSeparator.png";
+    // The ballot parameters.
+    public static AuditoriumParams BALLOT_CONSTANTS = null;
+    // The ballot ID.
+    public static String BALLOT_ID = "000000000";
+    // The path to the barcode image.
+    public static String BARCODE_IMAGE = "Barcode.png";
+    // The path to the line separator image.
+    public static String LINE_SEPARATOR_IMAGE = "LineSeparator.png";
 
     /**
      * Generates a HTML file that will be used to print a voter's selections.
@@ -31,10 +42,13 @@ public class HTMLPrinter {
      * @param useTwoColumns - Whether or not to use two columns of images per page
      * @param printFriendly - Whether or not to generate a printer-friendly HTML file. If true, then the HTML file will contain no colours and only black text on a white background.
      * @param pathToBallotVVPATFolder - The path to the vvpat folder in the ballot files
+     * @param ballotConstants - The object that contains ballot parameters (such as election name)
+     * @param ballotID - The ID of the ballot
+     * @param barcodeFilePath - The path to the barcode file.
      * @param lineSeparatorFilePath - The path to the line separator file. This can be a 10x10 solid black PNG. The HTML code resizes it to the correct dimensions.
      * @param imageNames - ArrayLists of file names for images. One ArrayList per column.
      */
-    public static void generateHTMLFile (String filename, Boolean useTwoColumns, Boolean printFriendly, String pathToBallotVVPATFolder, String lineSeparatorFilePath, ArrayList<String>... imageNames)
+    public static void generateHTMLFile (String filename, Boolean useTwoColumns, Boolean printFriendly, String pathToBallotVVPATFolder, AuditoriumParams ballotConstants, String ballotID, String barcodeFilePath, String lineSeparatorFilePath, ArrayList<String>... imageNames)
     {
         System.out.println("Attempting to create an html file at " + filename);
         File file = new File(filename);
@@ -63,8 +77,14 @@ public class HTMLPrinter {
             System.out.println("HTML File Generator Error: Unable to create BufferedWriter for file '" + filename + "'");
         }
 
+        // Set the ballot constants object.
+        BALLOT_CONSTANTS = ballotConstants;
+        // Set the ballot ID.
+        BALLOT_ID = ballotID;
+        // Set the barcode.
+        BARCODE_IMAGE = barcodeFilePath;
         // Set the line separator.
-        LINE_SEPARATOR = lineSeparatorFilePath;
+        LINE_SEPARATOR_IMAGE = lineSeparatorFilePath;
 
         // Actually write the HTML file.
         try
@@ -81,7 +101,13 @@ public class HTMLPrinter {
             writer.write("<body bgcolor = \"#FFFFFF\" text = \"#000000\">\n");
 
             // Writes the header of the page(s) to be printed.
-            writer.write("<h2>Rice University Demo Election</h2>\n");
+            writer.write("<h4>" + BALLOT_CONSTANTS.getElectionName() + "<br>\n");
+
+            DateFormat dateFormat = new SimpleDateFormat("MMMM d, y");
+            Date date = new Date();
+            String currentDate = dateFormat.format(date);
+            writer.write(currentDate + "</h4>\n");
+
 
 
             if (!useTwoColumns) // Ballot printing uses one-column format
@@ -136,6 +162,9 @@ public class HTMLPrinter {
                 writer.write("<div id = \"right_margin\" style = \"background-color:#000000;width:" + RIGHT_MARGIN_WIDTH + "px;float:right\"><br></div>\n");
             }
 
+            // Add the barcode to the container (top).
+            writer.write("<center><img src = \"" + BARCODE_IMAGE + "_flipped.png\" alt = \"Image did not load properly\" width = \"" + TWO_COLUMNS_COLUMN_SIZE + "\"></center>\n");
+
             // Left Column //////////////////////////////////////////////////////////////////////////////////////////////////////
 
             if (printFriendly)
@@ -161,7 +190,7 @@ public class HTMLPrinter {
                 {
                     // Add selection separator.
                     // New separator:
-                    writer.write("<img src = \"" + /*pathToBallotVVPATFolder*/ LINE_SEPARATOR + "\" alt = \"Image not found\" width = \"" + (TWO_COLUMNS_COLUMN_SIZE - 12) + "\" height = \"2\" align = \"right\">\n<br>\n<br>\n");
+                    writer.write("<img src = \"" + /*pathToBallotVVPATFolder*/ LINE_SEPARATOR_IMAGE + "\" alt = \"Image not found\" width = \"" + (TWO_COLUMNS_COLUMN_SIZE - 12) + "\" height = \"2\" align = \"right\">\n<br>\n<br>\n");
                     // Old separators:
                     // writer.write("<br>\n<br>\n");
                     // writer.write("<div id = \"bar\" style = \"background-color:#000000;width:" + TWO_COLUMNS_COLUMN_SIZE + "px;\"><hr></div>\n");
@@ -201,7 +230,7 @@ public class HTMLPrinter {
                     {
                         // Add selection separator.
                         // New separator:
-                        writer.write("<img src = \"" + /*pathToBallotVVPATFolder*/ LINE_SEPARATOR + "\" alt = \"Image not found\" width = \"" + (TWO_COLUMNS_COLUMN_SIZE - 12) + "\" height = \"2\" align = \"right\">\n<br>\n<br>\n");
+                        writer.write("<img src = \"" + /*pathToBallotVVPATFolder*/ LINE_SEPARATOR_IMAGE + "\" alt = \"Image not found\" width = \"" + (TWO_COLUMNS_COLUMN_SIZE - 12) + "\" height = \"2\" align = \"right\">\n<br>\n<br>\n");
                         // Old separators:
                         // writer.write("<br>\n<br>\n");
                         // writer.write("<div id = \"bar\" style = \"background-color:#000000;width:" + TWO_COLUMNS_COLUMN_SIZE + "px;\"><hr></div>\n");
@@ -218,6 +247,9 @@ public class HTMLPrinter {
             // End of the right column.
             writer.write("</div>\n");
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            // Add the barcode to the container (bottom).
+            writer.write("<center><img src = \"" + BARCODE_IMAGE + ".png\" alt = \"Image did not load properly\" width = \"" + TWO_COLUMNS_COLUMN_SIZE + "\"></center>\n");
 
             // End of the container for the columns.
             writer.write("</div>\n");
@@ -263,6 +295,9 @@ public class HTMLPrinter {
                 writer.write("<div id = \"right_margin\" style = \"background-color:#000000;width:" + RIGHT_MARGIN_WIDTH + "px;float:right\"><br></div>\n");
             }
 
+            // Add the barcode to the container (top).
+            writer.write("<center><img src = \"" + BARCODE_IMAGE + "_flipped.png\" alt = \"Image did not load properly\" width = \"" + TWO_COLUMNS_COLUMN_SIZE + "\"></center>\n");
+
             // Column ///////////////////////////////////////////////////////////////////////////////////////////////////////////
             if (printFriendly)
             {
@@ -287,7 +322,7 @@ public class HTMLPrinter {
                 {
                     // Add selection separator.
                     // New separator:
-                    writer.write("<img src = \"" + /*pathToBallotVVPATFolder*/ LINE_SEPARATOR + "\" alt = \"Image not found\" width = \"" + (ONE_COLUMN_COLUMN_SIZE - 12) + "\" height = \"2\" align = \"right\">\n<br>\n<br>\n");
+                    writer.write("<img src = \"" + /*pathToBallotVVPATFolder*/ LINE_SEPARATOR_IMAGE + "\" alt = \"Image not found\" width = \"" + (ONE_COLUMN_COLUMN_SIZE - 12) + "\" height = \"2\" align = \"right\">\n<br>\n<br>\n");
                     // Old separators:
                     // writer.write("<br>\n<br>\n");
                     // writer.write("<div id = \"bar\" style = \"background-color:#000000;width:" + TWO_COLUMNS_COLUMN_SIZE + "px;\"><hr></div>\n");
@@ -299,6 +334,9 @@ public class HTMLPrinter {
             // End of the column.
             writer.write("</div>\n");
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            // Add the barcode to the container (bottom).
+            writer.write("<center><img src = \"" + BARCODE_IMAGE + ".png\" alt = \"Image did not load properly\" width = \"" + TWO_COLUMNS_COLUMN_SIZE + "\"></center>\n");
 
             // End of the container for the column.
             writer.write("</div>\n");

@@ -12,6 +12,8 @@
     <list default="true" id="26d876ad-6b77-4796-b9d0-ead84066c769" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/log.out" afterPath="$PROJECT_DIR$/log.out" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/printer/HTMLPrinter.java" afterPath="$PROJECT_DIR$/printer/HTMLPrinter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/printer/PrintImageUtils.java" afterPath="$PROJECT_DIR$/printer/PrintImageUtils.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/printer/Printer.java" afterPath="$PROJECT_DIR$/printer/Printer.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/vb.conf" afterPath="$PROJECT_DIR$/vb.conf" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
@@ -28,7 +30,7 @@
     <file path="/NIZKsPerformanceTest.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369261905322" ignored="false" />
     <file path="/VoteBoxEventNotifier.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371244793169" ignored="false" />
     <file path="/VoteBox.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371240642306" ignored="false" />
-    <file path="/Printer.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370987196885" ignored="false" />
+    <file path="/Printer.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371485324255" ignored="false" />
     <file path="/BallotImageHelper.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370275851871" ignored="false" />
     <file path="/build.sh" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369346908949" ignored="false" />
     <file path="/vb.conf" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370990693397" ignored="false" />
@@ -52,9 +54,9 @@
     <file path="/ToggleButton.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370358039224" ignored="false" />
     <file path="/RaceTitlePair.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369945268870" ignored="false" />
     <file path="/Label.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370901082820" ignored="false" />
-    <file path="/Dummy.txt" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371477801447" ignored="false" />
+    <file path="/Dummy.txt" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371480048063" ignored="false" />
     <file path="/ALayoutComponent.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370380215222" ignored="false" />
-    <file path="/PrintImageUtils.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370880262959" ignored="false" />
+    <file path="/PrintImageUtils.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371484670713" ignored="false" />
     <file path="/DefaultButtonState.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370901784343" ignored="false" />
     <file path="/BallotScanner.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371247273779" ignored="false" />
     <file path="/FrameGrabberWebcam.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371245965796" ignored="false" />
@@ -67,7 +69,7 @@
     <file path="/BallotScanConfirmedEvent.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371238790940" ignored="false" />
     <file path="/VoteBoxEventListener.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371240517375" ignored="false" />
     <file path="/Tap.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371240709063" ignored="false" />
-    <file path="/HTMLPrinter.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371479816888" ignored="false" />
+    <file path="/HTMLPrinter.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371484767663" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -178,8 +180,21 @@
       <file leaf-file-name="Printer.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/printer/Printer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="145" column="18" selection-start="5051" selection-end="5051" vertical-scroll-proportion="0.0">
-              <folding />
+            <state line="249" column="117" selection-start="11091" selection-end="11091" vertical-scroll-proportion="0.0">
+              <folding>
+                <element signature="e#4523#17275#0" expanded="true" />
+                <element signature="e#5143#5151#0" expanded="true" />
+                <element signature="e#6594#6602#0" expanded="true" />
+                <element signature="e#8049#8057#0" expanded="true" />
+                <element signature="e#17269#17270#0" expanded="true" />
+                <element signature="e#17657#17666#0" expanded="true" />
+                <element signature="e#17937#17952#0" expanded="true" />
+                <element signature="e#18526#18538#0" expanded="true" />
+                <element signature="e#20565#22568#0" expanded="true" />
+                <element signature="e#22556#22557#0" expanded="true" />
+                <element signature="e#23409#24947#0" expanded="true" />
+                <element signature="e#24935#24936#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -187,8 +202,10 @@
       <file leaf-file-name="HTMLPrinter.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/printer/HTMLPrinter.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="242" column="181" selection-start="11718" selection-end="11718" vertical-scroll-proportion="4.552542">
-              <folding />
+            <state line="108" column="25" selection-start="4586" selection-end="4586" vertical-scroll-proportion="0.41694915">
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -211,7 +228,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/votebox/middle/ballot/RadioButton.java" />
         <option value="$PROJECT_DIR$/votebox/middle/ballot/StraightTicket.java" />
         <option value="$PROJECT_DIR$/votebox/events/BallotScanConfirmedEvent.java" />
         <option value="$PROJECT_DIR$/votebox/events/BallotScanAcceptedEvent.java" />
@@ -225,6 +241,7 @@
         <option value="$PROJECT_DIR$/votebox/events/BallotScanRejectedEvent.java" />
         <option value="$PROJECT_DIR$/ballotscanner/FrameGrabberWebcam.java" />
         <option value="$PROJECT_DIR$/ballotscanner/BallotScanner.java" />
+        <option value="$PROJECT_DIR$/printer/PrintImageUtils.java" />
         <option value="$PROJECT_DIR$/printer/Printer.java" />
         <option value="$PROJECT_DIR$/printer/HTMLPrinter.java" />
       </list>
@@ -800,7 +817,11 @@
       <created>1371245590108</created>
       <updated>1371245590108</updated>
     </task>
-    <option name="localTasksCounter" value="49" />
+    <task id="LOCAL-00049" summary="Added support for the line separator to be given as an input to the generateHTMLFile function.">
+      <created>1371480058412</created>
+      <updated>1371480058412</updated>
+    </task>
+    <option name="localTasksCounter" value="50" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -892,7 +913,7 @@
     <option name="WRAP_WHEN_TYPING_REACHES_RIGHT_MARGIN" value="false" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="THE SCANNER WORKS!" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added support for the line separator to be given as an input to the generateHTMLFile function." />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="false" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -906,7 +927,6 @@
     <option name="UPDATE_FILTER_BY_SCOPE" value="false" />
     <option name="SHOW_FILE_HISTORY_AS_TREE" value="false" />
     <option name="FILE_HISTORY_SPLITTER_PROPORTION" value="0.6" />
-    <MESSAGE value="Added support for vertical image trimming." />
     <MESSAGE value="Cleaned up PrintImageUtils variable names." />
     <MESSAGE value="Added code for actually performing the vertical trimming." />
     <MESSAGE value="Upped the printing resolution" />
@@ -931,6 +951,7 @@
     <MESSAGE value="Fixed matcher issues" />
     <MESSAGE value="Update rejection events" />
     <MESSAGE value="THE SCANNER WORKS!" />
+    <MESSAGE value="Added support for the line separator to be given as an input to the generateHTMLFile function." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -944,11 +965,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/tap/Tap.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="136" column="71" selection-start="4999" selection-end="4999" vertical-scroll-proportion="0.92259085" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/votebox/VoteBox.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="706" column="28" selection-start="30524" selection-end="30528" vertical-scroll-proportion="-7.92">
@@ -1040,17 +1056,39 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/printer/PrintImageUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="93" column="29" selection-start="2996" selection-end="2996" vertical-scroll-proportion="0.454343">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/printer/Printer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="145" column="18" selection-start="5051" selection-end="5051" vertical-scroll-proportion="0.0">
-          <folding />
+        <state line="249" column="117" selection-start="11091" selection-end="11091" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="e#4523#17275#0" expanded="true" />
+            <element signature="e#5143#5151#0" expanded="true" />
+            <element signature="e#6594#6602#0" expanded="true" />
+            <element signature="e#8049#8057#0" expanded="true" />
+            <element signature="e#17269#17270#0" expanded="true" />
+            <element signature="e#17657#17666#0" expanded="true" />
+            <element signature="e#17937#17952#0" expanded="true" />
+            <element signature="e#18526#18538#0" expanded="true" />
+            <element signature="e#20565#22568#0" expanded="true" />
+            <element signature="e#22556#22557#0" expanded="true" />
+            <element signature="e#23409#24947#0" expanded="true" />
+            <element signature="e#24935#24936#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/printer/HTMLPrinter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="242" column="181" selection-start="11718" selection-end="11718" vertical-scroll-proportion="4.552542">
-          <folding />
+        <state line="108" column="25" selection-start="4586" selection-end="4586" vertical-scroll-proportion="0.41694915">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
