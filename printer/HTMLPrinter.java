@@ -25,7 +25,7 @@ public class HTMLPrinter {
     public final static int RIGHT_MARGIN_WIDTH = 72;
     public final static int TWO_COLUMNS_COLUMN_SIZE = (CONTAINER_WIDTH - LEFT_MARGIN_WIDTH - RIGHT_MARGIN_WIDTH) / 2;
     public final static int ONE_COLUMN_COLUMN_SIZE = CONTAINER_WIDTH - LEFT_MARGIN_WIDTH - RIGHT_MARGIN_WIDTH;
-    public final static int BARCODE_DIVIDER_HEIGHT = 60;
+    public final static int BARCODE_DIVIDER_HEIGHT = 80;
 
     // The ballot parameters.
     public static AuditoriumParams BALLOT_CONSTANTS = null;
@@ -159,6 +159,11 @@ public class HTMLPrinter {
 
                 // Creates the divider for the content.
                 writer.write("<div id = \"content\" style = \"background-color:#FFFFFF;width:" + ONE_COLUMN_COLUMN_SIZE + "px;height:" + CONTAINER_HEIGHT + "px;float:left;\">\n");
+
+                // Add the barcode to the container (top).
+                writer.write("<div id = \"barcode_top\" style = \"background-color:#FFFFFF;width:" + ONE_COLUMN_COLUMN_SIZE + "px;height:" + BARCODE_DIVIDER_HEIGHT + "px;float:left;text-align:center;\">\n");
+                writer.write("<center><img src = \"" + BARCODE_IMAGE + "_flipped.png\" alt = \"Image did not load properly\" width = \"" + TWO_COLUMNS_COLUMN_SIZE + "\"></center>\n");
+                writer.write("</div>\n");
             }
             else
             {
@@ -171,15 +176,15 @@ public class HTMLPrinter {
 
                 // Creates the divider for the content.
                 writer.write("<div id = \"content\" style = \"background-color:#CCFFFF;width:" + ONE_COLUMN_COLUMN_SIZE + "px;height:" + CONTAINER_HEIGHT + "px;float:left;\">\n");
+
+                // Add the barcode to the container (top).
+                writer.write("<div id = \"barcode_top\" style = \"background-color:#FF0000;width:" + ONE_COLUMN_COLUMN_SIZE + "px;height:" + BARCODE_DIVIDER_HEIGHT + "px;float:left;text-align:center;\">\n");
+                writer.write("<center><img src = \"" + BARCODE_IMAGE + "_flipped.png\" alt = \"Image did not load properly\" width = \"" + TWO_COLUMNS_COLUMN_SIZE + "\"></center>\n");
+                writer.write("</div>\n");
             }
 
-            // Add the barcode to the container (top).
-            writer.write("<div id = \"barcode_top\" style = \"background-color:#FF0000;width:" + ONE_COLUMN_COLUMN_SIZE + "px;height:" + BARCODE_DIVIDER_HEIGHT + "px;float:left;text-align:center;\">\n");
-            writer.write("<center><img src = \"" + BARCODE_IMAGE + "_flipped.png\" alt = \"Image did not load properly\" width = \"" + TWO_COLUMNS_COLUMN_SIZE + "\"></center>\n");
-            writer.write("</div>\n");
 
             // Left Column //////////////////////////////////////////////////////////////////////////////////////////////////////
-
             if (printFriendly)
             {
                 // Create the left column.
@@ -262,7 +267,18 @@ public class HTMLPrinter {
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
             // Add the barcode to the container (bottom).
-            writer.write("<center><img src = \"" + BARCODE_IMAGE + ".png\" alt = \"Image did not load properly\" width = \"" + TWO_COLUMNS_COLUMN_SIZE + "\"></center>\n");
+            if (printFriendly)
+            {
+                writer.write("<div id = \"barcode_bottom\" style = \"background-color:#FFFFFF;width:" + ONE_COLUMN_COLUMN_SIZE + "px;height:" + BARCODE_DIVIDER_HEIGHT + "px;float:right;text-align:center;\">\n");
+                writer.write("<center><img src = \"" + BARCODE_IMAGE + ".png\" alt = \"Image did not load properly\" width = \"" + TWO_COLUMNS_COLUMN_SIZE + "\"></center>\n");
+                writer.write("</div>\n");
+            }
+            else
+            {
+                writer.write("<div id = \"barcode_bottom\" style = \"background-color:#FF0000;width:" + ONE_COLUMN_COLUMN_SIZE + "px;height:" + BARCODE_DIVIDER_HEIGHT + "px;float:right;text-align:center;\">\n");
+                writer.write("<center><img src = \"" + BARCODE_IMAGE + ".png\" alt = \"Image did not load properly\" width = \"" + TWO_COLUMNS_COLUMN_SIZE + "\"></center>\n");
+                writer.write("</div>\n");
+            }
 
             // End of the container for the content.
             writer.write("</div>\n");
@@ -307,6 +323,11 @@ public class HTMLPrinter {
 
                 // Creates the divider for the content.
                 writer.write("<div id = \"content\" style = \"background-color:#FFFFFF;width:" + ONE_COLUMN_COLUMN_SIZE + "px;height:" + CONTAINER_HEIGHT + "px;float:left;\">\n");
+
+                // Add the barcode to the container (top).
+                writer.write("<div id = \"barcode_top\" style = \"background-color:#FFFFFF;width:" + ONE_COLUMN_COLUMN_SIZE + "px;height:" + BARCODE_DIVIDER_HEIGHT + "px;float:left;text-align:center;\">\n");
+                writer.write("<center><img src = \"" + BARCODE_IMAGE + "_flipped.png\" alt = \"Image did not load properly\" width = \"" + TWO_COLUMNS_COLUMN_SIZE + "\"></center>\n");
+                writer.write("</div>\n");
             }
             else
             {
@@ -319,10 +340,13 @@ public class HTMLPrinter {
 
                 // Creates the divider for the content.
                 writer.write("<div id = \"content\" style = \"background-color:#CCFFFF;width:" + ONE_COLUMN_COLUMN_SIZE + "px;height:" + CONTAINER_HEIGHT + "px;float:left;\">\n");
+
+                // Add the barcode to the container (top).
+                writer.write("<div id = \"barcode_top\" style = \"background-color:#FF0000;width:" + ONE_COLUMN_COLUMN_SIZE + "px;height:" + BARCODE_DIVIDER_HEIGHT + "px;float:left;text-align:center;\">\n");
+                writer.write("<center><img src = \"" + BARCODE_IMAGE + "_flipped.png\" alt = \"Image did not load properly\" width = \"" + TWO_COLUMNS_COLUMN_SIZE + "\"></center>\n");
+                writer.write("</div>\n");
             }
 
-            // Add the barcode to the container (top).
-            writer.write("<center><img src = \"" + BARCODE_IMAGE + "_flipped.png\" alt = \"Image did not load properly\" width = \"" + TWO_COLUMNS_COLUMN_SIZE + "\"></center>\n");
 
             // Column ///////////////////////////////////////////////////////////////////////////////////////////////////////////
             if (printFriendly)
@@ -362,9 +386,18 @@ public class HTMLPrinter {
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
             // Add the barcode to the container (bottom).
-            writer.write("<div id = \"barcode_bottom\" style = \"background-color:#FF0000;width:" + ONE_COLUMN_COLUMN_SIZE + "px;height:" + BARCODE_DIVIDER_HEIGHT + "px;float:right;text-align:center;\">\n");
-            writer.write("<center><img src = \"" + BARCODE_IMAGE + ".png\" alt = \"Image did not load properly\" width = \"" + TWO_COLUMNS_COLUMN_SIZE + "\"></center>\n");
-            writer.write("</div>\n");
+            if (printFriendly)
+            {
+                writer.write("<div id = \"barcode_bottom\" style = \"background-color:#FFFFFF;width:" + ONE_COLUMN_COLUMN_SIZE + "px;height:" + BARCODE_DIVIDER_HEIGHT + "px;float:right;text-align:center;\">\n");
+                writer.write("<center><img src = \"" + BARCODE_IMAGE + ".png\" alt = \"Image did not load properly\" width = \"" + TWO_COLUMNS_COLUMN_SIZE + "\"></center>\n");
+                writer.write("</div>\n");
+            }
+            else
+            {
+                writer.write("<div id = \"barcode_bottom\" style = \"background-color:#FF0000;width:" + ONE_COLUMN_COLUMN_SIZE + "px;height:" + BARCODE_DIVIDER_HEIGHT + "px;float:right;text-align:center;\">\n");
+                writer.write("<center><img src = \"" + BARCODE_IMAGE + ".png\" alt = \"Image did not load properly\" width = \"" + TWO_COLUMNS_COLUMN_SIZE + "\"></center>\n");
+                writer.write("</div>\n");
+            }
 
             // End of the container for the content.
             writer.write("</div>\n");
