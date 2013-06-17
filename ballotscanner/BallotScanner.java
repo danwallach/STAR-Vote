@@ -381,7 +381,7 @@ public class BallotScanner {
 
                     //Code which will display a confirmation screen
                     frame.setVisible(false);
-                    frame = new JFrame("STAR-Vote Ballot Scanner");
+                    //frame = new JFrame("STAR-Vote Ballot Scanner");
                     JPanel panel = new JPanel();
                     JLabel imageLabel = new JLabel();
                     JLabel textLabel = new JLabel("Ballot " + lastFoundBID + " confirmed and cast");
@@ -431,7 +431,7 @@ public class BallotScanner {
 
                     //Code which will display a rejection screen
                     frame.setVisible(false);
-                    frame = new JFrame("STAR-Vote Ballot Scanner");
+                    //frame = new JFrame("STAR-Vote Ballot Scanner");
 
                     JPanel panel = new JPanel();
                     JLabel imageLabel = new JLabel();

@@ -1133,11 +1133,12 @@ public class PsychLayoutManager extends ALayoutManager {
         	reviewPage.markAsReviewPage();
         
         layout.getPages().add(reviewPageNum + (ballot.getCards().size() / CARDS_PER_REVIEW_PAGE) + 1, makeCastPage());
-        
-        if (USE_COMMIT_CHALLENGE_MODEL){
-        	layout.getPages().add(reviewPageNum + (ballot.getCards().size() / CARDS_PER_REVIEW_PAGE) + 2, makeChallengePage());
-        	reviewPageNum++;
-        }
+
+        //No challenge page necessary since challenges can't happen?
+//        if (USE_COMMIT_CHALLENGE_MODEL){
+//        	layout.getPages().add(reviewPageNum + (ballot.getCards().size() / CARDS_PER_REVIEW_PAGE) + 2, makeChallengePage());
+//        	reviewPageNum++;
+//        }
         
         layout.getPages().add(reviewPageNum + (ballot.getCards().size() / CARDS_PER_REVIEW_PAGE) + 2, makeSuccessPage());
         
@@ -1249,7 +1250,6 @@ public class PsychLayoutManager extends ALayoutManager {
                 }
                 if (i < cardPanels.size() - 1) {
                 	//#ifdef NONE_OF_ABOVE
-                    //TODO I figured out why we get two next buttons, but this still won't print a no selection
             		//cardFrame.addNextRequireSelectionButton((Label) moreCandidatesInfo.clone(), card.getUID());
             		//#endif
             		//#ifndef NONE_OF_ABOVE

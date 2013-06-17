@@ -63,7 +63,7 @@ public class BallotScannerUI extends JFrame {
         electionInfoPanel.add(new JLabel("To cast your vote, place your barcode under the scanner"));
     }
 
-    public void dislayInitial
+    //public void dislayInitial
 
     /*try{
         logo = new ImageIcon(ImageIO.read(new File("images/logo.png")));

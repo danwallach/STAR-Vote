@@ -319,8 +319,10 @@ public class LiteralStrings {
      */
     public String get(String key, Language lang) {
         LocalizedString ls = map.get(key);
-        if (ls == null)
+        if (ls == null){
+            System.out.println("Couldn't find " + key);
             throw new IllegalArgumentException("String not found");
+        }
         else
             return ls.get(lang);
     }
