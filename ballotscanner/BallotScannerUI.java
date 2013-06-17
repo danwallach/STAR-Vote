@@ -1,5 +1,7 @@
 package ballotscanner;
 
+import votebox.AuditoriumParams;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.io.File;
@@ -28,10 +30,10 @@ public class BallotScannerUI extends JFrame {
     private JLabel scanResultLabel;
     private JLabel dateLabel;
 
-    private DateFormat dateFormat = new SimpleDateFormat("MMMM d, y");
-    private Date date = new Date();
+    private DateFormat dateFormat;
+    private Date date;
 
-    public BallotScannerUI(){
+    public BallotScannerUI(String electionName){
         super("STAR-Vote Ballot Scanner");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(600,600);
@@ -39,6 +41,9 @@ public class BallotScannerUI extends JFrame {
         setLocationRelativeTo(null);
         setLocation((int)Math.round(getLocation().getX()) - getWidth()/2,
                     (int)Math.round(getLocation().getY()) - getHeight()/2);
+
+        dateFormat = new SimpleDateFormat("MMMM d, y");
+        date = new Date();
 
         try{
             logo = new ImageIcon(ImageIO.read(new File("images/logo.png")));
@@ -58,12 +63,25 @@ public class BallotScannerUI extends JFrame {
         try{rejectedIcon = new ImageIcon(ImageIO.read(new File("images/logo.png")));}
         catch(IOException ioe){System.out.println("BallotScannerUI: Could not locate logo Icon");}
 
-        userInfoPanel = new JPanel();
-        userInfoPanel.add(new JLabel("Welcome to the Ballot Scanning Console"));
-        electionInfoPanel.add(new JLabel("To cast your vote, place your barcode under the scanner"));
+        electionInfoPanel = new JPanel();
+        electionInfoPanel.add(logoLabel);
+        electionInfoPanel.add(new JLabel(electionName));
+        electionInfoPanel.add(new JLabel(dateFormat.format(date)));
     }
 
-    public void dislayInitial
+    public void displayPromptScreen(){
+        setVisible(true);
+        userInfoPanel = new JPanel();
+        userInfoPanel.add(logoLabel);
+        userInfoPanel.add(new JLabel("Welcome to the Ballot Scanning Console"));
+        userInfoPanel.add(new JLabel("To Cast Your Vote, Place Your Barcode Under the Scanner"));
+        updateFrame();
+    }
+
+    private void updateFrame(){
+        electionInfoPanel.repaint();
+        userInfoPanel.repaint();
+    }
 
     /*try{
         logo = new ImageIcon(ImageIO.read(new File("images/logo.png")));

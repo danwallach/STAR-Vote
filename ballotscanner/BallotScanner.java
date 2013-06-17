@@ -100,7 +100,7 @@ public class BallotScanner {
         });
 
         //Set up the JFrame confirmation screen
-        frame = new BallotScannerUI();
+        frame = new BallotScannerUI(_constants.getElectionName());
     }
 
     /**
@@ -186,6 +186,7 @@ public class BallotScanner {
         frame.add(panel);
         frame.pack();
         frame.setVisible(true);*/
+        frame.displayPromptScreen();
 
         while (true) {
             wait = false;
@@ -379,7 +380,7 @@ public class BallotScanner {
 
 
 
-                    //Code which will display a confirmation screen
+                    /*//Code which will display a confirmation screen
                     frame.setVisible(false);
                     frame = new JFrame("STAR-Vote Ballot Scanner");
                     JPanel panel = new JPanel();
@@ -412,7 +413,7 @@ public class BallotScanner {
 
                     //If the frame is closed, start over
                     if(!frame.isVisible())
-                        wait = false;
+                        wait = false;*/
 
 
 
@@ -429,7 +430,7 @@ public class BallotScanner {
                 if(lastFoundBID.equals(event.getBID())){
 
 
-                    //Code which will display a rejection screen
+                    /*//Code which will display a rejection screen
                     frame.setVisible(false);
                     frame = new JFrame("STAR-Vote Ballot Scanner");
 
@@ -465,7 +466,7 @@ public class BallotScanner {
 
                     //If the frame is closed, start over
                     if(!frame.isVisible())
-                        wait = false;
+                        wait = false;*/
 
                 }
             }
