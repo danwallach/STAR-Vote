@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 /**
  * A class which provides tools to write images to HTML files. Might be useful in printing higher quality images.
@@ -19,13 +20,13 @@ import java.util.Date;
 public class HTMLPrinter {
 
     /* All sizes are in pixels. */
-    public final static int CONTAINER_WIDTH = 750;
-    public final static int CONTAINER_HEIGHT = 792;
+    public final static int CONTAINER_WIDTH = 812;
+    public final static int CONTAINER_HEIGHT = 850;
     public final static int LEFT_MARGIN_WIDTH = 72;
     public final static int RIGHT_MARGIN_WIDTH = 72;
-    // Arbitrarily subtracting a 3, to make it all print on one page. Page margins are difficult to bypass when printing from the command line.
-    public final static int TWO_COLUMNS_COLUMN_SIZE = (CONTAINER_WIDTH - LEFT_MARGIN_WIDTH - RIGHT_MARGIN_WIDTH) / 2 - 3;
+    public final static int TWO_COLUMNS_COLUMN_SIZE = (CONTAINER_WIDTH - LEFT_MARGIN_WIDTH - RIGHT_MARGIN_WIDTH) / 2;
     public final static int ONE_COLUMN_COLUMN_SIZE = CONTAINER_WIDTH - LEFT_MARGIN_WIDTH - RIGHT_MARGIN_WIDTH;
+    public final static int BARCODE_DIVIDER_HEIGHT = 80;
 
     // The ballot parameters.
     public static AuditoriumParams BALLOT_CONSTANTS = null;
@@ -48,7 +49,7 @@ public class HTMLPrinter {
      * @param lineSeparatorFilePath - The path to the line separator file. This can be a 10x10 solid black PNG. The HTML code resizes it to the correct dimensions.
      * @param imageNames - ArrayLists of file names for images. One ArrayList per column.
      */
-    public static void generateHTMLFile (String filename, Boolean useTwoColumns, Boolean printFriendly, String pathToBallotVVPATFolder, AuditoriumParams ballotConstants, String ballotID, String barcodeFilePath, String lineSeparatorFilePath, ArrayList<String>... imageNames)
+    public static void generateHTMLFile (String filename, Boolean useTwoColumns, Boolean printFriendly, String pathToBallotVVPATFolder, AuditoriumParams ballotConstants, String ballotID, String barcodeFilePath, String lineSeparatorFilePath, List<ArrayList<String>> imageNames)
     {
         System.out.println("Attempting to create an html file at " + filename);
         File file = new File(filename);
@@ -101,12 +102,13 @@ public class HTMLPrinter {
             writer.write("<body bgcolor = \"#FFFFFF\" text = \"#000000\">\n");
 
             // Writes the header of the page(s) to be printed.
-            writer.write("<h4>" + BALLOT_CONSTANTS.getElectionName() + "<br>\n");
+            // <p style="font-family:arial;color:red;font-size:20px;">A paragraph.</p>
+            writer.write("<p style = \"font-family:arial;color:black;font-size:20px;\">" + BALLOT_CONSTANTS.getElectionName() + "<br>\n");
 
             DateFormat dateFormat = new SimpleDateFormat("MMMM d, y");
             Date date = new Date();
             String currentDate = dateFormat.format(date);
-            writer.write(currentDate + "</h4>\n");
+            writer.write(currentDate + "</p>\n");
 
 
 
@@ -143,7 +145,7 @@ public class HTMLPrinter {
      * @param pathToBallotVVPATFolder - The path to the vvpat folder in the ballot files
      * @param imageNames - ArrayLists of file names for images. One ArrayList per column.
      */
-    private static void generatorHelperForTwoColumns (BufferedWriter writer, Boolean printFriendly, String pathToBallotVVPATFolder, ArrayList<String>... imageNames)
+    private static void generatorHelperForTwoColumns (BufferedWriter writer, Boolean printFriendly, String pathToBallotVVPATFolder, List<ArrayList<String>> imageNames)
     {
         try
         {
@@ -151,6 +153,18 @@ public class HTMLPrinter {
             {
                 // Creates the container for the columns of images.
                 writer.write("<div id = \"container\" style = \"background-color:#FFFFFF;width:" + CONTAINER_WIDTH + "px;height:" + CONTAINER_HEIGHT + "px;\">\n");
+
+                // Creates the left and right margins.
+                writer.write("<div id = \"left_margin\" style = \"background-color:#FFFFFF;width:" + LEFT_MARGIN_WIDTH + "px;height:" + CONTAINER_HEIGHT + "px;float:left;\"><br></div>\n");
+                writer.write("<div id = \"right_margin\" style = \"background-color:#FFFFFF;width:" + RIGHT_MARGIN_WIDTH + "px;height:" + CONTAINER_HEIGHT + "px;float:right;\"><br></div>\n");
+
+                // Creates the divider for the content.
+                writer.write("<div id = \"content\" style = \"background-color:#FFFFFF;width:" + ONE_COLUMN_COLUMN_SIZE + "px;height:" + CONTAINER_HEIGHT + "px;float:left;\">\n");
+
+                // Add the barcode to the container (top).
+                writer.write("<div id = \"barcode_top\" style = \"background-color:#FFFFFF;width:" + ONE_COLUMN_COLUMN_SIZE + "px;height:" + BARCODE_DIVIDER_HEIGHT + "px;float:left;text-align:center;\">\n");
+                writer.write("<center><img src = \"" + BARCODE_IMAGE + "_flipped.png\" alt = \"Image did not load properly\" width = \"" + TWO_COLUMNS_COLUMN_SIZE + "\"></center>\n");
+                writer.write("</div>\n");
             }
             else
             {
@@ -158,15 +172,20 @@ public class HTMLPrinter {
                 writer.write("<div id = \"container\" style = \"background-color:#CCFF00;width:" + CONTAINER_WIDTH + "px;height:" + CONTAINER_HEIGHT + "px;\">\n");
 
                 // Creates the left and right margins.
-                writer.write("<div id = \"left_margin\" style = \"background-color:#000000;width:" + LEFT_MARGIN_WIDTH + "px;float:left\"><br></div>\n");
-                writer.write("<div id = \"right_margin\" style = \"background-color:#000000;width:" + RIGHT_MARGIN_WIDTH + "px;float:right\"><br></div>\n");
+                writer.write("<div id = \"left_margin\" style = \"background-color:#000000;width:" + LEFT_MARGIN_WIDTH + "px;height:" + CONTAINER_HEIGHT + "px;float:left;\"><br></div>\n");
+                writer.write("<div id = \"right_margin\" style = \"background-color:#000000;width:" + RIGHT_MARGIN_WIDTH + "px;height:" + CONTAINER_HEIGHT + "px;float:right;\"><br></div>\n");
+
+                // Creates the divider for the content.
+                writer.write("<div id = \"content\" style = \"background-color:#CCFFFF;width:" + ONE_COLUMN_COLUMN_SIZE + "px;height:" + CONTAINER_HEIGHT + "px;float:left;\">\n");
+
+                // Add the barcode to the container (top).
+                writer.write("<div id = \"barcode_top\" style = \"background-color:#FF0000;width:" + ONE_COLUMN_COLUMN_SIZE + "px;height:" + BARCODE_DIVIDER_HEIGHT + "px;float:left;text-align:center;\">\n");
+                writer.write("<center><img src = \"" + BARCODE_IMAGE + "_flipped.png\" alt = \"Image did not load properly\" width = \"" + TWO_COLUMNS_COLUMN_SIZE + "\"></center>\n");
+                writer.write("</div>\n");
             }
 
-            // Add the barcode to the container (top).
-            writer.write("<center><img src = \"" + BARCODE_IMAGE + "_flipped.png\" alt = \"Image did not load properly\" width = \"" + TWO_COLUMNS_COLUMN_SIZE + "\"></center>\n");
 
             // Left Column //////////////////////////////////////////////////////////////////////////////////////////////////////
-
             if (printFriendly)
             {
                 // Create the left column.
@@ -179,7 +198,7 @@ public class HTMLPrinter {
             }
 
             // Put images in the left column.
-            ArrayList<String> left_column = imageNames[0];
+            ArrayList<String> left_column = imageNames.get(0);
             Boolean isSelectionImage = false; // Used to leave an empty line after every selectionImage
             for (String imageName : left_column)
             {
@@ -219,7 +238,7 @@ public class HTMLPrinter {
             // It might be the case that there is an odd number of columns. Check if imageNames[1] throws an IndexOutOfBounds Exception.
             try
             {
-                ArrayList<String> right_column = imageNames[1];
+                ArrayList<String> right_column = imageNames.get(1);
                 isSelectionImage = false; // Used to leave an empty line after every selectionImage
                 for (String imageName : right_column)
                 {
@@ -249,7 +268,21 @@ public class HTMLPrinter {
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
             // Add the barcode to the container (bottom).
-            writer.write("<center><img src = \"" + BARCODE_IMAGE + ".png\" alt = \"Image did not load properly\" width = \"" + TWO_COLUMNS_COLUMN_SIZE + "\"></center>\n");
+            if (printFriendly)
+            {
+                writer.write("<div id = \"barcode_bottom\" style = \"background-color:#FFFFFF;width:" + ONE_COLUMN_COLUMN_SIZE + "px;height:" + BARCODE_DIVIDER_HEIGHT + "px;float:right;text-align:center;\">\n");
+                writer.write("<center><img src = \"" + BARCODE_IMAGE + ".png\" alt = \"Image did not load properly\" width = \"" + TWO_COLUMNS_COLUMN_SIZE + "\"></center>\n");
+                writer.write("</div>\n");
+            }
+            else
+            {
+                writer.write("<div id = \"barcode_bottom\" style = \"background-color:#FF0000;width:" + ONE_COLUMN_COLUMN_SIZE + "px;height:" + BARCODE_DIVIDER_HEIGHT + "px;float:right;text-align:center;\">\n");
+                writer.write("<center><img src = \"" + BARCODE_IMAGE + ".png\" alt = \"Image did not load properly\" width = \"" + TWO_COLUMNS_COLUMN_SIZE + "\"></center>\n");
+                writer.write("</div>\n");
+            }
+
+            // End of the container for the content.
+            writer.write("</div>\n");
 
             // End of the container for the columns.
             writer.write("</div>\n");
@@ -263,9 +296,9 @@ public class HTMLPrinter {
         }
 
         // If there are more columns to be printed, call this helper again on the rest of the columns.
-        if (imageNames.length > 2)
+        if (imageNames.size() > 2)
         {
-            generatorHelperForTwoColumns(writer, printFriendly, pathToBallotVVPATFolder, Arrays.copyOfRange(imageNames, 2, imageNames.length));
+            generatorHelperForTwoColumns(writer, printFriendly, pathToBallotVVPATFolder, imageNames.subList(2,imageNames.size()));
         }
     }
 
@@ -276,7 +309,7 @@ public class HTMLPrinter {
      * @param pathToBallotVVPATFolder - The path to the vvpat folder in the ballot files
      * @param imageNames - ArrayLists of file names for images. One ArrayList per column.
      */
-    private static void generatorHelperForOneColumn (BufferedWriter writer, Boolean printFriendly, String pathToBallotVVPATFolder, ArrayList<String>... imageNames)
+    private static void generatorHelperForOneColumn (BufferedWriter writer, Boolean printFriendly, String pathToBallotVVPATFolder, List<ArrayList<String>> imageNames)
     {
         try
         {
@@ -284,6 +317,18 @@ public class HTMLPrinter {
             {
                 // Creates the container for the columns of images.
                 writer.write("<div id = \"container\" style = \"background-color:#FFFFFF;width:" + CONTAINER_WIDTH + "px;height:" + CONTAINER_HEIGHT + "px;\">\n");
+
+                // Creates the left and right margins.
+                writer.write("<div id = \"left_margin\" style = \"background-color:#FFFFFF;width:" + LEFT_MARGIN_WIDTH + "px;height:" + CONTAINER_HEIGHT + "px;float:left;\"><br></div>\n");
+                writer.write("<div id = \"right_margin\" style = \"background-color:#FFFFFF;width:" + RIGHT_MARGIN_WIDTH + "px;height:" + CONTAINER_HEIGHT + "px;float:right;\"><br></div>\n");
+
+                // Creates the divider for the content.
+                writer.write("<div id = \"content\" style = \"background-color:#FFFFFF;width:" + ONE_COLUMN_COLUMN_SIZE + "px;height:" + CONTAINER_HEIGHT + "px;float:left;\">\n");
+
+                // Add the barcode to the container (top).
+                writer.write("<div id = \"barcode_top\" style = \"background-color:#FFFFFF;width:" + ONE_COLUMN_COLUMN_SIZE + "px;height:" + BARCODE_DIVIDER_HEIGHT + "px;float:left;text-align:center;\">\n");
+                writer.write("<center><img src = \"" + BARCODE_IMAGE + "_flipped.png\" alt = \"Image did not load properly\" width = \"" + TWO_COLUMNS_COLUMN_SIZE + "\"></center>\n");
+                writer.write("</div>\n");
             }
             else
             {
@@ -291,12 +336,18 @@ public class HTMLPrinter {
                 writer.write("<div id = \"container\" style = \"background-color:#CCFF00;width:" + CONTAINER_WIDTH + "px;height:" + CONTAINER_HEIGHT + "px;\">\n");
 
                 // Creates the left and right margins.
-                writer.write("<div id = \"left_margin\" style = \"background-color:#000000;width:" + LEFT_MARGIN_WIDTH + "px;float:left\"><br></div>\n");
-                writer.write("<div id = \"right_margin\" style = \"background-color:#000000;width:" + RIGHT_MARGIN_WIDTH + "px;float:right\"><br></div>\n");
+                writer.write("<div id = \"left_margin\" style = \"background-color:#000000;width:" + LEFT_MARGIN_WIDTH + "px;height:" + CONTAINER_HEIGHT + "px;float:left;\"><br></div>\n");
+                writer.write("<div id = \"right_margin\" style = \"background-color:#000000;width:" + RIGHT_MARGIN_WIDTH + "px;height:" + CONTAINER_HEIGHT + "px;float:right;\"><br></div>\n");
+
+                // Creates the divider for the content.
+                writer.write("<div id = \"content\" style = \"background-color:#CCFFFF;width:" + ONE_COLUMN_COLUMN_SIZE + "px;height:" + CONTAINER_HEIGHT + "px;float:left;\">\n");
+
+                // Add the barcode to the container (top).
+                writer.write("<div id = \"barcode_top\" style = \"background-color:#FF0000;width:" + ONE_COLUMN_COLUMN_SIZE + "px;height:" + BARCODE_DIVIDER_HEIGHT + "px;float:left;text-align:center;\">\n");
+                writer.write("<center><img src = \"" + BARCODE_IMAGE + "_flipped.png\" alt = \"Image did not load properly\" width = \"" + TWO_COLUMNS_COLUMN_SIZE + "\"></center>\n");
+                writer.write("</div>\n");
             }
 
-            // Add the barcode to the container (top).
-            writer.write("<center><img src = \"" + BARCODE_IMAGE + "_flipped.png\" alt = \"Image did not load properly\" width = \"" + TWO_COLUMNS_COLUMN_SIZE + "\"></center>\n");
 
             // Column ///////////////////////////////////////////////////////////////////////////////////////////////////////////
             if (printFriendly)
@@ -311,7 +362,7 @@ public class HTMLPrinter {
             }
 
             // Put images in the column.
-            ArrayList<String> column = imageNames[0];
+            ArrayList<String> column = imageNames.get(0);
             Boolean isSelectionImage = false; // Used to leave an empty line after every selectionImage
             for (String imageName : column)
             {
@@ -336,7 +387,21 @@ public class HTMLPrinter {
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
             // Add the barcode to the container (bottom).
-            writer.write("<center><img src = \"" + BARCODE_IMAGE + ".png\" alt = \"Image did not load properly\" width = \"" + TWO_COLUMNS_COLUMN_SIZE + "\"></center>\n");
+            if (printFriendly)
+            {
+                writer.write("<div id = \"barcode_bottom\" style = \"background-color:#FFFFFF;width:" + ONE_COLUMN_COLUMN_SIZE + "px;height:" + BARCODE_DIVIDER_HEIGHT + "px;float:right;text-align:center;\">\n");
+                writer.write("<center><img src = \"" + BARCODE_IMAGE + ".png\" alt = \"Image did not load properly\" width = \"" + TWO_COLUMNS_COLUMN_SIZE + "\"></center>\n");
+                writer.write("</div>\n");
+            }
+            else
+            {
+                writer.write("<div id = \"barcode_bottom\" style = \"background-color:#FF0000;width:" + ONE_COLUMN_COLUMN_SIZE + "px;height:" + BARCODE_DIVIDER_HEIGHT + "px;float:right;text-align:center;\">\n");
+                writer.write("<center><img src = \"" + BARCODE_IMAGE + ".png\" alt = \"Image did not load properly\" width = \"" + TWO_COLUMNS_COLUMN_SIZE + "\"></center>\n");
+                writer.write("</div>\n");
+            }
+
+            // End of the container for the content.
+            writer.write("</div>\n");
 
             // End of the container for the column.
             writer.write("</div>\n");
@@ -350,9 +415,9 @@ public class HTMLPrinter {
         }
 
         // If there are more columns to be printed, call this helper again on the rest of the columns.
-        if (imageNames.length > 1)
+        if (imageNames.size() > 1)
         {
-            generatorHelperForTwoColumns(writer, printFriendly, pathToBallotVVPATFolder, Arrays.copyOfRange(imageNames, 1, imageNames.length));
+            generatorHelperForOneColumn(writer, printFriendly, pathToBallotVVPATFolder, imageNames.subList(1, imageNames.size()));
         }
     }
 }

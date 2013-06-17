@@ -485,7 +485,7 @@ public class Model {
                     ChallengeEvent.getMatcher(), EncryptedCastBallotWithNIZKsEvent.getMatcher(),
                     AuthorizedToCastWithNIZKsEvent.getMatcher(), AdderChallengeEvent.getMatcher(),
                     PinEnteredEvent.getMatcher(), InvalidPinEvent.getMatcher(),
-                    PollStatusEvent.getMatcher(), BallotPrintedEvent.getMatcher(),
+                    PollStatusEvent.getMatcher(), BallotPrintSuccessEvent.getMatcher(),
                     BallotScannedEvent.getMatcher());
 
 
@@ -976,16 +976,25 @@ public class Model {
             }
 
 
-            public void ballotPrinted(BallotPrintedEvent ballotPrintedEvent) {
-                expectedBallots.add(Integer.valueOf(ballotPrintedEvent.getBID()));
-                System.out.println("V"  + expectedBallots);
-            }
-
             public void ballotAccepted(BallotScanAcceptedEvent e){
                 //NO-OP
             }
 
             public void ballotRejected(BallotScanRejectedEvent e){
+                //NO-OP
+            }
+
+
+            public void ballotPrinting(BallotPrintingEvent e) {
+                //NO-OP
+            }
+
+            public void ballotPrintSuccess(BallotPrintSuccessEvent e) {
+                expectedBallots.add(Integer.valueOf(e.getBID()));
+                //System.out.println("V"  + expectedBallots);
+            }
+
+            public void ballotPrintFail(BallotPrintFailEvent ballotPrintFailEvent) {
                 //NO-OP
             }
 

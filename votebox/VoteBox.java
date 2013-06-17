@@ -285,11 +285,16 @@ public class VoteBox{
         				}
 
                         List<List<String>> races = currentDriver.getBallotAdapter().getRaceGroups();
+                        auditorium.announce(new BallotPrintingEvent(mySerial, bid,
+                                nonce));
                         printer = new Printer(_currentBallotFile, races);
 						printer.printCommittedBallot(ballot, bid);
                         printer.printedReciept(bid);
-                        auditorium.announce(new BallotPrintedEvent(mySerial, bid,
-                                nonce));
+
+                        //By this time, the voter is done voting
+                        finishedVoting = true;
+
+
 					} catch (AuditoriumCryptoException e) {
 						Bugout.err("Crypto error trying to commit ballot: "+e.getMessage());
 						e.printStackTrace();
@@ -527,7 +532,8 @@ public class VoteBox{
                     ChallengeEvent.getMatcher(), ChallengeResponseEvent.getMatcher(),
                     AuthorizedToCastWithNIZKsEvent.getMatcher(), PinEnteredEvent.getMatcher(),
                     InvalidPinEvent.getMatcher(), PollsOpenEvent.getMatcher(),
-                    PollStatusEvent.getMatcher());
+                    PollStatusEvent.getMatcher(), BallotPrintingEvent.getMatcher(),
+                    BallotPrintSuccessEvent.getMatcher(), BallotPrintFailEvent.getMatcher());
         } catch (NetworkException e1) {
         	//NetworkException represents a recoverable error
         	//  so just note it and continue
@@ -611,7 +617,6 @@ public class VoteBox{
              * the VoteBox runtime. Also announce the new status.
              */
             public void authorizedToCast(AuthorizedToCastEvent e) {
-                System.out.println("auth event YAY!");
                 if (e.getNode() == mySerial) {
                     if (voting || currentDriver != null && killVBTimer == null)
                         throw new RuntimeException(
@@ -895,9 +900,52 @@ public class VoteBox{
                 }
             }
 
-            @Override
-            public void ballotPrinted(BallotPrintedEvent ballotPrintedEvent) {
+           @Override
+            public void ballotPrinting(BallotPrintingEvent ballotPrintingEvent) {
                 // NO-OP
+            }
+
+            //This indicates that the ballot was successfully printed and the voting session can safely end
+            public void ballotPrintSuccess(BallotPrintSuccessEvent e){
+                if (e.getBID() == bid
+                        && Arrays.equals(e.getNonce(), nonce)) {
+
+                    //This should also never happen...
+                    if (!finishedVoting)
+                        throw new RuntimeException(
+                                "Someone said the ballot was printed, but this machine hasn't finished voting yet");
+
+                    //This should never really happen...
+                    if(!_constants.getUseCommitChallengeModel()){
+                        Bugout.err("Received BallotPrinted message while not in Challenge-Commit mode!");
+                        return;
+                    }
+
+
+                    nonce = null;
+                    voting = false;
+                    finishedVoting = false;
+                    committedBallot = false;
+                    broadcastStatus();
+                    killVBTimer = new Timer(_constants.getViewRestartTimeout(), new ActionListener() {
+                        public void actionPerformed(ActionEvent arg0) {
+                            currentDriver.kill();
+                            currentDriver = null;
+                            inactiveUI.setVisible(true);
+                            killVBTimer = null;
+                            System.out.println(">>> Now prompting for PIN");
+                            promptForPin("Enter Voting Authentication PIN");
+                        }
+                    });
+                    killVBTimer.setRepeats(false);
+                    System.out.println(">>> Starting the timer");
+                    killVBTimer.start();
+                }//if
+
+            }
+
+            public void ballotPrintFail(BallotPrintFailEvent e){
+                // Should implement something to indicate the print failed
             }
 
 
