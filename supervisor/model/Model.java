@@ -180,6 +180,13 @@ public class Model {
                         unlabeled.add(ma);
                     else if (ma.getLabel() > maxlabel)
                         maxlabel = ma.getLabel();
+                } else if(m instanceof BallotScannerMachine){
+                    BallotScannerMachine ma = (BallotScannerMachine)m;
+                    if(ma.getStatus() == BallotScannerMachine.ACTIVE){
+                        s = new BallotScannerEvent(ma.getSerial(), "active");
+                    } else if(ma.getStatus() == BallotScannerMachine.INACTIVE){
+                        s = new BallotScannerEvent(ma.getSerial(), "inactive");
+                    }
                 }
                 if (s == null)
                     throw new IllegalStateException("Unknown machine or status");
@@ -479,7 +486,11 @@ public class Model {
                     AuthorizedToCastWithNIZKsEvent.getMatcher(), AdderChallengeEvent.getMatcher(),
                     PinEnteredEvent.getMatcher(), InvalidPinEvent.getMatcher(),
                     PollStatusEvent.getMatcher(), BallotPrintedEvent.getMatcher(),
+<<<<<<< HEAD
                     BallotScannedEvent.getMatcher());
+=======
+                    BallotScannerEvent.getMatcher());
+>>>>>>> ScannerUI
         } catch (NetworkException e1) {
             throw new RuntimeException(e1);
         }
@@ -587,7 +598,8 @@ public class Model {
              * see if it exists, and set it to online if so. Also increment the
              * number of connections.
              */
-            public void joined(JoinEvent e) {            	
+            public void joined(JoinEvent e) {
+                System.out.println(">>> model reported a machine joined!");
                 AMachine m = getMachineForSerial(e.getSerial());
                 if (m != null) {
                     m.setOnline(true);
@@ -621,6 +633,8 @@ public class Model {
                 AMachine m = getMachineForSerial(e.getSerial());
                 if (m != null) {
                     m.setOnline(false);
+                }else{
+                    throw new RuntimeException("WARNING: Machine left without having been registered");
                 }
                 numConnected--;
                 if (numConnected == 0) {
@@ -766,12 +780,10 @@ public class Model {
                     machinesChangedObs.notifyObservers();
                 }
                 BallotScannerMachine bsm = (BallotScannerMachine) m;
-                if (e.getStatus().equals("active")) {
-                    bsm.setStatus(SupervisorMachine.ACTIVE);
-                    if (e.getSerial() != mySerial)
-                        setActivated(false);
+                if(e.getStatus().equals("active")) {
+                    bsm.setStatus(BallotScannerMachine.ACTIVE);
                 } else if (e.getStatus().equals("inactive"))
-                    bsm.setStatus(SupervisorMachine.INACTIVE);
+                    bsm.setStatus(BallotScannerMachine.INACTIVE);
                 else
                     throw new IllegalStateException(
                             "Invalid BallotScanner Status: " + e.getStatus());
@@ -826,6 +838,7 @@ public class Model {
                                     + " is not a booth, but broadcasted votebox message");
                 if (m == null) {
                     m = new VoteBoxBooth(e.getSerial());
+                    System.out.println("Vote Box Added: " + m);
                     machines.add(m);
                     machinesChangedObs.notifyObservers();
                 }
