@@ -86,7 +86,7 @@ public class PrintImageUtils {
      * @param image - image to be flipped
      * @return - a flipped image
      */
-    private static BufferedImage flipImageHorizontally(BufferedImage image){
+    public static BufferedImage flipImageHorizontally(BufferedImage image){
         BufferedImage flipped = new BufferedImage(image.getWidth(), image.getHeight(), image.getType());
         AffineTransform tran = AffineTransform.getTranslateInstance(image.getWidth(), 0);
         AffineTransform flip = AffineTransform.getScaleInstance(-1d, 1d);
@@ -107,7 +107,7 @@ public class PrintImageUtils {
      * @param image - image to be flipped
      * @return - a flipped image
      */
-    private static BufferedImage flipImageVertically(BufferedImage image){
+    public static BufferedImage flipImageVertically(BufferedImage image){
         BufferedImage flipped = new BufferedImage(image.getWidth(), image.getHeight(), image.getType());
         AffineTransform tran = AffineTransform.getTranslateInstance(0, image.getHeight());
         AffineTransform flip = AffineTransform.getScaleInstance(1d, -1d);

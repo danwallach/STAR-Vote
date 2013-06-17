@@ -45,6 +45,7 @@ import javax.print.attribute.standard.PrintQuality;
 import javax.print.attribute.standard.PrinterName;
 
 
+import preptool.model.layout.manager.RenderingUtils;
 import sexpression.*;
 import tap.BallotImageHelper;
 import votebox.AuditoriumParams;
@@ -149,7 +150,7 @@ public class Printer {
 
                 int printWidth = _constants.getPrintableWidthForVVPAT();
 
-                /*ArrayList<String> column1 = new ArrayList<String>();
+                ArrayList<String> column1 = new ArrayList<String>();
                 column1.add("L168_printable_en.png");
                 column1.add("B1_printable_en.png");
                 column1.add("L169_printable_en.png");
@@ -230,7 +231,9 @@ public class Printer {
                 column3.add("B19_printable_en.png");
                 column3.add("L191_printable_en.png");
                 column3.add("B20_printable_en.png");
-                HTMLPrinter.generateHTMLFile("C:\\Users\\Mircea\\Desktop\\b.html", true, true, "C:\\Users\\Mircea\\Desktop\\long_ballot_correct\\media\\vvpat\\", column1, column2);*/
+                HTMLPrinter.generateHTMLFile("C:\\Users\\Mircea\\Desktop\\b.html", true, true, "C:\\Users\\Mircea\\Desktop\\long_ballot_correct\\media\\vvpat\\",
+                        _constants, fbid, "C:\\Users\\Mircea\\Desktop\\long_ballot_correct\\media\\vvpat\\Barcode",
+                        "C:\\Users\\Mircea\\Desktop\\long_ballot_correct\\media\\vvpat\\LineSeparator.png", column1, column2);
 
                 //Print the date and title of the election at the top of the page
                 Font font = new Font("ARIAL Unicode", Font.PLAIN, 10);
@@ -246,6 +249,16 @@ public class Printer {
                 //Generate a barcode of the bid
                 //Do it here so we can use height of the barcode for laying out other components on the printout
                 BufferedImage barcode = PrintImageUtils.getBarcode(fbid);
+
+                try
+                {
+                    ImageIO.write(barcode, "PNG", new File("C:\\Users\\Mircea\\Desktop\\long_ballot_correct\\media\\vvpat\\Barcode.png"));
+                    ImageIO.write(PrintImageUtils.flipImageHorizontally(PrintImageUtils.flipImageVertically(barcode)), "PNG", new File("C:\\Users\\Mircea\\Desktop\\long_ballot_correct\\media\\vvpat\\Barcode_flipped.png"));
+                }
+                catch (IOException e)
+                {
+                    System.out.println("Could not write barcode image to a file.");
+                }
 
                 Font ocra = new Font("OCR A Extended", Font.PLAIN, 16);
 
