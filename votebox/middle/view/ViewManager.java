@@ -146,11 +146,16 @@ public class ViewManager implements IViewManager {
      *            Draw this page number to this display.
      */
     public void drawPage(int pagenum) {
-        //System.out.println("Trying to draw page number " + pagenum);
+        System.out.println("Trying to draw page number " + pagenum);
+        System.out.println(_view);
+
         _view.clearDisplay();
+
+        System.out.println(">>>> display cleared!");
         
         if(pagenum != _page)
         {
+            System.out.println("pagenum != _page");
         	List<String> affectedUIDs = _layout.getPages().get(_page).getUniqueIDs();
         	
         	_pageChanged.notifyObservers(affectedUIDs);
@@ -158,19 +163,24 @@ public class ViewManager implements IViewManager {
         
         _page = pagenum;
         setInitialFocus();
+
+        System.out.println(">>>> focused!");
+
         _layout.initFromViewManager( _page, this, _ballotLookupAdapter,
         		_ballotAdapter, _factory, _variables );
+
+        System.out.println(">>>> Layout initialized!");
         
         boolean postNotice = false;
         
         try{
         	String isReviewPage = _layout.getPages().get(pagenum).getProperties().getString("IsReviewPage"); 
 
-        	//System.out.println("Properties:");
-        	//System.out.println("\t"+_layout.getPages().get(pagenum).getProperties());
+        	System.out.println("Properties:");
+        	System.out.println("\t"+_layout.getPages().get(pagenum).getProperties());
         	
         	if(isReviewPage != null && isReviewPage.equals("yes")){
-        		//System.out.println("Notifying observers...");
+        		System.out.println("Notifying observers...");
         		_reviewScreenEncountered.notifyObservers(new Object[]{false, _ballotLookupAdapter.getCastBallot()});
         		postNotice = true;
         	}//if
@@ -717,9 +727,6 @@ public class ViewManager implements IViewManager {
      * page that is displayed, there should be an initial element that is
      * focused from which the voter can move. This method takes care of the job
      * of focusing that one initial element.
-     * 
-     * @param pagenum
-     *            Set the initial Focus on this particular page.
      */
     private void setInitialFocus() {
         // Find a focusable element, Focus it, Unfocus the rest of the

@@ -828,13 +828,18 @@ public class PsychLayoutManager extends ALayoutManager {
 
     /**
      * A Common Cast Button
-     */
+    */
     protected Button castButton;
     
     /**
      * A Common Commit Button
      */
     protected Button commitButton;
+
+    /**
+     * A Common Challenge Button
+     */
+    protected Button challengeButton;
 
     /**
      * A Common NextButton
@@ -1131,7 +1136,7 @@ public class PsychLayoutManager extends ALayoutManager {
         
         for(Page reviewPage : reviewPages)
         	reviewPage.markAsReviewPage();
-        
+
         layout.getPages().add(reviewPageNum + (ballot.getCards().size() / CARDS_PER_REVIEW_PAGE) + 1, makeCastPage());
 
         //No challenge page necessary since challenges can't happen?

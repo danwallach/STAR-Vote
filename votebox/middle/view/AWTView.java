@@ -97,15 +97,21 @@ public class AWTView extends AView {
 	/**
 	 * @see votebox.middle.view.IView#clearDisplay()
 	 */
-	public synchronized void clearDisplay() {
+    //TODO this is synchronized - investigate further
+	public synchronized  void clearDisplay() {
+        System.out.println(">>>>> Clearing display!");
 		if (_frame.getGraphics() == null)
 			return;
+        System.out.println(">>>>> Graphics weren't null!");
 		Graphics graphics = _frame.getGraphics();
 		graphics.setClip( _bounds );
 		graphics
 		.clearRect( _bounds.x, _bounds.y, _bounds.width, _bounds.height );
+        System.out.println(">>>>> Cleared rectangle!");
 		_hitboxMap.clear();
+        System.out.println(">>>>> Cleared hitbox!");
 		_currentDrawables.clear();
+        System.out.println(">>>>> Cleared drawables!");
 	}
 
 	/**

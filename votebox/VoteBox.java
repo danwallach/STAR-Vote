@@ -288,6 +288,10 @@ public class VoteBox{
                         printer = new Printer(_currentBallotFile, races);
 						printer.printCommittedBallot(ballot, bid);
                         printer.printedReciept(bid);
+
+                        //By this time, the voter is done voting
+                        finishedVoting = true;
+
                         auditorium.announce(new BallotPrintedEvent(mySerial, bid,
                                 nonce));
 					} catch (AuditoriumCryptoException e) {
@@ -527,7 +531,7 @@ public class VoteBox{
                     ChallengeEvent.getMatcher(), ChallengeResponseEvent.getMatcher(),
                     AuthorizedToCastWithNIZKsEvent.getMatcher(), PinEnteredEvent.getMatcher(),
                     InvalidPinEvent.getMatcher(), PollsOpenEvent.getMatcher(),
-                    PollStatusEvent.getMatcher());
+                    PollStatusEvent.getMatcher(), BallotPrintedEvent.getMatcher());
         } catch (NetworkException e1) {
         	//NetworkException represents a recoverable error
         	//  so just note it and continue
@@ -611,7 +615,6 @@ public class VoteBox{
              * the VoteBox runtime. Also announce the new status.
              */
             public void authorizedToCast(AuthorizedToCastEvent e) {
-                System.out.println("auth event YAY!");
                 if (e.getNode() == mySerial) {
                     if (voting || currentDriver != null && killVBTimer == null)
                         throw new RuntimeException(
@@ -895,9 +898,51 @@ public class VoteBox{
                 }
             }
 
-            @Override
+           @Override
             public void ballotPrinted(BallotPrintedEvent ballotPrintedEvent) {
-                // NO-OP
+               System.out.println("Ballot printed event generated!");
+                if (ballotPrintedEvent.getBID() == bid
+                        && Arrays.equals(ballotPrintedEvent.getNonce(), nonce)) {
+
+                    System.out.println(">>> It was an event for this ballot!");
+
+                    //This should also never happen...
+                    if (!finishedVoting)
+                        throw new RuntimeException(
+                                "Someone said the ballot was printed, but this machine hasn't finished voting yet");
+
+                    //This should never really happen...
+                    if(!_constants.getUseCommitChallengeModel()){
+                        Bugout.err("Received BallotPrinted message while not in Challenge-Commit mode!");
+                        return;
+                    }
+
+                    System.out.println(">>> Getting next page!");
+
+                    System.out.println(">>> Got next page!");
+
+                    nonce = null;
+                    voting = false;
+                    finishedVoting = false;
+                    committedBallot = false;
+                    System.out.println(">>> Broadcasting status!");
+                    broadcastStatus();
+                    killVBTimer = new Timer(_constants.getViewRestartTimeout(), new ActionListener() {
+                        public void actionPerformed(ActionEvent arg0) {
+                            currentDriver.kill();
+                            currentDriver = null;
+                            inactiveUI.setVisible(true);
+                            killVBTimer = null;
+                            System.out.println(">>> Now prompting for PIN");
+                            promptForPin("Enter Voting Authentication PIN");
+                        }
+                    });
+                    killVBTimer.setRepeats(false);
+                    System.out.println(">>> Starting the timer");
+                    killVBTimer.start();
+                }//if
+
+
             }
 
 
