@@ -595,7 +595,7 @@ public class Model {
              * number of connections.
              */
             public void joined(JoinEvent e) {
-                System.out.println("MACHINE JOINED!");
+                System.out.println(">>> model reported a machine joined!");
                 AMachine m = getMachineForSerial(e.getSerial());
                 if (m != null) {
                     m.setOnline(true);

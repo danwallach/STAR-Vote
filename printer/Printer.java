@@ -92,6 +92,12 @@ public class Printer {
 
         final String fbid = bid;
 
+        //System.out.println()
+//        System.out.println("Number of races " + (choiceToImage).size());
+//        for(String i : choiceToImage.keySet()){
+//            System.out.println("Image title: " + i);
+//        }
+
         ArrayList<RaceTitlePair> actualRaceNameImagePairs = getRaceNameImagePairs(choiceToImage);
 
         final List<String> choices = new ArrayList<String>();
@@ -307,9 +313,16 @@ public class Printer {
 
                 int counter = 0;
 				while(totalSize < _constants.getPrintableHeightForVVPAT() && counter < choices.size()){
+                    System.out.println("Counter: " +  counter);
+                    System.out.println("Size of Choices: " + choices.size());
+                    System.out.println("Size of fActualRaceNamePairs: " + fActualRaceNamePairs.size());
+                    System.out.println(fActualRaceNamePairs.get(counter).getImage());
+
 
 					BufferedImage img = (BufferedImage)choiceToImage.get(choices.get(counter));
                     BufferedImage titleImg = (BufferedImage)fActualRaceNamePairs.get(counter).getImage();
+
+
 
 
                     //Remove trailing whitespace to allow for better scaling

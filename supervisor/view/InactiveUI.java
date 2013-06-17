@@ -138,7 +138,7 @@ public class InactiveUI extends JPanel {
             int supervisors = 0;
             int booths = 0;
             int scanners = 0;
-            System.out.println(model.getMachines().size() + " " + model.getNumConnected());
+            System.out.println("Total number of machines: " + model.getMachines().size() + "\nConnected Machines: " + model.getNumConnected());
             for (AMachine m : model.getMachines()) {
                 System.out.println(m);
                 if (m instanceof SupervisorMachine && m.isOnline() && m.getSerial() != model.getMySerial()) {

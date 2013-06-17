@@ -79,6 +79,7 @@ public class VoteBoxEventNotifier implements VoteBoxEventListener {
     }
 
     public void joined(JoinEvent e) {
+        System.out.println("Joined!");
         for (VoteBoxEventListener l : listeners)
             l.joined(e);
     }
