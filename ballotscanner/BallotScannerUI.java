@@ -31,6 +31,7 @@ public class BallotScannerUI extends JFrame {
     private BufferedImage rejectImage;
     private BufferedImage acceptImage;
     private BufferedImage waitingImage;
+    private BufferedImage inactiveButton;
     private BufferedImage responseImage;
 
     private JLabel scanResultLabel;
@@ -86,12 +87,15 @@ public class BallotScannerUI extends JFrame {
             waitingImage = null;
         }
 
-        responseImage = waitingImage;
+        try{
+            waitingImage = ImageIO.read(new File("images/inactive.png"));
+        }catch(IOException ioe){
+            System.out.println("BallotScannerUI: Could not locate inactive image");
+            waitingImage = null;
+        }
 
         userInfoPanel = new UserInfoPanel();
         electionInfoPanel = new ElectionInfoPanel();
-
-        JPanel
 
         mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
@@ -99,6 +103,8 @@ public class BallotScannerUI extends JFrame {
         mainPanel.add(userInfoPanel);
         add(mainPanel);
         pack();
+        setVisible(true);
+        displayInactiveScreen();
     }
 
     private class ElectionInfoPanel extends JPanel{
@@ -221,6 +227,14 @@ public class BallotScannerUI extends JFrame {
         userInfoPanel.clearMessages();
         userInfoPanel.addMessage("This is a Ballot Scanning Console");
         userInfoPanel.addMessage("Place Ballot Under Scanner to Cast Ballot");
+        updateFrame();
+    }
+
+    public void displayInactiveScreen(){
+        userInfoPanel.clearMessages();
+        userInfoPanel.addMessage("This is a Ballot Scanning Console");
+        userInfoPanel.addMessage("Console Currently Not Ready For Use");
+        responseImage = waitingImage;
         updateFrame();
     }
 

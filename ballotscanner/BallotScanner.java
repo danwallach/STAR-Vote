@@ -164,28 +164,6 @@ public class BallotScanner {
 
         Code128Decoder decoder = new Code128Decoder();
 
-        /*try{
-            logo = new ImageIcon(ImageIO.read(new File("images/logo.png")));
-        } catch(IOException e) {
-            logo = null;
-            System.out.println("BallotScannerUI: Logo Icon could not be loaded!");
-            new RuntimeException(e);
-        }
-
-
-
-        JPanel panel = new JPanel();
-        panel.setPreferredSize(new Dimension(600, 600));
-        JLabel image = new JLabel(logo);
-        panel.add(image);
-        panel.add(new JLabel("Please scan your ballot"));
-        panel.add(new JLabel(dateFormat.format(date)
-
-
-        ));
-        frame.add(panel);
-        frame.pack();
-        frame.setVisible(true);*/
         frame.displayPromptScreen();
 
         while (true) {
