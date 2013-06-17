@@ -835,11 +835,6 @@ public class PsychLayoutManager extends ALayoutManager {
      * A Common Commit Button
      */
     protected Button commitButton;
-    
-    /**
-     * A Common Challenge Button
-     */
-    protected Button challengeButton;
 
     /**
      * A Common NextButton
@@ -1034,10 +1029,10 @@ public class PsychLayoutManager extends ALayoutManager {
         commitButton.setIncreasedFontSize(true);
         commitButton.setSize(commitButton.execute(sizeVisitor));
         
-        challengeButton = new Button(getNextLayoutUID(), LiteralStrings.Singleton
-                .get("CHALLENGE_BUTTON", language), "Challenge");
-        challengeButton.setIncreasedFontSize(true);
-        challengeButton.setSize(challengeButton.execute(sizeVisitor));
+//        challengeButton = new Button(getNextLayoutUID(), LiteralStrings.Singleton
+//                .get("CHALLENGE_BUTTON", language), "Challenge");
+//        challengeButton.setIncreasedFontSize(true);
+//        challengeButton.setSize(challengeButton.execute(sizeVisitor));
 
         nextInfo = new Label(getNextLayoutUID(), LiteralStrings.Singleton.get(
                 "FORWARD_NEXT_RACE", language), sizeVisitor);
@@ -1976,10 +1971,10 @@ public class PsychLayoutManager extends ALayoutManager {
         east.setLayout(new GridBagLayout());
         c = new GridBagConstraints();
 
-        Spacer sp = new Spacer(challengeButton, east);
-        east.add(sp, c);
+//        Spacer sp = new Spacer(challengeButton, east);
+//        east.add(sp, c);
         
-        sp = new Spacer(castButton, east);
+        Spacer sp = new Spacer(castButton, east);
         c.gridy = 1;
         c.insets = new Insets(50, 0, 0, 0);
         east.add(sp, c);
