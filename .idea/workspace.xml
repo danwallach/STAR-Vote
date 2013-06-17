@@ -10,11 +10,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="26d876ad-6b77-4796-b9d0-ead84066c769" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/supervisor/view/InactiveUI.java" afterPath="$PROJECT_DIR$/supervisor/view/InactiveUI.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/supervisor/model/Model.java" afterPath="$PROJECT_DIR$/supervisor/model/Model.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/printer/Printer.java" afterPath="$PROJECT_DIR$/printer/Printer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/votebox/events/VoteBoxEventNotifier.java" afterPath="$PROJECT_DIR$/votebox/events/VoteBoxEventNotifier.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/vb.conf" afterPath="$PROJECT_DIR$/vb.conf" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="STAR-Vote.iws" />
@@ -54,7 +49,7 @@
     <file path="/ToggleButton.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370358039224" ignored="false" />
     <file path="/RaceTitlePair.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369945268870" ignored="false" />
     <file path="/Label.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370369156357" ignored="false" />
-    <file path="/Dummy.txt" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371480343242" ignored="false" />
+    <file path="/Dummy.txt" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371484312683" ignored="false" />
     <file path="/ALayoutComponent.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370380215222" ignored="false" />
     <file path="/HTMLPrinter.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371225518333" ignored="false" />
     <file path="/InactiveUI.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371241853749" ignored="false" />
@@ -179,15 +174,6 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="PsychLayoutManager.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/preptool/model/layout/manager/PsychLayoutManager.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="144" column="31" selection-start="5338" selection-end="5341" vertical-scroll-proportion="-9.72">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="ALayoutManager.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/preptool/model/layout/manager/ALayoutManager.java">
           <provider selected="true" editor-type-id="text-editor">
@@ -229,10 +215,19 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="YesNoOptionsModule.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="YesNoOptionsModule.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/preptool/model/ballot/module/YesNoOptionsModule.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="42" column="13" selection-start="1544" selection-end="1544" vertical-scroll-proportion="0.2556818">
+            <state line="38" column="41" selection-start="1404" selection-end="1404" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="LiteralStrings.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/preptool/model/language/LiteralStrings.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="31" column="13" selection-start="1284" selection-end="1284" vertical-scroll-proportion="-0.14914773">
               <folding />
             </state>
           </provider>
@@ -446,33 +441,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="ballot" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="STAR-Vote" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="STAR-Vote" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="preptool" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="model" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ballot" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="module" />
+              <option name="myItemId" value="language" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -758,7 +727,11 @@
       <created>1371225342419</created>
       <updated>1371225342419</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="Refined debugging code for joined/connected">
+      <created>1371484318155</created>
+      <updated>1371484318155</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -850,7 +823,7 @@
     <option name="WRAP_WHEN_TYPING_REACHES_RIGHT_MARGIN" value="false" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added code in the Printer class that builds a 3-column HTML file." />
+    <option name="LAST_COMMIT_MESSAGE" value="Refined debugging code for joined/connected" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="false" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -877,6 +850,7 @@
     <MESSAGE value="Fixed a possible IndexOutOfBounds exception in the HTMLPrinter code." />
     <MESSAGE value="Added layout variables to HTMLPrinter, to replace its hard-coded output dimensions." />
     <MESSAGE value="Added code in the Printer class that builds a 3-column HTML file." />
+    <MESSAGE value="Refined debugging code for joined/connected" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -890,13 +864,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/votebox/events/VoteBoxAuditoriumConnector.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="48" column="39" selection-start="1776" selection-end="1776" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/preptool/model/layout/PrintButton.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="70" column="19" selection-start="1760" selection-end="1760" vertical-scroll-proportion="0.0">
@@ -1005,7 +972,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/preptool/model/ballot/module/YesNoOptionsModule.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="42" column="13" selection-start="1544" selection-end="1544" vertical-scroll-proportion="0.2556818">
+        <state line="38" column="41" selection-start="1404" selection-end="1404" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/preptool/model/language/LiteralStrings.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="31" column="13" selection-start="1284" selection-end="1284" vertical-scroll-proportion="-0.14914773">
           <folding />
         </state>
       </provider>
