@@ -250,7 +250,6 @@ public class VoteBox{
 
         		@SuppressWarnings("unchecked")
 				public void update(Observable o, Object argTemp) {
-                    System.out.println("The ballot was committed!");
         			if (!connected)
         				throw new RuntimeException(
         						"Attempted to cast ballot when not connected to any machines");
@@ -456,7 +455,6 @@ public class VoteBox{
                     auditorium.announce(new OverrideCancelDenyEvent(mySerial,
                             nonce));
                     override = false;
-                    System.out.println("Trying to draw page " + pageBeforeOverride);
                     currentDriver.getView().drawPage(pageBeforeOverride);
                 } else
                     throw new RuntimeException(
@@ -503,7 +501,6 @@ public class VoteBox{
                     auditorium.announce(new OverrideCastDenyEvent(mySerial,
                             nonce));
                     override = false;
-                    System.out.println("Trying to draw page " + pageBeforeOverride);
                     currentDriver.getView().drawPage(pageBeforeOverride);
                 } else
                     throw new RuntimeException(
@@ -933,12 +930,10 @@ public class VoteBox{
                             currentDriver = null;
                             inactiveUI.setVisible(true);
                             killVBTimer = null;
-                            System.out.println(">>> Now prompting for PIN");
                             promptForPin("Enter Voting Authentication PIN");
                         }
                     });
                     killVBTimer.setRepeats(false);
-                    System.out.println(">>> Starting the timer");
                     killVBTimer.start();
                 }//if
 

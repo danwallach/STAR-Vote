@@ -1154,8 +1154,9 @@ public class View extends JFrame {
                 previewButtonPressed();
             }
         } );
-
+        //This button is annoying, so disable it
         previewButton.setEnabled(false);
+
         toolbar.add( previewButton );
         
         try {
