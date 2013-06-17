@@ -10,13 +10,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="26d876ad-6b77-4796-b9d0-ead84066c769" name="Default" comment="Refined debugging code for joined/connected">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/votebox/middle/view/AWTView.java" afterPath="$PROJECT_DIR$/votebox/middle/view/AWTView.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/votebox/BatteryStatus.java" afterPath="$PROJECT_DIR$/votebox/BatteryStatus.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/preptool/model/language/LiteralStrings.java" afterPath="$PROJECT_DIR$/preptool/model/language/LiteralStrings.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/printer/Printer.java" afterPath="$PROJECT_DIR$/printer/Printer.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/preptool/model/layout/manager/PsychLayoutManager.java" afterPath="$PROJECT_DIR$/preptool/model/layout/manager/PsychLayoutManager.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/votebox/middle/view/ViewManager.java" afterPath="$PROJECT_DIR$/votebox/middle/view/ViewManager.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/votebox/VoteBox.java" afterPath="$PROJECT_DIR$/votebox/VoteBox.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="STAR-Vote.iws" />
     <ignored path=".idea/workspace.xml" />
     <file path="/fragment.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371486639033" ignored="false" />
     <file path="/printer.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369322211698" ignored="false" />
-    <file path="/a.dummy" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371483854022" ignored="false" />
+    <file path="/a.dummy" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371494089294" ignored="false" />
     <file path="/*.regexp" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370469295632" ignored="false" />
     <file path="/IAdapter.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369258761957" ignored="false" />
     <file path="/Model.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371244120701" ignored="false" />
@@ -24,7 +31,7 @@
     <file path="$PROJECT_DIR$/sim/utils/Time.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369261529307" ignored="false" />
     <file path="/NIZKsPerformanceTest.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369261905322" ignored="false" />
     <file path="/VoteBoxEventNotifier.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371480514911" ignored="false" />
-    <file path="/VoteBox.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369772845301" ignored="false" />
+    <file path="/VoteBox.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371493280413" ignored="false" />
     <file path="/Printer.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371481730387" ignored="false" />
     <file path="/BallotImageHelper.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370275851871" ignored="false" />
     <file path="/build.sh" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369346908949" ignored="false" />
@@ -34,22 +41,22 @@
     <file path="/ILayoutComponentVisitor.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369938429518" ignored="false" />
     <file path="/AuditoriumParams.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369771839936" ignored="false" />
     <file path="/SimpleKeyStore.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369761414786" ignored="false" />
-    <file path="/ViewManager.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369773186046" ignored="false" />
+    <file path="/ViewManager.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371494535878" ignored="false" />
     <file path="/ActiveUI.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369772205729" ignored="false" />
     <file path="/IAuditoriumParams.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369772314696" ignored="false" />
     <file path="/Button.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370370207449" ignored="false" />
     <file path="/Properties.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369775555798" ignored="false" />
     <file path="/View.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369777894923" ignored="false" />
     <file path="/BallotResultParser.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369778023577" ignored="false" />
-    <file path="/PsychLayoutManager.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371485334385" ignored="false" />
+    <file path="/PsychLayoutManager.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371498342284" ignored="false" />
     <file path="/BallotParser.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370036369566" ignored="false" />
     <file path="/RenderingUtils.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370378525443" ignored="false" />
-    <file path="/AWTView.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370013836469" ignored="false" />
+    <file path="/AWTView.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371497670193" ignored="false" />
     <file path="/PrintButton.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369939044393" ignored="false" />
     <file path="/ToggleButton.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370358039224" ignored="false" />
     <file path="/RaceTitlePair.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369945268870" ignored="false" />
     <file path="/Label.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370369156357" ignored="false" />
-    <file path="/Dummy.txt" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371486938417" ignored="false" />
+    <file path="/Dummy.txt" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371498101764" ignored="false" />
     <file path="/ALayoutComponent.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370380215222" ignored="false" />
     <file path="/HTMLPrinter.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371225518333" ignored="false" />
     <file path="/InactiveUI.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371241853749" ignored="false" />
@@ -60,11 +67,11 @@
     <file path="$PROJECT_DIR$/votebox/events/CastCommittedBallotEvent.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371484680688" ignored="false" />
     <file path="$PROJECT_DIR$/tap/Tap.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371484680688" ignored="false" />
     <file path="$PROJECT_DIR$/votebox/events/VoteBoxAuditoriumConnector.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371484680689" ignored="false" />
-    <file path="$PROJECT_DIR$/printer/HTMLPrinter.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371484680689" ignored="false" />
     <file path="$PROJECT_DIR$/votebox/events/CastBallotEvent.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371484680689" ignored="false" />
     <file path="$PROJECT_DIR$/votebox/events/VoteBoxEventListener.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371484680689" ignored="false" />
     <file path="/BallotScannerUI.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371486555689" ignored="false" />
     <file path="/BallotScanner.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371486538562" ignored="false" />
+    <file path="/BatteryStatus.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371495920244" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -79,6 +86,7 @@
     <disable_hints />
   </component>
   <component name="DebuggerManager">
+    <ui_properties default_suspend_policy="SuspendAll" default_condition_enabled="true" />
     <breakpoint_any default_suspend_policy="SuspendAll" default_condition_enabled="true">
       <breakpoint>
         <option name="NOTIFY_CAUGHT" value="true" />
@@ -115,7 +123,6 @@
         <option name="LOG_MESSAGE" value="" />
       </breakpoint>
     </breakpoint_any>
-    <ui_properties default_suspend_policy="SuspendAll" default_condition_enabled="true" />
     <line_breakpoints default_suspend_policy="SuspendAll" default_condition_enabled="true">
       <breakpoint url="file://$PROJECT_DIR$/votebox/middle/Properties.java" line="223" class="votebox.middle.Properties" package="votebox.middle">
         <option name="ENABLED" value="true" />
@@ -172,28 +179,86 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="BallotScanner.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ballotscanner/BallotScanner.java">
+      <file leaf-file-name="VoteBox.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/votebox/VoteBox.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="112" column="58" selection-start="3188" selection-end="3188" vertical-scroll-proportion="0.0">
+            <state line="919" column="18" selection-start="39359" selection-end="39470" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="AuditoriumParams.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/votebox/AuditoriumParams.java">
+      <file leaf-file-name="AWTView.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/votebox/middle/view/AWTView.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="415" column="5" selection-start="13861" selection-end="13861" vertical-scroll-proportion="0.0">
+            <state line="99" column="18" selection-start="3325" selection-end="3325" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="BallotScannerUI.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/ballotscanner/BallotScannerUI.java">
+      <file leaf-file-name="ViewManager.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/votebox/middle/view/ViewManager.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="83" column="6" selection-start="2647" selection-end="2647" vertical-scroll-proportion="0.69447136">
+            <state line="178" column="56" selection-start="6403" selection-end="6403" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="LiteralStrings.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/preptool/model/language/LiteralStrings.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="94" column="28" selection-start="3417" selection-end="3502" vertical-scroll-proportion="-8.16">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="IView.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/votebox/middle/view/IView.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="82" column="9" selection-start="3220" selection-end="3220" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="AView.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/votebox/middle/view/AView.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="35" column="5" selection-start="1453" selection-end="1475" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Model.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/preptool/model/Model.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="333" column="60" selection-start="11962" selection-end="11964" vertical-scroll-proportion="-15.88">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="PsychLayoutManager.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/preptool/model/layout/manager/PsychLayoutManager.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="1139" column="0" selection-start="40704" selection-end="40704" vertical-scroll-proportion="0.3182276">
+              <folding>
+                <element signature="e#21930#21954#0" expanded="true" />
+                <element signature="e#26472#26491#0" expanded="true" />
+                <element signature="e#44683#44710#1" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Language.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/preptool/model/language/Language.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="34" column="13" selection-start="1302" selection-end="1302" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -218,22 +283,22 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/votebox/events/CommitBallotEvent.java" />
-        <option value="$PROJECT_DIR$/printer/HTMLPrinter.java" />
-        <option value="$PROJECT_DIR$/votebox/VoteBox.java" />
-        <option value="$PROJECT_DIR$/supervisor/model/VoteBoxBooth.java" />
         <option value="$PROJECT_DIR$/votebox/events/JoinEvent.java" />
         <option value="$PROJECT_DIR$/supervisor/model/AMachine.java" />
         <option value="$PROJECT_DIR$/votebox/events/VoteBoxEventNotifier.java" />
         <option value="$PROJECT_DIR$/vb.conf" />
-        <option value="$PROJECT_DIR$/printer/Printer.java" />
         <option value="$PROJECT_DIR$/tap/BallotImageHelper.java" />
         <option value="$PROJECT_DIR$/supervisor/view/InactiveUI.java" />
         <option value="$PROJECT_DIR$/supervisor/model/Model.java" />
-        <option value="$PROJECT_DIR$/preptool/model/language/LiteralStrings.java" />
-        <option value="$PROJECT_DIR$/preptool/model/layout/manager/PsychLayoutManager.java" />
         <option value="$PROJECT_DIR$/ballotscanner/BallotScanner.java" />
         <option value="$PROJECT_DIR$/ballotscanner/BallotScannerUI.java" />
+        <option value="$PROJECT_DIR$/printer/Printer.java" />
+        <option value="$PROJECT_DIR$/votebox/middle/view/ViewManager.java" />
+        <option value="$PROJECT_DIR$/votebox/BatteryStatus.java" />
+        <option value="$PROJECT_DIR$/votebox/middle/view/AWTView.java" />
+        <option value="$PROJECT_DIR$/votebox/VoteBox.java" />
+        <option value="$PROJECT_DIR$/preptool/model/language/LiteralStrings.java" />
+        <option value="$PROJECT_DIR$/preptool/model/layout/manager/PsychLayoutManager.java" />
       </list>
     </option>
   </component>
@@ -340,33 +405,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="lib" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="zxing-core.jar" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiFileNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="STAR-Vote" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="STAR-Vote" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="lib" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="zxing-core.jar" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiFileNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="zxing" />
+              <option name="myItemId" value="votebox" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -380,7 +419,11 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="lib" />
+              <option name="myItemId" value="votebox" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="middle" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -394,7 +437,47 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="ballotscanner" />
+              <option name="myItemId" value="preptool" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="STAR-Vote" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="STAR-Vote" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="preptool" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="model" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="STAR-Vote" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="STAR-Vote" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="preptool" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="model" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="language" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -412,7 +495,7 @@
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="recentsLimit" value="5" />
     <property name="MemberChooser.sorted" value="false" />
-    <property name="options.lastSelected" value="editor.preferences.appearance" />
+    <property name="options.lastSelected" value="preferences.keymap" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/votebox" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="MemberChooser.copyJavadoc" value="false" />
@@ -430,7 +513,7 @@
       <recent name="preptool.model.layout.manager" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.BallotScanner">
+  <component name="RunManager" selected="Application.Votebox">
     <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
       <module name="" />
       <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m" />
@@ -733,21 +816,21 @@
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.397351" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3517316" sideWeight="0.50026894" order="11" side_tool="true" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3112583" sideWeight="0.5002764" order="11" side_tool="true" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.19900498" sideWeight="0.41248816" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32672334" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31977293" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32355723" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.19900498" sideWeight="0.7114475" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2883549" sideWeight="0.49973103" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.19900498" sideWeight="0.7123936" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.28760645" sideWeight="0.4997236" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3112583" sideWeight="0.49973103" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3112583" sideWeight="0.4997236" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Analyze Dataflow to" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32899022" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3201133" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2498618" sideWeight="0.68874174" order="1" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.39924315" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -834,97 +917,109 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/supervisor/view/ActiveUI.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="136" column="58" selection-start="4059" selection-end="4059" vertical-scroll-proportion="0.31299734" />
-      </provider>
-    </entry>
-    <entry file="jar:///usr/lib/jvm/java-7-oracle/src.zip!/javax/swing/JComponent.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="4839" column="16" selection-start="182884" selection-end="182884" vertical-scroll-proportion="0.6637298" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/votebox/events/VoteBoxEventNotifier.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="92" column="38" selection-start="2969" selection-end="2969" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/preptool/model/layout/manager/PsychLayoutManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="1943" column="5" selection-start="75992" selection-end="75992" vertical-scroll-proportion="2.0661986">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/preptool/model/language/LiteralStrings.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="34" column="109" selection-start="1313" selection-end="1313" vertical-scroll-proportion="0.014548982" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/preptool/model/ballot/module/YesNoOptionsModule.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="38" column="41" selection-start="1404" selection-end="1404" vertical-scroll-proportion="0.014548982" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/preptool/model/ballot/module/TextFieldModule.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="57" column="13" selection-start="1936" selection-end="1936" vertical-scroll-proportion="0.014548982" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/supervisor/view/InactiveUI.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="131" column="57" selection-start="4418" selection-end="4418" vertical-scroll-proportion="0.34529582" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/preptool/model/layout/manager/ALayoutManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="227" column="86" selection-start="7885" selection-end="7885" vertical-scroll-proportion="0.014548982" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/printer/Printer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="94" column="92" selection-start="3221" selection-end="3221" vertical-scroll-proportion="0.014548982" />
+        <state line="109" column="118" selection-start="3824" selection-end="3824" vertical-scroll-proportion="-21.16" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.idea/workspace.xml">
+    <entry file="file://$PROJECT_DIR$/votebox/middle/view/IViewFactory.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" />
+        <state line="38" column="17" selection-start="1369" selection-end="1369" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/supervisor/model/Model.java">
+    <entry file="file://$PROJECT_DIR$/votebox/middle/driver/Driver.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="485" column="61" selection-start="15222" selection-end="15222" vertical-scroll-proportion="2.9332042">
+        <state line="165" column="13" selection-start="4793" selection-end="4793" vertical-scroll-proportion="-9.6">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ballotscanner/BallotScannerMachine.java">
+    <entry file="file://$PROJECT_DIR$/votebox/middle/datacollection/Launcher.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="36" column="3" selection-start="831" selection-end="831" vertical-scroll-proportion="0.52274925">
+        <state line="149" column="67" selection-start="5203" selection-end="5203" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/votebox/middle/view/AWTViewFactory.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="65" column="25" selection-start="2227" selection-end="2227" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/votebox/middle/view/AView.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="35" column="5" selection-start="1453" selection-end="1475" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/votebox/AuditoriumParams.java">
+    <entry file="file://$PROJECT_DIR$/votebox/middle/view/IView.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="415" column="5" selection-start="13861" selection-end="13861" vertical-scroll-proportion="0.0">
+        <state line="82" column="9" selection-start="3220" selection-end="3220" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/votebox/BatteryStatus.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="36" column="92" selection-start="1358" selection-end="1358" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ballotscanner/BallotScanner.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="112" column="58" selection-start="3188" selection-end="3188" vertical-scroll-proportion="0.0">
+        <state line="220" column="101" selection-start="6331" selection-end="6331" vertical-scroll-proportion="0.66024756" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/preptool/model/language/Language.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="34" column="13" selection-start="1302" selection-end="1302" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ballotscanner/BallotScannerUI.java">
+    <entry file="file://$PROJECT_DIR$/votebox/middle/view/AWTView.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="83" column="6" selection-start="2647" selection-end="2647" vertical-scroll-proportion="0.69447136">
+        <state line="99" column="18" selection-start="3325" selection-end="3325" vertical-scroll-proportion="0.0">
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/votebox/VoteBox.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="919" column="18" selection-start="39359" selection-end="39470" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/preptool/model/Model.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="333" column="60" selection-start="11962" selection-end="11964" vertical-scroll-proportion="-15.88">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/preptool/model/language/LiteralStrings.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="94" column="28" selection-start="3417" selection-end="3502" vertical-scroll-proportion="-8.16">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/votebox/middle/view/ViewManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="178" column="56" selection-start="6403" selection-end="6403" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/preptool/model/layout/manager/PsychLayoutManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="1139" column="0" selection-start="40704" selection-end="40704" vertical-scroll-proportion="0.3182276">
+          <folding>
+            <element signature="e#21930#21954#0" expanded="true" />
+            <element signature="e#26472#26491#0" expanded="true" />
+            <element signature="e#44683#44710#1" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

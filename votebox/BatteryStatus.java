@@ -25,12 +25,13 @@ package votebox;
 /**
  * Will, sometime in the future, actually read battery status if able.
  * 
- * Currently, a better solution that leaving a Math.random() in votebox.Votebox proper.
+ * Currently, a better solution than leaving a Math.random() in votebox.Votebox proper.
  * @author Montrose
  *
  */
 public class BatteryStatus {
 	public static int read(){
-		return (int)(Math.random() * 100.0);
+        return (int)(Math.random() * 1000.0);
+
 	}
 }

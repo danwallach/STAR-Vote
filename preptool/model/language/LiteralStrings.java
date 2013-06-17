@@ -100,7 +100,9 @@ public class LiteralStrings {
         ls.set(ENGLISH, "Print Ballot" + '\u2192');
         map.put("COMMIT_BUTTON", ls);
 
-
+//        ls = new LocalizedString();
+//        ls.set(ENGLISH, "Challenge Vote");
+//        map.put("CHALLENGE_BUTTON", ls);
 
         ls = new LocalizedString();
         ls.set(ENGLISH, "Next Page" + '\u2192');
@@ -301,9 +303,21 @@ public class LiteralStrings {
         ls.set(ENGLISH, "No, Ignore this Request");
         map.put("OVERRIDE_DENY", ls);
 
-        ls = new LocalizedString();
-        ls.set(ENGLISH, "Record and Print my Ballot");
-        map.put("CHALLENGE_DENY", ls);
+//        ls = new LocalizedString();
+//        ls.set(ENGLISH, "Challenge");
+//        map.put("CHALLENGE_TITLE", ls);
+//
+//        ls = new LocalizedString();
+//        ls.set(ENGLISH, "You have the option of challenging the VoteBox. \n Do you wish to challenge this VoteBox?");
+//        map.put("CHALLENGE_INSTRUCTIONS", ls);
+//
+//        ls = new LocalizedString();
+//        ls.set(ENGLISH, "Yes, Challenge this VoteBox");
+//        map.put("CHALLENGE_CONFIRM", ls);
+//
+//        ls = new LocalizedString();
+//        ls.set(ENGLISH, "Record and Print my Ballot");
+//        map.put("CHALLENGE_DENY", ls);
     }
 
     /**
