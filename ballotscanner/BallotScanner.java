@@ -162,7 +162,7 @@ public class BallotScanner {
 
         webcam.startCapture();
 
-        MultiFormatDecoder decoder = new MultiFormatDecoder();
+        Code128Decoder decoder = new Code128Decoder();
 
         /*try{
             logo = new ImageIcon(ImageIO.read(new File("images/logo.png")));
