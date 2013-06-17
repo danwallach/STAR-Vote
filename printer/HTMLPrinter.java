@@ -189,12 +189,12 @@ public class HTMLPrinter {
             if (printFriendly)
             {
                 // Create the left column.
-                writer.write("<div id = \"left_column\" style=\"background-color:#FFFFFF;width:" + TWO_COLUMNS_COLUMN_SIZE + "px;float:left;\">\n");
+                writer.write("<div id = \"left_column\" style=\"background-color:#FFFFFF;width:" + TWO_COLUMNS_COLUMN_SIZE + "px;height:" + (CONTAINER_HEIGHT - 2 * BARCODE_DIVIDER_HEIGHT) + "px;float:left;\">\n");
             }
             else
             {
                 // Create the left column.
-                writer.write("<div id = \"left_column\" style=\"background-color:#ABCDEF;width:" + TWO_COLUMNS_COLUMN_SIZE + "px;float:left;\">\n");
+                writer.write("<div id = \"left_column\" style=\"background-color:#ABCDEF;width:" + TWO_COLUMNS_COLUMN_SIZE + "px;height:" + (CONTAINER_HEIGHT - 2 * BARCODE_DIVIDER_HEIGHT) + "px;float:left;\">\n");
             }
 
             // Put images in the left column.
@@ -226,12 +226,12 @@ public class HTMLPrinter {
             if (printFriendly)
             {
                 // Create the right column.
-                writer.write("<div id = \"right_column\" style=\"background-color:#FFFFFF;width:" + TWO_COLUMNS_COLUMN_SIZE + "px;float:left;\">\n");
+                writer.write("<div id = \"right_column\" style=\"background-color:#FFFFFF;width:" + TWO_COLUMNS_COLUMN_SIZE + "px;height:" + (CONTAINER_HEIGHT - 2 * BARCODE_DIVIDER_HEIGHT) + "px;float:left;\">\n");
             }
             else
             {
                 // Create the right column.
-                writer.write("<div id = \"right_column\" style=\"background-color:#FEDCBA;width:" + TWO_COLUMNS_COLUMN_SIZE + "px;float:right;\">\n");
+                writer.write("<div id = \"right_column\" style=\"background-color:#FEDCBA;width:" + TWO_COLUMNS_COLUMN_SIZE + "px;height:" + (CONTAINER_HEIGHT - 2 * BARCODE_DIVIDER_HEIGHT) + "px;float:right;\">\n");
             }
 
             // Put images in the right column.
@@ -353,12 +353,12 @@ public class HTMLPrinter {
             if (printFriendly)
             {
                 // Create the column.
-                writer.write("<div id = \"column\" style=\"background-color:#FFFFFF;width:" + ONE_COLUMN_COLUMN_SIZE + "px;float:left;\">\n");
+                writer.write("<div id = \"column\" style=\"background-color:#FFFFFF;width:" + ONE_COLUMN_COLUMN_SIZE + "px;height:" + (CONTAINER_HEIGHT - 2 * BARCODE_DIVIDER_HEIGHT) + "px;float:left;\">\n");
             }
             else
             {
                 // Create the column.
-                writer.write("<div id = \"column\" style=\"background-color:#ABCDEF;width:" + ONE_COLUMN_COLUMN_SIZE + "px;float:left;\">\n");
+                writer.write("<div id = \"column\" style=\"background-color:#ABCDEF;width:" + ONE_COLUMN_COLUMN_SIZE + "px;height:" + (CONTAINER_HEIGHT - 2 * BARCODE_DIVIDER_HEIGHT) + "px;float:left;\">\n");
             }
 
             // Put images in the column.
