@@ -133,6 +133,63 @@ public class Printer {
 		final int fTotalSize = totalSize;
         final ArrayList<RaceTitlePair> fActualRaceNamePairs = actualRaceNameImagePairs;
 
+
+
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        // This is where the HTML Printing occurs.
+
+        String cleanFilePath = _currentBallotFile.getAbsolutePath().substring(0, _currentBallotFile.getAbsolutePath().lastIndexOf('\\') + 1);
+        // Print to an HTML file. Parameters to be used:
+        String htmlFileName = cleanFilePath + "PrintableBallot.html";
+        Boolean useTwoColumns = true;
+        Boolean printerFriendly = true;
+        String pathToVVPATFolder = cleanFilePath + "data\\media\\vvpat\\";
+        String barcodeFileNameNoExtension = pathToVVPATFolder + "Barcode";
+        String lineSeparatorFileName = pathToVVPATFolder + "LineSeparator.png";
+
+        //Generate a barcode of the bid
+        //Do it here so we can use height of the barcode for laying out other components on the printout
+        BufferedImage barcode = PrintImageUtils.getBarcode(fbid);
+        try
+        {
+            BufferedImage lineSeparator = new BufferedImage(10,10,BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g = (Graphics2D) lineSeparator.getGraphics();
+            g.setColor(Color.BLACK);
+            g.fillRect(0,0,10,10);
+
+            ImageIO.write(lineSeparator, "PNG", new File(lineSeparatorFileName));
+            ImageIO.write(barcode, "PNG", new File(barcodeFileNameNoExtension + ".png"));
+            ImageIO.write(PrintImageUtils.flipImageHorizontally(PrintImageUtils.flipImageVertically(barcode)), "PNG", new File(barcodeFileNameNoExtension + "_flipped.png"));
+        }
+        catch (IOException e)
+        {
+            System.out.println("Could not write barcode image to a file.");
+        }
+
+        // HTML Printing: Each column is an ArrayList of Strings. Each image is represented by its file name.
+        ArrayList<ArrayList<String>> columnsToPrint = new ArrayList<ArrayList<String>>();
+        int counter = 0;
+        while (counter < choices.size())
+        {
+            ArrayList<String> currentColumn = new ArrayList<String>();
+            while ((currentColumn.size() < 26) && (counter < choices.size()))
+            {
+                String titleName = fActualRaceNamePairs.get(counter).getLabel();
+                String selectionName = choices.get(counter);
+                currentColumn.add(titleName + "_printable_en.png");
+                currentColumn.add(selectionName + "_printable_en.png");
+                counter++;
+            }
+            columnsToPrint.add(currentColumn);
+        }
+
+        HTMLPrinter.generateHTMLFile(htmlFileName, useTwoColumns, printerFriendly, pathToVVPATFolder, _constants, fbid, barcodeFileNameNoExtension, lineSeparatorFileName, columnsToPrint);
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
 		Printable printedBallot = new Printable(){
 
 			public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
@@ -143,56 +200,6 @@ public class Printer {
 
 				if(pageIndex >= numPages)
 					return Printable.NO_SUCH_PAGE;
-
-
-
-
-                String cleanFilePath = _currentBallotFile.getAbsolutePath().substring(0, _currentBallotFile.getAbsolutePath().lastIndexOf('\\') + 1);
-                // Print to an HTML file. Parameters to be used:
-                String htmlFileName = "C:\\Users\\Mircea\\Desktop\\b.html";
-                Boolean useTwoColumns = true;
-                Boolean printerFriendly = true;
-                String pathToVVPATFolder = cleanFilePath + "data\\media\\vvpat\\";
-                String barcodeFileNameNoExtension = pathToVVPATFolder + "Barcode";
-                String lineSeparatorFileName = pathToVVPATFolder + "LineSeparator.png";
-
-                //Generate a barcode of the bid
-                //Do it here so we can use height of the barcode for laying out other components on the printout
-                BufferedImage barcode = PrintImageUtils.getBarcode(fbid);
-                try
-                {
-                    BufferedImage lineSeparator = new BufferedImage(10,10,BufferedImage.TYPE_INT_ARGB);
-                    Graphics2D g = (Graphics2D) lineSeparator.getGraphics();
-                    g.setColor(Color.BLACK);
-                    g.fillRect(0,0,10,10);
-
-                    ImageIO.write(lineSeparator, "PNG", new File(lineSeparatorFileName));
-                    ImageIO.write(barcode, "PNG", new File(barcodeFileNameNoExtension + ".png"));
-                    ImageIO.write(PrintImageUtils.flipImageHorizontally(PrintImageUtils.flipImageVertically(barcode)), "PNG", new File(barcodeFileNameNoExtension + "_flipped.png"));
-                }
-                catch (IOException e)
-                {
-                    System.out.println("Could not write barcode image to a file.");
-                }
-
-                // HTML Printing: Each column is an ArrayList of Strings. Each image is represented by its file name.
-                ArrayList<ArrayList<String>> columnsToPrint = new ArrayList<ArrayList<String>>();
-                int counter = 0;
-                while (counter < choices.size())
-                {
-                    ArrayList<String> currentColumn = new ArrayList<String>();
-                    while ((currentColumn.size() < 26) && (counter < choices.size()))
-                    {
-                        String titleName = fActualRaceNamePairs.get(counter).getLabel();
-                        String selectionName = choices.get(counter);
-                        currentColumn.add(titleName + "_printable_en.png");
-                        currentColumn.add(selectionName + "_printable_en.png");
-                        counter++;
-                    }
-                    columnsToPrint.add(currentColumn);
-                }
-
-                HTMLPrinter.generateHTMLFile(htmlFileName, useTwoColumns, printerFriendly, pathToVVPATFolder, _constants, fbid, barcodeFileNameNoExtension, lineSeparatorFileName, columnsToPrint);
 
 				return Printable.PAGE_EXISTS;
 
@@ -268,16 +275,17 @@ public class Printer {
         }
 
         // Print the updated ballot (for consistency checking).
-        for (int i = 0; i < updatedBallot.size(); i++)
+        /*for (int i = 0; i < updatedBallot.size(); i++)
         {
             ChoicePair currentItem = updatedBallot.get(i);
-        }
+        }*/
         return updatedBallot;
     }
-    public void printedReciept(String bID){
+
+    public void printedReceipt(String bID){
 
         final String bid = bID;
-        Printable printedReciept = new Printable(){
+        Printable printedReceipt = new Printable(){
 
             public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
                 //print is called by Java until NO_SUCH_PAGE is returned
@@ -319,7 +327,7 @@ public class Printer {
 
         };
 
-        printOnVVPAT(printedReciept);
+        printOnVVPAT(printedReceipt);
     }
 
     private void printCenteredText(String s, int xBound, int y, Graphics g){

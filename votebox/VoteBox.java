@@ -288,7 +288,7 @@ public class VoteBox{
                                 nonce));
                         printer = new Printer(_currentBallotFile, races);
 						printer.printCommittedBallot(ballot, bid);
-                        printer.printedReciept(bid);
+                        printer.printedReceipt(bid);
 
                         //By this time, the voter is done voting
                         finishedVoting = true;
