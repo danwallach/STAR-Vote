@@ -18,18 +18,23 @@ public class HTMLPrinter {
     public final static int CONTAINER_HEIGHT = 792;
     public final static int LEFT_MARGIN_WIDTH = 72;
     public final static int RIGHT_MARGIN_WIDTH = 72;
-    // Randomly subtracting a 3, to make it all print on one page. Page margins are difficult to bypass when printing from the command line.
+    // Arbitrarily subtracting a 3, to make it all print on one page. Page margins are difficult to bypass when printing from the command line.
     public final static int TWO_COLUMNS_COLUMN_SIZE = (CONTAINER_WIDTH - LEFT_MARGIN_WIDTH - RIGHT_MARGIN_WIDTH) / 2 - 3;
     public final static int ONE_COLUMN_COLUMN_SIZE = CONTAINER_WIDTH - LEFT_MARGIN_WIDTH - RIGHT_MARGIN_WIDTH;
+
+    // The line separator to be used.
+    public static String LINE_SEPARATOR = "LineSeparator.png";
 
     /**
      * Generates a HTML file that will be used to print a voter's selections.
      * @param filename - The name of the HTML file to be written
      * @param useTwoColumns - Whether or not to use two columns of images per page
+     * @param printFriendly - Whether or not to generate a printer-friendly HTML file. If true, then the HTML file will contain no colours and only black text on a white background.
      * @param pathToBallotVVPATFolder - The path to the vvpat folder in the ballot files
+     * @param lineSeparatorFilePath - The path to the line separator file. This can be a 10x10 solid black PNG. The HTML code resizes it to the correct dimensions.
      * @param imageNames - ArrayLists of file names for images. One ArrayList per column.
      */
-    public static void generateHTMLFile (String filename, Boolean useTwoColumns, Boolean printFriendly, String pathToBallotVVPATFolder, ArrayList<String>... imageNames)
+    public static void generateHTMLFile (String filename, Boolean useTwoColumns, Boolean printFriendly, String pathToBallotVVPATFolder, String lineSeparatorFilePath, ArrayList<String>... imageNames)
     {
         System.out.println("Attempting to create an html file at " + filename);
         File file = new File(filename);
@@ -58,6 +63,8 @@ public class HTMLPrinter {
             System.out.println("HTML File Generator Error: Unable to create BufferedWriter for file '" + filename + "'");
         }
 
+        // Set the line separator.
+        LINE_SEPARATOR = lineSeparatorFilePath;
 
         // Actually write the HTML file.
         try
@@ -106,6 +113,7 @@ public class HTMLPrinter {
     /**
      * Creates a "page" that contains two columns of images.
      * @param writer - The writer to the HTML file
+     * @param printFriendly - Whether or not to generate a printer-friendly HTML file. If true, then the HTML file will contain no colours and only black text on a white background.
      * @param pathToBallotVVPATFolder - The path to the vvpat folder in the ballot files
      * @param imageNames - ArrayLists of file names for images. One ArrayList per column.
      */
@@ -153,7 +161,7 @@ public class HTMLPrinter {
                 {
                     // Add selection separator.
                     // New separator:
-                    writer.write("<img src = \"" + pathToBallotVVPATFolder + "LineSeparator.png\" alt = \"Image not found\" width = \"" + (TWO_COLUMNS_COLUMN_SIZE - 12) + "\" height = \"2\" align = \"right\">\n<br>\n<br>\n");
+                    writer.write("<img src = \"" + /*pathToBallotVVPATFolder*/ LINE_SEPARATOR + "\" alt = \"Image not found\" width = \"" + (TWO_COLUMNS_COLUMN_SIZE - 12) + "\" height = \"2\" align = \"right\">\n<br>\n<br>\n");
                     // Old separators:
                     // writer.write("<br>\n<br>\n");
                     // writer.write("<div id = \"bar\" style = \"background-color:#000000;width:" + TWO_COLUMNS_COLUMN_SIZE + "px;\"><hr></div>\n");
@@ -193,7 +201,7 @@ public class HTMLPrinter {
                     {
                         // Add selection separator.
                         // New separator:
-                        writer.write("<img src = \"" + pathToBallotVVPATFolder + "LineSeparator.png\" alt = \"Image not found\" width = \"" + (TWO_COLUMNS_COLUMN_SIZE - 12) + "\" height = \"2\" align = \"right\">\n<br>\n<br>\n");
+                        writer.write("<img src = \"" + /*pathToBallotVVPATFolder*/ LINE_SEPARATOR + "\" alt = \"Image not found\" width = \"" + (TWO_COLUMNS_COLUMN_SIZE - 12) + "\" height = \"2\" align = \"right\">\n<br>\n<br>\n");
                         // Old separators:
                         // writer.write("<br>\n<br>\n");
                         // writer.write("<div id = \"bar\" style = \"background-color:#000000;width:" + TWO_COLUMNS_COLUMN_SIZE + "px;\"><hr></div>\n");
@@ -232,6 +240,7 @@ public class HTMLPrinter {
     /**
      * Creates a "page" that contains one column of images.
      * @param writer - The writer to the HTML file
+     * @param printFriendly - Whether or not to generate a printer-friendly HTML file. If true, then the HTML file will contain no colours and only black text on a white background.
      * @param pathToBallotVVPATFolder - The path to the vvpat folder in the ballot files
      * @param imageNames - ArrayLists of file names for images. One ArrayList per column.
      */
@@ -278,7 +287,7 @@ public class HTMLPrinter {
                 {
                     // Add selection separator.
                     // New separator:
-                    writer.write("<img src = \"" + pathToBallotVVPATFolder + "LineSeparator.png\" alt = \"Image not found\" width = \"" + (ONE_COLUMN_COLUMN_SIZE - 12) + "\" height = \"2\" align = \"right\">\n<br>\n<br>\n");
+                    writer.write("<img src = \"" + /*pathToBallotVVPATFolder*/ LINE_SEPARATOR + "\" alt = \"Image not found\" width = \"" + (ONE_COLUMN_COLUMN_SIZE - 12) + "\" height = \"2\" align = \"right\">\n<br>\n<br>\n");
                     // Old separators:
                     // writer.write("<br>\n<br>\n");
                     // writer.write("<div id = \"bar\" style = \"background-color:#000000;width:" + TWO_COLUMNS_COLUMN_SIZE + "px;\"><hr></div>\n");
