@@ -1,5 +1,7 @@
 package ballotscanner;
 
+import ballotscanner.state.AState;
+import ballotscanner.state.PromptState;
 import javazoom.jl.player.Player;
 import votebox.AuditoriumParams;
 
@@ -46,6 +48,7 @@ public class BallotScannerUI extends JFrame {
     private Thread delay;
 
     private String electionName;
+    public AState state;
 
     private Font fontBig   = new Font("Arial Unicode", Font.BOLD, 20);
     private Font fontSmall = new Font("Arial Unicode", Font.PLAIN, 18);
@@ -72,16 +75,7 @@ public class BallotScannerUI extends JFrame {
 
         bsMp3Path = mp3Path;
 
-        // prepare the mp3Player
-        try {
-            FileInputStream fileInputStream = new FileInputStream(bsMp3Path);
-            BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
-            mp3Player = new Player(bufferedInputStream);
-        } catch (Exception e) {
-            mp3Player = null;
-            System.out.println("Problem playing audio: " + bsMp3Path);
-            System.out.println(e);
-        }
+        state = PromptState.SINGLETON;
 
         try{
             logo = ImageIO.read(new File("images/logo.png"));
@@ -271,16 +265,7 @@ public class BallotScannerUI extends JFrame {
         responseImage = acceptImage;
         updateFrame();
 
-        // play confirmation sound
-        new Thread() {
-            public void run() {
-                try {
-                    mp3Player.play();
-                } catch (Exception e) {
-                    System.out.println(e);
-                }
-            }
-        }.start();
+
     }
 
     public void displayBallotRejectedScreen(){

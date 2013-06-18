@@ -35,10 +35,12 @@ public class Code128Decoder {
     public String decode(BinaryBitmap bitmap) {
         try {
             Result result = reader.decode(bitmap, hints);
+            //System.out.println(bitmap.getBlackMatrix().toString());
             return result.getText();
         }
         catch(NotFoundException e) {
             //e.printStackTrace();
+            //System.out.println("Image not found!");
             return null;
         } catch (FormatException e) {
             e.printStackTrace();

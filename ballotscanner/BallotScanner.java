@@ -47,7 +47,7 @@ public class BallotScanner{
     private Code128Decoder decoder;
 
     // keeps the path to the "ballot scanned" mp3
-    private String bsMp3Path;// = "sound/ballotscanned.mp3"; //move to the .conf file
+    private String bsMp3Path = "sound/ballotscanned.mp3"; //move to the .conf file
 
     // keeps the mp3Player
     private Player mp3Player;
@@ -75,6 +75,8 @@ public class BallotScanner{
         if (_constants.useScanConfirmationSound()) {
             bsMp3Path = _constants.getConfirmationSoundPath();
         }
+
+
 
         if (serial != -1)
             mySerial = serial;
@@ -158,34 +160,58 @@ public class BallotScanner{
     }
 
     public void beginScanning(){
+        frame.displayPromptScreen();
+        long lastFoundTime = 0;
         while(true){
-            scanBallot();
-            while(!receivedResponse) Thread.currentThread().yield();
+           // System.out.println(receivedResponse);
+            if(frame.state.getStateName() == "")
+                continue;
+
+            BinaryBitmap bitmap = webcam.getBitmap();
+
+            decoder = new Code128Decoder();
+
             long start = System.currentTimeMillis();
-            while(System.currentTimeMillis() - start < 5000);
+
+            lastFoundBID = decoder.decode(bitmap);
+
+            if(start - lastFoundTime > 5000){
+                if(lastFoundBID != null){
+
+                    // play confirmation sound
+                    new Thread() {
+                        public void run() {
+                            // prepare the mp3Player
+                            try {
+                                FileInputStream fileInputStream = new FileInputStream(bsMp3Path);
+                                BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
+                                mp3Player = new Player(bufferedInputStream);
+                                mp3Player.play();
+                            } catch (Exception e) {
+                                mp3Player = null;
+                                System.out.println("Problem playing audio: " + bsMp3Path);
+                                System.out.println(e);
+                            }
+
+                        }
+                    }.start();
+
+                    lastFoundTime = System.currentTimeMillis();
+                    System.out.println(lastFoundBID);  //TODO Is this needed?
+                    System.out.println("Got in the if statement and set receivedResponse to false!");
+                    if(receivedResponse)
+                        receivedResponse = false;
+                    auditorium.announce(new BallotScannedEvent(mySerial, lastFoundBID));
+
+
+                }
+            }
+
+
         }
     }
 
-    /**
-     * method that starts the scanning process
-     */
-    public void scanBallot() {
 
-        frame.displayPromptScreen();
-
-        BinaryBitmap bitmap;
-
-        do{
-            long start = System.currentTimeMillis();
-            while(System.currentTimeMillis() - start < 100);
-            bitmap = webcam.getBitmap();
-        }while((lastFoundBID = decoder.decode(bitmap)) == null);
-
-        System.out.println(lastFoundBID);  //TODO Is this needed?
-
-        receivedResponse = false;
-        auditorium.announce(new BallotScannedEvent(mySerial, lastFoundBID));
-    }
 
     /**
      * Main method which right now just goes into an infinite while loop, constantly scanning
@@ -320,6 +346,9 @@ public class BallotScanner{
                 //If this event corresponds with our last scanned ballot, display a confirmation message
                 if(lastFoundBID.equals(event.getBID())){
                     frame.displayBallotAcceptedScreen(lastFoundBID);
+                    long start = System.currentTimeMillis();
+                    while(System.currentTimeMillis() - start < 5000);
+                    frame.displayPromptScreen();
                     receivedResponse = true;
                 }
 
@@ -331,8 +360,12 @@ public class BallotScanner{
 
                 //If our ballot was rejected, display a message
                 if(lastFoundBID.equals(event.getBID())){
-                    frame.displayBallotRejectedScreen();
                     receivedResponse = true;
+                    frame.displayBallotRejectedScreen();
+                    long start = System.currentTimeMillis();
+                    while(System.currentTimeMillis() - start < 5000);
+                    frame.displayPromptScreen();
+
                 }
             }
 
@@ -344,6 +377,8 @@ public class BallotScanner{
         });
 
         statusTimer.start();
+
+        receivedResponse = true;
 
         beginScanning();
     }
