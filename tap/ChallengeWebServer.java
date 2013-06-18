@@ -65,7 +65,7 @@ public class ChallengeWebServer {
 	public static PublicKey ADDER_FINAL_PUBLIC_KEY = null;
 	
 	/**
-	 * Loads the public key necissary for operation.
+	 * Loads the public key necessary for operation.
 	 * Fails fast if key not found.
 	 */
 	static{
