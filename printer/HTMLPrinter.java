@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -71,7 +70,7 @@ public class HTMLPrinter {
         BufferedWriter writer = null;
         try
         {
-        writer = new BufferedWriter(new FileWriter(file.getAbsoluteFile()));
+            writer = new BufferedWriter(new FileWriter(file.getAbsoluteFile()));
         }
         catch (IOException e)
         {

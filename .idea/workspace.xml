@@ -11,6 +11,7 @@
   <component name="ChangeListManager">
     <list default="true" id="26d876ad-6b77-4796-b9d0-ead84066c769" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/printer/HTMLPrinter.java" afterPath="$PROJECT_DIR$/printer/HTMLPrinter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/printer/Printer.java" afterPath="$PROJECT_DIR$/printer/Printer.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="STAR-Vote.iws" />
@@ -26,7 +27,7 @@
     <file path="/NIZKsPerformanceTest.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369261905322" ignored="false" />
     <file path="/VoteBoxEventNotifier.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371480514911" ignored="false" />
     <file path="/VoteBox.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369772845301" ignored="false" />
-    <file path="/Printer.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371505082790" ignored="false" />
+    <file path="/Printer.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371569640341" ignored="false" />
     <file path="/BallotImageHelper.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370275851871" ignored="false" />
     <file path="/build.sh" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369346908949" ignored="false" />
     <file path="/vb.conf" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370363850507" ignored="false" />
@@ -50,7 +51,7 @@
     <file path="/ToggleButton.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370358039224" ignored="false" />
     <file path="/RaceTitlePair.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369945268870" ignored="false" />
     <file path="/Label.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370369156357" ignored="false" />
-    <file path="/Dummy.txt" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371564884702" ignored="false" />
+    <file path="/Dummy.txt" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371565488606" ignored="false" />
     <file path="/ALayoutComponent.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370380215222" ignored="false" />
     <file path="/HTMLPrinter.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371502659179" ignored="false" />
     <file path="/InactiveUI.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371241853749" ignored="false" />
@@ -172,11 +173,27 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="Printer.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="Printer.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/printer/Printer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="155" column="17" selection-start="5711" selection-end="5711" vertical-scroll-proportion="0.0">
-              <folding />
+            <state line="239" column="32" selection-start="9235" selection-end="9235" vertical-scroll-proportion="0.26169264">
+              <folding>
+                <element signature="n#!!doc" expanded="true" />
+                <element signature="imports" expanded="true" />
+                <element signature="e#3706#3714#0" expanded="true" />
+                <element signature="e#4229#4244#0" expanded="true" />
+                <element signature="e#6650#6669#0" expanded="true" />
+                <element signature="e#6808#6816#0" expanded="true" />
+                <element signature="e#9612#10008#0" expanded="true" />
+                <element signature="e#10002#10003#0" expanded="true" />
+                <element signature="e#10390#10399#0" expanded="true" />
+                <element signature="e#10670#10685#0" expanded="true" />
+                <element signature="e#11259#11271#0" expanded="true" />
+                <element signature="e#13303#15306#0" expanded="true" />
+                <element signature="e#15294#15295#0" expanded="true" />
+                <element signature="e#16147#17685#0" expanded="true" />
+                <element signature="e#17673#17674#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -190,10 +207,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="HTMLPrinter.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="HTMLPrinter.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/printer/HTMLPrinter.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="110" column="50" selection-start="4714" selection-end="4714" vertical-scroll-proportion="0.6338983">
+            <state line="95" column="36" selection-start="3980" selection-end="3980" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -232,8 +249,8 @@
         <option value="$PROJECT_DIR$/ballotscanner/BallotScanner.java" />
         <option value="$PROJECT_DIR$/ballotscanner/BallotScannerUI.java" />
         <option value="$PROJECT_DIR$/vb.conf" />
-        <option value="$PROJECT_DIR$/printer/Printer.java" />
         <option value="$PROJECT_DIR$/printer/HTMLPrinter.java" />
+        <option value="$PROJECT_DIR$/printer/Printer.java" />
       </list>
     </option>
   </component>
@@ -689,7 +706,11 @@
       <created>1371564893220</created>
       <updated>1371564893220</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="Added two spaces before the election name and date.">
+      <created>1371565502160</created>
+      <updated>1371565502160</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -903,17 +924,33 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/printer/Printer.java">
+    <entry file="file://$PROJECT_DIR$/printer/HTMLPrinter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="155" column="17" selection-start="5711" selection-end="5711" vertical-scroll-proportion="0.0">
+        <state line="95" column="36" selection-start="3980" selection-end="3980" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/printer/HTMLPrinter.java">
+    <entry file="file://$PROJECT_DIR$/printer/Printer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="110" column="50" selection-start="4714" selection-end="4714" vertical-scroll-proportion="0.6338983">
-          <folding />
+        <state line="239" column="32" selection-start="9235" selection-end="9235" vertical-scroll-proportion="0.26169264">
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+            <element signature="imports" expanded="true" />
+            <element signature="e#3706#3714#0" expanded="true" />
+            <element signature="e#4229#4244#0" expanded="true" />
+            <element signature="e#6650#6669#0" expanded="true" />
+            <element signature="e#6808#6816#0" expanded="true" />
+            <element signature="e#9612#10008#0" expanded="true" />
+            <element signature="e#10002#10003#0" expanded="true" />
+            <element signature="e#10390#10399#0" expanded="true" />
+            <element signature="e#10670#10685#0" expanded="true" />
+            <element signature="e#11259#11271#0" expanded="true" />
+            <element signature="e#13303#15306#0" expanded="true" />
+            <element signature="e#15294#15295#0" expanded="true" />
+            <element signature="e#16147#17685#0" expanded="true" />
+            <element signature="e#17673#17674#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
