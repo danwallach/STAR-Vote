@@ -36,6 +36,6 @@ public interface IState {
     /**
      * Will go from this state to the next one
      */
-    public void nextState(BallotScannerUI host, boolean whichState);
+    public void updateState(BallotScannerUI host, int updateMode);
 
 }
