@@ -240,13 +240,9 @@ public class Printer {
             e.printStackTrace();
         }
 
-        System.out.println("Got to before the wait!");
-
         // Need to make the thread wait for the PDF to get created.
         long start = System.currentTimeMillis();
         while (System.currentTimeMillis() - start < 1000);
-
-        System.out.println("Waited one second");
 
         // Attempt to print PDF.
         try

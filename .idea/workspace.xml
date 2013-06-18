@@ -11,6 +11,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="26d876ad-6b77-4796-b9d0-ead84066c769" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/printer/HTMLPrinter.java" afterPath="$PROJECT_DIR$/printer/HTMLPrinter.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/printer/Printer.java" afterPath="$PROJECT_DIR$/printer/Printer.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
@@ -51,7 +52,7 @@
     <file path="/ToggleButton.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370358039224" ignored="false" />
     <file path="/RaceTitlePair.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369945268870" ignored="false" />
     <file path="/Label.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370369156357" ignored="false" />
-    <file path="/Dummy.txt" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371576053375" ignored="false" />
+    <file path="/Dummy.txt" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371576326629" ignored="false" />
     <file path="/ALayoutComponent.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370380215222" ignored="false" />
     <file path="/HTMLPrinter.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371498673490" ignored="false" />
     <file path="/InactiveUI.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371241853749" ignored="false" />
@@ -169,10 +170,19 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="Printer.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="Printer.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/printer/Printer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="246" column="58" selection-start="9666" selection-end="9666" vertical-scroll-proportion="0.54899776">
+            <state line="241" column="0" selection-start="9434" selection-end="9434" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="HTMLPrinter.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/printer/HTMLPrinter.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="130" column="14" selection-start="5334" selection-end="5334" vertical-scroll-proportion="0.84519774">
               <folding />
             </state>
           </provider>
@@ -207,12 +217,12 @@
         <option value="$PROJECT_DIR$/preptool/model/language/LiteralStrings.java" />
         <option value="$PROJECT_DIR$/preptool/model/layout/manager/PsychLayoutManager.java" />
         <option value="$PROJECT_DIR$/vb.conf" />
-        <option value="$PROJECT_DIR$/printer/HTMLPrinter.java" />
         <option value="$PROJECT_DIR$/ballotscanner/Code128Decoder.java" />
         <option value="$PROJECT_DIR$/ballotscanner/BallotScannerUI.java" />
         <option value="$PROJECT_DIR$/ballotscanner/BallotScannerUITester.java" />
         <option value="$PROJECT_DIR$/ballotscanner/BallotScanner.java" />
         <option value="$PROJECT_DIR$/printer/Printer.java" />
+        <option value="$PROJECT_DIR$/printer/HTMLPrinter.java" />
       </list>
     </option>
   </component>
@@ -695,7 +705,11 @@
       <created>1371576062852</created>
       <updated>1371576062852</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="Decreased the create-read delay back to 1 second.">
+      <created>1371576337555</created>
+      <updated>1371576337555</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -787,7 +801,7 @@
     <option name="WRAP_WHEN_TYPING_REACHES_RIGHT_MARGIN" value="false" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="Increased the delay between converting the HTML file to a PDF file and attempting to read the PDF file to 5 seconds (from 1)." />
+    <option name="LAST_COMMIT_MESSAGE" value="Decreased the create-read delay back to 1 second." />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="false" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -821,6 +835,7 @@
     <MESSAGE value="Change to scanBallot to update bitmap when looking for scan" />
     <MESSAGE value="Hopefully restored the Scanner to its current version" />
     <MESSAGE value="Increased the delay between converting the HTML file to a PDF file and attempting to read the PDF file to 5 seconds (from 1)." />
+    <MESSAGE value="Decreased the create-read delay back to 1 second." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -834,13 +849,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/printer/HTMLPrinter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="51" column="241" selection-start="2616" selection-end="2616" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/printer/QRCodeGenerator.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="25" column="13" selection-start="718" selection-end="718" vertical-scroll-proportion="0.0">
@@ -931,7 +939,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/printer/Printer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="246" column="58" selection-start="9666" selection-end="9666" vertical-scroll-proportion="0.54899776">
+        <state line="241" column="0" selection-start="9434" selection-end="9434" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/printer/HTMLPrinter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="130" column="14" selection-start="5334" selection-end="5334" vertical-scroll-proportion="0.84519774">
           <folding />
         </state>
       </provider>
