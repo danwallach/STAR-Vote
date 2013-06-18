@@ -383,7 +383,7 @@ public class Printer {
                 graphics.setFont(new Font("Arial", 0, 12));
                 printCenteredText("District: "+ AuditoriumParams.ELECTION_NAME, xBound, y, graphics);
                 y+=20;
-                DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+                DateFormat dateFormat = new SimpleDateFormat("MMMM d, y");
                 Date date = new Date();
                 printCenteredText("Date: "+ dateFormat.format(date), xBound, y, graphics);
                 y+=30;
