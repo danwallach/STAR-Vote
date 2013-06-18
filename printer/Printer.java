@@ -244,7 +244,7 @@ public class Printer {
 
         // Need to make the thread wait for the PDF to get created.
         long start = System.currentTimeMillis();
-        while (System.currentTimeMillis() - start < 1000) {}
+        while (System.currentTimeMillis() - start < 5000) {}
 
         System.out.println("Waited one second");
 
