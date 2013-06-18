@@ -20,7 +20,7 @@ public class RejectState extends AState {
 
     public static final RejectState SINGLETON = new RejectState("images/reject_ballot.png", "Reject State", "Your ballot has been rejected and will not be counted.");
     /**
-     * constructor for a prompt state
+     * Constructor for a reject state.
      * @param image
      * @param name
      * @param message

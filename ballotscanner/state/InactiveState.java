@@ -11,21 +11,18 @@ import java.io.IOException;
  * @author Matt Bernhard, Mircea Berechet
  * 6/18/13
  *
- * A state which prompts user that a ballot has been accepted.
+ * A state which prompts user that scanner is inactive.
  */
-public class AcceptState extends AState {
+public class InactiveState extends AState {
 
-    private long stateStartTime = 0;
-    private final long stateActiveDelay = 5000;
-
-    public static final AcceptState SINGLETON = new AcceptState("images/accept_ballot.png", "Accept State", "Your ballot has been cast and will be counted.");
+    public static final InactiveState SINGLETON = new InactiveState("images/inactive.png", "Inactive State", "Scanner is inactive");
     /**
-     * Constructor for an accept state.
+     * Constructor for an inactive state.
      * @param image
      * @param name
      * @param message
      */
-    private AcceptState(String image, String name, String message){
+    private InactiveState(String image, String name, String message){
         try
         {
             BufferedImage si = ImageIO.read(new File(image));
@@ -39,15 +36,13 @@ public class AcceptState extends AState {
         this.stateMessage = message;
     }
 
-    public void resetStateStartTime()
-    {
-        stateStartTime = System.currentTimeMillis();
-    }
 
     public void updateState(BallotScannerUI context, int updateMode)
     {
-        if (System.currentTimeMillis() - stateStartTime > stateActiveDelay)
+        if (updateMode == 3)
+        {
             context.state = PromptState.SINGLETON;
+        }
     }
 
 }
