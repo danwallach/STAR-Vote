@@ -1,6 +1,7 @@
 package ballotscanner;
 
 import auditorium.NetworkException;
+import ballotscanner.state.RejectState;
 import com.google.zxing.BinaryBitmap;
 import com.googlecode.javacv.CanvasFrame;
 import com.googlecode.javacv.cpp.opencv_core;
@@ -164,7 +165,7 @@ public class BallotScanner{
         long lastFoundTime = 0;
         while(true){
            // System.out.println(receivedResponse);
-            if(frame.state.getStateName() == "")
+            if(frame.state.getStateName() == RejectState.SINGLETON.getStateName())
                 continue;
 
             BinaryBitmap bitmap = webcam.getBitmap();

@@ -15,6 +15,9 @@ import java.io.IOException;
  */
 public class AcceptState extends AState {
 
+    private long stateStartTime = 0;
+    private final long stateActiveDelay = 5000;
+
     public static final AcceptState SINGLETON = new AcceptState("images/accept_ballot.png", "Accept State", "Your ballot has been cast and will be counted.");
     /**
      * constructor for a prompt state
@@ -39,7 +42,8 @@ public class AcceptState extends AState {
 
     public void nextState(BallotScannerUI context, boolean whichState)
     {
-
+        if (System.currentTimeMillis() - stateStartTime > stateActiveDelay)
+            context.state = PromptState.SINGLETON;
     }
 
 }

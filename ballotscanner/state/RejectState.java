@@ -15,7 +15,8 @@ import java.io.IOException;
  */
 public class RejectState extends AState {
 
-    private long stateTime = 0;
+    private long stateStartTime = 0;
+    private final long stateActiveDelay = 5000;
 
     public static final RejectState SINGLETON = new RejectState("images/reject_ballot.png", "Reject State", "Your ballot has been rejected and will not be counted.");
     /**
@@ -41,7 +42,8 @@ public class RejectState extends AState {
 
     public void nextState(BallotScannerUI context, boolean whichState)
     {
-
+        if (System.currentTimeMillis() - stateStartTime > stateActiveDelay)
+            context.state = PromptState.SINGLETON;
     }
 
 }
