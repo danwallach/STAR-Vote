@@ -29,7 +29,9 @@ import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.print.*;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -184,7 +186,70 @@ public class Printer {
             columnsToPrint.add(currentColumn);
         }
 
+        // Generate the HTML file with the properties set above.
         HTMLPrinter.generateHTMLFile(htmlFileName, useTwoColumns, printerFriendly, pathToVVPATFolder, _constants, fbid, barcodeFileNameNoExtension, lineSeparatorFileName, columnsToPrint);
+
+        // Get the file that is to be read for commands and its parameter separator string.
+        String filename = "C:\\Users\\Mircea\\Desktop\\CommandFile.txt";
+        String fileSeparator = "###";
+
+        // Open the file.
+        File file = new File (filename);
+
+        // If the file does not exist, then print error.
+        if (!file.exists())
+        {
+            System.err.println("The specified file could not be found: " + filename);
+        }
+
+        // Create holders for the two commands.
+        String convertHTMLtoPDFCommandLine = "";
+        String printPDFCommandLine = "";
+
+        // Create the reader.
+        BufferedReader reader = null;
+        try
+        {
+            reader = new BufferedReader(new FileReader(file.getAbsoluteFile()));
+            convertHTMLtoPDFCommandLine = reader.readLine();
+            printPDFCommandLine = reader.readLine();
+            reader.close();
+        }
+        catch (IOException e)
+        {
+            System.out.println("Unable to read from file " + filename);
+            e.printStackTrace();
+        }
+
+        // Create arrays of the command and its parameters (to use with the exec method in JDK 7+
+        String[] convertHTMLtoPDFCommandArray = convertHTMLtoPDFCommandLine.split(fileSeparator);
+        String[] printPDFCommandArray = printPDFCommandLine.split(fileSeparator);
+
+        // Attempt to convert HTML to PDF.
+        try
+        {
+            Runtime.getRuntime().exec(convertHTMLtoPDFCommandArray);
+
+        }
+        catch (IOException e)
+        {
+            System.err.println("Converting HTML to PDF failed.");
+            e.printStackTrace();
+        }
+
+        // Attempt to print PDF.
+        try
+        {
+            Runtime.getRuntime().exec(printPDFCommandArray);
+
+        }
+        catch (IOException e)
+        {
+            System.err.println("Printing PDF failed.");
+            e.printStackTrace();
+        }
+
+
         ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
