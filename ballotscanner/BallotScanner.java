@@ -46,8 +46,15 @@ public class BallotScanner{
     private IWebcam webcam;
     private Code128Decoder decoder;
 
+    // keeps the path to the "ballot scanned" mp3
+    private String bsMp3Path;// = "sound/ballotscanned.mp3"; //move to the .conf file
+
+    // keeps the mp3Player
+    private Player mp3Player;
+
     // how long a result is stored in memory before it is cleared
     private boolean receivedResponse;
+
 
     /**
      * Equivalent to new BallotScanner(-1).
@@ -64,6 +71,10 @@ public class BallotScanner{
      */
     public BallotScanner(int serial) {
         _constants = new AuditoriumParams("bs.conf");
+
+        if (_constants.useScanConfirmationSound()) {
+            bsMp3Path = _constants.getConfirmationSoundPath();
+        }
 
         if (serial != -1)
             mySerial = serial;
