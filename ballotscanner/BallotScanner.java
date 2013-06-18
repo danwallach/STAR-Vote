@@ -88,8 +88,6 @@ public class BallotScanner{
 
         webcam = new FrameGrabberWebcam();
 
-        webcam.startCapture();
-
         decoder = new Code128Decoder();
 
         //Set up the JFrame confirmation screen
@@ -151,6 +149,8 @@ public class BallotScanner{
      * method that starts the scanning process
      */
     public void scanBallot() {
+
+        webcam.startCapture();
 
         frame.displayPromptScreen();
 
@@ -302,6 +302,7 @@ public class BallotScanner{
                     frame.displayBallotAcceptedScreen(lastFoundBID);
                     new Timer(5000, new ActionListener() {
                         public void actionPerformed(ActionEvent e) {
+                            System.out.println("Calling Scan Ballot After accepted ballot");
                             scanBallot();
                         }
                     }).start();
@@ -318,6 +319,7 @@ public class BallotScanner{
                     frame.displayBallotRejectedScreen();
                     new Timer(5000, new ActionListener() {
                         public void actionPerformed(ActionEvent e) {
+                            System.out.println("Calling Scan Ballot After rejected ballot");
                             scanBallot();
                         }
                     }).start();
