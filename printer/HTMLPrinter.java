@@ -103,12 +103,12 @@ public class HTMLPrinter {
 
             // Writes the header of the page(s) to be printed.
             // <p style="font-family:arial;color:red;font-size:20px;">A paragraph.</p>
-            writer.write("<p style = \"font-family:arial;color:black;font-size:20px;\">" + BALLOT_CONSTANTS.getElectionName() + "<br>\n");
+            writer.write("<p style = \"font-family:arial;color:black;font-size:20px;\">&nbsp;&nbsp;" + BALLOT_CONSTANTS.getElectionName() + "<br>\n");
 
             DateFormat dateFormat = new SimpleDateFormat("MMMM d, y");
             Date date = new Date();
             String currentDate = dateFormat.format(date);
-            writer.write(currentDate + "</p>\n");
+            writer.write("&nbsp;&nbsp;" + currentDate + "</p>\n");
 
 
 
