@@ -2,7 +2,7 @@ package ballotscanner.state;
 
 import ballotscanner.BallotScannerUI;
 
-import java.awt.*;
+import java.awt.image.BufferedImage;
 
 /**
  * @author Matt Bernhard, Mircea Berechet
@@ -12,7 +12,7 @@ import java.awt.*;
  */
 public abstract class AState implements IState {
 
-    Image stateImage;
+    BufferedImage stateImage;
 
     String stateName;
     String stateMessage;
@@ -22,7 +22,7 @@ public abstract class AState implements IState {
      *
      * @return - an image representing this state
      */
-    public Image getStateImage(){
+    public BufferedImage getStateImage(){
 
         return stateImage;
     }
@@ -47,6 +47,18 @@ public abstract class AState implements IState {
         return stateMessage;
     }
 
+    /**
+     * Adds messages and updates the frame.
+     * @param context
+     * @param params
+     */
+    public abstract void displayScreen(BallotScannerUI context, Object... params);
+
+    /**
+     * Updates the state, if needed.
+     * @param context
+     * @param updateMode
+     */
     public abstract void updateState(BallotScannerUI context, int updateMode);
 
 }

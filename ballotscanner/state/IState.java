@@ -2,7 +2,7 @@ package ballotscanner.state;
 
 import ballotscanner.BallotScannerUI;
 
-import java.awt.*;
+import java.awt.image.BufferedImage;
 
 /**
  * @author Matt Bernhard, Mircea Berechet
@@ -17,7 +17,7 @@ public interface IState {
      *
      * @return - an image representing this state
      */
-    public Image getStateImage();
+    public BufferedImage getStateImage();
 
     /**
      * Gives the name of the state

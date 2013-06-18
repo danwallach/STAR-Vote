@@ -37,6 +37,10 @@ public class PromptState extends AState {
     }
 
 
+    public void displayScreen(BallotScannerUI context, Object... params) {
+        context.userInfoPanel.clearMessages();
+    }
+
     public void updateState(BallotScannerUI context, int updateMode)
     {
         if(updateMode == 1)
