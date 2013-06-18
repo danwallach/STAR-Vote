@@ -88,6 +88,8 @@ public class BallotScanner{
 
         webcam = new FrameGrabberWebcam();
 
+        webcam.startCapture();
+
         decoder = new Code128Decoder();
 
         //Set up the JFrame confirmation screen
@@ -149,8 +151,6 @@ public class BallotScanner{
      * method that starts the scanning process
      */
     public void scanBallot() {
-
-        webcam.startCapture();
 
         frame.displayPromptScreen();
 
