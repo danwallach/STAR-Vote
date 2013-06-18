@@ -79,10 +79,10 @@ public class AuditoriumParams implements IAuditoriumParams,
     public static final String DEFAULT_REPORT_ADDRESS = "";
     
     //Default challenge port, used by challenge web server and tap.  If -1, must be specified explicitly somehow.
-    public static final int DEFAULT_CHALLENGE_PORT = -1;
+    public static final int DEFAULT_CHALLENGE_PORT = 9700;
     
     //Default http port, used by challenge web server.
-    public static final int DEFAULT_HTTP_PORT = 80;
+    public static final int DEFAULT_HTTP_PORT = 8080;
     
     //Default challenge ballot file.  If "", must be specified explicitly somehow.
     public static final String DEFAULT_BALLOT_FILE = "";

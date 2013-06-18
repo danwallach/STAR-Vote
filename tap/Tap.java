@@ -37,10 +37,10 @@ import votebox.events.*;
 /**
  * Class used to "Tap" outgoing commit, cast, and challenge messages.<BR>
  * Forwards - ideally across a one-way connection, or diode - these messages to a machine<BR>
- * outside of the Auditorium network, which a voter would then interogate.<BR>
+ * outside of the Auditorium network, which a voter would then interrogate.<BR>
  * <BR>
  * Must not, under any circumstances, broadcast meaningful messages back onto the Auditorium network.<BR>
- * Keep-alives - or heartbeats - are permissable.
+ * Keep-alives - or heartbeats - are permissible.
  * @author Montrose
  *
  */
@@ -99,15 +99,17 @@ public class Tap {
 			public void ballotCounted(BallotCountedEvent e){
         		//NO-OP
         	}
-			
+
+            //We no longer want to do this when ballots are cast
+            //TODO figure out what we should do instead
 			public void castBallot(CastBallotEvent e) {
-				forward(e);
+//				forward(e);
 			}
 			public void challenge(ChallengeEvent e) {
-				forward(e);
+//				forward(e);
 			}
 			public void commitBallot(CommitBallotEvent e) {
-				forward(e);
+//				forward(e);
 			}
 			
 			//Ignored events
