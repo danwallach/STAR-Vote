@@ -30,7 +30,8 @@ public class PromptState extends AState {
         }
         catch (IOException e)
         {
-            throw new RuntimeException(e);
+            System.out.println("BallotScannerUI: Could not locate waiting image");
+            this.stateImage = null;
         }
         this.stateName = name;
         this.stateMessage = message;
@@ -39,6 +40,10 @@ public class PromptState extends AState {
 
     public void displayScreen(BallotScannerUI context, Object... params) {
         context.userInfoPanel.clearMessages();
+        context.userInfoPanel.addMessage("This is a Ballot Scanning Console.");
+        context.userInfoPanel.addMessage("Place Ballot Under Scanner to Cast Ballot.");
+        context.responseImage = stateImage;
+        context.updateFrame(context.NO_TRANSITION);
     }
 
     public void updateState(BallotScannerUI context, int updateMode)
@@ -47,15 +52,22 @@ public class PromptState extends AState {
         {
             context.state = AcceptState.SINGLETON;
             AcceptState.SINGLETON.resetStateStartTime();
+            System.out.println("Transitioning from PROMPT STATE to ACCEPT STATE!");
             return;
         }
         if(updateMode == 2)
         {
             context.state = RejectState.SINGLETON;
             RejectState.SINGLETON.resetStateStartTime();
+            System.out.println("Transitioning from PROMPT STATE to REJECT STATE!");
             return;
         }
-
+        if(updateMode == 3)
+        {
+            context.state = PromptState.SINGLETON;
+            System.out.println("Transitioning from PROMPT STATE to PROMPT STATE!");
+            return;
+        }
     }
 
 }

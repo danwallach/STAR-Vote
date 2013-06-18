@@ -1,6 +1,7 @@
 package ballotscanner;
 
 import ballotscanner.state.AState;
+import ballotscanner.state.InactiveState;
 import ballotscanner.state.PromptState;
 import javazoom.jl.player.Player;
 
@@ -18,11 +19,15 @@ import java.io.IOException;
  */
 public class BallotScannerUI extends JFrame {
 
+    public static final int NO_TRANSITION = 0;
+    public static final int TO_ACCEPT_STATE = 1;
+    public static final int TO_REJECT_STATE = 2;
+    public static final int TO_PROMPT_STATE = 3;
+
     private JPanel mainPanel;
 
     public ElectionInfoPanel electionInfoPanel;
     public UserInfoPanel userInfoPanel;
-
 
     private BufferedImage rejectImage;
     private BufferedImage acceptImage;
@@ -51,8 +56,6 @@ public class BallotScannerUI extends JFrame {
         this.electionName = electionName;
 
         bsMp3Path = mp3Path;
-
-        state = PromptState.SINGLETON;
 
         try{
             acceptImage = ImageIO.read(new File("images/accept_ballot.png"));
@@ -92,10 +95,12 @@ public class BallotScannerUI extends JFrame {
         add(mainPanel);
         pack();
         setVisible(true);
-        displayInactiveScreen();
+        //displayInactiveScreen();
+        state = InactiveState.SINGLETON;
+        this.updateFrame(NO_TRANSITION);
     }
 
-    public void displayPromptScreen(){
+    /*public void displayPromptScreen(){
         userInfoPanel.clearMessages();
         userInfoPanel.addMessage("This is a Ballot Scanning Console.");
         userInfoPanel.addMessage("Place Ballot Under Scanner to Cast Ballot.");
@@ -127,17 +132,16 @@ public class BallotScannerUI extends JFrame {
         userInfoPanel.addMessage("If This Problem Persists, Contact an Election Official");
         responseImage = rejectImage;
         updateFrame();
-    }
+    }*/
 
-    public void updateFrame(){
+    public void updateFrame(int transition){
         electionInfoPanel.repaint();
         userInfoPanel.repaint();
-        state.updateState(this, 0);
-    }
-
-    public void update(){
-        System.out.println(state.getStateName());
-        super.update(this.getGraphics());
-        updateFrame();
+        state.updateState(this, transition);
+        state.displayScreen(this);
+        if (transition != 0)
+        {
+            updateFrame(0);
+        }
     }
 }

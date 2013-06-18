@@ -149,7 +149,8 @@ public class BallotScanner{
     }
 
     public void beginScanning(){
-        frame.displayPromptScreen();
+        //frame.displayPromptScreen();
+        frame.updateFrame(frame.TO_PROMPT_STATE);
         long lastFoundTime = 0;
 
         int counter = 0;
@@ -341,11 +342,12 @@ public class BallotScanner{
 
                 //If this event corresponds with our last scanned ballot, display a confirmation message
                 if(lastFoundBID.equals(event.getBID())){
-                    frame.displayBallotAcceptedScreen(lastFoundBID);
-                    frame.state.updateState(frame, 1);
+                    //frame.displayBallotAcceptedScreen(lastFoundBID);
+                    frame.updateFrame(frame.TO_ACCEPT_STATE);
                     long start = System.currentTimeMillis();
                     while(System.currentTimeMillis() - start < 5000);
-                    frame.displayPromptScreen();
+                    //frame.displayPromptScreen();
+                    frame.updateFrame(frame.TO_PROMPT_STATE);
                     receivedResponse = true;
                 }
 
@@ -358,13 +360,12 @@ public class BallotScanner{
                 //If our ballot was rejected, display a message
                 if(lastFoundBID.equals(event.getBID())){
                     receivedResponse = true;
-                    frame.displayBallotRejectedScreen();
-                    frame.state.updateState(frame, 2);
+                    //frame.displayBallotRejectedScreen();
+                    frame.updateFrame(frame.TO_REJECT_STATE);
                     long start = System.currentTimeMillis();
                     while(System.currentTimeMillis() - start < 5000);
-                    frame.state.updateState(frame, 0);
-                    frame.displayPromptScreen();
-
+                    //frame.displayPromptScreen();
+                    frame.updateFrame(frame.TO_PROMPT_STATE);
                 }
             }
 

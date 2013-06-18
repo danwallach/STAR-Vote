@@ -30,18 +30,42 @@ public class InactiveState extends AState {
         }
         catch (IOException e)
         {
-            throw new RuntimeException(e);
+            System.out.println("BallotScannerUI: Could not locate inactive image");
+            this.stateImage = null;
         }
         this.stateName = name;
         this.stateMessage = message;
     }
 
+    public void displayScreen(BallotScannerUI context, Object... params) {
+        context.userInfoPanel.clearMessages();
+        context.userInfoPanel.addMessage("This is a Ballot Scanning Console.");
+        context.userInfoPanel.addMessage("Console Currently Not Ready For Use.");
+        context.responseImage = stateImage;
+        context.updateFrame(context.NO_TRANSITION);
+    }
 
     public void updateState(BallotScannerUI context, int updateMode)
     {
-        if (updateMode == 3)
+        if(updateMode == 1)
+        {
+            context.state = AcceptState.SINGLETON;
+            AcceptState.SINGLETON.resetStateStartTime();
+            System.out.println("Transitioning from INACTIVE STATE to ACCEPT STATE!");
+            return;
+        }
+        if(updateMode == 2)
+        {
+            context.state = RejectState.SINGLETON;
+            RejectState.SINGLETON.resetStateStartTime();
+            System.out.println("Transitioning from INACTIVE STATE to REJECT STATE!");
+            return;
+        }
+        if(updateMode == 3)
         {
             context.state = PromptState.SINGLETON;
+            System.out.println("Transitioning from INACTIVE STATE to PROMPT STATE!");
+            return;
         }
     }
 

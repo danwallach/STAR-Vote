@@ -33,7 +33,8 @@ public class RejectState extends AState {
         }
         catch (IOException e)
         {
-            throw new RuntimeException(e);
+            System.out.println("BallotScannerUI: Could not locate reject image");
+            this.stateImage = null;
         }
         this.stateName = name;
         this.stateMessage = message;
@@ -44,10 +45,43 @@ public class RejectState extends AState {
         stateStartTime = System.currentTimeMillis();
     }
 
+    public void displayScreen(BallotScannerUI context, Object... params) {
+        context.userInfoPanel.clearMessages();
+        context.userInfoPanel.addMessage("Ballot has been rejected");
+        context.userInfoPanel.addMessage("Hold Ballot Still Under the Scanner");
+        context.userInfoPanel.addMessage("If This Problem Persists, Contact an Election Official");
+        context.responseImage = stateImage;
+        context.updateFrame(context.NO_TRANSITION);
+    }
+
     public void updateState(BallotScannerUI context, int updateMode)
     {
-        //if (System.currentTimeMillis() - stateStartTime > stateActiveDelay)
+        if (System.currentTimeMillis() - stateStartTime > stateActiveDelay)
+        {
             context.state = PromptState.SINGLETON;
+            System.out.println("Transitioning from REJECT STATE to PROMPT STATE!");
+            return;
+        }
+        if(updateMode == 1)
+        {
+            context.state = AcceptState.SINGLETON;
+            AcceptState.SINGLETON.resetStateStartTime();
+            System.out.println("Transitioning from REJECT STATE to ACCEPT STATE!");
+            return;
+        }
+        if(updateMode == 2)
+        {
+            context.state = RejectState.SINGLETON;
+            RejectState.SINGLETON.resetStateStartTime();
+            System.out.println("Transitioning from REJECT STATE to REJECT STATE!");
+            return;
+        }
+        if(updateMode == 3)
+        {
+            context.state = PromptState.SINGLETON;
+            System.out.println("Transitioning from REJECT STATE to PROMPT STATE!");
+            return;
+        }
     }
 
 }
