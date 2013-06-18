@@ -142,6 +142,8 @@ public class Tap {
             public void ballotPrinting(BallotPrintingEvent ballotPrintingEvent) {}
             public void ballotPrintSuccess(BallotPrintSuccessEvent ballotPrintSuccessEvent) {}
             public void ballotPrintFail(BallotPrintFailEvent ballotPrintFailEvent) {}
+            public void uploadCastBallots(CastBallotUploadEvent castBallotUploadEvent) {}
+            public void uploadChallengedBallots(ChallengedBallotUploadEvent challengedBallotUploadEvent) {}
 
         });
 		

@@ -943,6 +943,11 @@ public class VoteBox{
                 // Should implement something to indicate the print failed
             }
 
+            public void uploadCastBallots(CastBallotUploadEvent castBallotUploadEvent) {}
+
+
+            public void uploadChallengedBallots(ChallengedBallotUploadEvent challengedBallotUploadEvent) {}
+
 
             public void ballotScanned(BallotScannedEvent e) {
                 // NO-OP

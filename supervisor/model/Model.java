@@ -998,6 +998,14 @@ public class Model {
                 //NO-OP
             }
 
+            public void uploadCastBallots(CastBallotUploadEvent castBallotUploadEvent) {
+                // NO-OP
+            }
+
+            public void uploadChallengedBallots(ChallengedBallotUploadEvent challengedBallotUploadEvent) {
+                // NO-OP
+            }
+
         });
 
         try {

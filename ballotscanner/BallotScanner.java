@@ -333,10 +333,11 @@ public class BallotScanner{
             public void ballotPrintSuccess(BallotPrintSuccessEvent e) {
             }
 
-            @Override
-            public void ballotPrintFail(BallotPrintFailEvent ballotPrintFailEvent) {
-                //To change body of implemented methods use File | Settings | File Templates.
-            }
+            public void ballotPrintFail(BallotPrintFailEvent ballotPrintFailEvent) {}
+
+            public void uploadCastBallots(CastBallotUploadEvent castBallotUploadEvent) {}
+
+            public void uploadChallengedBallots(ChallengedBallotUploadEvent challengedBallotUploadEvent) {}
 
             public void ballotAccepted(BallotScanAcceptedEvent event){
 
