@@ -42,7 +42,7 @@ public class InactiveState extends AState {
         context.userInfoPanel.addMessage("This is a Ballot Scanning Console.");
         context.userInfoPanel.addMessage("Console Currently Not Ready For Use.");
         context.responseImage = stateImage;
-        context.updateFrame(context.NO_TRANSITION);
+        context.updateFrameComponents();
     }
 
     public void updateState(BallotScannerUI context, int updateMode)

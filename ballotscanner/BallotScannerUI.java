@@ -133,10 +133,13 @@ public class BallotScannerUI extends JFrame {
         responseImage = rejectImage;
         updateFrame();
     }*/
-
-    public void updateFrame(int transition){
+    public void updateFrameComponents ()
+    {
         electionInfoPanel.repaint();
         userInfoPanel.repaint();
+    }
+
+    public void updateFrame(int transition){
         state.updateState(this, transition);
         state.displayScreen(this);
         if (transition != 0)

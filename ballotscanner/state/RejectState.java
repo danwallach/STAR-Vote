@@ -51,7 +51,7 @@ public class RejectState extends AState {
         context.userInfoPanel.addMessage("Hold Ballot Still Under the Scanner");
         context.userInfoPanel.addMessage("If This Problem Persists, Contact an Election Official");
         context.responseImage = stateImage;
-        context.updateFrame(context.NO_TRANSITION);
+        context.updateFrameComponents();
     }
 
     public void updateState(BallotScannerUI context, int updateMode)
