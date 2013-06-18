@@ -37,11 +37,20 @@ public class PromptState extends AState {
     }
 
 
-    public void nextState(BallotScannerUI context, boolean whichState)
+    public void updateState(BallotScannerUI context, int updateMode)
     {
-        if(whichState)
+        if(updateMode == 1)
+        {
             context.state = AcceptState.SINGLETON;
-        context.state = RejectState.SINGLETON;
+            AcceptState.SINGLETON.resetStateStartTime();
+            return;
+        }
+        if(updateMode == 2)
+        {
+            context.state = RejectState.SINGLETON;
+            RejectState.SINGLETON.resetStateStartTime();
+            return;
+        }
 
     }
 

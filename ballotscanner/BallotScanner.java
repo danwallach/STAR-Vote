@@ -3,28 +3,16 @@ package ballotscanner;
 import auditorium.NetworkException;
 import ballotscanner.state.RejectState;
 import com.google.zxing.BinaryBitmap;
-import com.googlecode.javacv.CanvasFrame;
-import com.googlecode.javacv.cpp.opencv_core;
 import javazoom.jl.player.Player;
-import sexpression.*;
 import supervisor.model.ObservableEvent;
 import votebox.AuditoriumParams;
 import votebox.events.*;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.Observer;
 
 public class BallotScanner{
@@ -165,6 +153,7 @@ public class BallotScanner{
         long lastFoundTime = 0;
         while(true){
            // System.out.println(receivedResponse);
+            System.out.println(frame.state.getStateName());
             if(frame.state.getStateName() == RejectState.SINGLETON.getStateName())
                 continue;
 
@@ -347,6 +336,7 @@ public class BallotScanner{
                 //If this event corresponds with our last scanned ballot, display a confirmation message
                 if(lastFoundBID.equals(event.getBID())){
                     frame.displayBallotAcceptedScreen(lastFoundBID);
+                    frame.state.updateState(frame, 1);
                     long start = System.currentTimeMillis();
                     while(System.currentTimeMillis() - start < 5000);
                     frame.displayPromptScreen();
@@ -363,6 +353,7 @@ public class BallotScanner{
                 if(lastFoundBID.equals(event.getBID())){
                     receivedResponse = true;
                     frame.displayBallotRejectedScreen();
+                    frame.state.updateState(frame, 2);
                     long start = System.currentTimeMillis();
                     while(System.currentTimeMillis() - start < 5000);
                     frame.displayPromptScreen();

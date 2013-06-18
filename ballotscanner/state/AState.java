@@ -47,6 +47,6 @@ public abstract class AState implements IState {
         return stateMessage;
     }
 
-    public abstract void nextState(BallotScannerUI context, boolean whichState);
+    public abstract void updateState(BallotScannerUI context, int updateMode);
 
 }
