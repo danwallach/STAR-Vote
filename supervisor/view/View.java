@@ -59,8 +59,10 @@ public class View extends JFrame {
             public void update(Observable o, Object arg) {
                 if (model.isActivated())
                     setContentPane(activeUI);
-                else
+                else {
+                    activeUI.setVisible(false);
                     setContentPane(inactiveUI);
+                }
                 validate();
                 repaint();
             }
