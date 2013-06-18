@@ -132,6 +132,10 @@ public class AuditoriumParams implements IAuditoriumParams,
     
     private final HashMap<String, String> _config;
 
+    //Settings for printing
+    public static final String COMMANDS_FILE_FILENAME = "CommandsFile.txt";
+    public static final String PARAMETER_SEPARATOR = "!!!";
+
 
     /**
      * @param path
@@ -187,6 +191,18 @@ public class AuditoriumParams implements IAuditoriumParams,
         if (_config.containsKey( "LISTEN_PORT" ))
             return Integer.parseInt( _config.get( "LISTEN_PORT" ) );
         return LISTEN_PORT;
+    }
+
+    public String getCommandsFileFilename() {
+        if (_config.containsKey( "COMMANDS_FILE_FILENAME" ))
+            return _config.get( "COMMANDS_FILE_FILENAME" );
+        return COMMANDS_FILE_FILENAME;
+    }
+
+    public String getCommandsFileParameterSeparator() {
+        if (_config.containsKey( "PARAMETER_SEPARATOR" ))
+            return _config.get( "PARAMETER_SEPARATOR" );
+        return PARAMETER_SEPARATOR;
     }
 
     public String getLogLocation() {

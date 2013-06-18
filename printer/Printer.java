@@ -64,6 +64,7 @@ import printer.HTMLPrinter;
 public class Printer {
 
     private final AuditoriumParams _constants;
+    private final AuditoriumParams _printerConstants;
     private File _currentBallotFile;
     private List<List<String>> _races;
 
@@ -73,6 +74,7 @@ public class Printer {
 
     public Printer(File ballotFile,List<List<String>> races) {
         _constants = new AuditoriumParams("vb.conf");
+        _printerConstants = new AuditoriumParams("printer.conf");
         _currentBallotFile =  ballotFile;
         _races = races;
         DPI_SCALE = _constants.getPrinterDefaultDpi()/_constants.getJavaDefaultDpi();
@@ -80,6 +82,7 @@ public class Printer {
 
     public Printer(){
         _constants = new AuditoriumParams("supervisor.conf");
+        _printerConstants = new AuditoriumParams("printer.conf");
     }
 
     /**
@@ -190,8 +193,8 @@ public class Printer {
         HTMLPrinter.generateHTMLFile(htmlFileName, useTwoColumns, printerFriendly, pathToVVPATFolder, _constants, fbid, barcodeFileNameNoExtension, lineSeparatorFileName, columnsToPrint);
 
         // Get the file that is to be read for commands and its parameter separator string.
-        String filename = "C:\\Users\\Mircea\\Desktop\\CommandFile.txt";
-        String fileSeparator = "###";
+        String filename = _printerConstants.getCommandsFileFilename();
+        String fileSeparator = _printerConstants.getCommandsFileParameterSeparator();
 
         // Open the file.
         File file = new File (filename);
