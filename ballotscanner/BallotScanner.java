@@ -153,7 +153,11 @@ public class BallotScanner{
         long currentTime = System.currentTimeMillis();
         BinaryBitmap bitmap = webcam.getBitmap();
 
-        while((lastFoundBID = decoder.decode(bitmap)) == null);
+        while((lastFoundBID = decoder.decode(bitmap)) == null){
+            long start = System.currentTimeMillis();
+            while(System.currentTimeMillis() - start < 100);
+            bitmap = webcam.getBitmap();
+        }
 
         System.out.println(lastFoundBID);  //TODO Is this needed?
 
