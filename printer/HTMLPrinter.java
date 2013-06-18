@@ -50,7 +50,7 @@ public class HTMLPrinter {
      */
     public static void generateHTMLFile (String filename, Boolean useTwoColumns, Boolean printFriendly, String pathToBallotVVPATFolder, AuditoriumParams ballotConstants, String ballotID, String barcodeFilePath, String lineSeparatorFilePath, List<ArrayList<String>> imageNames)
     {
-        System.out.println("Attempting to create an html file at " + filename);
+        //System.out.println("Attempting to create an html file at " + filename);
         File file = new File(filename);
 
         // If the file does not exist, then create it.
@@ -128,7 +128,7 @@ public class HTMLPrinter {
 
             writer.flush();
             writer.close();
-            System.out.println("It should have generated an html file.");
+            //System.out.println("It should have generated an html file.");
         }
         catch (IOException e)
         {
