@@ -43,6 +43,9 @@ public class BallotScanner{
     // stores the last found result obtained from a successful code scan
     private String lastFoundBID = "";
 
+    private IWebcam webcam;
+    private Code128Decoder decoder;
+
     // how long a result is stored in memory before it is cleared
     private final long DELAY_TIME = 5000;
 
@@ -82,6 +85,12 @@ public class BallotScanner{
                 }
             }
         });
+
+        webcam = new FrameGrabberWebcam();
+
+        webcam.startCapture();
+
+        decoder = new Code128Decoder();
 
         //Set up the JFrame confirmation screen
         frame = new BallotScannerUI(_constants.getElectionName(), _constants.getConfirmationSoundPath());
@@ -142,22 +151,16 @@ public class BallotScanner{
      * method that starts the scanning process
      */
     public void scanBallot() {
-        IWebcam webcam = new FrameGrabberWebcam();
-
-        webcam.startCapture();
-
-        Code128Decoder decoder = new Code128Decoder();
 
         frame.displayPromptScreen();
 
-        long currentTime = System.currentTimeMillis();
-        BinaryBitmap bitmap = webcam.getBitmap();
+        BinaryBitmap bitmap;
 
-        while((lastFoundBID = decoder.decode(bitmap)) == null){
+        do{
             long start = System.currentTimeMillis();
             while(System.currentTimeMillis() - start < 100);
             bitmap = webcam.getBitmap();
-        }
+        }while((lastFoundBID = decoder.decode(bitmap)) == null);
 
         System.out.println(lastFoundBID);  //TODO Is this needed?
 

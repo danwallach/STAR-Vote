@@ -7,10 +7,10 @@
   </component>
   <component name="BookmarkManager">
     <bookmark url="file://$PROJECT_DIR$/preptool/model/layout/manager/RenderingUtils.java" line="545" />
-    <bookmark url="file://$PROJECT_DIR$/ballotscanner/BallotScanner.java" line="163" />
+    <bookmark url="file://$PROJECT_DIR$/ballotscanner/BallotScanner.java" line="166" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="26d876ad-6b77-4796-b9d0-ead84066c769" name="Default" comment="Default screen of Scanner UI is inactive screen">
+    <list default="true" id="26d876ad-6b77-4796-b9d0-ead84066c769" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ballotscanner/BallotScanner.java" afterPath="$PROJECT_DIR$/ballotscanner/BallotScanner.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
@@ -51,7 +51,7 @@
     <file path="/ToggleButton.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370358039224" ignored="false" />
     <file path="/RaceTitlePair.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369945268870" ignored="false" />
     <file path="/Label.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370369156357" ignored="false" />
-    <file path="/Dummy.txt" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371570238994" ignored="false" />
+    <file path="/Dummy.txt" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371570584321" ignored="false" />
     <file path="/ALayoutComponent.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370380215222" ignored="false" />
     <file path="/HTMLPrinter.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371498673490" ignored="false" />
     <file path="/InactiveUI.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371241853749" ignored="false" />
@@ -59,7 +59,7 @@
     <file path="/VoteBoxBooth.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371241644794" ignored="false" />
     <file path="$PROJECT_DIR$/tap/Tap.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371484680688" ignored="false" />
     <file path="/BallotScannerUI.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371568781742" ignored="false" />
-    <file path="/BallotScanner.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371570552056" ignored="false" />
+    <file path="/BallotScanner.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371570985847" ignored="false" />
     <file path="/Code128Decoder.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371502044995" ignored="false" />
     <file path="/BallotScannerUITester.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371567235002" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -172,7 +172,7 @@
       <file leaf-file-name="BallotScanner.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/ballotscanner/BallotScanner.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="159" column="9" selection-start="4389" selection-end="4389" vertical-scroll-proportion="0.70151305">
+            <state line="162" column="9" selection-start="4304" selection-end="4304" vertical-scroll-proportion="0.7221458">
               <folding />
             </state>
           </provider>
@@ -767,7 +767,11 @@
       <created>1371500378124</created>
       <updated>1371500378124</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="Change to scanBallot to update bitmap when looking for scan">
+      <created>1371570590082</created>
+      <updated>1371570590082</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -859,7 +863,7 @@
     <option name="WRAP_WHEN_TYPING_REACHES_RIGHT_MARGIN" value="false" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="The printing is now using the HTML Printer instead of the regular Java printing. Need to find the locations of all the items that the HTML Printer requires." />
+    <option name="LAST_COMMIT_MESSAGE" value="Change to scanBallot to update bitmap when looking for scan" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="false" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -890,6 +894,7 @@
     <MESSAGE value="Changed code in HTMLPrinter, to account for our now lack of margins. It should now produce HTML Files that are ready to be converted to PDF and then printed." />
     <MESSAGE value="HTMLPrinter is now completely functional." />
     <MESSAGE value="The printing is now using the HTML Printer instead of the regular Java printing. Need to find the locations of all the items that the HTML Printer requires." />
+    <MESSAGE value="Change to scanBallot to update bitmap when looking for scan" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1000,7 +1005,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/ballotscanner/BallotScanner.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="159" column="9" selection-start="4389" selection-end="4389" vertical-scroll-proportion="0.70151305">
+        <state line="162" column="9" selection-start="4304" selection-end="4304" vertical-scroll-proportion="0.7221458">
           <folding />
         </state>
       </provider>
