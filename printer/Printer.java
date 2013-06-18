@@ -133,6 +133,63 @@ public class Printer {
 		final int fTotalSize = totalSize;
         final ArrayList<RaceTitlePair> fActualRaceNamePairs = actualRaceNameImagePairs;
 
+
+
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        // This is where the HTML Printing occurs.
+
+        String cleanFilePath = _currentBallotFile.getAbsolutePath().substring(0, _currentBallotFile.getAbsolutePath().lastIndexOf('\\') + 1);
+        // Print to an HTML file. Parameters to be used:
+        String htmlFileName = cleanFilePath + "PrintableBallot.html";
+        Boolean useTwoColumns = true;
+        Boolean printerFriendly = true;
+        String pathToVVPATFolder = cleanFilePath + "data\\media\\vvpat\\";
+        String barcodeFileNameNoExtension = pathToVVPATFolder + "Barcode";
+        String lineSeparatorFileName = pathToVVPATFolder + "LineSeparator.png";
+
+        //Generate a barcode of the bid
+        //Do it here so we can use height of the barcode for laying out other components on the printout
+        BufferedImage barcode = PrintImageUtils.getBarcode(fbid);
+        try
+        {
+            BufferedImage lineSeparator = new BufferedImage(10,10,BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g = (Graphics2D) lineSeparator.getGraphics();
+            g.setColor(Color.BLACK);
+            g.fillRect(0,0,10,10);
+
+            ImageIO.write(lineSeparator, "PNG", new File(lineSeparatorFileName));
+            ImageIO.write(barcode, "PNG", new File(barcodeFileNameNoExtension + ".png"));
+            ImageIO.write(PrintImageUtils.flipImageHorizontally(PrintImageUtils.flipImageVertically(barcode)), "PNG", new File(barcodeFileNameNoExtension + "_flipped.png"));
+        }
+        catch (IOException e)
+        {
+            System.out.println("Could not write barcode image to a file.");
+        }
+
+        // HTML Printing: Each column is an ArrayList of Strings. Each image is represented by its file name.
+        ArrayList<ArrayList<String>> columnsToPrint = new ArrayList<ArrayList<String>>();
+        int counter = 0;
+        while (counter < choices.size())
+        {
+            ArrayList<String> currentColumn = new ArrayList<String>();
+            while ((currentColumn.size() < 26) && (counter < choices.size()))
+            {
+                String titleName = fActualRaceNamePairs.get(counter).getLabel();
+                String selectionName = choices.get(counter);
+                currentColumn.add(titleName + "_printable_en.png");
+                currentColumn.add(selectionName + "_printable_en.png");
+                counter++;
+            }
+            columnsToPrint.add(currentColumn);
+        }
+
+        HTMLPrinter.generateHTMLFile(htmlFileName, useTwoColumns, printerFriendly, pathToVVPATFolder, _constants, fbid, barcodeFileNameNoExtension, lineSeparatorFileName, columnsToPrint);
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
 		Printable printedBallot = new Printable(){
 
 			public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
@@ -143,293 +200,6 @@ public class Printer {
 
 				if(pageIndex >= numPages)
 					return Printable.NO_SUCH_PAGE;
-
-
-
-
-
-
-                // Print to an HTML file. Parameters to be used:
-                String htmlFileName = "C:\\Users\\Mircea\\Desktop\\b.html";
-                Boolean useTwoColumns = true;
-                Boolean printerFriendly = true;
-                String pathToVVPATFolder = "C:\\Users\\Mircea\\Desktop\\long_ballot_correct\\media\\vvpat\\";
-                String barcodeFileNameNoExtension = "C:\\Users\\Mircea\\Desktop\\long_ballot_correct\\media\\vvpat\\Barcode";
-                String lineSeparatorFileName = "C:\\Users\\Mircea\\Desktop\\long_ballot_correct\\media\\vvpat\\LineSeparator.png";
-
-                //Generate a barcode of the bid
-                //Do it here so we can use height of the barcode for laying out other components on the printout
-                BufferedImage barcode = PrintImageUtils.getBarcode(fbid);
-                try
-                {
-                    ImageIO.write(barcode, "PNG", new File(barcodeFileNameNoExtension + ".png"));
-                    ImageIO.write(PrintImageUtils.flipImageHorizontally(PrintImageUtils.flipImageVertically(barcode)), "PNG", new File(barcodeFileNameNoExtension + "_flipped.png"));
-                }
-                catch (IOException e)
-                {
-                    System.out.println("Could not write barcode image to a file.");
-                }
-
-                // HTML Printing: Each column is an ArrayList of Strings. Each image is represented by its file name.
-                ArrayList<ArrayList<String>> columnsToPrint = new ArrayList<ArrayList<String>>();
-                int counter = 0;
-                while (counter < choices.size())
-                {
-                    ArrayList<String> currentColumn = new ArrayList<String>();
-                    while (currentColumn.size() < 26)
-                    {
-                        String titleName = fActualRaceNamePairs.get(counter).getLabel();
-                        String selectionName = choices.get(counter);
-                        System.out.println(">>> Adding " + titleName);
-                        currentColumn.add(titleName);
-                        System.out.println(">>> Adding " + selectionName);
-                        currentColumn.add(selectionName);
-                        counter++;
-                    }
-                    columnsToPrint.add(currentColumn);
-                }
-
-                HTMLPrinter.generateHTMLFile(htmlFileName, useTwoColumns, printerFriendly, pathToVVPATFolder, _constants, fbid, barcodeFileNameNoExtension, lineSeparatorFileName, columnsToPrint);
-
-
-
-                /*int totalSize = _constants.getPrintableVerticalMargin();
-                int printX = (int)pageFormat.getImageableX();
-
-                int printWidth = _constants.getPrintableWidthForVVPAT();
-
-                */
-
-                /*ArrayList<String> column1 = new ArrayList<String>();
-                column1.add("L168_printable_en.png");
-                column1.add("B1_printable_en.png");
-                column1.add("L169_printable_en.png");
-                column1.add("B2_printable_en.png");
-                column1.add("L170_printable_en.png");
-                column1.add("B3_printable_en.png");
-                column1.add("L171_printable_en.png");
-                column1.add("B4_printable_en.png");
-                column1.add("L172_printable_en.png");
-                column1.add("B5_printable_en.png");
-                column1.add("L173_printable_en.png");
-                column1.add("B6_printable_en.png");
-                column1.add("L174_printable_en.png");
-                column1.add("B7_printable_en.png");
-                column1.add("L175_printable_en.png");
-                column1.add("B8_printable_en.png");
-                column1.add("L176_printable_en.png");
-                column1.add("B9_printable_en.png");
-                column1.add("L177_printable_en.png");
-                column1.add("B10_printable_en.png");
-                column1.add("L182_printable_en.png");
-                column1.add("B11_printable_en.png");
-                column1.add("L183_printable_en.png");
-                column1.add("B12_printable_en.png");
-                column1.add("L184_printable_en.png");
-                column1.add("B13_printable_en.png");
-                ArrayList<String> column2 = new ArrayList<String>();
-                column2.add("L187_printable_en.png");
-                column2.add("B16_printable_en.png");
-                column2.add("L188_printable_en.png");
-                column2.add("B17_printable_en.png");
-                column2.add("L189_printable_en.png");
-                column2.add("B18_printable_en.png");
-                column2.add("L190_printable_en.png");
-                column2.add("B19_printable_en.png");
-                column2.add("L191_printable_en.png");
-                column2.add("B20_printable_en.png");
-                column2.add("L196_printable_en.png");
-                column2.add("B21_printable_en.png");
-                column2.add("L197_printable_en.png");
-                column2.add("B22_printable_en.png");
-                column2.add("L198_printable_en.png");
-                column2.add("B23_printable_en.png");
-                column2.add("L168_printable_en.png");
-                column2.add("B1_printable_en.png");
-                column2.add("L169_printable_en.png");
-                column2.add("B2_printable_en.png");
-                column2.add("L170_printable_en.png");
-                column2.add("B3_printable_en.png");
-                column2.add("L171_printable_en.png");
-                column2.add("B4_printable_en.png");
-                column2.add("L172_printable_en.png");
-                column2.add("B5_printable_en.png");
-                ArrayList<String> column3 = new ArrayList<String>();
-                column3.add("L175_printable_en.png");
-                column3.add("B8_printable_en.png");
-                column3.add("L176_printable_en.png");
-                column3.add("B9_printable_en.png");
-                column3.add("L177_printable_en.png");
-                column3.add("B10_printable_en.png");
-                column3.add("L182_printable_en.png");
-                column3.add("B11_printable_en.png");
-                column3.add("L183_printable_en.png");
-                column3.add("B12_printable_en.png");
-                column3.add("L184_printable_en.png");
-                column3.add("B13_printable_en.png");
-                column3.add("L185_printable_en.png");
-                column3.add("B14_printable_en.png");
-                column3.add("L186_printable_en.png");
-                column3.add("B15_printable_en.png");
-                column3.add("L187_printable_en.png");
-                column3.add("B16_printable_en.png");
-                column3.add("L188_printable_en.png");
-                column3.add("B17_printable_en.png");
-                column3.add("L189_printable_en.png");
-                column3.add("B18_printable_en.png");
-                column3.add("L190_printable_en.png");
-                column3.add("B19_printable_en.png");
-                column3.add("L191_printable_en.png");
-                column3.add("B20_printable_en.png");
-
-                ArrayList<ArrayList<String>> cols = new ArrayList<ArrayList<String>>();
-                cols.add(column1);
-                cols.add(column2);
-                cols.add(column3);
-
-                HTMLPrinter.generateHTMLFile("C:\\Users\\Mircea\\Desktop\\b.html", true, true, "C:\\Users\\Mircea\\Desktop\\long_ballot_correct\\media\\vvpat\\",
-                        _constants, fbid, "C:\\Users\\Mircea\\Desktop\\long_ballot_correct\\media\\vvpat\\Barcode",
-                        "C:\\Users\\Mircea\\Desktop\\long_ballot_correct\\media\\vvpat\\LineSeparator.png", cols);*/
-
-
-                ////// THIS CODE IS UNNECESSARY //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/*                //Print the date and title of the election at the top of the page
-                Font font = new Font("ARIAL Unicode", Font.PLAIN, 10);
-                graphics.setFont(font);
-                graphics.drawString(_constants.getElectionName(), printX, totalSize+graphics.getFont().getSize());
-                totalSize += graphics.getFont().getSize();
-
-                DateFormat dateFormat = new SimpleDateFormat("MMMM d, y");
-                Date date = new Date();
-                graphics.drawString(dateFormat.format(date), printX, totalSize+graphics.getFont().getSize());
-                totalSize += graphics.getFont().getSize() + 5; //Add a little space between the date and title*/
-                //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-                ////// THIS CODE IS UNNECESSARY //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-                /*Font ocra = new Font("OCR A Extended", Font.PLAIN, 16);
-
-                // Draw the barcode and the ballot ID.
-                graphics.setFont(ocra);
-                graphics.drawString(fbid, (int)pageFormat.getImageableX(), _constants.getPrintableHeightForVVPAT()-ocra.getSize());
-                graphics.drawImage(barcode, printWidth/2, _constants.getPrintableHeightForVVPAT()-barcode.getHeight(null), null);
-
-
-                //Find the minimum amount of whitespace to be trimmed off title images
-                int maxToTrimTitleHorizontally = Integer.MAX_VALUE;
-                int maxToTrimTitleVertically = Integer.MAX_VALUE;
-                for(RaceTitlePair rtp : fActualRaceNamePairs){
-                    BufferedImage title = (BufferedImage)rtp.getImage();
-
-                    maxToTrimTitleHorizontally = Math.min(PrintImageUtils.getHorizontalImageTrim(title, true), maxToTrimTitleHorizontally);
-                    maxToTrimTitleVertically = Math.min(PrintImageUtils.getVerticalImageTrim(title, true), maxToTrimTitleVertically);
-
-
-                }
-
-                //Find the minimum amount of whitespace to be trimmed off selection images
-                int maxToTrimSelectionHorizontally = Integer.MAX_VALUE;
-                int maxToTrimSelectionVertically = Integer.MAX_VALUE;
-                for(String choice :choices)
-                {
-                    BufferedImage selection = (BufferedImage) choiceToImage.get(choice);
-
-                    maxToTrimSelectionHorizontally = Math.min(PrintImageUtils.getHorizontalImageTrim(selection, false), maxToTrimSelectionHorizontally);
-                    maxToTrimSelectionVertically = Math.min(PrintImageUtils.getVerticalImageTrim(selection, false), maxToTrimSelectionVertically);
-                }
-
-                if(_constants.getUseTwoColumns())
-                    printWidth = _constants.getPrintableWidthForVVPAT()/2;
-
-                int initialHeight = totalSize;
-                int column = 1;
-
-
-                // Scaling down the graphics object, to improve print quality. The factor is 72/300 on both x and y dimensions.
-                Graphics2D g = (Graphics2D) graphics;
-                double xScale = .2;
-                double yScale = .2;
-                double xMargin = (pageFormat.getImageableWidth() - ((BufferedImage)choiceToImage.get(choices.get(1))).getWidth()*xScale)/2;
-                double yMargin = (pageFormat.getImageableHeight() - ((BufferedImage)choiceToImage.get(choices.get(1))).getHeight()*yScale)/2;
-//                g.translate(pageFormat.getImageableX(), pageFormat.getImageableY() + totalSize);
-//                g.scale(xScale , yScale);
-
-                int columnPrintableWidth = printWidth - printX;*/
-
-                //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-				//while(/*totalSize < _constants.getPrintableHeightForVVPAT() && */counter < choices.size()){
-
-
-
-                    ////// THIS CODE IS UNNECESSARY //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-                    /*System.out.println("Counter: " +  counter);
-                    System.out.println("Size of Choices: " + choices.size());
-                    System.out.println("Size of fActualRaceNamePairs: " + fActualRaceNamePairs.size());
-                    System.out.println(fActualRaceNamePairs.get(counter).getImage());
-
-
-					BufferedImage img = (BufferedImage)choiceToImage.get(choices.get(counter));
-                    BufferedImage titleImg = (BufferedImage)fActualRaceNamePairs.get(counter).getImage();
-
-                    //Remove trailing whitespace to allow for better scaling
-                    //Only the title image will have trailing whitespace due to rendering
-                    titleImg = PrintImageUtils.trimImageHorizontally(titleImg, true, maxToTrimTitleHorizontally);
-                    titleImg = PrintImageUtils.trimImageVertically(titleImg, true, maxToTrimTitleVertically);
-
-                    //Remove whitespace above the selection image.
-                    img = PrintImageUtils.trimImageVertically(img, false, maxToTrimSelectionVertically);
-
-                    float percentageScaling = (1.0f * columnPrintableWidth) / printWidth;
-                    int targetTitleHeight = Math.round(titleImg.getHeight() * percentageScaling);
-                    int targetSelectionHeight = Math.round(img.getHeight() * percentageScaling);
-
-//                    System.out.println("Now scaling " + choices.get(counter) + "'s outImage.");
-//                    BufferedImage outImage = PrintImageUtils.getScaledInstance(img,columnPrintableWidth, targetSelectionHeight, RenderingHints.VALUE_INTERPOLATION_BICUBIC, true );
-////                    System.out.println("Now scaling " + fActualRaceNamePairs.get(counter).getLabel() + "'s outImage.");
-                    BufferedImage outTitle = PrintImageUtils.getScaledInstance(titleImg, columnPrintableWidth, targetTitleHeight, RenderingHints.VALUE_INTERPOLATION_BICUBIC, true);
-
-
-
-                    g.drawImage(outTitle,
-                            printX,
-                            totalSize,
-                            null);
-
-
-					g.drawImage(img,
-                            printX,
-                            totalSize + Math.round(outTitle.getHeight(null)),
-                            null);
-
-
-					totalSize += img.getHeight(null) + outTitle.getHeight(null) + 5;
-                    counter++;
-
-                    //If we reach the end of a column and are printing in two columns, go back to the top with an offset of printwidth
-                    if(totalSize + img.getHeight(null) + outTitle.getHeight(null) >= (_constants.getPrintableHeightForVVPAT() - barcode.getHeight(null))
-                            && _constants.getUseTwoColumns() && column == 1){
-                        totalSize = initialHeight;
-                        printX += printWidth;
-                        column = 2;
-
-                    } else if (totalSize + img.getHeight(null) + outTitle.getHeight(null) >= (_constants.getPrintableHeightForVVPAT() - barcode.getHeight(null))
-                            && _constants.getUseTwoColumns() && column == 2){
-                        totalSize = initialHeight;
-                        printX =  (int) pageFormat.getImageableX();
-                        column = 1;
-
-                    }*/
-
-                    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-				//}
 
 				return Printable.PAGE_EXISTS;
 
@@ -505,16 +275,17 @@ public class Printer {
         }
 
         // Print the updated ballot (for consistency checking).
-        for (int i = 0; i < updatedBallot.size(); i++)
+        /*for (int i = 0; i < updatedBallot.size(); i++)
         {
             ChoicePair currentItem = updatedBallot.get(i);
-        }
+        }*/
         return updatedBallot;
     }
-    public void printedReciept(String bID){
+
+    public void printedReceipt(String bID){
 
         final String bid = bID;
-        Printable printedReciept = new Printable(){
+        Printable printedReceipt = new Printable(){
 
             public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
                 //print is called by Java until NO_SUCH_PAGE is returned
@@ -556,7 +327,7 @@ public class Printer {
 
         };
 
-        printOnVVPAT(printedReciept);
+        printOnVVPAT(printedReceipt);
     }
 
     private void printCenteredText(String s, int xBound, int y, Graphics g){
