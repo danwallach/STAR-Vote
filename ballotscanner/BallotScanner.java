@@ -47,8 +47,7 @@ public class BallotScanner{
     private Code128Decoder decoder;
 
     // how long a result is stored in memory before it is cleared
-    private final long DELAY_TIME = 5000;
-
+    private boolean receivedResponse;
 
     /**
      * Equivalent to new BallotScanner(-1).
@@ -147,6 +146,15 @@ public class BallotScanner{
         return connected;
     }
 
+    public void beginScanning(){
+        while(true){
+            scanBallot();
+            while(!receivedResponse) Thread.currentThread().yield();
+            long start = System.currentTimeMillis();
+            while(System.currentTimeMillis() - start < 5000);
+        }
+    }
+
     /**
      * method that starts the scanning process
      */
@@ -164,6 +172,7 @@ public class BallotScanner{
 
         System.out.println(lastFoundBID);  //TODO Is this needed?
 
+        receivedResponse = false;
         auditorium.announce(new BallotScannedEvent(mySerial, lastFoundBID));
     }
 
@@ -300,13 +309,7 @@ public class BallotScanner{
                 //If this event corresponds with our last scanned ballot, display a confirmation message
                 if(lastFoundBID.equals(event.getBID())){
                     frame.displayBallotAcceptedScreen(lastFoundBID);
-                    new Thread(){
-                        public void run(){
-                            long start = System.currentTimeMillis();
-                            while(System.currentTimeMillis() - start < 5000);
-                            scanBallot();
-                        }
-                    }.start();
+                    receivedResponse = true;
                 }
 
             }
@@ -318,13 +321,7 @@ public class BallotScanner{
                 //If our ballot was rejected, display a message
                 if(lastFoundBID.equals(event.getBID())){
                     frame.displayBallotRejectedScreen();
-                    new Thread(){
-                        public void run(){
-                            long start = System.currentTimeMillis();
-                            while(System.currentTimeMillis() - start < 5000);
-                            scanBallot();
-                        }
-                    }.start();
+                    receivedResponse = true;
                 }
             }
 
@@ -337,7 +334,7 @@ public class BallotScanner{
 
         statusTimer.start();
 
-        scanBallot();
+        beginScanning();
     }
 
     /**
