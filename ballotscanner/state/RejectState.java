@@ -46,7 +46,7 @@ public class RejectState extends AState {
 
     public void updateState(BallotScannerUI context, int updateMode)
     {
-        if (System.currentTimeMillis() - stateStartTime > stateActiveDelay)
+        //if (System.currentTimeMillis() - stateStartTime > stateActiveDelay)
             context.state = PromptState.SINGLETON;
     }
 

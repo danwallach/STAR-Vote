@@ -282,4 +282,10 @@ public class BallotScannerUI extends JFrame {
         userInfoPanel.repaint();
         state.updateState(this, 0);
     }
+
+    public void update(){
+        System.out.println(state.getStateName());
+        super.update(this.getGraphics());
+        updateFrame();
+    }
 }

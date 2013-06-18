@@ -151,9 +151,15 @@ public class BallotScanner{
     public void beginScanning(){
         frame.displayPromptScreen();
         long lastFoundTime = 0;
+
+        int counter = 0;
         while(true){
            // System.out.println(receivedResponse);
-            System.out.println(frame.state.getStateName());
+            if(counter%10 == 0)
+//                System.out.println(frame.state.getStateName());
+
+            counter++;
+
             if(frame.state.getStateName() == RejectState.SINGLETON.getStateName())
                 continue;
 
@@ -356,6 +362,7 @@ public class BallotScanner{
                     frame.state.updateState(frame, 2);
                     long start = System.currentTimeMillis();
                     while(System.currentTimeMillis() - start < 5000);
+                    frame.state.updateState(frame, 0);
                     frame.displayPromptScreen();
 
                 }
