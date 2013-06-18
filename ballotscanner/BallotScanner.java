@@ -26,7 +26,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Observer;
 
-public class BallotScanner {
+public class BallotScanner{
 
     private final AuditoriumParams _constants;
 
@@ -39,24 +39,12 @@ public class BallotScanner {
     private boolean activated;
     private ObservableEvent activatedObs;
     private BallotScannerUI frame;
-    private boolean wait = true;
-    private boolean skip = false;
 
     // stores the last found result obtained from a successful code scan
     private String lastFoundBID = "";
 
-    // stores the last time a code was found
-    private long lastFoundTime = 0;
-
-    // keeps the path to the "ballot scanned" mp3
-    private String bsMp3Path;// = "sound/ballotscanned.mp3"; //move to the .conf file
-
-    // keeps the mp3Player
-    private Player mp3Player;
-
     // how long a result is stored in memory before it is cleared
     private final long DELAY_TIME = 5000;
-
 
 
     /**
@@ -74,10 +62,6 @@ public class BallotScanner {
      */
     public BallotScanner(int serial) {
         _constants = new AuditoriumParams("bs.conf");
-
-        if (_constants.useScanConfirmationSound()) {
-            bsMp3Path = _constants.getConfirmationSoundPath();
-        }
 
         if (serial != -1)
             mySerial = serial;
@@ -100,7 +84,7 @@ public class BallotScanner {
         });
 
         //Set up the JFrame confirmation screen
-        frame = new BallotScannerUI(_constants.getElectionName());
+        frame = new BallotScannerUI(_constants.getElectionName(), _constants.getConfirmationSoundPath());
     }
 
     /**
@@ -157,7 +141,7 @@ public class BallotScanner {
     /**
      * method that starts the scanning process
      */
-    public void beginScanning() {
+    public void scanBallot() {
         IWebcam webcam = new FrameGrabberWebcam();
 
         webcam.startCapture();
@@ -166,66 +150,14 @@ public class BallotScanner {
 
         frame.displayPromptScreen();
 
-        while (true) {
-            wait = false;
-            long currentTime = System.currentTimeMillis();
-            BinaryBitmap bitmap = webcam.getBitmap();
+        long currentTime = System.currentTimeMillis();
+        BinaryBitmap bitmap = webcam.getBitmap();
 
+        while((lastFoundBID = decoder.decode(bitmap)) == null);
 
+        System.out.println(lastFoundBID);  //TODO Is this needed?
 
-            //Skip over code if a scan is pending confirmation or rejection
-            if(skip)
-                continue;
-
-
-            lastFoundBID = decoder.decode(bitmap);
-
-            if (currentTime - lastFoundTime > DELAY_TIME) {
-                if (lastFoundBID != null) {
-                    System.out.println(lastFoundBID);  //TODO Is this needed?
-
-                    auditorium.announce(new BallotScannedEvent(mySerial, lastFoundBID));
-
-
-                    lastFoundTime = System.currentTimeMillis();
-                    auditorium.announce(new BallotScannedEvent(mySerial, lastFoundBID));
-                    bsMp3Path = _constants.getConfirmationSoundPath();
-
-                    // prepare the mp3Player
-                     try {
-
-                        FileInputStream fileInputStream = new FileInputStream(bsMp3Path);
-                        BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
-                        mp3Player = new Player(bufferedInputStream);
-                    } catch (Exception e) {
-                        if (!_constants.useScanConfirmationSound()) {
-                            System.out.println("Problem playing audio: " + bsMp3Path);
-                            System.out.println(e);
-                        }
-                    }
-
-                    // play the sound
-                    new Thread() {
-                        public void run() {
-                            try {
-                                mp3Player.play();
-                            } catch (Exception e) {
-                                System.out.println(e);
-                            }
-                        }
-                    }.start();
-
-
-
-                    while(wait){
-                        if(frame.isVisible()) //reset the confirmed variable once the jframe has shown
-                            wait = false;
-                    }
-
-
-                }
-            }
-        }
+        auditorium.announce(new BallotScannedEvent(mySerial, lastFoundBID));
     }
 
     /**
@@ -360,47 +292,12 @@ public class BallotScanner {
 
                 //If this event corresponds with our last scanned ballot, display a confirmation message
                 if(lastFoundBID.equals(event.getBID())){
-
-
-
-                    /*//Code which will display a confirmation screen
-                    frame.setVisible(false);
-                    //frame = new JFrame("STAR-Vote Ballot Scanner");
-                    JPanel panel = new JPanel();
-                    JLabel imageLabel = new JLabel();
-                    JLabel textLabel = new JLabel("Ballot " + lastFoundBID + " confirmed and cast");
-
-
-
-                    BufferedImage confirmed = null;
-
-                    try{
-                        File file = new File("images/confirmation.png");
-                        confirmed = ImageIO.read(file);
-                    } catch (IOException e){
-                        System.out.println("Confirmation image could not be loaded!");
-                        throw new RuntimeException(e);
-                    }
-                    ImageIcon confirmationIcon = new ImageIcon(confirmed);
-
-
-
-                    imageLabel.setIcon(confirmationIcon);
-                    panel.add(imageLabel);
-                    panel.setPreferredSize(new Dimension(600, 600));
-                    panel.add(textLabel);
-                    frame.add(panel);
-                    frame.pack();
-
-                    frame.setVisible(true);
-
-                    //If the frame is closed, start over
-                    if(!frame.isVisible())
-                        wait = false;*/
-
-
-
-
+                    frame.displayBallotAcceptedScreen(lastFoundBID);
+                    new Timer(5000, new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                            scanBallot();
+                        }
+                    }).start();
                 }
 
             }
@@ -411,46 +308,12 @@ public class BallotScanner {
 
                 //If our ballot was rejected, display a message
                 if(lastFoundBID.equals(event.getBID())){
-
-
-                    /*//Code which will display a rejection screen
-                    frame.setVisible(false);
-                    //frame = new JFrame("STAR-Vote Ballot Scanner");
-
-                    JPanel panel = new JPanel();
-                    JLabel imageLabel = new JLabel();
-                    JLabel textLabel = new JLabel("Ballot " + lastFoundBID + " was NOT cast.");
-                    JLabel text2Label = new JLabel("Please ensure that this is the correct ballot or seek assistance from an election official.");
-
-
-
-                    BufferedImage rejected = null;
-
-                    try{
-                        File file = new File("images/rejected.png");
-                        rejected = ImageIO.read(file);
-                    } catch (IOException e){
-                        System.out.println("Rejection image could not be loaded!");
-                        throw new RuntimeException(e);
-                    }
-                    ImageIcon rejectionIcon = new ImageIcon(rejected);
-
-
-
-                    imageLabel.setIcon(rejectionIcon);
-                    panel.add(imageLabel);
-                    panel.setPreferredSize(new Dimension(600, 600));
-                    panel.add(textLabel);
-                    panel.add(text2Label);
-                    frame.add(panel);
-                    frame.pack();
-
-                    frame.setVisible(true);
-
-                    //If the frame is closed, start over
-                    if(!frame.isVisible())
-                        wait = false;*/
-
+                    frame.displayBallotRejectedScreen();
+                    new Timer(5000, new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                            scanBallot();
+                        }
+                    }).start();
                 }
             }
 
@@ -463,7 +326,7 @@ public class BallotScanner {
 
         statusTimer.start();
 
-        beginScanning();
+        scanBallot();
     }
 
     /**

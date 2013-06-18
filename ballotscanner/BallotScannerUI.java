@@ -1,12 +1,15 @@
 package ballotscanner;
 
+import javazoom.jl.player.Player;
 import votebox.AuditoriumParams;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -31,7 +34,7 @@ public class BallotScannerUI extends JFrame {
     private BufferedImage rejectImage;
     private BufferedImage acceptImage;
     private BufferedImage waitingImage;
-    private BufferedImage inactiveButton;
+    private BufferedImage inactiveImage;
     private BufferedImage responseImage;
 
     private JLabel scanResultLabel;
@@ -40,12 +43,20 @@ public class BallotScannerUI extends JFrame {
     private DateFormat dateFormat;
     private Date date;
 
+    private Thread delay;
+
     private String electionName;
 
     private Font fontBig   = new Font("Arial Unicode", Font.BOLD, 20);
     private Font fontSmall = new Font("Arial Unicode", Font.PLAIN, 18);
 
-    public BallotScannerUI(String electionName){
+    // keeps the path to the "ballot scanned" mp3
+    private String bsMp3Path;// = "sound/ballotscanned.mp3"; //move to the .conf file
+
+    // keeps the mp3Player
+    private Player mp3Player;
+
+    public BallotScannerUI(String electionName, String mp3Path){
         super("STAR-Vote Ballot Scanner");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(600,600);
@@ -58,6 +69,19 @@ public class BallotScannerUI extends JFrame {
         date = new Date();
 
         this.electionName = electionName;
+
+        bsMp3Path = mp3Path;
+
+        // prepare the mp3Player
+        try {
+            FileInputStream fileInputStream = new FileInputStream(bsMp3Path);
+            BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
+            mp3Player = new Player(bufferedInputStream);
+        } catch (Exception e) {
+            mp3Player = null;
+            System.out.println("Problem playing audio: " + bsMp3Path);
+            System.out.println(e);
+        }
 
         try{
             logo = ImageIO.read(new File("images/logo.png"));
@@ -88,10 +112,10 @@ public class BallotScannerUI extends JFrame {
         }
 
         try{
-            waitingImage = ImageIO.read(new File("images/inactive.png"));
+            inactiveImage = ImageIO.read(new File("images/inactive.png"));
         }catch(IOException ioe){
             System.out.println("BallotScannerUI: Could not locate inactive image");
-            waitingImage = null;
+            inactiveImage = null;
         }
 
         userInfoPanel = new UserInfoPanel();
@@ -225,16 +249,46 @@ public class BallotScannerUI extends JFrame {
 
     public void displayPromptScreen(){
         userInfoPanel.clearMessages();
-        userInfoPanel.addMessage("This is a Ballot Scanning Console");
-        userInfoPanel.addMessage("Place Ballot Under Scanner to Cast Ballot");
+        userInfoPanel.addMessage("This is a Ballot Scanning Console.");
+        userInfoPanel.addMessage("Place Ballot Under Scanner to Cast Ballot.");
+        responseImage = waitingImage;
         updateFrame();
     }
 
     public void displayInactiveScreen(){
         userInfoPanel.clearMessages();
-        userInfoPanel.addMessage("This is a Ballot Scanning Console");
-        userInfoPanel.addMessage("Console Currently Not Ready For Use");
-        responseImage = waitingImage;
+        userInfoPanel.addMessage("This is a Ballot Scanning Console.");
+        userInfoPanel.addMessage("Console Currently Not Ready For Use.");
+        responseImage = inactiveImage;
+        updateFrame();
+    }
+
+    public void displayBallotAcceptedScreen(String bid){
+        userInfoPanel.clearMessages();
+        userInfoPanel.addMessage("Ballot " + bid  + " Confirmed and Cast");
+        userInfoPanel.addMessage("Your Vote Will be Counted");
+        userInfoPanel.addMessage("Thank You for Voting!");
+        responseImage = acceptImage;
+        updateFrame();
+
+        // play confirmation sound
+        new Thread() {
+            public void run() {
+                try {
+                    mp3Player.play();
+                } catch (Exception e) {
+                    System.out.println(e);
+                }
+            }
+        }.start();
+    }
+
+    public void displayBallotRejectedScreen(){
+        userInfoPanel.clearMessages();
+        userInfoPanel.addMessage("Ballot has been rejected");
+        userInfoPanel.addMessage("Hold Ballot Still Under the Scanner");
+        userInfoPanel.addMessage("If This Problem Persists, Contact an Election Official");
+        responseImage = rejectImage;
         updateFrame();
     }
 
@@ -242,29 +296,4 @@ public class BallotScannerUI extends JFrame {
         electionInfoPanel.repaint();
         userInfoPanel.repaint();
     }
-
-    /*try{
-        logo = new ImageIcon(ImageIO.read(new File("images/logo.png")));
-    } catch(IOException e) {
-        logo = null;
-        System.out.println("BallotScannerUI: Logo Icon could not be loaded!");
-        new RuntimeException(e);
-    }
-
-
-
-    JPanel panel = new JPanel();
-    panel.setPreferredSize(new Dimension(600, 600));
-    JLabel image = new JLabel(logo);
-    panel.add(image);
-    panel.add(new JLabel("Please scan your ballot"));
-    panel.add(new JLabel(dateFormat.format(date)
-
-
-    ));
-    frame.add(panel);
-    frame.pack();
-    frame.setVisible(true);*/
-
-
 }
