@@ -1,6 +1,7 @@
 package ballotscanner;
 
 import auditorium.NetworkException;
+import ballotscanner.state.PromptState;
 import ballotscanner.state.RejectState;
 import com.google.zxing.BinaryBitmap;
 import javazoom.jl.player.Player;
@@ -155,56 +156,52 @@ public class BallotScanner{
 
         int counter = 0;
         while(true){
-           // System.out.println(receivedResponse);
-            if(counter%10 == 0)
-//                System.out.println(frame.state.getStateName());
-
-            counter++;
-
-            if(frame.state.getStateName() == RejectState.SINGLETON.getStateName())
-                continue;
 
             BinaryBitmap bitmap = webcam.getBitmap();
 
-            decoder = new Code128Decoder();
+            if(frame.state.getStateName() == PromptState.SINGLETON.getStateName()){
 
-            long start = System.currentTimeMillis();
 
-            lastFoundBID = decoder.decode(bitmap);
 
-            if(start - lastFoundTime > 5000){
-                if(lastFoundBID != null){
+                decoder = new Code128Decoder();
 
-                    // play confirmation sound
-                    new Thread() {
-                        public void run() {
-                            // prepare the mp3Player
-                            try {
-                                FileInputStream fileInputStream = new FileInputStream(bsMp3Path);
-                                BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
-                                mp3Player = new Player(bufferedInputStream);
-                                mp3Player.play();
-                            } catch (Exception e) {
-                                mp3Player = null;
-                                System.out.println("Problem playing audio: " + bsMp3Path);
-                                System.out.println(e);
+                long start = System.currentTimeMillis();
+
+                lastFoundBID = decoder.decode(bitmap);
+
+                if(start - lastFoundTime > 5000){
+                    if(lastFoundBID != null){
+
+                        // play confirmation sound
+                        new Thread() {
+                            public void run() {
+                                // prepare the mp3Player
+                                try {
+                                    FileInputStream fileInputStream = new FileInputStream(bsMp3Path);
+                                    BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
+                                    mp3Player = new Player(bufferedInputStream);
+                                    mp3Player.play();
+                                } catch (Exception e) {
+                                    mp3Player = null;
+                                    System.out.println("Problem playing audio: " + bsMp3Path);
+                                    System.out.println(e);
+                                }
+
                             }
+                        }.start();
 
-                        }
-                    }.start();
-
-                    lastFoundTime = System.currentTimeMillis();
-                    System.out.println(lastFoundBID);  //TODO Is this needed?
-                    System.out.println("Got in the if statement and set receivedResponse to false!");
-                    if(receivedResponse)
-                        receivedResponse = false;
-                    auditorium.announce(new BallotScannedEvent(mySerial, lastFoundBID));
+                        lastFoundTime = System.currentTimeMillis();
+                        System.out.println(lastFoundBID);  //TODO Is this needed?
+                        System.out.println("Got in the if statement and set receivedResponse to false!");
+                        if(receivedResponse)
+                            receivedResponse = false;
+                        auditorium.announce(new BallotScannedEvent(mySerial, lastFoundBID));
 
 
+                    }
                 }
+
             }
-
-
         }
     }
 

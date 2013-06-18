@@ -38,12 +38,6 @@ public class BallotScannerUI extends JFrame {
     public String electionName;
     public AState state;
 
-    // keeps the path to the "ballot scanned" mp3
-    private String bsMp3Path;// = "sound/ballotscanned.mp3"; //move to the .conf file
-
-    // keeps the mp3Player
-    private Player mp3Player;
-
     public BallotScannerUI(String electionName, String mp3Path){
         super("STAR-Vote Ballot Scanner");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -55,39 +49,38 @@ public class BallotScannerUI extends JFrame {
 
         this.electionName = electionName;
 
-        bsMp3Path = mp3Path;
 
-        try{
-            acceptImage = ImageIO.read(new File("images/accept_ballot.png"));
-        }catch(IOException ioe){
-            System.out.println("BallotScannerUI: Could not locate accept image");
-            acceptImage = null;
-        }
-
-        try{
-            rejectImage = ImageIO.read(new File("images/reject_ballot.png"));
-        }catch(IOException ioe){
-            System.out.println("BallotScannerUI: Could not locate reject image");
-            rejectImage = null;
-        }
-
-        try{
-            waitingImage = ImageIO.read(new File("images/waiting_ballot.png"));
-        }catch(IOException ioe){
-            System.out.println("BallotScannerUI: Could not locate waiting image");
-            waitingImage = null;
-        }
-
-        try{
-            inactiveImage = ImageIO.read(new File("images/inactive.png"));
-        }catch(IOException ioe){
-            System.out.println("BallotScannerUI: Could not locate inactive image");
-            inactiveImage = null;
-        }
+//        try{
+//            acceptImage = ImageIO.read(new File("images/accept_ballot.png"));
+//        }catch(IOException ioe){
+//            System.out.println("BallotScannerUI: Could not locate accept image");
+//            acceptImage = null;
+//        }
+//
+//        try{
+//            rejectImage = ImageIO.read(new File("images/reject_ballot.png"));
+//        }catch(IOException ioe){
+//            System.out.println("BallotScannerUI: Could not locate reject image");
+//            rejectImage = null;
+//        }
+//
+//        try{
+//            waitingImage = ImageIO.read(new File("images/waiting_ballot.png"));
+//        }catch(IOException ioe){
+//            System.out.println("BallotScannerUI: Could not locate waiting image");
+//            waitingImage = null;
+//        }
+//
+//        try{
+//            inactiveImage = ImageIO.read(new File("images/inactive.png"));
+//        }catch(IOException ioe){
+//            System.out.println("BallotScannerUI: Could not locate inactive image");
+//            inactiveImage = null;
+//        }
 
         userInfoPanel = new UserInfoPanel(this);
         electionInfoPanel = new ElectionInfoPanel(this);
-
+        state = InactiveState.SINGLETON;
         mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         mainPanel.add(electionInfoPanel);
@@ -96,7 +89,7 @@ public class BallotScannerUI extends JFrame {
         pack();
         setVisible(true);
         //displayInactiveScreen();
-        state = InactiveState.SINGLETON;
+
         this.updateFrame(NO_TRANSITION);
     }
 
@@ -137,6 +130,7 @@ public class BallotScannerUI extends JFrame {
     {
         electionInfoPanel.repaint();
         userInfoPanel.repaint();
+        this.repaint();
     }
 
     public void updateFrame(int transition){
