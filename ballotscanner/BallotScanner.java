@@ -300,12 +300,14 @@ public class BallotScanner{
                 //If this event corresponds with our last scanned ballot, display a confirmation message
                 if(lastFoundBID.equals(event.getBID())){
                     frame.displayBallotAcceptedScreen(lastFoundBID);
-                    new Timer(5000, new ActionListener() {
+                    Timer t = new Timer(5000, new ActionListener() {
                         public void actionPerformed(ActionEvent e) {
                             System.out.println("Calling Scan Ballot After accepted ballot");
                             scanBallot();
                         }
-                    }).start();
+                    });
+                    t.setRepeats(false);
+                    t.start();
                 }
 
             }
@@ -317,12 +319,14 @@ public class BallotScanner{
                 //If our ballot was rejected, display a message
                 if(lastFoundBID.equals(event.getBID())){
                     frame.displayBallotRejectedScreen();
-                    new Timer(5000, new ActionListener() {
+                    Timer t = new Timer(5000, new ActionListener() {
                         public void actionPerformed(ActionEvent e) {
-                            System.out.println("Calling Scan Ballot After rejected ballot");
+                            System.out.println("Calling Scan Ballot After accepted ballot");
                             scanBallot();
                         }
-                    }).start();
+                    });
+                    t.setRepeats(false);
+                    t.start();
                 }
             }
 
