@@ -51,7 +51,7 @@ public class AcceptState extends AState {
         context.userInfoPanel.addMessage("Your Vote Will be Counted");
         context.userInfoPanel.addMessage("Thank You for Voting!");
         context.responseImage = stateImage;
-        context.updateFrame(context.NO_TRANSITION);
+        context.updateFrameComponents();
     }
 
     public void updateState(BallotScannerUI context, int updateMode)
