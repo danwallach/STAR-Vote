@@ -242,9 +242,5 @@ public class VoteBoxEventNotifier implements VoteBoxEventListener {
         for(VoteBoxEventListener l : listeners)
             l.pollMachines(pollMachinesEvent);
     }
-    public void identifyMachine(IdentifyMachineEvent identifyMachineEvent) {
-        for(VoteBoxEventListener l : listeners)
-            l.identifyMachine(identifyMachineEvent);
-    }
 
 }

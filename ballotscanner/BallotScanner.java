@@ -335,11 +335,7 @@ public class BallotScanner{
 
             public void uploadChallengedBallots(ChallengedBallotUploadEvent challengedBallotUploadEvent) {}
 
-            @Override
             public void pollMachines(PollMachinesEvent pollMachinesEvent) {}
-
-            @Override
-            public void identifyMachine(IdentifyMachineEvent identifyMachineEvent) {}
 
             public void ballotAccepted(BallotScanAcceptedEvent event){
 

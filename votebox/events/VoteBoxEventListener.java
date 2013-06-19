@@ -269,9 +269,4 @@ public interface VoteBoxEventListener {
      */
     public void pollMachines(PollMachinesEvent pollMachinesEvent);
 
-    /**
-     * Responds to poll Machines method with the serial of the machine allowing super to identify unknown machines
-     * @param identifyMachineEvent
-     */
-    void identifyMachine(IdentifyMachineEvent identifyMachineEvent);
 }

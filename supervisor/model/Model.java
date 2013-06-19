@@ -491,7 +491,7 @@ public class Model {
                     AuthorizedToCastWithNIZKsEvent.getMatcher(), AdderChallengeEvent.getMatcher(),
                     PinEnteredEvent.getMatcher(), InvalidPinEvent.getMatcher(),
                     PollStatusEvent.getMatcher(), BallotPrintSuccessEvent.getMatcher(),
-                    BallotScannedEvent.getMatcher(), IdentifyMachineEvent.getMatcher());
+                    BallotScannedEvent.getMatcher());
 
 
         } catch (NetworkException e1) {
@@ -1013,31 +1013,9 @@ public class Model {
 
             @Override
             public void pollMachines(PollMachinesEvent pollMachinesEvent) {
-
+                //NO-OP
             }
 
-            @Override
-            public void identifyMachine(IdentifyMachineEvent identifyMachineEvent) {
-                if(machines.size()==getNumConnected()-1){
-                    return;
-                }
-                 for(AMachine m : machines){
-                     if(m.getSerial()==identifyMachineEvent.getSerial())
-                         return;
-                 }
-                IAnnounceEvent machineEvent = null;
-                if(identifyMachineEvent.getMachineType()==0)   {
-                    machineEvent = new VoteBoxEvent(0, 0, "ready", 0, 0, 0);
-                }
-                if(identifyMachineEvent.getMachineType()==1)   {
-                    machineEvent = new BallotScannerEvent(identifyMachineEvent.getSerial(), "active");
-                }
-                if(identifyMachineEvent.getMachineType()==2)   {
-                    machineEvent = new SupervisorEvent(0, 0, "active");
-                }
-                if(machineEvent!=null)
-                    auditorium.announce(machineEvent);
-            }
 
         });
 

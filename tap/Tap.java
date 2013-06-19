@@ -144,16 +144,7 @@ public class Tap {
             public void ballotPrintFail(BallotPrintFailEvent ballotPrintFailEvent) {}
             public void uploadCastBallots(CastBallotUploadEvent castBallotUploadEvent) {}
             public void uploadChallengedBallots(ChallengedBallotUploadEvent challengedBallotUploadEvent) {}
-
-            @Override
-            public void pollMachines(PollMachinesEvent pollMachinesEvent) {
-                //To change body of implemented methods use File | Settings | File Templates.
-            }
-
-            @Override
-            public void identifyMachine(IdentifyMachineEvent identifyMachineEvent) {
-                //To change body of implemented methods use File | Settings | File Templates.
-            }
+            public void pollMachines(PollMachinesEvent pollMachinesEvent){}
 
         });
 		
