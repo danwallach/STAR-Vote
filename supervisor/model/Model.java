@@ -93,7 +93,7 @@ public class Model {
 
     private IAuditoriumParams auditoriumParams;
 
-    private HashMap<String, ASExpression> bids;
+    private HashMap<String, ASExpression> committedBids;
 
     private BallotManager bManager;
 
@@ -137,7 +137,7 @@ public class Model {
         keyword = "";
         ballotLocation = "ballot.zip";
         tallier = new Tallier();
-        bids = new HashMap<String, ASExpression>();
+        committedBids = new HashMap<String, ASExpression>();
         statusTimer = new Timer(300000, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (isConnected()) {
@@ -956,7 +956,7 @@ public class Model {
             	System.out.println("Received challenge: "+e);
             	
             	tallier.challenged(e.getNonce());
-            	auditorium.announce(new ChallengeResponseEvent(mySerial, 
+            	auditorium.announce(new ChallengeResponseEvent(mySerial,
             			e.getSerial(), e.getNonce()));
             }
 
@@ -975,15 +975,15 @@ public class Model {
                             .getBytes()));
                     tallier.recordVotes(e.getBallot().toVerbatim(), e.getNonce());
                     String bid = e.getBID().toString();
-                    bids.put(bid, e.getNonce());
+                    committedBids.put(bid, e.getNonce());
                 }
             }
 
             public void ballotScanned(BallotScannedEvent e) {
                 String bid = e.getBID();
                 int serial = e.getSerial();
-                if (bids.containsKey(bid)) {
-                    ASExpression nonce = bids.get(bid);
+                if (committedBids.containsKey(bid)){
+                    ASExpression nonce = committedBids.get(bid);
                     BallotStore.castBallot(e.getBID(), nonce);
                     // used to be in voteBox registerForCommit listener.
                     auditorium.announce(new CastCommittedBallotEvent(serial, nonce));
@@ -994,7 +994,6 @@ public class Model {
                     System.out.println("Sending scan rejection!");
                     auditorium.announce(new BallotScanRejectedEvent(mySerial, bid));
                 }
-
             }
 
             public void pinEntered(PinEnteredEvent e){
@@ -1095,6 +1094,13 @@ public class Model {
         bManager.addBallot(precinct, fileIn.getAbsolutePath());
         }catch(NumberFormatException e){
             JOptionPane.showMessageDialog(null, "Please choose a valid ballot");
+        }
+    }
+
+    public void spoilBallot(String bid){
+        if(committedBids.containsKey(bid)){
+            committedBids.remove(bid);
+            //auditorium.announce(new ChallengeEvent());
         }
     }
 
