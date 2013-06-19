@@ -187,10 +187,9 @@ public class BallotScanner{
                         }.start();
 
                         lastFoundTime = System.currentTimeMillis();
-                        System.out.println(lastFoundBID);  //TODO Is this needed?
+                        System.out.println("Last found BID: " + lastFoundBID);  //TODO Is this needed?
                         System.out.println("Got in the if statement and set receivedResponse to false!");
-                        if(receivedResponse)
-                            receivedResponse = false;
+                        receivedResponse = false;
                         auditorium.announce(new BallotScannedEvent(mySerial, lastFoundBID));
                     }
                 }
