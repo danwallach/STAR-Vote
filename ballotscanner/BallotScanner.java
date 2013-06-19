@@ -150,17 +150,14 @@ public class BallotScanner{
 
     public void beginScanning(){
         //frame.displayPromptScreen();
-        frame.updateFrame(frame.TO_PROMPT_STATE);
+        frame.updateFrame(BallotScannerUI.TO_PROMPT_STATE);
         long lastFoundTime = 0;
 
-        int counter = 0;
         while(true){
 
             BinaryBitmap bitmap = webcam.getBitmap();
 
-            if(frame.state.getStateName() == PromptState.SINGLETON.getStateName()){
-
-
+            if(frame.state.getStateName().equals(PromptState.SINGLETON.getStateName())){
 
                 decoder = new Code128Decoder();
 
@@ -195,11 +192,8 @@ public class BallotScanner{
                         if(receivedResponse)
                             receivedResponse = false;
                         auditorium.announce(new BallotScannedEvent(mySerial, lastFoundBID));
-
-
                     }
                 }
-
             }
         }
     }
@@ -340,11 +334,11 @@ public class BallotScanner{
                 //If this event corresponds with our last scanned ballot, display a confirmation message
                 if(lastFoundBID.equals(event.getBID())){
                     //frame.displayBallotAcceptedScreen(lastFoundBID);
-                    frame.updateFrame(frame.TO_ACCEPT_STATE);
+                    frame.updateFrame(BallotScannerUI.TO_ACCEPT_STATE);
                     long start = System.currentTimeMillis();
                     while(System.currentTimeMillis() - start < 5000);
                     //frame.displayPromptScreen();
-                    frame.updateFrame(frame.TO_PROMPT_STATE);
+                    frame.updateFrame(BallotScannerUI.TO_PROMPT_STATE);
                     receivedResponse = true;
                 }
 
@@ -358,11 +352,11 @@ public class BallotScanner{
                 if(lastFoundBID.equals(event.getBID())){
                     receivedResponse = true;
                     //frame.displayBallotRejectedScreen();
-                    frame.updateFrame(frame.TO_REJECT_STATE);
+                    frame.updateFrame(BallotScannerUI.TO_REJECT_STATE);
                     long start = System.currentTimeMillis();
                     while(System.currentTimeMillis() - start < 5000);
                     //frame.displayPromptScreen();
-                    frame.updateFrame(frame.TO_PROMPT_STATE);
+                    frame.updateFrame(BallotScannerUI.TO_PROMPT_STATE);
                 }
             }
 
@@ -384,7 +378,7 @@ public class BallotScanner{
      * Main entry point into the program. If an argument is given, it will be
      * the serial number, otherwise VoteBox will load a serial from its config file.
      *
-     * @param args
+     * @param args - arguments to be passed to the main method, from the command line
      */
     public static void main(String[] args) {
         if (args.length == 1)

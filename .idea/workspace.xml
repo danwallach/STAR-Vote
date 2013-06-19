@@ -7,12 +7,11 @@
   </component>
   <component name="BookmarkManager">
     <bookmark url="file://$PROJECT_DIR$/preptool/model/layout/manager/RenderingUtils.java" line="545" />
-    <bookmark url="file://$PROJECT_DIR$/ballotscanner/BallotScanner.java" line="200" />
+    <bookmark url="file://$PROJECT_DIR$/ballotscanner/BallotScanner.java" line="195" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="26d876ad-6b77-4796-b9d0-ead84066c769" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ballotscanner/BallotScanner.java" afterPath="$PROJECT_DIR$/ballotscanner/BallotScanner.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ballotscanner/BallotScannerUI.java" afterPath="$PROJECT_DIR$/ballotscanner/BallotScannerUI.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="STAR-Vote.iws" />
@@ -52,14 +51,14 @@
     <file path="/ToggleButton.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370358039224" ignored="false" />
     <file path="/RaceTitlePair.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369945268870" ignored="false" />
     <file path="/Label.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370369156357" ignored="false" />
-    <file path="/Dummy.txt" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371650167709" ignored="false" />
+    <file path="/Dummy.txt" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371651392338" ignored="false" />
     <file path="/ALayoutComponent.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370380215222" ignored="false" />
     <file path="/HTMLPrinter.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371498673490" ignored="false" />
     <file path="/InactiveUI.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371241853749" ignored="false" />
     <file path="/AMachine.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371246915202" ignored="false" />
     <file path="/VoteBoxBooth.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371241644794" ignored="false" />
     <file path="/BallotScannerUI.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371651324008" ignored="false" />
-    <file path="/BallotScanner.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371601659929" ignored="false" />
+    <file path="/BallotScanner.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371651843840" ignored="false" />
     <file path="/Code128Decoder.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371582271444" ignored="false" />
     <file path="/BallotScannerUITester.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371567235002" ignored="false" />
     <file path="/IState.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371589450748" ignored="false" />
@@ -179,19 +178,22 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="BallotScanner.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="BallotScanner.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/ballotscanner/BallotScanner.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="2" column="7" selection-start="31" selection-end="31" vertical-scroll-proportion="0.0">
-              <folding />
+            <state line="27" column="70" selection-start="748" selection-end="748" vertical-scroll-proportion="0.26532888">
+              <folding>
+                <element signature="e#2211#2423#0" expanded="true" />
+                <element signature="e#2412#2413#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="BallotScannerUI.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="BallotScannerUI.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ballotscanner/BallotScannerUI.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="27" column="43" selection-start="783" selection-end="783" vertical-scroll-proportion="0.43589744">
+            <state line="118" column="10" selection-start="4207" selection-end="4207" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -275,8 +277,8 @@
         <option value="$PROJECT_DIR$/tap/Tap.java" />
         <option value="$PROJECT_DIR$/votebox/events/VoteBoxEventListener.java" />
         <option value="$PROJECT_DIR$/ballotscanner/state/AcceptState.java" />
-        <option value="$PROJECT_DIR$/ballotscanner/BallotScanner.java" />
         <option value="$PROJECT_DIR$/ballotscanner/BallotScannerUI.java" />
+        <option value="$PROJECT_DIR$/ballotscanner/BallotScanner.java" />
       </list>
     </option>
   </component>
@@ -771,7 +773,11 @@
       <created>1371591757483</created>
       <updated>1371591757483</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="Cleaned up code. Added comments to BallotScannerUI.">
+      <created>1371651407028</created>
+      <updated>1371651407028</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -806,6 +812,7 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3517316" sideWeight="0.50026894" order="11" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3245033" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3181818" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32355723" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -816,7 +823,6 @@
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.31060606" sideWeight="0.49973103" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Analyze Dataflow to" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32899022" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3181818" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.39924315" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
@@ -863,7 +869,7 @@
     <option name="WRAP_WHEN_TYPING_REACHES_RIGHT_MARGIN" value="false" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="Furthered the implementation of the State Design Pattern (part IV)." />
+    <option name="LAST_COMMIT_MESSAGE" value="Cleaned up code. Added comments to BallotScannerUI." />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="false" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -877,7 +883,6 @@
     <option name="UPDATE_FILTER_BY_SCOPE" value="false" />
     <option name="SHOW_FILE_HISTORY_AS_TREE" value="false" />
     <option name="FILE_HISTORY_SPLITTER_PROPORTION" value="0.6" />
-    <MESSAGE value="Deleted unnecessary ant build files" />
     <MESSAGE value="Altered the printable heights to format properly&#10;" />
     <MESSAGE value="Fixed the Review Screen selections." />
     <MESSAGE value="Stripped out SDL code since we don't use it" />
@@ -902,6 +907,7 @@
     <MESSAGE value="Furthered the implementation of the State Design Pattern (part II)." />
     <MESSAGE value="Furthered the implementation of the State Design Pattern (part III)." />
     <MESSAGE value="Furthered the implementation of the State Design Pattern (part IV)." />
+    <MESSAGE value="Cleaned up code. Added comments to BallotScannerUI." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -961,13 +967,6 @@
         <state line="57" column="12" selection-start="1585" selection-end="1585" vertical-scroll-proportion="0.71666664" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ballotscanner/BallotScanner.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="2" column="7" selection-start="31" selection-end="31" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/ballotscanner/state/AcceptState.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="18" column="33" selection-start="426" selection-end="426" vertical-scroll-proportion="0.0">
@@ -1014,8 +1013,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/ballotscanner/BallotScannerUI.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="27" column="43" selection-start="783" selection-end="783" vertical-scroll-proportion="0.43589744">
+        <state line="118" column="10" selection-start="4207" selection-end="4207" vertical-scroll-proportion="0.0">
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ballotscanner/BallotScanner.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="27" column="70" selection-start="748" selection-end="748" vertical-scroll-proportion="0.26532888">
+          <folding>
+            <element signature="e#2211#2423#0" expanded="true" />
+            <element signature="e#2412#2413#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
