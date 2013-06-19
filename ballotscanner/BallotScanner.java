@@ -214,7 +214,8 @@ public class BallotScanner{
         try {
             auditorium = new VoteBoxAuditoriumConnector(mySerial,
                     _constants, BallotScanAcceptedEvent.getMatcher(),
-                    BallotScanRejectedEvent.getMatcher()
+                    BallotScanRejectedEvent.getMatcher(),
+                    PollMachinesEvent.getMatcher()
             );
         } catch (NetworkException e1) {
             //NetworkException represents a recoverable error
@@ -335,7 +336,9 @@ public class BallotScanner{
 
             public void uploadChallengedBallots(ChallengedBallotUploadEvent challengedBallotUploadEvent) {}
 
-            public void pollMachines(PollMachinesEvent pollMachinesEvent) {}
+            public void pollMachines(PollMachinesEvent pollMachinesEvent) {
+                auditorium.announce(getStatus());
+            }
 
             public void ballotAccepted(BallotScanAcceptedEvent event){
 
