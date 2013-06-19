@@ -62,6 +62,12 @@ public class RejectState extends AState {
             System.out.println("Transitioning from REJECT STATE to PROMPT STATE!");
             return;
         }
+        if(updateMode == -1)
+        {
+            context.state = InactiveState.SINGLETON;
+            System.out.println("Transitioning from REJECT STATE to INACTIVE STATE!");
+            return;
+        }
         if(updateMode == 1)
         {
             context.state = AcceptState.SINGLETON;

@@ -15,6 +15,7 @@ import java.awt.image.BufferedImage;
 public class BallotScannerUI extends JFrame {
 
     /* Transition states to be used with the updateFrame method. */
+    public static final int TO_INACTIVE_STATE = -1;
     public static final int NO_TRANSITION = 0;
     public static final int TO_ACCEPT_STATE = 1;
     public static final int TO_REJECT_STATE = 2;
