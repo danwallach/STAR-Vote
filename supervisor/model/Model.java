@@ -1063,6 +1063,10 @@ public class Model {
                 // NO-OP
             }
 
+            public void scannerstart(StartScannerEvent startScannerEvent) {
+                // NO-OP
+            }
+
         });
 
         try {

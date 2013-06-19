@@ -948,6 +948,10 @@ public class VoteBox{
 
             public void uploadChallengedBallots(ChallengedBallotUploadEvent challengedBallotUploadEvent) {}
 
+            public void scannerstart(StartScannerEvent startScannerEvent) {
+                // NO-OP
+            }
+
 
             public void ballotScanned(BallotScannedEvent e) {
                 // NO-OP

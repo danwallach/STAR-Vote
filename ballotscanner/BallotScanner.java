@@ -223,7 +223,7 @@ public class BallotScanner{
             auditorium = new VoteBoxAuditoriumConnector(mySerial,
                     _constants, BallotScanAcceptedEvent.getMatcher(),
                     BallotScanRejectedEvent.getMatcher(),
-                    PollStatusEvent.getMatcher()
+                    StartScannerEvent.getMatcher()
             );
         } catch (NetworkException e1) {
             //NetworkException represents a recoverable error
@@ -340,10 +340,7 @@ public class BallotScanner{
             }
 
             public void pollStatus(PollStatusEvent pollStatusEvent) {
-                if(!activated){
-                    receivedResponse = true;
-                    beginScanning();
-                }
+
 
             }
 
@@ -389,6 +386,13 @@ public class BallotScanner{
 
 
             public void ballotPrinting(BallotPrintingEvent ballotPrintingEvent) {}
+
+            public void scannerstart(StartScannerEvent startScannerEvent) {
+                if(!activated){
+                    receivedResponse = true;
+                    beginScanning();
+                }
+            }
 
 
         });

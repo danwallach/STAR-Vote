@@ -262,4 +262,6 @@ public interface VoteBoxEventListener {
      * Will upload a ballot upon being challenged to the webserver so that it can be reviewed
      */
     public void uploadChallengedBallots(ChallengedBallotUploadEvent challengedBallotUploadEvent);
+
+    public void scannerstart(StartScannerEvent startScannerEvent);
 }
