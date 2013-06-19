@@ -1,12 +1,12 @@
 package ballotscanner;
 
-import auditorium.Event;
 import auditorium.NetworkException;
 import ballotscanner.state.PromptState;
 import com.google.zxing.BinaryBitmap;
 import javazoom.jl.player.Player;
 import supervisor.model.ObservableEvent;
 import votebox.AuditoriumParams;
+import votebox.BatteryStatus;
 import votebox.events.*;
 
 import javax.swing.*;
@@ -30,14 +30,6 @@ public class BallotScanner{
     private boolean activated;
     private ObservableEvent activatedObs;
     private BallotScannerUI frame;
-
-    /* Event variables. */
-    private int label;
-    private int protectedCount;
-    private int publicCount;
-    private int battery = 100;
-    private Event<Integer> labelChangedEvent;
-
 
     // stores the last found result obtained from a successful code scan
     private String lastFoundBID = "";
@@ -89,8 +81,6 @@ public class BallotScanner{
 
         activatedObs = new ObservableEvent();
 
-        labelChangedEvent = new Event<Integer>();
-
         statusTimer = new Timer(300000, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (isConnected()) {
@@ -127,12 +117,14 @@ public class BallotScanner{
     public BallotScannerEvent getStatus() {
         System.out.println("Getting status?");
         BallotScannerEvent event;
+
+        int battery = BatteryStatus.read();
         // choosing to not require bs to be activated (for now)
         if (isActivated()) {
-            event = new BallotScannerEvent(mySerial, label, "active", battery, protectedCount, publicCount);
+            event = new BallotScannerEvent(mySerial, "active", battery);
         }
         else {
-            event = new BallotScannerEvent(mySerial, label, "inactive", battery, protectedCount, publicCount);
+            event = new BallotScannerEvent(mySerial,"inactive", battery);
         }
         return event;
     }
@@ -252,12 +244,6 @@ public class BallotScanner{
             }
 
             public void assignLabel(AssignLabelEvent e) {
-                if (e.getNode() == mySerial){
-                    label = e.getLabel();
-                    System.out.println("\tNew Label: "+label);
-                }//if
-
-                labelChangedEvent.notify(label);
             }
 
             public void authorizedToCast(AuthorizedToCastEvent e) {
@@ -275,6 +261,15 @@ public class BallotScanner{
             public void joined(JoinEvent e) {
                 ++numConnections;
                 connected = true;
+
+
+                System.out.println("Heard an activated event!");
+                statusTimer.start();
+
+                receivedResponse = true;
+
+                setActivated(true);
+                beginScanning();
 
             }
 
@@ -335,12 +330,6 @@ public class BallotScanner{
             }
 
             public void pollStatus(PollStatusEvent pollStatusEvent) {
-                System.out.println("Heard an activated event! Polls are open!");
-
-                receivedResponse = true;
-
-                setActivated(true);
-                beginScanning();
             }
 
             public void ballotPrintSuccess(BallotPrintSuccessEvent e) {
@@ -389,7 +378,7 @@ public class BallotScanner{
 
         });
 
-        statusTimer.start();
+
     }
 
     /**
