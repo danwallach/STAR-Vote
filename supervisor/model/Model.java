@@ -1010,7 +1010,7 @@ public class Model {
 
             @Override
             public void pollMachines(PollMachinesEvent pollMachinesEvent) {
-                broadcastStatus();
+                // NO-OP
             }
 
 
