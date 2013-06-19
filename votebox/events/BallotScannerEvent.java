@@ -1,12 +1,15 @@
 package votebox.events;
 
 import sexpression.*;
+import votebox.events.IAnnounceEvent;
+import votebox.events.MatcherRule;
+import votebox.events.VoteBoxEventListener;
 
 /**
- * Event that represents the ballotscanner message
- *
- * @author aroe
- */
+* Event that represents the ballotscanner message
+*
+* @author aroe, Matt Bernhard
+*/
 public class BallotScannerEvent implements IAnnounceEvent {
 
     /**
@@ -14,15 +17,22 @@ public class BallotScannerEvent implements IAnnounceEvent {
      */
     private static MatcherRule MATCHER = new MatcherRule() {
         private ASExpression pattern = new ListExpression(StringExpression
-                .makeString("ballotscanner"), StringWildcard.SINGLETON);
+                .makeString("ballotscanner"), StringWildcard.SINGLETON,
+                StringWildcard.SINGLETON, StringWildcard.SINGLETON,
+                StringWildcard.SINGLETON );
 
         public IAnnounceEvent match(int serial, ASExpression sexp) {
             ASExpression res = pattern.match(sexp);
             if (res != NoMatch.SINGLETON) {
-                String status = ((ListExpression) res).get(0).toString();
-                int battery = Integer.parseInt( ((ListExpression) res).get( 1 )
+                int label = Integer.parseInt( ((ListExpression) res).get( 0 )
                         .toString() );
-                return new BallotScannerEvent(serial, status, battery);
+                String status = ((ListExpression) res).get(1).toString();
+                int battery = Integer.parseInt(((ListExpression)res).get(2).toString());
+                int protectedCount = Integer.parseInt( ((ListExpression) res)
+                        .get(3).toString() );
+                int publicCount = Integer.parseInt( ((ListExpression) res)
+                        .get(4).toString() );
+                return new BallotScannerEvent(serial, label, status, battery, protectedCount, publicCount);
             }
 
             return null;
@@ -32,13 +42,26 @@ public class BallotScannerEvent implements IAnnounceEvent {
     };
     private int serial;
     private String status;
-
     private int battery;
+    private int protectedCount;
+    private int publicCount;
+    private int label;
 
-    public BallotScannerEvent(int serial, String status, int battery) {
+    public BallotScannerEvent(int serial, int label, String status, int battery,
+                              int protectedCount, int publicCount) {
         this.serial = serial;
+        this.label = label;
         this.status = status;
         this.battery = battery;
+        this.protectedCount = protectedCount;
+        this.publicCount = publicCount;
+    }
+
+    /**
+     * @return the label
+     */
+    public int getLabel() {
+        return label;
     }
 
     /**
@@ -52,10 +75,6 @@ public class BallotScannerEvent implements IAnnounceEvent {
         return serial;
     }
 
-    public int getBattery(){
-        return battery;
-    }
-
     /**
      * @return the status, either "active" or "inactive"
      */
@@ -63,14 +82,40 @@ public class BallotScannerEvent implements IAnnounceEvent {
         return status;
     }
 
+    /**
+     * @return the battery level
+     */
+    public int getBattery() {
+        return battery;
+    }
+
+    /**
+     * @return the protected count
+     */
+    public int getProtectedCount() {
+        return protectedCount;
+    }
+
+    /**
+     * @return the public count
+     */
+    public int getPublicCount() {
+        return publicCount;
+    }
+
     public void fire(VoteBoxEventListener l) {
         l.ballotscanner(this);
     }
 
     public ASExpression toSExp() {
-        return new ListExpression(StringExpression.makeString("ballotscanner"),
+        return new ListExpression(
+
+                StringExpression.makeString("ballotscanner"),
+                StringExpression.makeString( Integer.toString( label ) ),
                 StringExpression.makeString(status),
-                StringExpression.makeString(Integer.toString( battery ) ));
+                StringExpression.makeString(battery + ""),
+                StringExpression.makeString( Integer.toString( protectedCount ) ),
+                StringExpression.makeString( Integer.toString( publicCount ) ));
     }
 
 }
