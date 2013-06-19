@@ -48,6 +48,12 @@ public class PromptState extends AState {
 
     public void updateState(BallotScannerUI context, int updateMode)
     {
+        if(updateMode == -1)
+        {
+            context.state = InactiveState.SINGLETON;
+            System.out.println("Transitioning from PROMPT STATE to INACTIVE STATE!");
+            return;
+        }
         if(updateMode == 1)
         {
             context.state = AcceptState.SINGLETON;

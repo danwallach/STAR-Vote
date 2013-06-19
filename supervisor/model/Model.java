@@ -353,6 +353,7 @@ public class Model {
     public void openPolls() {
         auditorium.announce(new PollsOpenEvent(mySerial, new Date().getTime(),
                 keyword));
+        auditorium.announce(new StartScannerEvent( mySerial ));
     }
 
     /**
@@ -473,7 +474,6 @@ public class Model {
     public void setPollsOpen(boolean pollsOpen) {
         this.pollsOpen = pollsOpen;
         pollsOpenObs.notifyObservers();
-        auditorium.announce(new StartScannerEvent( mySerial ));
     }
 
     /**
@@ -984,7 +984,6 @@ public class Model {
             }
 
             public void ballotScanned(BallotScannedEvent e) {
-                System.err.println("Found a BallotScannedEvent! ? ");
                 String bid = e.getBID();
                 int serial = e.getSerial();
                 if (committedBids.containsKey(bid)){
