@@ -25,7 +25,7 @@ public class BallotScanAcceptedEvent implements IAnnounceEvent{
                 .makeString("ballot-accepted %bid:#string"));
 
         public IAnnounceEvent match(int serial, ASExpression sexp) {
-
+            System.out.println(">>>> SEXP: " + sexp.toString());
             HashMap<String, ASExpression> result = pattern.namedMatch(sexp);
             if (result != NamedNoMatch.SINGLETON) {
                 return new BallotScanAcceptedEvent(result.get("bid"));
