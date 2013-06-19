@@ -486,7 +486,7 @@ public class Model {
                     AuthorizedToCastWithNIZKsEvent.getMatcher(), AdderChallengeEvent.getMatcher(),
                     PinEnteredEvent.getMatcher(), InvalidPinEvent.getMatcher(),
                     PollStatusEvent.getMatcher(), BallotPrintSuccessEvent.getMatcher(),
-                    BallotScannedEvent.getMatcher());
+                    BallotScannedEvent.getMatcher(), IdentifyMachineEvent.getMatcher());
 
 
         } catch (NetworkException e1) {
@@ -605,6 +605,12 @@ public class Model {
                 numConnected++;
                 setConnected(true);
                 machinesChangedObs.notifyObservers();
+
+                //checks for unknown machines
+                if(getNumConnected()!=getMachines().size()-1){
+                    auditorium.announce(new PollMachinesEvent(mySerial, new Date().getTime(),
+                            keyword));
+                }
             }
 
             /**
@@ -795,6 +801,8 @@ public class Model {
              * hasn't been seen, and updates its status if it has.
              */
             public void supervisor(SupervisorEvent e) {
+                auditorium.announce(new PollMachinesEvent(mySerial, new Date().getTime(),
+                        keyword));
                 AMachine m = getMachineForSerial(e.getSerial());
                 if (m != null && !(m instanceof SupervisorMachine))
                     throw new IllegalStateException(
@@ -1004,6 +1012,24 @@ public class Model {
 
             public void uploadChallengedBallots(ChallengedBallotUploadEvent challengedBallotUploadEvent) {
                 // NO-OP
+            }
+
+            @Override
+            public void pollMachines(PollMachinesEvent pollMachinesEvent) {
+
+            }
+
+            @Override
+            public void identifyMachine(IdentifyMachineEvent identifyMachineEvent) {
+                if(machines.size()==getNumConnected()-1)
+                    return;
+                 for(AMachine m : machines){
+                     if(m.getSerial()==identifyMachineEvent.getSerial())
+                         return;
+                 }
+                if(identifyMachineEvent.getMachineType().equals("VoteBox"))   {
+                    machines.add(new VoteBoxBooth(identifyMachineEvent.getSerial()));
+                }
             }
 
         });

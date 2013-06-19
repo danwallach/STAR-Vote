@@ -262,4 +262,16 @@ public interface VoteBoxEventListener {
      * Will upload a ballot upon being challenged to the webserver so that it can be reviewed
      */
     public void uploadChallengedBallots(ChallengedBallotUploadEvent challengedBallotUploadEvent);
+
+    /**
+     * Polls all machines when an unknown connection is detected and attempts add that machine to known machines
+     * @param pollMachinesEvent
+     */
+    public void pollMachines(PollMachinesEvent pollMachinesEvent);
+
+    /**
+     * Responds to poll Machines method with the serial of the machine allowing super to identify unknown machines
+     * @param identifyMachineEvent
+     */
+    void identifyMachine(IdentifyMachineEvent identifyMachineEvent);
 }
