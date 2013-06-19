@@ -5,7 +5,7 @@ import sexpression.*;
 /**
  * Event that represents the ballotscanner message
  *
- * @author aroe
+ * @author aroe, Matt Bernhard
  */
 public class BallotScannerEvent implements IAnnounceEvent {
 
@@ -14,14 +14,20 @@ public class BallotScannerEvent implements IAnnounceEvent {
      */
     private static MatcherRule MATCHER = new MatcherRule() {
         private ASExpression pattern = new ListExpression(StringExpression
-                .makeString("ballotscanner"), StringWildcard.SINGLETON, StringWildcard.SINGLETON);
+                .makeString("ballotscanner"), StringWildcard.SINGLETON,
+                StringWildcard.SINGLETON, StringWildcard.SINGLETON,
+                StringWildcard.SINGLETON );
 
         public IAnnounceEvent match(int serial, ASExpression sexp) {
             ASExpression res = pattern.match(sexp);
             if (res != NoMatch.SINGLETON) {
                 String status = ((ListExpression) res).get(0).toString();
                 int battery = Integer.parseInt(((ListExpression)res).get(1).toString());
-                return new BallotScannerEvent(serial, status, battery);
+                int protectedCount = Integer.parseInt( ((ListExpression) res)
+                        .get(2).toString() );
+                int publicCount = Integer.parseInt( ((ListExpression) res)
+                        .get(3).toString() );
+                return new BallotScannerEvent(serial, status, battery, protectedCount, publicCount);
             }
 
             return null;
@@ -32,11 +38,16 @@ public class BallotScannerEvent implements IAnnounceEvent {
     private int serial;
     private String status;
     private int battery;
+    private int protectedCount;
+    private int publicCount;
 
-    public BallotScannerEvent(int serial, String status, int battery) {
+    public BallotScannerEvent(int serial, String status, int battery,
+                              int protectedCount, int publicCount) {
         this.serial = serial;
         this.status = status;
         this.battery = battery;
+        this.protectedCount = protectedCount;
+        this.publicCount = publicCount;
     }
 
     /**
@@ -64,13 +75,29 @@ public class BallotScannerEvent implements IAnnounceEvent {
         return battery;
     }
 
+    /**
+     * @return the protected count
+     */
+    public int getProtectedCount() {
+        return protectedCount;
+    }
+
+    /**
+     * @return the public count
+     */
+    public int getPublicCount() {
+        return publicCount;
+    }
+
     public void fire(VoteBoxEventListener l) {
         l.ballotscanner(this);
     }
 
     public ASExpression toSExp() {
         return new ListExpression(StringExpression.makeString("ballotscanner"),
-                StringExpression.makeString(status), StringExpression.makeString(battery + ""));
+                StringExpression.makeString(status), StringExpression.makeString(battery + ""),
+                StringExpression.makeString( Integer.toString( protectedCount ) ),
+                StringExpression.makeString( Integer.toString( publicCount ) ));
     }
 
 }
