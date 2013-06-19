@@ -962,7 +962,7 @@ public class VoteBox{
 
             @Override
             public void pollMachines(PollMachinesEvent pollMachinesEvent) {
-                auditorium.announce(new IdentifyMachineEvent(mySerial, "VoteBox", new Date().getTime()));
+                auditorium.announce(new IdentifyMachineEvent(mySerial, new Date().getTime(), "VoteBox"));
             }
 
             @Override

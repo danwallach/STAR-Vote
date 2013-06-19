@@ -1021,6 +1021,7 @@ public class Model {
 
             @Override
             public void identifyMachine(IdentifyMachineEvent identifyMachineEvent) {
+                System.out.println("Identified");
                 if(machines.size()==getNumConnected()-1)
                     return;
                  for(AMachine m : machines){
