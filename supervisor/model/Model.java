@@ -984,7 +984,6 @@ public class Model {
             }
 
             public void ballotScanned(BallotScannedEvent e) {
-                System.err.println("Found a BallotScannedEvent! ? ");
                 String bid = e.getBID();
                 int serial = e.getSerial();
                 if (committedBids.containsKey(bid)){
