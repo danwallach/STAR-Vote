@@ -192,6 +192,7 @@ public class VoteBoxEventNotifier implements VoteBoxEventListener {
 	}
 
     public void ballotScanned(BallotScannedEvent e) {
+
         for (VoteBoxEventListener l : listeners)
             l.ballotScanned(e);
     }

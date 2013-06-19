@@ -1,9 +1,6 @@
 package votebox.events;
 
 import sexpression.*;
-import votebox.events.IAnnounceEvent;
-import votebox.events.MatcherRule;
-import votebox.events.VoteBoxEventListener;
 
 /**
 * Event that represents the ballotscanner message
