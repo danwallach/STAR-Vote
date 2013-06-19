@@ -183,6 +183,7 @@ public class BallotScanner{
                 if(start - lastFoundTime > 5000){
                     if(lastFoundBID != null){
                         receivedResponse = false;
+
                         auditorium.announce(new BallotScannedEvent(mySerial, lastFoundBID));
 
                         // play confirmation sound
@@ -339,6 +340,10 @@ public class BallotScanner{
             }
 
             public void pollStatus(PollStatusEvent pollStatusEvent) {
+                if(!activated){
+                    receivedResponse = true;
+                    beginScanning();
+                }
 
             }
 
