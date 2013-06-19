@@ -34,6 +34,13 @@ public class ChallengedBallotUploadEvent implements IAnnounceEvent {
         }
     };
 
+    /**
+     * @return a MatcherRule for parsing this event type.
+     */
+    public static MatcherRule getMatcher(){
+        return MATCHER;
+    }//getMatcher
+
 
     public ChallengedBallotUploadEvent(int serial, ASExpression challengedBallots) {
         this.serial = serial;
