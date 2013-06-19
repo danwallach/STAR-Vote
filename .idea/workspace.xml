@@ -7,8 +7,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="26d876ad-6b77-4796-b9d0-ead84066c769" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/votebox/events/CastBallotUploadEvent.java" afterPath="$PROJECT_DIR$/votebox/events/CastBallotUploadEvent.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/votebox/events/ChallengedBallotUploadEvent.java" afterPath="$PROJECT_DIR$/votebox/events/ChallengedBallotUploadEvent.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tap/Tap.java" afterPath="$PROJECT_DIR$/tap/Tap.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
@@ -49,7 +47,7 @@
     <file path="/ToggleButton.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370358039224" ignored="false" />
     <file path="/RaceTitlePair.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369945268870" ignored="false" />
     <file path="/Label.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370369156357" ignored="false" />
-    <file path="/Dummy.txt" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371658336834" ignored="false" />
+    <file path="/Dummy.txt" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371660233268" ignored="false" />
     <file path="/ALayoutComponent.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370380215222" ignored="false" />
     <file path="/HTMLPrinter.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371498673490" ignored="false" />
     <file path="/InactiveUI.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371241853749" ignored="false" />
@@ -67,7 +65,7 @@
     <file path="/InactiveState.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371593596662" ignored="false" />
     <file path="/ElectionInfoPanel.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371591614926" ignored="false" />
     <file path="/UserInfoPanel.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371591066832" ignored="false" />
-    <file path="/Tap.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371659291531" ignored="false" />
+    <file path="/Tap.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371660610778" ignored="false" />
     <file path="/VoteBoxEventListener.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371594677509" ignored="false" />
     <file path="/BallotScannerEvent.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371658198983" ignored="false" />
     <file path="/BallotScannerMachine.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371657973043" ignored="false" />
@@ -178,19 +176,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="BallotScanner.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ballotscanner/BallotScanner.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="121" column="57" selection-start="3369" selection-end="3369" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="VoteBox.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="VoteBox.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/votebox/VoteBox.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="80" column="40" selection-start="2706" selection-end="2706" vertical-scroll-proportion="-0.09259259">
+            <state line="121" column="76" selection-start="3840" selection-end="3840" vertical-scroll-proportion="-21.0">
               <folding />
             </state>
           </provider>
@@ -246,10 +235,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Tap.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="Tap.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tap/Tap.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="85" column="33" selection-start="3040" selection-end="3040" vertical-scroll-proportion="0.0">
+            <state line="82" column="67" selection-start="2936" selection-end="2936" vertical-scroll-proportion="0.25218233">
               <folding>
                 <element signature="n#!!doc" expanded="true" />
                 <element signature="imports" expanded="true" />
@@ -980,7 +969,11 @@
       <created>1371658340882</created>
       <updated>1371658340882</updated>
     </task>
-    <option name="localTasksCounter" value="33" />
+    <task id="LOCAL-00033" summary="Working on the WebServer">
+      <created>1371660239334</created>
+      <updated>1371660239334</updated>
+    </task>
+    <option name="localTasksCounter" value="34" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -1072,7 +1065,7 @@
     <option name="WRAP_WHEN_TYPING_REACHES_RIGHT_MARGIN" value="false" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="updated to a more useful event and machine for scanner" />
+    <option name="LAST_COMMIT_MESSAGE" value="Working on the WebServer" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="false" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -1086,7 +1079,6 @@
     <option name="UPDATE_FILTER_BY_SCOPE" value="false" />
     <option name="SHOW_FILE_HISTORY_AS_TREE" value="false" />
     <option name="FILE_HISTORY_SPLITTER_PROPORTION" value="0.6" />
-    <MESSAGE value="Fixed all the issues with shifting. The only remaining TODO would be setting the PRESIDENTIAL_RACE_LABEL_COMPONENT_HEIGHT attribute, in PsychLayoutManager.java." />
     <MESSAGE value="Updated print scaling code, added a method to scale more smoothly" />
     <MESSAGE value="Fixed the bug related to the override nonce. Instead of crashing without sending any useful information, the system now prints an error message and throws a Runtime Exception." />
     <MESSAGE value="Fixed rendering. It now renders all the selection images to be the same size." />
@@ -1111,6 +1103,7 @@
     <MESSAGE value="Working on getting BallotScanner to actually work. Seriously." />
     <MESSAGE value="Updated ballotScanner to implement a battery" />
     <MESSAGE value="updated to a more useful event and machine for scanner" />
+    <MESSAGE value="Working on the WebServer" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1173,16 +1166,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tap/Tap.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="85" column="33" selection-start="3040" selection-end="3040" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/supervisor/model/VoteBoxBooth.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="67" column="81" selection-start="1964" selection-end="1964" vertical-scroll-proportion="0.0">
@@ -1232,15 +1215,25 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/ballotscanner/BallotScanner.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="121" column="57" selection-start="3369" selection-end="3369" vertical-scroll-proportion="0.0">
+        <state line="121" column="57" selection-start="3369" selection-end="3369" vertical-scroll-proportion="1.5594059">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/votebox/VoteBox.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="80" column="40" selection-start="2706" selection-end="2706" vertical-scroll-proportion="-0.09259259">
+        <state line="121" column="76" selection-start="3840" selection-end="3840" vertical-scroll-proportion="-21.0">
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tap/Tap.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="82" column="67" selection-start="2936" selection-end="2936" vertical-scroll-proportion="0.25218233">
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
