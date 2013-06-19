@@ -80,6 +80,7 @@ public class Tap {
         }
     }//forward
 
+    // TODO update this when our own database/server is implemented
     protected void dumpBallotList(ArrayList<String> ballotList) {
         try {
 //            todo: revert this hard-coded value for demo
