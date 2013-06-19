@@ -2,7 +2,6 @@ package ballotscanner;
 
 import auditorium.NetworkException;
 import ballotscanner.state.PromptState;
-import ballotscanner.state.RejectState;
 import com.google.zxing.BinaryBitmap;
 import javazoom.jl.player.Player;
 import supervisor.model.ObservableEvent;
@@ -95,7 +94,7 @@ public class BallotScanner{
         decoder = new Code128Decoder();
 
         //Set up the JFrame confirmation screen
-        frame = new BallotScannerUI(_constants.getElectionName(), _constants.getConfirmationSoundPath());
+        frame = new BallotScannerUI(_constants.getElectionName());
     }
 
     /**

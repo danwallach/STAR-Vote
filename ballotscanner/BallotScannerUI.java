@@ -2,14 +2,9 @@ package ballotscanner;
 
 import ballotscanner.state.AState;
 import ballotscanner.state.InactiveState;
-import ballotscanner.state.PromptState;
-import javazoom.jl.player.Player;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
 /**
  * @author mrdouglass95, Mircea Berechet
@@ -19,26 +14,34 @@ import java.io.IOException;
  */
 public class BallotScannerUI extends JFrame {
 
+    /* Transition states to be used with the updateFrame method. */
     public static final int NO_TRANSITION = 0;
     public static final int TO_ACCEPT_STATE = 1;
     public static final int TO_REJECT_STATE = 2;
     public static final int TO_PROMPT_STATE = 3;
 
+    /* The main panel for the UI. */
     private JPanel mainPanel;
 
+    /* Panels that display election/status information on the UI. */
     public ElectionInfoPanel electionInfoPanel;
     public UserInfoPanel userInfoPanel;
 
-    private BufferedImage rejectImage;
-    private BufferedImage acceptImage;
-    private BufferedImage waitingImage;
-    private BufferedImage inactiveImage;
+    /* The image that represents the scanner/UI's current state. It is now "deprecated" and should be removed.
+    * TODO All uses of responseImage should be replaced with calls to state.getStateImage()*/
     public BufferedImage responseImage;
 
+    /* The name of the election for which the scanner/UI is currently being used. */
     public String electionName;
+
+    /* The current state of this scanner/UI. */
     public AState state;
 
-    public BallotScannerUI(String electionName, String mp3Path){
+    /**
+     * Constructor for a BallotScannerUI.
+     * @param electionName - the name of the election, to be displayed on the GUI.
+     */
+    public BallotScannerUI(String electionName){
         super("STAR-Vote Ballot Scanner");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(600,600);
@@ -49,34 +52,6 @@ public class BallotScannerUI extends JFrame {
 
         this.electionName = electionName;
 
-
-//        try{
-//            acceptImage = ImageIO.read(new File("images/accept_ballot.png"));
-//        }catch(IOException ioe){
-//            System.out.println("BallotScannerUI: Could not locate accept image");
-//            acceptImage = null;
-//        }
-//
-//        try{
-//            rejectImage = ImageIO.read(new File("images/reject_ballot.png"));
-//        }catch(IOException ioe){
-//            System.out.println("BallotScannerUI: Could not locate reject image");
-//            rejectImage = null;
-//        }
-//
-//        try{
-//            waitingImage = ImageIO.read(new File("images/waiting_ballot.png"));
-//        }catch(IOException ioe){
-//            System.out.println("BallotScannerUI: Could not locate waiting image");
-//            waitingImage = null;
-//        }
-//
-//        try{
-//            inactiveImage = ImageIO.read(new File("images/inactive.png"));
-//        }catch(IOException ioe){
-//            System.out.println("BallotScannerUI: Could not locate inactive image");
-//            inactiveImage = null;
-//        }
 
         userInfoPanel = new UserInfoPanel(this);
         electionInfoPanel = new ElectionInfoPanel(this);
@@ -126,6 +101,11 @@ public class BallotScannerUI extends JFrame {
         responseImage = rejectImage;
         updateFrame();
     }*/
+
+    /**
+     * An update method that repaints the JFrame and two of its embedded components.
+     * ElectionInfoPanel and UserInfoPanel are now public, stand-alone classes.
+     */
     public void updateFrameComponents ()
     {
         electionInfoPanel.repaint();
@@ -133,6 +113,13 @@ public class BallotScannerUI extends JFrame {
         this.repaint();
     }
 
+    /**
+     * An update method that transitions the scanner/UI between states and calls the displayScreen method of the state.
+     * This should set the user info panel to contain the appropriate messages for that particular state.
+     * // TODO Find a way to pass in bid to the AcceptState (maybe by adding it as a parameter to the updateFrame function
+     * // TODO which is not used by any state except AcceptState.
+     * @param transition - the type of transition to be performed by the update method.
+     */
     public void updateFrame(int transition){
         state.updateState(this, transition);
         state.displayScreen(this);
