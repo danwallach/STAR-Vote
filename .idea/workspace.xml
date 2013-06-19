@@ -7,9 +7,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="26d876ad-6b77-4796-b9d0-ead84066c769" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ballotscanner/BallotScanner.java" afterPath="$PROJECT_DIR$/ballotscanner/BallotScanner.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/votebox/events/BallotScannerEvent.java" afterPath="$PROJECT_DIR$/votebox/events/BallotScannerEvent.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/supervisor/model/Model.java" afterPath="$PROJECT_DIR$/supervisor/model/Model.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="STAR-Vote.iws" />
@@ -49,7 +47,7 @@
     <file path="/ToggleButton.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370358039224" ignored="false" />
     <file path="/RaceTitlePair.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369945268870" ignored="false" />
     <file path="/Label.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370369156357" ignored="false" />
-    <file path="/Dummy.txt" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371655043130" ignored="false" />
+    <file path="/Dummy.txt" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371657188221" ignored="false" />
     <file path="/ALayoutComponent.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370380215222" ignored="false" />
     <file path="/HTMLPrinter.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371498673490" ignored="false" />
     <file path="/InactiveUI.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371241853749" ignored="false" />
@@ -69,6 +67,7 @@
     <file path="/UserInfoPanel.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371591066832" ignored="false" />
     <file path="/Tap.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371594433678" ignored="false" />
     <file path="/VoteBoxEventListener.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371594677509" ignored="false" />
+    <file path="/BallotScannerEvent.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371657474559" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -214,19 +213,19 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="BallotScannerEvent.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="BallotScannerEvent.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/votebox/events/BallotScannerEvent.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="28" column="0" selection-start="811" selection-end="811" vertical-scroll-proportion="0.0">
+            <state line="72" column="93" selection-start="1950" selection-end="1950" vertical-scroll-proportion="1.5720524">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="VoteBoxEvent.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="VoteBoxEvent.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/votebox/events/VoteBoxEvent.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="39" column="13" selection-start="1459" selection-end="1459" vertical-scroll-proportion="0.0713246">
+            <state line="118" column="53" selection-start="3957" selection-end="3957" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -877,7 +876,11 @@
       <created>1371654027424</created>
       <updated>1371654027424</updated>
     </task>
-    <option name="localTasksCounter" value="30" />
+    <task id="LOCAL-00030" summary="Working on getting BallotScanner to actually work. Seriously.">
+      <created>1371657193797</created>
+      <updated>1371657193797</updated>
+    </task>
+    <option name="localTasksCounter" value="31" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -969,7 +972,7 @@
     <option name="WRAP_WHEN_TYPING_REACHES_RIGHT_MARGIN" value="false" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="Cleaned up code in BallotScanner." />
+    <option name="LAST_COMMIT_MESSAGE" value="Working on getting BallotScanner to actually work. Seriously." />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="false" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -983,7 +986,6 @@
     <option name="UPDATE_FILTER_BY_SCOPE" value="false" />
     <option name="SHOW_FILE_HISTORY_AS_TREE" value="false" />
     <option name="FILE_HISTORY_SPLITTER_PROPORTION" value="0.6" />
-    <MESSAGE value="Stripped out SDL code since we don't use it" />
     <MESSAGE value="Stripped out SDL code since we don't use it (again)" />
     <MESSAGE value="Added code for shifting the images up/down in a Component." />
     <MESSAGE value="Fixed all the issues with shifting. The only remaining TODO would be setting the PRESIDENTIAL_RACE_LABEL_COMPONENT_HEIGHT attribute, in PsychLayoutManager.java." />
@@ -1008,6 +1010,7 @@
     <MESSAGE value="Cleaned up code. Added comments to BallotScannerUI." />
     <MESSAGE value="Cleaned up code in BallotScanner. Fixed warnings that static variables were accessed through an instance of a class instead of directly through the class' name. Removed unused variables." />
     <MESSAGE value="Cleaned up code in BallotScanner." />
+    <MESSAGE value="Working on getting BallotScanner to actually work. Seriously." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1091,13 +1094,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/supervisor/model/VoteBoxBooth.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="28" column="13" selection-start="1151" selection-end="1151" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/votebox/VoteBox.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="174" column="36" selection-start="5352" selection-end="5364" vertical-scroll-proportion="0.0">
@@ -1121,16 +1117,23 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/votebox/events/BallotScannerEvent.java">
+    <entry file="file://$PROJECT_DIR$/supervisor/model/VoteBoxBooth.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="28" column="0" selection-start="811" selection-end="811" vertical-scroll-proportion="0.0">
+        <state line="28" column="13" selection-start="1151" selection-end="1151" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/votebox/events/VoteBoxEvent.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="39" column="13" selection-start="1459" selection-end="1459" vertical-scroll-proportion="0.0713246">
+        <state line="118" column="53" selection-start="3957" selection-end="3957" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/votebox/events/BallotScannerEvent.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="72" column="93" selection-start="1950" selection-end="1950" vertical-scroll-proportion="1.5720524">
           <folding />
         </state>
       </provider>
