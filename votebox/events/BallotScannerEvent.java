@@ -19,7 +19,7 @@ public class BallotScannerEvent implements IAnnounceEvent {
         private ASExpression pattern = new ListExpression(StringExpression
                 .makeString("ballotscanner"), StringWildcard.SINGLETON,
                 StringWildcard.SINGLETON, StringWildcard.SINGLETON,
-                StringWildcard.SINGLETON );
+                StringWildcard.SINGLETON, StringWildcard.SINGLETON );
 
         public IAnnounceEvent match(int serial, ASExpression sexp) {
             ASExpression res = pattern.match(sexp);
