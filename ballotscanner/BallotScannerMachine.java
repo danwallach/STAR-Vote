@@ -17,23 +17,11 @@ public class BallotScannerMachine extends AMachine {
    */
   public static final int INACTIVE = 7;
 
-  private boolean currentMachine;
-
   /**
    * Constructs a new supervisor machine
    * @param serial the serial number of the ballotscanner
-   * @param current whether the ballotscanner is the current ballotscanner
    */
-  public BallotScannerMachine(int serial, boolean current) {
+  public BallotScannerMachine(int serial) {
     super(serial);
-    this.currentMachine = current;
   }
-
-  /**
-   * @return whether this is the current machine
-   */
-  public boolean isCurrentMachine() {
-    return currentMachine;
-  }
-
 }
