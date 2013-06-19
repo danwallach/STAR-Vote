@@ -167,6 +167,8 @@ public class BallotScanner{
 
                 if(start - lastFoundTime > 5000){
                     if(lastFoundBID != null){
+                        receivedResponse = false;
+                        auditorium.announce(new BallotScannedEvent(mySerial, lastFoundBID));
 
                         // play confirmation sound
                         new Thread() {
@@ -188,9 +190,6 @@ public class BallotScanner{
 
                         lastFoundTime = System.currentTimeMillis();
                         System.out.println("Last found BID: " + lastFoundBID);  //TODO Is this needed?
-                        System.out.println("Got in the if statement and set receivedResponse to false!");
-                        receivedResponse = false;
-                        auditorium.announce(new BallotScannedEvent(mySerial, lastFoundBID));
                     }
                 }
             }

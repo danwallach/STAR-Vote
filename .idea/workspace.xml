@@ -7,6 +7,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="26d876ad-6b77-4796-b9d0-ead84066c769" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ballotscanner/BallotScanner.java" afterPath="$PROJECT_DIR$/ballotscanner/BallotScanner.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="STAR-Vote.iws" />
@@ -46,7 +47,7 @@
     <file path="/ToggleButton.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370358039224" ignored="false" />
     <file path="/RaceTitlePair.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1369945268870" ignored="false" />
     <file path="/Label.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370369156357" ignored="false" />
-    <file path="/Dummy.txt" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371653381435" ignored="false" />
+    <file path="/Dummy.txt" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371654017565" ignored="false" />
     <file path="/ALayoutComponent.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1370380215222" ignored="false" />
     <file path="/HTMLPrinter.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371498673490" ignored="false" />
     <file path="/InactiveUI.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371241853749" ignored="false" />
@@ -176,10 +177,11 @@
       <file leaf-file-name="BallotScanner.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/ballotscanner/BallotScanner.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="196" column="9" selection-start="5955" selection-end="5955" vertical-scroll-proportion="0.8864775">
+            <state line="191" column="102" selection-start="5785" selection-end="5785" vertical-scroll-proportion="0.50250417">
               <folding>
                 <element signature="e#2211#2423#0" expanded="true" />
                 <element signature="e#2412#2413#0" expanded="true" />
+                <element signature="class#4739:5604" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -188,7 +190,7 @@
       <file leaf-file-name="BallotScannerUI.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ballotscanner/BallotScannerUI.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="118" column="10" selection-start="4207" selection-end="4207" vertical-scroll-proportion="0.0">
+            <state line="31" column="38" selection-start="1015" selection-end="1028" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -780,7 +782,11 @@
       <created>1371653395128</created>
       <updated>1371653395128</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="Cleaned up code in BallotScanner.">
+      <created>1371654027424</created>
+      <updated>1371654027424</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="TodoView" selected-index="4">
@@ -1016,17 +1022,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/ballotscanner/BallotScannerUI.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="118" column="10" selection-start="4207" selection-end="4207" vertical-scroll-proportion="0.0">
+        <state line="31" column="38" selection-start="1015" selection-end="1028" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ballotscanner/BallotScanner.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="196" column="9" selection-start="5955" selection-end="5955" vertical-scroll-proportion="0.8864775">
+        <state line="191" column="102" selection-start="5785" selection-end="5785" vertical-scroll-proportion="0.50250417">
           <folding>
             <element signature="e#2211#2423#0" expanded="true" />
             <element signature="e#2412#2413#0" expanded="true" />
+            <element signature="class#4739:5604" expanded="false" />
           </folding>
         </state>
       </provider>
