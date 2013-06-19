@@ -23,7 +23,9 @@ public class BallotScannerEvent implements IAnnounceEvent {
 
         public IAnnounceEvent match(int serial, ASExpression sexp) {
             ASExpression res = pattern.match(sexp);
+            System.out.println("res is: " + res);
             if (res != NoMatch.SINGLETON) {
+                System.out.println("It matched! " + res.toString());
                 int label = Integer.parseInt( ((ListExpression) res).get( 0 )
                         .toString() );
                 String status = ((ListExpression) res).get(1).toString();
@@ -113,7 +115,7 @@ public class BallotScannerEvent implements IAnnounceEvent {
                 StringExpression.makeString("ballotscanner"),
                 StringExpression.makeString( Integer.toString( label ) ),
                 StringExpression.makeString(status),
-                StringExpression.makeString(battery + ""),
+                StringExpression.makeString( Integer.toString( battery ) ),
                 StringExpression.makeString( Integer.toString( protectedCount ) ),
                 StringExpression.makeString( Integer.toString( publicCount ) ));
     }
