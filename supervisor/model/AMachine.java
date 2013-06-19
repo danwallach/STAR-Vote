@@ -22,8 +22,6 @@
 
 package supervisor.model;
 
-import ballotscanner.BallotScannerMachine;
-
 import java.util.Observer;
 
 /**

@@ -154,7 +154,8 @@ public class VoteBoxEvent implements IAnnounceEvent {
     }
 
     public ASExpression toSExp() {
-        return new ListExpression( StringExpression.makeString( "votebox" ),
+        return new ListExpression(
+                StringExpression.makeString( "votebox" ),
                 StringExpression.makeString( Integer.toString( label ) ),
                 StringExpression.makeString( status ), StringExpression
                         .makeString( Integer.toString( battery ) ),

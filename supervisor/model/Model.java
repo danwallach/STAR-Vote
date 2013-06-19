@@ -33,7 +33,6 @@ import java.util.*;
 import javax.swing.*;
 import javax.swing.Timer;
 
-import ballotscanner.BallotScannerMachine;
 import edu.uconn.cse.adder.PrivateKey;
 import edu.uconn.cse.adder.PublicKey;
 
@@ -184,9 +183,11 @@ public class Model {
 
                     BallotScannerMachine ma = (BallotScannerMachine)m;
                     if(ma.getStatus() == BallotScannerMachine.ACTIVE){
-                        s = new BallotScannerEvent(ma.getSerial(), "active");
+                        s = new BallotScannerEvent(ma.getSerial(), ma.getLabel(), "active",
+                                ma.getBattery(), ma.getProtectedCount(), ma.getPublicCount());
                     } else if(ma.getStatus() == BallotScannerMachine.INACTIVE){
-                        s = new BallotScannerEvent(ma.getSerial(), "inactive");
+                        s = new BallotScannerEvent(ma.getSerial(), ma.getLabel(), "inactive",
+                                ma.getBattery(), ma.getProtectedCount(), ma.getPublicCount());
                     }
                 }
                 if (s == null)
@@ -773,8 +774,8 @@ public class Model {
                                     + e.getSerial()
                                     + " is not a ballotscanner, but broadcasted ballotscanner message");
                 if (m == null) {
-                    m = new BallotScannerMachine(e.getSerial(),
-                            e.getSerial() == mySerial);
+                    m = new BallotScannerMachine(e.getSerial());
+                    System.out.println("Ballot Scanner Added: " + m);
                     machines.add(m);
                     machinesChangedObs.notifyObservers();
                 }
@@ -784,9 +785,52 @@ public class Model {
                 } else if (e.getStatus().equals("inactive"))
                     bsm.setStatus(BallotScannerMachine.INACTIVE);
                 else
-                    throw new IllegalStateException(
-                            "Invalid BallotScanner Status: " + e.getStatus());
+                    throw new IllegalStateException("Invalid BallotScanner Status: "
+                            + e.getStatus());
+                bsm.setBattery(e.getBattery());
+                bsm.setProtectedCount(e.getProtectedCount());
+                bsm.setPublicCount(e.getPublicCount());
                 bsm.setOnline(true);
+                ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                //Check to see if this votebox has a conflicting label
+
+                //TODO Apparently this doesn't do what it says it does....
+                if (e.getLabel() > 0){
+                    for(AMachine machine : machines){
+                        if(machine.getLabel() == e.getLabel() && machine != m){
+                            //If there is a conflict, relabel this (the event generator) machine.
+                            int maxlabel = 0;
+                            for(AMachine ma : machines){
+                                if(ma instanceof BallotScannerMachine)
+                                    maxlabel = (int)Math.max(maxlabel, ma.getLabel());
+                            }//for
+
+                            auditorium.announce(new AssignLabelEvent(mySerial, e.getSerial(), maxlabel + 1));
+                            return;
+                        }
+                    }
+                }//if
+
+                if (e.getLabel() > 0)
+                    bsm.setLabel(e.getLabel());
+                else {
+                    if (activated) {
+                        if (bsm.getLabel() > 0)
+                            auditorium.announce(new AssignLabelEvent(mySerial, e.getSerial(), bsm.getLabel()));
+                        else {
+                            int maxlabel = 0;
+                            for (AMachine ma : machines) {
+                                if (ma instanceof BallotScannerMachine && ((BallotScannerMachine) ma).getLabel() > maxlabel)
+                                {
+                                    maxlabel = ((BallotScannerMachine) ma).getLabel();
+                                }
+                            }
+                            auditorium.announce(new AssignLabelEvent(mySerial, e
+                                    .getSerial(), maxlabel + 1));
+                        }
+                        auditorium.announce(new PollStatusEvent(mySerial, e.getSerial(), pollsOpen ? 1:0 ));
+                    }
+                }
             }
 
 

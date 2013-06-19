@@ -1,9 +1,6 @@
 package supervisor.view;
 
-import ballotscanner.BallotScannerMachine;
-import supervisor.model.Model;
-import supervisor.model.SupervisorMachine;
-import supervisor.model.VoteBoxBooth;
+import supervisor.model.BallotScannerMachine;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
