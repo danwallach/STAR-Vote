@@ -181,6 +181,7 @@ public class Model {
                     else if (ma.getLabel() > maxlabel)
                         maxlabel = ma.getLabel();
                 } else if(m instanceof BallotScannerMachine){
+
                     BallotScannerMachine ma = (BallotScannerMachine)m;
                     if(ma.getStatus() == BallotScannerMachine.ACTIVE){
                         s = new BallotScannerEvent(ma.getSerial(), "active");

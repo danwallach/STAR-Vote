@@ -9,6 +9,7 @@ import votebox.AuditoriumParams;
 import votebox.events.*;
 
 import javax.swing.*;
+import javax.swing.text.html.StyleSheet;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedInputStream;
@@ -113,14 +114,15 @@ public class BallotScanner{
      * @return the status
      */
     public BallotScannerEvent getStatus() {
+        System.out.println("Getting status?");
         BallotScannerEvent event;
         // choosing to not require bs to be activated (for now)
-//    if (isActivated()) {
-        event = new BallotScannerEvent(mySerial, "active");
-//    }
-//    else {
-//      event = new BallotScannerEvent(mySerial,"inactive");
-//    }
+        if (isActivated()) {
+            event = new BallotScannerEvent(mySerial, "active");
+        }
+        else {
+            event = new BallotScannerEvent(mySerial,"inactive");
+        }
         return event;
     }
 
@@ -134,7 +136,6 @@ public class BallotScanner{
     /**
      * Sets this BallotScanner's active status
      *
-     * @param activated the activated to set
      */
     public void setActivated(boolean activated) {
         this.activated = activated;
@@ -257,6 +258,16 @@ public class BallotScanner{
             public void joined(JoinEvent e) {
                 ++numConnections;
                 connected = true;
+
+
+                System.out.println("Heard an activated event!");
+                statusTimer.start();
+
+                receivedResponse = true;
+
+                setActivated(true);
+                beginScanning();
+
             }
 
             public void lastPollsOpen(LastPollsOpenEvent e) {
@@ -359,17 +370,12 @@ public class BallotScanner{
             }
 
 
-            public void ballotPrinting(BallotPrintingEvent ballotPrintingEvent) {
-            }
+            public void ballotPrinting(BallotPrintingEvent ballotPrintingEvent) {}
 
 
         });
 
-        statusTimer.start();
 
-        receivedResponse = true;
-
-        beginScanning();
     }
 
     /**
@@ -379,10 +385,15 @@ public class BallotScanner{
      * @param args - arguments to be passed to the main method, from the command line
      */
     public static void main(String[] args) {
+        BallotScanner bs;
         if (args.length == 1)
-            new BallotScanner(Integer.parseInt(args[0])).start();
+            bs = new BallotScanner(Integer.parseInt(args[0]));
         else
             //Tell VoteBox to refer to its config file for the serial number
-            new BallotScanner().start();
+            bs = new BallotScanner();
+
+//        while(!bs.activated);
+
+        bs.start();
     }
 }
