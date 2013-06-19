@@ -6,6 +6,7 @@ import com.google.zxing.BinaryBitmap;
 import javazoom.jl.player.Player;
 import supervisor.model.ObservableEvent;
 import votebox.AuditoriumParams;
+import votebox.BatteryStatus;
 import votebox.events.*;
 
 import javax.swing.*;
@@ -116,12 +117,14 @@ public class BallotScanner{
     public BallotScannerEvent getStatus() {
         System.out.println("Getting status?");
         BallotScannerEvent event;
+
+        int battery = BatteryStatus.read();
         // choosing to not require bs to be activated (for now)
         if (isActivated()) {
-            event = new BallotScannerEvent(mySerial, "active");
+            event = new BallotScannerEvent(mySerial, "active", battery);
         }
         else {
-            event = new BallotScannerEvent(mySerial,"inactive");
+            event = new BallotScannerEvent(mySerial,"inactive", battery);
         }
         return event;
     }

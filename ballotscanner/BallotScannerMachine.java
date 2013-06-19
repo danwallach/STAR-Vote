@@ -19,6 +19,8 @@ public class BallotScannerMachine extends AMachine {
 
   private boolean currentMachine;
 
+  private int battery;
+
   /**
    * Constructs a new supervisor machine
    * @param serial the serial number of the ballotscanner
@@ -34,6 +36,15 @@ public class BallotScannerMachine extends AMachine {
    */
   public boolean isCurrentMachine() {
     return currentMachine;
+  }
+
+  public int getBattery(){
+       return battery;
+  }
+
+  public void setBattery(int battery) {
+      this.battery = battery;
+      obs.notifyObservers();
   }
 
 }

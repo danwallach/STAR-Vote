@@ -8,6 +8,7 @@ import supervisor.model.VoteBoxBooth;
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import java.awt.*;
+import java.net.URL;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -27,6 +28,8 @@ public class BallotScannerMachineView extends AMachineView{
     private JLabel serialLabel;
 
     private JLabel statusLabel;
+
+    private JLabel batteryLabel;
 
 
     public BallotScannerMachineView(BallotScannerMachine b){
@@ -56,11 +59,11 @@ public class BallotScannerMachineView extends AMachineView{
         c.insets = new Insets(0, 0, 0, 0);
         add(statusLabel, c);
 
-        JLabel currentLabel = new MyJLabel("");
+        batteryLabel = new MyJLabel();
         c.gridy = 3;
         c.weighty = 1;
         c.anchor = GridBagConstraints.PAGE_START;
-        add(currentLabel, c);
+        add(batteryLabel, c);
 
         setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
         setSize(180, 160);
@@ -86,6 +89,9 @@ public class BallotScannerMachineView extends AMachineView{
     }
 
     public void updateView(){
+
+        BallotScannerMachine m = (BallotScannerMachine)machine;
+
         if (machine.isOnline()) {
             updateBackground(Color.green);
             if (machine.getStatus() == BallotScannerMachine.ACTIVE)
@@ -96,6 +102,15 @@ public class BallotScannerMachineView extends AMachineView{
             updateBackground(Color.LIGHT_GRAY);
             statusLabel.setText("Offline");
         }
+
+        batteryLabel.setVisible(true);
+        String batteryIcon = "images/batt" + ((m.getBattery() + 10) / 20)
+                + ".png";
+
+        URL url = ClassLoader.getSystemClassLoader().getResource(
+                batteryIcon);
+        if (url != null) batteryLabel.setIcon(new ImageIcon(url));
+
         revalidate();
         repaint();
     }

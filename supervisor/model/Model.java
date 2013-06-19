@@ -184,9 +184,9 @@ public class Model {
 
                     BallotScannerMachine ma = (BallotScannerMachine)m;
                     if(ma.getStatus() == BallotScannerMachine.ACTIVE){
-                        s = new BallotScannerEvent(ma.getSerial(), "active");
+                        s = new BallotScannerEvent(ma.getSerial(), "active",ma.getBattery());
                     } else if(ma.getStatus() == BallotScannerMachine.INACTIVE){
-                        s = new BallotScannerEvent(ma.getSerial(), "inactive");
+                        s = new BallotScannerEvent(ma.getSerial(), "inactive",ma.getBattery());
                     }
                 }
                 if (s == null)
@@ -786,6 +786,7 @@ public class Model {
                 else
                     throw new IllegalStateException(
                             "Invalid BallotScanner Status: " + e.getStatus());
+                bsm.setBattery(e.getBattery());
                 bsm.setOnline(true);
             }
 
