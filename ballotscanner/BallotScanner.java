@@ -154,6 +154,10 @@ public class BallotScanner{
     public void setActivated(boolean activated) {
         this.activated = activated;
         activatedObs.notifyObservers();
+        if(activated)
+            frame.updateFrame(BallotScannerUI.TO_PROMPT_STATE);
+        else
+            frame.updateFrame(BallotScannerUI.TO_INACTIVE_STATE);
     }
 
     /**
@@ -165,51 +169,59 @@ public class BallotScanner{
 
     public void beginScanning(){
         //frame.displayPromptScreen();
-        frame.updateFrame(BallotScannerUI.TO_PROMPT_STATE);
-        long lastFoundTime = 0;
 
-        while(true){
 
-            BinaryBitmap bitmap = webcam.getBitmap();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                long lastFoundTime = 0;
 
-            if(frame.state.getStateName().equals(PromptState.SINGLETON.getStateName())){
+                while(true){
 
-                decoder = new Code128Decoder();
+                    BinaryBitmap bitmap = webcam.getBitmap();
 
-                long start = System.currentTimeMillis();
+                    if(frame.state.getStateName().equals(PromptState.SINGLETON.getStateName()) && receivedResponse){
 
-                lastFoundBID = decoder.decode(bitmap);
+                        decoder = new Code128Decoder();
 
-                if(start - lastFoundTime > 5000){
-                    if(lastFoundBID != null){
-                        receivedResponse = false;
+                        long start = System.currentTimeMillis();
 
-                        auditorium.announce(new BallotScannedEvent(mySerial, lastFoundBID));
+                        lastFoundBID = decoder.decode(bitmap);
 
-                        // play confirmation sound
-                        new Thread() {
-                            public void run() {
-                                // prepare the mp3Player
-                                try {
-                                    FileInputStream fileInputStream = new FileInputStream(bsMp3Path);
-                                    BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
-                                    mp3Player = new Player(bufferedInputStream);
-                                    mp3Player.play();
-                                } catch (Exception e) {
-                                    mp3Player = null;
-                                    System.out.println("Problem playing audio: " + bsMp3Path);
-                                    System.out.println(e);
-                                }
+                        if(start - lastFoundTime > 5000){
+                            if(lastFoundBID != null){
+                                receivedResponse = false;
 
+                                auditorium.announce(new BallotScannedEvent(mySerial, lastFoundBID));
+
+                                // play confirmation sound
+                                new Thread() {
+                                    public void run() {
+
+                                        // prepare the mp3Player
+                                        try {
+                                            FileInputStream fileInputStream = new FileInputStream(bsMp3Path);
+                                            BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
+                                            mp3Player = new Player(bufferedInputStream);
+                                            mp3Player.play();
+                                        } catch (Exception e) {
+                                            mp3Player = null;
+                                            System.out.println("Problem playing audio: " + bsMp3Path);
+                                            System.out.println(e);
+                                        }
+
+                                    }
+                                }.start();
+
+                                lastFoundTime = System.currentTimeMillis();
+                                System.out.println("Last found BID: " + lastFoundBID);  //TODO Is this needed?
                             }
-                        }.start();
-
-                        lastFoundTime = System.currentTimeMillis();
-                        System.out.println("Last found BID: " + lastFoundBID);  //TODO Is this needed?
+                        }
                     }
-                }
             }
-        }
+        }}).start();
+
+
     }
 
 
@@ -339,10 +351,7 @@ public class BallotScanner{
             public void invalidPin(InvalidPinEvent event) {
             }
 
-            public void pollStatus(PollStatusEvent pollStatusEvent) {
-
-
-            }
+            public void pollStatus(PollStatusEvent pollStatusEvent) {}
 
             public void ballotPrintSuccess(BallotPrintSuccessEvent e) {
             }
@@ -372,6 +381,9 @@ public class BallotScanner{
                 System.out.println("Rejected event: Event BID: " + event.getBID());
                 System.out.println("Rejected event: Last BID: " + lastFoundBID);
 
+                if(lastFoundBID == null)
+                    return;
+
                 //If our ballot was rejected, display a message
                 if(lastFoundBID.equals(event.getBID())){
                     receivedResponse = true;
@@ -388,10 +400,7 @@ public class BallotScanner{
             public void ballotPrinting(BallotPrintingEvent ballotPrintingEvent) {}
 
             public void scannerstart(StartScannerEvent startScannerEvent) {
-                if(!activated){
-                    receivedResponse = true;
-                    beginScanning();
-                }
+               setActivated(true);
             }
 
 
@@ -399,6 +408,8 @@ public class BallotScanner{
 
         System.out.println("Timer starting!");
         statusTimer.start();
+        receivedResponse = true;
+        beginScanning();
     }
 
     /**

@@ -3,11 +3,8 @@ package votebox.events;
 import sexpression.*;
 
 /**
- * Created with IntelliJ IDEA.
- * User: matt
- * Date: 6/19/13
- * Time: 3:56 PM
- * To change this template use File | Settings | File Templates.
+ * @author Matt Bernhard
+ * 6/19/13
  */
 public class StartScannerEvent implements IAnnounceEvent{
 
