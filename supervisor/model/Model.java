@@ -160,7 +160,6 @@ public class Model {
         for (AMachine m : machines) {
             if (m.isOnline()) {
                 IAnnounceEvent s = null;
-                System.out.println(m+ " ! ");
                 if (m instanceof SupervisorMachine) {
                     SupervisorMachine ma = (SupervisorMachine) m;
                     if (ma.getStatus() == SupervisorMachine.ACTIVE)
@@ -189,8 +188,6 @@ public class Model {
                         s = new BallotScannerEvent(ma.getSerial(), "inactive");
                     }
                 }
-                for(AMachine me : machines)
-                    System.out.println(me);
                 if (s == null)
                     throw new IllegalStateException("Unknown machine or status");
 
