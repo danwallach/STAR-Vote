@@ -154,7 +154,7 @@ public class Model {
      */
     public void activate() {
         ArrayList<StatusEvent> statuses = new ArrayList<StatusEvent>();
-        ArrayList<VoteBoxBooth> unlabeled = new ArrayList<VoteBoxBooth>();
+        ArrayList<AMachine> unlabeled = new ArrayList<AMachine>();
         int maxlabel = 0;
         for (AMachine m : machines) {
             if (m.isOnline()) {
@@ -185,21 +185,28 @@ public class Model {
                     if(ma.getStatus() == BallotScannerMachine.ACTIVE){
                         s = new BallotScannerEvent(ma.getSerial(), ma.getLabel(), "active",
                                 ma.getBattery(), ma.getProtectedCount(), ma.getPublicCount());
-                    } else if(ma.getStatus() == BallotScannerMachine.INACTIVE){
+                    }
+                    else if(ma.getStatus() == BallotScannerMachine.INACTIVE){
                         s = new BallotScannerEvent(ma.getSerial(), ma.getLabel(), "inactive",
                                 ma.getBattery(), ma.getProtectedCount(), ma.getPublicCount());
                     }
+                    if (ma.getLabel() == 0)
+                        unlabeled.add(ma);
+                    else if (ma.getLabel() > maxlabel)
+                        maxlabel = ma.getLabel();
                 }
                 if (s == null)
                     throw new IllegalStateException("Unknown machine or status");
                 statuses.add(new StatusEvent(0, m.getSerial(), s));
             }
         }
+        System.out.println("About to create a nomatch SExpression.");
         auditorium.announce(new ActivatedEvent(mySerial, statuses));
-        for (VoteBoxBooth b : unlabeled) {
-            auditorium.announce(new AssignLabelEvent(mySerial, b.getSerial(),
-                    ++maxlabel));
+        for (AMachine machine : unlabeled) {
+            auditorium.announce(new AssignLabelEvent(mySerial, machine.getSerial(), ++maxlabel));
         }
+
+
         if (!pollsOpen)
             auditorium.announce(new PollsOpenQEvent(mySerial, keyword));
     }
