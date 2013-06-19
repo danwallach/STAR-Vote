@@ -24,7 +24,7 @@ package supervisor.view;
 
 import java.util.HashMap;
 
-import ballotscanner.BallotScannerMachine;
+import supervisor.model.BallotScannerMachine;
 import supervisor.model.AMachine;
 import supervisor.model.Model;
 import supervisor.model.SupervisorMachine;

@@ -99,7 +99,7 @@ public class VoteBox{
     }
     
     /**
-     * Constructs a new instance of a persistant VoteBox booth. This
+     * Constructs a new instance of a persistent VoteBox booth. This
      * implementation runs in the background, on an auditorium network, and
      * waits to receive an authorization before launching the VoteBox middle.
      * For a standalone implementation, see

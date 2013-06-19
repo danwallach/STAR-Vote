@@ -33,6 +33,13 @@ public class CastBallotUploadEvent implements IAnnounceEvent {
         }
     };
 
+    /**
+     * @return a MatcherRule for parsing this event type.
+     */
+    public static MatcherRule getMatcher(){
+        return MATCHER;
+    }//getMatcher
+
 
     public CastBallotUploadEvent(int serial, ASExpression nonces) {
         this.serial = serial;

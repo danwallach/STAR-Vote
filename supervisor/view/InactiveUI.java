@@ -39,7 +39,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import ballotscanner.BallotScannerMachine;
+import supervisor.model.BallotScannerMachine;
 import supervisor.model.AMachine;
 import supervisor.model.Model;
 import supervisor.model.SupervisorMachine;
