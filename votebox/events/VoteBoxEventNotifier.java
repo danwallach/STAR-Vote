@@ -192,6 +192,7 @@ public class VoteBoxEventNotifier implements VoteBoxEventListener {
 	}
 
     public void ballotScanned(BallotScannedEvent e) {
+
         for (VoteBoxEventListener l : listeners)
             l.ballotScanned(e);
     }
@@ -211,6 +212,7 @@ public class VoteBoxEventNotifier implements VoteBoxEventListener {
     }
 
     public void ballotRejected(BallotScanRejectedEvent e){
+        System.out.println("Sending event: " + e.toSExp().toString());
         for(VoteBoxEventListener l : listeners)
             l.ballotRejected(e);
     }
@@ -238,6 +240,11 @@ public class VoteBoxEventNotifier implements VoteBoxEventListener {
     public void uploadChallengedBallots(ChallengedBallotUploadEvent challengedBallotUploadEvent) {
         for(VoteBoxEventListener l : listeners)
             l.uploadChallengedBallots(challengedBallotUploadEvent);
+    }
+
+    public void scannerstart(StartScannerEvent e){
+        for(VoteBoxEventListener l : listeners)
+            l.scannerstart(e);
     }
 
 }

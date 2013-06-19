@@ -183,6 +183,7 @@ public class BallotScanner{
                 if(start - lastFoundTime > 5000){
                     if(lastFoundBID != null){
                         receivedResponse = false;
+
                         auditorium.announce(new BallotScannedEvent(mySerial, lastFoundBID));
 
                         // play confirmation sound
@@ -222,7 +223,7 @@ public class BallotScanner{
             auditorium = new VoteBoxAuditoriumConnector(mySerial,
                     _constants, BallotScanAcceptedEvent.getMatcher(),
                     BallotScanRejectedEvent.getMatcher(),
-                    PollStatusEvent.getMatcher()
+                    StartScannerEvent.getMatcher()
             );
         } catch (NetworkException e1) {
             //NetworkException represents a recoverable error
@@ -340,6 +341,7 @@ public class BallotScanner{
 
             public void pollStatus(PollStatusEvent pollStatusEvent) {
 
+
             }
 
             public void ballotPrintSuccess(BallotPrintSuccessEvent e) {
@@ -384,6 +386,13 @@ public class BallotScanner{
 
 
             public void ballotPrinting(BallotPrintingEvent ballotPrintingEvent) {}
+
+            public void scannerstart(StartScannerEvent startScannerEvent) {
+                if(!activated){
+                    receivedResponse = true;
+                    beginScanning();
+                }
+            }
 
 
         });

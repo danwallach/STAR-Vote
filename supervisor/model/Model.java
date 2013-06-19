@@ -154,7 +154,7 @@ public class Model {
      */
     public void activate() {
         ArrayList<StatusEvent> statuses = new ArrayList<StatusEvent>();
-        ArrayList<VoteBoxBooth> unlabeled = new ArrayList<VoteBoxBooth>();
+        ArrayList<AMachine> unlabeled = new ArrayList<AMachine>();
         int maxlabel = 0;
         for (AMachine m : machines) {
             if (m.isOnline()) {
@@ -185,10 +185,15 @@ public class Model {
                     if(ma.getStatus() == BallotScannerMachine.ACTIVE){
                         s = new BallotScannerEvent(ma.getSerial(), ma.getLabel(), "active",
                                 ma.getBattery(), ma.getProtectedCount(), ma.getPublicCount());
-                    } else if(ma.getStatus() == BallotScannerMachine.INACTIVE){
+                    }
+                    else if(ma.getStatus() == BallotScannerMachine.INACTIVE){
                         s = new BallotScannerEvent(ma.getSerial(), ma.getLabel(), "inactive",
                                 ma.getBattery(), ma.getProtectedCount(), ma.getPublicCount());
                     }
+                    if (ma.getLabel() == 0)
+                        unlabeled.add(ma);
+                    else if (ma.getLabel() > maxlabel)
+                        maxlabel = ma.getLabel();
                 }
                 if (s == null)
                     throw new IllegalStateException("Unknown machine or status");
@@ -196,10 +201,11 @@ public class Model {
             }
         }
         auditorium.announce(new ActivatedEvent(mySerial, statuses));
-        for (VoteBoxBooth b : unlabeled) {
-            auditorium.announce(new AssignLabelEvent(mySerial, b.getSerial(),
-                    ++maxlabel));
+        for (AMachine machine : unlabeled) {
+            auditorium.announce(new AssignLabelEvent(mySerial, machine.getSerial(), ++maxlabel));
         }
+
+
         if (!pollsOpen)
             auditorium.announce(new PollsOpenQEvent(mySerial, keyword));
     }
@@ -467,6 +473,7 @@ public class Model {
     public void setPollsOpen(boolean pollsOpen) {
         this.pollsOpen = pollsOpen;
         pollsOpenObs.notifyObservers();
+        auditorium.announce(new StartScannerEvent( mySerial ));
     }
 
     /**
@@ -767,7 +774,6 @@ public class Model {
              * hasn't been seen, and updates its status if it has.
              */
             public void ballotscanner(BallotScannerEvent e) {
-                System.out.println(">>>>>>>>>>>>>>>>>>>>>If you cannot read this, then program execution never gets here!");
                 AMachine m = getMachineForSerial(e.getSerial());
                 if (m != null && !(m instanceof BallotScannerMachine))
                     throw new IllegalStateException(
@@ -792,10 +798,8 @@ public class Model {
                 bsm.setProtectedCount(e.getProtectedCount());
                 bsm.setPublicCount(e.getPublicCount());
                 bsm.setOnline(true);
-                System.out.println(">>>>>>>>>>>>>>>>>>>>>Trying to get a label to assign to scanner");
                 //Check to see if this votebox has a conflicting label
 
-                //TODO Apparently this doesn't do what it says it does....
                 if (e.getLabel() > 0){
                     for(AMachine machine : machines){
                         if(machine.getLabel() == e.getLabel() && machine != m){
@@ -811,13 +815,14 @@ public class Model {
                         }
                     }
                 }//if
-                System.out.println(">>>>>>>>>>>>>>>>>>>>>Trying to assign label.");
                 if (e.getLabel() > 0)
                     bsm.setLabel(e.getLabel());
                 else {
                     if (activated) {
                         if (bsm.getLabel() > 0)
+                        {
                             auditorium.announce(new AssignLabelEvent(mySerial, e.getSerial(), bsm.getLabel()));
+                        }
                         else {
                             int maxlabel = 0;
                             for (AMachine ma : machines) {
@@ -829,7 +834,6 @@ public class Model {
                             auditorium.announce(new AssignLabelEvent(mySerial, e
                                     .getSerial(), maxlabel + 1));
                         }
-                        System.out.println(">>>>>>>>>>>>>>>>>>>>>Sending PollStatusEvent");
                         auditorium.announce(new PollStatusEvent(mySerial, e.getSerial(), pollsOpen ? 1:0 ));
                     }
                 }
@@ -980,6 +984,7 @@ public class Model {
             }
 
             public void ballotScanned(BallotScannedEvent e) {
+                System.err.println("Found a BallotScannedEvent! ? ");
                 String bid = e.getBID();
                 int serial = e.getSerial();
                 if (committedBids.containsKey(bid)){
@@ -989,9 +994,11 @@ public class Model {
                     auditorium.announce(new CastCommittedBallotEvent(serial, nonce));
                     // that should trigger my own castBallot listener.
                     System.out.println("Sending scan confirmation!");
+                    System.out.println("BID: " + bid);
                     auditorium.announce(new BallotScanAcceptedEvent(StringExpression.makeString(bid)));
                 } else {
                     System.out.println("Sending scan rejection!");
+                    System.out.println("BID: " + bid);
                     auditorium.announce(new BallotScanRejectedEvent(mySerial, bid));
                 }
             }
@@ -1049,6 +1056,10 @@ public class Model {
             }
 
             public void uploadChallengedBallots(ChallengedBallotUploadEvent challengedBallotUploadEvent) {
+                // NO-OP
+            }
+
+            public void scannerstart(StartScannerEvent startScannerEvent) {
                 // NO-OP
             }
 
