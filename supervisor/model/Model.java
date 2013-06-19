@@ -828,6 +828,7 @@ public class Model {
                             auditorium.announce(new AssignLabelEvent(mySerial, e
                                     .getSerial(), maxlabel + 1));
                         }
+                        auditorium.announce(new PollStatusEvent(mySerial, e.getSerial(), pollsOpen ? 1:0 ));
                     }
                 }
             }
