@@ -994,9 +994,11 @@ public class Model {
                     auditorium.announce(new CastCommittedBallotEvent(serial, nonce));
                     // that should trigger my own castBallot listener.
                     System.out.println("Sending scan confirmation!");
+                    System.out.println("BID: " + bid);
                     auditorium.announce(new BallotScanAcceptedEvent(StringExpression.makeString(bid)));
                 } else {
                     System.out.println("Sending scan rejection!");
+                    System.out.println("BID: " + bid);
                     auditorium.announce(new BallotScanRejectedEvent(mySerial, bid));
                 }
 

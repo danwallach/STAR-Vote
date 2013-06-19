@@ -212,6 +212,7 @@ public class VoteBoxEventNotifier implements VoteBoxEventListener {
     }
 
     public void ballotRejected(BallotScanRejectedEvent e){
+        System.out.println("Sending event: " + e.toSExp().toString());
         for(VoteBoxEventListener l : listeners)
             l.ballotRejected(e);
     }
