@@ -82,6 +82,9 @@ public class VoteBox{
     private int pageBeforeOverride;
     private Timer killVBTimer;
     private Timer statusTimer;
+    boolean superOnline;
+    private int superSerial;
+    private JOptionPane pinPane;
 
     private  Printer printer;
 
@@ -443,7 +446,7 @@ public class VoteBox{
                                     "Received an override-cancel-confirm event at the incorrect time");
                     }
                 });
-        
+
         currentDriver.getView().registerForOverrideCancelDeny(new Observer() {
             /**
              * Announce the deny message, and return to the page the voter was
@@ -530,7 +533,8 @@ public class VoteBox{
                     AuthorizedToCastWithNIZKsEvent.getMatcher(), PinEnteredEvent.getMatcher(),
                     InvalidPinEvent.getMatcher(), PollsOpenEvent.getMatcher(),
                     PollStatusEvent.getMatcher(), BallotPrintingEvent.getMatcher(),
-                    BallotPrintSuccessEvent.getMatcher(), BallotPrintFailEvent.getMatcher());
+                    BallotPrintSuccessEvent.getMatcher(), BallotPrintFailEvent.getMatcher(),
+                    PollMachinesEvent.getMatcher());
         } catch (NetworkException e1) {
         	//NetworkException represents a recoverable error
         	//  so just note it and continue
@@ -593,6 +597,8 @@ public class VoteBox{
                     }
                 }
                 if (!found) broadcastStatus();
+                superSerial = e.getSerial();
+                superOnline = true;
             }
 
             /**
@@ -707,6 +713,8 @@ public class VoteBox{
             public void joined(JoinEvent e) {
                 ++numConnections;
                 connected = true;
+                if(e.getSerial()==superSerial)
+                    superOnline = true;
             }
 
             public void lastPollsOpen(LastPollsOpenEvent e) {
@@ -718,6 +726,10 @@ public class VoteBox{
             public void left(LeaveEvent e) {
                 --numConnections;
                 if (numConnections == 0) connected = false;
+
+                if(e.getSerial()==superSerial){
+                    superOnline = false;
+                }
             }
 
             /**
@@ -948,6 +960,16 @@ public class VoteBox{
 
             public void uploadChallengedBallots(ChallengedBallotUploadEvent challengedBallotUploadEvent) {}
 
+            @Override
+            public void pollMachines(PollMachinesEvent pollMachinesEvent) {
+                auditorium.announce(new IdentifyMachineEvent(mySerial, "VoteBox", new Date().getTime()));
+            }
+
+            @Override
+            public void identifyMachine(IdentifyMachineEvent identifyMachineEvent) {
+                // NO-OP
+            }
+
 
             public void ballotScanned(BallotScannedEvent e) {
                 // NO-OP
@@ -980,6 +1002,7 @@ public class VoteBox{
 
     public void promptForPin(String message) {
             if(promptingForPin) return;
+            if(!superOnline) return;
             promptingForPin = true;
             JTextField limitedField = new JTextField(new PlainDocument() {
                 private int limit=4;
@@ -995,13 +1018,13 @@ public class VoteBox{
             Object[] msg = {
                     message, limitedField
             };
-            int pinResult = JOptionPane.showConfirmDialog(
+            pinPane = new JOptionPane();
+            int pinResult = pinPane.showConfirmDialog(
                     (JFrame)inactiveUI,
                     msg,
                     "Authorization Required",
                     JOptionPane.OK_CANCEL_OPTION,
                     JOptionPane.PLAIN_MESSAGE);
-
 
             while(pinResult != JOptionPane.OK_OPTION) {
                 pinResult = JOptionPane.showConfirmDialog(
@@ -1017,8 +1040,8 @@ public class VoteBox{
                 int pin = Integer.parseInt(limitedField.getText());
                 validatePin(pin);
             }catch(NumberFormatException nfe){
-                promptingForPin = false;
-                promptForPin("Invalid PIN: Enter 4-digit PIN");
+                    promptingForPin = false;
+                    promptForPin("Invalid PIN: Enter 4-digit PIN");
             }
             promptingForPin = false;
     }

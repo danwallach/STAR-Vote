@@ -335,6 +335,12 @@ public class BallotScanner{
 
             public void uploadChallengedBallots(ChallengedBallotUploadEvent challengedBallotUploadEvent) {}
 
+            @Override
+            public void pollMachines(PollMachinesEvent pollMachinesEvent) {}
+
+            @Override
+            public void identifyMachine(IdentifyMachineEvent identifyMachineEvent) {}
+
             public void ballotAccepted(BallotScanAcceptedEvent event){
 
                 //If this event corresponds with our last scanned ballot, display a confirmation message

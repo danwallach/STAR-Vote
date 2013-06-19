@@ -238,4 +238,13 @@ public class VoteBoxEventNotifier implements VoteBoxEventListener {
             l.uploadChallengedBallots(challengedBallotUploadEvent);
     }
 
+    public void pollMachines(PollMachinesEvent pollMachinesEvent) {
+        for(VoteBoxEventListener l : listeners)
+            l.pollMachines(pollMachinesEvent);
+    }
+    public void identifyMachine(IdentifyMachineEvent identifyMachineEvent) {
+        for(VoteBoxEventListener l : listeners)
+            l.identifyMachine(identifyMachineEvent);
+    }
+
 }
