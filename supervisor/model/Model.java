@@ -1100,7 +1100,7 @@ public class Model {
     public void spoilBallot(String bid){
         if(committedBids.containsKey(bid)){
             committedBids.remove(bid);
-            auditorium.announce(new ChallengeEvent())
+            //auditorium.announce(new ChallengeEvent());
         }
     }
 

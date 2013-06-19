@@ -184,7 +184,7 @@ public class Tap {
             public void ballotscanner(BallotScannerEvent e) {}
             public void ballotScanned(BallotScannedEvent e) {}
             public void pollStatus(PollStatusEvent pollStatusEvent) {}
-            public void pinEntered(PinEnteredEvent event) { }
+            public void pinEntered(PinEnteredEvent event) {}
             public void invalidPin(InvalidPinEvent event) {}
             public void ballotAccepted(BallotScanAcceptedEvent e){}
             public void ballotRejected(BallotScanRejectedEvent e){}
