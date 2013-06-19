@@ -93,7 +93,9 @@ public class BallotScanner{
 
         statusTimer = new Timer(300000, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                System.out.println(">>>> Is connected? " + isConnected());
                 if (isConnected()) {
+                    System.out.println("Scanner status " + getStatus());
                     auditorium.announce(getStatus());
                 }
             }
@@ -125,13 +127,14 @@ public class BallotScanner{
      * @return the status
      */
     public BallotScannerEvent getStatus() {
-        System.out.println("Getting status?");
         BallotScannerEvent event;
         // choosing to not require bs to be activated (for now)
         if (isActivated()) {
+            System.out.println(">>>>> Active");
             event = new BallotScannerEvent(mySerial, label, "active", battery, protectedCount, publicCount);
         }
         else {
+            System.out.println(">>>>> Not active");
             event = new BallotScannerEvent(mySerial, label, "inactive", battery, protectedCount, publicCount);
         }
         return event;
@@ -218,7 +221,8 @@ public class BallotScanner{
         try {
             auditorium = new VoteBoxAuditoriumConnector(mySerial,
                     _constants, BallotScanAcceptedEvent.getMatcher(),
-                    BallotScanRejectedEvent.getMatcher()
+                    BallotScanRejectedEvent.getMatcher(),
+                    PollStatusEvent.getMatcher()
             );
         } catch (NetworkException e1) {
             //NetworkException represents a recoverable error
@@ -335,12 +339,7 @@ public class BallotScanner{
             }
 
             public void pollStatus(PollStatusEvent pollStatusEvent) {
-                System.out.println("Heard an activated event! Polls are open!");
 
-                receivedResponse = true;
-
-                setActivated(true);
-                beginScanning();
             }
 
             public void ballotPrintSuccess(BallotPrintSuccessEvent e) {
@@ -389,6 +388,7 @@ public class BallotScanner{
 
         });
 
+        System.out.println("Timer starting!");
         statusTimer.start();
     }
 
