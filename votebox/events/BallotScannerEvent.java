@@ -20,6 +20,7 @@ public class BallotScannerEvent implements IAnnounceEvent {
 
         public IAnnounceEvent match(int serial, ASExpression sexp) {
             ASExpression res = pattern.match(sexp);
+            System.out.println("SExpression is: " + sexp.toString());
             System.out.println("res is: " + res + " from serial:" + serial);
             if (res != NoMatch.SINGLETON) {
                 System.out.println("It matched! " + res.toString());

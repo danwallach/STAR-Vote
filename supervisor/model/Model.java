@@ -200,7 +200,6 @@ public class Model {
                 statuses.add(new StatusEvent(0, m.getSerial(), s));
             }
         }
-        System.out.println("About to create a nomatch SExpression.");
         auditorium.announce(new ActivatedEvent(mySerial, statuses));
         for (AMachine machine : unlabeled) {
             auditorium.announce(new AssignLabelEvent(mySerial, machine.getSerial(), ++maxlabel));
@@ -821,9 +820,14 @@ public class Model {
                 if (e.getLabel() > 0)
                     bsm.setLabel(e.getLabel());
                 else {
+                    System.err.println("Got in the else statement. The supervisor is activated: " + activated);
                     if (activated) {
+                        System.err.println("Got in the if(activated).");
                         if (bsm.getLabel() > 0)
+                        {
+                            System.err.println("The label is greater than 0.");
                             auditorium.announce(new AssignLabelEvent(mySerial, e.getSerial(), bsm.getLabel()));
+                        }
                         else {
                             int maxlabel = 0;
                             for (AMachine ma : machines) {
