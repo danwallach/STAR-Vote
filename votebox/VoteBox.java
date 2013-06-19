@@ -963,6 +963,12 @@ public class VoteBox{
             @Override
             public void pollMachines(PollMachinesEvent pollMachinesEvent) {
                 auditorium.announce(new IdentifyMachineEvent(mySerial, 0, new Date().getTime()));
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
+                broadcastStatus();
             }
 
             @Override

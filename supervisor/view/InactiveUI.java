@@ -32,6 +32,7 @@ import java.awt.Insets;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Date;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -44,6 +45,7 @@ import supervisor.model.AMachine;
 import supervisor.model.Model;
 import supervisor.model.SupervisorMachine;
 import supervisor.model.VoteBoxBooth;
+import votebox.events.PollMachinesEvent;
 
 /**
  * The view that is shown on an inactive supervisor - only shows the number of
@@ -121,6 +123,11 @@ public class InactiveUI extends JPanel {
     }
 
     private void updateTextPanel() {
+        try {
+            Thread.sleep(1000);    //sleep to make sure that all machines have time to identify themselves
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         textPanel.removeAll();
 
         GridBagConstraints c = new GridBagConstraints();
@@ -138,10 +145,8 @@ public class InactiveUI extends JPanel {
             int supervisors = 0;
             int booths = 0;
             int scanners = 0;
-            System.out.println("Total number of machines: " + model.getMachines().size() + "\nConnected Machines: " + model.getNumConnected());
-            System.out.println(model.getMachines().size() + " "+ model.getNumConnected());
+
             for (AMachine m : model.getMachines()) {
-                System.out.println(m);
                 if (m instanceof SupervisorMachine && m.isOnline() && m.getSerial() != model.getMySerial()) {
                     supervisors++;
                 } else if (m instanceof VoteBoxBooth && m.isOnline()){

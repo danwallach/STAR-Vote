@@ -160,6 +160,7 @@ public class Model {
         for (AMachine m : machines) {
             if (m.isOnline()) {
                 IAnnounceEvent s = null;
+                System.out.println(m+ " ! ");
                 if (m instanceof SupervisorMachine) {
                     SupervisorMachine ma = (SupervisorMachine) m;
                     if (ma.getStatus() == SupervisorMachine.ACTIVE)
@@ -188,8 +189,12 @@ public class Model {
                         s = new BallotScannerEvent(ma.getSerial(), "inactive");
                     }
                 }
+                for(AMachine me : machines)
+                    System.out.println(me);
                 if (s == null)
                     throw new IllegalStateException("Unknown machine or status");
+
+
                 statuses.add(new StatusEvent(0, m.getSerial(), s));
             }
         }
@@ -597,7 +602,6 @@ public class Model {
              * number of connections.
              */
             public void joined(JoinEvent e) {
-                System.out.println(">>> model reported a machine joined!");
                 AMachine m = getMachineForSerial(e.getSerial());
                 if (m != null) {
                     m.setOnline(true);
@@ -605,12 +609,6 @@ public class Model {
                 numConnected++;
                 setConnected(true);
                 machinesChangedObs.notifyObservers();
-
-                //checks for unknown machines
-                if(getNumConnected()!=getMachines().size()-1){
-                    auditorium.announce(new PollMachinesEvent(mySerial, new Date().getTime(),
-                            keyword));
-                }
             }
 
             /**
@@ -999,7 +997,6 @@ public class Model {
 
             public void ballotPrintSuccess(BallotPrintSuccessEvent e) {
                 expectedBallots.add(Integer.valueOf(e.getBID()));
-                //System.out.println("V"  + expectedBallots);
             }
 
             public void ballotPrintFail(BallotPrintFailEvent ballotPrintFailEvent) {
@@ -1021,16 +1018,25 @@ public class Model {
 
             @Override
             public void identifyMachine(IdentifyMachineEvent identifyMachineEvent) {
-                System.out.println("Identified");
-                if(machines.size()==getNumConnected()-1)
+                if(machines.size()==getNumConnected()-1){
                     return;
+                }
                  for(AMachine m : machines){
                      if(m.getSerial()==identifyMachineEvent.getSerial())
                          return;
                  }
+                IAnnounceEvent machineEvent = null;
                 if(identifyMachineEvent.getMachineType()==0)   {
-                    machines.add(new VoteBoxBooth(identifyMachineEvent.getSerial()));
+                    machineEvent = new VoteBoxEvent(0, 0, "ready", 0, 0, 0);
                 }
+                if(identifyMachineEvent.getMachineType()==1)   {
+                    machineEvent = new BallotScannerEvent(identifyMachineEvent.getSerial(), "active");
+                }
+                if(identifyMachineEvent.getMachineType()==2)   {
+                    machineEvent = new SupervisorEvent(0, 0, "active");
+                }
+                if(machineEvent!=null)
+                    auditorium.announce(machineEvent);
             }
 
         });

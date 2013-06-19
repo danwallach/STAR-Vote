@@ -138,9 +138,9 @@ public abstract class AMachine implements Comparable {
     public String toString(){
         String res = "";
         if(this instanceof SupervisorMachine){
-            res = "SupervisorMachine{serial =  " + serial + " status = " + ((status==4)?"ACTIVE":"INACTIVE") + "}";
+            res = "SupervisorMachine{serial =  " + serial + " status = " + ((status==4)?"ACTIVE":"INACTIVE") + status + "}";
         } else if(this instanceof VoteBoxBooth){
-            res = "VoteBoxBooth{serial = " + serial + " status = " + ((status==1)? "IN-USE": "READY") + "}";
+            res = "VoteBoxBooth{serial = " + serial + " status = " + ((status==1)? "IN-USE": "READY") + status + "}";
         } else if(this instanceof BallotScannerMachine){
             res = "ballotScannerMachine{serial = " + serial + " status = " + ((status == 6)?"ACTIVE":"INACTIVE") + "}";
         }
