@@ -208,6 +208,8 @@ public class Model {
 
         if (!pollsOpen)
             auditorium.announce(new PollsOpenQEvent(mySerial, keyword));
+
+        auditorium.announce(new StartScannerEvent( mySerial ));
     }
 
     /**
@@ -353,7 +355,6 @@ public class Model {
     public void openPolls() {
         auditorium.announce(new PollsOpenEvent(mySerial, new Date().getTime(),
                 keyword));
-        auditorium.announce(new StartScannerEvent( mySerial ));
     }
 
     /**
@@ -835,6 +836,7 @@ public class Model {
                                     .getSerial(), maxlabel + 1));
                         }
                         auditorium.announce(new PollStatusEvent(mySerial, e.getSerial(), pollsOpen ? 1:0 ));
+
                     }
                 }
             }
@@ -1025,6 +1027,7 @@ public class Model {
 
             public void pollStatus(PollStatusEvent pollStatusEvent) {
                 pollsOpen = pollStatusEvent.getPollStatus()==1;
+                auditorium.announce(new StartScannerEvent( mySerial ));
             }
 
 
