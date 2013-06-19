@@ -241,4 +241,9 @@ public class VoteBoxEventNotifier implements VoteBoxEventListener {
             l.uploadChallengedBallots(challengedBallotUploadEvent);
     }
 
+    public void scannerstart(StartScannerEvent e){
+        for(VoteBoxEventListener l : listeners)
+            l.scannerstart(e);
+    }
+
 }
