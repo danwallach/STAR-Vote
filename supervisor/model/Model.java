@@ -791,7 +791,7 @@ public class Model {
                 bsm.setProtectedCount(e.getProtectedCount());
                 bsm.setPublicCount(e.getPublicCount());
                 bsm.setOnline(true);
-                ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
                 //Check to see if this votebox has a conflicting label
 
                 //TODO Apparently this doesn't do what it says it does....
@@ -828,7 +828,6 @@ public class Model {
                             auditorium.announce(new AssignLabelEvent(mySerial, e
                                     .getSerial(), maxlabel + 1));
                         }
-                        auditorium.announce(new PollStatusEvent(mySerial, e.getSerial(), pollsOpen ? 1:0 ));
                     }
                 }
             }
