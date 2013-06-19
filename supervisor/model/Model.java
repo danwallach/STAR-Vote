@@ -488,7 +488,7 @@ public class Model {
                     AuthorizedToCastWithNIZKsEvent.getMatcher(), AdderChallengeEvent.getMatcher(),
                     PinEnteredEvent.getMatcher(), InvalidPinEvent.getMatcher(),
                     PollStatusEvent.getMatcher(), BallotPrintSuccessEvent.getMatcher(),
-                    BallotScannedEvent.getMatcher());
+                    BallotScannedEvent.getMatcher(), BallotScannerEvent.getMatcher());
 
 
         } catch (NetworkException e1) {
@@ -767,6 +767,7 @@ public class Model {
              * hasn't been seen, and updates its status if it has.
              */
             public void ballotscanner(BallotScannerEvent e) {
+                System.out.println(">>>>>>>>>>>>>>>>>>>>>If you cannot read this, then program execution never gets here!");
                 AMachine m = getMachineForSerial(e.getSerial());
                 if (m != null && !(m instanceof BallotScannerMachine))
                     throw new IllegalStateException(
@@ -791,7 +792,7 @@ public class Model {
                 bsm.setProtectedCount(e.getProtectedCount());
                 bsm.setPublicCount(e.getPublicCount());
                 bsm.setOnline(true);
-
+                System.out.println(">>>>>>>>>>>>>>>>>>>>>Trying to get a label to assign to scanner");
                 //Check to see if this votebox has a conflicting label
 
                 //TODO Apparently this doesn't do what it says it does....
@@ -810,7 +811,7 @@ public class Model {
                         }
                     }
                 }//if
-
+                System.out.println(">>>>>>>>>>>>>>>>>>>>>Trying to assign label.");
                 if (e.getLabel() > 0)
                     bsm.setLabel(e.getLabel());
                 else {
@@ -828,6 +829,7 @@ public class Model {
                             auditorium.announce(new AssignLabelEvent(mySerial, e
                                     .getSerial(), maxlabel + 1));
                         }
+                        System.out.println(">>>>>>>>>>>>>>>>>>>>>Sending PollStatusEvent");
                         auditorium.announce(new PollStatusEvent(mySerial, e.getSerial(), pollsOpen ? 1:0 ));
                     }
                 }
