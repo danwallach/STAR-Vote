@@ -491,7 +491,7 @@ public class Model {
                     AuthorizedToCastWithNIZKsEvent.getMatcher(), AdderChallengeEvent.getMatcher(),
                     PinEnteredEvent.getMatcher(), InvalidPinEvent.getMatcher(),
                     PollStatusEvent.getMatcher(), BallotPrintSuccessEvent.getMatcher(),
-                    BallotScannedEvent.getMatcher());
+                    BallotScannedEvent.getMatcher(), BallotScannerEvent.getMatcher());
 
 
         } catch (NetworkException e1) {
