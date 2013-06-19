@@ -1028,7 +1028,7 @@ public class Model {
                      if(m.getSerial()==identifyMachineEvent.getSerial())
                          return;
                  }
-                if(identifyMachineEvent.getMachineType().equals("VoteBox"))   {
+                if(identifyMachineEvent.getMachineType()==0)   {
                     machines.add(new VoteBoxBooth(identifyMachineEvent.getSerial()));
                 }
             }

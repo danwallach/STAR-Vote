@@ -43,7 +43,7 @@ public class IdentifyMachineEvent implements IAnnounceEvent {
 
     private long timestamp;
 
-    private static String machineType;
+    private static int machineType;
 
     /**
      * Matcher for the PollsOpenEvent.
@@ -59,7 +59,7 @@ public class IdentifyMachineEvent implements IAnnounceEvent {
                 long timestamp = Long.parseLong( ((ListExpression) res).get( 0 )
                         .toString() );
                 String keyword = ((ListExpression) res).get( 1 ).toString();
-                return new IdentifyMachineEvent( serial,timestamp,machineType);
+                return new IdentifyMachineEvent( serial,machineType, timestamp);
             }
 
             return null;
@@ -82,7 +82,7 @@ public class IdentifyMachineEvent implements IAnnounceEvent {
      * @param timestamp
      *            the local timestamp
      */
-    public IdentifyMachineEvent(int serial, long timestamp, String machineType) {
+    public IdentifyMachineEvent(int serial,int machineType, long timestamp) {
         this.serial = serial;
         this.machineType = machineType;
         this.timestamp = timestamp;
@@ -103,7 +103,7 @@ public class IdentifyMachineEvent implements IAnnounceEvent {
         return timestamp;
     }
 
-    public String getMachineType(){
+    public int getMachineType(){
         return machineType;
     }
 
@@ -113,7 +113,7 @@ public class IdentifyMachineEvent implements IAnnounceEvent {
 
     public ASExpression toSExp() {
         return new ListExpression( StringExpression.makeString( "here-i-am" ),
-                StringExpression.makeString(machineType),
+                StringExpression.makeString(String.valueOf(machineType)),
                 StringExpression.makeString( Long.toString( timestamp ) ));
     }
 
