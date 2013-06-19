@@ -16,6 +16,7 @@ import java.util.Observer;
  * Time: 11:23 AM
  * To change this template use File | Settings | File Templates.
  */
+
 public class BallotScannerMachineView extends AMachineView{
 
     private BallotScannerMachine machine;
@@ -33,35 +34,38 @@ public class BallotScannerMachineView extends AMachineView{
 
         machine = b;
 
-        setLayout(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        JPanel batteryPanel = new JPanel();
-        batteryPanel.setLayout(new BoxLayout(batteryPanel, BoxLayout.Y_AXIS));
+        JPanel p;
 
         batteryLabel = new JLabel();
-        batteryPanel.add(batteryLabel);
-        add(batteryPanel);
+        p = new JPanel();
+        p.setBackground(Color.green);
+        batteryLabel.setAlignmentX(Container.RIGHT_ALIGNMENT);
+        p.add(new JLabel("                               ")); //Janky allignment help
+        p.add(batteryLabel);
+        add(p);
 
         scannerLabel = new MyJLabel("Scanner");
         scannerLabel.setFont(scannerLabel.getFont().deriveFont(Font.BOLD,
                 16f));
-        c.gridy = 0;
-        c.weighty = 1;
-        c.anchor = GridBagConstraints.PAGE_END;
-        add(scannerLabel, c);
+        p = new JPanel();
+        p.setBackground(Color.green);
+        p.add(scannerLabel);
+        add(p);
 
         serialLabel = new MyJLabel("#" + machine.getSerial());
-        c.gridy = 1;
-        c.weighty = 0;
-        c.insets = new Insets(0, 0, 10, 0);
-        add(serialLabel, c);
+        p = new JPanel();
+        p.setBackground(Color.green);
+        p.add(serialLabel);
+        add(p);
 
         statusLabel = new MyJLabel();
         statusLabel.setFont(statusLabel.getFont().deriveFont(Font.BOLD, 14f));
-        c.gridy = 2;
-        c.insets = new Insets(0, 0, 0, 0);
-        add(statusLabel, c);
+        p = new JPanel();
+        p.setBackground(Color.green);
+        p.add(statusLabel);
+        add(p);
 
 
         setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
