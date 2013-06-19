@@ -36,6 +36,13 @@ public class BallotScannerMachineView extends AMachineView{
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
+        JPanel batteryPanel = new JPanel();
+        batteryPanel.setLayout(new BoxLayout(batteryPanel, BoxLayout.Y_AXIS));
+
+        batteryLabel = new JLabel();
+        batteryPanel.add(batteryLabel);
+        add(batteryPanel);
+
         scannerLabel = new MyJLabel("Scanner");
         scannerLabel.setFont(scannerLabel.getFont().deriveFont(Font.BOLD,
                 16f));
@@ -56,11 +63,6 @@ public class BallotScannerMachineView extends AMachineView{
         c.insets = new Insets(0, 0, 0, 0);
         add(statusLabel, c);
 
-        batteryLabel = new MyJLabel();
-        c.gridy = 3;
-        c.weighty = 1;
-        c.anchor = GridBagConstraints.PAGE_START;
-        add(batteryLabel, c);
 
         setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
         setSize(180, 160);

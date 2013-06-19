@@ -875,7 +875,6 @@ public class VoteBox{
                     		currentDriver = null;
                     		inactiveUI.setVisible(true);
                     		killVBTimer = null;
-                            promptForPin("Enter Voting Authentication PIN");
                     	};
                     });
                     killVBTimer.setRepeats(false);

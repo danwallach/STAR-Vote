@@ -55,7 +55,7 @@ public class ChallengeResponseEvent implements IAnnounceEvent {
                 return new ChallengeResponseEvent( serial, node, nonce);
             }
             return null;
-        };
+        }
     };
     
     /**
