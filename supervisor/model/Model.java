@@ -33,7 +33,6 @@ import java.util.*;
 import javax.swing.*;
 import javax.swing.Timer;
 
-import ballotscanner.BallotScannerMachine;
 import edu.uconn.cse.adder.PrivateKey;
 import edu.uconn.cse.adder.PublicKey;
 

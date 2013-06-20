@@ -236,7 +236,7 @@ public class BallotScanner{
             auditorium = new VoteBoxAuditoriumConnector(mySerial,
                     _constants, BallotScanAcceptedEvent.getMatcher(),
                     BallotScanRejectedEvent.getMatcher(),
-                    StartScannerEvent.getMatcher()
+                    StartScannerEvent.getMatcher(),
                     PollMachinesEvent.getMatcher()
             );
         } catch (NetworkException e1) {
