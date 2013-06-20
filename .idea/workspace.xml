@@ -9,47 +9,7 @@
     <bookmark url="file://$PROJECT_DIR$/preptool/model/layout/manager/RenderingUtils.java" line="545" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="26d876ad-6b77-4796-b9d0-ead84066c769" name="Default" comment="Scanning works. I think.">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/testdata/100" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/testdata/1000" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/testdata/1100" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/testdata/1150" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/testdata/1200" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/testdata/1250" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/testdata/1300" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/testdata/1350" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/testdata/1400" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/testdata/1450" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/testdata/150" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/testdata/1500" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/testdata/1550" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/testdata/1600" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/testdata/1650" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/testdata/1700" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/testdata/1750" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/testdata/1800" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/testdata/1850" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/testdata/1900" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/testdata/1950" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/testdata/200" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/testdata/250" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/testdata/300" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/testdata/350" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/testdata/400" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/testdata/450" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/testdata/50" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/testdata/500" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/testdata/550" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/testdata/600" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/testdata/650" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/testdata/700" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/testdata/750" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/testdata/800" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/testdata/850" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/testdata/900" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/testdata/950" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-    </list>
+    <list default="true" id="26d876ad-6b77-4796-b9d0-ead84066c769" name="Default" comment="Scanning works. I think." />
     <ignored path="STAR-Vote.iws" />
     <ignored path=".idea/workspace.xml" />
     <file path="/fragment.java" changelist="26d876ad-6b77-4796-b9d0-ead84066c769" time="1371757284283" ignored="false" />
