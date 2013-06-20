@@ -1006,7 +1006,7 @@ public class VoteBox{
 
     public void promptForPin(String message) {
             if(promptingForPin) return;
-            if(!superOnline) return;
+            //if(!superOnline) return;
             promptingForPin = true;
             JTextField limitedField = new JTextField(new PlainDocument() {
                 private int limit=4;
