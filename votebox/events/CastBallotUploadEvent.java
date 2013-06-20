@@ -13,6 +13,7 @@ import java.util.HashMap;
  *
  * @author Nelson Chen
  *         Date: 12/4/12
+ *
  */
 public class CastBallotUploadEvent implements IAnnounceEvent {
     private int serial;

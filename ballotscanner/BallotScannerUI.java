@@ -28,9 +28,8 @@ public class BallotScannerUI extends JFrame {
     public ElectionInfoPanel electionInfoPanel;
     public UserInfoPanel userInfoPanel;
 
-    /* The image that represents the scanner/UI's current state. It is now "deprecated" and should be removed.
-    * TODO All uses of responseImage should be replaced with calls to state.getStateImage()*/
-    public BufferedImage responseImage;
+    /* The image that represents the scanner/UI's current state. It is now "deprecated" and should be removed. */
+//    public BufferedImage responseImage;
 
     /* The name of the election for which the scanner/UI is currently being used. */
     public String electionName;
@@ -111,14 +110,13 @@ public class BallotScannerUI extends JFrame {
     {
         electionInfoPanel.repaint();
         userInfoPanel.repaint();
-        this.repaint();
+        repaint();
     }
 
     /**
      * An update method that transitions the scanner/UI between states and calls the displayScreen method of the state.
      * This should set the user info panel to contain the appropriate messages for that particular state.
-     * // TODO Find a way to pass in bid to the AcceptState (maybe by adding it as a parameter to the updateFrame function
-     * // TODO which is not used by any state except AcceptState.
+     *
      * @param transition - the type of transition to be performed by the update method.
      */
     public void updateFrame(int transition){

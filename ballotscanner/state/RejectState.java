@@ -50,7 +50,7 @@ public class RejectState extends AState {
         context.userInfoPanel.addMessage("Ballot has been rejected");
         context.userInfoPanel.addMessage("Hold Ballot Still Under the Scanner");
         context.userInfoPanel.addMessage("If This Problem Persists, Contact an Election Official");
-        context.responseImage = stateImage;
+//        context.responseImage = stateImage;
         context.updateFrameComponents();
     }
 

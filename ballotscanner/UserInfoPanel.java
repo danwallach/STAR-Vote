@@ -24,8 +24,8 @@ public class UserInfoPanel extends JPanel {
         scanResponsePanel = new JPanel(){
             public void paintComponent(Graphics g){
                 super.paintComponent(g);
-                if(context.responseImage != null){
-                    g.drawImage(context.responseImage, 100, 15, 400, 90, null);
+                if(context.state.getStateImage() != null){
+                    g.drawImage(context.state.getStateImage(), 100, 15, 400, 90, null);
                 }
             }
         };

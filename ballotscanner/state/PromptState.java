@@ -42,7 +42,7 @@ public class PromptState extends AState {
         context.userInfoPanel.clearMessages();
         context.userInfoPanel.addMessage("This is a Ballot Scanning Console.");
         context.userInfoPanel.addMessage("Place Ballot Under Scanner to Cast Ballot.");
-        context.responseImage = stateImage;
+//        context.responseImage = stateImage;
         context.updateFrameComponents();
     }
 

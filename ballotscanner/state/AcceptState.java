@@ -50,7 +50,7 @@ public class AcceptState extends AState {
 //        context.userInfoPanel.addMessage("Ballot " + Integer.parseInt(params[0].toString())  + " Confirmed and Cast");
         context.userInfoPanel.addMessage("Your Vote Will be Counted");
         context.userInfoPanel.addMessage("Thank You for Voting!");
-        context.responseImage = stateImage;
+//        context.responseImage = stateImage;
         context.updateFrameComponents();
     }
 
