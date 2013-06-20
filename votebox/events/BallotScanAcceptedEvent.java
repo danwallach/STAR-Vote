@@ -1,9 +1,6 @@
 package votebox.events;
 
-import sexpression.ASExpression;
-import sexpression.ListExpression;
-import sexpression.NamedNoMatch;
-import sexpression.StringExpression;
+import sexpression.*;
 
 import java.util.HashMap;
 
@@ -15,24 +12,24 @@ import java.util.HashMap;
  */
 public class BallotScanAcceptedEvent implements IAnnounceEvent{
 
-    private ASExpression _bid;
+    private String _bid;
+    private int serial;
 
     /**
      * The matcher for the BallotReceivedEvent.
      */
     private static MatcherRule MATCHER = new MatcherRule() {
         private ASExpression pattern = new ListExpression( StringExpression
-                .makeString("ballot-accepted %bid:#string"));
+                .makeString("ballot-accepted"), StringWildcard.SINGLETON);
 
         public IAnnounceEvent match(int serial, ASExpression sexp) {
-            System.out.println(">>>> SEXP: " + sexp.toString());
-            HashMap<String, ASExpression> result = pattern.namedMatch(sexp);
-            if (result != NamedNoMatch.SINGLETON) {
-                return new BallotScanAcceptedEvent(result.get("bid"));
-
+            ASExpression res = pattern.match(sexp);
+            if (res != NoMatch.SINGLETON) {
+                String BID = ((ListExpression) res).get(0).toString();
+                return new BallotScanAcceptedEvent(serial,  BID );
             }
             return null;
-        };
+        }
     };
 
     /**
@@ -49,7 +46,8 @@ public class BallotScanAcceptedEvent implements IAnnounceEvent{
      * @param bid
      *          The rejected ballot's id
      */
-    public BallotScanAcceptedEvent(ASExpression bid) {
+    public BallotScanAcceptedEvent(int serial, String bid) {
+        this.serial = serial;
         _bid = bid;
     }
 
@@ -57,18 +55,18 @@ public class BallotScanAcceptedEvent implements IAnnounceEvent{
      * @return the ballot id
      */
     public String getBID(){
-        return _bid.toString();
+        return _bid;
     }
 
     /**
      * @param l the listener
      */
     public void fire(VoteBoxEventListener l) {
-        // l.ballotReceived( this );
+        l.ballotAccepted( this );
     }
 
     public int getSerial(){
-        return -1;
+        return serial;
     }
 
     public ASExpression toSExp() {
@@ -79,6 +77,6 @@ public class BallotScanAcceptedEvent implements IAnnounceEvent{
 
         return new ListExpression( StringExpression
                 .makeString( "ballot-accepted" ),
-                _bid );
+                StringExpression.makeString(_bid) );
     }
 }

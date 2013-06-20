@@ -371,15 +371,19 @@ public class BallotScanner{
 
             public void ballotAccepted(BallotScanAcceptedEvent event){
 
+                System.out.println("Accepted event: Event BID: " + event.getBID());
+                System.out.println("Accepted event: Last BID: " + lastFoundBID);
+
                 //If this event corresponds with our last scanned ballot, display a confirmation message
                 if(lastFoundBID.equals(event.getBID())){
+                    receivedResponse = true;
                     //frame.displayBallotAcceptedScreen(lastFoundBID);
                     frame.updateFrame(BallotScannerUI.TO_ACCEPT_STATE);
                     long start = System.currentTimeMillis();
                     while(System.currentTimeMillis() - start < 5000);
                     //frame.displayPromptScreen();
                     frame.updateFrame(BallotScannerUI.TO_PROMPT_STATE);
-                    receivedResponse = true;
+
                 }
 
             }

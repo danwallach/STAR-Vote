@@ -297,6 +297,7 @@ public class VoteBox{
                         finishedVoting = true;
 
 
+
 					} catch (AuditoriumCryptoException e) {
 						Bugout.err("Crypto error trying to commit ballot: "+e.getMessage());
 						e.printStackTrace();

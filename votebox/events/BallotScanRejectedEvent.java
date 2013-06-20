@@ -25,12 +25,9 @@ public class BallotScanRejectedEvent implements IAnnounceEvent {
                 .makeString("ballot-rejected"), StringWildcard.SINGLETON);
 
         public IAnnounceEvent match(int serial, ASExpression sexp) {
-            System.out.println(">>>> SEXP: " + sexp.toString());
             ASExpression res = pattern.match(sexp);
-            System.out.println(">>>> Match result: " + res.toString());
             if (res != NoMatch.SINGLETON) {
                 String BID = ((ListExpression) res).get(0).toString();
-                System.out.println("Matcher trying to match " + BID);
                 return new BallotScanRejectedEvent(serial,  BID );
             }
 
