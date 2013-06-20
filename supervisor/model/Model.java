@@ -577,26 +577,11 @@ public class Model {
             public void castBallot(CastBallotEvent e) {
             	AMachine m = getMachineForSerial(e.getSerial());
                 if (m != null && m instanceof VoteBoxBooth) {
-                    
-                    //If we're using the commit-challenge model, then the ballot is already cached and we
-                    // just need to confirm it
-                    if(auditoriumParams.getUseCommitChallengeModel()){
-                    	auditorium.announce(new BallotCountedEvent(mySerial, e
-                                .getSerial(), ((StringExpression) e.getNonce())
-                                .getBytes()));
-                    	
-                    	tallier.confirmed(e.getNonce());
-                    }else{
-                    	auditorium.announce(new BallotReceivedEvent(mySerial, e
-                                .getSerial(), ((StringExpression) e.getNonce())
-                                .getBytes()));
-                    	
-                    	//Otherwise, we need to count the whole thing.
-                        VoteBoxBooth booth = (VoteBoxBooth) m;
-                        booth.setPublicCount(booth.getPublicCount() + 1);
-                        booth.setProtectedCount(booth.getProtectedCount() + 1);
-                    	tallier.recordVotes(e.getBallot().toVerbatim(), e.getNonce());	
-                    }
+                    auditorium.announce(new BallotCountedEvent(mySerial, e
+                            .getSerial(), ((StringExpression) e.getNonce())
+                            .getBytes()));
+
+                    tallier.confirmed(e.getNonce());
                 }
             }
 
@@ -989,7 +974,9 @@ public class Model {
                 String bid = e.getBID();
                 int serial = e.getSerial();
                 if (committedBids.containsKey(bid)){
-                    ASExpression nonce = committedBids.get(bid);
+                    //ASExpression nonce = committedBids.get(bid);
+                    ASExpression nonce = committedBids.remove(bid);
+
                     BallotStore.castBallot(e.getBID(), nonce);
                     // used to be in voteBox registerForCommit listener.
                     auditorium.announce(new CastCommittedBallotEvent(serial, nonce));
