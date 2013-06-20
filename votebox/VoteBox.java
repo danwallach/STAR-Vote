@@ -294,8 +294,12 @@ public class VoteBox{
                         printer.printedReceipt(bid);
 
                         //By this time, the voter is done voting
+                        //Wait before returning to inactive
+                        long start = System.currentTimeMillis();
+                        while(System.currentTimeMillis() - start < 5000);
                         finishedVoting = true;
-
+//                        inactiveUI.setVisible(true);
+                        BallotEncrypter.SINGLETON.clear();
 
 
 					} catch (AuditoriumCryptoException e) {
@@ -683,7 +687,7 @@ public class VoteBox{
                     			"Someone said the ballot was received, but this machine hasn't finished voting yet");
                     
                     currentDriver.getView().nextPage();
-                    if(!_constants.getUseCommitChallengeModel()){
+//                    if(!_constants.getUseCommitChallengeModel()){
                     	nonce = null;
                     	voting = false;
                     	finishedVoting = false;
@@ -700,7 +704,7 @@ public class VoteBox{
                     	});
                     	killVBTimer.setRepeats(false);
                     	killVBTimer.start();
-                    }//if
+//                    }//if
                 }
             }
 
@@ -898,7 +902,10 @@ public class VoteBox{
             }
 
 
-            public void pinEntered(PinEnteredEvent e) {}
+            public void pinEntered(PinEnteredEvent e) {
+                // NO-OP
+            }
+
             public void invalidPin(InvalidPinEvent e) {
                 promptForPin("Invalid PIN: Enter Valid PIN");
             }
@@ -910,7 +917,6 @@ public class VoteBox{
                 }
             }
 
-           @Override
             public void ballotPrinting(BallotPrintingEvent ballotPrintingEvent) {
                 // NO-OP
             }
