@@ -444,7 +444,7 @@ public class Printer {
                 int imgHeight = pageWidth*3/4;
                 int pinStartX = printableWidth/2 - 54;
                 int pinStartY = printableHeight - 15;
-                int imgStartX = pageWidth/2-imgWidth/2;
+                int imgStartX = printableWidth/2-imgWidth/2;
                 int imgStartY = printableHeight-imgHeight-40;
 
                 graphics.drawImage(stateSeal, imgStartX, imgStartY, imgWidth, imgHeight, null);

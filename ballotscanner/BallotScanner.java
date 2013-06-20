@@ -169,11 +169,7 @@ public class BallotScanner{
     }
 
     public void beginScanning(){
-        //frame.displayPromptScreen();
-
-
         new Thread(new Runnable() {
-            @Override
             public void run() {
                 long lastFoundTime = 0;
 
