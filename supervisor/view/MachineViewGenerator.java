@@ -67,8 +67,29 @@ public class MachineViewGenerator {
         AMachineView mv = views.get(m);
         if (mv != null) {
             mv.updateView();
+            if ((m instanceof SupervisorMachine) && !(mv instanceof SupervisorMachineView))
+            {
+                views.remove(m);
+                mv = new SupervisorMachineView((SupervisorMachine) m);
+                views.put(m, mv);
+            }
+            if ((m instanceof VoteBoxBooth) && !(mv instanceof VoteBoxBoothView))
+            {
+                views.remove(m);
+                mv = new VoteBoxBoothView(model, view, (VoteBoxBooth) m);
+                views.put(m, mv);
+            }
+            if ((m instanceof BallotScannerMachine) && !(mv instanceof BallotScannerMachineView))
+            {
+                views.remove(m);
+                mv = new BallotScannerMachineView(model, view, (BallotScannerMachine) m);
+                views.put(m, mv);
+            }
+
             return mv;
-        } else {
+        }
+        else
+        {
             if (m instanceof SupervisorMachine) {
                 mv = new SupervisorMachineView((SupervisorMachine) m);
             } else if (m instanceof VoteBoxBooth) {

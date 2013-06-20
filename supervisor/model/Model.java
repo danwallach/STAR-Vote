@@ -159,13 +159,16 @@ public class Model {
         for (AMachine m : machines) {
             if (m.isOnline()) {
                 IAnnounceEvent s = null;
-                if (m instanceof SupervisorMachine) {
+                if (m instanceof SupervisorMachine)
+                {
                     SupervisorMachine ma = (SupervisorMachine) m;
                     if (ma.getStatus() == SupervisorMachine.ACTIVE)
                         s = new SupervisorEvent(0, 0, "active");
                     else if (ma.getStatus() == SupervisorMachine.INACTIVE)
                         s = new SupervisorEvent(0, 0, "inactive");
-                } else if (m instanceof VoteBoxBooth) {
+                }
+                else if (m instanceof VoteBoxBooth)
+                {
                     VoteBoxBooth ma = (VoteBoxBooth) m;
                     if (ma.getStatus() == VoteBoxBooth.READY)
                         s = new VoteBoxEvent(0, ma.getLabel(), "ready", ma
@@ -179,28 +182,34 @@ public class Model {
                         unlabeled.add(ma);
                     else if (ma.getLabel() > maxlabel)
                         maxlabel = ma.getLabel();
-                } else if(m instanceof BallotScannerMachine){
-                    BallotScannerMachine ma = (BallotScannerMachine)m;
-                    if(ma.getStatus() == BallotScannerMachine.ACTIVE){
-                        s = new BallotScannerEvent(ma.getSerial(), ma.getLabel(), "active",
-                                ma.getBattery(), ma.getProtectedCount(), ma.getPublicCount());
-                    }
-                    else if(ma.getStatus() == BallotScannerMachine.INACTIVE){
-                        s = new BallotScannerEvent(ma.getSerial(), ma.getLabel(), "inactive",
-                                ma.getBattery(), ma.getProtectedCount(), ma.getPublicCount());
-                    }
-                    if (ma.getLabel() == 0)
-                        unlabeled.add(ma);
-                    else if (ma.getLabel() > maxlabel)
-                        maxlabel = ma.getLabel();
                 }
+                else
+                    if(m instanceof BallotScannerMachine)
+                    {
+                        BallotScannerMachine ma = (BallotScannerMachine)m;
+                        if(ma.getStatus() == BallotScannerMachine.ACTIVE)
+                        {
+                            s = new BallotScannerEvent(ma.getSerial(), ma.getLabel(), "active",
+                                    ma.getBattery(), ma.getProtectedCount(), ma.getPublicCount());
+                        }
+                        else if(ma.getStatus() == BallotScannerMachine.INACTIVE)
+                        {
+                            s = new BallotScannerEvent(ma.getSerial(), ma.getLabel(), "inactive",
+                                    ma.getBattery(), ma.getProtectedCount(), ma.getPublicCount());
+                        }
+                        if (ma.getLabel() == 0)
+                            unlabeled.add(ma);
+                        else if (ma.getLabel() > maxlabel)
+                            maxlabel = ma.getLabel();
+                    }
                 if (s == null)
                     throw new IllegalStateException("Unknown machine or status");
                 statuses.add(new StatusEvent(0, m.getSerial(), s));
             }
         }
         auditorium.announce(new ActivatedEvent(mySerial, statuses));
-        for (AMachine machine : unlabeled) {
+        for (AMachine machine : unlabeled)
+        {
             auditorium.announce(new AssignLabelEvent(mySerial, machine.getSerial(), ++maxlabel));
         }
 
@@ -208,8 +217,18 @@ public class Model {
         if (!pollsOpen)
             auditorium.announce(new PollsOpenQEvent(mySerial, keyword));
 
-        auditorium.announce(new StartScannerEvent( mySerial ));
+        sendStartScannerEvent();
     }
+
+    /**
+     * Sends a StartScannerEvent.
+     */
+    public void sendStartScannerEvent ()
+    {
+        auditorium.announce(new StartScannerEvent( mySerial ));
+
+    }
+
 
     /**
      * Authorizes a VoteBox booth
@@ -627,6 +646,7 @@ public class Model {
                 }else{
                     throw new RuntimeException("WARNING: Machine left without having been registered");
                 }
+
                 numConnected--;
 //                if (numConnected == 0) {
 //                    setConnected(false);
@@ -1015,7 +1035,7 @@ public class Model {
 
             public void pollStatus(PollStatusEvent pollStatusEvent) {
                 pollsOpen = pollStatusEvent.getPollStatus()==1;
-                auditorium.announce(new StartScannerEvent( mySerial ));
+                sendStartScannerEvent();
             }
 
 
@@ -1050,6 +1070,13 @@ public class Model {
 
             public void scannerstart(StartScannerEvent startScannerEvent) {
                 // NO-OP
+                for (AMachine machine:machines)
+                {
+                    if (machine instanceof BallotScannerMachine)
+                    {
+                        machine.setStatus(BallotScannerMachine.ACTIVE);
+                    }
+                }
             }
             public void pollMachines(PollMachinesEvent pollMachinesEvent) {
                 // NO-OP

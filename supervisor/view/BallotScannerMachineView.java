@@ -3,6 +3,7 @@ package supervisor.view;
 import supervisor.model.BallotScannerMachine;
 import supervisor.model.Model;
 import supervisor.model.VoteBoxBooth;
+import votebox.events.StartScannerEvent;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
@@ -38,10 +39,6 @@ public class BallotScannerMachineView extends AMachineView{
 
     private JLabel statusLabel;
 
-    private JLabel publicCountLabel;
-
-    private JLabel protectedCountLabel;
-
     private JPanel statusPanel;
 
     private JPanel namePanel;
@@ -61,7 +58,7 @@ public class BallotScannerMachineView extends AMachineView{
 
         batteryLabel = new JLabel();
         p = new JPanel();
-        p.setBackground(Color.green);
+        p.setBackground(Color.GREEN);
         batteryLabel.setAlignmentX(Container.RIGHT_ALIGNMENT);
         p.add(new JLabel("                               ")); //Janky allignment help
         p.add(batteryLabel);
@@ -71,13 +68,13 @@ public class BallotScannerMachineView extends AMachineView{
         scannerLabel.setFont(scannerLabel.getFont().deriveFont(Font.BOLD,
                 16f));
         p = new JPanel();
-        p.setBackground(Color.green);
+        p.setBackground(Color.GREEN);
         p.add(scannerLabel);
         add(p);
 
         serialLabel = new MyJLabel("#" + machine.getSerial());
         p = new JPanel();
-        p.setBackground(Color.green);
+        p.setBackground(Color.GREEN);
         p.add(serialLabel);
         add(p);
 
@@ -90,7 +87,7 @@ public class BallotScannerMachineView extends AMachineView{
         }
         else
         {
-            p.setBackground(Color.green);
+            p.setBackground(Color.GREEN);
         }
         p.add(statusLabel);
         add(p);
@@ -140,11 +137,7 @@ public class BallotScannerMachineView extends AMachineView{
 
         statusLabel = new MyJLabel();
         statusLabel.setFont(statusLabel.getFont().deriveFont(Font.BOLD));
-        publicCountLabel = new MyJLabel();
-        publicCountLabel.setFont(publicCountLabel.getFont().deriveFont(9f));
-        protectedCountLabel = new MyJLabel();
-        protectedCountLabel.setFont(protectedCountLabel.getFont()
-                .deriveFont(9f));
+
         statusPanel = new JPanel();
         statusPanel.setLayout(new GridBagLayout());
         c.weighty = 1;
@@ -158,10 +151,10 @@ public class BallotScannerMachineView extends AMachineView{
         c.anchor = GridBagConstraints.PAGE_START;
         c.gridy = 2;
         c.weighty = 0;
-        statusPanel.add(publicCountLabel, c);
+
         c.gridy = 3;
         c.weighty = 1;
-        statusPanel.add(protectedCountLabel, c);
+
         statusPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0,
                 Color.BLACK));
         statusPanel.setPreferredSize(new Dimension(70, 70));
@@ -174,7 +167,6 @@ public class BallotScannerMachineView extends AMachineView{
                 buttonPressed();
             }
         });
-        button.add(new MyJLabel("Act on Scanner"), new GridBagConstraints());
         button.setVisible(model.isPollsOpen());
         buttonPanel = new JPanel();
         buttonPanel.setLayout(new BorderLayout());
@@ -228,19 +220,37 @@ public class BallotScannerMachineView extends AMachineView{
     }
 
     public void updateView(){
-
+        // Prints the label in large font in the upper left section of the tile.
+        nameLabel.setText(Integer.toString(machine.getLabel()));
+        serialLabel.setText("#" + machine.getSerial());
         BallotScannerMachine m = (BallotScannerMachine)machine;
-
-        if (machine.isOnline()) {
-            updateBackground(Color.green);
+        GridBagConstraints c = new GridBagConstraints();
+        if (machine.isOnline())
+        {
+            button.removeAll();
             if (machine.getStatus() == BallotScannerMachine.ACTIVE)
+            {
+                //button.add(new MyJLabel("Deactivate Scanner"), c);
+                button.setEnabled(false);
+                button.setVisible(false);
                 statusLabel.setText("Active");
+                updateBackground(Color.GREEN);
+            }
             else
+            {
+                //button.add(new MyJLabel("Activate Scanner"), c);
+                button.setEnabled(false);
+                button.setVisible(false);
+                updateBackground(Color.GREEN);
                 statusLabel.setText("Inactive");
-        } else {
+            }
+
+            batteryLabel.setVisible(true);
+        }
+        else
+        {
+            updateBackground(Color.LIGHT_GRAY);
             batteryLabel.setVisible(false);
-            publicCountLabel.setVisible(false);
-            protectedCountLabel.setVisible(false);
             statusLabel.setText("Offline");
             button.setVisible(false);
         }
@@ -261,6 +271,14 @@ public class BallotScannerMachineView extends AMachineView{
      * Called whenever the main button on the view is pressed.
      */
     private void buttonPressed() {
-        //NO-OP for now
+        // NO-OP
+        /*if (machine.isOnline())
+        {
+            if (machine.getStatus() == BallotScannerMachine.INACTIVE)
+            {
+                model.sendStartScannerEvent();
+
+            }
+        }*/
     }
 }
