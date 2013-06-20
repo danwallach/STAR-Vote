@@ -264,4 +264,11 @@ public interface VoteBoxEventListener {
     public void uploadChallengedBallots(ChallengedBallotUploadEvent challengedBallotUploadEvent);
 
     public void scannerstart(StartScannerEvent startScannerEvent);
+
+    /**
+     * Polls all machines when an unknown connection is detected and attempts add that machine to known machines
+     * @param pollMachinesEvent
+     */
+    public void pollMachines(PollMachinesEvent pollMachinesEvent);
+
 }

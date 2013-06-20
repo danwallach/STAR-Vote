@@ -82,6 +82,9 @@ public class VoteBox{
     private int pageBeforeOverride;
     private Timer killVBTimer;
     private Timer statusTimer;
+    boolean superOnline;
+    private int superSerial;
+    private JOptionPane pinPane;
 
     private  Printer printer;
 
@@ -530,7 +533,8 @@ public class VoteBox{
                     AuthorizedToCastWithNIZKsEvent.getMatcher(), PinEnteredEvent.getMatcher(),
                     InvalidPinEvent.getMatcher(), PollsOpenEvent.getMatcher(),
                     PollStatusEvent.getMatcher(), BallotPrintingEvent.getMatcher(),
-                    BallotPrintSuccessEvent.getMatcher(), BallotPrintFailEvent.getMatcher());
+                    BallotPrintSuccessEvent.getMatcher(), BallotPrintFailEvent.getMatcher(),
+                    PollMachinesEvent.getMatcher());
         } catch (NetworkException e1) {
         	//NetworkException represents a recoverable error
         	//  so just note it and continue
@@ -593,6 +597,8 @@ public class VoteBox{
                     }
                 }
                 if (!found) broadcastStatus();
+                superSerial = e.getSerial();
+                superOnline = true;
             }
 
             /**
@@ -707,6 +713,8 @@ public class VoteBox{
             public void joined(JoinEvent e) {
                 ++numConnections;
                 connected = true;
+                if(e.getSerial()==superSerial)
+                    superOnline = true;
             }
 
             public void lastPollsOpen(LastPollsOpenEvent e) {
@@ -718,6 +726,10 @@ public class VoteBox{
             public void left(LeaveEvent e) {
                 --numConnections;
                 if (numConnections == 0) connected = false;
+
+                if(e.getSerial()==superSerial){
+                    superOnline = false;
+                }
             }
 
             /**
@@ -875,6 +887,7 @@ public class VoteBox{
                     		currentDriver = null;
                     		inactiveUI.setVisible(true);
                     		killVBTimer = null;
+                            promptForPin("Enter Voting Authentication PIN");
                     	};
                     });
                     killVBTimer.setRepeats(false);
@@ -951,6 +964,16 @@ public class VoteBox{
                 // NO-OP
             }
 
+            @Override
+            public void pollMachines(PollMachinesEvent pollMachinesEvent) {
+                broadcastStatus();
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
+            }
+
 
             public void ballotScanned(BallotScannedEvent e) {
                 // NO-OP
@@ -983,6 +1006,7 @@ public class VoteBox{
 
     public void promptForPin(String message) {
             if(promptingForPin) return;
+            if(!superOnline) return;
             promptingForPin = true;
             JTextField limitedField = new JTextField(new PlainDocument() {
                 private int limit=4;
@@ -1004,7 +1028,6 @@ public class VoteBox{
                     "Authorization Required",
                     JOptionPane.OK_CANCEL_OPTION,
                     JOptionPane.PLAIN_MESSAGE);
-
 
             while(pinResult != JOptionPane.OK_OPTION) {
                 pinResult = JOptionPane.showConfirmDialog(

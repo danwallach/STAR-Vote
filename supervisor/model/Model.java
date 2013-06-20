@@ -33,6 +33,7 @@ import java.util.*;
 import javax.swing.*;
 import javax.swing.Timer;
 
+import ballotscanner.BallotScannerMachine;
 import edu.uconn.cse.adder.PrivateKey;
 import edu.uconn.cse.adder.PublicKey;
 
@@ -180,7 +181,6 @@ public class Model {
                     else if (ma.getLabel() > maxlabel)
                         maxlabel = ma.getLabel();
                 } else if(m instanceof BallotScannerMachine){
-
                     BallotScannerMachine ma = (BallotScannerMachine)m;
                     if(ma.getStatus() == BallotScannerMachine.ACTIVE){
                         s = new BallotScannerEvent(ma.getSerial(), ma.getLabel(), "active",
@@ -607,7 +607,6 @@ public class Model {
              * number of connections.
              */
             public void joined(JoinEvent e) {
-                System.out.println(">>> model reported a machine joined!");
                 AMachine m = getMachineForSerial(e.getSerial());
                 if (m != null) {
                     m.setOnline(true);
@@ -848,6 +847,8 @@ public class Model {
              * hasn't been seen, and updates its status if it has.
              */
             public void supervisor(SupervisorEvent e) {
+                auditorium.announce(new PollMachinesEvent(mySerial, new Date().getTime(),
+                        keyword));
                 AMachine m = getMachineForSerial(e.getSerial());
                 if (m != null && !(m instanceof SupervisorMachine))
                     throw new IllegalStateException(
@@ -1002,6 +1003,7 @@ public class Model {
                     System.out.println("BID: " + bid);
                     auditorium.announce(new BallotScanRejectedEvent(mySerial, bid));
                 }
+
             }
 
             public void pinEntered(PinEnteredEvent e){
@@ -1046,7 +1048,6 @@ public class Model {
 
             public void ballotPrintSuccess(BallotPrintSuccessEvent e) {
                 expectedBallots.add(Integer.valueOf(e.getBID()));
-                //System.out.println("V"  + expectedBallots);
             }
 
             public void ballotPrintFail(BallotPrintFailEvent ballotPrintFailEvent) {
@@ -1064,6 +1065,10 @@ public class Model {
             public void scannerstart(StartScannerEvent startScannerEvent) {
                 // NO-OP
             }
+            public void pollMachines(PollMachinesEvent pollMachinesEvent) {
+                // NO-OP
+            }
+
 
         });
 

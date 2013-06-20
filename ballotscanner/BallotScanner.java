@@ -150,6 +150,7 @@ public class BallotScanner{
     /**
      * Sets this BallotScanner's active status
      *
+     * @param activated the activated to set
      */
     public void setActivated(boolean activated) {
         this.activated = activated;
@@ -236,6 +237,7 @@ public class BallotScanner{
                     _constants, BallotScanAcceptedEvent.getMatcher(),
                     BallotScanRejectedEvent.getMatcher(),
                     StartScannerEvent.getMatcher()
+                    PollMachinesEvent.getMatcher()
             );
         } catch (NetworkException e1) {
             //NetworkException represents a recoverable error
@@ -351,7 +353,8 @@ public class BallotScanner{
             public void invalidPin(InvalidPinEvent event) {
             }
 
-            public void pollStatus(PollStatusEvent pollStatusEvent) {}
+            public void pollStatus(PollStatusEvent pollStatusEvent) {
+            }
 
             public void ballotPrintSuccess(BallotPrintSuccessEvent e) {
             }
@@ -361,6 +364,10 @@ public class BallotScanner{
             public void uploadCastBallots(CastBallotUploadEvent castBallotUploadEvent) {}
 
             public void uploadChallengedBallots(ChallengedBallotUploadEvent challengedBallotUploadEvent) {}
+
+            public void pollMachines(PollMachinesEvent pollMachinesEvent) {
+                auditorium.announce(getStatus());
+            }
 
             public void ballotAccepted(BallotScanAcceptedEvent event){
 
