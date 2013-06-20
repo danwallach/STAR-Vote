@@ -55,7 +55,7 @@ public interface ITallier {
 	public void recordVotes(byte[] ballot, ASExpression nonce);
 	
 	/**
-	 * Called to indicate that the voting transactioned indicated by the nonce is complete, and should be counted
+	 * Called to indicate that the voting transaction indicated by the nonce is complete, and should be counted
 	 * in the final tally.
 	 * 
 	 * @param nonce - Nonce of this voting transaction

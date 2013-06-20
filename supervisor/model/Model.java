@@ -643,10 +643,10 @@ public class Model {
                     throw new RuntimeException("WARNING: Machine left without having been registered");
                 }
                 numConnected--;
-                if (numConnected == 0) {
-                    setConnected(false);
-                    setActivated(false);
-                }
+//                if (numConnected == 0) {
+//                    setConnected(false);
+//                    setActivated(false);
+//                }
                 machinesChangedObs.notifyObservers();
             }
 

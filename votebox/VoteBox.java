@@ -687,24 +687,24 @@ public class VoteBox{
                     			"Someone said the ballot was received, but this machine hasn't finished voting yet");
                     
                     currentDriver.getView().nextPage();
-//                    if(!_constants.getUseCommitChallengeModel()){
-                    	nonce = null;
-                    	voting = false;
-                    	finishedVoting = false;
-                    	committedBallot = false;
-                    	broadcastStatus();
-                    	killVBTimer = new Timer(_constants.getViewRestartTimeout(), new ActionListener() {
-                    		public void actionPerformed(ActionEvent arg0) {
-                    			currentDriver.kill();
-                    			currentDriver = null;
-                    			inactiveUI.setVisible(true);
-                    			killVBTimer = null;
-                                promptForPin("Enter Voting Authentication PIN");
-                    		}
-                    	});
-                    	killVBTimer.setRepeats(false);
-                    	killVBTimer.start();
-//                    }//if
+
+                    nonce = null;
+                    voting = false;
+                    finishedVoting = false;
+                    committedBallot = false;
+                    broadcastStatus();
+                    killVBTimer = new Timer(_constants.getViewRestartTimeout(), new ActionListener() {
+                        public void actionPerformed(ActionEvent arg0) {
+                            currentDriver.kill();
+                            currentDriver = null;
+                            inactiveUI.setVisible(true);
+                            killVBTimer = null;
+                            promptForPin("Enter Voting Authentication PIN");
+                        }
+                    });
+                    killVBTimer.setRepeats(false);
+                    killVBTimer.start();
+
                 }
             }
 
