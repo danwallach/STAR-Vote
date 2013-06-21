@@ -41,7 +41,7 @@ public interface ITallier {
 	 * Gets the report of the total tally
 	 * 
 	 * 
-	 * @return the report as a map of Candidiate to votes received.
+	 * @return the report as a map of Candidate to votes received.
 	 */
 	public Map<String, BigInteger> getReport();
 	
@@ -49,7 +49,7 @@ public interface ITallier {
 	 * Records the votes from the given ballot, as an S-Expression in byte array
 	 * format
 	 * 
-	 * @param ballot - Verbatim version of the ballot to totall
+	 * @param ballot - Verbatim version of the ballot to total
 	 * @param nonce - Nonce of this voting transaction
 	 */
 	public void recordVotes(byte[] ballot, ASExpression nonce);
