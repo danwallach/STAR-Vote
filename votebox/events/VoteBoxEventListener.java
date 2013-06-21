@@ -271,4 +271,5 @@ public interface VoteBoxEventListener {
      */
     public void pollMachines(PollMachinesEvent pollMachinesEvent);
 
+    public void spoilBallot(SpoilBallotEvent spoilBallotEvent);
 }

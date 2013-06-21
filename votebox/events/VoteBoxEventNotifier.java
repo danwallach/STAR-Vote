@@ -251,4 +251,9 @@ public class VoteBoxEventNotifier implements VoteBoxEventListener {
             l.pollMachines(pollMachinesEvent);
     }
 
+    public void spoilBallot(SpoilBallotEvent spoilBallotEvent) {
+        for(VoteBoxEventListener l : listeners)
+            l.spoilBallot(spoilBallotEvent);
+    }
+
 }

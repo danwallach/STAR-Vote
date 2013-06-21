@@ -981,6 +981,10 @@ public class VoteBox{
                 }
             }
 
+            public void spoilBallot(SpoilBallotEvent spoilBallotEvent) {
+                // NO-OP
+            }
+
 
             public void ballotScanned(BallotScannedEvent e) {
                 // NO-OP

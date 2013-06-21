@@ -365,6 +365,9 @@ public class BallotScanner{
                 auditorium.announce(getStatus());
             }
 
+            public void spoilBallot(SpoilBallotEvent spoilBallotEvent) {
+            }
+
             public void ballotAccepted(BallotScanAcceptedEvent event){
 
                 System.out.println("Accepted event: Event BID: " + event.getBID());

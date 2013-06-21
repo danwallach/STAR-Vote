@@ -73,6 +73,8 @@ public class ActiveUI extends JPanel {
 
     private JButton pinButton;
 
+    private JButton spoilButton;
+
     private JPanel mainPanel;
 
     private JFileChooser ballotLocChooser;
@@ -216,6 +218,47 @@ public class ActiveUI extends JPanel {
         c.insets = new Insets(20, 20, 20, 20);
         leftPanel.add(ballotButton, c);
 
+        final JPanel fthis = this;
+
+        pinButton = new JButton("Generate Pin");
+        pinButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if(model.getSelections().length>0){
+                    int precinct = (Integer) JOptionPane.showInputDialog(fthis, "Please choose a precinct", " Pin Generator",
+                            JOptionPane.QUESTION_MESSAGE, null, model.getSelections(), model.getInitialSelection());
+                    int pin = model.generatePin(precinct);
+                    Printer printer = new Printer();
+                    String strPin;
+                    printer.printPin(strPin = (new DecimalFormat("0000")).format(pin));
+                    JOptionPane.showMessageDialog(fthis, "Your pin is: " + strPin);
+                }
+                else{
+                    JOptionPane.showMessageDialog(fthis, "Please select at least one ballot before generating a pin");
+                }
+            }
+        });
+        c.ipady = 50;
+        c.gridy = 2;
+        leftPanel.add(pinButton, c);
+
+        spoilButton = new JButton("Spoil a Ballot");
+        spoilButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String bid = (String)JOptionPane.showInputDialog(fthis, "Please enter the bid of the ballot to be spoiled, or scan the ballot printout", "Spoil Ballot",
+                        JOptionPane.QUESTION_MESSAGE, null, null,"Enter BID Here");
+                boolean spoiled = model.spoilBallot(bid);
+                if(spoiled)
+                    JOptionPane.showMessageDialog(fthis, "Ballot " + bid + " has been spoiled.");
+                else
+                    JOptionPane.showMessageDialog(fthis, "Not a valid bid. No ballot was spoiled.");
+
+            }
+        });
+
+        c.ipady = 50;
+        c.gridy = 3;
+        leftPanel.add(spoilButton, c);
+
         leftButton = new MyJButton("Open Polls Now");
         leftButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -234,31 +277,11 @@ public class ActiveUI extends JPanel {
                 updateAllMachineViews();
             }
         });
-        c.ipady = 150;
-        c.gridy = 3;
+        c.ipady = 100;
+        c.gridy = 4;
         leftPanel.add(leftButton, c);
 
-        final JPanel fthis = this;
 
-        pinButton = new JButton("Generate Pin");
-        pinButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if(model.getSelections().length>0){
-                    int precinct = (Integer) JOptionPane.showInputDialog(fthis, "Please choose a precinct", " Pin Generator", JOptionPane.QUESTION_MESSAGE, null, model.getSelections(), model.getInitialSelection());
-                    int pin = model.generatePin(precinct);
-                    Printer printer = new Printer();
-                    String strPin;
-                    printer.printPin(strPin = (new DecimalFormat("0000")).format(pin));
-                    JOptionPane.showMessageDialog(fthis, "Your pin is: " + strPin);
-                }
-                else{
-                    JOptionPane.showMessageDialog(fthis, "Please select at least one ballot before generating a pin");
-                }
-            }
-        });
-        c.ipady = 50;
-        c.gridy = 2;
-        leftPanel.add(pinButton, c);
     }
 
     private void initializeMainPanel() {
