@@ -65,7 +65,7 @@ public class ChallengeDelayedTallier extends EncryptedTallier {
 	
 	public void challenged(ASExpression nonce){
 		
-		//This could be innoculous (supervisor going on and offline)
+		//This could be innocuous (supervisor going online and offline)
 		//Or it could be a sign of malicious tampering, so we'll report it.
 		if(_nonceToBallot.remove(nonce) == null){
 			Bugout.err("Detected a challenge on an UNKNOWN vote, nonce  = "+nonce);
