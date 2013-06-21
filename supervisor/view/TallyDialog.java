@@ -378,11 +378,11 @@ public class TallyDialog extends JDialog {
 	
 	/**
 	 * @param entryName - the Zip entry to consider
-	 * @param lang - the list of languages to pull the results from
+	 * @param langs - the list of languages to pull the results from
 	 * @return true if entryName is in the form "media_B*_selected_*.png", ie if it is a "race image"
 	 */
 	private boolean isRaceImage(String entryName, List<String> langs){
-		if(!entryName.startsWith("media/B"))
+		if(!entryName.startsWith("media/vvpat/B"))
 			return false;
 		
 		if(!entryName.endsWith(".png"))
