@@ -16,21 +16,21 @@ import java.util.HashMap;
 public class SpoilBallotEvent implements IAnnounceEvent {
 
     private int _serial;
+    private String _bid;
     private ASExpression _nonce;
-    private ASExpression _ballot;
 
     /**
      * Matcher for the SpoilBallotEvent
      */
     private static MatcherRule MATCHER = new MatcherRule() {
         private ASExpression pattern = ASExpression
-                .make("(spoil-ballot %nonce:#string %ballot:#any)");
+                .make("(spoil-ballot %bid:#string %nonce:#any)");
 
         public IAnnounceEvent match(int serial, ASExpression sexp) {
             HashMap<String, ASExpression> result = pattern.namedMatch(sexp);
             if (result != NamedNoMatch.SINGLETON)
-                return new CastBallotEvent(serial, result.get("nonce"), result
-                        .get("ballot"));
+                return new CastBallotEvent(serial, result.get("bid"), result
+                        .get("nonce"));
 
             return null;
         }
@@ -48,20 +48,20 @@ public class SpoilBallotEvent implements IAnnounceEvent {
      * Constructs a new SpoilBallotEvent
      *
      * @param serial the serial number of the sender
-     * @param nonce  the nonce
-     * @param ballot the encrypted ballot, as an array of bytes
+     * @param bid the ballot to be spoiled
+     * @param nonce  the nonce of the ballot
      */
-    public SpoilBallotEvent(int serial, ASExpression nonce, ASExpression ballot) {
+    public SpoilBallotEvent(int serial,String bid, ASExpression nonce) {
         _serial = serial;
+        _bid = bid;
         _nonce = nonce;
-        _ballot = ballot;
     }
 
     /**
      * @return the ballot
      */
-    public ASExpression getBallot() {
-        return _ballot;
+    public String getBID() {
+        return _bid;
     }
 
     /**
@@ -87,6 +87,6 @@ public class SpoilBallotEvent implements IAnnounceEvent {
      */
     public ASExpression toSExp() {
         return new ListExpression(StringExpression.makeString("spoil-ballot"),
-                _nonce, _ballot);
+                StringExpression.make(_bid), _nonce);
     }
 }

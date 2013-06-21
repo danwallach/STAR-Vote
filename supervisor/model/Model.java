@@ -1132,11 +1132,20 @@ public class Model {
         }
     }
 
-    public void spoilBallot(String bid){
+    /**
+     * Will spoil ballot by removing it from the commtedBids structure, return true if a bid was removed
+     * @param bid
+     * @return whether or not a bid was actually spoiled
+     */
+    public boolean spoilBallot(String bid){
         if(committedBids.containsKey(bid)){
-            committedBids.remove(bid);
-            //auditorium.announce(new ChallengeEvent());
+            ASExpression nonce = committedBids.remove(bid);
+            auditorium.announce(new SpoilBallotEvent(mySerial, bid, nonce));
+            return true;
         }
+        else
+            return false;
+
     }
 
     public int generatePin(int precinct){
