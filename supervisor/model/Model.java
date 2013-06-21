@@ -1082,6 +1082,10 @@ public class Model {
                 // NO-OP
             }
 
+            public void spoilBallot(SpoilBallotEvent spoilBallotEvent) {
+                // NO-OP
+            }
+
 
         });
 

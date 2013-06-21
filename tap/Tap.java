@@ -193,6 +193,7 @@ public class Tap {
             public void ballotPrintFail(BallotPrintFailEvent ballotPrintFailEvent) {}
             public void scannerstart(StartScannerEvent startScannerEvent) {}
             public void pollMachines(PollMachinesEvent pollMachinesEvent){}
+            public void spoilBallot(SpoilBallotEvent spoilBallotEvent) {}
 
             public void uploadCastBallots(CastBallotUploadEvent e) {
                 dumpBallotList(e.getDumpList());
