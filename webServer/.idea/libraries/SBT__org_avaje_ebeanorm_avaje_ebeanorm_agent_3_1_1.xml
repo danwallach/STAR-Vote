@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="SBT: org.avaje.ebeanorm:avaje-ebeanorm-agent:3.1.1">
-    <CLASSES>
-      <root url="jar://$USER_HOME$/Downloads/play-2.1.1/repository/local/org.avaje.ebeanorm/avaje-ebeanorm-agent/3.1.1/jars/avaje-ebeanorm-agent.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

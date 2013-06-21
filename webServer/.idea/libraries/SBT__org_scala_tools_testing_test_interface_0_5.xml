@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="SBT: org.scala-tools.testing:test-interface:0.5">
-    <CLASSES>
-      <root url="jar://$USER_HOME$/Downloads/play-2.1.1/repository/local/org.scala-tools.testing/test-interface/0.5/jars/test-interface.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
