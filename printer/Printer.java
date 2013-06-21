@@ -46,8 +46,6 @@ import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.PrintQuality;
 import javax.print.attribute.standard.PrinterName;
 
-
-import javafx.beans.binding.ListExpression;
 import preptool.model.layout.manager.RenderingUtils;
 import sexpression.*;
 import tap.BallotImageHelper;
