@@ -10,4 +10,6 @@ out
 *.zip
 *.bal
 *.conf
+ballotscanner/BallotScannerUITester.java
+supervisor/view/BallotScannerMachineViewTester.java
 
