@@ -71,7 +71,17 @@ public abstract class
 	 * multi-core machines. Experimental. [dsandler]
 	 */
 	public static final Boolean USE_THREADS = true;
-	
+
+    /**
+     * Constant used when determining the font size
+     */
+    private static final int FONT_SIZE_SELECTED_IMAGES = 20;
+
+    /**
+     * Width to be used when rendering "_selected_" images.
+     */
+    private static final int WIDTH_SELECTED_IMAGES = 600;
+
 	/**
      * Creates a Layout using the information from the given Ballot.
      * @param ballot the ballot
@@ -263,7 +273,7 @@ public abstract class
 
             public Void forReviewButton(ReviewButton rb, Object... param) {
 
-                //TODO _1_ is the file necessary for review
+                // _1_ is the file necessary for review
 
                 String uid = rb.getUID();
                 String uuid = null;
@@ -307,19 +317,18 @@ public abstract class
                     //forPrintButton(pb, param);
                 }
 
-//                BufferedImage imageRead = null;
-//                try {
-//                    imageRead = ImageIO.read(new File(location
-//                            + uid + "_1_"
-//                            + langShortName + ".png"));
-//                }
-//                catch (Exception ie){
-//                    System.out.println("Image " + uuid + " does not exist!");
-//                    System.out.println(ie.getMessage());
-//                }
+//              BufferedImage imageRead = null;
+//              try {
+//                  imageRead = ImageIO.read(new File(location
+//                          + uid + "_1_"
+//                          + langShortName + ".png"));
+//              }
+//              catch (Exception ie){
+//                  System.out.println("Image " + uuid + " does not exist!");
+//                  System.out.println(ie.getMessage());
+//              }
 
                 BufferedImage image = rb.execute(getImageVisitor());
-             ;
 
 
 
@@ -379,6 +388,18 @@ public abstract class
                                 + tb.getUID() + "_focused_1_" + langShortName
                                 + ".png"));
                         img = tb.execute(getImageVisitor(), true);
+
+                        /*// Save a copy of the selected image to the vvpat folder, to be displayed by the tallier. //////////////
+                        File selectedTallyFile = new File(location);
+                        selectedTallyFile = new File(selectedTallyFile, "vvpat");
+                        if(!selectedTallyFile.exists())
+                            selectedTallyFile.mkdirs();
+
+                        selectedTallyFile = new File(selectedTallyFile, tb.getUID() + "_selected_" + langShortName + ".png");
+                        ImageIO.write(img, "png", selectedTallyFile);
+                        ////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+
+
                         ImageIO.write(img, "png", new File(location
                                 + tb.getUID() + "_selected_1_" + langShortName
                                 + ".png"));
@@ -486,7 +507,18 @@ public abstract class
                         if(!file.exists())
                             file.mkdirs();
 
+                        // Save a selected copy of the images to local files./////////////////////////////////////////////////////////////////////////////////////////////////
+                        if (pb.getUID().contains("B"))
+                        {
+                            //System.out.println("Rendering " + pb.getUID() + " with:\n\tText: " + pb.getText() + "\n\tSecond Line: " + pb.getSecondLine() + "\n\tParty: " + pb.getParty() + "\n\tFontsize: " + FONT_SIZE_SELECTED_IMAGES + "\n\tWidth: " + WIDTH_SELECTED_IMAGES + "\n\tBold: " + pb.isBold() + "\n\tSelected: true\n========================================================================================");
+                            BufferedImage selectedImg = RenderingUtils.renderToggleButton(pb.getText(), pb.getSecondLine(), pb.getParty(), FONT_SIZE_SELECTED_IMAGES, WIDTH_SELECTED_IMAGES, pb.isBold(), true);
+                            File selectedFile = new File (file, uuid + "_selected_" + langShortName + ".png");
+                            ImageIO.write(selectedImg, "png", selectedFile);
+                        }
+                        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
                         file = new File(file, uuid+"_printable_"+langShortName+".png");
+
 
                         ImageIO.write(img, "png", file);
 
