@@ -976,8 +976,10 @@ public class Model {
              * It should not yet be tallied.
              */
             public void commitBallot(CommitBallotEvent e) {
+                System.err.print("Processing a commit ballot event ");
             	AMachine m = getMachineForSerial(e.getSerial());
                 if (m != null && m instanceof VoteBoxBooth) {
+                    System.err.println("which came from a valid machine.");
                     VoteBoxBooth booth = (VoteBoxBooth) m;
                     booth.setPublicCount(booth.getPublicCount() + 1);
                     booth.setProtectedCount(booth.getProtectedCount() + 1);

@@ -77,8 +77,10 @@ public class EncryptedTallier implements ITallier {
 			ASExpression sexp = in.read();
 			//Check that the ballot is well-formed
 			if(PATTERN.match(sexp) != NoMatch.SINGLETON){
+                System.out.println("Recording Vote Step 1: Ballot is well-formed!");
 				ListExpression ballot = (ListExpression)sexp;
-				
+
+                System.out.println("Found " + ballot.size() + " ASExpressions in ballot.");
 				for(ASExpression voteE : ballot){
 					ListExpression vote = (ListExpression)voteE;
 					String key = vote.get(0).toString();
@@ -98,7 +100,8 @@ public class EncryptedTallier implements ITallier {
 					}else{
 						currentTotal = pair;
 					}//if
-					
+
+                    System.out.println("Counting vote:\n\tKey: " + key + "\n\tValue: " + currentTotal);
 					_votes.put(key, currentTotal);
 				}//for
 			}else{
