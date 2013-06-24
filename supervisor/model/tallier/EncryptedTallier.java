@@ -59,11 +59,9 @@ public class EncryptedTallier implements ITallier {
 		
 		Map<String, BigInteger> results = new HashMap<String, BigInteger>();
 
-        System.out.println("Recorded " + _votes.keySet().size() + " votes:");
 		for(String candidate : _votes.keySet()){
 			Pair<BigInteger> value = _votes.get(candidate);
 			BigInteger decryptedValue = ElGamalCrypto.SINGLETON.decrypt(_privateKey, value);
-            System.out.println("Candidate " + candidate + " obtained " + decryptedValue + " votes.");
 			results.put(candidate, decryptedValue);
 		}//for
 		
@@ -71,17 +69,14 @@ public class EncryptedTallier implements ITallier {
 	}
 
 	public void recordVotes(byte[] ballotBytes, ASExpression ignoredNonce) {
-        System.err.println(">>>>RECORD VOTES METHOD CALLED!!!");
 		ASEInputStreamReader in = new ASEInputStreamReader(
 				new ByteArrayInputStream(ballotBytes));
 		try {
 			ASExpression sexp = in.read();
 			//Check that the ballot is well-formed
 			if(PATTERN.match(sexp) != NoMatch.SINGLETON){
-                System.out.println("Recording Vote Step 1: Ballot is well-formed!");
 				ListExpression ballot = (ListExpression)sexp;
 
-                System.out.println("Found " + ballot.size() + " ASExpressions in ballot.");
 				for(ASExpression voteE : ballot){
 					ListExpression vote = (ListExpression)voteE;
 					String key = vote.get(0).toString();
@@ -102,7 +97,6 @@ public class EncryptedTallier implements ITallier {
 						currentTotal = pair;
 					}//if
 
-                    System.out.println("Counting vote:\n\tKey: " + key + "\n\tValue: " + currentTotal);
 					_votes.put(key, currentTotal);
 				}//for
 			}else{

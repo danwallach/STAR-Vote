@@ -58,7 +58,6 @@ public class ChallengeDelayedTallier extends EncryptedTallier {
 				+ nonce
 				+ " -- perhaps the ballot is not designed to use the challenge model?");
 		}//if
-		System.err.println("ChallengeDelayedTallier got a non-null vote and is recording it now!");
 		//Delegate actually tallying to the EncryptedTallier class
 		super.recordVotes(vote, null);
 	}//confirmed
