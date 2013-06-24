@@ -91,7 +91,6 @@ public class Printer {
      * @param ballot - the choices to print, in the form ((race-id choice) ...)
      */
 	public void printCommittedBallot(ListExpression ballot, String bid) {
-        System.out.println(">>> Printing " + bid);
         System.out.println("Current Ballot: " + _currentBallotFile.getAbsolutePath());
 		final Map<String, Image> choiceToImage = BallotImageHelper.loadImagesForVVPAT(_currentBallotFile);
         final Map<String, Image> raceTitles = BallotImageHelper.loadBallotTitles(_currentBallotFile);
