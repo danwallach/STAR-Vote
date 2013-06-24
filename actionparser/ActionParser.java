@@ -116,7 +116,6 @@ public class ActionParser {
 
 	/**
 	 * Search the layout for any page transitions and map the ID to the transition direction
-	 * @param layout the layout to search
 	 * @return the mapping of IDs to transitions
 	 */
 	private HashMap<String, Integer> getTransitions(){
@@ -160,7 +159,6 @@ public class ActionParser {
 	/**
 	 * Finds the page number in the layout contianing the element with the specified UID
 	 * @param uid the UID to search for 
-	 * @param layout the layout to search in
 	 * @return the zero-indexed page number in layout containing uid
 	 */
 	private Integer findPageContaining(String uid) {
