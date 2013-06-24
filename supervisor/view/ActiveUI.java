@@ -38,6 +38,7 @@ import java.util.*;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.Timer;
+import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileFilter;
 
 import printer.Printer;
@@ -75,6 +76,8 @@ public class ActiveUI extends JPanel {
     private JPanel mainPanel;
 
     private JFileChooser ballotLocChooser;
+
+    private static String ballotID;
 
 
     /**
@@ -220,7 +223,7 @@ public class ActiveUI extends JPanel {
         pinButton = new MyJButton("Generate Pin");
         pinButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if(model.getSelections().length>0){
+                if (model.getSelections().length > 0) {
                     int precinct = (Integer) JOptionPane.showInputDialog(fthis, "Please choose a precinct", " Pin Generator",
                             JOptionPane.QUESTION_MESSAGE, null, model.getSelections(), model.getInitialSelection());
                     int pin = model.generatePin(precinct);
@@ -228,8 +231,7 @@ public class ActiveUI extends JPanel {
                     String strPin;
                     printer.printPin(strPin = (new DecimalFormat("0000")).format(pin));
                     JOptionPane.showMessageDialog(fthis, "Your pin is: " + strPin);
-                }
-                else{
+                } else {
                     JOptionPane.showMessageDialog(fthis, "Please select at least one ballot before generating a pin");
                 }
             }
@@ -242,79 +244,57 @@ public class ActiveUI extends JPanel {
         spoilButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 Scanner scanner = new Scanner(System.in);
-                boolean entered = false;
 
                 String bid = "-1";
 
-                Object[] options = { "Type in a BID", "Scan a BID", "Cancel"};
-                int scan = JOptionPane.showOptionDialog(fthis, "Would you like to scan or enter in the BID of the ballot to be spoiled?",
-                        "Spoil Ballot", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-//                JFrame f = new JFrame("Spoil a BID");
-//                JPanel p = new JPanel();
-//                JLabel label = new JLabel("Please scan a BID");
-//                JTextArea a = new JTextArea(1, 30);
-//                p.add(label);
-//                p.add(a);
-//                label.setEnabled(true);
-//                a.setEnabled(true);
-//                f.add(p);
-//                p.setEnabled(true);
-//                f.pack();
-//                f.setVisible(true);
-//
-//                if(scanner.hasNextLine()){
-//                    a.setText(scanner.nextLine());
-//                    a.repaint();
-//                    entered = true;
-//                }
+                final JFrame frame = new JFrame ("Spoil a ballot");
+                frame.setPreferredSize(new Dimension(200, 100));
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setBounds(100, 100, 368, 153);
+                JPanel contentPane = new JPanel();
+                contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+                contentPane.setLayout(new BorderLayout(0, 0));
+                frame.setContentPane(contentPane);
 
+                JPanel panel = new JPanel();
+                panel.setPreferredSize(new Dimension(200, 100));
+                panel.setBackground(SystemColor.controlHighlight);
+                contentPane.add(panel, BorderLayout.CENTER);
+                panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
+                final JTextArea txtrTypeABallot = new JTextArea();
+                txtrTypeABallot.setRows(1);
+                txtrTypeABallot.setPreferredSize(new Dimension(200, 30));
+                txtrTypeABallot.setWrapStyleWord(true);
+                txtrTypeABallot.setLineWrap(true);
+                txtrTypeABallot.setText("Type a ballot ID here.");
+                panel.add(txtrTypeABallot);
 
-                if(scan == 0){
-                    bid = JOptionPane.showInputDialog(fthis, "Please enter the ballot ID of the ballot you would like to spoil.", "Spoil Ballot",
-                        JOptionPane.QUESTION_MESSAGE);
-                    entered = true;
-                }
-                else if(scan == 1){
-                    JFrame f = new JFrame("BID Scan");
-                    JDialog d = new JDialog(f, "", Dialog.ModalityType.MODELESS);
-                    JPanel p = new JPanel();
-                    p.setLayout(new FlowLayout());
-                    BufferedImage img = null;
-                    try{
-                        img = ImageIO.read(new File("images/logo.png"));
-                    } catch (IOException ie){
-                        throw new RuntimeException(ie);
+                JButton btnSubmitId = new JButton("Submit ID");
+                btnSubmitId.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent arg0) {
+                        ballotID = txtrTypeABallot.getText();
+                        frame.setVisible(false);
+                        frame.dispose();
                     }
+                });
+                panel.add(btnSubmitId);
+
+                JPanel panel_1 = new JPanel();
+                panel_1.setPreferredSize(new Dimension(300, 50));
+                panel_1.setBackground(SystemColor.controlHighlight);
+                contentPane.add(panel_1, BorderLayout.NORTH);
+
+                JLabel lblPleaseScanOr = new JLabel("Please scan or type a ballot ID");
+                lblPleaseScanOr.setFont(new Font("Tahoma", Font.PLAIN, 16));
+                panel_1.add(lblPleaseScanOr);
 
 
-                    JLabel l = new JLabel(new ImageIcon(img));
-                    l.setEnabled(true);
-                    f.add(p);
-                    p.add(l);
-                    f.pack();
-                    f.setVisible(true);
 
 
 
-                    if(scanner.hasNext()){
-                        d.dispose();
-                        bid = scanner.nextLine();
-                        int choice = JOptionPane.showConfirmDialog(fthis, "You scanned ballot " + bid + ". Is this the ballot you would like to spoil?", "Spoil Confirm",
-                                JOptionPane.YES_NO_OPTION);
 
-                        entered = true;
-
-                        if(choice == 1)
-                            entered = false;
-
-
-                    }
-
-                }
-
-
-                if(entered){
+                if(!frame.isVisible()){
                     boolean spoiled = model.spoilBallot(bid);
                     if(spoiled)
                         JOptionPane.showMessageDialog(fthis, "Ballot " + bid + " has been spoiled.");
