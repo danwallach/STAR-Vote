@@ -52,17 +52,19 @@ public class EncryptedTallier implements ITallier {
 	}
 	
 	/**
-	 * @param privateKey - the appropriate ElGamal private key
+	 * //@param privateKey - the appropriate ElGamal private key
 	 * @return a text description of the outcome of the election.
 	 */
 	public Map<String, BigInteger> getReport() {
 		
 		Map<String, BigInteger> results = new HashMap<String, BigInteger>();
-		
+
+        System.out.println("Recorded " + _votes.keySet().size() + " votes:");
 		for(String candidate : _votes.keySet()){
 			Pair<BigInteger> value = _votes.get(candidate);
-			
-			results.put(candidate, ElGamalCrypto.SINGLETON.decrypt(_privateKey, value));
+			BigInteger decryptedValue = ElGamalCrypto.SINGLETON.decrypt(_privateKey, value);
+            System.out.println("Candidate " + candidate + " obtained " + decryptedValue + " votes.");
+			results.put(candidate, decryptedValue);
 		}//for
 		
 		return results;
