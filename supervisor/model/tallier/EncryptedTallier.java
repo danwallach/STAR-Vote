@@ -71,6 +71,7 @@ public class EncryptedTallier implements ITallier {
 	}
 
 	public void recordVotes(byte[] ballotBytes, ASExpression ignoredNonce) {
+        System.err.println(">>>>RECORD VOTES METHOD CALLED!!!");
 		ASEInputStreamReader in = new ASEInputStreamReader(
 				new ByteArrayInputStream(ballotBytes));
 		try {

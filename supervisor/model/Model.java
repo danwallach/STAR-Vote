@@ -595,12 +595,15 @@ public class Model {
              */
             public void castBallot(CastBallotEvent e) {
             	AMachine m = getMachineForSerial(e.getSerial());
-                if (m != null && m instanceof VoteBoxBooth) {
+                System.err.println("Got a cast ballot event ");
+                if (m != null && m instanceof BallotScannerMachine) {
+                    System.err.println("from a valid machine.");
                     auditorium.announce(new BallotCountedEvent(mySerial, e
                             .getSerial(), ((StringExpression) e.getNonce())
                             .getBytes()));
 
                     tallier.confirmed(e.getNonce());
+                    System.err.println("The vote should have been confirmed now and all those messages should get printed.");
                 }
             }
 
