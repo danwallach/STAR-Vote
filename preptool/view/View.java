@@ -1232,11 +1232,11 @@ public class View extends JFrame {
     	
     	final JCheckBoxMenuItem challenge = new JCheckBoxMenuItem("Use Commit-Challenge Model");
         challenge.setState(true);
+        //We're always using commit-challenge by default
+        model.setCommitChallenge(true);
     	challenge.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-                //We're always using commit challenge
-                //We're always using commit challenge
-				model.setCommitChallenge(true);
+				model.setCommitChallenge(challenge.getState());
 			}
     	});
     	prefMenu.add( challenge );
