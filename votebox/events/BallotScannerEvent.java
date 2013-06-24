@@ -18,7 +18,7 @@ public class BallotScannerEvent implements IAnnounceEvent {
                 StringWildcard.SINGLETON, StringWildcard.SINGLETON,
                 StringWildcard.SINGLETON, StringWildcard.SINGLETON );
 
-        public IAnnounceEvent match(int serial, ASExpression sexp) {
+        public IAnnounceEvent match(int serial, ASExpression sexp){
             ASExpression res = pattern.match(sexp);
             if (res != NoMatch.SINGLETON) {
                 int label = Integer.parseInt( ((ListExpression) res).get( 0 )

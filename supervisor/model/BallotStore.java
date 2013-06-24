@@ -40,11 +40,14 @@ public class BallotStore {
      * Cast unconfirmed ballot
      * @param ballotID - unique ballot identifier
      */
-    public static void castBallot(String ballotID, ASExpression nonce) {
-        ASExpression confirmedBallot = unconfirmedBallots.remove(ballotID);
-        castNonces.add(nonce);
+    public static void castCommittedBallot(String ballotID){
+        if(unconfirmedBallots.containsKey(ballotID)){
+            castNonces.add(unconfirmedBallots.get(ballotID));
+            unconfirmedBallots.remove(ballotID);
+        }else{
+            throw new RuntimeException("Ballot was cast before it was committed");
+        }
     }
-
 
     /**
      * Retrieves nonces of cast ballots
@@ -75,42 +78,6 @@ public class BallotStore {
             decryptedBallots.add(new ListExpression(decryptedVotes));
         }
         return new ListExpression(new ListExpression(hashes), new ListExpression(decryptedBallots));
-    }
-
-
-    /**
-     * Upload/dump challenged ballots to post-election audit server
-     *
-     * @deprecated - this is now done through Tap
-     */
-    public static void uploadBallots() {
-        try {
-//            open websocket to server
-            Socket socket = new Socket("ws://" + SERVER_IP, SERVER_PORT);
-            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-
-//            rudimentary protocol; not actually used by receiver server yet
-            out.println("ChallengedBallots:" + unconfirmedBallots.size());
-            for (ASExpression unconfirmedBallot : getUnconfirmedBallots()) {
-                // todo: add machine-unique key
-//                decrypt challenged ballots and then upload plaintext versions
-//                ListExpression decryptedBallot = BallotEncrypter.SINGLETON.decrypt(unconfirmedBallot, STATICKEY.SINGLETON.PUBLIC_KEY);
-//                out.println(decryptedBallot.toString());
-            }
-            out.println("ChallengedBallotsEnd");
-
-//            Uploading of cast ballots done by supervisor after tallying
-//            out.println("CastBallots:" + castBallots.size());
-//            for (CastBallot castBallot : getConfirmedBallots()) {
-//                out.println(castBallot.toString());
-//            }
-//            out.println("CastBallotsEnd");
-
-            socket.close();
-            out.close();
-        } catch (Exception e){
-            e.printStackTrace();
-        }
     }
 
     public static List<ASExpression> getUnconfirmedBallots() {

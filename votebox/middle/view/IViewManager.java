@@ -61,7 +61,7 @@ public interface IViewManager {
     /**
      * Cast the ballot.
      */
-    void castBallot();
+    void castCommittedBallot();
     
     /**
      * Cast the ballot.

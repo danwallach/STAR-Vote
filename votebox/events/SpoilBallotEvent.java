@@ -29,7 +29,7 @@ public class SpoilBallotEvent implements IAnnounceEvent {
         public IAnnounceEvent match(int serial, ASExpression sexp) {
             HashMap<String, ASExpression> result = pattern.namedMatch(sexp);
             if (result != NamedNoMatch.SINGLETON)
-                return new CastBallotEvent(serial, result.get("bid"), result
+                return new CastCommittedBallotEvent(serial, result.get("bid"), result
                         .get("nonce"));
 
             return null;

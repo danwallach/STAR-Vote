@@ -504,7 +504,7 @@ public class Model {
             auditorium = new VoteBoxAuditoriumConnector(mySerial,
                     auditoriumParams, ActivatedEvent.getMatcher(),
                     AssignLabelEvent.getMatcher(), AuthorizedToCastEvent.getMatcher(),
-                    CastBallotEvent.getMatcher(), LastPollsOpenEvent.getMatcher(),
+                    CastCommittedBallotEvent.getMatcher(), LastPollsOpenEvent.getMatcher(),
                     OverrideCastConfirmEvent.getMatcher(), PollsClosedEvent.getMatcher(),
                     PollsOpenEvent.getMatcher(), PollsOpenQEvent.getMatcher(),
                     SupervisorEvent.getMatcher(), VoteBoxEvent.getMatcher(),
@@ -593,7 +593,7 @@ public class Model {
              * public and protected counts, replies with ballot-received, and
              * stores the votes in the tallier.
              */
-            public void castBallot(CastBallotEvent e) {
+            public void castCommittedBallot(CastCommittedBallotEvent e) {
             	AMachine m = getMachineForSerial(e.getSerial());
                 if (m != null && m instanceof BallotScannerMachine) {
                     auditorium.announce(new BallotCountedEvent(mySerial, e
@@ -997,9 +997,9 @@ public class Model {
                     //ASExpression nonce = committedBids.get(bid);
                     ASExpression nonce = committedBids.remove(bid);
 
-                    BallotStore.castBallot(e.getBID(), nonce);
+                    BallotStore.castCommittedBallot(e.getBID(), nonce);
                     // used to be in voteBox registerForCommit listener.
-                    auditorium.announce(new CastCommittedBallotEvent(serial, nonce));
+                    auditorium.announce(new CastCommittedBallotEvent(serial, nonce, StringExpression.makeString(e.getBID())));
                     // that should trigger my own castBallot listener.
                     System.out.println("Sending scan confirmation!");
                     System.out.println("BID: " + bid);

@@ -333,7 +333,7 @@ public class VoteBox{
                     //Object[] arg = (Object[])argTemp;
 
                     auditorium.announce(new CastCommittedBallotEvent(mySerial,
-                            StringExpression.makeString(nonce)));
+                            StringExpression.makeString(nonce), StringExpression.makeString(bid)));
 
                     BallotEncrypter.SINGLETON.clear();
 
@@ -392,9 +392,9 @@ public class VoteBox{
 
                     Object[] arg = (Object[]) argTemp;
 
-                    //If we are not using encryption use the plain old CastBallotEvent
+                    //If we are not using encryption use the plain old CastCommittedBallotEvent
                     if (!_constants.getCastBallotEncryptionEnabled()) {
-                        auditorium.announce(new CastBallotEvent(mySerial,
+                        auditorium.announce(new CastCommittedBallotEvent(mySerial,
                                 StringExpression.makeString(nonce),
                                 (ASExpression) arg[0], StringExpression.makeString(bid)));
                     } else {
@@ -709,7 +709,7 @@ public class VoteBox{
                 }
             }
 
-            public void castBallot(CastBallotEvent e) {
+            public void castCommittedBallot(CastCommittedBallotEvent e) {
                 // NO-OP
             }
 

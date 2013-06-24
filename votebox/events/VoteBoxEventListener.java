@@ -68,7 +68,7 @@ public interface VoteBoxEventListener {
      * @param e
      *            the event
      */
-    public void castBallot(CastBallotEvent e);
+    public void castCommittedBallot(CastCommittedBallotEvent e);
 
     public void commitBallot(CommitBallotEvent e);
 

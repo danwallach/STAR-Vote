@@ -270,7 +270,7 @@ public class ViewManager implements IViewManager {
      * releasing, remove the event and put all code in this function, so that an
      * outside party cannot register malicious code.
      */
-    public void castBallot() {
+    public void castCommittedBallot() {
     	Object[] toPass = new Object[]{
     		_ballotLookupAdapter.getCastBallot(),
     		_ballotLookupAdapter.getRaceGroups()
@@ -772,7 +772,7 @@ public class ViewManager implements IViewManager {
         _view.register( EventType.CAST_BALLOT, new IEventHandler() {
 
             public void handle(InputEvent event) throws BallotBoxViewException {
-                castBallot();
+                castCommittedBallot();
             }
         } );
 

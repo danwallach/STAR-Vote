@@ -60,7 +60,7 @@ import printer.HTMLPrinter;
 /**
  * This class handles all print calls made by Voteboxes, Supervisors and any future additions that will need to print
  */
-public class Printer {
+public class Printer{
 
     private final AuditoriumParams _constants;
     private final AuditoriumParams _printerConstants;
@@ -536,6 +536,4 @@ public class Printer {
 
 
 	}
-
-
 }

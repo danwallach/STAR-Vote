@@ -33,7 +33,7 @@ import votebox.events.ActivatedEvent;
 import votebox.events.AssignLabelEvent;
 import votebox.events.AuthorizedToCastEvent;
 import votebox.events.BallotReceivedEvent;
-import votebox.events.CastBallotEvent;
+import votebox.events.CastCommittedBallotEvent;
 import votebox.events.LastPollsOpenEvent;
 import votebox.events.OverrideCancelConfirmEvent;
 import votebox.events.OverrideCancelDenyEvent;
@@ -56,7 +56,7 @@ public class VoteBoxEventsTest extends TestCase {
         super.setUp();
         matcher = new VoteBoxEventMatcher(ActivatedEvent.getMatcher(),
                 AssignLabelEvent.getMatcher(), AuthorizedToCastEvent.getMatcher(),
-                BallotReceivedEvent.getMatcher(), CastBallotEvent.getMatcher(),
+                BallotReceivedEvent.getMatcher(), CastCommittedBallotEvent.getMatcher(),
                 LastPollsOpenEvent.getMatcher(), OverrideCancelConfirmEvent.getMatcher(),
                 OverrideCancelDenyEvent.getMatcher(), OverrideCancelEvent.getMatcher(),
                 OverrideCastConfirmEvent.getMatcher(),
@@ -152,12 +152,12 @@ public class VoteBoxEventsTest extends TestCase {
     public void testCastBallot() {
         ASExpression nonce = StringExpression.makeString(getBlob());
         ASExpression ballot = StringExpression.makeString(getBlob());
-        CastBallotEvent event = new CastBallotEvent(50, nonce, ballot);
+        CastCommittedBallotEvent event = new CastCommittedBallotEvent(50, nonce, ballot);
         ASExpression sexp = event.toSExp();
         assertEquals("(cast-ballot " + nonce.toString() + " "
                 + ballot.toString() + ")", sexp.toString());
 
-        CastBallotEvent event2 = (CastBallotEvent) matcher.match(50, sexp);
+        CastCommittedBallotEvent event2 = (CastCommittedBallotEvent) matcher.match(50, sexp);
         assertEquals(event.getSerial(), event2.getSerial());
         assertEquals(event.getNonce(), event2.getNonce());
         assertEquals(event.getBallot(), event2.getBallot());
