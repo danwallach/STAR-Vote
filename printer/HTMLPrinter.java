@@ -97,24 +97,10 @@ public class HTMLPrinter {
             // Beginning of head.
             writer.write("<head>\n");
             // End of head.
-            writer.write("</hea988863412" +
-                    "988863412" +
-                    "d>\n");
+            writer.write("</head>\n");
 
             // Beginning of body.
             writer.write("<body bgcolor = \"#FFFFFF\" text = \"#000000\">\n");
-
-            // Writes the header of the page(s) to be printed.
-            // <p style="font-family:arial;color:red;font-size:20px;">A paragraph.</p>
-            writer.write("<p style = \"font-family:arial;color:black;font-size:20px;\">&nbsp;&nbsp;&nbsp;&nbsp;" + BALLOT_CONSTANTS.getElectionName() + "<br>\n");
-
-            DateFormat dateFormat = new SimpleDateFormat("MMMM d, y hh:mm:ss");
-            Date date = new Date();
-
-            String currentDate = dateFormat.format(date);
-            writer.write("&nbsp;&nbsp;&nbsp;&nbsp;" + currentDate + "</p>\n");
-
-
 
             if (!useTwoColumns) // Ballot printing uses one-column format
             {
@@ -153,6 +139,16 @@ public class HTMLPrinter {
     {
         try
         {
+            // Writes the header of the page(s) to be printed.
+            // <p style="font-family:arial;color:red;font-size:20px;">A paragraph.</p>
+            writer.write("<p style = \"font-family:arial;color:black;font-size:20px;\">&nbsp;&nbsp;&nbsp;&nbsp;" + BALLOT_CONSTANTS.getElectionName() + "<br>\n");
+
+            DateFormat dateFormat = new SimpleDateFormat("MMMM d, y hh:mm:ss");
+            Date date = new Date();
+
+            String currentDate = dateFormat.format(date);
+            writer.write("&nbsp;&nbsp;&nbsp;&nbsp;" + currentDate + "</p>\n");
+
             if (printFriendly)
             {
                 // Creates the container for the columns of images.
@@ -317,6 +313,16 @@ public class HTMLPrinter {
     {
         try
         {
+            // Writes the header of the page(s) to be printed.
+            // <p style="font-family:arial;color:red;font-size:20px;">A paragraph.</p>
+            writer.write("<p style = \"font-family:arial;color:black;font-size:20px;\">&nbsp;&nbsp;&nbsp;&nbsp;" + BALLOT_CONSTANTS.getElectionName() + "<br>\n");
+
+            DateFormat dateFormat = new SimpleDateFormat("MMMM d, y hh:mm:ss");
+            Date date = new Date();
+
+            String currentDate = dateFormat.format(date);
+            writer.write("&nbsp;&nbsp;&nbsp;&nbsp;" + currentDate + "</p>\n");
+
             if (printFriendly)
             {
                 // Creates the container for the columns of images.

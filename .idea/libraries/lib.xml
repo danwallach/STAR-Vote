@@ -1,10 +1,22 @@
 <component name="libraryTable">
   <library name="lib">
     <CLASSES>
-      <root url="file://$PROJECT_DIR$/lib" />
+      <root url="jar://$PROJECT_DIR$/lib/javacv-windows-x86_64.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/junit-4.3.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/javacv.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/weberknecht-0.1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/javacpp.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/bsh.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/javase.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/javacv-windows-x86.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/zxing-core.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jdom.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/barbecue-1.5-beta1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/javacv-linux-x86_64.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jl1.0.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/JavaOCR.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
-    <jarDirectory url="file://$PROJECT_DIR$/lib" recursive="false" />
   </library>
 </component>
