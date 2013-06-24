@@ -77,8 +77,6 @@ public class ActiveUI extends JPanel {
 
     private JFileChooser ballotLocChooser;
 
-    private static String ballotID;
-
     private static Boolean frameOn;
 
 
@@ -248,73 +246,88 @@ public class ActiveUI extends JPanel {
                 frameOn = true;
 
                 Scanner scanner = new Scanner(System.in);
+                boolean entered = true;
 
-                ballotID = "-1";
+                String bid = "-1";
 
-                final JFrame frame = new JFrame ("Spoil a ballot");
-                frame.setPreferredSize(new Dimension(200, 100));
-                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                frame.setBounds(100, 100, 368, 153);
-                JPanel contentPane = new JPanel();
-                contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-                contentPane.setLayout(new BorderLayout(0, 0));
-                frame.setContentPane(contentPane);
+                bid = (String) JOptionPane.showInputDialog(fthis, "Please enter a ballot ID or scan a ballot", "Spoil Ballot",
+                        JOptionPane.QUESTION_MESSAGE, null, null, null);
 
-                JPanel panel = new JPanel();
-                panel.setPreferredSize(new Dimension(200, 100));
-                panel.setBackground(SystemColor.controlHighlight);
-                contentPane.add(panel, BorderLayout.CENTER);
-                panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
-                final JTextArea txtrTypeABallot = new JTextArea();
-                txtrTypeABallot.setRows(1);
-                txtrTypeABallot.setPreferredSize(new Dimension(200, 30));
-                txtrTypeABallot.setWrapStyleWord(true);
-                txtrTypeABallot.setLineWrap(true);
-                txtrTypeABallot.setText("Type a ballot ID here.");
-                panel.add(txtrTypeABallot);
-
-                JButton btnSubmitId = new JButton("Submit ID");
-                btnSubmitId.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent arg0) {
-                        ballotID = txtrTypeABallot.getText();
-                        frame.setVisible(false);
-                        frameOn = false;
-                        boolean spoiled = model.spoilBallot(ballotID);
-                        if(spoiled)
-                        {
-                            JOptionPane.showMessageDialog(fthis, "Ballot " + ballotID + " has been spoiled.");
-                            frame.dispose();
-                        }
-                        else
-                        {
-                            JOptionPane.showMessageDialog(fthis, ballotID + " is not a valid ballot ID. No ballot was spoiled.");
-                            frame.dispose();
-                        }
-                    }
-                });
-                panel.add(btnSubmitId);
-
-                JPanel panel_1 = new JPanel();
-                panel_1.setPreferredSize(new Dimension(300, 50));
-                panel_1.setBackground(SystemColor.controlHighlight);
-                contentPane.add(panel_1, BorderLayout.NORTH);
-
-                JLabel lblPleaseScanOr = new JLabel("Please scan or type a ballot ID");
-                lblPleaseScanOr.setFont(new Font("Tahoma", Font.PLAIN, 16));
-                panel_1.add(lblPleaseScanOr);
-
-                frame.setVisible(true);
-
-                while (frameOn)
+                boolean spoiled = model.spoilBallot(bid);
+                if(spoiled)
                 {
-                    if (scanner.hasNextLine())
-                    {
-                        txtrTypeABallot.setText(scanner.nextLine());
-                        txtrTypeABallot.repaint();
-                    }
-                    frame.repaint();
+                    JOptionPane.showMessageDialog(fthis, "Ballot " + bid + " has been spoiled.");
                 }
+                else
+                {
+                    JOptionPane.showMessageDialog(fthis, bid + " is not a valid ballot ID. No ballot was spoiled.");
+                }
+
+//                final JFrame frame = new JFrame ("Spoil a ballot");
+//                frame.setPreferredSize(new Dimension(200, 100));
+//                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//                frame.setBounds(100, 100, 368, 153);
+//                JPanel contentPane = new JPanel();
+//                contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+//                contentPane.setLayout(new BorderLayout(0, 0));
+//                frame.setContentPane(contentPane);
+//
+//                JPanel panel = new JPanel();
+//                panel.setPreferredSize(new Dimension(200, 100));
+//                panel.setBackground(SystemColor.controlHighlight);
+//                contentPane.add(panel, BorderLayout.CENTER);
+//                panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+//
+//                final JTextArea txtrTypeABallot = new JTextArea();
+//                txtrTypeABallot.setRows(1);
+//                txtrTypeABallot.setPreferredSize(new Dimension(200, 30));
+//                txtrTypeABallot.setWrapStyleWord(true);
+//                txtrTypeABallot.setLineWrap(true);
+//                txtrTypeABallot.setText("Type a ballot ID here.");
+//                panel.add(txtrTypeABallot);
+//
+//                JButton btnSubmitId = new JButton("Submit ID");
+//                btnSubmitId.addActionListener(new ActionListener() {
+//                    public void actionPerformed(ActionEvent arg0) {
+//                        ballotID = txtrTypeABallot.getText();
+//                        frame.setVisible(false);
+//                        frameOn = false;
+//                        boolean spoiled = model.spoilBallot(ballotID);
+//                        if(spoiled)
+//                        {
+//                            JOptionPane.showMessageDialog(fthis, "Ballot " + ballotID + " has been spoiled.");
+//                            frame.dispose();
+//                        }
+//                        else
+//                        {
+//                            JOptionPane.showMessageDialog(fthis, ballotID + " is not a valid ballot ID. No ballot was spoiled.");
+//                            frame.dispose();
+//                        }
+//                    }
+//                });
+//                panel.add(btnSubmitId);
+//
+//                JPanel panel_1 = new JPanel();
+//                panel_1.setPreferredSize(new Dimension(300, 50));
+//                panel_1.setBackground(SystemColor.controlHighlight);
+//                contentPane.add(panel_1, BorderLayout.NORTH);
+//
+//                JLabel lblPleaseScanOr = new JLabel("Please scan or type a ballot ID");
+//                lblPleaseScanOr.setFont(new Font("Tahoma", Font.PLAIN, 16));
+//                panel_1.add(lblPleaseScanOr);
+//
+//                frame.setVisible(true);
+
+//                while (frameOn)
+//                {
+//                    if (scanner.hasNextLine())
+//                    {
+//                        txtrTypeABallot.setText(scanner.nextLine());
+//                        txtrTypeABallot.repaint();
+//                    }
+//                    frame.repaint();
+//                }
             }
         });
 

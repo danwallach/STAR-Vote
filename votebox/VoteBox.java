@@ -126,7 +126,7 @@ public class VoteBox{
         
         numConnections = 0;
         labelChangedEvent = new Event<Integer>();
-        bid = String.valueOf(rand.nextInt(Integer.MAX_VALUE));
+
         statusTimer = new Timer(300000, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (connected) {
@@ -648,6 +648,8 @@ public class VoteBox{
                     path = new File(path, "ballots");
                     path = new File(path, "ballot" + protectedCount);
                     path.mkdirs();
+
+                    bid = String.valueOf(rand.nextInt(Integer.MAX_VALUE));
                     
                     try {
                     	_currentBallotFile = new File(path, "ballot.zip");
