@@ -273,6 +273,15 @@ public class VoteBox{
         						"Incorrectly expected a cast-ballot");
         			ListExpression ballot = (ListExpression) arg[0];
 
+                    System.out.println("Found " + ballot.size() + " ASExpressions in ballot, when trying to commit ballot:");
+                    for(ASExpression voteE : ballot){
+                        ListExpression vote = (ListExpression)voteE;
+                        String key = vote.get(0).toString();
+                        System.out.println("\t" + key);
+                    }
+
+
+
 
         			try {
                         if(!_constants.getEnableNIZKs()){
