@@ -254,7 +254,7 @@ public class ActiveUI extends JPanel {
                 String bid = "-1";
 
                 final JFrame frame = new JFrame ("Spoil a ballot");
-                frame.setPreferredSize(new Dimension(400, 150));
+                frame.setPreferredSize(new Dimension(400, 200));
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frame.setBounds(100, 100, 368, 153);
                 JPanel contentPane = new JPanel();
@@ -301,9 +301,10 @@ public class ActiveUI extends JPanel {
                 buttonPanel.add(btnSubmitId);
                 buttonPanel.add(Box.createRigidArea(new Dimension(btnSubmitId.getWidth(), 10)));
 
-                JButton scanID = new JButton("Scan ID");
+                final JButton scanID = new JButton("Scan ID");
                 scanID.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
+                        scanID.setEnabled(false);
                         //Disable the button so submissions can't happen while scanning
                         btnSubmitId.setEnabled(false);
                         JOptionPane.showMessageDialog(fthis, "Please scan a ballot");
@@ -312,7 +313,7 @@ public class ActiveUI extends JPanel {
                         }
                         txtrTypeABallot.setText(ballotID);
                         btnSubmitId.setEnabled(true);
-
+                        scanID.setEnabled(true);
                     }
                 });
                 //Ensure the buttons are of the same size

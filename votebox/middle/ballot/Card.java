@@ -425,17 +425,35 @@ public class Card {
      */
     public List<ASExpression> getCastBallot() {
         ArrayList<ASExpression> lst = new ArrayList<ASExpression>();
+        boolean selected = false;
         for (SelectableCardElement sce : _elements) {
             ASExpression val;
-            if (sce.isSelected())
+            if (sce.isSelected()){
+                selected = true;
                 //val = StringExpression.makeString(BigInteger.ONE.toByteArray());
             	val = StringExpression.makeString(BigInteger.ONE.toString());
+            }
             else
                 //val = StringExpression.makeString(BigInteger.ZERO.toByteArray());
             	val = StringExpression.makeString(BigInteger.ZERO.toString());
             lst.add(new ListExpression(StringExpression.makeString(sce
                     .getUniqueID()), val));
         }
+
+        /*
+            This code allows for a "No Selection" element to be added to the string representation of the ballot
+            This is so the tallier can include (and count) races where no one was selected
+            We do this by including the UID of the no selection candidate, which will always be the lowest number
+            UID for the race. Hence we take out the first candidate and subtract one from the UID to derive the
+            No selection UID
+        */
+        String noSelectionLabel = _elements.get(0).getUniqueID();
+        noSelectionLabel = noSelectionLabel.substring(0,1) + (Integer.parseInt(noSelectionLabel.substring(1)) - 1);
+
+        lst.add(0, new ListExpression(StringExpression.makeString(noSelectionLabel),
+                StringExpression.makeString((selected?BigInteger.ZERO:BigInteger.ONE).toString())));
+
+        System.out.println(">>> Built ASExpression :" + lst.toString());
         return lst;
     }
 }
