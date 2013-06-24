@@ -78,9 +78,10 @@ public class ActiveUI extends JPanel {
 
     private static String ballotID;
 
-    private static Boolean frameOn;
+    private static boolean scanned = false;
 
-    private static Scanner scanner = new Scanner(System.in);
+//    private static final Scanner scanner = new Scanner(System.in);
+
 
 
     /**
@@ -246,8 +247,6 @@ public class ActiveUI extends JPanel {
         spoilButton = new MyJButton("Spoil Ballot");
         spoilButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                frameOn = true;
-
 
                 boolean entered = true;
 
@@ -273,18 +272,15 @@ public class ActiveUI extends JPanel {
                 txtrTypeABallot.setPreferredSize(new Dimension(200, 30));
                 txtrTypeABallot.setWrapStyleWord(true);
                 txtrTypeABallot.setLineWrap(true);
-                txtrTypeABallot.setText("Type a ballot ID here.");
                 panel.add(txtrTypeABallot);
 
-                JPanel buttonPanel = new JPanel();
-                buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
 
                 final JButton btnSubmitId = new JButton("Submit ID");
                 btnSubmitId.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent arg0) {
                         ballotID = txtrTypeABallot.getText();
                         frame.setVisible(false);
-                        frameOn = false;
+                        scanned = true;
                         boolean spoiled = model.spoilBallot(ballotID);
                         if(spoiled)
                         {
@@ -296,30 +292,43 @@ public class ActiveUI extends JPanel {
                             JOptionPane.showMessageDialog(fthis, ballotID + " is not a valid ballot ID. No ballot was spoiled.");
                             frame.dispose();
                         }
-                    }
-                });
-                buttonPanel.add(btnSubmitId);
-                buttonPanel.add(Box.createRigidArea(new Dimension(btnSubmitId.getWidth(), 10)));
 
-                final JButton scanID = new JButton("Scan ID");
-                scanID.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        scanID.setEnabled(false);
-                        //Disable the button so submissions can't happen while scanning
-                        btnSubmitId.setEnabled(false);
-                        JOptionPane.showMessageDialog(fthis, "Please scan a ballot");
-                        if(scanner.hasNextLine()){
-                            ballotID = scanner.nextLine();
-                        }
-                        txtrTypeABallot.setText(ballotID);
-                        btnSubmitId.setEnabled(true);
-                        scanID.setEnabled(true);
+//                        try{
+                            //t.interrupt();
+//                        } catch (InterruptedException ie){
+//                            throw new RuntimeException(ie);
+//                        } //finally{
+//                            scanner.close();
+//                        }
                     }
                 });
-                //Ensure the buttons are of the same size
-                scanID.setSize(btnSubmitId.getWidth(), btnSubmitId.getHeight());
-                buttonPanel.add(scanID);
-                panel.add(buttonPanel);
+//                buttonPanel.add(btnSubmitId);
+//                buttonPanel.add(Box.createRigidArea(new Dimension(btnSubmitId.getWidth(), 10)));
+//
+//                final JButton scanID = new JButton("Scan ID");
+//                scanID.addActionListener(new ActionListener() {
+//                    public void actionPerformed(ActionEvent e) {
+//                        scanID.setEnabled(false);
+//                        //Disable the button so submissions can't happen while scanning
+//                        btnSubmitId.setEnabled(false);
+//                        JOptionPane.showMessageDialog(fthis, "Please scan a ballot");
+//                        if(scanner.hasNextLine()){
+//                            ballotID = scanner.nextLine();
+//                        }
+//                        txtrTypeABallot.setText(ballotID);
+//                        btnSubmitId.setEnabled(true);
+//                        scanID.setEnabled(true);
+//                    }
+//                });
+//                //Ensure the buttons are of the same size
+////                scanID.setPreferredSize(btnSubmitId.getPreferredSize());
+//                buttonPanel.add(scanID);
+//                buttonPanel.add(Box.createRigidArea(new Dimension(btnSubmitId.getWidth(), 10)));
+//                buttonPanel.add(btnSubmitId);
+//                scanID.setMinimumSize(btnSubmitId.getPreferredSize());
+
+
+                panel.add(btnSubmitId);
 
                 JPanel panel_1 = new JPanel();
                 panel_1.setPreferredSize(new Dimension(300, 50));
@@ -332,6 +341,7 @@ public class ActiveUI extends JPanel {
                 frame.pack();
                 frame.setLocationRelativeTo(null);
                 frame.setVisible(true);
+
 
 
 
