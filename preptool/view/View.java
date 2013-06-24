@@ -1234,7 +1234,9 @@ public class View extends JFrame {
         challenge.setState(true);
     	challenge.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				model.setCommitChallenge(challenge.getState());
+                //We're always using commit challenge
+                //We're always using commit challenge
+				model.setCommitChallenge(true);
 			}
     	});
     	prefMenu.add( challenge );

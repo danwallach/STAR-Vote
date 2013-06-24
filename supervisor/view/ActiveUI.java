@@ -242,14 +242,33 @@ public class ActiveUI extends JPanel {
         spoilButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 Scanner scanner = new Scanner(System.in);
+                boolean entered = false;
 
                 String bid = "-1";
 
                 Object[] options = { "Type in a BID", "Scan a BID", "Cancel"};
                 int scan = JOptionPane.showOptionDialog(fthis, "Would you like to scan or enter in the BID of the ballot to be spoiled?",
                         "Spoil Ballot", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+//                JFrame f = new JFrame("Spoil a BID");
+//                JPanel p = new JPanel();
+//                JLabel label = new JLabel("Please scan a BID");
+//                JTextArea a = new JTextArea(1, 30);
+//                p.add(label);
+//                p.add(a);
+//                label.setEnabled(true);
+//                a.setEnabled(true);
+//                f.add(p);
+//                p.setEnabled(true);
+//                f.pack();
+//                f.setVisible(true);
+//
+//                if(scanner.hasNextLine()){
+//                    a.setText(scanner.nextLine());
+//                    a.repaint();
+//                    entered = true;
+//                }
 
-                boolean entered = false;
+
 
                 if(scan == 0){
                     bid = JOptionPane.showInputDialog(fthis, "Please enter the ballot ID of the ballot you would like to spoil.", "Spoil Ballot",
@@ -259,6 +278,8 @@ public class ActiveUI extends JPanel {
                 else if(scan == 1){
                     JFrame f = new JFrame("BID Scan");
                     JDialog d = new JDialog(f, "", Dialog.ModalityType.MODELESS);
+                    JPanel p = new JPanel();
+                    p.setLayout(new FlowLayout());
                     BufferedImage img = null;
                     try{
                         img = ImageIO.read(new File("images/logo.png"));
@@ -268,7 +289,9 @@ public class ActiveUI extends JPanel {
 
 
                     JLabel l = new JLabel(new ImageIcon(img));
-                    f.add(l);
+                    l.setEnabled(true);
+                    f.add(p);
+                    p.add(l);
                     f.pack();
                     f.setVisible(true);
 
