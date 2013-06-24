@@ -511,7 +511,8 @@ public abstract class
                         if (pb.getUID().contains("B"))
                         {
                             //System.out.println("Rendering " + pb.getUID() + " with:\n\tText: " + pb.getText() + "\n\tSecond Line: " + pb.getSecondLine() + "\n\tParty: " + pb.getParty() + "\n\tFontsize: " + FONT_SIZE_SELECTED_IMAGES + "\n\tWidth: " + WIDTH_SELECTED_IMAGES + "\n\tBold: " + pb.isBold() + "\n\tSelected: true\n========================================================================================");
-                            BufferedImage selectedImg = RenderingUtils.renderToggleButton(pb.getText(), pb.getSecondLine(), pb.getParty(), FONT_SIZE_SELECTED_IMAGES, WIDTH_SELECTED_IMAGES, pb.isBold(), true);
+                            BufferedImage selectedImg = RenderingUtils.renderToggleButton(pb.getText(), pb.getSecondLine(), pb.getParty(),
+                                    FONT_SIZE_SELECTED_IMAGES, WIDTH_SELECTED_IMAGES, pb.isBold(), !(pb.getText().equals("NO SELECTION")));
                             File selectedFile = new File (file, uuid + "_selected_" + langShortName + ".png");
                             ImageIO.write(selectedImg, "png", selectedFile);
                         }
