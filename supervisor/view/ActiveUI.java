@@ -291,7 +291,11 @@ public class ActiveUI extends JPanel {
 
 
 
-
+                if (scanner.hasNextLine())
+                {
+                    txtrTypeABallot.setText(scanner.nextLine());
+                    txtrTypeABallot.repaint();
+                }
 
 
                 if(!frame.isVisible()){
