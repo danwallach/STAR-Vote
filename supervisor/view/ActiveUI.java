@@ -79,6 +79,8 @@ public class ActiveUI extends JPanel {
 
     private static String ballotID;
 
+    private static Boolean frameOn;
+
 
     /**
      * Constructs a new ActiveUI
@@ -243,9 +245,11 @@ public class ActiveUI extends JPanel {
         spoilButton = new MyJButton("Spoil Ballot");
         spoilButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                frameOn = true;
+
                 Scanner scanner = new Scanner(System.in);
 
-                String bid = "-1";
+                ballotID = "-1";
 
                 final JFrame frame = new JFrame ("Spoil a ballot");
                 frame.setPreferredSize(new Dimension(200, 100));
@@ -275,7 +279,18 @@ public class ActiveUI extends JPanel {
                     public void actionPerformed(ActionEvent arg0) {
                         ballotID = txtrTypeABallot.getText();
                         frame.setVisible(false);
-                        frame.dispose();
+                        frameOn = false;
+                        boolean spoiled = model.spoilBallot(ballotID);
+                        if(spoiled)
+                        {
+                            JOptionPane.showMessageDialog(fthis, "Ballot " + ballotID + " has been spoiled.");
+                            frame.dispose();
+                        }
+                        else
+                        {
+                            JOptionPane.showMessageDialog(fthis, ballotID + " is not a valid ballot ID. No ballot was spoiled.");
+                            frame.dispose();
+                        }
                     }
                 });
                 panel.add(btnSubmitId);
@@ -289,23 +304,17 @@ public class ActiveUI extends JPanel {
                 lblPleaseScanOr.setFont(new Font("Tahoma", Font.PLAIN, 16));
                 panel_1.add(lblPleaseScanOr);
 
+                frame.setVisible(true);
 
-
-                if (scanner.hasNextLine())
+                while (frameOn)
                 {
-                    txtrTypeABallot.setText(scanner.nextLine());
-                    txtrTypeABallot.repaint();
+                    if (scanner.hasNextLine())
+                    {
+                        txtrTypeABallot.setText(scanner.nextLine());
+                        txtrTypeABallot.repaint();
+                    }
+                    frame.repaint();
                 }
-
-
-                if(!frame.isVisible()){
-                    boolean spoiled = model.spoilBallot(bid);
-                    if(spoiled)
-                        JOptionPane.showMessageDialog(fthis, "Ballot " + bid + " has been spoiled.");
-                    else
-                        JOptionPane.showMessageDialog(fthis, bid + " is not a valid ballot ID. No ballot was spoiled.");
-                }
-
             }
         });
 
