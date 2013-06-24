@@ -425,6 +425,8 @@ public class Card {
      */
     public List<ASExpression> getCastBallot() {
         ArrayList<ASExpression> lst = new ArrayList<ASExpression>();
+
+        //A flag to determine if NO SELECTION was...er...selected.
         boolean selected = false;
         for (SelectableCardElement sce : _elements) {
             ASExpression val;
