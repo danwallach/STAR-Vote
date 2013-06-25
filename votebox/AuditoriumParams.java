@@ -59,7 +59,7 @@ public class AuditoriumParams implements IAuditoriumParams,
     public static final String RULE_FILE = "rules";
     
     //Default for cast_ballot_encryption_enabled.  Will probably need to be set to true in the future
-    public static final boolean CAST_BALLOT_ENCRYPTION_ENABLED = false;
+    public static final boolean CAST_BALLOT_ENCRYPTION_ENABLED = true;
     
     //Default for use_commit_challenge_model.  Likewise, will probably be switched on in the future
     public static final boolean USE_COMMIT_CHALLENGE_MODEL = false;
@@ -117,7 +117,7 @@ public class AuditoriumParams implements IAuditoriumParams,
     public static final boolean USE_TABLE_TALLY_VIEW = false;
     
     //AWT view is windowed by default (as it may break if fullscreen
-    public static final boolean DEFAULT_USE_WINDOWED_VIEW = true;
+    public static final boolean DEFAULT_USE_WINDOWED_VIEW = false;
     
     public static final boolean DEFAULT_ALLOW_UI_SCALING = true;
 
