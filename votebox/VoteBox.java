@@ -422,21 +422,21 @@ public class VoteBox{
                         && currentDriver != null) {
                     ++publicCount;
                     ++protectedCount;
-                    Object[] arg = (Object[])argTemp;
+                    ListExpression arg = (ListExpression)argTemp;
 
                     // arg1 should be the cast ballot structure, check
-                    if (Ballot.BALLOT_PATTERN.match((ASExpression) arg[0]) == NoMatch.SINGLETON)
+                    if (Ballot.BALLOT_PATTERN.match((ASExpression) arg) == NoMatch.SINGLETON)
                         throw new RuntimeException(
                                 "Incorrectly expected a cast-ballot");
-                    ListExpression ballot = (ListExpression) arg[0];
+                    ListExpression ballot = (ListExpression) arg;
 
                     auditorium.announce(new OverrideCastConfirmEvent(mySerial,
                             nonce, ballot.toVerbatim()));
-                    currentDriver.kill();
+                    /*currentDriver.kill();
                     currentDriver = null;
                     nonce = null;
                     voting = false;
-                    override = false;
+                    override = false;*/
                     broadcastStatus();
 
 
