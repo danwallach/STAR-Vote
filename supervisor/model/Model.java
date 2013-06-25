@@ -37,8 +37,10 @@ import edu.uconn.cse.adder.PrivateKey;
 import edu.uconn.cse.adder.PublicKey;
 
 import sexpression.ASExpression;
+import sexpression.ListExpression;
 import sexpression.NoMatch;
 import sexpression.StringExpression;
+import sexpression.stream.InvalidVerbatimStreamException;
 import supervisor.model.tallier.ChallengeDelayedTallier;
 import supervisor.model.tallier.ChallengeDelayedWithNIZKsTallier;
 import supervisor.model.tallier.EncryptedTallier;
@@ -682,6 +684,11 @@ public class Model {
                     booth.setPublicCount(booth.getPublicCount() + 1);
                     booth.setProtectedCount(booth.getProtectedCount() + 1);
                     tallier.recordVotes(e.getBallot(), StringExpression.makeString(e.getNonce()));
+                    try {
+                        tallier.confirmed(ListExpression.makeVerbatim(e.getNonce()));
+                    } catch (InvalidVerbatimStreamException e1) {
+                        throw new RuntimeException(e1);
+                    }
                 }
             }
 

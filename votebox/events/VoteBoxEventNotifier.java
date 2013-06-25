@@ -165,8 +165,6 @@ public class VoteBoxEventNotifier implements VoteBoxEventListener {
     }
 
     public void ballotscanner(BallotScannerEvent e) {
-        System.out.println("Scanner event!");
-        System.out.println(e.toSExp());
         for (VoteBoxEventListener l : listeners)
             l.ballotscanner(e);
     }

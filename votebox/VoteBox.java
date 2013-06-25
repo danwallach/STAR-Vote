@@ -427,10 +427,10 @@ public class VoteBox{
                     if (Ballot.BALLOT_PATTERN.match((ASExpression) arg) == NoMatch.SINGLETON)
                         throw new RuntimeException(
                                 "Incorrectly expected a cast-ballot");
-                    ListExpression ballot = (ListExpression) arg;
+                    byte[] ballot = arg.toVerbatim();
 
                     auditorium.announce(new OverrideCastConfirmEvent(mySerial,
-                            nonce, ballot.toVerbatim()));
+                            nonce, ballot));
                     /*currentDriver.kill();
                     currentDriver = null;
                     nonce = null;
@@ -444,7 +444,7 @@ public class VoteBox{
                     auditorium.announce(new BallotPrintingEvent(mySerial, bid,
                             nonce));
                     printer = new Printer(_currentBallotFile, races);
-                    boolean success = printer.printCommittedBallot(ballot, bid);
+                    boolean success = printer.printCommittedBallot(arg, bid);
                     printer.printedReceipt(bid);
 
                     //By this time, the voter is done voting

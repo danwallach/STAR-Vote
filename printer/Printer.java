@@ -165,7 +165,7 @@ public class Printer{
 
             ImageIO.write(lineSeparator, "PNG", new File(lineSeparatorFileName));
             ImageIO.write(barcode, "PNG", new File(barcodeFileNameNoExtension + ".png"));
-            ImageIO.write(PrintImageUtils.flipImageHorizontally(PrintImageUtils.flipImageVertically(barcode)), "PNG", new File(barcodeFileNameNoExtension + "_flipped.png"));
+            ImageIO.write(barcode, "PNG", new File(barcodeFileNameNoExtension + "_flipped.png"));
         }
         catch (IOException e)
         {
