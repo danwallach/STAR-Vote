@@ -16,6 +16,7 @@ public class BallotManager {
 
     //manages the pins for the supervisor as well as all corresponding ballots
 
+    private Map<Integer, PinTimeStamp> timeStamp = new HashMap<Integer, PinTimeStamp>();
     private Map<Integer, String> ballotByPin = new HashMap<Integer, String>();       //Holds all active pins and corresponding ballot location
     private Map<Integer, String> ballotByPrecinct = new HashMap<Integer, String>();       //Holds all precincts and corresponding ballot location
 
@@ -25,6 +26,8 @@ public class BallotManager {
         int pin = rand.nextInt(10000);
         while(ballotByPin.containsKey(pin))
             pin = rand.nextInt(10000);
+        //create a new time stamp on this pin
+        timeStamp.put(pin, new PinTimeStamp());
         ballotByPin.put(pin, ballotByPrecinct.get(precinct));
         return pin;
     }
@@ -33,7 +36,9 @@ public class BallotManager {
     public String getBallotByPin(int pin){
         String s = null;
         if(ballotByPin.containsKey(pin)){
-            s = ballotByPin.get(pin);
+            if(timeStamp.get(pin).isValid()){
+                s = ballotByPin.get(pin);
+            }
             ballotByPin.remove(pin);
         }
         return s;
@@ -53,5 +58,30 @@ public class BallotManager {
     public Integer getInitialSelection(){
         Iterator i = ballotByPrecinct.keySet().iterator();
         return (Integer) i.next();
+    }
+}
+
+
+// keeps track of how long a pin has been issued and expires the pin if pin is older than
+// lifeTimeInSeconds
+
+class PinTimeStamp{
+
+    private static final int DEFAULT_LIFE_TIME = 180;
+
+    private long startTime;
+    private int lifeTimeInSeconds;
+
+    public PinTimeStamp(int lt){
+        startTime = System.currentTimeMillis();
+        lifeTimeInSeconds = lt;
+    }
+
+    public PinTimeStamp(){
+        this(DEFAULT_LIFE_TIME);
+    }
+
+    public boolean isValid(){
+        return (System.currentTimeMillis()-startTime) < 1000*lifeTimeInSeconds;
     }
 }

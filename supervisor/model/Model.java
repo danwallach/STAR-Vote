@@ -997,7 +997,7 @@ public class Model {
                     //ASExpression nonce = committedBids.get(bid);
                     ASExpression nonce = committedBids.remove(bid);
 
-                    BallotStore.castCommittedBallot(e.getBID(), nonce);
+                    BallotStore.castCommittedBallot(e.getBID());
                     // used to be in voteBox registerForCommit listener.
                     auditorium.announce(new CastCommittedBallotEvent(serial, nonce, StringExpression.makeString(e.getBID())));
                     // that should trigger my own castBallot listener.
