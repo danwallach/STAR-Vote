@@ -40,7 +40,7 @@ public class PatternTest {
         ASExpression m1 = e1.match( r1 );
         assertNotSame( m1, NoMatch.SINGLETON );
         assertTrue( m1 instanceof ListExpression );
-        assertTrue( ((ListExpression) m1).size() == 0 );
+        assertTrue( m1.size() == 0 );
 
         ASExpression e2 = ASExpression.make( "foo" );
         ASExpression r2 = ASExpression.make( "foo" );
@@ -70,7 +70,7 @@ public class PatternTest {
         ASExpression m1 = listwc.match( e1 );
         assertNotNull( m1 );
         assertTrue( m1 instanceof ListExpression );
-        assertTrue( ((ListExpression) m1).size() == 1 );
+        assertTrue( m1.size() == 1 );
         assertTrue( ((ListExpression) m1).get( 0 ).equals( e1 ) ); // relies on
         // correctness of test_literal
 
@@ -79,7 +79,7 @@ public class PatternTest {
         ASExpression m2 = stringwc.match( e2 );
         assertNotNull( m2 );
         assertTrue( m2 instanceof ListExpression );
-        assertTrue( ((ListExpression) m2).size() == 1 );
+        assertTrue( m2.size() == 1 );
         assertTrue( ((ListExpression) m2).get( 0 ).equals( e2 ) ); // relies on
         // correctness
         // of

@@ -29,9 +29,9 @@ public class Vote {
 
         for (int i = 0; i < this.getCipherList().size(); i++) {
             ElgamalCiphertext ciphertext1
-                = (ElgamalCiphertext) this.getCipherList().get(i);
+                = this.getCipherList().get(i);
             ElgamalCiphertext ciphertext2
-                = (ElgamalCiphertext) vote.getCipherList().get(i);
+                = vote.getCipherList().get(i);
             vec.add(ciphertext1.multiply(ciphertext2));
         }
 
@@ -39,7 +39,15 @@ public class Vote {
     }
 
     public String shortHash() {
-        return "added"; // FIXME
+        //TODO I'm not sure if this actually works...but it's never used so...
+        String str = toString();
+        int idx = str.indexOf(" ");
+
+        if (idx != -1) {
+            str = str.substring(0, idx);
+        }
+
+        return Util.sha1(str).substring(0, 5);
     }
 
     public static Vote fromString(String s) {
@@ -68,7 +76,7 @@ public class Vote {
 
         for (int i = 0; i < cipherList.size(); i++) {
             ElgamalCiphertext ciphertext
-                = (ElgamalCiphertext) cipherList.get(i);
+                = cipherList.get(i);
             sb.append(ciphertext.toString());
             sb.append(" ");
         }

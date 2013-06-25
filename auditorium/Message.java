@@ -80,7 +80,7 @@ public class Message {
             throw new IncorrectFormatException( message, new Exception( message
                     + " didn't match the pattern:" + PATTERN ) );
         ListExpression lst = (ListExpression) message;
-        _type = ((StringExpression) lst.get( 0 )).toString();
+        _type = lst.get( 0 ).toString();
         _from = new HostPointer( lst.get( 1 ) );
         _sequence = lst.get( 2 ).toString();
         _datum = lst.get( 3 );

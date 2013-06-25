@@ -23,8 +23,8 @@ public class InvalidPinEvent implements IAnnounceEvent{
         public IAnnounceEvent match(int serial, ASExpression sexp) {
             ASExpression res = pattern.match( sexp );
             if (res != NoMatch.SINGLETON) {
-                byte[] nonce = new BigInteger(((StringExpression) ((ListExpression) res)
-                        .get( 0 )).toString()).toByteArray();
+                byte[] nonce = new BigInteger(((ListExpression) res)
+                        .get( 0 ).toString()).toByteArray();
                 return new InvalidPinEvent( serial, nonce );
             }
 

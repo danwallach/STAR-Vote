@@ -94,7 +94,7 @@ public class ASEInputStreamReader {
             throw new EOFException( "End of stream" );
         // verbatim case
         else
-            return readASE( (byte) b );
+            return readASE( b );
     }
 
     /**

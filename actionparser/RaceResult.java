@@ -66,7 +66,7 @@ public class RaceResult {
 			
 			Iterator raceIt=ex.iterator();
 				
-			String raw=((StringExpression)(raceIt.next())).toString();
+			String raw= raceIt.next().toString();
 			rr.set_UID(raw);//get the race id
 
 		//	System.out.println("***"+rr.get_UID()+"***");
@@ -78,7 +78,7 @@ public class RaceResult {
 			if(voteIt.hasNext()==false)
 					votes.add("(none)");
 			while(voteIt.hasNext()){//for each selected candidate
-				String v=((StringExpression)(voteIt.next())).toString();
+				String v= voteIt.next().toString();
 				votes.add(v);
 				
 				//System.out.println(v.substring(1, v.length()-1));

@@ -70,7 +70,7 @@ public class ASEInputStreamReaderTest extends TestCase {
         stream = new ASEInputStreamReader( new ByteArrayInputStream( test
                 .getBytes( "us-ascii" ) ) );
 
-        assertEquals( "(abc ab)", ((ASExpression) stream.read()).toString() );
+        assertEquals( "(abc ab)", stream.read().toString() );
     }
 
     /**
@@ -88,7 +88,7 @@ public class ASEInputStreamReaderTest extends TestCase {
         stream = new ASEInputStreamReader( new ByteArrayInputStream( test
                 .getBytes( "us-ascii" ) ) );
 
-        assertEquals( "(() (abc ab))", ((ASExpression) stream.read())
+        assertEquals( "(() (abc ab))", stream.read()
                 .toString() );
     }
 
@@ -107,6 +107,6 @@ public class ASEInputStreamReaderTest extends TestCase {
                 .getBytes( "us-ascii" ) ) );
 
         assertEquals( "(Dear Kyle: (s-exp (f t w) ! ()))",
-            ((ASExpression) stream.read()).toString() );
+            stream.read().toString() );
     }
 }

@@ -116,13 +116,13 @@ public class StraightTicket extends ACardStrategy {
 					}
 					;
 
-					list.add((SelectableCardElement) ce);
+					list.add(ce);
 					// Make sure that when this button is deselected, the
 					// straight ticket
 					// button is also deselected
 					SelectableCardElement straightTicketButton = null;
 					if ((straightTicketButton = _buttons.get(party)) != null)
-						((SelectableCardElement) ce).getDeselectedEvent()
+						ce.getDeselectedEvent()
 								.addObserver(
 										straightTicketButton
 												.getDeselectHandler());
@@ -135,7 +135,7 @@ public class StraightTicket extends ACardStrategy {
 						_buttons
 								.put(ce.getProperties().getString(
 										Properties.PARTY),
-										((SelectableCardElement) ce));
+                                        ce);
 					} catch (IncorrectTypeException e) {
 						throw new CardStrategyException(
 								"There was an issue getting the party affiliation of straight ticket button with UID: "

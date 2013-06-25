@@ -78,9 +78,10 @@ public class ActiveUI extends JPanel {
 
     private static String ballotID;
 
-    private static Boolean frameOn;
+    private static boolean scanned = false;
 
-    private static Scanner scanner = new Scanner(System.in);
+//    private static final Scanner scanner = new Scanner(System.in);
+
 
 
     /**
@@ -246,10 +247,6 @@ public class ActiveUI extends JPanel {
         spoilButton = new MyJButton("Spoil Ballot");
         spoilButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                frameOn = true;
-
-
-                boolean entered = true;
 
                 String bid = "-1";
 
@@ -264,7 +261,6 @@ public class ActiveUI extends JPanel {
 
                 JPanel panel = new JPanel();
                 panel.setPreferredSize(new Dimension(200, 100));
-//                panel.setBackground(SystemColor.controlHighlight);
                 contentPane.add(panel, BorderLayout.CENTER);
                 panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
@@ -273,18 +269,15 @@ public class ActiveUI extends JPanel {
                 txtrTypeABallot.setPreferredSize(new Dimension(200, 30));
                 txtrTypeABallot.setWrapStyleWord(true);
                 txtrTypeABallot.setLineWrap(true);
-                txtrTypeABallot.setText("Type a ballot ID here.");
                 panel.add(txtrTypeABallot);
 
-                JPanel buttonPanel = new JPanel();
-                buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
 
                 final JButton btnSubmitId = new JButton("Submit ID");
                 btnSubmitId.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent arg0) {
-                        ballotID = txtrTypeABallot.getText();
+                        ballotID = txtrTypeABallot.getText().split("\n")[0];
                         frame.setVisible(false);
-                        frameOn = false;
+                        scanned = true;
                         boolean spoiled = model.spoilBallot(ballotID);
                         if(spoiled)
                         {
@@ -298,32 +291,11 @@ public class ActiveUI extends JPanel {
                         }
                     }
                 });
-                buttonPanel.add(btnSubmitId);
-                buttonPanel.add(Box.createRigidArea(new Dimension(btnSubmitId.getWidth(), 10)));
 
-                final JButton scanID = new JButton("Scan ID");
-                scanID.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        scanID.setEnabled(false);
-                        //Disable the button so submissions can't happen while scanning
-                        btnSubmitId.setEnabled(false);
-                        JOptionPane.showMessageDialog(fthis, "Please scan a ballot");
-                        if(scanner.hasNextLine()){
-                            ballotID = scanner.nextLine();
-                        }
-                        txtrTypeABallot.setText(ballotID);
-                        btnSubmitId.setEnabled(true);
-                        scanID.setEnabled(true);
-                    }
-                });
-                //Ensure the buttons are of the same size
-                scanID.setSize(btnSubmitId.getWidth(), btnSubmitId.getHeight());
-                buttonPanel.add(scanID);
-                panel.add(buttonPanel);
+                panel.add(btnSubmitId);
 
                 JPanel panel_1 = new JPanel();
                 panel_1.setPreferredSize(new Dimension(300, 50));
-//                panel_1.setBackground(SystemColor.controlHighlight);
                 contentPane.add(panel_1, BorderLayout.NORTH);
 
                 JLabel lblPleaseScanOr = new JLabel("Please scan or type a ballot ID");
@@ -332,8 +304,6 @@ public class ActiveUI extends JPanel {
                 frame.pack();
                 frame.setLocationRelativeTo(null);
                 frame.setVisible(true);
-
-
 
             }
         });

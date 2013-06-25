@@ -455,7 +455,6 @@ public class Card {
         lst.add(0, new ListExpression(StringExpression.makeString(noSelectionLabel),
                 StringExpression.makeString((selected?BigInteger.ZERO:BigInteger.ONE).toString())));
 
-        System.out.println(">>> Built ASExpression :" + lst.toString());
         return lst;
     }
 }

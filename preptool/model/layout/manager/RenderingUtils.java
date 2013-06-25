@@ -701,7 +701,11 @@ public class RenderingUtils {
             if(split.length > 1) //if there is a newline character, there are two titles
                 text2 = split[1];
 
-            selectionLength = lineWidth(selection.split("$"), font);
+            /**
+             * Since the selection is drawn using the 'temp' font, it would make sense to use the
+             * 'temp' font when determining selectionLength. The font 'font' was being used before.
+             */
+            selectionLength = lineWidth(selection.split("$"), temp);
 
             graphs.setFont(temp);
 
@@ -719,7 +723,11 @@ public class RenderingUtils {
             graphs.drawString(selection, padding, heightPos); //height based on an appropriate spacing of up to a 3 digit number
             graphs.setFont(font);
 
-            wrappedImage = wrappedImage.getSubimage(0, 0, Math.max(wrappingWidth,selectionLength), 2 * heightPos);
+            /**
+             * The formula for the total width of the resulting image should contain padding because the selection text gets drawn
+             * at a horizontal displacement of 'padding' from the left margin.
+             */
+            wrappedImage = wrappedImage.getSubimage(0, 0, Math.max(wrappingWidth,selectionLength) + padding, 2 * heightPos);
 
 
 
@@ -727,7 +735,7 @@ public class RenderingUtils {
             wrappedImage = PrintImageUtils.trimImageVertically(wrappedImage, false, Integer.MAX_VALUE); // Above
             wrappedImage = PrintImageUtils.trimImageVertically(wrappedImage, true, Integer.MAX_VALUE); // Below
             // No Left/Right trimming, because it is done in the Printer class.
-
+            //System.err.println("Image with UID " + uid + ":\n\tWrapping width: " + wrappingWidth + "\n\tText width: " + lineWidth(selection.split("$"), temp));
 
             return copy(wrappedImage);
 

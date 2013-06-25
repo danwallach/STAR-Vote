@@ -84,7 +84,6 @@ public class Cert {
      * Convert this certificate to its auditorium s-expression format.
      * 
      * @return This method returns (cert (signature [signer] [)
-     * @throws CertificateEncodingException
      *             THis method throws if the certificate cannot be encoded.
      */
     public ListExpression toASE() {

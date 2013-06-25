@@ -334,7 +334,7 @@ public class Driver {
 				continue;
 			}//if
 			
-			if(((ListExpression)choice.get(1)).size() < 1){
+			if(choice.get(1).size() < 1){
 				choices.add(choice.get(0).toString());
 				continue;
 			}//if
@@ -495,7 +495,7 @@ public class Driver {
 
 		//Make all the directories first
 		while(entries.hasMoreElements()){
-			ZipEntry entry = (ZipEntry)entries.nextElement();
+			ZipEntry entry = entries.nextElement();
 			
 			if (entry.isDirectory()) {
 				//Create the directory using the proper seperator for this platform
@@ -508,7 +508,7 @@ public class Driver {
 		
 		//Now copy all the data files
 		while (entries.hasMoreElements()) {
-			ZipEntry entry = (ZipEntry) entries.nextElement();
+			ZipEntry entry = entries.nextElement();
 
 			if (entry.isDirectory()) {
 				continue;

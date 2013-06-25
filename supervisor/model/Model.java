@@ -811,7 +811,7 @@ public class Model {
                             int maxlabel = 0;
                             for(AMachine ma : machines){
                                 if(ma instanceof BallotScannerMachine)
-                                    maxlabel = (int)Math.max(maxlabel, ma.getLabel());
+                                    maxlabel = Math.max(maxlabel, ma.getLabel());
                             }//for
 
                             auditorium.announce(new AssignLabelEvent(mySerial, e.getSerial(), maxlabel + 1));
@@ -830,9 +830,9 @@ public class Model {
                         else {
                             int maxlabel = 0;
                             for (AMachine ma : machines) {
-                                if (ma instanceof BallotScannerMachine && ((BallotScannerMachine) ma).getLabel() > maxlabel)
+                                if (ma instanceof BallotScannerMachine && ma.getLabel() > maxlabel)
                                 {
-                                    maxlabel = ((BallotScannerMachine) ma).getLabel();
+                                    maxlabel = ma.getLabel();
                                 }
                             }
                             auditorium.announce(new AssignLabelEvent(mySerial, e
@@ -920,7 +920,7 @@ public class Model {
                 			int maxlabel = 0;
                 			for(AMachine ma : machines){
                 				if(ma instanceof VoteBoxBooth)
-                					maxlabel = (int)Math.max(maxlabel, ma.getLabel());
+                					maxlabel = Math.max(maxlabel, ma.getLabel());
                 			}//for
                 			
                                 auditorium.announce(new AssignLabelEvent(mySerial, e.getSerial(), maxlabel + 1));
@@ -940,8 +940,8 @@ public class Model {
                             int maxlabel = 0;
                             for (AMachine ma : machines) {
                                 if (ma instanceof VoteBoxBooth
-                                        && ((VoteBoxBooth) ma).getLabel() > maxlabel)
-                                    maxlabel = ((VoteBoxBooth) ma).getLabel();
+                                        && ma.getLabel() > maxlabel)
+                                    maxlabel = ma.getLabel();
                             }
                             auditorium.announce(new AssignLabelEvent(mySerial, e
                                     .getSerial(), maxlabel + 1));

@@ -632,7 +632,7 @@ public class PsychLayoutManager extends ALayoutManager {
 
             //System.out.println("PsychLayout's forReviewButton");
             int size = 1;
-            int fontsize = (int) ((size + 1) * (FONT_SIZE_MULTIPLE - 1)) - 2;
+            int fontsize = (size + 1) * (FONT_SIZE_MULTIPLE - 1) - 2;
 
             BufferedImage buttonImg = RenderingUtils.renderButton(
 				rb.getText(), fontsize, rb.isBold(), rb.isBoxed(),
@@ -669,7 +669,7 @@ public class PsychLayoutManager extends ALayoutManager {
         public BufferedImage forReviewLabel(ReviewLabel rl, Boolean... param) {
             //System.out.println("PsychLayout's forReviewLabel");
             int size = 1;
-            int fontsize = (int) ((size + 1) * (FONT_SIZE_MULTIPLE - 1));
+            int fontsize = (size + 1) * (FONT_SIZE_MULTIPLE - 1);
 
             return RenderingUtils.renderLabel(rl.getText(), "", "", fontsize,
                     //rl.getWidth(), 

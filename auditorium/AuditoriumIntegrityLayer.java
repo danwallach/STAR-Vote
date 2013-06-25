@@ -101,8 +101,7 @@ public class AuditoriumIntegrityLayer extends AAuditoriumLayer {
     }
 
     /**
-     * @see auditorium.IAuditoriumLayer#makeJoinReply(sexpression.ASExpression,
-     *      sexpression.ASExpression)
+     * @see auditorium.IAuditoriumLayer#makeJoinReply(sexpression.ASExpression)
      */
     public ASExpression makeJoinReply(ASExpression datum) {
         return getChild().makeJoinReply( datum );

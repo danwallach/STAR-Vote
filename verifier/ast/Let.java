@@ -53,7 +53,7 @@ public class Let extends AST {
 			String[] variables = new String[numBindings];
 			for (int lcv = 0; lcv < numBindings; lcv++) {
 				ListExpression clause = (ListExpression) (bindingsExpr.get(lcv));
-				variables[lcv] = ((StringExpression) (clause.get(0)))
+				variables[lcv] = clause.get(0)
 						.toString();
 				bindings[lcv] = parser.parse(clause.get(1));
 			}

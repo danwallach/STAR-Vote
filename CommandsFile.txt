@@ -1,0 +1,5 @@
+C:\Program Files\Prince\Engine\bin\prince.exe!!!-s C:\Dropbox\Votebox\printing\s1.css!!!--no-compress!!!C:\Users\Tap 20\Downloads\tmp\ballots\ballot0\PrintableBallot.html!!!-o C:\Dropbox\Votebox\printing\PrintableBallot.pdf
+C:\Program Files (x86)\Foxit Software\Foxit Reader\Foxit Reader.exe!!!/t!!!C:\Users\Mircea\Desktop\PrintableBallot.pdf!!!PDF
+
+The first line converts an HTML file to a PDF document using (the poorly named) Prince XML.
+The second line prints the PDF document using Foxit Reader.

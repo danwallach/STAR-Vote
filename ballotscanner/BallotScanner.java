@@ -16,6 +16,7 @@ import java.awt.event.ActionListener;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.util.Observer;
+import java.util.Scanner;
 
 public class BallotScanner{
 
@@ -101,11 +102,11 @@ public class BallotScanner{
             }
         });
 
-        webcam = new FrameGrabberWebcam();
+        //webcam = new FrameGrabberWebcam();
 
-        webcam.startCapture();
+        //webcam.startCapture();
 
-        decoder = new Code128Decoder();
+        //decoder = new Code128Decoder();
 
         //Set up the JFrame confirmation screen
         frame = new BallotScannerUI(_constants.getElectionName());
@@ -171,19 +172,22 @@ public class BallotScanner{
     public void beginScanning(){
         new Thread(new Runnable() {
             public void run() {
+
+                Scanner scanner = new Scanner(System.in);
                 long lastFoundTime = 0;
 
                 while(true){
 
-                    BinaryBitmap bitmap = webcam.getBitmap();
+                    //BinaryBitmap bitmap = webcam.getBitmap();
+                    lastFoundBID = scanner.nextInt()+"";
 
                     if(frame.state.getStateName().equals(PromptState.SINGLETON.getStateName()) && receivedResponse){
 
-                        decoder = new Code128Decoder();
+                        //decoder = new Code128Decoder();
 
                         long start = System.currentTimeMillis();
 
-                        lastFoundBID = decoder.decode(bitmap);
+                        //lastFoundBID = decoder.decode(bitmap);
 
                         if(start - lastFoundTime > 5000){
                             if(lastFoundBID != null){

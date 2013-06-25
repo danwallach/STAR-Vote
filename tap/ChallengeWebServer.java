@@ -116,7 +116,7 @@ public class ChallengeWebServer {
 		}
 
 		public String getHeader(String name) {
-			return (String)(headers.get(name));
+			return headers.get(name);
 		}
 		public void setHeader(String name, String value) {
 			headers.put(name, value);
@@ -355,9 +355,9 @@ public class ChallengeWebServer {
 						byte buf[] = new byte[BUFSIZ];
 						int len;
 						int contentLength = -1;
-						String contentLengthStr = (String) (headers.get((Object)"Content-Length"));
+						String contentLengthStr = headers.get("Content-Length");
 						if (contentLengthStr != null) {
-							contentLength = new Integer(contentLengthStr).intValue();
+							contentLength = Integer.parseInt(contentLengthStr);
 						}
 						//System.out.println("[Poolboy.run] POST/PUT content-length = " + contentLength);
 						if (contentLength > 0) {

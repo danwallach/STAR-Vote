@@ -6,9 +6,11 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.Time;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -100,17 +102,6 @@ public class HTMLPrinter {
             // Beginning of body.
             writer.write("<body bgcolor = \"#FFFFFF\" text = \"#000000\">\n");
 
-            // Writes the header of the page(s) to be printed.
-            // <p style="font-family:arial;color:red;font-size:20px;">A paragraph.</p>
-            writer.write("<p style = \"font-family:arial;color:black;font-size:20px;\">&nbsp;&nbsp;&nbsp;&nbsp;" + BALLOT_CONSTANTS.getElectionName() + "<br>\n");
-
-            DateFormat dateFormat = new SimpleDateFormat("MMMM d, y");
-            Date date = new Date();
-            String currentDate = dateFormat.format(date);
-            writer.write("&nbsp;&nbsp;&nbsp;&nbsp;" + currentDate + "</p>\n");
-
-
-
             if (!useTwoColumns) // Ballot printing uses one-column format
             {
                 generatorHelperForOneColumn(writer, printFriendly, pathToBallotVVPATFolder, imageNames);
@@ -148,6 +139,16 @@ public class HTMLPrinter {
     {
         try
         {
+            // Writes the header of the page(s) to be printed.
+            // <p style="font-family:arial;color:red;font-size:20px;">A paragraph.</p>
+            writer.write("<p style = \"font-family:arial;color:black;font-size:20px;\">&nbsp;&nbsp;&nbsp;&nbsp;" + BALLOT_CONSTANTS.getElectionName() + "<br>\n");
+
+            DateFormat dateFormat = new SimpleDateFormat("MMMM d, y hh:mm:ss");
+            Date date = new Date();
+
+            String currentDate = dateFormat.format(date);
+            writer.write("&nbsp;&nbsp;&nbsp;&nbsp;" + currentDate + "</p>\n");
+
             if (printFriendly)
             {
                 // Creates the container for the columns of images.
@@ -312,6 +313,16 @@ public class HTMLPrinter {
     {
         try
         {
+            // Writes the header of the page(s) to be printed.
+            // <p style="font-family:arial;color:red;font-size:20px;">A paragraph.</p>
+            writer.write("<p style = \"font-family:arial;color:black;font-size:20px;\">&nbsp;&nbsp;&nbsp;&nbsp;" + BALLOT_CONSTANTS.getElectionName() + "<br>\n");
+
+            DateFormat dateFormat = new SimpleDateFormat("MMMM d, y hh:mm:ss");
+            Date date = new Date();
+
+            String currentDate = dateFormat.format(date);
+            writer.write("&nbsp;&nbsp;&nbsp;&nbsp;" + currentDate + "</p>\n");
+
             if (printFriendly)
             {
                 // Creates the container for the columns of images.

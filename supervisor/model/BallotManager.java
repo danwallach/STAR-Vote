@@ -46,7 +46,7 @@ public class BallotManager {
 
     //returns array of precincts
     public Integer[] getSelections(){
-        return (Integer[])ballotByPrecinct.keySet().toArray(new Integer[0]);
+        return ballotByPrecinct.keySet().toArray(new Integer[0]);
     }
 
     //returns first precinct in set of precincts

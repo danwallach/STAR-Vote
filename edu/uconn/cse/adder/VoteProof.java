@@ -43,8 +43,8 @@ public class VoteProof {
         for (int i = 0; i < size; i++) {
             MembershipProof proof = new MembershipProof();
             ElgamalCiphertext ciphertext
-                = (ElgamalCiphertext) cipherList.get(i);
-            AdderInteger choice = (AdderInteger) choices.get(i);
+                = cipherList.get(i);
+            AdderInteger choice = choices.get(i);
             proof.compute(ciphertext, pubKey, choice, cipherDomain);
             this.proofList.add(proof);
 
@@ -81,9 +81,9 @@ public class VoteProof {
         int size = this.proofList.size();
 
         for (int i = 0; i < size; i++) {
-            MembershipProof proof = (MembershipProof) this.proofList.get(i);
+            MembershipProof proof = this.proofList.get(i);
             ElgamalCiphertext ciphertext
-                = (ElgamalCiphertext) cipherList.get(i);
+                = cipherList.get(i);
 
             if (!proof.verify(ciphertext, pubKey, cipherDomain)) {
                 return false;
@@ -129,7 +129,7 @@ public class VoteProof {
         sb.append(sumProof.toString());
 
         for (int i = 0; i < proofList.size(); i++) {
-            MembershipProof proof = (MembershipProof) proofList.get(i);
+            MembershipProof proof = proofList.get(i);
             sb.append(" ");
             sb.append(proof.toString());
         }

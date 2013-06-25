@@ -64,8 +64,8 @@ public class AuthorizedToCastEvent implements IAnnounceEvent {
                         .toString() );
                 /*byte[] nonce = ((StringExpression) ((ListExpression) res)
                         .get( 1 )).getBytesCopy();*/
-                byte[] nonce = new BigInteger(((StringExpression) ((ListExpression) res)
-                        .get( 1 )).toString()).toByteArray();
+                byte[] nonce = new BigInteger(((ListExpression) res)
+                        .get( 1 ).toString()).toByteArray();
                 byte[] ballot = ((StringExpression) ((ListExpression) res)
                         .get( 2 )).getBytesCopy();
                 return new AuthorizedToCastEvent( serial, node, nonce, ballot );

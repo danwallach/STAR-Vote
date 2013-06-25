@@ -111,7 +111,7 @@ public class Polynomial {
         int size = coeffs.size();
         /*for (AdderInteger c : coeffs) {*/
         for (int i = 0; i < size; i++) {
-            AdderInteger c = (AdderInteger) coeffs.get(i);
+            AdderInteger c = coeffs.get(i);
             evalSum = evalSum.add(c.multiply(new AdderInteger(x, q).pow(i)));
         }
 

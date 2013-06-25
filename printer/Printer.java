@@ -177,7 +177,7 @@ public class Printer{
         while (counter < choices.size())
         {
             ArrayList<String> currentColumn = new ArrayList<String>();
-            while ((currentColumn.size() < 26) && (counter < choices.size()))
+            while ((currentColumn.size() < 24) && (counter < choices.size()))
             {
                 String titleName = fActualRaceNamePairs.get(counter).getLabel();
                 String selectionName = choices.get(counter);
@@ -406,7 +406,7 @@ public class Printer{
         Rectangle2D rect = fm.getStringBounds(s, g);
         int sLength = (int) rect.getWidth();
         if(sLength>fm.getStringBounds(s,g).getWidth()){
-            printCenteredText(s.substring(0, sLength-1), xBound, (int) (y), g);
+            printCenteredText(s.substring(0, sLength-1), xBound, y, g);
             printCenteredText(s.substring(sLength, s.length()), xBound, (int) (y+rect.getHeight()+5), g);
         }
         else{

@@ -62,8 +62,8 @@ public class OverrideCancelEvent implements IAnnounceEvent {
                         .toString() );
                 /*byte[] nonce = ((StringExpression) ((ListExpression) res)
                         .get( 1 )).getBytesCopy();*/
-                byte[] nonce = new BigInteger(((StringExpression) ((ListExpression) res)
-                        .get( 1 )).toString()).toByteArray();
+                byte[] nonce = new BigInteger(((ListExpression) res)
+                        .get( 1 ).toString()).toByteArray();
                 return new OverrideCancelEvent( serial, node, nonce );
             }
 
