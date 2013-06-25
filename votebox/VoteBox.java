@@ -289,7 +289,7 @@ public class VoteBox{
                         auditorium.announce(new BallotPrintingEvent(mySerial, bid,
                                 nonce));
                         printer = new Printer(_currentBallotFile, races);
-						printer.printCommittedBallot(ballot, bid);
+						boolean success = printer.printCommittedBallot(ballot, bid);
                         printer.printedReceipt(bid);
 
                         //By this time, the voter is done voting
@@ -297,9 +297,10 @@ public class VoteBox{
                         long start = System.currentTimeMillis();
                         while(System.currentTimeMillis() - start < 5000);
                         finishedVoting = true;
-//                        inactiveUI.setVisible(true);
                         BallotEncrypter.SINGLETON.clear();
 
+                        if(success)
+                            auditorium.announce(new BallotPrintSuccessEvent(mySerial, bid, nonce));
 
 					} catch (AuditoriumCryptoException e) {
 						Bugout.err("Crypto error trying to commit ballot: "+e.getMessage());
@@ -366,66 +367,7 @@ public class VoteBox{
         			}
         		});
         	}
-        /*}else{
-        	//If we're not using the challenge-commit model, we still need to handle "cast" ui events.
-        	//Here we role the commit triggered encryption in with casting (provided encryption is enabled).
-        	currentDriver.getView().registerForCastBallot(new Observer() {
-                *//**
-                 * Makes sure that the booth is in a correct state to cast a ballot,
-                 * then announce the cast-ballot message (also increment counters)
-                 *//*
-                @SuppressWarnings("unchecked")
-                public void update(Observable o, Object argTemp) {
-                    if (!connected)
-                        throw new RuntimeException(
-                                "Attempted to cast ballot when not connected to any machines");
-                    if (!voting || currentDriver == null)
-                        throw new RuntimeException(
-                                "VoteBox attempted to cast ballot, but was not currently voting");
-                    if (finishedVoting)
-                        throw new RuntimeException(
-                                "This machine has already finished voting, but attempted to vote again");
 
-                    finishedVoting = true;
-                    ++publicCount;
-                    ++protectedCount;
-
-                    Object[] arg = (Object[]) argTemp;
-
-                    //If we are not using encryption use the plain old CastCommittedBallotEvent
-                    if (!_constants.getCastBallotEncryptionEnabled()) {
-                        auditorium.announce(new CastCommittedBallotEvent(mySerial,
-                                StringExpression.makeString(nonce),
-                                (ASExpression) arg[0], StringExpression.makeString(bid)));
-                    } else {
-                        //Else, use the EncryptedCastBallotEvent with a properly encrypted ballot
-                        try {
-                            if (!VoteBox.this._constants.getEnableNIZKs()) {
-                                BallotEncrypter.SINGLETON.encrypt((ListExpression) arg[0], _constants.getKeyStore().loadKey("public"));
-
-                                auditorium.announce(new EncryptedCastBallotEvent(mySerial,
-                                        StringExpression.makeString(nonce),
-                                        BallotEncrypter.SINGLETON.getRecentEncryptedBallot(), StringExpression.makeString(bid)));
-                            } else {
-                                BallotEncrypter.SINGLETON.encryptWithProof((ListExpression) arg[0], (List<List<String>>) arg[1], (PublicKey) _constants.getKeyStore().loadAdderKey("public"));
-
-                                auditorium.announce(new EncryptedCastBallotWithNIZKsEvent(mySerial,
-                                        StringExpression.makeString(nonce),
-                                        BallotEncrypter.SINGLETON.getRecentEncryptedBallot(), StringExpression.makeString(bid)));
-                            }//if
-                        } catch (AuditoriumCryptoException e) {
-                            System.err.println("Encryption Error: " + e.getMessage());
-                        }
-                    }
-
-                    BallotEncrypter.SINGLETON.clear();
-
-                    //printCommittedBallot((ListExpression)arg);
-                    //printBallotCastConfirmation();
-                }
-            });
-        }//if*/
-        
         currentDriver.getView().registerForOverrideCancelConfirm(
                 new Observer() {
                     /**
@@ -474,23 +416,46 @@ public class VoteBox{
              * Increment counters, and send the ballot in the confirm message.
              * Also kill votebox and show the inactive UI
              */
-            public void update(Observable o, Object arg) {
+            public void update(Observable o, Object argTemp) {
                 if (voting && override && !finishedVoting
                         && currentDriver != null) {
                     ++publicCount;
                     ++protectedCount;
-                    byte[] ballot = ((ASExpression) arg).toVerbatim();
+                    Object[] arg = (Object[])argTemp;
+
+                    // arg1 should be the cast ballot structure, check
+                    if (Ballot.BALLOT_PATTERN.match((ASExpression) arg[0]) == NoMatch.SINGLETON)
+                        throw new RuntimeException(
+                                "Incorrectly expected a cast-ballot");
+                    ListExpression ballot = (ListExpression) arg[0];
+
                     auditorium.announce(new OverrideCastConfirmEvent(mySerial,
-                            nonce, ballot));
+                            nonce, ballot.toVerbatim()));
                     currentDriver.kill();
                     currentDriver = null;
                     nonce = null;
                     voting = false;
                     override = false;
                     broadcastStatus();
-                    inactiveUI.setVisible(true);
+
+
+
+                    List<List<String>> races = currentDriver.getBallotAdapter().getRaceGroups();
+                    auditorium.announce(new BallotPrintingEvent(mySerial, bid,
+                            nonce));
+                    printer = new Printer(_currentBallotFile, races);
+                    boolean success = printer.printCommittedBallot(ballot, bid);
+                    printer.printedReceipt(bid);
+
+                    //By this time, the voter is done voting
+                    //Wait before returning to inactive
+                    long start = System.currentTimeMillis();
+                    while(System.currentTimeMillis() - start < 5000);
+                    finishedVoting = true;
+                    BallotEncrypter.SINGLETON.clear();
                     
-                    //printBallotCastConfirmation();
+                    if(success)
+                        auditorium.announce(new BallotPrintSuccessEvent(mySerial, bid, nonce));
                 } else
                     throw new RuntimeException(
                             "Received an override-cast-confirm event at the incorrect time");
@@ -709,7 +674,7 @@ public class VoteBox{
                 }
             }
 
-            public void castCommittedBallot(CastCommittedBallotEvent e) {
+            public void castBallot(CastBallotEvent e) {
                 // NO-OP
             }
 
@@ -972,7 +937,6 @@ public class VoteBox{
                 // NO-OP
             }
 
-            @Override
             public void pollMachines(PollMachinesEvent pollMachinesEvent) {
                 broadcastStatus();
                 try {

@@ -89,8 +89,9 @@ public class Printer{
      *   print the voter's choices.
      *
      * @param ballot - the choices to print, in the form ((race-id choice) ...)
+     * @return  - true if the print executed successfully
      */
-	public void printCommittedBallot(ListExpression ballot, String bid) {
+	public boolean printCommittedBallot(ListExpression ballot, String bid) {
         System.out.println("Current Ballot: " + _currentBallotFile.getAbsolutePath());
 		final Map<String, Image> choiceToImage = BallotImageHelper.loadImagesForVVPAT(_currentBallotFile);
         final Map<String, Image> raceTitles = BallotImageHelper.loadBallotTitles(_currentBallotFile);
@@ -278,7 +279,7 @@ public class Printer{
 
 		};
 
-		printOnVVPAT(printedBallot);
+		return printOnVVPAT(printedBallot);
 
 
 	}
@@ -461,9 +462,9 @@ public class Printer{
      * Prints onto the attached VVPAT printer, if possible.
      * @param toPrint - the Printable to print.
      */
-	public void printOnVVPAT(Printable toPrint){
+	public boolean printOnVVPAT(Printable toPrint){
 		//VVPAT not ready
-		if(_constants.getPrinterForVVPAT().equals("")) return;
+		if(_constants.getPrinterForVVPAT().equals("")) return false;
 
 		PrintService[] printers = PrinterJob.lookupPrintServices();
 
@@ -487,7 +488,7 @@ public class Printer{
 
 		if(vvpat == null){
 			Bugout.msg("VVPAT is configured, but not detected as ready.");
-			return;
+			return false;
 		}
 
 
@@ -531,8 +532,10 @@ public class Printer{
 
 		} catch (PrinterException e) {
 			Bugout.err("VVPAT printing failed: "+e.getMessage());
-			return;
+			return false;
 		}
+
+        return true;
 
 
 	}
