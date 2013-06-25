@@ -421,16 +421,38 @@ public class VoteBox{
                         && currentDriver != null) {
                     ++publicCount;
                     ++protectedCount;
-                    ListExpression arg = (ListExpression)argTemp;
+                    ListExpression arg = (ListExpression) argTemp;
+                    //Object [] arg = (Object []) (((ListExpression) argTemp).toVerbatim());
 
                     // arg1 should be the cast ballot structure, check
                     if (Ballot.BALLOT_PATTERN.match((ASExpression) arg) == NoMatch.SINGLETON)
                         throw new RuntimeException(
                                 "Incorrectly expected a cast-ballot");
-                    byte[] ballot = arg.toVerbatim();
+                    ListExpression ballot = (ListExpression) arg;
 
                     auditorium.announce(new OverrideCastConfirmEvent(mySerial,
-                            nonce, ballot));
+                            nonce, ballot.toVerbatim()));
+
+
+
+
+                    try
+                    {
+                        if(!_constants.getEnableNIZKs()){
+                            auditorium.announce(new CommitBallotEvent(mySerial,
+                                    StringExpression.makeString(nonce),
+                                    BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey("public")), StringExpression.makeString(bid)));
+                        } else{
+                            auditorium.announce(new CommitBallotEvent(mySerial,
+                                    StringExpression.makeString(nonce),
+                                    BallotEncrypter.SINGLETON.encryptWithProof(ballot, (List<List<String>>) arg.get(1), (PublicKey) _constants.getKeyStore().loadAdderKey("public")), StringExpression.makeString(bid))
+                            );
+                        }
+                    }
+                    catch (AuditoriumCryptoException e) {
+                        Bugout.err("Crypto error trying to commit ballot: "+e.getMessage());
+                        e.printStackTrace();
+                    }
                     /*currentDriver.kill();
                     currentDriver = null;
                     nonce = null;
@@ -444,7 +466,7 @@ public class VoteBox{
                     auditorium.announce(new BallotPrintingEvent(mySerial, bid,
                             nonce));
                     printer = new Printer(_currentBallotFile, races);
-                    boolean success = printer.printCommittedBallot(arg, bid);
+                    boolean success = printer.printCommittedBallot(ballot, bid);
                     printer.printedReceipt(bid);
 
                     //By this time, the voter is done voting
