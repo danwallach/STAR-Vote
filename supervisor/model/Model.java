@@ -976,7 +976,7 @@ public class Model {
              * It should not yet be tallied.
              */
             public void commitBallot(CommitBallotEvent e) {
-                System.err.println("Ballot committed! BID: " + e.getBID());
+                //System.err.println("Ballot committed! BID: " + e.getBID());
             	AMachine m = getMachineForSerial(e.getSerial());
                 if (m != null && m instanceof VoteBoxBooth) {
                     VoteBoxBooth booth = (VoteBoxBooth) m;
