@@ -334,7 +334,7 @@ public class VoteBox{
                     //Object[] arg = (Object[])argTemp;
 
                     auditorium.announce(new CastCommittedBallotEvent(mySerial,
-                            StringExpression.makeString(nonce)));
+                            StringExpression.makeString(nonce), StringExpression.makeString(bid)));
 
                     BallotEncrypter.SINGLETON.clear();
 
@@ -389,7 +389,6 @@ public class VoteBox{
                             //printBallotSpoiled();
                         } else
                             throw new RuntimeException(
-
                                     "Received an override-cancel-confirm event at the incorrect time");
                     }
                 });
@@ -697,6 +696,10 @@ public class VoteBox{
                 }
             }
 
+            public void castCommittedBallot(CastCommittedBallotEvent e) {
+                // NO-OP
+            }
+
             public void castBallot(CastBallotEvent e) {
                 // NO-OP
             }
@@ -773,8 +776,6 @@ public class VoteBox{
                             pageBeforeOverride = page;
                             override = true;
                         }
-
-
                     } else
                         throw new RuntimeException(
                                 "Received an override-cast message when the user wasn't voting");

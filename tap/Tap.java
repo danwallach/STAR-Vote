@@ -29,12 +29,17 @@ import java.net.Socket;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
+import auditorium.AuditoriumCryptoException;
 import auditorium.IAuditoriumParams;
+import auditorium.Key;
 import auditorium.NetworkException;
 
 import de.roderick.weberknecht.*;
+import sexpression.ListExpression;
 import sexpression.stream.ASEWriter;
+import supervisor.model.BallotStore;
 import votebox.AuditoriumParams;
 import votebox.events.*;
 
@@ -49,10 +54,13 @@ import votebox.events.*;
  *
  */
 public class Tap {
+
     private int _mySerial = -1;
     private ASEWriter _output = null;
     private OutputStream _wrappedOut = null;
     private VoteBoxAuditoriumConnector _auditorium = null;
+    private static IAuditoriumParams params;
+    private Key privateKey;
 
     /**
      * Initializes a new Trapper.<BR>
@@ -65,6 +73,12 @@ public class Tap {
         _mySerial = serial;
         _wrappedOut = out;
         _output = new ASEWriter(_wrappedOut);
+
+        try{
+            privateKey = params.getKeyStore().loadKey("private");
+        }catch(AuditoriumCryptoException ex){
+            ex.printStackTrace();
+        }
     }//Trapper
 
     /**
@@ -81,9 +95,9 @@ public class Tap {
     }//forward
 
     // TODO update this when our own database/server is implemented
-    protected void dumpBallotList(ArrayList<String> ballotList) {
+    protected void dumpBallotList(ArrayList<String> ballotList){
         try {
-//            todo: revert this hard-coded value for demo
+//          todo: revert this hard-coded value for demo
             URI url = new URI("ws://localhost:9000/ballotdump");
             WebSocket websocket = new WebSocketConnection(url);
 
@@ -138,7 +152,8 @@ public class Tap {
                     AuthorizedToCastWithNIZKsEvent.getMatcher(),
                     AdderChallengeEvent.getMatcher(),
                     CastBallotUploadEvent.getMatcher(),
-                    ChallengedBallotUploadEvent.getMatcher()
+                    ChallengedBallotUploadEvent.getMatcher(),
+                    PollsClosedEvent.getMatcher()
             );
         }catch(NetworkException e){
             throw new RuntimeException("Unable to connect to Auditorium: "+e.getMessage(), e);
@@ -149,19 +164,17 @@ public class Tap {
                 //NO-OP
             }
 
-            //We no longer want to do this when ballots are cast
-            //TODO figure out what we should do instead
-            public void castBallot(CastBallotEvent e) {
-//				forward(e);
+            public void ballotAccepted(BallotScanAcceptedEvent e){
+                BallotStore.castCommittedBallot(e.getBID().toString());
             }
-            public void challenge(ChallengeEvent e) {
-//				forward(e);
-            }
+
             public void commitBallot(CommitBallotEvent e) {
-//				forward(e);
+			    BallotStore.addBallot(e.getBID().toString(), e.getBallot());
+                System.out.println("TAP: committing ballot " + e.getBID().toString());
             }
 
             //Ignored events
+            public void challenge(ChallengeEvent e) {}
             public void activated(ActivatedEvent e) {}
             public void assignLabel(AssignLabelEvent e) {}
             public void authorizedToCast(AuthorizedToCastEvent e) {}
@@ -176,17 +189,16 @@ public class Tap {
             public void overrideCast(OverrideCastEvent e) {}
             public void overrideCastConfirm(OverrideCastConfirmEvent e) {}
             public void overrideCastDeny(OverrideCastDenyEvent e) {}
-            public void pollsClosed(PollsClosedEvent e) {}
             public void pollsOpen(PollsOpenEvent e) {}
             public void pollsOpenQ(PollsOpenQEvent e) {}
             public void supervisor(SupervisorEvent e) {}
             public void votebox(VoteBoxEvent e) {}
             public void ballotscanner(BallotScannerEvent e) {}
             public void ballotScanned(BallotScannedEvent e) {}
+            public void castCommittedBallot(CastCommittedBallotEvent e) {}
             public void pollStatus(PollStatusEvent pollStatusEvent) {}
             public void pinEntered(PinEnteredEvent event) {}
             public void invalidPin(InvalidPinEvent event) {}
-            public void ballotAccepted(BallotScanAcceptedEvent e){}
             public void ballotRejected(BallotScanRejectedEvent e){}
             public void ballotPrinting(BallotPrintingEvent ballotPrintingEvent) {}
             public void ballotPrintSuccess(BallotPrintSuccessEvent ballotPrintSuccessEvent) {}
@@ -195,13 +207,19 @@ public class Tap {
             public void pollMachines(PollMachinesEvent pollMachinesEvent){}
             public void spoilBallot(SpoilBallotEvent spoilBallotEvent) {}
 
+            public void pollsClosed(PollsClosedEvent e) {
+                _auditorium.announce(new CastBallotUploadEvent(_mySerial, BallotStore.getCastNonces()));
+            }
+
             public void uploadCastBallots(CastBallotUploadEvent e) {
                 dumpBallotList(e.getDumpList());
+                System.out.println("TAP: Uploading Cast Ballots");
+                _auditorium.announce(new ChallengedBallotUploadEvent(_mySerial, BallotStore.getDecryptedBallots(privateKey)));
             }
             public void uploadChallengedBallots(ChallengedBallotUploadEvent e) {
                 dumpBallotList(e.getDumpList());
+                System.out.println("TAP: Uploading Challenged Ballots");
             }
-
         });
 
         try{
@@ -219,7 +237,7 @@ public class Tap {
      * @throws InterruptedException
      */
     public static void main(String[] args){
-        IAuditoriumParams params = new AuditoriumParams("tap.conf");
+        params = new AuditoriumParams("tap.conf");
 
         int serial = -1;
         String reportAddr = null;

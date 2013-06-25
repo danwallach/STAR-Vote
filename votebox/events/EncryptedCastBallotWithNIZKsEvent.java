@@ -40,6 +40,6 @@ public class EncryptedCastBallotWithNIZKsEvent extends EncryptedCastBallotEvent 
 
     public ASExpression toSExp(){
         return new ListExpression(StringExpression.makeString("encrypted-cast-ballot-with-nizks"),
-                getNonce(), getBallot());
+                getNonce(), getBID());
     }
 }

@@ -322,7 +322,7 @@ public class Button extends Label implements IFocusable {
 
                 public void execute(Button context)
                         throws BallotBoxViewException {
-                    viewManager.castBallot();
+                    viewManager.castCommittedBallot();
                 }
             };
         }

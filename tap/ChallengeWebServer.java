@@ -47,11 +47,7 @@ import sexpression.stream.ASEInputStreamReader;
 import sexpression.stream.InvalidVerbatimStreamException;
 import votebox.AuditoriumParams;
 import votebox.crypto.BallotEncrypter;
-import votebox.events.AdderChallengeEvent;
-import votebox.events.AuthorizedToCastWithNIZKsEvent;
-import votebox.events.CastCommittedBallotEvent;
-import votebox.events.ChallengeEvent;
-import votebox.events.CommitBallotEvent;
+import votebox.events.*;
 
 /**
  * Implements an example multi-threaded webserver for use in the challenge-commit model.

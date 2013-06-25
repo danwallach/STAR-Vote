@@ -73,9 +73,9 @@ public class VoteBoxEventNotifier implements VoteBoxEventListener {
             l.ballotReceived(e);
     }
 
-    public void castBallot(CastBallotEvent e) {
+    public void castCommittedBallot(CastCommittedBallotEvent e) {
         for (VoteBoxEventListener l : listeners)
-            l.castBallot(e);
+            l.castCommittedBallot(e);
     }
 
     public void joined(JoinEvent e) {

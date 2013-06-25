@@ -37,7 +37,7 @@ import sexpression.StringExpression;
  * with a whole message of E(...) thrown in.
  * @author Montrose
  */
-public class EncryptedCastBallotEvent extends CastBallotEvent{
+public class EncryptedCastBallotEvent extends CastCommittedBallotEvent{
 
     /**
      * Matcher for the EncryptedCastBallotEvent
@@ -81,7 +81,6 @@ public class EncryptedCastBallotEvent extends CastBallotEvent{
      */
     public ASExpression toSExp() {
         return new ListExpression(StringExpression.makeString("encrypted-cast-ballot"),
-                getNonce(), getBallot());
+                getNonce(), getBID());
     }
-
 }

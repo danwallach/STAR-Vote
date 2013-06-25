@@ -258,7 +258,7 @@ public class BallotScanner{
             }
 
 
-            public void castBallot(CastBallotEvent event) {
+            public void castCommittedBallot(CastCommittedBallotEvent event) {
             }
 
             public void challenge(ChallengeEvent e) {
