@@ -152,7 +152,8 @@ public class Tap {
                     AuthorizedToCastWithNIZKsEvent.getMatcher(),
                     AdderChallengeEvent.getMatcher(),
                     CastBallotUploadEvent.getMatcher(),
-                    ChallengedBallotUploadEvent.getMatcher()
+                    ChallengedBallotUploadEvent.getMatcher(),
+                    PollsClosedEvent.getMatcher()
             );
         }catch(NetworkException e){
             throw new RuntimeException("Unable to connect to Auditorium: "+e.getMessage(), e);
