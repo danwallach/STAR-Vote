@@ -674,6 +674,10 @@ public class VoteBox{
                 }
             }
 
+            public void castCommittedBallot(CastCommittedBallotEvent e) {
+                // NO-OP
+            }
+
             public void castBallot(CastBallotEvent e) {
                 // NO-OP
             }

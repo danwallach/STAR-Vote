@@ -59,7 +59,6 @@ public class Tap {
     private ASEWriter _output = null;
     private OutputStream _wrappedOut = null;
     private VoteBoxAuditoriumConnector _auditorium = null;
-    private AuditoriumParams _constants;
     private static IAuditoriumParams params;
     private Key privateKey;
 
@@ -74,8 +73,9 @@ public class Tap {
         _mySerial = serial;
         _wrappedOut = out;
         _output = new ASEWriter(_wrappedOut);
+
         try{
-            privateKey = _constants.getKeyStore().loadKey("private");
+            privateKey = params.getKeyStore().loadKey("private");
         }catch(AuditoriumCryptoException ex){
             ex.printStackTrace();
         }
@@ -208,12 +208,12 @@ public class Tap {
 
             public void pollsClosed(PollsClosedEvent e) {
                 _auditorium.announce(new CastBallotUploadEvent(_mySerial, BallotStore.getCastNonces()));
-                _auditorium.announce(new ChallengedBallotUploadEvent(_mySerial, BallotStore.getDecryptedBallots(privateKey)));
             }
 
             public void uploadCastBallots(CastBallotUploadEvent e) {
                 dumpBallotList(e.getDumpList());
                 System.out.println("TAP: Uploading Cast Ballots");
+                _auditorium.announce(new ChallengedBallotUploadEvent(_mySerial, BallotStore.getDecryptedBallots(privateKey)));
             }
             public void uploadChallengedBallots(ChallengedBallotUploadEvent e) {
                 dumpBallotList(e.getDumpList());
