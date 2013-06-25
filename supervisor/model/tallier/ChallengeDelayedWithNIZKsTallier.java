@@ -88,7 +88,7 @@ public class ChallengeDelayedWithNIZKsTallier implements ITallier {
 				//Vote vote = Vote.fromString(voteE.get(1).toString());
 				Vote vote = Vote.fromASE(voteE.get(1));
 				List<String> voteIds = new ArrayList<String>();
-				for(int j = 0; j < ((ListExpression)voteIdsE.get(1)).size(); j++)
+				for(int j = 0; j < voteIdsE.get(1).size(); j++)
 					voteIds.add(((ListExpression)voteIdsE.get(1)).get(j).toString());
 				
 				//VoteProof voteProof = VoteProof.fromString(proofE.get(1).toString());
@@ -139,7 +139,7 @@ public class ChallengeDelayedWithNIZKsTallier implements ITallier {
 			Election election = _results.get(group);
 			
 			Vote cipherSum = election.sumVotes();
-			List<AdderInteger> partialSum = (List<AdderInteger>)_finalPrivateKey.partialDecrypt(cipherSum);
+			List<AdderInteger> partialSum = _finalPrivateKey.partialDecrypt(cipherSum);
 			AdderInteger coeff = new AdderInteger(0);
 
 			List<List<AdderInteger>> partialSums = new ArrayList<List<AdderInteger>>();

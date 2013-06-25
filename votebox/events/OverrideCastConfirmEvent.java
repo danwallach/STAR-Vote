@@ -60,8 +60,8 @@ public class OverrideCastConfirmEvent implements IAnnounceEvent {
             if (res != NoMatch.SINGLETON) {
                 /*byte[] nonce = ((StringExpression) ((ListExpression) res)
                         .get( 0 )).getBytesCopy();*/
-            	byte[] nonce = new BigInteger(((StringExpression) ((ListExpression) res)
-                        .get( 0 )).toString()).toByteArray();
+            	byte[] nonce = new BigInteger(((ListExpression) res)
+                        .get( 0 ).toString()).toByteArray();
                 byte[] ballot = ((StringExpression) ((ListExpression) res)
                         .get( 1 )).getBytesCopy();
                 return new OverrideCastConfirmEvent( serial, nonce, ballot );

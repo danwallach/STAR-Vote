@@ -298,7 +298,7 @@ public class NIZKsPerformanceTest {
 				Integer expectedI = tempMap.get(decryptedRacePair.get(0).toString());
 				AdderInteger decryptedI = AdderInteger.fromASE(decryptedRacePair.get(1));
 				
-				Assert.assertEquals(decryptedRacePair.get(0).toString()+" did no match", (Object)expectedI, decryptedI.intValue());
+				Assert.assertEquals(decryptedRacePair.get(0).toString()+" did no match", expectedI, decryptedI.intValue());
 			}
 			
 			System.out.println("\t"+(stop - start)+" milliseconds");

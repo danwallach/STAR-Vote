@@ -406,7 +406,7 @@ public class Printer {
         Rectangle2D rect = fm.getStringBounds(s, g);
         int sLength = (int) rect.getWidth();
         if(sLength>fm.getStringBounds(s,g).getWidth()){
-            printCenteredText(s.substring(0, sLength-1), xBound, (int) (y), g);
+            printCenteredText(s.substring(0, sLength-1), xBound, y, g);
             printCenteredText(s.substring(sLength, s.length()), xBound, (int) (y+rect.getHeight()+5), g);
         }
         else{

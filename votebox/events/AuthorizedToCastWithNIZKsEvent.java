@@ -36,8 +36,8 @@ public class AuthorizedToCastWithNIZKsEvent extends AuthorizedToCastEvent {
                         .toString() );
                 /*byte[] nonce = ((StringExpression) ((ListExpression) res)
                         .get( 1 )).getBytesCopy();*/
-                byte[] nonce = new BigInteger(((StringExpression) ((ListExpression) res)
-                        .get( 1 )).toString()).toByteArray();
+                byte[] nonce = new BigInteger(((ListExpression) res)
+                        .get( 1 ).toString()).toByteArray();
                 byte[] ballot = ((StringExpression) ((ListExpression) res)
                         .get( 2 )).getBytesCopy();
                 //PublicKey finalPubKey = PublicKey.fromString(((ListExpression) res).get(3).toString());

@@ -109,8 +109,8 @@ public class MembershipProof {
 			} else {
 				sList.add(AdderInteger.random(q));
 				cList.add(AdderInteger.random(q));
-				AdderInteger s = (AdderInteger) sList.get(i);
-				AdderInteger c = (AdderInteger) cList.get(i);
+				AdderInteger s = sList.get(i);
+				AdderInteger c = cList.get(i);
 				AdderInteger negC = c.negate();
 				AdderInteger fpow = f.pow(d);
 				y = g.pow(s).multiply(bigG.pow(negC));
@@ -131,7 +131,7 @@ public class MembershipProof {
 		AdderInteger realC = new AdderInteger(this.c, q);
 
 		for (int i = 0; i < cList.size(); i++) {
-			AdderInteger fakeC = (AdderInteger) cList.get(i);
+			AdderInteger fakeC = cList.get(i);
 			realC = realC.subtract(fakeC);
 		}
 
@@ -173,8 +173,8 @@ public class MembershipProof {
 		for (int i = 0; i < size; i++) {
 			AdderInteger d = (AdderInteger) domain.get(i);
 			AdderInteger fpow = f.pow(d);
-			AdderInteger s = (AdderInteger) sList.get(i);
-			AdderInteger c = (AdderInteger) cList.get(i);
+			AdderInteger s = sList.get(i);
+			AdderInteger c = cList.get(i);
 			AdderInteger negC = c.negate();
 
 			cChoices = cChoices.add(c);

@@ -29,8 +29,8 @@ public class BallotPrintSuccessEvent implements IAnnounceEvent{
                 ASExpression res = pattern.match( sexp );
                 if (res != NoMatch.SINGLETON) {
                     String bID = ((ListExpression) res).get(0).toString();
-                    byte[] nonce = new BigInteger(((StringExpression) ((ListExpression) res)
-                            .get( 1 )).toString()).toByteArray();
+                    byte[] nonce = new BigInteger(((ListExpression) res)
+                            .get( 1 ).toString()).toByteArray();
                     return new BallotPrintSuccessEvent( serial, bID, nonce );
                 }
 

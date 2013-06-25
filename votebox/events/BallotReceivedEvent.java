@@ -62,8 +62,8 @@ public class BallotReceivedEvent implements IAnnounceEvent {
                         .toString() );
                 /*byte[] nonce = ((StringExpression) ((ListExpression) res)
                         .get( 1 )).getBytesCopy();*/
-                byte[] nonce = new BigInteger(((StringExpression) ((ListExpression) res)
-                        .get( 1 )).toString()).toByteArray();
+                byte[] nonce = new BigInteger(((ListExpression) res)
+                        .get( 1 ).toString()).toByteArray();
                 return new BallotReceivedEvent( serial, node, nonce );
             }
             return null;

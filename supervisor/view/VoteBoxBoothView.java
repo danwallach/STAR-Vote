@@ -213,7 +213,7 @@ public class VoteBoxBoothView extends AMachineView {
         serialLabel.setText("#" + machine.getSerial());
         GridBagConstraints c = new GridBagConstraints();
 
-        VoteBoxBooth m = (VoteBoxBooth) machine;
+        VoteBoxBooth m = machine;
 
         if (machine.isOnline()) {
             publicCountLabel.setVisible(true);

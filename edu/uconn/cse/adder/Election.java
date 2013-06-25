@@ -50,7 +50,7 @@ public class Election {
      * @return a vote representing the total of the given list of votes
      */
     public Vote sumVotes() {
-        Vote vote = (Vote) votes.get(0);
+        Vote vote = votes.get(0);
         int size = vote.getCipherList().size();
         List<ElgamalCiphertext> initList = new 
             ArrayList<ElgamalCiphertext>(size);
@@ -107,16 +107,16 @@ public class Election {
             productList.add(new AdderInteger(AdderInteger.ONE, p));
 
             for (int j = 0; j < lsize; j++) {
-                AdderInteger pli = (AdderInteger) productList.get(i);
+                AdderInteger pli = productList.get(i);
                 List ps = (List) partialSums.get(j);
                 AdderInteger psi = (AdderInteger) ps.get(i);
-                AdderInteger lcj = (AdderInteger) lagrangeCoeffs.get(j);
+                AdderInteger lcj = lagrangeCoeffs.get(j);
                 AdderInteger product = psi.pow(lcj).multiply(pli);
                 productList.set(i, product);
             }
 
-            AdderInteger bigH = ((ElgamalCiphertext) cipherList.get(i)).getH();
-            AdderInteger target = bigH.divide((AdderInteger) productList.get(i));
+            AdderInteger bigH = cipherList.get(i).getH();
+            AdderInteger target = bigH.divide(productList.get(i));
             AdderInteger j = null;
             boolean gotResult = false;
 

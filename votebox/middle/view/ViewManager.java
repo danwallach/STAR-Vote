@@ -203,8 +203,8 @@ public class ViewManager implements IViewManager {
         }
 
         // Tell the view to change the focus to the new element
-        ((IFocusable) _currentFocusedElement).unfocus();
-        ((IFocusable) dt).focus();
+        _currentFocusedElement.unfocus();
+        dt.focus();
         _view.invalidate( dt );
         _view.invalidate( _currentFocusedElement );
         // Keep track of who the new element is

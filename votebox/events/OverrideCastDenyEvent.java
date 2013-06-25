@@ -57,8 +57,8 @@ public class OverrideCastDenyEvent implements IAnnounceEvent {
             if (res != NoMatch.SINGLETON) {
                 /*byte[] nonce = ((StringExpression) ((ListExpression) res)
                         .get( 0 )).getBytesCopy();*/
-            	byte[] nonce = new BigInteger(((StringExpression) ((ListExpression) res)
-                        .get( 0 )).toString()).toByteArray();
+            	byte[] nonce = new BigInteger(((ListExpression) res)
+                        .get( 0 ).toString()).toByteArray();
                 return new OverrideCastDenyEvent( serial, nonce );
             }
 

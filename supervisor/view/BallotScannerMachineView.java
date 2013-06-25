@@ -223,7 +223,7 @@ public class BallotScannerMachineView extends AMachineView{
         // Prints the label in large font in the upper left section of the tile.
         nameLabel.setText(Integer.toString(machine.getLabel()));
         serialLabel.setText("#" + machine.getSerial());
-        BallotScannerMachine m = (BallotScannerMachine)machine;
+        BallotScannerMachine m = machine;
         GridBagConstraints c = new GridBagConstraints();
         if (machine.isOnline())
         {

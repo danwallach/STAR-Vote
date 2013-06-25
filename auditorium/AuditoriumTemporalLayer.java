@@ -127,7 +127,7 @@ public class AuditoriumTemporalLayer extends AAuditoriumLayer {
         ListExpression below = (ListExpression) ((ListExpression) result)
                 .get( 0 );
         // Extract message pointers to be added to the last list.
-        for (ASExpression ase : ((ListExpression) below))
+        for (ASExpression ase : below)
             getHost().getLog().updateLast( new MessagePointer( ase ) );
 
         // There is no more data to return.

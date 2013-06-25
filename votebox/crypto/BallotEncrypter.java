@@ -117,7 +117,7 @@ public class BallotEncrypter {
 		
 		Vote vote = finalPubKey.encrypt(value);
 		
-		List<ElgamalCiphertext> ciphers = (List<ElgamalCiphertext>)vote.getCipherList();
+		List<ElgamalCiphertext> ciphers = vote.getCipherList();
 		
 		List<AdderInteger> subRandom = new ArrayList<AdderInteger>();
 		for(ElgamalCiphertext cipher : ciphers)
@@ -194,7 +194,7 @@ public class BallotEncrypter {
     	PublicKey finalPublicKey = AdderKeyManipulator.generateFinalPublicKey(publicKey);
     	
     	Vote cipherSum = election.sumVotes();
-		List<AdderInteger> partialSum = (List<AdderInteger>)finalPrivateKey.partialDecrypt(cipherSum);
+		List<AdderInteger> partialSum = finalPrivateKey.partialDecrypt(cipherSum);
 		AdderInteger coeff = new AdderInteger(0);
 
 		List<List<AdderInteger>> partialSums = new ArrayList<List<AdderInteger>>();
@@ -252,11 +252,11 @@ public class BallotEncrypter {
     	List<ASExpression> subLists = new ArrayList<ASExpression>();
     	
     	for(String ids : idsToPlaintext.keySet()){
-    		List<StringExpression> idList = parseIds(ids.toString());
+    		List<StringExpression> idList = parseIds(ids);
     		List<AdderInteger> plaintexts = idsToPlaintext.get(ids);
 
     		for(int i = 0; i < idList.size(); i++){
-    			StringExpression id = (StringExpression)idList.get(i);
+    			StringExpression id = idList.get(i);
     			AdderInteger plaintext = plaintexts.get(i);
     			List<ASExpression> subList = new ArrayList<ASExpression>();
     			subList.add(id);
@@ -301,7 +301,7 @@ public class BallotEncrypter {
     	//                    if(m' == f) m = 1
     	//                    if(m' == 1) m = 0
     	
-    	List<ElgamalCiphertext> ciphers = (List<ElgamalCiphertext>)vote.getCipherList();
+    	List<ElgamalCiphertext> ciphers = vote.getCipherList();
     	List<AdderInteger> ret = new ArrayList<AdderInteger>();
     	
     	int i = 0;
@@ -383,9 +383,9 @@ public class BallotEncrypter {
             BigInteger cipher2 = new BigInteger(
                     ((StringExpression) ((ListExpression) ballotnext.get(1))
                             .get(1)).getBytes());*/
-            BigInteger r = new BigInteger(((StringExpression) rnext.get(1)).toString());
-            BigInteger cipher1 = new BigInteger(((StringExpression) ((ListExpression)ballotnext.get(1)).get(0)).toString());
-            BigInteger cipher2 = new BigInteger(((StringExpression) ((ListExpression)ballotnext.get(1)).get(1)).toString());
+            BigInteger r = new BigInteger(rnext.get(1).toString());
+            BigInteger cipher1 = new BigInteger(((ListExpression)ballotnext.get(1)).get(0).toString());
+            BigInteger cipher2 = new BigInteger(((ListExpression)ballotnext.get(1)).get(1).toString());
             
             Pair<BigInteger> cipher = new Pair<BigInteger>(cipher1, cipher2);
             BigInteger plaincounter = ElGamalCrypto.SINGLETON.decrypt(r,
@@ -481,7 +481,7 @@ public class BallotEncrypter {
 
         ThreadMXBean t = ManagementFactory.getThreadMXBean();
         
-        ListExpression b_count = (ListExpression) b.getCastBallot();
+        ListExpression b_count = b.getCastBallot();
         
         ListExpression b_count_crypt = SINGLETON.encrypt(b_count, STATICKEY.SINGLETON.PUBLIC_KEY);
         ListExpression rVals = SINGLETON.getRecentRandom();

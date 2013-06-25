@@ -155,7 +155,7 @@ public class Parser implements IParser {
                             } );
                 }
 
-                throw new UnexpectedTokenException( "#" + s.toString() );
+                throw new UnexpectedTokenException( "#" + s );
             }
 
         } );
