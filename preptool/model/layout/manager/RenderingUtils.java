@@ -619,6 +619,7 @@ public class RenderingUtils {
 
         //Scale the wrapping width
         wrappingWidth *= DPI_SCALE_FACTOR;
+        wrappingWidth += 500; //arbitrary sizes!
 
 
 
@@ -662,7 +663,7 @@ public class RenderingUtils {
 
         int heightPos = padding + baseline;
         int writePos = padding;
-        int boxPos = wrappingWidth - SELECTION_BOX_WIDTH - DPI_SCALE_FACTOR;
+        int boxPos = wrappingWidth - SELECTION_BOX_WIDTH - DPI_SCALE_FACTOR; //for fun!
         int candidateNameEndPos = boxPos - 2*DPI_SCALE_FACTOR;
 
 
@@ -693,7 +694,7 @@ public class RenderingUtils {
         //If this is a race name and not a candidate
         if (uid.contains("L"))
         {
-            wrappingWidth = 250*DPI_SCALE_FACTOR; //Arbitrary size!
+            wrappingWidth = 250*DPI_SCALE_FACTOR + 750; //Arbitrary size!
             Font temp = font.deriveFont(12.0f*DPI_SCALE_FACTOR);
             String[] split = selection.split("\n");
             text = split[0];
