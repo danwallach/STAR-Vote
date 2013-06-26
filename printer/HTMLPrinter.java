@@ -209,7 +209,7 @@ public class HTMLPrinter {
                 {
                     // Add selection separator.
                     // New separator:
-                    writer.write("<img src = \"" + /*pathToBallotVVPATFolder*/ LINE_SEPARATOR_IMAGE + "\" alt = \"Image not found\" width = \"" + (TWO_COLUMNS_COLUMN_SIZE - 24) + "\" height = \"1\" align = \"right\">\n<br>\n<br>\n");
+                    writer.write("<img id = \"line_separator\" src = \"" + /*pathToBallotVVPATFolder*/ LINE_SEPARATOR_IMAGE + "\" alt = \"Image not found\" width = \"" + (TWO_COLUMNS_COLUMN_SIZE - 24) + "\" height = \"1\" align = \"right\">\n<br>\n<br>\n");
                     // Old separators:
                     // writer.write("<br>\n<br>\n");
                     // writer.write("<div id = \"bar\" style = \"background-color:#000000;width:" + TWO_COLUMNS_COLUMN_SIZE + "px;\"><hr></div>\n");
