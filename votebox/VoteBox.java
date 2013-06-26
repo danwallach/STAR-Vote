@@ -275,6 +275,7 @@ public class VoteBox{
 
         			try {
                         if(!_constants.getEnableNIZKs()){
+                            System.out.println("Committing a ballot!");
                             auditorium.announce(new CommitBallotEvent(mySerial,
                                     StringExpression.makeString(nonce),
                                     BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey("public")), StringExpression.makeString(bid)));
@@ -284,6 +285,7 @@ public class VoteBox{
         							BallotEncrypter.SINGLETON.encryptWithProof(ballot, (List<List<String>>) arg[1], (PublicKey) _constants.getKeyStore().loadAdderKey("public")), StringExpression.makeString(bid))
                                     );
         				}
+
 
                         List<List<String>> races = currentDriver.getBallotAdapter().getRaceGroups();
                         auditorium.announce(new BallotPrintingEvent(mySerial, bid,
@@ -422,7 +424,8 @@ public class VoteBox{
                         && currentDriver != null) {
                     ++publicCount;
                     ++protectedCount;
-                    ListExpression arg = (ListExpression)argTemp;
+                    ListExpression arg = (ListExpression) argTemp;
+                    //Object [] arg = (Object []) (((ListExpression) argTemp).toVerbatim());
 
                     // arg1 should be the cast ballot structure, check
                     if (Ballot.BALLOT_PATTERN.match((ASExpression) arg) == NoMatch.SINGLETON)
@@ -430,15 +433,33 @@ public class VoteBox{
                                 "Incorrectly expected a cast-ballot");
                     ListExpression ballot = (ListExpression) arg;
 
+                    committedBallot = true;
+
                     auditorium.announce(new OverrideCastConfirmEvent(mySerial,
                             nonce, ballot.toVerbatim()));
-                    /*currentDriver.kill();
-                    currentDriver = null;
-                    nonce = null;
-                    voting = false;
-                    override = false;*/
-                    broadcastStatus();
 
+
+
+
+                    try
+                    {
+                        if(!_constants.getEnableNIZKs()){
+                            auditorium.announce(new CommitBallotEvent(mySerial,
+                                    StringExpression.makeString(nonce),
+                                    BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey("public")), StringExpression.makeString(bid)));
+                        } else{
+                            auditorium.announce(new CommitBallotEvent(mySerial,
+                                    StringExpression.makeString(nonce),
+                                    BallotEncrypter.SINGLETON.encryptWithProof(ballot, (List<List<String>>) arg.get(1), (PublicKey) _constants.getKeyStore().loadAdderKey("public")), StringExpression.makeString(bid))
+                            );
+                        }
+                    }
+                    catch (AuditoriumCryptoException e) {
+                        Bugout.err("Crypto error trying to commit ballot: "+e.getMessage());
+                        e.printStackTrace();
+                    }
+
+                    broadcastStatus();
 
 
                     List<List<String>> races = currentDriver.getBallotAdapter().getRaceGroups();
@@ -748,21 +769,23 @@ public class VoteBox{
              * was previously on.
              */
             public void overrideCast(OverrideCastEvent e) {
-                try {
-                    if (voting && !finishedVoting && currentDriver != null) {
-                        int page = currentDriver.getView().overrideCast();
-                        if (!override) {
-                            pageBeforeOverride = page;
-                            override = true;
-                        }
-                    } else
-                        throw new RuntimeException(
-                                "Received an override-cast message when the user wasn't voting");
-                } catch (IncorrectTypeException e1) {
-                	//We don't want to bail once VoteBox is up and running,
-                	//  so report and continue in this case
-                    System.out.println("Incorrect type received in overrideCast event: "+e1.getMessage());
-                    e1.printStackTrace(System.err);
+                if(e.getNode() == mySerial){
+                    try {
+                        if (voting && !finishedVoting && currentDriver != null) {
+                            int page = currentDriver.getView().overrideCast();
+                            if (!override) {
+                                pageBeforeOverride = page;
+                                override = true;
+                            }
+                        } else
+                            throw new RuntimeException(
+                                    "Received an override-cast message when the user wasn't voting");
+                    } catch (IncorrectTypeException e1) {
+                        //We don't want to bail once VoteBox is up and running,
+                        //  so report and continue in this case
+                        System.out.println("Incorrect type received in overrideCast event: "+e1.getMessage());
+                        e1.printStackTrace(System.err);
+                    }
                 }
             }
 
@@ -908,23 +931,8 @@ public class VoteBox{
                         return;
                     }
 
-
-                    nonce = null;
-                    voting = false;
-                    finishedVoting = false;
-                    committedBallot = false;
                     broadcastStatus();
-                    killVBTimer = new Timer(_constants.getViewRestartTimeout(), new ActionListener() {
-                        public void actionPerformed(ActionEvent arg0) {
-                            currentDriver.kill();
-                            currentDriver = null;
-                            inactiveUI.setVisible(true);
-                            killVBTimer = null;
-                            promptForPin("Enter Voting Authentication PIN");
-                        }
-                    });
-                    killVBTimer.setRepeats(false);
-                    killVBTimer.start();
+
                 }//if
 
             }

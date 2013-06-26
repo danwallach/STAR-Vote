@@ -22,7 +22,7 @@ public class HTMLPrinter {
 
     /* All sizes are in pixels. */
     public final static int CONTAINER_WIDTH = 812;
-    public final static int CONTAINER_HEIGHT = 850;
+    public final static int CONTAINER_HEIGHT = 940;
     public final static int LEFT_MARGIN_WIDTH = 72;
     public final static int RIGHT_MARGIN_WIDTH = 72;
     public final static int TWO_COLUMNS_COLUMN_SIZE = (CONTAINER_WIDTH - LEFT_MARGIN_WIDTH - RIGHT_MARGIN_WIDTH) / 2;

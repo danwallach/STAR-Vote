@@ -1,15 +1,19 @@
 package printer;
 
-import net.sourceforge.barbecue.Barcode;
-import net.sourceforge.barbecue.BarcodeException;
-import net.sourceforge.barbecue.BarcodeFactory;
-import net.sourceforge.barbecue.BarcodeImageHandler;
-import net.sourceforge.barbecue.output.OutputException;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitArray;
+import com.google.zxing.common.BitMatrix;
+
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.oned.Code128Writer;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.PixelGrabber;
+import java.util.HashMap;
 
 /**
  * A class which provides image manipulation support for printing
@@ -422,9 +426,6 @@ public class PrintImageUtils {
 
         BufferedImage printImg = null;
 
-
-
-
         return printImg;
 
     }
@@ -438,16 +439,15 @@ public class PrintImageUtils {
      */
     public static BufferedImage getBarcode(String string){
         try {
-            Barcode bar = BarcodeFactory.createCode128(string);
+            Code128Writer writer = new Code128Writer();
+            BitMatrix bar = writer.encode(string, BarcodeFormat.CODE_128, 264, 48, new HashMap<EncodeHintType,Object>());
 
-            BufferedImage code = BarcodeImageHandler.getImage(bar);
+            BufferedImage code = MatrixToImageWriter.toBufferedImage(bar);
 
             return code;
 
 
-        } catch (BarcodeException e) {
-            throw new RuntimeException(e);
-        } catch (OutputException e) {
+        }catch (WriterException e){
             throw new RuntimeException(e);
         }
 

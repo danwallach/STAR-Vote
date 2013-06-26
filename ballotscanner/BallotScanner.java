@@ -131,11 +131,9 @@ public class BallotScanner{
         BallotScannerEvent event;
         // choosing to not require bs to be activated (for now)
         if (isActivated()) {
-            System.out.println(">>>>> Active");
             event = new BallotScannerEvent(mySerial, label, "active", battery, protectedCount, publicCount);
         }
         else {
-            System.out.println(">>>>> Not active");
             event = new BallotScannerEvent(mySerial, label, "inactive", battery, protectedCount, publicCount);
         }
         return event;
@@ -417,7 +415,6 @@ public class BallotScanner{
 
         });
 
-        System.out.println("Timer starting!");
         statusTimer.start();
         receivedResponse = true;
         beginScanning();

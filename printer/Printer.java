@@ -165,7 +165,7 @@ public class Printer{
 
             ImageIO.write(lineSeparator, "PNG", new File(lineSeparatorFileName));
             ImageIO.write(barcode, "PNG", new File(barcodeFileNameNoExtension + ".png"));
-            ImageIO.write(PrintImageUtils.flipImageHorizontally(PrintImageUtils.flipImageVertically(barcode)), "PNG", new File(barcodeFileNameNoExtension + "_flipped.png"));
+            ImageIO.write(barcode, "PNG", new File(barcodeFileNameNoExtension + "_flipped.png"));
         }
         catch (IOException e)
         {
@@ -178,7 +178,7 @@ public class Printer{
         while (counter < choices.size())
         {
             ArrayList<String> currentColumn = new ArrayList<String>();
-            while ((currentColumn.size() < 24) && (counter < choices.size()))
+            while ((currentColumn.size() < 48) && (counter < choices.size()))
             {
                 String titleName = fActualRaceNamePairs.get(counter).getLabel();
                 String selectionName = choices.get(counter);

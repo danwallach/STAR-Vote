@@ -32,6 +32,7 @@ public class BallotStore {
      * @param ballot - ballot wrapper class encapsulating hashed ballot and r-values
      */
     public static void addBallot(String ballotID, ASExpression ballot) {
+        //System.err.println("Adding BID " + ballotID + " to the unconfirmedBallots in the BallotStore. It is now ready to be cast.");
         unconfirmedBallots.put(ballotID, ballot);
     }
 
