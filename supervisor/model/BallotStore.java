@@ -73,7 +73,8 @@ public class BallotStore {
             Map<String, BigInteger> ballotMap = tallier.getReport();
             ArrayList<ASExpression> decryptedVotes = new ArrayList<ASExpression>();
             for (Map.Entry<String, BigInteger> entry : ballotMap.entrySet()) {
-                decryptedVotes.add(StringExpression.make(entry.getKey() + ":" + entry.getValue()));
+                decryptedVotes.add(new ListExpression(ListExpression.make(entry.getKey()), ListExpression.make(entry.getValue().toString())));
+                System.out.println(entry.getKey() + ":" + entry.getValue());
             }
             hashes.add(unconfirmedBallot);
             decryptedBallots.add(new ListExpression(decryptedVotes));

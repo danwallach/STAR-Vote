@@ -298,6 +298,7 @@ public class VoteBox{
                         while(System.currentTimeMillis() - start < 5000);
                         finishedVoting = true;
                         BallotEncrypter.SINGLETON.clear();
+                        System.out.println(">>>> ballot: " + ballot);
 
                         if(success)
                             auditorium.announce(new BallotPrintSuccessEvent(mySerial, bid, nonce));
