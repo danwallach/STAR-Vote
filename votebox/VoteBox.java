@@ -275,6 +275,7 @@ public class VoteBox{
 
         			try {
                         if(!_constants.getEnableNIZKs()){
+                            System.out.println("Committing a ballot!");
                             auditorium.announce(new CommitBallotEvent(mySerial,
                                     StringExpression.makeString(nonce),
                                     BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey("public")), StringExpression.makeString(bid)));
@@ -284,6 +285,7 @@ public class VoteBox{
         							BallotEncrypter.SINGLETON.encryptWithProof(ballot, (List<List<String>>) arg[1], (PublicKey) _constants.getKeyStore().loadAdderKey("public")), StringExpression.makeString(bid))
                                     );
         				}
+
 
                         List<List<String>> races = currentDriver.getBallotAdapter().getRaceGroups();
                         auditorium.announce(new BallotPrintingEvent(mySerial, bid,
@@ -430,6 +432,8 @@ public class VoteBox{
                                 "Incorrectly expected a cast-ballot");
                     ListExpression ballot = (ListExpression) arg;
 
+                    committedBallot = true;
+
                     auditorium.announce(new OverrideCastConfirmEvent(mySerial,
                             nonce, ballot.toVerbatim()));
 
@@ -453,11 +457,7 @@ public class VoteBox{
                         Bugout.err("Crypto error trying to commit ballot: "+e.getMessage());
                         e.printStackTrace();
                     }
-                    /*currentDriver.kill();
-                    currentDriver = null;
-                    nonce = null;
-                    voting = false;
-                    override = false;*/
+
                     broadcastStatus();
 
 
@@ -929,23 +929,8 @@ public class VoteBox{
                         return;
                     }
 
-
-                    nonce = null;
-                    voting = false;
-                    finishedVoting = false;
-                    committedBallot = false;
                     broadcastStatus();
-                    killVBTimer = new Timer(_constants.getViewRestartTimeout(), new ActionListener() {
-                        public void actionPerformed(ActionEvent arg0) {
-                            currentDriver.kill();
-                            currentDriver = null;
-                            inactiveUI.setVisible(true);
-                            killVBTimer = null;
-                            promptForPin("Enter Voting Authentication PIN");
-                        }
-                    });
-                    killVBTimer.setRepeats(false);
-                    killVBTimer.start();
+
                 }//if
 
             }
