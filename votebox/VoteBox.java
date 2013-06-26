@@ -398,6 +398,7 @@ public class VoteBox{
                             override = false;
                             broadcastStatus();
                             inactiveUI.setVisible(true);
+                            promptForPin("Enter Voting Authentication PIN");
                             
                             //printBallotSpoiled();
                         } else

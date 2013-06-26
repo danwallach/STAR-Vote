@@ -29,6 +29,12 @@ public class BallotManager {
         while(ballotByPin.containsKey(pin))
             pin = rand.nextInt(10000) + "";
 
+        String ballot = ballotByPrecinct.remove(precinct);
+
+        ballotByPrecinct.put(precinct, ballot);
+        precinctByBallot.remove(ballot);
+        precinctByBallot.put(ballot, precinct);
+
         //create a new time stamp on this pin
         timeStamp.put(pin, new PinTimeStamp());
         ballotByPin.put(pin, ballotByPrecinct.get(precinct));
@@ -45,8 +51,7 @@ public class BallotManager {
 
         //Move the mappings from one to the other
         String ballot = ballotByPrecinct.remove(precinct);
-        System.out.println(">>>>> Precinct: "+ precinct);
-        System.out.println(">>>>> Ballot: " + ballot);
+
 
         ballotByPrecinct.put(precinct, ballot);
         precinctByBallot.remove(ballot);
