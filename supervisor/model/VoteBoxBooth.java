@@ -44,6 +44,11 @@ public class VoteBoxBooth extends AMachine {
     @Deprecated
     public static final int BATTERY_LOW = 3;
 
+    /**
+     * Represents a VoteBox that is in use and is in the process of a provisional voting session
+     */
+    public static final int PROVISIONAL = 4;
+
     private int battery;
 
     private int protectedCount;

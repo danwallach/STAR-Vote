@@ -55,7 +55,7 @@ public class OverrideDialog extends JDialog {
      * @param label the label of the machine to override
      */
     public OverrideDialog(final JPanel parent, final Model model,
-            final int node, int label) {
+            final int node, int label, boolean isProvisionalVoting) {
         super((JFrame) null, "Override", true);
         setSize(500, 150);
         setLocationRelativeTo(parent);
@@ -119,6 +119,11 @@ public class OverrideDialog extends JDialog {
         c.gridx = 1;
         c.insets = new Insets(10, 0, 10, 10);
         add(castButton, c);
+        // If this is a provisional session, then do not allow casts!
+        if (isProvisionalVoting)
+        {
+            castButton.setEnabled(false);
+        }
 
         JButton doNothingButton = new MyJButton("Do Not Override");
         doNothingButton

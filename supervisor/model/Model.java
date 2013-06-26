@@ -926,6 +926,8 @@ public class Model {
                     booth.setStatus(VoteBoxBooth.READY);
                 else if (e.getStatus().equals("in-use"))
                     booth.setStatus(VoteBoxBooth.IN_USE);
+                else if (e.getStatus().equals("provisional-in-use"))
+                    booth.setStatus(VoteBoxBooth.PROVISIONAL);
                 else
                     throw new IllegalStateException("Invalid VoteBox Status: "
                             + e.getStatus());
