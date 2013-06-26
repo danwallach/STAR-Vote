@@ -935,7 +935,6 @@ public class Model {
                 booth.setOnline(true);
                 
                 //Check to see if this votebox has a conflicting label
-                //TODO Apparently this doesn't do what it says it does....
                 if (e.getLabel() > 0){
                 	for(AMachine machine : machines){
                 		if(machine.getLabel() == e.getLabel() && machine != m){
