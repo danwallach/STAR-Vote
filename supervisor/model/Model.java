@@ -537,7 +537,7 @@ public class Model {
                     PINEnteredEvent.getMatcher(), InvalidPinEvent.getMatcher(),
                     PollStatusEvent.getMatcher(), BallotPrintSuccessEvent.getMatcher(),
                     BallotScannedEvent.getMatcher(), BallotScannerEvent.getMatcher(),
-                    ProvisionalCommitEvent.getMatcher());
+                    ProvisionalCommitEvent.getMatcher(), ProvisionalAuthorizeEvent.getMatcher());
 
 
         } catch (NetworkException e1) {
@@ -1136,8 +1136,15 @@ public class Model {
                 // NO-OP
             }
 
-            public void provisionalAuthorizedToCast(ProvisionalAuthorizeEvent provisionalAuthorizeEvent) {
-                // NO-OP
+            /**
+             * Handler for the provisional-authorize message. Sets the nonce for
+             * that machine.
+             */
+            public void provisionalAuthorizedToCast(ProvisionalAuthorizeEvent e) {
+                AMachine m = getMachineForSerial(e.getNode());
+                if (m != null && m instanceof VoteBoxBooth) {
+                    ((VoteBoxBooth) m).setNonce(e.getNonce());
+                }
             }
 
 
