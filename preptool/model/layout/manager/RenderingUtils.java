@@ -663,7 +663,7 @@ public class RenderingUtils {
 
         int heightPos = padding + baseline;
         int writePos = padding;
-        int boxPos = wrappingWidth - SELECTION_BOX_WIDTH - DPI_SCALE_FACTOR; //for fun!
+        int boxPos = wrappingWidth - SELECTION_BOX_WIDTH - DPI_SCALE_FACTOR;
         int candidateNameEndPos = boxPos - 2*DPI_SCALE_FACTOR;
 
 
@@ -695,7 +695,8 @@ public class RenderingUtils {
         if (uid.contains("L"))
         {
             wrappingWidth = 250*DPI_SCALE_FACTOR + 750; //Arbitrary size!
-            Font temp = font.deriveFont(12.0f*DPI_SCALE_FACTOR);
+            Font temp = new Font(font.getFontName(), Font.BOLD, 12*DPI_SCALE_FACTOR); //Changed from: font.deriveFont(12.0f*DPI_SCALE_FACTOR);
+
             String[] split = selection.split("\n");
             text = split[0];
 
