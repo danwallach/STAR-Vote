@@ -990,9 +990,6 @@ public class VoteBox{
             public void announceProvisionalBallot(ProvisionalBallotEvent e) {
             }
 
-            public void provisionalPinEntered(ProvisionalPINEnteredEvent e) {
-            }
-
             public void provisionalAuthorizedToCast(ProvisionalAuthorizeEvent e) {
 
                 if (e.getNode() == mySerial) {

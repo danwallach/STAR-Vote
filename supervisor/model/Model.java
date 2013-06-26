@@ -1135,24 +1135,6 @@ public class Model {
                 // NO-OP
             }
 
-            public void provisionalPinEntered(ProvisionalPINEnteredEvent e) {
-                if(isPollsOpen()) {
-                    String ballot = bManager.getBallotByPin(e.getPin());
-                    if(ballot!=null){
-                        try {
-                            setBallotLocation(ballot);
-                            provisionalAuthorize(e.getSerial());
-                        }
-                        catch(IOException ex) {
-                            System.out.println(ex.getMessage());
-                        }
-                    }
-                    else {
-                        auditorium.announce(new InvalidPinEvent(mySerial, e.getNonce()));
-                    }
-                }
-            }
-
             public void provisionalAuthorizedToCast(ProvisionalAuthorizeEvent provisionalAuthorizeEvent) {
                 // NO-OP
             }

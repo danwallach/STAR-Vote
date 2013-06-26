@@ -205,7 +205,7 @@ public class Tap {
             public void pollMachines(PollMachinesEvent pollMachinesEvent){}
             public void spoilBallot(SpoilBallotEvent spoilBallotEvent) {}
             public void announceProvisionalBallot(ProvisionalBallotEvent provisionalBallotEvent) {}
-            public void provisionalPinEntered(ProvisionalPINEnteredEvent provisionalPINEnteredEvent) {}
+
             public void provisionalAuthorizedToCast(ProvisionalAuthorizeEvent provisionalAuthorizeEvent) {}
             public void provisionalCommitBallot(ProvisionalCommitEvent provisionalCommitEvent) {}
 

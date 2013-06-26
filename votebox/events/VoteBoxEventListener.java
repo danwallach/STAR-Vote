@@ -278,11 +278,6 @@ public interface VoteBoxEventListener {
     public void announceProvisionalBallot(ProvisionalBallotEvent provisionalBallotEvent);
 
     /**
-     * Allows a votebox to know it is voting provisionally
-     */
-    public void provisionalPinEntered(ProvisionalPINEnteredEvent provisionalPINEnteredEvent);
-
-    /**
      * Sends over the ballot for a provisional voting session
      */
     public void provisionalAuthorizedToCast(ProvisionalAuthorizeEvent provisionalAuthorizeEvent);

@@ -259,11 +259,6 @@ public class VoteBoxEventNotifier implements VoteBoxEventListener {
             l.announceProvisionalBallot(e);
     }
 
-    public void provisionalPinEntered(ProvisionalPINEnteredEvent e) {
-        for(VoteBoxEventListener l : listeners)
-            l.provisionalPinEntered(e);
-    }
-
     public void provisionalAuthorizedToCast(ProvisionalAuthorizeEvent e) {
         for(VoteBoxEventListener l : listeners)
             l.provisionalAuthorizedToCast(e);

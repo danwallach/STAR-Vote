@@ -371,9 +371,6 @@ public class BallotScanner{
             public void announceProvisionalBallot(ProvisionalBallotEvent provisionalBallotEvent) {
             }
 
-            public void provisionalPinEntered(ProvisionalPINEnteredEvent provisionalPINEnteredEvent) {
-            }
-
             public void provisionalAuthorizedToCast(ProvisionalAuthorizeEvent provisionalAuthorizeEvent) {
             }
 
