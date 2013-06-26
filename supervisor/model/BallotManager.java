@@ -19,17 +19,33 @@ public class BallotManager {
     private Map<Integer, PinTimeStamp> timeStamp = new HashMap<Integer, PinTimeStamp>();
     private Map<Integer, String> ballotByPin = new HashMap<Integer, String>();       //Holds all active pins and corresponding ballot location
     private Map<Integer, String> ballotByPrecinct = new HashMap<Integer, String>();       //Holds all precincts and corresponding ballot location
+    private Random rand = (new Random());
 
     //generates a random pin and adds it to the list of pins and its corresponding ballot based on its precinct
     public int generatePin(int precinct){
-        Random rand = (new Random());
         int pin = rand.nextInt(10000);
+
+
         while(ballotByPin.containsKey(pin))
             pin = rand.nextInt(10000);
+
         //create a new time stamp on this pin
         timeStamp.put(pin, new PinTimeStamp());
         ballotByPin.put(pin, ballotByPrecinct.get(precinct));
+
         return pin;
+    }
+
+    public int generateProvisionalPin(int precinct){
+        int provisionalPin = rand.nextInt(10000);
+
+        while(ballotByPin.containsKey(provisionalPin))
+            provisionalPin = rand.nextInt(10000);
+
+        timeStamp.put(provisionalPin, new PinTimeStamp());
+        ballotByPin.put(provisionalPin, ballotByPin.get(precinct) + " - provisional");
+
+        return provisionalPin;
     }
 
     //returns ballot mapped to pin and null if pin is not in Map

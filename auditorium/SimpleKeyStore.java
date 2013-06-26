@@ -190,6 +190,7 @@ public class SimpleKeyStore implements IKeyStore {
 	 * @throws AuditoriumCryptoException - If the key cannot be found, or an error occurs
 	 */
 	private InputStream getInput(String file) throws AuditoriumCryptoException{
+        //TODO MAKE THIS WORK. RAWR.
 //		InputStream stream = getClass().getResourceAsStream(_dir+"/"+file); // "/" is the classloaders path component, not a hardcoded unix style path component separator
 //		// leave it alone
 //

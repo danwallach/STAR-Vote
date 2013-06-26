@@ -29,7 +29,6 @@ import java.net.Socket;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import auditorium.AuditoriumCryptoException;
 import auditorium.IAuditoriumParams;
@@ -37,7 +36,6 @@ import auditorium.Key;
 import auditorium.NetworkException;
 
 import de.roderick.weberknecht.*;
-import sexpression.ListExpression;
 import sexpression.stream.ASEWriter;
 import supervisor.model.BallotStore;
 import votebox.AuditoriumParams;
@@ -197,7 +195,7 @@ public class Tap {
             public void ballotScanned(BallotScannedEvent e) {}
             public void castCommittedBallot(CastCommittedBallotEvent e) {}
             public void pollStatus(PollStatusEvent pollStatusEvent) {}
-            public void pinEntered(PinEnteredEvent event) {}
+            public void pinEntered(PINEnteredEvent event) {}
             public void invalidPin(InvalidPinEvent event) {}
             public void ballotRejected(BallotScanRejectedEvent e){}
             public void ballotPrinting(BallotPrintingEvent ballotPrintingEvent) {}
@@ -206,6 +204,11 @@ public class Tap {
             public void scannerstart(StartScannerEvent startScannerEvent) {}
             public void pollMachines(PollMachinesEvent pollMachinesEvent){}
             public void spoilBallot(SpoilBallotEvent spoilBallotEvent) {}
+            public void announceProvisionalBallot(ProvisionalBallotEvent provisionalBallotEvent) {}
+            public void provisionalPinEntered(ProvisionalPINEnteredEvent provisionalPINEnteredEvent) {}
+            public void provisionalAuthorizedToCast(ProvisionalAuthorizeEvent provisionalAuthorizeEvent) {}
+            public void provisionalCommitBallot(ProvisionalCommitEvent provisionalCommitEvent) {}
+
 
             public void pollsClosed(PollsClosedEvent e) {
                 _auditorium.announce(new CastBallotUploadEvent(_mySerial, BallotStore.getCastNonces()));

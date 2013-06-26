@@ -3,14 +3,12 @@ package ballotscanner;
 import auditorium.Event;
 import auditorium.NetworkException;
 import ballotscanner.state.PromptState;
-import com.google.zxing.BinaryBitmap;
 import javazoom.jl.player.Player;
 import supervisor.model.ObservableEvent;
 import votebox.AuditoriumParams;
 import votebox.events.*;
 
 import javax.swing.*;
-import javax.swing.text.html.StyleSheet;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedInputStream;
@@ -345,7 +343,7 @@ public class BallotScanner{
             public void ballotScanned(BallotScannedEvent e) {
             }
 
-            public void pinEntered(PinEnteredEvent event) {
+            public void pinEntered(PINEnteredEvent event) {
             }
 
             public void invalidPin(InvalidPinEvent event) {
@@ -368,6 +366,18 @@ public class BallotScanner{
             }
 
             public void spoilBallot(SpoilBallotEvent spoilBallotEvent) {
+            }
+
+            public void announceProvisionalBallot(ProvisionalBallotEvent provisionalBallotEvent) {
+            }
+
+            public void provisionalPinEntered(ProvisionalPINEnteredEvent provisionalPINEnteredEvent) {
+            }
+
+            public void provisionalAuthorizedToCast(ProvisionalAuthorizeEvent provisionalAuthorizeEvent) {
+            }
+
+            public void provisionalCommitBallot(ProvisionalCommitEvent provisionalCommitEvent) {
             }
 
             public void ballotAccepted(BallotScanAcceptedEvent event){

@@ -258,6 +258,28 @@ public class Model {
     }
 
     /**
+     * Authorizes a VoteBox booth for a provisional voting session
+     *
+     * @param node
+     *            the serial number of the booth
+     * @throws IOException
+     */
+    private void provisionalAuthorize(int node) throws IOException{
+        byte[] nonce = new byte[256];
+        for (int i = 0; i < 256; i++)
+            nonce[i] = (byte) (Math.random() * 256);
+
+        File file = new File(ballotLocation);
+        FileInputStream fin = new FileInputStream(file);
+        byte[] ballot = new byte[(int) file.length()];
+        fin.read(ballot);
+
+        auditorium.announce(new ProvisionalAuthorizeEvent(mySerial, node, nonce, ballot));
+
+
+    }
+
+    /**
      * Closes the polls
      * 
      * @return the output from the tally
@@ -512,7 +534,7 @@ public class Model {
                     CastCommittedBallotEvent.getMatcher(), ChallengeResponseEvent.getMatcher(),
                     ChallengeEvent.getMatcher(), EncryptedCastBallotWithNIZKsEvent.getMatcher(),
                     AuthorizedToCastWithNIZKsEvent.getMatcher(), AdderChallengeEvent.getMatcher(),
-                    PinEnteredEvent.getMatcher(), InvalidPinEvent.getMatcher(),
+                    PINEnteredEvent.getMatcher(), InvalidPinEvent.getMatcher(),
                     PollStatusEvent.getMatcher(), BallotPrintSuccessEvent.getMatcher(),
                     BallotScannedEvent.getMatcher(), BallotScannerEvent.getMatcher());
 
@@ -992,6 +1014,18 @@ public class Model {
                 }
             }
 
+            public void provisionalCommitBallot(ProvisionalCommitEvent e) {
+                AMachine m = getMachineForSerial(e.getSerial());
+                if (m != null && m instanceof VoteBoxBooth) {
+                    VoteBoxBooth booth = (VoteBoxBooth) m;
+                    booth.setPublicCount(booth.getPublicCount() + 1);
+                    booth.setProtectedCount(booth.getProtectedCount() + 1);
+                    auditorium.announce(new BallotReceivedEvent(mySerial, e
+                            .getSerial(), ((StringExpression) e.getNonce())
+                            .getBytes()));
+                }
+            }
+
             public void ballotScanned(BallotScannedEvent e) {
                 String bid = e.getBID();
                 int serial = e.getSerial();
@@ -1014,12 +1048,11 @@ public class Model {
 
             }
 
-            public void pinEntered(PinEnteredEvent e){
+            public void pinEntered(PINEnteredEvent e){
                 if(isPollsOpen()) {
                     String ballot = bManager.getBallotByPin(e.getPin());
                     if(ballot!=null){
                         try {
-                            System.out.println(ballot + "!");
                             setBallotLocation(ballot);
                             authorize(e.getSerial());
                         }
@@ -1058,19 +1091,19 @@ public class Model {
                 expectedBallots.add(Integer.valueOf(e.getBID()));
             }
 
-            public void ballotPrintFail(BallotPrintFailEvent ballotPrintFailEvent) {
+            public void ballotPrintFail(BallotPrintFailEvent e) {
                 //NO-OP
             }
 
-            public void uploadCastBallots(CastBallotUploadEvent castBallotUploadEvent) {
+            public void uploadCastBallots(CastBallotUploadEvent e) {
                 // NO-OP
             }
 
-            public void uploadChallengedBallots(ChallengedBallotUploadEvent challengedBallotUploadEvent) {
+            public void uploadChallengedBallots(ChallengedBallotUploadEvent e) {
                 // NO-OP
             }
 
-            public void scannerstart(StartScannerEvent startScannerEvent) {
+            public void scannerstart(StartScannerEvent e) {
                 // NO-OP
                 for (AMachine machine:machines)
                 {
@@ -1080,13 +1113,41 @@ public class Model {
                     }
                 }
             }
-            public void pollMachines(PollMachinesEvent pollMachinesEvent) {
+            public void pollMachines(PollMachinesEvent e) {
                 // NO-OP
             }
 
-            public void spoilBallot(SpoilBallotEvent spoilBallotEvent) {
+            public void spoilBallot(SpoilBallotEvent e) {
                 // NO-OP
             }
+
+            public void announceProvisionalBallot(ProvisionalBallotEvent e) {
+                // NO-OP
+            }
+
+            public void provisionalPinEntered(ProvisionalPINEnteredEvent e) {
+                if(isPollsOpen()) {
+                    String ballot = bManager.getBallotByPin(e.getPin());
+                    if(ballot!=null){
+                        try {
+                            setBallotLocation(ballot);
+                            provisionalAuthorize(e.getSerial());
+                        }
+                        catch(IOException ex) {
+                            System.out.println(ex.getMessage());
+                        }
+                    }
+                    else {
+                        auditorium.announce(new InvalidPinEvent(mySerial, e.getNonce()));
+                    }
+                }
+            }
+
+            public void provisionalAuthorizedToCast(ProvisionalAuthorizeEvent provisionalAuthorizeEvent) {
+                // NO-OP
+            }
+
+
 
 
         });
@@ -1103,6 +1164,8 @@ public class Model {
 
         statusTimer.start();
     }
+
+
 
     /**
      * Broadcasts this supervisor's status, and resets the status timer
@@ -1152,6 +1215,10 @@ public class Model {
 
     public int generatePin(int precinct){
         return bManager.generatePin(precinct);
+    }
+
+    public int generateProvisionalPin(int precinct){
+        return bManager.generateProvisionalPin(precinct);
     }
 
     public Integer[] getSelections(){

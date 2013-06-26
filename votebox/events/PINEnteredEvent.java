@@ -7,7 +7,7 @@ import java.math.BigInteger;
 /**
  * Event class for when a pin gets entered on a votebox
  */
-public class PinEnteredEvent implements IAnnounceEvent {
+public class PINEnteredEvent implements IAnnounceEvent {
 
     private int serial;
 
@@ -28,7 +28,7 @@ public class PinEnteredEvent implements IAnnounceEvent {
                 int pin = Integer.parseInt(((ListExpression) res).get(0).toString());
                 byte[] nonce = new BigInteger(((ListExpression) res)
                         .get( 1 ).toString()).toByteArray();
-                return new PinEnteredEvent( serial, pin, nonce );
+                return new PINEnteredEvent( serial, pin, nonce );
             }
 
             return null;
@@ -55,7 +55,7 @@ public class PinEnteredEvent implements IAnnounceEvent {
         return pin;
     }
 
-    public PinEnteredEvent(int serial, int pin, byte[] nonce) {
+    public PINEnteredEvent(int serial, int pin, byte[] nonce) {
         this.serial = serial;
         this.pin = pin;
         this.nonce = nonce;

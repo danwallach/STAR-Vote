@@ -228,9 +228,16 @@ public class ActiveUI extends JPanel {
         pinButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (model.getSelections().length > 0) {
-                    int precinct = (Integer) JOptionPane.showInputDialog(fthis, "Please choose a precinct", " Pin Generator",
+                    String precinct = (String) JOptionPane.showInputDialog(fthis, "Please choose a precinct", " Pin Generator",
                             JOptionPane.QUESTION_MESSAGE, null, model.getSelections(), model.getInitialSelection());
-                    int pin = model.generatePin(precinct);
+
+                    int pin = -1;
+                    int precinctNum = Integer.parseInt(precinct.substring(0, precinct.indexOf(" ")));
+                    if(precinct.contains("provisional"))
+                       pin  = model.generateProvisionalPin(precinctNum);
+                    else
+                        pin = model.generatePin(precinctNum);
+
                     Printer printer = new Printer();
                     String strPin;
                     printer.printPin(strPin = (new DecimalFormat("0000")).format(pin));
