@@ -976,11 +976,13 @@ public class Model {
              * It should not yet be tallied.
              */
             public void commitBallot(CommitBallotEvent e) {
+                //System.err.println("Ballot committed! BID: " + e.getBID());
             	AMachine m = getMachineForSerial(e.getSerial());
                 if (m != null && m instanceof VoteBoxBooth) {
                     VoteBoxBooth booth = (VoteBoxBooth) m;
                     booth.setPublicCount(booth.getPublicCount() + 1);
                     booth.setProtectedCount(booth.getProtectedCount() + 1);
+                    BallotStore.addBallot(e.getBID().toString(), e.getBallot());
                     auditorium.announce(new BallotReceivedEvent(mySerial, e
                             .getSerial(), ((StringExpression) e.getNonce())
                             .getBytes()));
