@@ -461,7 +461,6 @@ public class VoteBox{
                     broadcastStatus();
 
 
-
                     List<List<String>> races = currentDriver.getBallotAdapter().getRaceGroups();
                     auditorium.announce(new BallotPrintingEvent(mySerial, bid,
                             nonce));
