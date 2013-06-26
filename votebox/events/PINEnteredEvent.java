@@ -11,9 +11,10 @@ public class PINEnteredEvent implements IAnnounceEvent {
 
     private int serial;
 
-    private int pin;
+    private String pin;
 
     private byte[] nonce;
+
 
     /**
      * Matcher for the pinEntered message
@@ -25,7 +26,7 @@ public class PINEnteredEvent implements IAnnounceEvent {
         public IAnnounceEvent match(int serial, ASExpression sexp) {
             ASExpression res = pattern.match( sexp );
             if (res != NoMatch.SINGLETON) {
-                int pin = Integer.parseInt(((ListExpression) res).get(0).toString());
+                String pin =((ListExpression) res).get(0).toString();
                 byte[] nonce = new BigInteger(((ListExpression) res)
                         .get( 1 ).toString()).toByteArray();
                 return new PINEnteredEvent( serial, pin, nonce );
@@ -51,11 +52,11 @@ public class PINEnteredEvent implements IAnnounceEvent {
         return MATCHER;
     }
 
-    public int getPin() {
+    public String getPin() {
         return pin;
     }
 
-    public PINEnteredEvent(int serial, int pin, byte[] nonce) {
+    public PINEnteredEvent(int serial, String pin, byte[] nonce) {
         this.serial = serial;
         this.pin = pin;
         this.nonce = nonce;
@@ -67,7 +68,7 @@ public class PINEnteredEvent implements IAnnounceEvent {
 
     public ASExpression toSExp() {
         return new ListExpression( StringExpression.makeString("pin-entered"),
-                StringExpression.makeString( Integer.toString(pin) ),
+                StringExpression.makeString( pin) ,
                 StringExpression.makeString( new BigInteger(nonce).toString()));
     }
 

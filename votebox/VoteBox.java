@@ -41,6 +41,7 @@ import sexpression.*;
 import votebox.crypto.*;
 import votebox.events.*;
 import votebox.middle.*;
+import votebox.middle.Properties;
 import votebox.middle.ballot.Ballot;
 import votebox.middle.driver.*;
 import votebox.middle.view.*;
@@ -296,6 +297,8 @@ public class VoteBox{
                         auditorium.announce(new BallotPrintingEvent(mySerial, bid,
                                 nonce));
                         printer = new Printer(_currentBallotFile, races);
+
+                        System.out.println(">>>> Here's the ballot!" + ballot);
 						boolean success = printer.printCommittedBallot(ballot, bid);
                         printer.printedReceipt(bid);
 
@@ -320,7 +323,7 @@ public class VoteBox{
         	//Rather than actually send the ballot out, just send the nonce (which can identify the whole
         	//transaction).
         	//Clean up the encryptor afterwards so as to destroy the random number needed for challenging.
-            //TODO This code doens't do anything?
+            //TODO This code doesn't do anything?
         	currentDriver.getView().registerForCastBallot(new Observer(){
 
                 public void update(Observable o, Object argTemp) {
@@ -529,7 +532,7 @@ public class VoteBox{
                     InvalidPinEvent.getMatcher(), PollsOpenEvent.getMatcher(),
                     PollStatusEvent.getMatcher(), BallotPrintingEvent.getMatcher(),
                     BallotPrintSuccessEvent.getMatcher(), BallotPrintFailEvent.getMatcher(),
-                    PollMachinesEvent.getMatcher());
+                    PollMachinesEvent.getMatcher(), ProvisionalAuthorizeEvent.getMatcher());
         } catch (NetworkException e1) {
         	//NetworkException represents a recoverable error
         	//  so just note it and continue
@@ -670,8 +673,10 @@ public class VoteBox{
              * then shows the inactive screen. Also responds with its status.
              */
             public void ballotReceived(BallotReceivedEvent e) {
+
                 if (e.getNode() == mySerial
                         && Arrays.equals(e.getNonce(), nonce)) {
+
                     if (!committedBallot && _constants.getUseCommitChallengeModel())
                         throw new RuntimeException(
                                 "Someone said the ballot was received, but this machine hasn't committed it yet. Maybe the supervisor is misconfigured (not using challenge-commit model)?");
@@ -680,10 +685,19 @@ public class VoteBox{
                     	throw new RuntimeException(
                     			"Someone said the ballot was received, but this machine hasn't finished voting yet");
 
-                    if(isProvisional)
-                        currentDriver.getView().goToPage(currentDriver.getView().getSize() - 1); //The provisional page will be the last one
-                    else
+
+
+                    if(isProvisional)  {
+                        try{
+                            currentDriver.getView().drawPage(currentDriver.getView().getCurrentLayout().getProperties().getInteger(
+                                Properties.PROVISIONAL_SUCCESS_PAGE));
+                        } catch (IncorrectTypeException e1) {
+                            e1.printStackTrace();
+                        }
+                    } else{
                         currentDriver.getView().nextPage();
+                    }
+
 
 
                     nonce = null;
@@ -983,6 +997,8 @@ public class VoteBox{
 
                 if (e.getNode() == mySerial) {
 
+                    System.out.println(">>>>> Start provisional session!");
+
                     isProvisional = true;
 
                     if (voting || currentDriver != null && killVBTimer == null)
@@ -1101,7 +1117,7 @@ public class VoteBox{
 
 
             try{
-                int pin = Integer.parseInt(limitedField.getText());
+                String pin = limitedField.getText();
                 validatePin(pin);
             }catch(NumberFormatException nfe){
                 promptingForPin = false;
@@ -1110,7 +1126,7 @@ public class VoteBox{
             promptingForPin = false;
     }
 
-    public void validatePin(int pin) {
+    public void validatePin(String pin) {
         byte[] pinNonce = new byte[256];
         for (int i = 0; i < 256; i++)
             pinNonce[i] = (byte) (Math.random() * 256);

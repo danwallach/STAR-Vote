@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.*;
 
 import javax.imageio.ImageIO;
@@ -228,19 +229,24 @@ public class ActiveUI extends JPanel {
         pinButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (model.getSelections().length > 0) {
-                    String precinct = (String) JOptionPane.showInputDialog(fthis, "Please choose a precinct", " Pin Generator",
+                    String precinct = "" + JOptionPane.showInputDialog(fthis, "Please choose a precinct", " Pin Generator",
                             JOptionPane.QUESTION_MESSAGE, null, model.getSelections(), model.getInitialSelection());
 
-                    int pin = -1;
-                    int precinctNum = Integer.parseInt(precinct.substring(0, precinct.indexOf(" ")));
+                    String pin = "";
+                    String precinctNum = "";
+                    if(precinct.contains("-"))
+                        precinctNum = precinct.substring(0, precinct.indexOf("-"));
+                    else
+                        precinctNum = precinct;
+
                     if(precinct.contains("provisional"))
-                       pin  = model.generateProvisionalPin(precinctNum);
+                        pin  = model.generateProvisionalPin(precinct);
                     else
                         pin = model.generatePin(precinctNum);
 
                     Printer printer = new Printer();
                     String strPin;
-                    printer.printPin(strPin = (new DecimalFormat("0000")).format(pin));
+                    printer.printPin(strPin = (new DecimalFormat("0000")).format(Integer.parseInt(pin)));
                     JOptionPane.showMessageDialog(fthis, "Your pin is: " + strPin);
                 } else {
                     JOptionPane.showMessageDialog(fthis, "Please select at least one ballot before generating a pin");

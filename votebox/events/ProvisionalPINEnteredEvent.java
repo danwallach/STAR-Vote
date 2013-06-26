@@ -14,7 +14,7 @@ public class ProvisionalPINEnteredEvent extends PINEnteredEvent {
 
     private int serial;
 
-    private int pin;
+    private String pin;
 
     private byte[] nonce;
 
@@ -28,7 +28,7 @@ public class ProvisionalPINEnteredEvent extends PINEnteredEvent {
         public IAnnounceEvent match(int serial, ASExpression sexp) {
             ASExpression res = pattern.match( sexp );
             if (res != NoMatch.SINGLETON) {
-                int pin = Integer.parseInt(((ListExpression) res).get(0).toString());
+                String pin = ((ListExpression) res).get(0).toString();
                 byte[] nonce = new BigInteger(((ListExpression) res)
                         .get( 1 ).toString()).toByteArray();
                 return new ProvisionalPINEnteredEvent( serial, pin, nonce );
@@ -54,11 +54,11 @@ public class ProvisionalPINEnteredEvent extends PINEnteredEvent {
         return MATCHER;
     }
 
-    public int getPin() {
+    public String getPin() {
         return pin;
     }
 
-    public ProvisionalPINEnteredEvent(int serial, int pin, byte[] nonce) {
+    public ProvisionalPINEnteredEvent(int serial, String pin, byte[] nonce) {
         super(serial, pin, nonce);
         this.serial = serial;
         this.pin = pin;
@@ -71,7 +71,7 @@ public class ProvisionalPINEnteredEvent extends PINEnteredEvent {
 
     public ASExpression toSExp() {
         return new ListExpression( StringExpression.makeString("provisional-pin-entered"),
-                StringExpression.makeString( Integer.toString(pin) ),
+                StringExpression.makeString( pin ),
                 StringExpression.makeString( new BigInteger(nonce).toString()));
     }
 }

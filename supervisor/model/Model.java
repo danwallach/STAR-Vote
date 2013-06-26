@@ -536,7 +536,8 @@ public class Model {
                     AuthorizedToCastWithNIZKsEvent.getMatcher(), AdderChallengeEvent.getMatcher(),
                     PINEnteredEvent.getMatcher(), InvalidPinEvent.getMatcher(),
                     PollStatusEvent.getMatcher(), BallotPrintSuccessEvent.getMatcher(),
-                    BallotScannedEvent.getMatcher(), BallotScannerEvent.getMatcher());
+                    BallotScannedEvent.getMatcher(), BallotScannerEvent.getMatcher(),
+                    ProvisionalCommitEvent.getMatcher());
 
 
         } catch (NetworkException e1) {
@@ -1015,6 +1016,7 @@ public class Model {
             }
 
             public void provisionalCommitBallot(ProvisionalCommitEvent e) {
+
                 AMachine m = getMachineForSerial(e.getSerial());
                 if (m != null && m instanceof VoteBoxBooth) {
                     VoteBoxBooth booth = (VoteBoxBooth) m;
@@ -1050,11 +1052,19 @@ public class Model {
 
             public void pinEntered(PINEnteredEvent e){
                 if(isPollsOpen()) {
+                    System.out.println(">>> PIN entered: " + e.getPin());
                     String ballot = bManager.getBallotByPin(e.getPin());
+                    System.out.println(ballot);
                     if(ballot!=null){
                         try {
+                            System.out.println(bManager.getPrecinctByBallot(ballot));
                             setBallotLocation(ballot);
-                            authorize(e.getSerial());
+                            if(bManager.getPrecinctByBallot(ballot).contains("provisional")) {
+                                provisionalAuthorize(e.getSerial());
+                                System.out.println(">>>>>>> It's working!");
+                            }
+                            else
+                                authorize(e.getSerial());
                         }
                         catch(IOException ex) {
                             System.out.println(ex.getMessage());
@@ -1190,7 +1200,7 @@ public class Model {
     public void addBallot(File fileIn) {
         String fileName = fileIn.getName();
         try{
-        int precinct = Integer.parseInt(fileName.substring(fileName.length()-7,fileName.length()-4));
+        String precinct = fileName.substring(fileName.length()-7,fileName.length()-4);
         bManager.addBallot(precinct, fileIn.getAbsolutePath());
         }catch(NumberFormatException e){
             JOptionPane.showMessageDialog(null, "Please choose a valid ballot");
@@ -1213,19 +1223,19 @@ public class Model {
 
     }
 
-    public int generatePin(int precinct){
+    public String generatePin(String precinct){
         return bManager.generatePin(precinct);
     }
 
-    public int generateProvisionalPin(int precinct){
+    public String generateProvisionalPin(String precinct){
         return bManager.generateProvisionalPin(precinct);
     }
 
-    public Integer[] getSelections(){
+    public String[] getSelections(){
         return bManager.getSelections();
     }
 
-    public Integer getInitialSelection(){
+    public String getInitialSelection(){
         return bManager.getInitialSelection();
     }
 
