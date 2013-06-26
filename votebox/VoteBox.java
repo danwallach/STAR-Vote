@@ -461,7 +461,6 @@ public class VoteBox{
                     broadcastStatus();
 
 
-
                     List<List<String>> races = currentDriver.getBallotAdapter().getRaceGroups();
                     auditorium.announce(new BallotPrintingEvent(mySerial, bid,
                             nonce));
@@ -769,21 +768,23 @@ public class VoteBox{
              * was previously on.
              */
             public void overrideCast(OverrideCastEvent e) {
-                try {
-                    if (voting && !finishedVoting && currentDriver != null) {
-                        int page = currentDriver.getView().overrideCast();
-                        if (!override) {
-                            pageBeforeOverride = page;
-                            override = true;
-                        }
-                    } else
-                        throw new RuntimeException(
-                                "Received an override-cast message when the user wasn't voting");
-                } catch (IncorrectTypeException e1) {
-                	//We don't want to bail once VoteBox is up and running,
-                	//  so report and continue in this case
-                    System.out.println("Incorrect type received in overrideCast event: "+e1.getMessage());
-                    e1.printStackTrace(System.err);
+                if(e.getNode() == mySerial){
+                    try {
+                        if (voting && !finishedVoting && currentDriver != null) {
+                            int page = currentDriver.getView().overrideCast();
+                            if (!override) {
+                                pageBeforeOverride = page;
+                                override = true;
+                            }
+                        } else
+                            throw new RuntimeException(
+                                    "Received an override-cast message when the user wasn't voting");
+                    } catch (IncorrectTypeException e1) {
+                        //We don't want to bail once VoteBox is up and running,
+                        //  so report and continue in this case
+                        System.out.println("Incorrect type received in overrideCast event: "+e1.getMessage());
+                        e1.printStackTrace(System.err);
+                    }
                 }
             }
 

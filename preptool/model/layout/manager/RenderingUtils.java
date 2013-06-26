@@ -619,7 +619,7 @@ public class RenderingUtils {
 
         //Scale the wrapping width
         wrappingWidth *= DPI_SCALE_FACTOR;
-        wrappingWidth += 500;
+        wrappingWidth += 500; //arbitrary sizes!
 
 
 
