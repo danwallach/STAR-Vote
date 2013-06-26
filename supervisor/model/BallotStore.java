@@ -42,6 +42,7 @@ public class BallotStore {
      */
     public static void castCommittedBallot(String ballotID){
         if(unconfirmedBallots.containsKey(ballotID)){
+            System.out.println("A committed ballot was cast");
             castNonces.add(unconfirmedBallots.get(ballotID));
             unconfirmedBallots.remove(ballotID);
         }else{

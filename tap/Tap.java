@@ -147,7 +147,7 @@ public class Tap {
             _auditorium = new VoteBoxAuditoriumConnector(_mySerial,
                     AuditoriumParams.Singleton,
                     CommitBallotEvent.getMatcher(),
-                    CastCommittedBallotEvent.getMatcher(),
+                    BallotScanAcceptedEvent.getMatcher(),
                     ChallengeEvent.getMatcher(),
                     AuthorizedToCastWithNIZKsEvent.getMatcher(),
                     AdderChallengeEvent.getMatcher(),
