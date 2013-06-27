@@ -42,7 +42,8 @@ public class BatteryStatus {
             if(OS.equals("Windows")){
                 //A batch file to be included in the working directory
                 File batteryFile = new File("BatteryStatus.bat");
-                Process child = Runtime.getRuntime().exec(batteryFile.getAbsolutePath());
+                //Using the exec(String[]) method to prevent errors when the command contains spaces.
+                Process child = Runtime.getRuntime().exec(batteryFile.getAbsolutePath().split("!!!"));
                 BufferedReader out = new BufferedReader(new InputStreamReader(child.getInputStream()));
 
                 String s = "";
