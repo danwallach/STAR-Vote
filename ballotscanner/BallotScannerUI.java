@@ -49,21 +49,26 @@ public class BallotScannerUI extends JFrame {
         //setLocation((int)Math.round(getLocation().getX()) - getWidth()/2, (int)Math.round(getLocation().getY()) - getHeight()/2);
 
         this.electionName = electionName;
+        // Set the initial state of the Scanner to the InactiveState.
+        state = InactiveState.SINGLETON;
 
-
+        // Create the two panels of the GUI.
         userInfoPanel = new UserInfoPanel(this);
         electionInfoPanel = new ElectionInfoPanel(this);
-        state = InactiveState.SINGLETON;
+
+        // Update the state and panels.
+        this.updateFrame(NO_TRANSITION);
+
+        // Add the panels to the GUI.
         mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         mainPanel.add(electionInfoPanel);
         mainPanel.add(userInfoPanel);
         add(mainPanel);
         pack();
-        setVisible(true);
-        //displayInactiveScreen();
 
-        this.updateFrame(NO_TRANSITION);
+        // Make the GUI visible.
+        setVisible(true);
     }
 
     /*public void displayPromptScreen(){
