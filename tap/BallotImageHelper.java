@@ -258,7 +258,7 @@ public class BallotImageHelper {
 	 * @throws IOException
 	 * @throws BallotParserException
 	 */
-	private static Ballot getBallot(String ballotPath) throws IOException, BallotParserException {
+	public /*<-We NEEEEEED this*/ static Ballot getBallot(String ballotPath) throws IOException, BallotParserException {
 		//GlobalVarsReader et. al. expect the ballot to be extracted.
 		//This is a very stupid assumption (why we aren't taking InputStreams is beyond me) but
 		//needs to hold for now.

@@ -6,6 +6,7 @@ import sexpression.NamedNoMatch;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 /**
  * Event representing uploading of cast ballots to post-election audit server
@@ -48,11 +49,14 @@ public class CastBallotUploadEvent implements IAnnounceEvent {
     }
 
     public ArrayList<String> getDumpList() {
-        ListExpression nonceList = (ListExpression) _nonces;
+        ListExpression ballotList = (ListExpression)_nonces;
+        Iterator<ASExpression> iterator = ballotList.iterator();
+        ASExpression[] ballotIDs = ((ListExpression) iterator.next()).getArray();
+        ASExpression[] nonceList = ((ListExpression) iterator.next()).getArray();
         ArrayList<String> dumpList = new ArrayList<String>();
 
-        for (ASExpression nonce : nonceList) {
-            dumpList.add("cast:" + nonce.toString());
+        for (int i=0; i<ballotIDs.length; i++) {
+            dumpList.add("cast:" + ballotIDs[i] + ":" + nonceList[i].toString());
         }
         return dumpList;
     }

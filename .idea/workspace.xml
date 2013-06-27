@@ -1,19 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="ArtifactsWorkspaceSettings">
+    <artifacts-to-build>
+      <artifact name="Votebox" />
+    </artifacts-to-build>
+  </component>
   <component name="BookmarkManager">
     <bookmark url="file://$PROJECT_DIR$/tap/Tap.java" line="66" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="75bff78c-08eb-49b0-a7bd-215fc1a3c618" name="Default" comment="">
       <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tap/BallotImageHelper.java" afterPath="$PROJECT_DIR$/tap/BallotImageHelper.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/supervisor/model/BallotStore.java" afterPath="$PROJECT_DIR$/supervisor/model/BallotStore.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/votebox/VoteBox.java" afterPath="$PROJECT_DIR$/votebox/VoteBox.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/votebox/events/CastBallotUploadEvent.java" afterPath="$PROJECT_DIR$/votebox/events/CastBallotUploadEvent.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/votebox/events/ChallengedBallotUploadEvent.java" afterPath="$PROJECT_DIR$/votebox/events/ChallengedBallotUploadEvent.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/printer/Printer.java" afterPath="$PROJECT_DIR$/printer/Printer.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/STAR-Vote.iml" afterPath="$PROJECT_DIR$/STAR-Vote.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/lib.xml" afterPath="$PROJECT_DIR$/.idea/libraries/lib.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/printer/printer.iml" afterPath="$PROJECT_DIR$/printer/printer.iml" />
     </list>
     <ignored path="STAR-Vote.iws" />
     <ignored path=".idea/workspace.xml" />
-    <file path="/Dummy.txt" changelist="75bff78c-08eb-49b0-a7bd-215fc1a3c618" time="1372261209000" ignored="false" />
+    <file path="/Dummy.txt" changelist="75bff78c-08eb-49b0-a7bd-215fc1a3c618" time="1372363402083" ignored="false" />
     <file path="/Model.java" changelist="75bff78c-08eb-49b0-a7bd-215fc1a3c618" time="1371849073364" ignored="false" />
-    <file path="/BallotStore.java" changelist="75bff78c-08eb-49b0-a7bd-215fc1a3c618" time="1372271669097" ignored="false" />
+    <file path="/BallotStore.java" changelist="75bff78c-08eb-49b0-a7bd-215fc1a3c618" time="1372273211579" ignored="false" />
     <file path="/Tap.java" changelist="75bff78c-08eb-49b0-a7bd-215fc1a3c618" time="1372194963198" ignored="false" />
     <file path="/CastCommittedBallotEvent.java" changelist="75bff78c-08eb-49b0-a7bd-215fc1a3c618" time="1372105182920" ignored="false" />
     <file path="/EncryptedCastBallotEvent.java" changelist="75bff78c-08eb-49b0-a7bd-215fc1a3c618" time="1372105188496" ignored="false" />
@@ -22,6 +33,9 @@
     <file path="/fragment.java" changelist="75bff78c-08eb-49b0-a7bd-215fc1a3c618" time="1372271254303" ignored="false" />
     <file path="/EncryptedCastBallotWithNIZKsEvent.java" changelist="75bff78c-08eb-49b0-a7bd-215fc1a3c618" time="1372188973253" ignored="false" />
     <file path="/a.dummy" changelist="75bff78c-08eb-49b0-a7bd-215fc1a3c618" time="1372271510246" ignored="false" />
+    <file path="/ChallengedBallotUploadEvent.java" changelist="75bff78c-08eb-49b0-a7bd-215fc1a3c618" time="1372272910831" ignored="false" />
+    <file path="/CastBallotUploadEvent.java" changelist="75bff78c-08eb-49b0-a7bd-215fc1a3c618" time="1372273054272" ignored="false" />
+    <file path="$PROJECT_DIR$/../Web-Server/logs/application.log" changelist="75bff78c-08eb-49b0-a7bd-215fc1a3c618" time="1372347215974" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -82,10 +96,37 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="Tap.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="Tap.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tap/Tap.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="239" column="49" selection-start="9552" selection-end="9552" vertical-scroll-proportion="0.93421054">
+            <state line="247" column="59" selection-start="9884" selection-end="9884" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ChallengedBallotUploadEvent.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/votebox/events/ChallengedBallotUploadEvent.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="59" column="41" selection-start="2044" selection-end="2044" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="BallotManager.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/supervisor/model/BallotManager.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="13" column="3" selection-start="241" selection-end="241" vertical-scroll-proportion="0.014851485">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CastBallotUploadEvent.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/votebox/events/CastBallotUploadEvent.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="54" column="64" selection-start="1655" selection-end="1655" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -94,7 +135,7 @@
       <file leaf-file-name="BallotStore.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/supervisor/model/BallotStore.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="86" column="5" selection-start="3244" selection-end="3244" vertical-scroll-proportion="0.0">
+            <state line="86" column="5" selection-start="3529" selection-end="3529" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -104,9 +145,7 @@
         <entry file="file://$PROJECT_DIR$/actionparser/RaceResult.java">
           <provider selected="true" editor-type-id="text-editor">
             <state line="54" column="23" selection-start="1756" selection-end="1756" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+              <folding />
             </state>
           </provider>
         </entry>
@@ -129,40 +168,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="VoteBox.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/votebox/VoteBox.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="300" column="69" selection-start="11320" selection-end="11320" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ASExpression.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/sexpression/ASExpression.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="73" column="22" selection-start="2819" selection-end="2819" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Lexer.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/sexpression/lexer/Lexer.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="46" column="30" selection-start="1645" selection-end="1645" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="Parser.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/sexpression/parser/Parser.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="111" column="43" selection-start="3564" selection-end="3569" vertical-scroll-proportion="-12.36">
-              <folding>
-                <element signature="n#!!doc" expanded="true" />
-              </folding>
+            <state line="111" column="43" selection-start="3564" selection-end="3569" vertical-scroll-proportion="0.0">
+              <folding />
             </state>
           </provider>
         </entry>
@@ -203,7 +213,9 @@
         <option value="$PROJECT_DIR$/tap/Tap.java" />
         <option value="$PROJECT_DIR$/sexpression/parser/Parser.java" />
         <option value="$PROJECT_DIR$/votebox/VoteBox.java" />
+        <option value="$PROJECT_DIR$/votebox/events/CastBallotUploadEvent.java" />
         <option value="$PROJECT_DIR$/supervisor/model/BallotStore.java" />
+        <option value="$PROJECT_DIR$/votebox/events/ChallengedBallotUploadEvent.java" />
       </list>
     </option>
   </component>
@@ -281,20 +293,6 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="tap" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="STAR-Vote" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="STAR-Vote" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
               <option name="myItemId" value="supervisor" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -317,26 +315,48 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="STAR-Vote" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="STAR-Vote" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="supervisor" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="model" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="BallotManager.java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.ClassesTreeStructureProvider$PsiClassOwnerTreeNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
       <pane id="PackagesPane" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="GoToFile.includeJavaFiles" value="false" />
-    <property name="GoToClass.toSaveIncludeLibraries" value="false" />
     <property name="OverrideImplement.combined" value="true" />
-    <property name="MemberChooser.sorted" value="false" />
+    <property name="GoToClass.toSaveIncludeLibraries" value="false" />
     <property name="recentsLimit" value="5" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Web-Server" />
+    <property name="MemberChooser.sorted" value="false" />
     <property name="restartRequiresConfirmation" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="MemberChooser.showClasses" value="true" />
     <property name="GoToClass.includeLibraries" value="false" />
-    <property name="MemberChooser.copyJavadoc" value="false" />
     <property name="dynamic.classpath" value="false" />
+    <property name="MemberChooser.copyJavadoc" value="false" />
   </component>
-  <component name="RunManager" selected="Application.Tap">
+  <component name="RunManager" selected="Application.VoteBox">
     <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
       <module name="" />
       <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m" />
@@ -349,19 +369,6 @@
       <option name="SHMEM_ADDRESS" value="javadebug" />
       <option name="HOST" value="localhost" />
       <option name="PORT" value="5005" />
-      <method />
-    </configuration>
-    <configuration default="true" type="Applet" factoryName="Applet">
-      <module name="" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="HTML_FILE_NAME" />
-      <option name="HTML_USED" value="false" />
-      <option name="WIDTH" value="400" />
-      <option name="HEIGHT" value="300" />
-      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
-      <option name="VM_PARAMETERS" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
       <method />
     </configuration>
     <configuration default="true" type="TestNG" factoryName="TestNG">
@@ -389,6 +396,19 @@
       <envs />
       <properties />
       <listeners />
+      <method />
+    </configuration>
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <module name="" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="HTML_FILE_NAME" />
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <option name="VM_PARAMETERS" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
       <method />
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
@@ -520,26 +540,26 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="1984" y="-4" width="1857" height="1205" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.29044464" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32923368" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32923368" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.249309" sideWeight="0.6717124" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.14096186" sideWeight="0.6717124" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3282876" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.29044464" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3286119" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
     </layout>
@@ -612,72 +632,29 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/sexpression/NamedPattern.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="102" column="19" selection-start="3231" selection-end="3231" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sexpression/parser/test/ParserTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="40" column="15" selection-start="1403" selection-end="1403" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="n#!!doc" expanded="false" />
-            <element signature="imports" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/verifier/ActivationRecord.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="113" column="40" selection-start="3774" selection-end="3774" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="n#!!doc" expanded="false" />
-            <element signature="imports" expanded="false" />
-            <element signature="e#3683#3697#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/verifier/task/Task.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="100" column="47" selection-start="3018" selection-end="3018" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/sexpression/lexer/ILexer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="30" column="17" selection-start="1165" selection-end="1165" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="30" column="17" selection-start="1165" selection-end="1165" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/sexpression/lexer/ILexerState.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="77" column="16" selection-start="2437" selection-end="2437" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="77" column="16" selection-start="2437" selection-end="2437" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/sexpression/lexer/Lexer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="46" column="30" selection-start="1645" selection-end="1645" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="46" column="30" selection-start="1645" selection-end="1645" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/sexpression/ASExpression.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="73" column="22" selection-start="2819" selection-end="2819" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="73" column="22" selection-start="2819" selection-end="2819" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/votebox/VoteBox.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="300" column="69" selection-start="11320" selection-end="11320" vertical-scroll-proportion="0.0">
+        <state line="300" column="69" selection-start="11264" selection-end="11264" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
@@ -691,10 +668,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/sexpression/parser/Parser.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="111" column="43" selection-start="3564" selection-end="3569" vertical-scroll-proportion="-12.36">
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
+        <state line="111" column="43" selection-start="3564" selection-end="3569" vertical-scroll-proportion="0.0">
+          <folding />
         </state>
       </provider>
     </entry>
@@ -708,9 +683,7 @@
     <entry file="file://$PROJECT_DIR$/actionparser/RaceResult.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="54" column="23" selection-start="1756" selection-end="1756" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -721,16 +694,42 @@
         </state>
       </provider>
     </entry>
+    <entry file="jar:///usr/lib/jvm/java-7-oracle/src.zip!/java/util/HashMap.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="749" column="73" selection-start="26658" selection-end="26662" vertical-scroll-proportion="0.45238096" />
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/supervisor/model/BallotStore.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="86" column="5" selection-start="3244" selection-end="3244" vertical-scroll-proportion="0.0">
+        <state line="86" column="5" selection-start="3529" selection-end="3529" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/tap/Tap.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="239" column="49" selection-start="9552" selection-end="9552" vertical-scroll-proportion="0.93421054">
+        <state line="247" column="59" selection-start="9884" selection-end="9884" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/votebox/events/CastBallotUploadEvent.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="54" column="64" selection-start="1655" selection-end="1655" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/votebox/events/ChallengedBallotUploadEvent.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="59" column="41" selection-start="2044" selection-end="2044" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/supervisor/model/BallotManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="13" column="3" selection-start="241" selection-end="241" vertical-scroll-proportion="0.014851485">
           <folding />
         </state>
       </provider>

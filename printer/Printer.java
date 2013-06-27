@@ -62,21 +62,25 @@ import printer.HTMLPrinter;
  */
 public class Printer{
 
-    private final AuditoriumParams _constants;
+    protected final AuditoriumParams _constants;
     private final AuditoriumParams _printerConstants;
-    private File _currentBallotFile;
+    protected File _currentBallotFile;
     private List<List<String>> _races;
 
     public static int counter = 0;
 
     public static int DPI_SCALE;
 
-    public Printer(File ballotFile,List<List<String>> races) {
-        _constants = new AuditoriumParams("vb.conf");
+    public Printer(File ballotFile,List<List<String>> races, String confFilePath) {
+        _constants = new AuditoriumParams(confFilePath);
         _printerConstants = new AuditoriumParams("printer.conf");
         _currentBallotFile =  ballotFile;
         _races = races;
         DPI_SCALE = _constants.getPrinterDefaultDpi()/_constants.getJavaDefaultDpi();
+    }
+
+    public Printer(File ballotFile,List<List<String>> races) {
+        this(ballotFile, races, "vb.conf");
     }
 
     public Printer(){
@@ -284,7 +288,7 @@ public class Printer{
 
 	}
 
-    private ArrayList<RaceTitlePair> getRaceNameImagePairs(Map<String, Image> imageMap) {
+    protected ArrayList<RaceTitlePair> getRaceNameImagePairs(Map<String, Image> imageMap) {
         // This ArrayList holds all the numeric IDs that correspond to race labels.
         // If a race label's image has UID L50, then this ArrayList will hold 50 to represent that race label.
         ArrayList<Integer> raceNumericIDs = new ArrayList<Integer> ();
@@ -307,7 +311,7 @@ public class Printer{
         return sortedRaceNameImagePairs;
     }
 
-    private ArrayList<ChoicePair> correctBallot(ListExpression rawBallot) {
+    protected ArrayList<ChoicePair> correctBallot(ListExpression rawBallot) {
         // List of races is called: _races
         ArrayList<ChoicePair> updatedBallot = new ArrayList<ChoicePair>();
         for (int raceIdx = 0; raceIdx < _races.size(); raceIdx++)

@@ -52,11 +52,12 @@ public class ChallengedBallotUploadEvent implements IAnnounceEvent {
         ArrayList<String> dumpList = new ArrayList<String>();
 
         Iterator<ASExpression> iterator = ballotList.iterator();
+        ASExpression[] ballotIDs = ((ListExpression) iterator.next()).getArray();
         ASExpression[] encryptedBallots = ((ListExpression) iterator.next()).getArray();
         ASExpression[] decryptedBallots = ((ListExpression) iterator.next()).getArray();
 
         for (int i = 0; i < encryptedBallots.length; i ++) {
-            String ballotString = "chall:" + encryptedBallots[i].toString() + ";" + decryptedBallots[i].toString() + "\n";
+            String ballotString = "chall:" + ballotIDs[i] + ":" + encryptedBallots[i].toString() + ";" + decryptedBallots[i].toString() + "\n";
             dumpList.add(ballotString);
         }
         return dumpList;
@@ -74,6 +75,4 @@ public class ChallengedBallotUploadEvent implements IAnnounceEvent {
     public int getSerial() {
         return this.serial;
     }
-
-
 }

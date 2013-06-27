@@ -22,6 +22,7 @@ public class BallotStore {
     public static final int SERVER_PORT = 9000;
 
     private static ArrayList<ASExpression> castNonces = new ArrayList<ASExpression>();
+    private static ArrayList<ASExpression> castBIDs = new ArrayList<ASExpression>();
     private static HashMap<String, ASExpression> unconfirmedBallots = new HashMap<String, ASExpression>();
 
 
@@ -45,6 +46,7 @@ public class BallotStore {
         if(unconfirmedBallots.containsKey(ballotID)){
             System.out.println("A committed ballot was cast");
             castNonces.add(unconfirmedBallots.get(ballotID));
+            castBIDs.add(ListExpression.make(ballotID));
             unconfirmedBallots.remove(ballotID);
         }else{
             throw new RuntimeException("Ballot was cast before it was committed");
@@ -56,7 +58,7 @@ public class BallotStore {
      * @return
      */
     public static ListExpression getCastNonces() {
-        return new ListExpression(castNonces);
+        return new ListExpression(new ListExpression(castBIDs), new ListExpression(castNonces));
     }
 
 
@@ -69,18 +71,19 @@ public class BallotStore {
         ITallier tallier = new EncryptedTallier(privateKey);
         List<ASExpression> hashes = new ArrayList<ASExpression>();
         List<ASExpression> decryptedBallots = new ArrayList<ASExpression>();
-        for (ASExpression unconfirmedBallot : getUnconfirmedBallots()) {
-            tallier.recordVotes(unconfirmedBallot.toVerbatim(), null);
+        List<ASExpression> ballotIDs = new ArrayList<ASExpression>();
+        for (String ballotID : unconfirmedBallots.keySet()) {
+            tallier.recordVotes(unconfirmedBallots.get(ballotID).toVerbatim(), null);
             Map<String, BigInteger> ballotMap = tallier.getReport();
             ArrayList<ASExpression> decryptedVotes = new ArrayList<ASExpression>();
             for (Map.Entry<String, BigInteger> entry : ballotMap.entrySet()) {
                 decryptedVotes.add(new ListExpression(ListExpression.make(entry.getKey()), ListExpression.make(entry.getValue().toString())));
-                System.out.println(entry.getKey() + ":" + entry.getValue());
             }
-            hashes.add(unconfirmedBallot);
+            hashes.add(unconfirmedBallots.get(ballotID));
             decryptedBallots.add(new ListExpression(decryptedVotes));
+            ballotIDs.add(ListExpression.make(ballotID));
         }
-        return new ListExpression(new ListExpression(hashes), new ListExpression(decryptedBallots));
+        return new ListExpression(new ListExpression(ballotIDs), new ListExpression(hashes), new ListExpression(decryptedBallots));
     }
 
     public static List<ASExpression> getUnconfirmedBallots() {
