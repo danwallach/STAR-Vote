@@ -4,13 +4,11 @@ import ballotscanner.state.AState;
 import ballotscanner.state.InactiveState;
 
 import javax.swing.*;
-import java.awt.image.BufferedImage;
 
 /**
- * @author mrdouglass95, Mircea Berechet
- * 6/17/13
+ * @author Mircea Berechet, mrdouglass95
  *
- * A ballot scanner UI.
+ * A Ballot Scanner UI.
  */
 public class BallotScannerUI extends JFrame {
 
@@ -20,9 +18,6 @@ public class BallotScannerUI extends JFrame {
     public static final int TO_ACCEPT_STATE = 1;
     public static final int TO_REJECT_STATE = 2;
     public static final int TO_PROMPT_STATE = 3;
-
-    /* The main panel for the UI. */
-    private JPanel mainPanel;
 
     /* Panels that display election/status information on the UI. */
     public ElectionInfoPanel electionInfoPanel;
@@ -43,29 +38,37 @@ public class BallotScannerUI extends JFrame {
      */
     public BallotScannerUI(String electionName){
         super("STAR-Vote Ballot Scanner");
+
+        /* The main panel for the UI. */
+        JPanel mainPanel;
+
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(600,600);
         setResizable(false);
         setLocationRelativeTo(null);
-        setLocation((int)Math.round(getLocation().getX()) - getWidth()/2,
-                    (int)Math.round(getLocation().getY()) - getHeight()/2);
+        //setLocation((int)Math.round(getLocation().getX()) - getWidth()/2, (int)Math.round(getLocation().getY()) - getHeight()/2);
 
         this.electionName = electionName;
+        // Set the initial state of the Scanner to the InactiveState.
+        state = InactiveState.SINGLETON;
 
-
+        // Create the two panels of the GUI.
         userInfoPanel = new UserInfoPanel(this);
         electionInfoPanel = new ElectionInfoPanel(this);
-        state = InactiveState.SINGLETON;
+
+        // Update the state and panels.
+        this.updateFrame(NO_TRANSITION);
+
+        // Add the panels to the GUI.
         mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         mainPanel.add(electionInfoPanel);
         mainPanel.add(userInfoPanel);
         add(mainPanel);
         pack();
-        setVisible(true);
-        //displayInactiveScreen();
 
-        this.updateFrame(NO_TRANSITION);
+        // Make the GUI visible.
+        setVisible(true);
     }
 
     /*public void displayPromptScreen(){

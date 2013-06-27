@@ -41,6 +41,7 @@ import sexpression.*;
 import votebox.crypto.*;
 import votebox.events.*;
 import votebox.middle.*;
+import votebox.middle.Properties;
 import votebox.middle.ballot.Ballot;
 import votebox.middle.driver.*;
 import votebox.middle.view.*;
@@ -72,6 +73,7 @@ public class VoteBox{
     private boolean override;
     private boolean committedBallot;
     private boolean finishedVoting;
+    private boolean isProvisional;
     private int label;
     private String bid;
     private Event<Integer> labelChangedEvent;
@@ -172,9 +174,12 @@ public class VoteBox{
     public VoteBoxEvent getStatus() {
         VoteBoxEvent event;
 
-        int battery = BatteryStatus.read();
+        int battery = BatteryStatus.read(_constants.getOS());
 
-        if (voting)
+        if (voting && isProvisional)
+            event = new VoteBoxEvent(mySerial, label, "provisional-in-use", battery,
+                    protectedCount, publicCount);
+        else if(voting)
             event = new VoteBoxEvent(mySerial, label, "in-use", battery,
                     protectedCount, publicCount);
         else
@@ -244,7 +249,6 @@ public class VoteBox{
 
                     BallotEncrypter.SINGLETON.clear();
                     
-                    //printBallotSpoiled();
                 }
             });
         	
@@ -274,23 +278,30 @@ public class VoteBox{
         			ListExpression ballot = (ListExpression) arg[0];
 
         			try {
-                        if(!_constants.getEnableNIZKs()){
-                            System.out.println("Committing a ballot!");
-                            auditorium.announce(new CommitBallotEvent(mySerial,
+                        if(!isProvisional){
+                            if(!_constants.getEnableNIZKs()){
+                                auditorium.announce(new CommitBallotEvent(mySerial,
+                                        StringExpression.makeString(nonce),
+                                        BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey("public")), StringExpression.makeString(bid)));
+                            } else{
+                                auditorium.announce(new CommitBallotEvent(mySerial,
+                                        StringExpression.makeString(nonce),
+                                        BallotEncrypter.SINGLETON.encryptWithProof(ballot, (List<List<String>>) arg[1], (PublicKey) _constants.getKeyStore().loadAdderKey("public")), StringExpression.makeString(bid))
+                                        );
+                            }
+                        } else {
+                            auditorium.announce(new ProvisionalCommitEvent(mySerial,
                                     StringExpression.makeString(nonce),
                                     BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey("public")), StringExpression.makeString(bid)));
-                        } else{
-        					auditorium.announce(new CommitBallotEvent(mySerial,
-        							StringExpression.makeString(nonce),
-        							BallotEncrypter.SINGLETON.encryptWithProof(ballot, (List<List<String>>) arg[1], (PublicKey) _constants.getKeyStore().loadAdderKey("public")), StringExpression.makeString(bid))
-                                    );
-        				}
+                        }
 
 
                         List<List<String>> races = currentDriver.getBallotAdapter().getRaceGroups();
                         auditorium.announce(new BallotPrintingEvent(mySerial, bid,
                                 nonce));
                         printer = new Printer(_currentBallotFile, races);
+
+                        System.out.println(">>>> Here's the ballot!" + ballot);
 						boolean success = printer.printCommittedBallot(ballot, bid);
                         printer.printedReceipt(bid);
 
@@ -316,7 +327,7 @@ public class VoteBox{
         	//Rather than actually send the ballot out, just send the nonce (which can identify the whole
         	//transaction).
         	//Clean up the encryptor afterwards so as to destroy the random number needed for challenging.
-            //TODO This code doens't do anything?
+            //TODO This code doesn't do anything?
         	currentDriver.getView().registerForCastBallot(new Observer(){
 
                 public void update(Observable o, Object argTemp) {
@@ -388,6 +399,7 @@ public class VoteBox{
                             override = false;
                             broadcastStatus();
                             inactiveUI.setVisible(true);
+                            promptForPin("Enter Voting Authentication PIN");
                             
                             //printBallotSpoiled();
                         } else
@@ -521,11 +533,11 @@ public class VoteBox{
                     OverrideCancelEvent.getMatcher(), OverrideCastEvent.getMatcher(),
                     PollsOpenQEvent.getMatcher(), BallotCountedEvent.getMatcher(),
                     ChallengeEvent.getMatcher(), ChallengeResponseEvent.getMatcher(),
-                    AuthorizedToCastWithNIZKsEvent.getMatcher(), PinEnteredEvent.getMatcher(),
+                    AuthorizedToCastWithNIZKsEvent.getMatcher(), PINEnteredEvent.getMatcher(),
                     InvalidPinEvent.getMatcher(), PollsOpenEvent.getMatcher(),
                     PollStatusEvent.getMatcher(), BallotPrintingEvent.getMatcher(),
                     BallotPrintSuccessEvent.getMatcher(), BallotPrintFailEvent.getMatcher(),
-                    PollMachinesEvent.getMatcher());
+                    PollMachinesEvent.getMatcher(), ProvisionalAuthorizeEvent.getMatcher());
         } catch (NetworkException e1) {
         	//NetworkException represents a recoverable error
         	//  so just note it and continue
@@ -612,6 +624,8 @@ public class VoteBox{
              */
             public void authorizedToCast(AuthorizedToCastEvent e) {
                 if (e.getNode() == mySerial) {
+                    isProvisional = false;
+
                     if (voting || currentDriver != null && killVBTimer == null)
                         throw new RuntimeException(
                                 "VoteBox was authorized-to-cast, but was already voting");
@@ -664,8 +678,10 @@ public class VoteBox{
              * then shows the inactive screen. Also responds with its status.
              */
             public void ballotReceived(BallotReceivedEvent e) {
+
                 if (e.getNode() == mySerial
                         && Arrays.equals(e.getNonce(), nonce)) {
+
                     if (!committedBallot && _constants.getUseCommitChallengeModel())
                         throw new RuntimeException(
                                 "Someone said the ballot was received, but this machine hasn't committed it yet. Maybe the supervisor is misconfigured (not using challenge-commit model)?");
@@ -673,8 +689,21 @@ public class VoteBox{
                     if(!finishedVoting && !_constants.getUseCommitChallengeModel())
                     	throw new RuntimeException(
                     			"Someone said the ballot was received, but this machine hasn't finished voting yet");
-                    
-                    currentDriver.getView().nextPage();
+
+
+
+                    if(isProvisional)  {
+                        try{
+                            currentDriver.getView().drawPage(currentDriver.getView().getCurrentLayout().getProperties().getInteger(
+                                Properties.PROVISIONAL_SUCCESS_PAGE));
+                        } catch (IncorrectTypeException e1) {
+                            e1.printStackTrace();
+                        }
+                    } else{
+                        currentDriver.getView().nextPage();
+                    }
+
+
 
                     nonce = null;
                     voting = false;
@@ -896,7 +925,7 @@ public class VoteBox{
             }
 
 
-            public void pinEntered(PinEnteredEvent e) {
+            public void pinEntered(PINEnteredEvent e) {
                 // NO-OP
             }
 
@@ -960,6 +989,67 @@ public class VoteBox{
             }
 
             public void spoilBallot(SpoilBallotEvent spoilBallotEvent) {
+                // NO-OP
+            }
+
+            public void announceProvisionalBallot(ProvisionalBallotEvent e) {
+            }
+
+            public void provisionalAuthorizedToCast(ProvisionalAuthorizeEvent e) {
+
+                if (e.getNode() == mySerial) {
+
+                    System.out.println(">>>>> Start provisional session!");
+
+                    isProvisional = true;
+
+                    if (voting || currentDriver != null && killVBTimer == null)
+                        throw new RuntimeException(
+                                "VoteBox was authorized-to-cast, but was already voting");
+
+                    // If last VB runtime is on thank you screen and counting
+                    // down to when it disappears, kill it prematurely without
+                    // showing inactive UI
+                    if (killVBTimer != null && currentDriver != null) {
+                        killVBTimer.stop();
+                        killVBTimer = null;
+                        currentDriver.kill();
+                        currentDriver = null;
+                    }
+
+                    nonce = e.getNonce();
+
+                    //Current working directory
+                    File path = new File(System.getProperty("user.dir"));
+                    path = new File(path, "tmp");
+                    path = new File(path, "ballots");
+                    path = new File(path, "ballot" + protectedCount);
+                    path.mkdirs();
+
+                    bid = String.valueOf(rand.nextInt(Integer.MAX_VALUE));
+
+                    try {
+                        _currentBallotFile = new File(path, "ballot.zip");
+
+
+                        FileOutputStream fout = new FileOutputStream(_currentBallotFile);
+                        byte[] ballot = e.getBallot();
+                        fout.write(ballot);
+
+                        Driver.unzip(new File(path, "ballot.zip").getAbsolutePath(), new File(path, "data").getAbsolutePath());
+                        Driver.deleteRecursivelyOnExit(path.getAbsolutePath());
+
+
+                        run(new File(path, "data").getAbsolutePath());
+                        broadcastStatus();
+                    } catch (IOException e1) {
+                        throw new RuntimeException(e1);
+                    }
+                }
+
+            }
+
+            public void provisionalCommitBallot(ProvisionalCommitEvent provisionalCommitEvent) {
                 // NO-OP
             }
 
@@ -1029,7 +1119,7 @@ public class VoteBox{
 
 
             try{
-                int pin = Integer.parseInt(limitedField.getText());
+                String pin = limitedField.getText();
                 validatePin(pin);
             }catch(NumberFormatException nfe){
                 promptingForPin = false;
@@ -1038,12 +1128,12 @@ public class VoteBox{
             promptingForPin = false;
     }
 
-    public void validatePin(int pin) {
+    public void validatePin(String pin) {
         byte[] pinNonce = new byte[256];
         for (int i = 0; i < 256; i++)
             pinNonce[i] = (byte) (Math.random() * 256);
         this.pinNonce = pinNonce;
-        auditorium.announce(new PinEnteredEvent(mySerial, pin, pinNonce));
+        auditorium.announce(new PINEnteredEvent(mySerial, pin, pinNonce));
     }
 
 

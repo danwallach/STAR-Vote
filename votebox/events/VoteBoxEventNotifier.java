@@ -194,7 +194,7 @@ public class VoteBoxEventNotifier implements VoteBoxEventListener {
             l.ballotScanned(e);
     }
 
-    public void pinEntered(PinEnteredEvent e) {
+    public void pinEntered(PINEnteredEvent e) {
         for (VoteBoxEventListener l : listeners)
             l.pinEntered(e);
     }
@@ -252,6 +252,21 @@ public class VoteBoxEventNotifier implements VoteBoxEventListener {
     public void spoilBallot(SpoilBallotEvent spoilBallotEvent) {
         for(VoteBoxEventListener l : listeners)
             l.spoilBallot(spoilBallotEvent);
+    }
+
+    public void announceProvisionalBallot(ProvisionalBallotEvent e) {
+        for(VoteBoxEventListener l : listeners)
+            l.announceProvisionalBallot(e);
+    }
+
+    public void provisionalAuthorizedToCast(ProvisionalAuthorizeEvent e) {
+        for(VoteBoxEventListener l : listeners)
+            l.provisionalAuthorizedToCast(e);
+    }
+
+    public void provisionalCommitBallot(ProvisionalCommitEvent e) {
+        for(VoteBoxEventListener l : listeners)
+            l.provisionalCommitBallot(e);
     }
 
 }

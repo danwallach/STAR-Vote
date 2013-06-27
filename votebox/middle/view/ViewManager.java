@@ -525,8 +525,16 @@ public class ViewManager implements IViewManager {
      */
     public void nextPage() {
         if (_page + 1 < _layout.getPages().size()) {
-            //System.out.println("Trying to draw page " + (_page + 1));
             drawPage( _page + 1 );
+        }
+    }
+
+    /**
+     * This method allows for the drawing of a specific page
+     */
+    public void goToPage(int pageNum){
+        if (pageNum < _layout.getPages().size()) {
+            drawPage( pageNum );
         }
     }
 

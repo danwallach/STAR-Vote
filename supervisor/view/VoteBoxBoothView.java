@@ -193,6 +193,8 @@ public class VoteBoxBoothView extends AMachineView {
         updateView();
     }
 
+
+
     /**
      * Updates the background to a given color
      * @param c the color
@@ -222,13 +224,24 @@ public class VoteBoxBoothView extends AMachineView {
             protectedCountLabel.setText("Protected Count: "
                     + m.getProtectedCount());
             button.removeAll();
-            if (machine.getStatus() == VoteBoxBooth.IN_USE) {
+            if (machine.getStatus() == VoteBoxBooth.IN_USE)
+            {
                 button.setEnabled(true);
                 button.setVisible(true);
                 updateBackground(Color.YELLOW);
                 statusLabel.setText("In Use");
                 button.add(new MyJLabel("Override"), c);
-            } else{
+            }
+            if (machine.getStatus() == VoteBoxBooth.PROVISIONAL)
+            {
+                button.setEnabled(true);
+                button.setVisible(true);
+                updateBackground(Color.YELLOW);
+                statusLabel.setText("Provisional Voting");
+                button.add(new MyJLabel("Override"), c);
+            }
+            if (machine.getStatus() == VoteBoxBooth.READY)
+            {
                 button.setEnabled(false);
                 button.setVisible(false);
                 updateBackground(Color.white);
@@ -274,7 +287,7 @@ public class VoteBoxBoothView extends AMachineView {
                 }
             } else {
                 JDialog dlg = new OverrideDialog(view, model, machine
-                        .getSerial(), machine.getLabel());
+                        .getSerial(), machine.getLabel(), machine.getStatus() == VoteBoxBooth.PROVISIONAL);
                 dlg.setVisible(true);
             }
         }

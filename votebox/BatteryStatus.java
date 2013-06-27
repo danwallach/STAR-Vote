@@ -22,16 +22,71 @@
 
 package votebox;
 
+import sexpression.stream.Base64;
+
+import java.io.*;
+
 /**
- * Will, sometime in the future, actually read battery status if able.
- * 
- * Currently, a better solution than leaving a Math.random() in votebox.Votebox proper.
- * @author Montrose
+ * @author Montrose, Matt Bernhard
  *
  */
 public class BatteryStatus {
-	public static int read(){
-        return (int)(Math.random() * 1000.0);
 
+    /**
+     * Reads the batter status based on the operating system
+     * @param OS - This way we know which protocol to use based on the OS
+     * @return - the percentage of battery as an integer
+     */
+	public static int read(String OS){
+        try{
+            if(OS.equals("Windows")){
+                //A batch file to be included in the working directory
+                File batteryFile = new File("BatteryStatus.bat");
+                //Using the exec(String[]) method to prevent errors when the command contains spaces.
+                Process child = Runtime.getRuntime().exec(batteryFile.getAbsolutePath().split("!!!"));
+                BufferedReader out = new BufferedReader(new InputStreamReader(child.getInputStream()));
+
+                String s = "";
+                //This should be at most one line
+                while((s = out.readLine()) != null){
+                    //TODO Figure out what actually happens when the batch file returns something that isn't an integer...
+                    if(s.contains("error"))
+                        return 100;
+                    else
+                        return Integer.parseInt(s); //format the acpi output to truncate
+
+                }
+
+
+            } else if(OS.equals("Linux")){
+
+                    String cmd = "acpi -b";
+                    ProcessBuilder pb = new ProcessBuilder("bash", "-c", cmd);
+                    pb.redirectErrorStream(true);
+                    Process child = pb.start();
+
+
+
+                    BufferedReader out = new BufferedReader(new InputStreamReader(child.getInputStream()));
+
+                    String s = "";
+                    //This should be at most one line
+                    while((s = out.readLine()) != null){
+                        if(s.contains("power_supply"))
+                            return 100;
+                        else
+                            return Integer.parseInt(s.substring(s.indexOf("%")- 2, s.indexOf("%"))); //format the acpi output to truncate
+
+                    }
+
+
+
+
+             }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return 0;
 	}
 }

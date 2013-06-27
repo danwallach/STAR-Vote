@@ -243,8 +243,12 @@ public class LiteralStrings {
         map.put("LANGUAGE_SELECT_INSTRUCTIONS", ls);
 
         ls = new LocalizedString();
-        ls.set(ENGLISH, "\n Your ballot is being printed.  To cast your vote deposit your ballot in the ballot box.  You may now leave the voting booth. ");
+        ls.set(ENGLISH, "\n Your ballot is being printed.  To cast your vote deposit your ballot in the ballot box. \n You may now leave the voting booth. ");
         map.put("SUCCESS", ls);
+
+        ls = new LocalizedString();
+        ls.set(ENGLISH, "\n Your provisional ballot is being printed. \n Please see a poll worker to ensure that the proper protocols are being followed for this vote. ");
+        map.put("PROVISIONAL", ls);
 
         ls = new LocalizedString();
         ls.set(ENGLISH, "\n Your vote has not been recorded. Please ask to re-authorize this booth to cast your vote. ");

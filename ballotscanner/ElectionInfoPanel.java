@@ -33,7 +33,7 @@ public class ElectionInfoPanel extends JPanel {
         try{
             logo = ImageIO.read(new File("images/logo.png"));
         }catch(IOException ioe){
-            System.out.println("BallotScannerUI: Could not locate logo image");
+            System.err.println("BallotScannerUI: Could not locate logo image");
             logo = null;
         }
 

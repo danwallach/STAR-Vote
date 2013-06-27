@@ -214,7 +214,7 @@ public interface VoteBoxEventListener {
      * called to signal the input of a pin
      */
 
-    public void pinEntered(PinEnteredEvent event);
+    public void pinEntered(PINEnteredEvent event);
 
     /**
      * called to signal that the input pin is invalid
@@ -267,9 +267,23 @@ public interface VoteBoxEventListener {
 
     /**
      * Polls all machines when an unknown connection is detected and attempts add that machine to known machines
-     * @param pollMachinesEvent
      */
     public void pollMachines(PollMachinesEvent pollMachinesEvent);
 
     public void spoilBallot(SpoilBallotEvent spoilBallotEvent);
+
+    /**
+     * Announces when the supervisor gets a provisional ballot
+     */
+    public void announceProvisionalBallot(ProvisionalBallotEvent provisionalBallotEvent);
+
+    /**
+     * Sends over the ballot for a provisional voting session
+     */
+    public void provisionalAuthorizedToCast(ProvisionalAuthorizeEvent provisionalAuthorizeEvent);
+
+    /**
+     * Announces the end of a provisional voting session on the booth-end
+     */
+    public void provisionalCommitBallot(ProvisionalCommitEvent provisionalCommitEvent);
 }

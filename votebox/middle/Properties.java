@@ -60,9 +60,14 @@ public class Properties {
     public static final String OVERRIDE_CAST_PAGE = "OverrideCastPage";
     
     /**
-     * The value of this property is the page number of the challenge respnse page.
+     * The value of this property is the page number of the challenge response page.
      */
     public static final String RESPONSE_PAGE = "ResponsePage";
+
+    /**
+     *
+     */
+    public static final String PROVISIONAL_SUCCESS_PAGE = "ProvisionalSuccessPage";
 
     /**
      * This property assigns party affiliation to a candidate.

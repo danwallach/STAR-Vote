@@ -33,7 +33,7 @@ public class AcceptState extends AState {
         }
         catch (IOException e)
         {
-            System.out.println("BallotScannerUI: Could not locate accept image");
+            System.err.println("BallotScannerUI: Could not locate accept image");
             this.stateImage = null;
         }
         this.stateName = name;
@@ -59,33 +59,28 @@ public class AcceptState extends AState {
         if (System.currentTimeMillis() - stateStartTime > stateActiveDelay)
         {
             context.state = PromptState.SINGLETON;
-            System.out.println("Transitioning from ACCEPT STATE to PROMPT STATE!");
             return;
         }
         if(updateMode == -1)
         {
             context.state = InactiveState.SINGLETON;
-            System.out.println("Transitioning from ACCEPT STATE to INACTIVE STATE!");
             return;
         }
         if(updateMode == 1)
         {
             context.state = AcceptState.SINGLETON;
             AcceptState.SINGLETON.resetStateStartTime();
-            System.out.println("Transitioning from ACCEPT STATE to ACCEPT STATE!");
             return;
         }
         if(updateMode == 2)
         {
             context.state = RejectState.SINGLETON;
             RejectState.SINGLETON.resetStateStartTime();
-            System.out.println("Transitioning from ACCEPT STATE to REJECT STATE!");
             return;
         }
         if(updateMode == 3)
         {
             context.state = PromptState.SINGLETON;
-            System.out.println("Transitioning from ACCEPT STATE to PROMPT STATE!");
             return;
         }
     }

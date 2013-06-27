@@ -258,6 +258,28 @@ public class Model {
     }
 
     /**
+     * Authorizes a VoteBox booth for a provisional voting session
+     *
+     * @param node
+     *            the serial number of the booth
+     * @throws IOException
+     */
+    private void provisionalAuthorize(int node) throws IOException{
+        byte[] nonce = new byte[256];
+        for (int i = 0; i < 256; i++)
+            nonce[i] = (byte) (Math.random() * 256);
+
+        File file = new File(ballotLocation);
+        FileInputStream fin = new FileInputStream(file);
+        byte[] ballot = new byte[(int) file.length()];
+        fin.read(ballot);
+
+        auditorium.announce(new ProvisionalAuthorizeEvent(mySerial, node, nonce, ballot));
+
+
+    }
+
+    /**
      * Closes the polls
      * 
      * @return the output from the tally
@@ -512,9 +534,10 @@ public class Model {
                     CastCommittedBallotEvent.getMatcher(), ChallengeResponseEvent.getMatcher(),
                     ChallengeEvent.getMatcher(), EncryptedCastBallotWithNIZKsEvent.getMatcher(),
                     AuthorizedToCastWithNIZKsEvent.getMatcher(), AdderChallengeEvent.getMatcher(),
-                    PinEnteredEvent.getMatcher(), InvalidPinEvent.getMatcher(),
+                    PINEnteredEvent.getMatcher(), InvalidPinEvent.getMatcher(),
                     PollStatusEvent.getMatcher(), BallotPrintSuccessEvent.getMatcher(),
-                    BallotScannedEvent.getMatcher(), BallotScannerEvent.getMatcher());
+                    BallotScannedEvent.getMatcher(), BallotScannerEvent.getMatcher(),
+                    ProvisionalCommitEvent.getMatcher(), ProvisionalAuthorizeEvent.getMatcher());
 
 
         } catch (NetworkException e1) {
@@ -903,6 +926,8 @@ public class Model {
                     booth.setStatus(VoteBoxBooth.READY);
                 else if (e.getStatus().equals("in-use"))
                     booth.setStatus(VoteBoxBooth.IN_USE);
+                else if (e.getStatus().equals("provisional-in-use"))
+                    booth.setStatus(VoteBoxBooth.PROVISIONAL);
                 else
                     throw new IllegalStateException("Invalid VoteBox Status: "
                             + e.getStatus());
@@ -912,7 +937,6 @@ public class Model {
                 booth.setOnline(true);
                 
                 //Check to see if this votebox has a conflicting label
-                //TODO Apparently this doesn't do what it says it does....
                 if (e.getLabel() > 0){
                 	for(AMachine machine : machines){
                 		if(machine.getLabel() == e.getLabel() && machine != m){
@@ -992,6 +1016,19 @@ public class Model {
                 }
             }
 
+            public void provisionalCommitBallot(ProvisionalCommitEvent e) {
+
+                AMachine m = getMachineForSerial(e.getSerial());
+                if (m != null && m instanceof VoteBoxBooth) {
+                    VoteBoxBooth booth = (VoteBoxBooth) m;
+                    booth.setPublicCount(booth.getPublicCount() + 1);
+                    booth.setProtectedCount(booth.getProtectedCount() + 1);
+                    auditorium.announce(new BallotReceivedEvent(mySerial, e
+                            .getSerial(), ((StringExpression) e.getNonce())
+                            .getBytes()));
+                }
+            }
+
             public void ballotScanned(BallotScannedEvent e) {
                 String bid = e.getBID();
                 int serial = e.getSerial();
@@ -1014,14 +1051,21 @@ public class Model {
 
             }
 
-            public void pinEntered(PinEnteredEvent e){
+            public void pinEntered(PINEnteredEvent e){
                 if(isPollsOpen()) {
+                    System.out.println(">>> PIN entered: " + e.getPin());
                     String ballot = bManager.getBallotByPin(e.getPin());
+                    System.out.println(ballot);
                     if(ballot!=null){
                         try {
-                            System.out.println(ballot + "!");
+                            System.out.println(bManager.getPrecinctByBallot(ballot));
                             setBallotLocation(ballot);
-                            authorize(e.getSerial());
+                            if(bManager.getPrecinctByBallot(ballot).contains("provisional")) {
+                                provisionalAuthorize(e.getSerial());
+                                System.out.println(">>>>>>> It's working!");
+                            }
+                            else
+                                authorize(e.getSerial());
                         }
                         catch(IOException ex) {
                             System.out.println(ex.getMessage());
@@ -1058,19 +1102,19 @@ public class Model {
                 expectedBallots.add(Integer.valueOf(e.getBID()));
             }
 
-            public void ballotPrintFail(BallotPrintFailEvent ballotPrintFailEvent) {
+            public void ballotPrintFail(BallotPrintFailEvent e) {
                 //NO-OP
             }
 
-            public void uploadCastBallots(CastBallotUploadEvent castBallotUploadEvent) {
+            public void uploadCastBallots(CastBallotUploadEvent e) {
                 // NO-OP
             }
 
-            public void uploadChallengedBallots(ChallengedBallotUploadEvent challengedBallotUploadEvent) {
+            public void uploadChallengedBallots(ChallengedBallotUploadEvent e) {
                 // NO-OP
             }
 
-            public void scannerstart(StartScannerEvent startScannerEvent) {
+            public void scannerstart(StartScannerEvent e) {
                 // NO-OP
                 for (AMachine machine:machines)
                 {
@@ -1080,13 +1124,30 @@ public class Model {
                     }
                 }
             }
-            public void pollMachines(PollMachinesEvent pollMachinesEvent) {
+            public void pollMachines(PollMachinesEvent e) {
                 // NO-OP
             }
 
-            public void spoilBallot(SpoilBallotEvent spoilBallotEvent) {
+            public void spoilBallot(SpoilBallotEvent e) {
                 // NO-OP
             }
+
+            public void announceProvisionalBallot(ProvisionalBallotEvent e) {
+                // NO-OP
+            }
+
+            /**
+             * Handler for the provisional-authorize message. Sets the nonce for
+             * that machine.
+             */
+            public void provisionalAuthorizedToCast(ProvisionalAuthorizeEvent e) {
+                AMachine m = getMachineForSerial(e.getNode());
+                if (m != null && m instanceof VoteBoxBooth) {
+                    ((VoteBoxBooth) m).setNonce(e.getNonce());
+                }
+            }
+
+
 
 
         });
@@ -1103,6 +1164,8 @@ public class Model {
 
         statusTimer.start();
     }
+
+
 
     /**
      * Broadcasts this supervisor's status, and resets the status timer
@@ -1127,7 +1190,7 @@ public class Model {
     public void addBallot(File fileIn) {
         String fileName = fileIn.getName();
         try{
-        int precinct = Integer.parseInt(fileName.substring(fileName.length()-7,fileName.length()-4));
+        String precinct = fileName.substring(fileName.length()-7,fileName.length()-4);
         bManager.addBallot(precinct, fileIn.getAbsolutePath());
         }catch(NumberFormatException e){
             JOptionPane.showMessageDialog(null, "Please choose a valid ballot");
@@ -1150,15 +1213,19 @@ public class Model {
 
     }
 
-    public int generatePin(int precinct){
+    public String generatePin(String precinct){
         return bManager.generatePin(precinct);
     }
 
-    public Integer[] getSelections(){
+    public String generateProvisionalPin(String precinct){
+        return bManager.generateProvisionalPin(precinct);
+    }
+
+    public String[] getSelections(){
         return bManager.getSelections();
     }
 
-    public Integer getInitialSelection(){
+    public String getInitialSelection(){
         return bManager.getInitialSelection();
     }
 

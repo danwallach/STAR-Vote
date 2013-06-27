@@ -178,7 +178,7 @@ public class Printer{
         while (counter < choices.size())
         {
             ArrayList<String> currentColumn = new ArrayList<String>();
-            while ((currentColumn.size() < 48) && (counter < choices.size()))
+            while ((currentColumn.size() < 46) && (counter < choices.size()))
             {
                 String titleName = fActualRaceNamePairs.get(counter).getLabel();
                 String selectionName = choices.get(counter);

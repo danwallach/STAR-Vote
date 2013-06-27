@@ -46,7 +46,7 @@ public class FrameGrabberWebcam implements IWebcam {
         return null;
     }
     catch (Exception e) {
-      System.out.println("Exception Occurred: "+e.getMessage());
+      System.err.println("Exception Occurred: "+e.getMessage());
       return null;
     }
   }
@@ -60,7 +60,7 @@ public class FrameGrabberWebcam implements IWebcam {
       frameGrabber.start();
     }
     catch (Exception e) {
-      System.out.println("Exception Occurred: "+e.getMessage());
+      System.err.println("Exception Occurred: "+e.getMessage());
     }
   }
 }

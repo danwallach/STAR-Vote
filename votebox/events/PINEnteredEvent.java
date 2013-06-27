@@ -7,13 +7,14 @@ import java.math.BigInteger;
 /**
  * Event class for when a pin gets entered on a votebox
  */
-public class PinEnteredEvent implements IAnnounceEvent {
+public class PINEnteredEvent implements IAnnounceEvent {
 
     private int serial;
 
-    private int pin;
+    private String pin;
 
     private byte[] nonce;
+
 
     /**
      * Matcher for the pinEntered message
@@ -25,10 +26,10 @@ public class PinEnteredEvent implements IAnnounceEvent {
         public IAnnounceEvent match(int serial, ASExpression sexp) {
             ASExpression res = pattern.match( sexp );
             if (res != NoMatch.SINGLETON) {
-                int pin = Integer.parseInt(((ListExpression) res).get(0).toString());
+                String pin =((ListExpression) res).get(0).toString();
                 byte[] nonce = new BigInteger(((ListExpression) res)
                         .get( 1 ).toString()).toByteArray();
-                return new PinEnteredEvent( serial, pin, nonce );
+                return new PINEnteredEvent( serial, pin, nonce );
             }
 
             return null;
@@ -51,11 +52,11 @@ public class PinEnteredEvent implements IAnnounceEvent {
         return MATCHER;
     }
 
-    public int getPin() {
+    public String getPin() {
         return pin;
     }
 
-    public PinEnteredEvent(int serial, int pin, byte[] nonce) {
+    public PINEnteredEvent(int serial, String pin, byte[] nonce) {
         this.serial = serial;
         this.pin = pin;
         this.nonce = nonce;
@@ -67,7 +68,7 @@ public class PinEnteredEvent implements IAnnounceEvent {
 
     public ASExpression toSExp() {
         return new ListExpression( StringExpression.makeString("pin-entered"),
-                StringExpression.makeString( Integer.toString(pin) ),
+                StringExpression.makeString( pin) ,
                 StringExpression.makeString( new BigInteger(nonce).toString()));
     }
 

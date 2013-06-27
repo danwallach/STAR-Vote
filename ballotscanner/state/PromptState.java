@@ -30,7 +30,7 @@ public class PromptState extends AState {
         }
         catch (IOException e)
         {
-            System.out.println("BallotScannerUI: Could not locate waiting image");
+            System.err.println("BallotScannerUI: Could not locate waiting image");
             this.stateImage = null;
         }
         this.stateName = name;
@@ -51,27 +51,23 @@ public class PromptState extends AState {
         if(updateMode == -1)
         {
             context.state = InactiveState.SINGLETON;
-            System.out.println("Transitioning from PROMPT STATE to INACTIVE STATE!");
             return;
         }
         if(updateMode == 1)
         {
             context.state = AcceptState.SINGLETON;
             AcceptState.SINGLETON.resetStateStartTime();
-            System.out.println("Transitioning from PROMPT STATE to ACCEPT STATE!");
             return;
         }
         if(updateMode == 2)
         {
             context.state = RejectState.SINGLETON;
             RejectState.SINGLETON.resetStateStartTime();
-            System.out.println("Transitioning from PROMPT STATE to REJECT STATE!");
             return;
         }
         if(updateMode == 3)
         {
             context.state = PromptState.SINGLETON;
-            System.out.println("Transitioning from PROMPT STATE to PROMPT STATE!");
             return;
         }
     }

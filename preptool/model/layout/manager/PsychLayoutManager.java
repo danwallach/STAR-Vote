@@ -1154,7 +1154,9 @@ public class PsychLayoutManager extends ALayoutManager {
         
         if (USE_COMMIT_CHALLENGE_MODEL){
         	layout.getPages().add(makeResponsePage());
-        	layout.setReponsePage(layout.getPages().size()-1);
+            layout.getPages().add(makeProvisionalSuccessPage());
+        	layout.setReponsePage(layout.getPages().size()-2);
+            layout.setProvisionalPage(layout.getPages().size() - 1);
         }
         
         //LAST_LAYOUT = layout;
@@ -2015,6 +2017,39 @@ public class PsychLayoutManager extends ALayoutManager {
         east.setLayout(new GridBagLayout());
         Label instrLabel = new Label(getNextLayoutUID(),
                 LiteralStrings.Singleton.get("RESPONSE", language), sizeVisitor);
+        Spacer sp = new Spacer(instrLabel, east);
+        east.add(sp);
+        frame.addAsEastPanel(east);
+
+        frame.validate();
+        frame.pack();
+
+        Page page = new Page();
+        page.getComponents().add(simpleBackground);
+        page.setBackgroundLabel(simpleBackground.getUID());
+
+        for (Component c : frame.getAllComponents()) {
+            Spacer s = (Spacer) c;
+            s.updatePosition();
+            page.getComponents().add(s.getComponent());
+        }
+        return page;
+    }
+
+    protected Page makeProvisionalSuccessPage() {
+        PsychLayoutPanel frame = new PsychLayoutPanel();
+        Label successTitle = new Label(getNextLayoutUID(),
+                LiteralStrings.Singleton.get("SUCCESS_TITLE", language));
+        successTitle.setBold(true);
+        successTitle.setCentered(true);
+        successTitle.setSize(successTitle.execute(sizeVisitor));
+        frame.addTitle(successTitle);
+        frame.remove(frame.west);
+
+        JPanel east = new JPanel();
+        east.setLayout(new GridBagLayout());
+        Label instrLabel = new Label(getNextLayoutUID(),
+                LiteralStrings.Singleton.get("PROVISIONAL", language), sizeVisitor);
         Spacer sp = new Spacer(instrLabel, east);
         east.add(sp);
         frame.addAsEastPanel(east);

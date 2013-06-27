@@ -57,8 +57,9 @@ public class Layout {
      * The page number of the challenge-response page
      */
     private int responsePage;
-    
-	/**
+    private int provisionalPage;
+
+    /**
 	 * Constructs a blank layout with an empty list of Pages
 	 */
 	public Layout() {
@@ -114,6 +115,14 @@ public class Layout {
         this.responsePage = responsePage;
     }
 
+    /**
+     * @param provisionalPage the provisionalPage number
+     */
+    public void setProvisionalPage(int provisionalPage){
+        this.provisionalPage = provisionalPage;
+
+    }
+
 	/**
 	 * Converts this Layout object to XML
 	 * @param doc the document
@@ -124,6 +133,7 @@ public class Layout {
         XMLTools.addProperty(doc, layoutElt, "OverrideCancelPage", "Integer", overrideCancelPage);
         XMLTools.addProperty(doc, layoutElt, "OverrideCastPage", "Integer", overrideCastPage);
         XMLTools.addProperty(doc, layoutElt, "ResponsePage", "Integer", responsePage);
+        XMLTools.addProperty(doc, layoutElt, "ProvisionalSuccessPage", "Integer", provisionalPage);
         
 		for (Page p : pages) {
 			Element pageElt = p.toXML(doc);
