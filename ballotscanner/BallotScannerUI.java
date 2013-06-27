@@ -4,14 +4,7 @@ import ballotscanner.state.AState;
 import ballotscanner.state.InactiveState;
 
 import javax.swing.*;
-import java.awt.image.BufferedImage;
 
-/**
- * @author mrdouglass95, Mircea Berechet
- * 6/17/13
- *
- * A ballot scanner UI.
- */
 public class BallotScannerUI extends JFrame {
 
     /* Transition states to be used with the updateFrame method. */
@@ -21,8 +14,7 @@ public class BallotScannerUI extends JFrame {
     public static final int TO_REJECT_STATE = 2;
     public static final int TO_PROMPT_STATE = 3;
 
-    /* The main panel for the UI. */
-    private JPanel mainPanel;
+
 
     /* Panels that display election/status information on the UI. */
     public ElectionInfoPanel electionInfoPanel;
@@ -43,6 +35,10 @@ public class BallotScannerUI extends JFrame {
      */
     public BallotScannerUI(String electionName){
         super("STAR-Vote Ballot Scanner");
+
+        /* The main panel for the UI. */
+        JPanel mainPanel;
+
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(600,600);
         setResizable(false);
