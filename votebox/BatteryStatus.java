@@ -43,6 +43,12 @@ public class BatteryStatus {
                 //A batch file to be included in the working directory
                 String cmd = "BatteryStatus.bat";
 
+                //This will let us set the working directory for the command prompt
+                File batteryFile = new File(cmd);
+
+                cmd = batteryFile.getAbsolutePath() + cmd;
+
+
                 Process child = Runtime.getRuntime().exec(cmd);
 
 
