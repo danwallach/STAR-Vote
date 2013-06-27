@@ -47,8 +47,7 @@ public class BallotScannerUI extends JFrame {
         setSize(600,600);
         setResizable(false);
         setLocationRelativeTo(null);
-        setLocation((int)Math.round(getLocation().getX()) - getWidth()/2,
-                    (int)Math.round(getLocation().getY()) - getHeight()/2);
+        //setLocation((int)Math.round(getLocation().getX()) - getWidth()/2, (int)Math.round(getLocation().getY()) - getHeight()/2);
 
         this.electionName = electionName;
 
