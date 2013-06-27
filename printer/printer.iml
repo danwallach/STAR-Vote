@@ -9,6 +9,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="votebox" />
     <orderEntry type="module" module-name="STAR-Vote" />
+    <orderEntry type="module" module-name="Web-Server" />
   </component>
 </module>
 
