@@ -174,7 +174,7 @@ public class VoteBox{
     public VoteBoxEvent getStatus() {
         VoteBoxEvent event;
 
-        int battery = BatteryStatus.read();
+        int battery = BatteryStatus.read(_constants.getOS());
 
         if (voting && isProvisional)
             event = new VoteBoxEvent(mySerial, label, "provisional-in-use", battery,

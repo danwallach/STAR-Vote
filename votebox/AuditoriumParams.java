@@ -136,6 +136,8 @@ public class AuditoriumParams implements IAuditoriumParams,
     public static final String COMMANDS_FILE_FILENAME = "CommandsFile.txt";
     public static final String PARAMETER_SEPARATOR = "!!!";
 
+    public static final String DEFAULT_OPERATING_SYSTEM = "Windows";
+
 
     /**
      * @param path
@@ -450,6 +452,13 @@ public class AuditoriumParams implements IAuditoriumParams,
             return _config.get("SCAN_CONFIRMATION_SOUND_PATH");
 
         return SCAN_CONFIRMATION_SOUND_PATH;
+    }
+
+    public String getOS(){
+        if(_config.containsKey("OPERATING_SYSTEM"))
+            return _config.get("OPERATING_SYSTEM");
+
+        return DEFAULT_OPERATING_SYSTEM;
     }
 	
     /**

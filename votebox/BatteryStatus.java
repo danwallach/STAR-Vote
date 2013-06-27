@@ -22,16 +22,74 @@
 
 package votebox;
 
+import sexpression.stream.Base64;
+
+import java.io.*;
+
 /**
  * @author Montrose, Matt Bernhard
  *
  */
 public class BatteryStatus {
-	public static int read(){
-        Kernel32.SYSTEM_POWER_STATUS batteryStatus = new Kernel32.SYSTEM_POWER_STATUS();
-        Kernel32.INSTANCE.GetSystemPowerStatus(batteryStatus);
+
+    /**
+     * Reads the batter status based on the operating system
+     * @param OS - This way we know which protocol to use based on the OS
+     * @return - the percentage of battery as an integer
+     */
+	public static int read(String OS){
+        try{
+            if(OS.equals("Windows")){
+                //A batch file to be included in the working directory
+                String cmd = "BatteryStatus.bat";
+
+                Process child = Runtime.getRuntime().exec(cmd);
 
 
-        return Integer.parseInt(batteryStatus.getBatteryLifePercent());
+
+                BufferedReader out = new BufferedReader(new InputStreamReader(child.getInputStream()));
+
+                String s = "";
+                //This should be at most one line
+                while((s = out.readLine()) != null){
+                    //TODO Figure out what actually happens when the batch file returns something that isn't an integer...
+                    if(s.contains("error"))
+                        return 100;
+                    else
+                        return Integer.parseInt(s); //format the acpi output to truncate
+
+                }
+
+
+            } else if(OS.equals("Linux")){
+
+                    String cmd = "acpi -b";
+                    ProcessBuilder pb = new ProcessBuilder("bash", "-c", cmd);
+                    pb.redirectErrorStream(true);
+                    Process child = pb.start();
+
+
+
+                    BufferedReader out = new BufferedReader(new InputStreamReader(child.getInputStream()));
+
+                    String s = "";
+                    //This should be at most one line
+                    while((s = out.readLine()) != null){
+                        if(s.contains("power_supply"))
+                            return 100;
+                        else
+                            return Integer.parseInt(s.substring(s.indexOf("%")- 2, s.indexOf("%"))); //format the acpi output to truncate
+
+                    }
+
+
+
+
+             }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return 0;
 	}
 }
