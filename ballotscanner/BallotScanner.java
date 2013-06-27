@@ -41,14 +41,14 @@ public class BallotScanner{
     // stores the last found result obtained from a successful code scan
     private String lastFoundBID = "";
 
-    private IWebcam webcam;
-    private Code128Decoder decoder;
+//    private IWebcam webcam;
+//    private Code128Decoder decoder;
 
     // keeps the path to the "ballot scanned" mp3
-    private String bsMp3Path = "sound/ballotscanned.mp3"; //move to the .conf file
+//    private String bsMp3Path = "sound/ballotscanned.mp3"; //move to the .conf file
 
     // keeps the mp3Player
-    private Player mp3Player;
+//    private Player mp3Player;
 
     // how long a result is stored in memory before it is cleared
     private boolean receivedResponse;
@@ -70,9 +70,9 @@ public class BallotScanner{
     public BallotScanner(int serial) {
         _constants = new AuditoriumParams("bs.conf");
 
-        if (_constants.useScanConfirmationSound()) {
-            bsMp3Path = _constants.getConfirmationSoundPath();
-        }
+//        if (_constants.useScanConfirmationSound()) {
+//            bsMp3Path = _constants.getConfirmationSoundPath();
+//        }
 
 
 
@@ -92,9 +92,7 @@ public class BallotScanner{
 
         statusTimer = new Timer(300000, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                System.out.println(">>>> Is connected? " + isConnected());
                 if (isConnected()) {
-                    System.out.println("Scanner status " + getStatus());
                     auditorium.announce(getStatus());
                 }
             }
@@ -191,8 +189,9 @@ public class BallotScanner{
 
                                 auditorium.announce(new BallotScannedEvent(mySerial, lastFoundBID));
 
+                                //This is sort of redundant now that our scanners beep
                                 // play confirmation sound
-                                new Thread() {
+                               /* new Thread() {
                                     public void run() {
 
                                         // prepare the mp3Player
@@ -208,10 +207,9 @@ public class BallotScanner{
                                         }
 
                                     }
-                                }.start();
+                                }.start();*/
 
                                 lastFoundTime = System.currentTimeMillis();
-                                System.out.println("Last found BID: " + lastFoundBID);  //TODO Is this needed?
                             }
                         }
                     }
@@ -238,7 +236,7 @@ public class BallotScanner{
         } catch (NetworkException e1) {
             //NetworkException represents a recoverable error
             //  so just note it and continue
-            System.out.println("Recoverable error occurred: " + e1.getMessage());
+            System.err.println("Recoverable error occurred: " + e1.getMessage());
             e1.printStackTrace(System.err);
         }
 
@@ -269,7 +267,6 @@ public class BallotScanner{
             public void assignLabel(AssignLabelEvent e) {
                 if (e.getNode() == mySerial){
                     label = e.getLabel();
-                    System.out.println("\tNew Label: "+label);
                 }//if
 
                 labelChangedEvent.notify(label);
@@ -379,8 +376,8 @@ public class BallotScanner{
 
             public void ballotAccepted(BallotScanAcceptedEvent event){
 
-                System.out.println("Accepted event: Event BID: " + event.getBID());
-                System.out.println("Accepted event: Last BID: " + lastFoundBID);
+//                System.out.println("Accepted event: Event BID: " + event.getBID());
+//                System.out.println("Accepted event: Last BID: " + lastFoundBID);
 
                 //If this event corresponds with our last scanned ballot, display a confirmation message
                 if(lastFoundBID.equals(event.getBID())){
@@ -397,8 +394,8 @@ public class BallotScanner{
             }
 
             public void ballotRejected(BallotScanRejectedEvent event){
-                System.out.println("Rejected event: Event BID: " + event.getBID());
-                System.out.println("Rejected event: Last BID: " + lastFoundBID);
+//                System.out.println("Rejected event: Event BID: " + event.getBID());
+//                System.out.println("Rejected event: Last BID: " + lastFoundBID);
 
                 //If our ballot was rejected, display a message
                 if(lastFoundBID.equals(event.getBID())){
