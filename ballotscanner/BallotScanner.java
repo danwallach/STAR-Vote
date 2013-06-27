@@ -3,7 +3,6 @@ package ballotscanner;
 import auditorium.Event;
 import auditorium.NetworkException;
 import ballotscanner.state.PromptState;
-import javazoom.jl.player.Player;
 import supervisor.model.ObservableEvent;
 import votebox.AuditoriumParams;
 import votebox.events.*;
@@ -11,8 +10,6 @@ import votebox.events.*;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
 import java.util.Observer;
 import java.util.Scanner;
 

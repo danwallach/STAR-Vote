@@ -22,15 +22,19 @@
 
 package votebox;
 
-import sexpression.stream.Base64;
+import sun.misc.IOUtils;
 
 import java.io.*;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 /**
  * @author Montrose, Matt Bernhard
  *
  */
 public class BatteryStatus {
+
+    public static final String ROOT_JARS = "Votebox.jar";
 
     /**
      * Reads the batter status based on the operating system
@@ -40,10 +44,38 @@ public class BatteryStatus {
 	public static int read(String OS){
         try{
             if(OS.equals("Windows")){
-                //A batch file to be included in the working directory
-                File batteryFile = new File("BatteryStatus.bat");
-                //Using the exec(String[]) method to prevent errors when the command contains spaces.
-                Process child = Runtime.getRuntime().exec(batteryFile.getAbsolutePath().split("!!!"));
+                //This will let us set the working directory for the command prompt
+                File file = new File("BatteryStatus.bat");
+
+                String entry = "BatteryStatus.bat";
+
+
+                File jarFile = new File(ROOT_JARS);
+
+
+
+                InputStream in = null;
+
+
+                if(jarFile.exists()){
+                    JarFile vbJar = new JarFile(jarFile);
+
+                    JarEntry jEntry = null;
+                    jEntry = vbJar.getJarEntry(entry);
+
+                    in = vbJar.getInputStream(jEntry);
+
+                    FileOutputStream f = new FileOutputStream(file);
+                    f.write(IOUtils.readFully(in, -1, false));
+                    f.flush();
+                    f.close();
+
+                }//if
+
+                Process child = Runtime.getRuntime().exec(file.getAbsolutePath().split("!!!"));
+
+
+
                 BufferedReader out = new BufferedReader(new InputStreamReader(child.getInputStream()));
 
                 String s = "";

@@ -55,7 +55,7 @@ import sexpression.stream.*;
  */
 public class SimpleKeyStore implements IKeyStore {
 	//Name of file containing keys/classes/etc for votebox (generally, a jar file)
-	public static final String ROOT_JARS[] = {"votebox.jar", "supervisor.jar"}; 
+	public static final String ROOT_JARS[] = {"Votebox.jar", "Supervisor.jar"};
 
 	private final String _dir;
 	private HashMap<String,Key>  _keyCache;
@@ -171,6 +171,7 @@ public class SimpleKeyStore implements IKeyStore {
             throw new AuditoriumCryptoException( "load(); path=\"" + path + "\"", e );
         }*/
 
+
 		try {
 			InputStream stream = getInput(file);
 
@@ -201,7 +202,8 @@ public class SimpleKeyStore implements IKeyStore {
 //		//Worth removing for a proper "deployment"
 
 		//Check each jar that might have a keystore
-		
+
+
 		boolean[] jarsExist = new boolean[ROOT_JARS.length];
 
 		String entry = _dir;
@@ -210,16 +212,16 @@ public class SimpleKeyStore implements IKeyStore {
 		else
 			entry += file;
 
-		for(int i = 0; i < ROOT_JARS.length; i++){
+        for(int i = 0; i < ROOT_JARS.length; i++){
 
             File jarFile = new File(ROOT_JARS[i]);
-
 
 			if(jarFile.exists())
 				jarsExist[i] = true;
 
 			try{
 				InputStream in = null;
+
 
 				if(jarFile.exists()){
 					JarFile vbJar = new JarFile(jarFile);

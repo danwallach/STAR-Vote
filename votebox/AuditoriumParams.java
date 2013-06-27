@@ -53,7 +53,7 @@ public class AuditoriumParams implements IAuditoriumParams,
     public static final int JOIN_TIMEOUT = 1000;
     public static final String BROADCAST_ADDRESS = "255.255.255.255";
     public static final String LOG_LOCATION = "log.out";
-    public static final String KEYS_DIRECTORY = "/keys/";
+    public static final String KEYS_DIRECTORY = "keys/";
 
     public static final String VIEW_IMPLEMENTATION = "AWT"; //Changed from SDL
     public static final String RULE_FILE = "rules";

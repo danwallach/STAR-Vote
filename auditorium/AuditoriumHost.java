@@ -164,6 +164,7 @@ public class AuditoriumHost implements IAuditoriumHost {
         _layers = new HashMap<String, IAuditoriumLayer>();
         AuditoriumIntegrityLayer integrity = new AuditoriumIntegrityLayer(
                 AAuditoriumLayer.BOTTOM, this, constants.getKeyStore() );
+
         AuditoriumTemporalLayer temporal = new AuditoriumTemporalLayer(
                 integrity, this );
         _layers.put( "Integrity", integrity );
