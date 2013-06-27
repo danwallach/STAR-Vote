@@ -2,6 +2,8 @@ package ballotscanner;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.font.FontRenderContext;
+import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 
 public class UserInfoPanel extends JPanel {
@@ -36,7 +38,7 @@ public class UserInfoPanel extends JPanel {
 
         messagesPanel = new JPanel();
         messagesPanel.setPreferredSize(new Dimension(600, 150));
-        messagesPanel.setLayout(new BoxLayout(messagesPanel, BoxLayout.Y_AXIS));
+        //messagesPanel.setLayout(new BoxLayout(messagesPanel, BoxLayout.Y_AXIS));
         messagesPanel.setBorder(BorderFactory.createEtchedBorder());
 
         clearMessages();
@@ -55,8 +57,14 @@ public class UserInfoPanel extends JPanel {
         messagesPanel.add(Box.createRigidArea(new Dimension(600,gap/3)));
         for(int i=0; i<messages.size(); i++){
             JLabel lab = new JLabel(messages.get(i));
+            lab.setHorizontalAlignment(SwingConstants.CENTER);
             lab.setFont(fontSmall);
-            lab.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+            int textHeight = 0;
+            textHeight += (fontSmall.getStringBounds(messages.get(i),new FontRenderContext(new AffineTransform(), true, true))).getHeight();
+
+            lab.setPreferredSize(new Dimension (messagesPanel.getWidth(), textHeight));
+            //lab.setAlignmentX(Component.CENTER_ALIGNMENT);
             messagesPanel.add(lab);
         }
         messagesPanel.add(Box.createRigidArea(new Dimension(600,gap*2/3)));
