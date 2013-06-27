@@ -23,15 +23,15 @@
 package votebox;
 
 /**
- * Will, sometime in the future, actually read battery status if able.
- * 
- * Currently, a better solution than leaving a Math.random() in votebox.Votebox proper.
- * @author Montrose
+ * @author Montrose, Matt Bernhard
  *
  */
 public class BatteryStatus {
 	public static int read(){
-        return (int)(Math.random() * 1000.0);
+        Kernel32.SYSTEM_POWER_STATUS batteryStatus = new Kernel32.SYSTEM_POWER_STATUS();
+        Kernel32.INSTANCE.GetSystemPowerStatus(batteryStatus);
 
+
+        return Integer.parseInt(batteryStatus.getBatteryLifePercent());
 	}
 }
