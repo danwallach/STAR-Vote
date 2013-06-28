@@ -62,7 +62,7 @@ public class PropositionCard extends ACard {
     };
 
     /**
-     * Constructs a new RaceCard
+     * Constructs a new PropositionCard
      */
     public PropositionCard() {
         super("Proposition");

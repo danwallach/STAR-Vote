@@ -49,12 +49,7 @@ import preptool.controller.exception.BallotExportException;
 import preptool.controller.exception.BallotOpenException;
 import preptool.controller.exception.BallotPreviewException;
 import preptool.controller.exception.BallotSaveException;
-import preptool.model.ballot.ACard;
-import preptool.model.ballot.Ballot;
-import preptool.model.ballot.ICardFactory;
-import preptool.model.ballot.PresidentialRaceCard;
-import preptool.model.ballot.PropositionCard;
-import preptool.model.ballot.RaceCard;
+import preptool.model.ballot.*;
 import preptool.model.ballot.module.AModule;
 import preptool.model.language.Language;
 import preptool.model.layout.Layout;
@@ -101,7 +96,7 @@ public class Model {
         };
 
         cardFactories = new ICardFactory[] {
-                RaceCard.FACTORY, PresidentialRaceCard.FACTORY,
+                PartyCard.FACTORY, RaceCard.FACTORY, PresidentialRaceCard.FACTORY,
                 PropositionCard.FACTORY
         };
     }

@@ -1,11 +1,12 @@
-package preptool.model.ballot.module;
+package preptool.model.ballot;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import preptool.model.XMLTools;
-import preptool.model.ballot.ACard;
-import preptool.model.ballot.CardElement;
-import preptool.model.ballot.ICardFactory;
+import preptool.model.ballot.module.AModule;
+import preptool.model.ballot.module.CandidatesModule;
+import preptool.model.ballot.module.TextFieldModule;
+import preptool.model.ballot.module.TitleModule;
 import preptool.model.language.Language;
 import preptool.model.language.LiteralStrings;
 import preptool.model.layout.manager.ALayoutManager;
@@ -26,7 +27,7 @@ import java.util.List;
 public class PartyCard extends ACard {
 
     /**
-     * Factory to create a RaceCard
+     * Factory to create a PartyCard
      */
     public static final ICardFactory FACTORY = new ICardFactory() {
 
@@ -45,7 +46,7 @@ public class PartyCard extends ACard {
      */
     public PartyCard() {
         super("Party");
-        modules.add(new TextFieldModule("Title", "Title"));
+        modules.add(new TitleModule("Label", "Straight Party Choices"));
         modules.add(new CandidatesModule("Party", new String[]{ "Party" }));
     }
 
@@ -79,7 +80,7 @@ public class PartyCard extends ACard {
      * @return the review title
      */
     public String getReviewTitle(Language language) {
-        TextFieldModule titleModule = (TextFieldModule) getModuleByName("Title");
+        TitleModule titleModule = (TitleModule) getModuleByName("Label");
         return titleModule.getData(language) + ":";
     }
 
@@ -92,15 +93,24 @@ public class PartyCard extends ACard {
      */
     public ALayoutManager.ICardLayout layoutCard(ALayoutManager manager, ALayoutManager.ICardLayout cardLayout) {
         Language lang = manager.getLanguage();
-        TextFieldModule titleModule = (TextFieldModule) getModuleByName("Title");
+        TitleModule title = (TitleModule) getModuleByName("Label");
         CandidatesModule candidatesModule = (CandidatesModule) getModuleByName("Party");
 
-        cardLayout.setTitle(titleModule.getData(lang));
+        cardLayout.setTitle(title.getData(lang));
         for (CardElement ce : candidatesModule.getData()) {
-            cardLayout.addCandidate(ce.getUID(), ce.getName(lang, 0), ce
-                    .getParty().getAbbrev(lang));
+            cardLayout.addCandidate(ce.getUID(), ce.getParty().getName(lang));
         }
         return cardLayout;
+    }
+
+    /**
+     * Returns this card's title, by checking to see if there is a title module
+     * and returning its data. If there is no title, returns the empty string
+     * @param lang the language to get the title in
+     * @return the title, if any
+     */
+    public String getTitle(Language lang) {
+        return "Parties";
     }
 
     public Element toXML(Document doc) {

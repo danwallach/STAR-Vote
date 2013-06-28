@@ -65,6 +65,8 @@ public abstract class ACard {
             card = new PresidentialRaceCard();
         else if (elt.getAttribute("type").equals("Proposition"))
             card = new PropositionCard();
+        else if (elt.getAttribute("type").equals("Party"))
+            card = new PartyCard();
         else
             throw new BallotOpenException("Unknown card type: "
                     + elt.getAttribute("type"));

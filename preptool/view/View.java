@@ -69,6 +69,7 @@ import preptool.controller.exception.BallotPreviewException;
 import preptool.controller.exception.BallotSaveException;
 import preptool.model.Model;
 import preptool.model.Party;
+import preptool.model.ballot.ACard;
 import preptool.model.ballot.ICardFactory;
 import preptool.model.language.Language;
 import preptool.view.dialog.LanguagesDialog;
@@ -840,14 +841,14 @@ public class View extends JFrame {
                 model.moveCard( from, to );
             }
         } );
-        cardList.setTransferHandler( lth );
+        cardList.setTransferHandler(lth);
         cardList.getSelectionModel().setSelectionMode(
-            ListSelectionModel.SINGLE_SELECTION );
-        cardList.addListSelectionListener( new ListSelectionListener() {
+                ListSelectionModel.SINGLE_SELECTION);
+        cardList.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent e) {
                 cardListSelectionChanged();
             }
-        } );
+        });
         JScrollPane cardListScrollPane = new JScrollPane( cardList );
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
@@ -1050,7 +1051,8 @@ public class View extends JFrame {
             JMenuItem item = new JMenuItem( fac.getMenuString() );
             item.addActionListener( new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    model.addCard( fac.makeCard() );
+                    ACard card = fac.makeCard();
+                    model.addCard( card );
                     int idx = model.getNumCards() - 1;
                     cardListModel.addElement( "" );
                     setCardTitle( model.getCardTitle( idx ), idx );
