@@ -54,17 +54,12 @@ public class TitleModule extends AModule {
             c.gridy = 0;
             c.insets = new Insets( 0, 10, 0, 0 );
             c.anchor = GridBagConstraints.LINE_START;
-            JLabel prompt = new JLabel( label + ":  " );
+            JLabel prompt = new JLabel( label  );
             add( prompt, c );
             title = new JLabel();
 
-            setData(language, label);
+            //setData(language, label);
 
-            title.addPropertyChangeListener(new PropertyChangeListener() {
-                public void propertyChange(PropertyChangeEvent evt) {
-                    title.setText(getData(language));
-                }
-            });
 
             JPopupMenu contextMenu = new JPopupMenu();
             copyFromItem = new JMenuItem();
@@ -150,8 +145,9 @@ public class TitleModule extends AModule {
         super( name );
         this.label = label;
         data = new LocalizedString();
-        //This is sort of a hack, should probably find a way to better support languages
-        //data.set(Language.getLanguageForName("English"), label);
+
+        //TODO This is sort of a hack, should probably find a way to better support languages
+        data.set(Language.getLanguageForName("English"), label);
     }
 
     /**

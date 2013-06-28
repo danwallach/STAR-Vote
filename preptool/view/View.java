@@ -71,6 +71,7 @@ import preptool.model.Model;
 import preptool.model.Party;
 import preptool.model.ballot.ACard;
 import preptool.model.ballot.ICardFactory;
+import preptool.model.ballot.PartyCard;
 import preptool.model.language.Language;
 import preptool.view.dialog.LanguagesDialog;
 import preptool.view.dialog.PartiesDialog;
@@ -1047,14 +1048,28 @@ public class View extends JFrame {
      */
     private void initializePopupMenu() {
         addCardMenu = new JPopupMenu();
+
         for (final ICardFactory fac : model.getCardFactories()) {
             JMenuItem item = new JMenuItem( fac.getMenuString() );
             item.addActionListener( new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     ACard card = fac.makeCard();
-                    model.addCard( card );
-                    int idx = model.getNumCards() - 1;
-                    cardListModel.addElement( "" );
+
+                    int idx;
+
+                    //Make PartyCards always first so they will be displayed
+                    // at the beginning of a voting session
+                    if(card instanceof PartyCard){
+                        idx = 0;
+                        model.addCardAtFront( card );
+                        cardListModel.insertElementAt("", 0 );
+
+                    }
+                    else{
+                        model.addCard( card );
+                        cardListModel.addElement( "" );
+                        idx = model.getNumCards() - 1;
+                    }
                     setCardTitle( model.getCardTitle( idx ), idx );
                     cardList.setSelectedIndex( idx );
                 }

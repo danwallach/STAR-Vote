@@ -112,6 +112,16 @@ public class Model {
     }
 
     /**
+     * Adds the card to the front of the ballot
+     *
+     * @param newCard
+     *             the card to add
+     */
+    public void addCardAtFront(ACard newCard){
+        getBallot().getCards().add(0, newCard);
+    }
+
+    /**
      * Adds the directory to a ZIP file
      */
     private void addDirectoryToZip(ZipOutputStream out, File dir, String path)

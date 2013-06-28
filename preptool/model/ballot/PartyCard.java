@@ -32,7 +32,7 @@ public class PartyCard extends ACard {
     public static final ICardFactory FACTORY = new ICardFactory() {
 
         public String getMenuString() {
-            return "Add Party";
+            return "Add Straight Party Support";
         }
 
         public ACard makeCard() {
@@ -46,7 +46,7 @@ public class PartyCard extends ACard {
      */
     public PartyCard() {
         super("Party");
-        modules.add(new TitleModule("Label", "Straight Party Choices"));
+        modules.add(new TitleModule("Label", "Straight Party"));
         modules.add(new CandidatesModule("Party", new String[]{ "Party" }));
     }
 
@@ -140,7 +140,7 @@ public class PartyCard extends ACard {
         //Need to carry the grouping of these candidates together for NIZK purposes.
         XMLTools.addListProperty(doc, cardElt, Properties.RACE_GROUP, "String", ids.toArray(new String[0]));
 
-        XMLTools.addProperty(doc, cardElt, Properties.CARD_STRATEGY, "String", "StraightTicket".split("!"));
+        XMLTools.addProperty(doc, cardElt, Properties.CARD_STRATEGY, "String", "StraightTicket");
 
         return cardElt;
     }
