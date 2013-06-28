@@ -1379,6 +1379,7 @@ public class PsychLayoutManager extends ALayoutManager {
         instructionsTitle.setSize(instructionsTitle.execute(sizeVisitor));
         frame.addTitle(instructionsTitle);
         frame.addSideBar(1);
+
         frame.addNextButton(new Label(getNextLayoutUID(),
                 LiteralStrings.Singleton.get("FORWARD_FIRST_RACE", language),
                 sizeVisitor));

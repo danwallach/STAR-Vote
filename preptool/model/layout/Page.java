@@ -39,7 +39,7 @@ import preptool.model.XMLTools;
 public class Page {
 
 	/**
-	 * Indiciates whether or not a page is a review screen.
+	 * Indicates whether or not a page is a review screen.
 	 */
 	private boolean isReviewPage = false;
 	

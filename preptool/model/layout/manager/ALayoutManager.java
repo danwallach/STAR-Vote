@@ -236,9 +236,7 @@ public abstract class
             }
 
             public Void forButton(Button b, Object... param) {
-                //System.out.println(">>> forButton attempting to be called");
                 if (!uids.contains(b.getUID())) {
-                    //System.out.println(">>> forButton being called on " + b.getUID());
                     try {
                         BufferedImage img = b.execute(getImageVisitor());
                         ImageIO.write(img, "png", new File(location
@@ -260,7 +258,6 @@ public abstract class
                 if (!uids.contains(l.getUID())) {
                     try {
                         BufferedImage img = l.execute(getImageVisitor());
-                        //System.out.println(location + l.getUID() + "_1_" + langShortName + ".png\nThe UID is: " + l.getUID());
                         ImageIO.write(img, "png", new File(location
                                 + l.getUID() + "_1_" + langShortName + ".png"));
                     } catch (IOException e) {
@@ -278,28 +275,22 @@ public abstract class
                 String uid = rb.getUID();
                 String uuid = null;
 
-                //System.out.println("Review processing uid " + uid);
-
                 if(uid.contains("_"))
                     uuid = uid.substring(0, uid.indexOf('_'));
                 else
                     uuid = uid;
 
-                //System.out.println(">>> forReviewButton being called on " + uid);
 
 
                 //We only want to reformat candidates as no selection, not races, etc
                 if(rb.getUID().contains("B")){
-                    //System.out.println(getSizeVisitor())
                     PrintButton pb = new PrintButton(rb.getUID(), (rb.getText().contains("None")) ? "NO SELECTION" : rb.getText(), getSizeVisitor());
 
                     pb.setBold(rb.isBold());
                     pb.setWidth(rb.getWidth());
                     pb.setIncreasedFontSize(rb.isIncreasedFontSize());
 
-                    //pb.setText("NO SELECTION");
-                    pb.execute(/*getImageVisitor()*/this);
-                    //this.forPrintButton(pb, param);
+                    pb.execute(this);
 
 
                 }
@@ -313,20 +304,9 @@ public abstract class
                     pb.setIncreasedFontSize(rb.isIncreasedFontSize());
 
                     pb.setText(rb.getText());
-                    pb.execute(/*getImageVisitor()*/this);
-                    //forPrintButton(pb, param);
+                    pb.execute(this);
                 }
 
-//              BufferedImage imageRead = null;
-//              try {
-//                  imageRead = ImageIO.read(new File(location
-//                          + uid + "_1_"
-//                          + langShortName + ".png"));
-//              }
-//              catch (Exception ie){
-//                  System.out.println("Image " + uuid + " does not exist!");
-//                  System.out.println(ie.getMessage());
-//              }
 
                 BufferedImage image = rb.execute(getImageVisitor());
 
@@ -471,36 +451,6 @@ public abstract class
                         ImageIO.write(img, "png", new File(location + uid
                                 + "_" + langShortName + ".png"));
 
-
-
-//                        /**
-//                         * Renders the VVPAT equivalent of the review button.
-//                         */
-//                        BufferedImage image = null;
-//                        try{
-//                            image = ImageIO.read(new File(location
-//                                    + uid + "_1_"
-//                                    + langShortName + ".png"));
-//                        }
-//                        //If there isn't a focused selected version of the selection, it must be a None selection
-//                        //Therefore we need to find another version of it
-//                        catch(Exception e){
-//                            String imageName = location
-//                                    + uuid + "_1_"
-//                                    + langShortName + ".png";
-//                            System.out.println(imageName);
-//
-//                            try {
-//
-//                                image = ImageIO.read(new File(imageName));
-//                            }
-//                            catch (Exception ie){
-//
-//                                System.out.println("Image " + uuid + " does not exist!");
-//                                return null;
-//                            }
-//
-//                        }
 
                         File file = new File(location);
                         file = new File(file, "vvpat");

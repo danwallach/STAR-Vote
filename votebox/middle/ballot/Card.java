@@ -138,7 +138,6 @@ public class Card {
                 k = _properties.getInteger(Properties.K);
             // Set the strategy.
             if (_properties.contains(Properties.CARD_STRATEGY)) {
-
                 if ("RadioButton".equals(_properties
                         .getString(Properties.CARD_STRATEGY))) {
                     _strategy = RadioButton.Singleton;
@@ -149,6 +148,7 @@ public class Card {
                     // break;
                 } else if ("StraightTicket".equals(_properties
                         .getString(Properties.CARD_STRATEGY))) {
+                    System.out.println("Found StraightTicket for " + _uniqueID);
                     _strategy = new StraightTicket(this);
                     // break;
                 } else {
@@ -163,6 +163,7 @@ public class Card {
             System.err
                     .println("Strategy formatting error detected for element "
                             + _uniqueID + ". Using radio button");
+            System.err.println(e.getMessage());
         }
     }
 

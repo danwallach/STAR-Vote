@@ -83,7 +83,7 @@ public class DataLogger {
     private ASEWriter _ballotwriter;
 
     /**
-     * This isthe public constructor to DataLogger
+     * This is the public constructor to DataLogger
      * 
      * @param filename
      *            This is the filename of the file where the logs needs to go.
@@ -91,8 +91,8 @@ public class DataLogger {
      */
     private DataLogger(File filename) {
         try {
-            if (filename.exists())
-                filename = new File( filename.getName() + "_" );
+//            if (filename.exists())
+//                filename = new File( filename.getName() + "_" );
 
             _writer = new ASEWriter( new FileOutputStream( filename ) );
             _ballotwriter = new ASEWriter( new FileOutputStream( filename
