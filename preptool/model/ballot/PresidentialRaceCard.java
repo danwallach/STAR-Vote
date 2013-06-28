@@ -137,8 +137,7 @@ public class PresidentialRaceCard extends ACard {
         //Need to carry the grouping of these candidates together for NIZK purposes.
         XMLTools.addListProperty(doc, cardElt, Properties.RACE_GROUP, "String", ids.toArray(new String[0]));
 
-        //Enable straight ticket voting
-        XMLTools.addListProperty(doc, cardElt, "CardStrategy", "String", "StraightTicket".split("!"));
+
 
         return cardElt;
     }

@@ -148,7 +148,6 @@ public class Card {
                     // break;
                 } else if ("StraightTicket".equals(_properties
                         .getString(Properties.CARD_STRATEGY))) {
-                    System.out.println("Found StraightTicket for " + _uniqueID);
                     _strategy = new StraightTicket(this);
                     // break;
                 } else {

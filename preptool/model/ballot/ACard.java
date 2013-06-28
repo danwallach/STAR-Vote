@@ -235,10 +235,9 @@ public abstract class ACard {
         cardElt.setAttribute("uid", uniqueID);
         XMLTools.addProperty(doc, cardElt, "CardStrategy", "String",
                 "RadioButton");
-        
-        XMLTools.addProperty(doc, cardElt, "TitleLabelUID", "String",
-        		titleLabelID);
 
+        XMLTools.addProperty(doc, cardElt, "TitleLabelUID", "String",
+                titleLabelID);
 
         return cardElt;
     }
