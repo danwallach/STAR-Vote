@@ -98,6 +98,7 @@ public class PartyCard extends ACard {
 
         cardLayout.setTitle(title.getData(lang));
         for (CardElement ce : candidatesModule.getData()) {
+            //Note that we put the party where the candidate's name would normally be
             cardLayout.addCandidate(ce.getUID(), ce.getParty().getName(lang));
         }
         return cardLayout;

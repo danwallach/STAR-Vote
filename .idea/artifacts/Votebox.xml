@@ -18,7 +18,6 @@
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/javacv-windows-x86_64.jar" path-in-jar="/" />
       <element id="dir-copy" path="$PROJECT_DIR$/keys" />
       <element id="library" level="project" name="keys" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/lib/barbecue-1.5-beta1.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>

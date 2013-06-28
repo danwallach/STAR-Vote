@@ -42,8 +42,7 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import preptool.model.ballot.ACard;
-import preptool.model.ballot.Ballot;
+import preptool.model.ballot.*;
 import preptool.model.language.Language;
 import preptool.model.language.LiteralStrings;
 import preptool.model.layout.*;
@@ -917,9 +916,11 @@ public class PsychLayoutManager extends ALayoutManager {
     protected Label moreCandidatesInfo;
 
     /**
-     * Instructions for a race
+     * Instructions for a races, based on the type of race
      */
     protected Label raceInstructions;
+    protected Label partyInstructions;
+    protected Label propInstructions;
 
     /**
      * The background for this layout
@@ -1051,6 +1052,15 @@ public class PsychLayoutManager extends ALayoutManager {
 
         raceInstructions = new Label(getNextLayoutUID(),
                 LiteralStrings.Singleton.get("RACE_INSTRUCTIONS", language),
+                sizeVisitor);
+
+        partyInstructions = new Label(getNextLayoutUID(),
+                LiteralStrings.Singleton.get("PARTY_INSTRUCTIONS", language),
+                sizeVisitor);
+
+
+        propInstructions = new Label(getNextLayoutUID(),
+                LiteralStrings.Singleton.get("PROPOSITION_INSTRUCTIONS", language),
                 sizeVisitor);
 
         background = makeBackground();
@@ -1307,7 +1317,15 @@ public class PsychLayoutManager extends ALayoutManager {
             constraints.gridx = 0;
             constraints.weightx = 1;
             constraints.weighty = 1;
-            Spacer instspacer = new Spacer(raceInstructions, cardFrame.north);
+            Spacer instspacer;
+
+            if(card instanceof PartyCard)
+                instspacer = new Spacer(partyInstructions, cardFrame.north);
+            else if(card instanceof PropositionCard)
+                instspacer = new Spacer(propInstructions, cardFrame.north);
+            else
+                instspacer= new Spacer(raceInstructions, cardFrame.north);
+
             cardFrame.north.add(instspacer, constraints);
             cardFrame.validate();
             cardFrame.pack();
