@@ -160,10 +160,7 @@ public class Launcher {
 
 					public boolean getAllowUIScaling() { return true; }
 
-                    @Override
-                    public String getElectionName() {
-                        return null;  //To change body of implemented methods use File | Settings | File Templates.
-                    }
+                    public String getElectionName() { return null; }
 
                     public boolean getUseWindowedView() {return true;}
 					
