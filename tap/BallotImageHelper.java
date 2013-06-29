@@ -83,6 +83,7 @@ public class BallotImageHelper {
 			while(entries.hasMoreElements()){
 				ZipEntry entry = entries.nextElement();
 				
+				// TODO We should take out the accpet/rejected images. They're a waste of space...				
 				if(entry.getName().endsWith("vvpat/accept.png"))
 					vvpatMap.put("accept", ImageIO.read(file.getInputStream(entry)));
 
@@ -99,8 +100,6 @@ public class BallotImageHelper {
 					
 					id = id.substring(0, sub);
 
-                    //System.out.println("Getting image " + id);
-					
 					vvpatMap.put(id, ImageIO.read(file.getInputStream(entry)));
 				}
 			}
