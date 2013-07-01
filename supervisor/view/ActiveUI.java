@@ -233,21 +233,19 @@ public class ActiveUI extends JPanel {
                             JOptionPane.QUESTION_MESSAGE, null, model.getSelections(), model.getInitialSelection());
 
                     String pin = "";
-                    String precinctNum = "";
-                    if(precinct.contains("-"))
-                        precinctNum = precinct.substring(0, precinct.indexOf("-"));
-                    else
-                        precinctNum = precinct;
 
-                    if(precinct.contains("provisional"))
-                        pin  = model.generateProvisionalPin(precinct);
-                    else
-                        pin = model.generatePin(precinctNum);
+                    if(!precinct.equals("null")){
+                        if(precinct.contains("provisional"))
+                            pin  = model.generateProvisionalPin(precinct);
+                        else
+                            pin = model.generatePin(precinct);
 
-                    Printer printer = new Printer();
-                    String strPin;
-                    printer.printPin(strPin = (new DecimalFormat("0000")).format(Integer.parseInt(pin)));
-                    JOptionPane.showMessageDialog(fthis, "Your pin is: " + strPin);
+                        Printer printer = new Printer();
+                        String strPin;
+                        printer.printPin(strPin = (new DecimalFormat("0000")).format(Integer.parseInt(pin)));
+                        JOptionPane.showMessageDialog(fthis, "Your pin is: " + strPin);
+                    }
+
                 } else {
                     JOptionPane.showMessageDialog(fthis, "Please select at least one ballot before generating a pin");
                 }

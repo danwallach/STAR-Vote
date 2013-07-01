@@ -345,8 +345,27 @@ public class CandidatesModule extends AModule {
         public void deleteCandidateButtonPressed() {
             if (candidatesTable.getEditingRow() == -1) {
                 int answer = JOptionPane.showConfirmDialog( this.getRootPane(),
-                    "Are you sure you want to delete this candidate?",
-                    "Delete Candidate", JOptionPane.YES_NO_OPTION );
+                    "Are you sure you want to delete this row?",
+                    "Delete row", JOptionPane.YES_NO_OPTION );
+                if (answer == JOptionPane.YES_OPTION) {
+                    int idx = candidatesTable.getSelectedRow();
+                    if (tableModel.getRowCount() > 1) {
+                        int newIdx;
+                        if (idx == tableModel.getRowCount() - 1)
+                            newIdx = idx - 1;
+                        else
+                            newIdx = idx + 1;
+                        candidatesTable.clearSelection();
+                        candidatesTable
+                                .addRowSelectionInterval( newIdx, newIdx );
+                    }
+                    tableModel.removeRow( idx );
+                }
+            } else if(candidatesTable.isRowSelected(candidatesTable.getSelectedRow())){
+                //This is necessary with the Parties card, as there are no text fields to selected
+                int answer = JOptionPane.showConfirmDialog( this.getRootPane(),
+                        "Are you sure you want to delete this row?",
+                        "Delete row", JOptionPane.YES_NO_OPTION );
                 if (answer == JOptionPane.YES_OPTION) {
                     int idx = candidatesTable.getSelectedRow();
                     if (tableModel.getRowCount() > 1) {

@@ -138,7 +138,6 @@ public class Card {
                 k = _properties.getInteger(Properties.K);
             // Set the strategy.
             if (_properties.contains(Properties.CARD_STRATEGY)) {
-
                 if ("RadioButton".equals(_properties
                         .getString(Properties.CARD_STRATEGY))) {
                     _strategy = RadioButton.Singleton;
@@ -163,6 +162,7 @@ public class Card {
             System.err
                     .println("Strategy formatting error detected for element "
                             + _uniqueID + ". Using radio button");
+            System.err.println(e.getMessage());
         }
     }
 

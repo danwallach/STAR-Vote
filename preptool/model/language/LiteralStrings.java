@@ -207,6 +207,20 @@ public class LiteralStrings {
         map.put("RACE_INSTRUCTIONS", ls);
 
         ls = new LocalizedString();
+        ls.set(ENGLISH, "To make your choice, click on the party name or on the box next to the name."
+                + "\n A green checkmark will appear next to your choice. If you want to change "
+                + "\n your choice, just click on a different party or box."
+                + "\n Selecting a party here will select candidates from that party on all subsequent"
+                + "\n screens, where applicable.");
+        map.put("PARTY_INSTRUCTIONS", ls);
+
+        ls = new LocalizedString();
+        ls.set(ENGLISH, "To make your choice, click on the response or on the box next to the "
+                + "\n response. A green checkmark will appear next to your choice. If you want to change "
+                + "\n your choice, just click on a different response or box.");
+        map.put("PROPOSITION_INSTRUCTIONS", ls);
+
+        ls = new LocalizedString();
         ls.set(ENGLISH, "Below are the choices you have made. If you would like to make changes, click on the race you would "
                 + "\n like to change. If you do not want to make changes,"
                 + "\n click the 'Next Page' button to go to Step 4. "

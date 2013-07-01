@@ -92,10 +92,9 @@ public class Tap {
         }
     }//forward
 
-    // TODO update this when our own database/server is implemented
     protected void dumpBallotList(ArrayList<String> ballotList){
         try {
-//          todo: revert this hard-coded value for demo
+          	// TODO revert this hard-coded value for demo
             URI url = new URI("ws://localhost:9000/ballotdump");
             WebSocket websocket = new WebSocketConnection(url);
 
@@ -103,17 +102,17 @@ public class Tap {
             websocket.setEventHandler(new WebSocketEventHandler() {
                 public void onOpen()
                 {
-//                  System.out.println("--open");
+					//System.out.println("--open");
                 }
 
                 public void onMessage(WebSocketMessage message)
                 {
-//                  System.out.println("--received message: " + message.getText());
+					//System.out.println("--received message: " + message.getText());
                 }
 
                 public void onClose()
                 {
-//                  System.out.println("--close");
+					//System.out.println("--close");
                 }
             });
 

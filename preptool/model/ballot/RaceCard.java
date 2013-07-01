@@ -131,6 +131,7 @@ public class RaceCard extends ACard {
         
         //Need to carry the grouping of these candidates together for NIZK purposes.
         XMLTools.addListProperty(doc, cardElt, Properties.RACE_GROUP, "String", ids.toArray(new String[0]));
+
         return cardElt;
     }
 }

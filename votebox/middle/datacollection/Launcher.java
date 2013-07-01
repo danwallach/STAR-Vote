@@ -67,7 +67,7 @@ public class Launcher {
      * checks won't catch everything but they will catch enough problems caused
      * by simple accidents.
      * @param ballotLocation This is the location of the ballot. (zip)
-     * @param logDir This is the directory that log files shuld be written out
+     * @param logDir This is the directory that log files should be written out
      *            to. (dir)
      * @param logFilename This is the desired filename for the log file.
      * @param debug Passed to AWTViewFactory to determine windowed/fullscreen mode.
@@ -134,11 +134,11 @@ public class Launcher {
 			// Mangle a name that doesn't exist
 			int i = 2;
 			String startname = logfile.getName();
-			while (logfile.exists())
-				logfile = new File(startname + "-" + i++);
+//			while (logfile.exists())
+//				logfile = new File(startname + "-" + i++);
 
 			if (!_view.askQuestion("Supplied 'log file' exists",
-					"If you choose to continue, event data will be recorded to the file: "
+					"If you choose to continue, event data will be overwritten in file: "
 							+ logfile.getName())) return;
 		}
 
@@ -160,10 +160,7 @@ public class Launcher {
 
 					public boolean getAllowUIScaling() { return true; }
 
-                    @Override
-                    public String getElectionName() {
-                        return null;  //To change body of implemented methods use File | Settings | File Templates.
-                    }
+                    public String getElectionName() { return null; }
 
                     public boolean getUseWindowedView() {return true;}
 					

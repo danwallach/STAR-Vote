@@ -65,6 +65,8 @@ public abstract class ACard {
             card = new PresidentialRaceCard();
         else if (elt.getAttribute("type").equals("Proposition"))
             card = new PropositionCard();
+        else if (elt.getAttribute("type").equals("Party"))
+            card = new PartyCard();
         else
             throw new BallotOpenException("Unknown card type: "
                     + elt.getAttribute("type"));
@@ -235,11 +237,10 @@ public abstract class ACard {
         cardElt.setAttribute("uid", uniqueID);
         XMLTools.addProperty(doc, cardElt, "CardStrategy", "String",
                 "RadioButton");
-        
+
         XMLTools.addProperty(doc, cardElt, "TitleLabelUID", "String",
-        		titleLabelID);
-        
-        
+                titleLabelID);
+
         return cardElt;
     }
 

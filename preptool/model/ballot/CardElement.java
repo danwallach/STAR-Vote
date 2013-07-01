@@ -28,6 +28,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import preptool.model.Party;
+import preptool.model.XMLTools;
 import preptool.model.language.Language;
 import preptool.model.language.LocalizedString;
 
@@ -217,6 +218,8 @@ public class CardElement {
 	public Element toXML(Document doc) {
 		Element cardElementElt = doc.createElement("SelectableCardElement");
 		cardElementElt.setAttribute("uid", uniqueID);
+        if(!party.equals(Party.NO_PARTY))
+            XMLTools.addProperty(doc, cardElementElt, "Party", "String", getParty().getName(Language.getLanguageForName("English")));
 		return cardElementElt;
 	}
 }
