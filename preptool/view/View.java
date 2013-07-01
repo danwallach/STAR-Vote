@@ -1061,8 +1061,10 @@ public class View extends JFrame {
                     // at the beginning of a voting session
                     if(card instanceof PartyCard){
                         idx = 0;
+                        //Should parties automatically be added to the card?
                         model.addCardAtFront( card );
                         cardListModel.insertElementAt("", 0 );
+
 
                     }
                     else{
