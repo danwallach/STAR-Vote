@@ -64,6 +64,10 @@ public class LiteralStrings {
         map.put("RECORD_TITLE", ls);
 
         ls = new LocalizedString();
+        ls.set(ENGLISH, "Straight Party");
+        map.put("STRAIGHT_PARTY", ls);
+
+        ls = new LocalizedString();
         ls.set(ENGLISH, "Thank you for voting!");
         map.put("SUCCESS_TITLE", ls);
 

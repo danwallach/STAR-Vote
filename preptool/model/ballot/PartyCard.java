@@ -26,6 +26,8 @@ import java.util.List;
  */
 public class PartyCard extends ACard {
 
+    private TitleModule title;
+
     /**
      * Factory to create a PartyCard
      */
@@ -46,7 +48,8 @@ public class PartyCard extends ACard {
      */
     public PartyCard() {
         super("Party");
-        modules.add(new TitleModule("Label", "Straight Party"));
+        title = new TitleModule("Label", "");
+        modules.add(title);
         modules.add(new CandidatesModule("Party", new String[]{ "Party" }));
     }
 
@@ -70,6 +73,7 @@ public class PartyCard extends ACard {
      * @param language the language
      */
     public String getReviewBlankText(Language language) {
+        title.setData(language, LiteralStrings.Singleton.get("STRAIGHT_PARTY").get(language));
         return LiteralStrings.Singleton.get("NONE", language);
     }
 
@@ -80,6 +84,7 @@ public class PartyCard extends ACard {
      * @return the review title
      */
     public String getReviewTitle(Language language) {
+        title.setData(language, LiteralStrings.Singleton.get("STRAIGHT_PARTY").get(language));
         TitleModule titleModule = (TitleModule) getModuleByName("Label");
         return titleModule.getData(language) + ":";
     }
@@ -93,6 +98,7 @@ public class PartyCard extends ACard {
      */
     public ALayoutManager.ICardLayout layoutCard(ALayoutManager manager, ALayoutManager.ICardLayout cardLayout) {
         Language lang = manager.getLanguage();
+        title.setData(lang, LiteralStrings.Singleton.get("STRAIGHT_PARTY").get(lang));
         TitleModule title = (TitleModule) getModuleByName("Label");
         CandidatesModule candidatesModule = (CandidatesModule) getModuleByName("Party");
 
@@ -111,7 +117,8 @@ public class PartyCard extends ACard {
      * @return the title, if any
      */
     public String getTitle(Language lang) {
-        return "Parties";
+        return title.getData(lang);
+
     }
 
     public Element toXML(Document doc) {

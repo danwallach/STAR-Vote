@@ -58,15 +58,16 @@ public class TitleModule extends AModule {
             add( prompt, c );
             title = new JLabel();
 
-            //setData(language, label);
+//            setData(language, label);
+//            System.out.println(language);
 
 
             JPopupMenu contextMenu = new JPopupMenu();
             copyFromItem = new JMenuItem();
             copyFromItem.addActionListener( new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    setData( language, getData( primaryLanguage ) );
-                    title.setText( getData( language ) );
+                    setData( primaryLanguage, getData( primaryLanguage ) );
+                    title.setText( getData( primaryLanguage ) );
                 }
             } );
             contextMenu.add( copyFromItem );
@@ -83,6 +84,8 @@ public class TitleModule extends AModule {
         public void languageSelected(Language lang) {
             language = lang;
             title.setText( getData( lang ) );
+            validate();
+            repaint();
         }
 
         /**
@@ -146,14 +149,13 @@ public class TitleModule extends AModule {
         this.label = label;
         data = new LocalizedString();
 
-        //TODO This is sort of a hack, should probably find a way to better support languages
-        data.set(Language.getLanguageForName("English"), label);
+//        //TODO This is sort of a hack, should probably find a way to better support languages
+//        data.set(Language.getLanguageForName("English"), "");
     }
 
     /**
      * Generates ane returns this module's view
      */
-    @Override
     public AModuleView generateView(View view) {
         return new ModuleView( view );
     }
@@ -169,9 +171,8 @@ public class TitleModule extends AModule {
     }
 
     /**
-     * Returns true if the module needs translation in the given languagex
+     * Returns true if the module needs translation in the given language
      */
-    @Override
     public boolean needsTranslation(Language lang) {
         return getData( lang ).equals( "" );
     }
@@ -185,6 +186,7 @@ public class TitleModule extends AModule {
      *            the string
      */
     public void setData(Language lang, String s) {
+        System.out.println("Setting data with string " + s + " in language " + lang);
         data.set( lang, s );
         setChanged();
         notifyObservers();
@@ -193,11 +195,14 @@ public class TitleModule extends AModule {
     /**
      * Formats this TextFieldModule as a savable XML Element
      */
-    @Override
     public Element toSaveXML(Document doc) {
         Element moduleElt = doc.createElement( "Module" );
         moduleElt.setAttribute( "type", "TitleModule" );
         moduleElt.setAttribute( "name", getName() );
+
+        for(Language lang : Language.getAllLanguages()){
+            System.out.println(">>>> Data: " + data.get(lang) + " in language " + lang.getName()) ;
+        }
 
         XMLTools.addProperty( doc, moduleElt, "label", "String", label );
 
