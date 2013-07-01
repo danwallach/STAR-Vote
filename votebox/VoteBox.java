@@ -729,10 +729,6 @@ public class VoteBox{
                 // NO-OP
             }
 
-            public void castBallot(CastBallotEvent e) {
-                // NO-OP
-            }
-
             /**
              * Increment the number of connections
              */

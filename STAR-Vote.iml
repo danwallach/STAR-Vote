@@ -7,10 +7,10 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="lib" level="project" />
-    <orderEntry type="library" name="STAR-Vote" level="project" />
-    <orderEntry type="module" module-name="votebox" />
-    <orderEntry type="library" name="STAR-Vote1" level="project" />
+    <orderEntry type="library" name="STAR-Vote2" level="project" />
+    <orderEntry type="library" name="lib2" level="project" />
+    <orderEntry type="library" name="lib1" level="project" />
+    <orderEntry type="library" name="STAR-Vote3" level="project" />
   </component>
 </module>
 

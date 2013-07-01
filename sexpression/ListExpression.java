@@ -69,7 +69,7 @@ public class ListExpression extends ASExpression implements
      *            this SExpressionList.
      */
     public ListExpression(List<ASExpression> list) {
-        _list = list.toArray( new ASExpression[0] );
+        _list = list.toArray(new ASExpression[0]);
     }
 
     /**
