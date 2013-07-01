@@ -435,6 +435,10 @@ public class AuditoriumParams implements IAuditoriumParams,
         return ELECTION_NAME;
     }
 
+
+    /**
+     * This parameter is used if the order in which the candidates are shown is supposed to be shuffled
+     */
     public boolean shuffleCandidates() {
         if(_config.containsKey("SHUFFLE_CANDIDATE_ORDER"))
             return Boolean.parseBoolean(_config.get("SHUFFLE_CANDIDATE_ORDER"));
