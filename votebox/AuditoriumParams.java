@@ -138,6 +138,8 @@ public class AuditoriumParams implements IAuditoriumParams,
 
     public static final String DEFAULT_OPERATING_SYSTEM = "Windows";
 
+    public static final boolean DEFAULT_SHUFFLE_CANDIDATE_ORDER = false;
+
 
     /**
      * @param path
@@ -431,6 +433,13 @@ public class AuditoriumParams implements IAuditoriumParams,
             return _config.get("ELECTION_NAME");
 
         return ELECTION_NAME;
+    }
+
+    public boolean shuffleCandidates() {
+        if(_config.containsKey("SHUFFLE_CANDIDATE_ORDER"))
+            return Boolean.parseBoolean(_config.get("SHUFFLE_CANDIDATE_ORDER"));
+
+        return DEFAULT_SHUFFLE_CANDIDATE_ORDER;
     }
 
     public boolean getUseTwoColumns(){

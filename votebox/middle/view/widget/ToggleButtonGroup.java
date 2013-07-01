@@ -23,6 +23,7 @@
 package votebox.middle.view.widget;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import votebox.middle.IncorrectTypeException;
 import votebox.middle.Properties;
@@ -61,7 +62,7 @@ public class ToggleButtonGroup {
 	 * Call this method to set the strategy that this button group delegates to
 	 * based on what is set in this button group's properties.
 	 * 
-	 * @param viewmanager
+	 * @param viewManagerAdapter
 	 *            Often a strategy's constructor will need a reference to the
 	 *            view manager. Use this reference.
 	 */

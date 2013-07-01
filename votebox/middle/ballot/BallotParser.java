@@ -24,9 +24,7 @@ package votebox.middle.ballot;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -183,8 +181,19 @@ public class BallotParser {
         for(Card card : cards){
         	Properties cardProps = card.getProperties();
         	if(cardProps.contains(Properties.RACE_GROUP)){
+
         		try{
-        			raceGroups.add(cardProps.getStringList(Properties.RACE_GROUP));
+                    List<String> r = cardProps.getStringList(Properties.RACE_GROUP);
+
+
+                    //Randomly permute the candidates (i.e. ballot rotation)
+                    Collections.shuffle(r);
+
+                    for(String i : r)
+                        System.out.println("Race groups entry: " + i);
+
+        			raceGroups.add(r);
+
         		}catch(Exception e){
         			throw new BallotParserException(e.getMessage(), null);
         		}
@@ -235,6 +244,9 @@ public class BallotParser {
                                 + " as being a Property, CardElement, or SelectableCardElement",
                         null );
         }
+
+        //Shuffle the elements of the card to hopefully reorder them
+        Collections.shuffle(elements);
 
         String uniqueID = node.getAttributes().getNamedItem( "uid" )
                 .getNodeValue();

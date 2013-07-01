@@ -108,7 +108,6 @@ public class Label implements IDrawable {
      */
     public IViewImage getReviewImage() {
         if (_reviewImage == null) {
-            //System.out.println("> Label is attempting to open image with UID: " + _uniqueID + " by passing: " + _vars.getBallotPath() + " | " + _uniqueID + "_review" + " | " + _viewManager.getSize() + " | " + _viewManager.getLanguage());
             _reviewImage = _factory.makeImage( imagePath( _vars, _uniqueID
                     + "_review", _viewManager.getSize(), _viewManager
                     .getLanguage() ) );

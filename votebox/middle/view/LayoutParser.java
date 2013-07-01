@@ -25,6 +25,7 @@ package votebox.middle.view;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -38,12 +39,15 @@ import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.SchemaFactory;
+
+import auditorium.IAuditoriumParams;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import votebox.AuditoriumParams;
 import votebox.middle.IBallotVars;
 import votebox.middle.Properties;
 import votebox.middle.UnknownFormatException;
@@ -81,6 +85,30 @@ import votebox.middle.view.widget.ToggleButtonGroup;
 public class LayoutParser {
 
     private HashMap<String, LinkedList<IDrawable>> _drawables;
+
+    private AuditoriumParams constants;
+
+    /**
+     * A constructor so we can get election parameters in to this class
+     *
+     * @param constants - election parameters
+     */
+    public LayoutParser(AuditoriumParams constants){
+        this.constants = constants;
+    }
+
+    /**
+     * A constructor so we don't have to rely on the constants if we don't want to
+     *
+     * Note that this will, in the long run, become useless, but since Texas doesn't like
+     * shuffled candidate order it's fine for now.
+     */
+    public LayoutParser(){
+        //Since this is always run with Votebox, we can sort of cheat and assume there will be a
+        //vb.conf file. Of course if there isn't, people will be confused about why they see two
+        //"Could not parse..." messages
+        constants = new AuditoriumParams("vb.conf");
+    }
 
     /**
      * This is the core method for the layout parser. Call this method to
@@ -255,6 +283,9 @@ public class LayoutParser {
         Properties properties = new Properties();
         ToggleButtonGroup group = new ToggleButtonGroup( properties );
 
+        ArrayList<ToggleButton> buttons = new ArrayList<ToggleButton>();
+        ArrayList<Integer> verticals = new ArrayList<Integer>();
+
         for (int lcv = 0; lcv < children.getLength(); lcv++) {
             Node child = children.item( lcv );
 
@@ -265,8 +296,9 @@ public class LayoutParser {
             else if (child.getNodeName().equals( "ToggleButton" )) {
                 ToggleButton button = (ToggleButton) parseDrawable( child,
                     group );
-                group.getButtons().add( button );
-                list.add( button );
+                verticals.add(button.getY());
+                buttons.add(button);
+
             }
             else if (child.getNodeName().equals( "#text" ))
                 ; // Do nothing
@@ -274,6 +306,21 @@ public class LayoutParser {
                 throw new LayoutParserException( "I dont recognize "
                         + child.getNodeName()
                         + " as a property or toggle button.", null );
+        }
+
+        //Now mix the buttons so that they are displayed in random order
+        //If this election is configured that way (it won't be in Texas, most likely)
+        if(constants.shuffleCandidates()){
+            Collections.shuffle(verticals);
+        }
+
+
+        for(int i = 0; i < buttons.size(); i++){
+            ToggleButton b = buttons.get(i);
+            b.setY(verticals.get(i));
+
+            group.getButtons().add( b );
+            list.add( b );
         }
     }
 

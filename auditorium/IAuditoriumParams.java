@@ -210,4 +210,5 @@ public interface IAuditoriumParams {
      * @return the name of the election
      */
     public String getElectionName();
+
 }

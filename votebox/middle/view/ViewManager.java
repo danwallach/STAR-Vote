@@ -146,8 +146,6 @@ public class ViewManager implements IViewManager {
      *            Draw this page number to this display.
      */
     public void drawPage(int pagenum) {
-        System.out.println(_view);
-
         _view.clearDisplay();
 
 
@@ -327,7 +325,7 @@ public class ViewManager implements IViewManager {
     }
 
     /**
-     * Register to be notifeid when someone calls challengeResponse().
+     * Register to be notified when someone calls challengeResponse().
      * 
      * @param obs
      *            Register this observer to be notified when the voter wants to

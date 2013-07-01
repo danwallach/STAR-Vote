@@ -400,8 +400,6 @@ public class Driver {
 							y,
 							null);
 					
-					//System.out.println("\t\tRendered at <"+x+", "+y+">");
-					
 					totalSize += img.getHeight(null);
 					choiceIndex++;
 				}
@@ -417,18 +415,17 @@ public class Driver {
     
     /**
 	 * Prints onto the attached VVPAT printer, if possible.
-	 * @param print - the Printable to print.
+     *
+     * @param constants - the constants the determine the printer, size, etc.
+	 * @param toPrint - the Printable to print.
 	 */
 	public static void printOnVVPAT(final IAuditoriumParams constants, final Printable toPrint){
 		//Marshal printing to a new thread to keep from blocking on an Observer
 		Thread t = new Thread(){
 			public void run(){
-				//System.out.println("printOnVVPAT");
-
 				//VVPAT not ready
 				if(constants.getPrinterForVVPAT().equals("")) return;
 
-				//System.out.println("\tLooking up printer...");
 				PrintService[] printers = PrinterJob.lookupPrintServices();
 
 				PrintService vvpat = null;
@@ -442,17 +439,14 @@ public class Driver {
 				}//for
 
 				if(vvpat == null){
-					//System.err.println("VVPAT is configured, but not detected as ready.");
 					return;
 				}
 
-				//System.out.println("\tCreating job");
 				PrinterJob job = PrinterJob.getPrinterJob();
 
 				try {
 					job.setPrintService(vvpat);
 				} catch (PrinterException e) {
-					//System.err.println("VVPAT printing failed: "+e.getMessage());
 					return;
 				}
 
@@ -475,7 +469,6 @@ public class Driver {
 				try {
 					job.print();
 				} catch (PrinterException e) {
-					//System.err.println("VVPAT printing failed: "+e.getMessage());
 					return;
 				}
 			}//run

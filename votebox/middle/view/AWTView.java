@@ -159,11 +159,9 @@ public class AWTView extends AView {
 
                 if (_hitboxMap.keySet().contains(d))
                 {
-                    //System.out.println(">>> The IDrawable " + d.getUniqueID() + " was found in the list of keys: " + _hitboxMap.keySet().toString() + "\nDelete this line from the code, if it ever gets printed.");
                     Rectangle drawableRectangle = _hitboxMap.get(d);
                     if (!(r == null))
                     {
-                        //System.out.println(">>> The bounding rectangle exists! \nDelete this line from the code, if it ever gets printed.");
                         if (r.contains( drawableRectangle ))
                             redrawset.add( d );
                     }
