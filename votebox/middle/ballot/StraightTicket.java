@@ -45,7 +45,7 @@ import votebox.middle.driver.UnknownUIDException;
 public class StraightTicket extends ACardStrategy {
 
 	//Local interface for help in cleaning up some repeated code
-	//  Still relatively hackish, but alot better than copy/paste
+	//  Still relatively hackish, but a lot better than copy/paste
 	private interface IStub{
 		public void invoke(SelectableCardElement sce) throws CardStrategyException;
 	}
@@ -117,7 +117,11 @@ public class StraightTicket extends ACardStrategy {
 					;
 
 					list.add(ce);
-					// Make sure that when this button is deselected, the
+
+                    //This is commented out because it forced any selection that was not
+                    //of the previously selected straight ticket party to deselect all
+                    //candidates for that party, which is kind of bad.
+					/*// Make sure that when this button is deselected, the
 					// straight ticket
 					// button is also deselected
 					SelectableCardElement straightTicketButton = null;
@@ -125,7 +129,7 @@ public class StraightTicket extends ACardStrategy {
 						ce.getDeselectedEvent()
 								.addObserver(
 										straightTicketButton
-												.getDeselectHandler());
+												.getDeselectHandler());*/
 				}
 				// If, instead, !(1), we -are- looking at the straight ticket
 				// card, add the element to the straight ticket buttons mapping
@@ -221,7 +225,7 @@ public class StraightTicket extends ACardStrategy {
 	}//iterateOverAnd
 	
 	/**
-	 * When this element is deselected, before delegating to the raio button
+	 * When this element is deselected, before delegating to the radio button
 	 * strategy, we need to explicitly deselect all the elements who belong to
 	 * the same party that this selected button belongs to. 
 	 * @param element This is the button who was deselected. Check the party of
