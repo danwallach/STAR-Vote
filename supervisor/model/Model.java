@@ -632,6 +632,7 @@ public class Model {
                             .getSerial(), ((StringExpression) e.getNonce())
                             .getBytes(), "", ""));
 
+
                     String precinct = bManager.getPrecinctByBallot(e.getBID().toString());
                     talliers.get(precinct).confirmed(e.getNonce());
 
