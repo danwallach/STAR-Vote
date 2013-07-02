@@ -41,10 +41,12 @@ public class CommitBallotEvent implements IAnnounceEvent {
     private final ASExpression _nonce;
     private final ASExpression _ballot;
     private final ASExpression _bid;
+    private final ASExpression _precinct;
+
 
     private static MatcherRule MATCHER = new MatcherRule() {
         private ASExpression pattern = ASExpression
-                .make("(commit-ballot %nonce:#string %ballot:#any %bid:#string)");
+                .make("(commit-ballot %nonce:#string %ballot:#any %bid:#string %precinct:#string)");
 
         public IAnnounceEvent match(int serial, ASExpression sexp) {
             HashMap<String, ASExpression> result = pattern.namedMatch(sexp);
@@ -56,7 +58,7 @@ public class CommitBallotEvent implements IAnnounceEvent {
             System.out.println("End of list of keys.");*/
             if (result != NamedNoMatch.SINGLETON)
                 return new CommitBallotEvent(serial, result.get("nonce"), result
-                        .get("ballot"), result.get("bid"));
+                        .get("ballot"), result.get("bid"), result.get("precinct") );
 
             return null;
         };
@@ -70,11 +72,12 @@ public class CommitBallotEvent implements IAnnounceEvent {
     	return MATCHER;
     }//getMatcher
     
-    public CommitBallotEvent(int serial, ASExpression nonce, ASExpression ballot, ASExpression bid) {
+    public CommitBallotEvent(int serial, ASExpression nonce, ASExpression ballot, ASExpression bid, ASExpression precinct) {
         _serial = serial;
         _nonce = nonce;
         _ballot = ballot;
         _bid = bid;
+        _precinct = precinct;
     }
 
     public ASExpression getNonce(){
@@ -88,7 +91,12 @@ public class CommitBallotEvent implements IAnnounceEvent {
     public ASExpression getBID(){
         return _bid;
     }
-    
+
+    public ASExpression getPrecinct(){
+        return _precinct;
+    }
+
+
     /**
      * @see votebox.events.IAnnounceEvent#fire(votebox.events.VoteBoxEventListener)
      */
@@ -108,7 +116,7 @@ public class CommitBallotEvent implements IAnnounceEvent {
      */
     public ASExpression toSExp() {
         return new ListExpression(StringExpression.make("commit-ballot"),
-                _nonce, _ballot, _bid);
+                _nonce, _ballot, _bid, _precinct);
     }
 
 }

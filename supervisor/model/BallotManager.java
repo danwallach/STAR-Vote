@@ -1,5 +1,6 @@
 package supervisor.model;
 
+import java.text.DecimalFormat;
 import java.util.*;
 
 /**
@@ -16,16 +17,18 @@ public class BallotManager {
     private Map<String, String> ballotByPin = new HashMap<String, String>();       //Holds all active pins and corresponding ballot location
     private Map<String, String> ballotByPrecinct = new HashMap<String, String>();       //Holds all precincts and corresponding ballot location
     private Map<String, String> precinctByBallot = new HashMap<String, String>();
+    private Map<String, String> precinctByBID = new HashMap<String, String>();
 
     private Random rand = (new Random());
+    private DecimalFormat decimalFormat = new DecimalFormat("0000");
 
     //generates a random pin and adds it to the list of pins and its corresponding ballot based on its precinct
     public String generatePin(String precinct){
-        String pin = "" + rand.nextInt(10000);
+        String pin = decimalFormat.format(rand.nextInt(10000));
 
 
         while(ballotByPin.containsKey(pin))
-            pin = rand.nextInt(10000) + "";
+            pin = decimalFormat.format(rand.nextInt(10000));
 
         String ballot = ballotByPrecinct.remove(precinct);
 
@@ -42,10 +45,10 @@ public class BallotManager {
 
     public String generateProvisionalPin(String precinct){
         System.err.println(">>> Generating provisional pin for precinct " + precinct);
-        String provisionalPin = rand.nextInt(10000) + "";
+        String provisionalPin = decimalFormat.format(rand.nextInt(10000));
 
         while(ballotByPin.containsKey(provisionalPin))
-            provisionalPin = rand.nextInt(10000) + "";
+            provisionalPin = decimalFormat.format(rand.nextInt(10000));
 
         //Move the mappings from one to the other
         String ballot = ballotByPrecinct.remove(precinct);
@@ -91,7 +94,15 @@ public class BallotManager {
         ballotByPrecinct.put(precinct, ballot);
         precinctByBallot.put(ballot, precinct);
         ballotByPrecinct.put(precinct+"-provisional", ballot);
+    }
 
+    public void setPrecinctByBID(String bID, String precinct){
+        System.out.println("BAllot manager setting BID: " + bID + " to precinct: "+ precinct);
+        precinctByBID.put(bID, precinct);
+    }
+
+    public String getPrecinctByBID(String bID){
+        return precinctByBID.get(bID);
     }
 
     //returns array of precincts
@@ -103,6 +114,10 @@ public class BallotManager {
     public String getInitialSelection(){
         Iterator i = ballotByPrecinct.keySet().iterator();
         return (String) i.next();
+    }
+
+    public void testMapPrint(){
+        System.out.println(precinctByBID);
     }
 }
 

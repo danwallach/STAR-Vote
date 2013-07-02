@@ -24,6 +24,7 @@ public class BallotStore {
     private static ArrayList<ASExpression> castNonces = new ArrayList<ASExpression>();
     private static ArrayList<ASExpression> castBIDs = new ArrayList<ASExpression>();
     private static HashMap<String, ASExpression> unconfirmedBallots = new HashMap<String, ASExpression>();
+    private static HashMap<String, String> precinctMap = new HashMap<String, String>();
 
 
     /**
@@ -58,7 +59,19 @@ public class BallotStore {
      * @return
      */
     public static ListExpression getCastNonces() {
-        return new ListExpression(new ListExpression(castBIDs), new ListExpression(castNonces));
+        List<ASExpression> precincts = new ArrayList<ASExpression>();
+        for(ASExpression bid: castBIDs){
+            precincts.add(ListExpression.make(precinctMap.get(bid.toString())));
+        }
+        return new ListExpression(new ListExpression(castBIDs), new ListExpression(precincts), new ListExpression(castNonces));
+    }
+
+    public static void mapPrecinct(String bid, String precinct){
+        precinctMap.put(bid, precinct);
+    }
+
+    public static String getPrecinct(String bid){
+        return precinctMap.get(bid);
     }
 
 
@@ -72,6 +85,7 @@ public class BallotStore {
         List<ASExpression> hashes = new ArrayList<ASExpression>();
         List<ASExpression> decryptedBallots = new ArrayList<ASExpression>();
         List<ASExpression> ballotIDs = new ArrayList<ASExpression>();
+        List<ASExpression> precincts = new ArrayList<ASExpression>();
         for (String ballotID : unconfirmedBallots.keySet()) {
             tallier.recordVotes(unconfirmedBallots.get(ballotID).toVerbatim(), null);
             Map<String, BigInteger> ballotMap = tallier.getReport();
@@ -82,8 +96,9 @@ public class BallotStore {
             hashes.add(unconfirmedBallots.get(ballotID));
             decryptedBallots.add(new ListExpression(decryptedVotes));
             ballotIDs.add(ListExpression.make(ballotID));
+            precincts.add(ListExpression.make(getPrecinct(ballotID)));
         }
-        return new ListExpression(new ListExpression(ballotIDs), new ListExpression(hashes), new ListExpression(decryptedBallots));
+        return new ListExpression(new ListExpression(ballotIDs), new ListExpression(precincts), new ListExpression(hashes), new ListExpression(decryptedBallots));
     }
 
     public static List<ASExpression> getUnconfirmedBallots() {

@@ -144,6 +144,7 @@ public class Tap {
             _auditorium = new VoteBoxAuditoriumConnector(_mySerial,
                     AuditoriumParams.Singleton,
                     CommitBallotEvent.getMatcher(),
+                    BallotReceivedEvent.getMatcher(),
                     BallotScanAcceptedEvent.getMatcher(),
                     AuthorizedToCastWithNIZKsEvent.getMatcher(),
                     CastBallotUploadEvent.getMatcher(),
@@ -168,11 +169,15 @@ public class Tap {
                 System.out.println("TAP: committing ballot " + e.getBID().toString());
             }
 
+            public void ballotReceived(BallotReceivedEvent e){
+                BallotStore.mapPrecinct(e.getBID(), e.getPrecinct());
+                System.out.println("Mapping BID: " + e.getBID() + "to precinct: " + e.getPrecinct());
+            }
+
+            //Ignored events
             public void activated(ActivatedEvent e) {}
             public void assignLabel(AssignLabelEvent e) {}
             public void authorizedToCast(AuthorizedToCastEvent e) {}
-            public void ballotReceived(BallotReceivedEvent e) {}
-
             public void joined(JoinEvent e) {}
             public void lastPollsOpen(LastPollsOpenEvent e) {}
             public void left(LeaveEvent e) {}

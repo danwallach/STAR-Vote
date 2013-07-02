@@ -1,8 +1,8 @@
 <component name="libraryTable">
   <library name="STAR-Vote">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/Votebox.jar!/" />
-      <root url="jar://$PROJECT_DIR$/Supervisor.jar!/" />
+      <root url="jar://$PROJECT_DIR$/out/production/STAR-Vote/Votebox.jar!/" />
+      <root url="jar://$PROJECT_DIR$/out/production/STAR-Vote/Supervisor.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

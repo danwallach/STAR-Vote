@@ -134,7 +134,7 @@ public class VoteBoxEventsTest extends TestCase {
         byte[] nonce = getBlob();
         byte[] ballot = getBlob();
         AuthorizedToCastEvent event = new AuthorizedToCastEvent(50, 65, nonce,
-                ballot);
+                "", ballot);
         ASExpression sexp = event.toSExp();
         assertEquals("(authorized-to-cast 65 "
                 + (new BigInteger(nonce)).toString() + " "
@@ -165,7 +165,7 @@ public class VoteBoxEventsTest extends TestCase {
 
     public void testBallotReceived() {
         byte[] nonce = getBlob();
-        BallotReceivedEvent event = new BallotReceivedEvent(50, 65, nonce);
+        BallotReceivedEvent event = new BallotReceivedEvent(50, 65, nonce, "123", "123");
         ASExpression sexp = event.toSExp();
         assertEquals("(ballot-received 65 "
                 + (new BigInteger(nonce)).toString() + ")", sexp.toString());

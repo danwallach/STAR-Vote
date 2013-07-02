@@ -47,13 +47,17 @@ public class BallotReceivedEvent implements IAnnounceEvent {
 
     private byte[] nonce;
 
+    protected String bid;
+
+    protected String precinct;
+
     /**
      * The matcher for the BallotReceivedEvent.
      */
     private static MatcherRule MATCHER = new MatcherRule() {
         private ASExpression pattern = new ListExpression( StringExpression
                 .makeString( "ballot-received" ), StringWildcard.SINGLETON,
-                StringWildcard.SINGLETON );
+                StringWildcard.SINGLETON, StringWildcard.SINGLETON, StringWildcard.SINGLETON);
 
         public IAnnounceEvent match(int serial, ASExpression sexp) {
             ASExpression res = pattern.match( sexp );
@@ -64,7 +68,10 @@ public class BallotReceivedEvent implements IAnnounceEvent {
                         .get( 1 )).getBytesCopy();*/
                 byte[] nonce = new BigInteger(((ListExpression) res)
                         .get( 1 ).toString()).toByteArray();
-                return new BallotReceivedEvent( serial, node, nonce );
+
+                String bid = ((ListExpression) res).get(2).toString();
+                String precinct = ((ListExpression) res).get(3).toString();
+                return new BallotReceivedEvent( serial, node, nonce, bid, precinct);
             }
             return null;
         };
@@ -88,10 +95,13 @@ public class BallotReceivedEvent implements IAnnounceEvent {
      * @param nonce
      *            the nonce
      */
-    public BallotReceivedEvent(int serial, int node, byte[] nonce) {
+    public BallotReceivedEvent(int serial, int node, byte[] nonce, String bid, String precinct) {
         this.serial = serial;
         this.node = node;
         this.nonce = nonce;
+        this.bid = bid;
+        if(precinct == null) System.out.println("null precinct");
+        this.precinct = precinct;
     }
 
     /**
@@ -112,6 +122,14 @@ public class BallotReceivedEvent implements IAnnounceEvent {
         return serial;
     }
 
+    public String getBID(){
+        return bid;
+    }
+
+    public String getPrecinct(){
+        return precinct;
+    }
+
     public void fire(VoteBoxEventListener l) {
         l.ballotReceived( this );
     }
@@ -125,7 +143,10 @@ public class BallotReceivedEvent implements IAnnounceEvent {
     	return new ListExpression( StringExpression
                 .makeString( "ballot-received" ), StringExpression
                 .makeString( Integer.toString( node ) ), StringExpression
-                .makeString( new BigInteger(nonce).toString() ) );
+                .makeString( new BigInteger(nonce).toString() ), StringExpression
+                .makeString(bid), StringExpression
+                .makeString(precinct));
+
     }
 
 }

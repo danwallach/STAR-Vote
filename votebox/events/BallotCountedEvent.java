@@ -32,8 +32,8 @@ import sexpression.StringWildcard;
 
 public class BallotCountedEvent extends BallotReceivedEvent{
 
-	public BallotCountedEvent(int serial, int node, byte[] nonce) {
-		super(serial, node, nonce);
+	public BallotCountedEvent(int serial, int node, byte[] nonce, String bid, String precinct) {
+		super(serial, node, nonce, "", "");
 	}
 	
 	/**
@@ -42,7 +42,7 @@ public class BallotCountedEvent extends BallotReceivedEvent{
     private static MatcherRule MATCHER = new MatcherRule() {
         private ASExpression pattern = new ListExpression( StringExpression
                 .makeString( "ballot-counted" ), StringWildcard.SINGLETON,
-                StringWildcard.SINGLETON );
+                StringWildcard.SINGLETON,StringWildcard.SINGLETON, StringWildcard.SINGLETON);
 
         public IAnnounceEvent match(int serial, ASExpression sexp) {
             ASExpression res = pattern.match( sexp );
@@ -53,7 +53,9 @@ public class BallotCountedEvent extends BallotReceivedEvent{
                         .get( 1 )).getBytesCopy();*/
                 byte[] nonce = new BigInteger(((ListExpression) res)
                         .get( 1 ).toString()).toByteArray();
-                return new BallotCountedEvent( serial, node, nonce );
+                String bid = ((ListExpression) res).get(2).toString();
+                String precinct = ((ListExpression) res).get(3).toString();
+                return new BallotCountedEvent( serial, node, nonce, bid, precinct );
             }
             return null;
         };
@@ -81,7 +83,9 @@ public class BallotCountedEvent extends BallotReceivedEvent{
     	return new ListExpression( StringExpression
                 .makeString( "ballot-counted" ), StringExpression
                 .makeString( Integer.toString( getNode() ) ), StringExpression
-                .makeString( new BigInteger(getNonce()).toString() ) );
+                .makeString( new BigInteger(getNonce()).toString()) , StringExpression
+                .makeString(bid), StringExpression
+                .makeString(precinct));
     }
     
 }

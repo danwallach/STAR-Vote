@@ -38,6 +38,7 @@ import javax.swing.text.PlainDocument;
 import edu.uconn.cse.adder.PublicKey;
 
 import sexpression.*;
+import supervisor.model.BallotManager;
 import votebox.crypto.*;
 import votebox.events.*;
 import votebox.middle.*;
@@ -87,6 +88,7 @@ public class VoteBox{
     boolean superOnline;
     private int superSerial;
     private JOptionPane pinPane;
+    private String precinct;
 
     private  Printer printer;
 
@@ -245,12 +247,12 @@ public class VoteBox{
                         if(!_constants.getEnableNIZKs()){
                             auditorium.announce(new CommitBallotEvent(mySerial,
                                     StringExpression.makeString(nonce),
-                                    BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey("public")), StringExpression.makeString(bid)));
+                                    BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey("public")), StringExpression.makeString(bid), StringExpression.makeString(precinct)));
                         } else{
                             auditorium.announce(new CommitBallotEvent(mySerial,
                                     StringExpression.makeString(nonce),
-                                    BallotEncrypter.SINGLETON.encryptWithProof(ballot, (List<List<String>>) arg[1], (PublicKey) _constants.getKeyStore().loadAdderKey("public")), StringExpression.makeString(bid))
-                                    );
+                                    BallotEncrypter.SINGLETON.encryptWithProof(ballot, (List<List<String>>) arg[1], (PublicKey) _constants.getKeyStore().loadAdderKey("public")),
+                                    StringExpression.makeString(bid), StringExpression.makeString(precinct)));
                         }
                     } else {
                         auditorium.announce(new ProvisionalCommitEvent(mySerial,
@@ -419,11 +421,12 @@ public class VoteBox{
                         if(!_constants.getEnableNIZKs()){
                             auditorium.announce(new CommitBallotEvent(mySerial,
                                     StringExpression.makeString(nonce),
-                                    BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey("public")), StringExpression.makeString(bid)));
+                                    BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey("public")), StringExpression.makeString(bid), StringExpression.makeString(precinct)));
                         } else{
                             auditorium.announce(new CommitBallotEvent(mySerial,
                                     StringExpression.makeString(nonce),
-                                    BallotEncrypter.SINGLETON.encryptWithProof(ballot, (List<List<String>>) arg.get(1), (PublicKey) _constants.getKeyStore().loadAdderKey("public")), StringExpression.makeString(bid))
+                                    BallotEncrypter.SINGLETON.encryptWithProof(ballot, (List<List<String>>) arg.get(1), (PublicKey) _constants.getKeyStore().loadAdderKey("public")),
+                                    StringExpression.makeString(bid), StringExpression.makeString(precinct))
                             );
                         }
                     }
@@ -606,6 +609,7 @@ public class VoteBox{
                     path.mkdirs();
 
                     bid = String.valueOf(rand.nextInt(Integer.MAX_VALUE));
+                    precinct = e.getPrecinct();
                     
                     try {
                     	_currentBallotFile = new File(path, "ballot.zip");

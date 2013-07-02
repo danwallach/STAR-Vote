@@ -246,16 +246,19 @@ public class Model {
             nonce[i] = (byte) (Math.random() * 256);
 
         File file = new File(ballotLocation);
+        String precinct = bManager.getPrecinctByBallot(ballotLocation);
+        System.out.println(ballotLocation);
+        System.out.println("<+++++++"+ precinct);
         FileInputStream fin = new FileInputStream(file);
         byte[] ballot = new byte[(int) file.length()];
         fin.read(ballot);
 
         if(!this.auditoriumParams.getEnableNIZKs()){
         	auditorium.announce(new AuthorizedToCastEvent(mySerial, node, nonce,
-                ballot));
+                    precinct, ballot));
         }else{
         	auditorium.announce(new AuthorizedToCastWithNIZKsEvent(mySerial, node,
-        			nonce, ballot,
+        			nonce, ballot, precinct,
         			AdderKeyManipulator.generateFinalPublicKey((PublicKey)auditoriumParams.getKeyStore().loadAdderKey("public"))));
         }
     }
@@ -278,8 +281,6 @@ public class Model {
         fin.read(ballot);
 
         auditorium.announce(new ProvisionalAuthorizeEvent(mySerial, node, nonce, ballot));
-
-
     }
 
     /**
@@ -540,9 +541,8 @@ public class Model {
                     PollsOpenEvent.getMatcher(), PollsOpenQEvent.getMatcher(),
                     SupervisorEvent.getMatcher(), VoteBoxEvent.getMatcher(),
                     EncryptedCastBallotEvent.getMatcher(), CommitBallotEvent.getMatcher(),
-                    CastCommittedBallotEvent.getMatcher(), ChallengeResponseEvent.getMatcher(),
-                    ChallengeEvent.getMatcher(), EncryptedCastBallotWithNIZKsEvent.getMatcher(),
-                    AuthorizedToCastWithNIZKsEvent.getMatcher(), AdderChallengeEvent.getMatcher(),
+                    CastCommittedBallotEvent.getMatcher(), EncryptedCastBallotWithNIZKsEvent.getMatcher(),
+                    AuthorizedToCastWithNIZKsEvent.getMatcher(),
                     PINEnteredEvent.getMatcher(), InvalidPinEvent.getMatcher(),
                     PollStatusEvent.getMatcher(), BallotPrintSuccessEvent.getMatcher(),
                     BallotScannedEvent.getMatcher(), BallotScannerEvent.getMatcher(),
@@ -630,7 +630,7 @@ public class Model {
                 if (m != null && m instanceof BallotScannerMachine) {
                     auditorium.announce(new BallotCountedEvent(mySerial, e
                             .getSerial(), ((StringExpression) e.getNonce())
-                            .getBytes()));
+                            .getBytes(), "", ""));
 
                     String precinct = bManager.getPrecinctByBallot(e.getBID().toString());
                     talliers.get(precinct).confirmed(e.getNonce());
@@ -1001,9 +1001,11 @@ public class Model {
                     booth.setPublicCount(booth.getPublicCount() + 1);
                     booth.setProtectedCount(booth.getProtectedCount() + 1);
                     BallotStore.addBallot(e.getBID().toString(), e.getBallot());
+                    bManager.setPrecinctByBID(e.getBID().toString(), e.getPrecinct().toString());
+                    bManager.testMapPrint();
                     auditorium.announce(new BallotReceivedEvent(mySerial, e
                             .getSerial(), ((StringExpression) e.getNonce())
-                            .getBytes()));
+                            .getBytes(), e.getBID().toString(), e.getPrecinct().toString()));
 
                     String precinct = bManager.getPrecinctByBallot(e.getBID().toString());
                     talliers.get(precinct).recordVotes(e.getBallot().toVerbatim(), e.getNonce());
@@ -1021,7 +1023,7 @@ public class Model {
                     booth.setProtectedCount(booth.getProtectedCount() + 1);
                     auditorium.announce(new BallotReceivedEvent(mySerial, e
                             .getSerial(), ((StringExpression) e.getNonce())
-                            .getBytes()));
+                            .getBytes(), e.getBID().toString(), bManager.getPrecinctByBallot(e.getBID().toString())));
                 }
             }
 
@@ -1248,9 +1250,4 @@ public class Model {
     public String getInitialSelection(){
         return bManager.getInitialSelection();
     }
-
-    /**
-     * A method that will generate a random pin for the voter to enter into his votebox machine
-     */
-
 }

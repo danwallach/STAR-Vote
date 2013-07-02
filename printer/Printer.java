@@ -393,10 +393,18 @@ public class Printer{
                 y+=20;
                 printCenteredText("If you wish to challenge your ballot, take it home and scan the QRCode below", xBound, y, graphics);
                 y+=20;
+                String domain = "localhost:9000";
+                String URL = "http://"+domain+"/ballot?ballotid="+bid;
                 QRCodeGenerator qGen = new QRCodeGenerator();
-                BufferedImage i = qGen.getImage(bid);
+                BufferedImage i = qGen.getImage(URL);
                 int imgStartX = xBound/2-i.getWidth()/2;
                 graphics.drawImage(i,imgStartX,y,null);
+                y+=i.getHeight()+20;
+
+                printCenteredText("To see your vote, please visit: "+URL , xBound, y, graphics);
+                y+=20;
+                printCenteredText("Or you may go to "+domain+"/challenge and enter your ballot id: "+ bid, xBound, y, graphics);
+
 
                 return Printable.PAGE_EXISTS;
             }

@@ -49,13 +49,15 @@ public class AuthorizedToCastEvent implements IAnnounceEvent {
 
     private byte[] ballot;
 
+    protected String precinct;
+
     /**
      * The matcher for the AuthorizedToCastEvent.
      */
     private static MatcherRule MATCHER = new MatcherRule() {
         private ASExpression pattern = new ListExpression( StringExpression
                 .makeString( "authorized-to-cast" ), StringWildcard.SINGLETON,
-                StringWildcard.SINGLETON, StringWildcard.SINGLETON );
+                StringWildcard.SINGLETON, StringWildcard.SINGLETON, StringWildcard.SINGLETON );
 
         public IAnnounceEvent match(int serial, ASExpression sexp) {
             ASExpression res = pattern.match( sexp );
@@ -66,9 +68,10 @@ public class AuthorizedToCastEvent implements IAnnounceEvent {
                         .get( 1 )).getBytesCopy();*/
                 byte[] nonce = new BigInteger(((ListExpression) res)
                         .get( 1 ).toString()).toByteArray();
+                String precinct = ((ListExpression) res).get( 2 ).toString();
                 byte[] ballot = ((StringExpression) ((ListExpression) res)
-                        .get( 2 )).getBytesCopy();
-                return new AuthorizedToCastEvent( serial, node, nonce, ballot );
+                        .get( 3 )).getBytesCopy();
+                return new AuthorizedToCastEvent( serial, node, nonce,  precinct, ballot );
             }
             return null;
         };
@@ -94,11 +97,11 @@ public class AuthorizedToCastEvent implements IAnnounceEvent {
      * @param ballot
      *            the ballot in zip format, stored as an array of bytes
      */
-    public AuthorizedToCastEvent(int serial, int node, byte[] nonce,
-            byte[] ballot) {
+    public AuthorizedToCastEvent(int serial, int node, byte[] nonce, String precinct, byte[] ballot) {
         this.serial = serial;
         this.node = node;
         this.nonce = nonce;
+        this.precinct = precinct;
         this.ballot = ballot;
     }
 
@@ -127,6 +130,10 @@ public class AuthorizedToCastEvent implements IAnnounceEvent {
         return serial;
     }
 
+    public String getPrecinct(){
+        return precinct;
+    }
+
     public void fire(VoteBoxEventListener l) {
         l.authorizedToCast( this );
     }
@@ -139,7 +146,8 @@ public class AuthorizedToCastEvent implements IAnnounceEvent {
     	return new ListExpression( StringExpression
                 .makeString( "authorized-to-cast" ), StringExpression
                 .makeString( Integer.toString( node ) ), StringExpression
-                .makeString( new BigInteger(nonce).toString() ), StringExpression.makeString( ballot ) );
+                .makeString( new BigInteger(nonce).toString() ), StringExpression
+                .makeString( precinct), StringExpression.makeString( ballot ));
     }
     
 }
