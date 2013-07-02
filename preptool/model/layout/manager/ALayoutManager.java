@@ -143,20 +143,6 @@ public abstract class
      * @return the success page
      */
     protected abstract Page makeSuccessPage();
-    
-    /**
-     * Makes a challenge page that asks the user whether he wishes to
-     * challenge the VoteBox or cast his ballot.
-     * @return the challenge page
-     */
-    protected abstract Page makeChallengePage();
-    
-    /**
-     * Makes a response page that reveals the random number used to generate
-     * the ballot to the user, who can then use it to verify his ballot.
-     * @return the response page
-     */
-    protected abstract Page makeResponsePage();
 
     /**
      * Returns a size visitor that determines the size of a component specific

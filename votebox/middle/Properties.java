@@ -58,11 +58,6 @@ public class Properties {
      * The value of this property is the page number of the override cast page.
      */
     public static final String OVERRIDE_CAST_PAGE = "OverrideCastPage";
-    
-    /**
-     * The value of this property is the page number of the challenge response page.
-     */
-    public static final String RESPONSE_PAGE = "ResponsePage";
 
     /**
      *

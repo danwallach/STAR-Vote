@@ -7,7 +7,6 @@ import java.util.*;
  * User: martinnikol
  * Date: 6/12/13
  * Time: 10:58 AM
- * To change this template use File | Settings | File Templates.
  */
 public class BallotManager {
 
@@ -22,7 +21,6 @@ public class BallotManager {
 
     //generates a random pin and adds it to the list of pins and its corresponding ballot based on its precinct
     public String generatePin(String precinct){
-        System.out.println(">>> Generating pin for precinct " + precinct);
         String pin = "" + rand.nextInt(10000);
 
 

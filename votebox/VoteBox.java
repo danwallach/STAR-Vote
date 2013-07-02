@@ -213,174 +213,135 @@ public class VoteBox{
         voting = true;
         currentDriver.run();
 
-
-        //If we're using the commit-challenge model, we need to register for the commit & challenge events.
-        //if(_constants.getUseCommitChallengeModel()){
         	
-        	//Listen for challenges ui events.  When received, discard the ballot (as the vote is no longer countable)
-        	//   and reply with the random key needed to decrypt this particular vote
-        	currentDriver.getView().registerForChallenge(new Observer() {
-            	/**
-                 * Makes sure that the booth is in a correct state to cast a ballot,
-                 * then announce the cast-ballot message (also increment counters)
-                 */
-                public void update(Observable arg0, Object arg1) {
-                    if (!connected)
-                        throw new RuntimeException(
-                                "Attempted to cast ballot when not connected to any machines");
-                    if (!voting || currentDriver == null)
-                        throw new RuntimeException(
-                                "VoteBox attempted to cast ballot, but was not currently voting");
-                    if (finishedVoting)
-                        throw new RuntimeException(
-                                "This machine has already finished voting, but attempted to vote again");
 
-                    finishedVoting = true;
+        //Listen for commit ui events.  When received, send out an encrypted vote.
+        currentDriver.getView().registerForCommit(new Observer() {
 
-                    if(!_constants.getEnableNIZKs()){
-	                    auditorium.announce(new ChallengeEvent(mySerial,
-	                            StringExpression.makeString(nonce),
-	                            BallotEncrypter.SINGLETON.getRecentRandom()));
-                    }else{
-                    	auditorium.announce(new AdderChallengeEvent(mySerial,
-                    			StringExpression.makeString(nonce),
-                    			BallotEncrypter.SINGLETON.getRecentAdderRandom()));
-                    }
+            @SuppressWarnings("unchecked")
+            public void update(Observable o, Object argTemp) {
+                if (!connected)
+                    throw new RuntimeException(
+                            "Attempted to cast ballot when not connected to any machines");
+                if (!voting || currentDriver == null)
+                    throw new RuntimeException(
+                            "VoteBox attempted to cast ballot, but was not currently voting");
+                if (finishedVoting)
+                    throw new RuntimeException(
+                            "This machine has already finished voting, but attempted to vote again");
 
-                    BallotEncrypter.SINGLETON.clear();
-                    
-                }
-            });
-        	
-        	//Listen for commit ui events.  When received, send out an encrypted vote.
-        	currentDriver.getView().registerForCommit(new Observer() {
+                committedBallot = true;
 
-        		@SuppressWarnings("unchecked")
-				public void update(Observable o, Object argTemp) {
-        			if (!connected)
-        				throw new RuntimeException(
-        						"Attempted to cast ballot when not connected to any machines");
-        			if (!voting || currentDriver == null)
-        				throw new RuntimeException(
-        						"VoteBox attempted to cast ballot, but was not currently voting");
-        			if (finishedVoting)
-        				throw new RuntimeException(
-        						"This machine has already finished voting, but attempted to vote again");
+                Object[] arg = (Object[])argTemp;
 
-                    committedBallot = true;
-                    
-                    Object[] arg = (Object[])argTemp;
-                    
-        			// arg1 should be the cast ballot structure, check
-        			if (Ballot.BALLOT_PATTERN.match((ASExpression) arg[0]) == NoMatch.SINGLETON)
-        				throw new RuntimeException(
-        						"Incorrectly expected a cast-ballot");
-        			ListExpression ballot = (ListExpression) arg[0];
+                // arg1 should be the cast ballot structure, check
+                if (Ballot.BALLOT_PATTERN.match((ASExpression) arg[0]) == NoMatch.SINGLETON)
+                    throw new RuntimeException(
+                            "Incorrectly expected a cast-ballot");
+                ListExpression ballot = (ListExpression) arg[0];
 
-        			try {
-                        if(!isProvisional){
-                            if(!_constants.getEnableNIZKs()){
-                                auditorium.announce(new CommitBallotEvent(mySerial,
-                                        StringExpression.makeString(nonce),
-                                        BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey("public")), StringExpression.makeString(bid)));
-                            } else{
-                                auditorium.announce(new CommitBallotEvent(mySerial,
-                                        StringExpression.makeString(nonce),
-                                        BallotEncrypter.SINGLETON.encryptWithProof(ballot, (List<List<String>>) arg[1], (PublicKey) _constants.getKeyStore().loadAdderKey("public")), StringExpression.makeString(bid))
-                                        );
-                            }
-                        } else {
-                            auditorium.announce(new ProvisionalCommitEvent(mySerial,
+                try {
+                    if(!isProvisional){
+                        if(!_constants.getEnableNIZKs()){
+                            auditorium.announce(new CommitBallotEvent(mySerial,
                                     StringExpression.makeString(nonce),
                                     BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey("public")), StringExpression.makeString(bid)));
+                        } else{
+                            auditorium.announce(new CommitBallotEvent(mySerial,
+                                    StringExpression.makeString(nonce),
+                                    BallotEncrypter.SINGLETON.encryptWithProof(ballot, (List<List<String>>) arg[1], (PublicKey) _constants.getKeyStore().loadAdderKey("public")), StringExpression.makeString(bid))
+                                    );
                         }
+                    } else {
+                        auditorium.announce(new ProvisionalCommitEvent(mySerial,
+                                StringExpression.makeString(nonce),
+                                BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey("public")), StringExpression.makeString(bid)));
+                    }
 
 
-                        List<List<String>> races = currentDriver.getBallotAdapter().getRaceGroups();
-                        auditorium.announce(new BallotPrintingEvent(mySerial, bid,
-                                nonce));
-                        printer = new Printer(_currentBallotFile, races);
+                    List<List<String>> races = currentDriver.getBallotAdapter().getRaceGroups();
+                    auditorium.announce(new BallotPrintingEvent(mySerial, bid,
+                            nonce));
+                    printer = new Printer(_currentBallotFile, races);
 
-                        System.out.println(">>>> Here's the ballot!" + ballot);
-						boolean success = printer.printCommittedBallot(ballot, bid);
-                        printer.printedReceipt(bid);
+                    boolean success = printer.printCommittedBallot(ballot, bid);
+                    printer.printedReceipt(bid);
 
-                        //By this time, the voter is done voting
-                        //Wait before returning to inactive
-                        long start = System.currentTimeMillis();
-                        while(System.currentTimeMillis() - start < 5000);
-                        finishedVoting = true;
-                        BallotEncrypter.SINGLETON.clear();
-                        System.out.println(">>>> ballot: " + ballot);
-
-                        if(success)
-                            auditorium.announce(new BallotPrintSuccessEvent(mySerial, bid, nonce));
-
-					} catch (AuditoriumCryptoException e) {
-						Bugout.err("Crypto error trying to commit ballot: "+e.getMessage());
-						e.printStackTrace();
-					}
-        		}
-        	});
-        	
-        	//Listen for cast ui events.
-        	//Rather than actually send the ballot out, just send the nonce (which can identify the whole
-        	//transaction).
-        	//Clean up the encryptor afterwards so as to destroy the random number needed for challenging.
-            //TODO This code doesn't do anything?
-        	currentDriver.getView().registerForCastBallot(new Observer(){
-
-                public void update(Observable o, Object argTemp) {
-                    if (!connected)
-                        throw new RuntimeException(
-                                "Attempted to cast ballot when not connected to any machines");
-                    if (!voting || currentDriver == null)
-                        throw new RuntimeException(
-                                "VoteBox attempted to cast ballot, but was not currently voting");
-                    if (finishedVoting)
-                        throw new RuntimeException(
-                                "This machine has already finished voting, but attempted to vote again");
-
+                    //By this time, the voter is done voting
+                    //Wait before returning to inactive
+                    long start = System.currentTimeMillis();
+                    while(System.currentTimeMillis() - start < 5000);
                     finishedVoting = true;
-                    ++publicCount;
-                    ++protectedCount;
-
-                    //Object[] arg = (Object[])argTemp;
-
-                    auditorium.announce(new CastCommittedBallotEvent(mySerial,
-                            StringExpression.makeString(nonce), StringExpression.makeString(bid)));
-
                     BallotEncrypter.SINGLETON.clear();
 
-                }
+                    if(success)
+                        auditorium.announce(new BallotPrintSuccessEvent(mySerial, bid, nonce));
 
-            });
-        	
-        	/**
-        	 * If we're using piecemeal encryption, we need to listen for each page change.
-        	 */
-        	if(_constants.getUsePiecemealEncryption()){
-        		currentDriver.getView().registerForPageChanged(new Observer(){
-        			public void update(Observable o, Object args){
-        				List<String> affectedUIDs = (List<String>)args;
-        				
-        				Map<String, List<ASExpression>> needUpdate = currentDriver.getBallotAdapter().getAffectedRaces(affectedUIDs);
-        				
-        				for(String uid : needUpdate.keySet()){
-        					if(!_constants.getEnableNIZKs()){
-        						try{
-        							PiecemealBallotEncrypter.SINGELTON.update(uid, needUpdate.get(uid), _constants.getKeyStore().loadKey("public"));
-        						}catch(AuditoriumCryptoException e){
-        							throw new RuntimeException(e);
-        						}
-        					}else{
-        						List<String> raceGroup = currentDriver.getBallotAdapter().getRaceGroupContaining(needUpdate.get(uid));
-        						PiecemealBallotEncrypter.SINGELTON.adderUpdate(uid, needUpdate.get(uid), raceGroup, (PublicKey)_constants.getKeyStore().loadAdderKey("public"));
-        					}
-        				}
-        			}
-        		});
+                } catch (AuditoriumCryptoException e) {
+                    Bugout.err("Crypto error trying to commit ballot: "+e.getMessage());
+                    e.printStackTrace();
+                }
         	}
+        });
+        	
+        //Listen for cast ui events.
+        //Rather than actually send the ballot out, just send the nonce (which can identify the whole
+        //transaction).
+        //Clean up the encryptor afterwards so as to destroy the random number needed for challenging.
+        //TODO This code doesn't do anything?
+        currentDriver.getView().registerForCastBallot(new Observer(){
+
+            public void update(Observable o, Object argTemp) {
+                if (!connected)
+                    throw new RuntimeException(
+                            "Attempted to cast ballot when not connected to any machines");
+                if (!voting || currentDriver == null)
+                    throw new RuntimeException(
+                            "VoteBox attempted to cast ballot, but was not currently voting");
+                if (finishedVoting)
+                    throw new RuntimeException(
+                            "This machine has already finished voting, but attempted to vote again");
+
+                finishedVoting = true;
+                ++publicCount;
+                ++protectedCount;
+
+                //Object[] arg = (Object[])argTemp;
+
+                auditorium.announce(new CastCommittedBallotEvent(mySerial,
+                        StringExpression.makeString(nonce), StringExpression.makeString(bid)));
+
+                BallotEncrypter.SINGLETON.clear();
+
+            }
+
+        });
+
+        /**
+         * If we're using piecemeal encryption, we need to listen for each page change.
+         */
+        if(_constants.getUsePiecemealEncryption()){
+            currentDriver.getView().registerForPageChanged(new Observer(){
+                public void update(Observable o, Object args){
+                    List<String> affectedUIDs = (List<String>)args;
+
+                    Map<String, List<ASExpression>> needUpdate = currentDriver.getBallotAdapter().getAffectedRaces(affectedUIDs);
+
+                    for(String uid : needUpdate.keySet()){
+                        if(!_constants.getEnableNIZKs()){
+                            try{
+                                PiecemealBallotEncrypter.SINGELTON.update(uid, needUpdate.get(uid), _constants.getKeyStore().loadKey("public"));
+                            }catch(AuditoriumCryptoException e){
+                                throw new RuntimeException(e);
+                            }
+                        }else{
+                            List<String> raceGroup = currentDriver.getBallotAdapter().getRaceGroupContaining(needUpdate.get(uid));
+                            PiecemealBallotEncrypter.SINGELTON.adderUpdate(uid, needUpdate.get(uid), raceGroup, (PublicKey)_constants.getKeyStore().loadAdderKey("public"));
+                        }
+                    }
+                }
+            });
+        }
 
         currentDriver.getView().registerForOverrideCancelConfirm(
                 new Observer() {
@@ -532,7 +493,6 @@ public class VoteBox{
                     AuthorizedToCastEvent.getMatcher(), BallotReceivedEvent.getMatcher(),
                     OverrideCancelEvent.getMatcher(), OverrideCastEvent.getMatcher(),
                     PollsOpenQEvent.getMatcher(), BallotCountedEvent.getMatcher(),
-                    ChallengeEvent.getMatcher(), ChallengeResponseEvent.getMatcher(),
                     AuthorizedToCastWithNIZKsEvent.getMatcher(), PINEnteredEvent.getMatcher(),
                     InvalidPinEvent.getMatcher(), PollsOpenEvent.getMatcher(),
                     PollStatusEvent.getMatcher(), BallotPrintingEvent.getMatcher(),
@@ -553,10 +513,6 @@ public class VoteBox{
                         throw new RuntimeException(
                                 "Someone said the ballot was counted, but this machine hasn't finished voting yet");
         		
-                    if(!_constants.getUseCommitChallengeModel()){
-                    	Bugout.err("Received BallotCounted message while not in Challenge-Commit mode!");
-                    	return;
-                    }
 
                     currentDriver.getView().nextPage();
                     nonce = null;
@@ -682,11 +638,11 @@ public class VoteBox{
                 if (e.getNode() == mySerial
                         && Arrays.equals(e.getNonce(), nonce)) {
 
-                    if (!committedBallot && _constants.getUseCommitChallengeModel())
+                    if (!committedBallot )
                         throw new RuntimeException(
-                                "Someone said the ballot was received, but this machine hasn't committed it yet. Maybe the supervisor is misconfigured (not using challenge-commit model)?");
+                                "Someone said the ballot was received, but this machine hasn't committed it yet. Maybe the supervisor is not configured properly?");
                     
-                    if(!finishedVoting && !_constants.getUseCommitChallengeModel())
+                    if(!finishedVoting )
                     	throw new RuntimeException(
                     			"Someone said the ballot was received, but this machine hasn't finished voting yet");
 
@@ -870,56 +826,6 @@ public class VoteBox{
 
             }
 
-            public void challenge(ChallengeEvent e) {
-            	if(!_constants.getUseCommitChallengeModel()){
-            		Bugout.err("Received Challenge while not using Challenge-Commit model");
-            		return;
-            	}//if
-            	
-            	if (e.getSerial() == mySerial
-                        && Arrays.equals(e.getNonce().toVerbatim(), nonce)) {
-                    if (!finishedVoting)
-                        throw new RuntimeException(
-                                "Someone said this ballot was challenge, but this machine hasn't finished voting yet");
-
-                    broadcastStatus();
-                    
-            	}//if
-
-            }
-            
-            public void challengeResponse(ChallengeResponseEvent e) {
-            	if(!_constants.getUseCommitChallengeModel()){
-            		Bugout.err("Received Challenge Response while not using Challenge-Commit model");
-            		return;
-            	}//if
-
-            	if (e.getNode() == mySerial
-                        && e.getNonce().equals(StringExpression.makeString(nonce))) {
-                    if (!finishedVoting)
-                        throw new RuntimeException(
-                                "Someone said this ballot was challenge, but this machine hasn't finished voting yet");
-                    currentDriver.getView().nextPage();
-                    nonce = null;
-                    voting = false;
-                    finishedVoting = false;
-                    committedBallot = false;
-                    broadcastStatus();
-                    killVBTimer = new Timer(_constants.getViewRestartTimeout(), new ActionListener() {
-                    	public void actionPerformed(ActionEvent arg0) {
-                    		currentDriver.kill();
-                    		currentDriver = null;
-                    		inactiveUI.setVisible(true);
-                    		killVBTimer = null;
-                            promptForPin("Enter Voting Authentication PIN");
-                    	};
-                    });
-                    killVBTimer.setRepeats(false);
-                    killVBTimer.start();
-            	}//if
-
-            }
-
 
             public void pinEntered(PINEnteredEvent e) {
                 // NO-OP
@@ -945,16 +851,11 @@ public class VoteBox{
                 if (e.getBID() == bid
                         && Arrays.equals(e.getNonce(), nonce)) {
 
-                    //This should also never happen...
+                    //This should never happen...
                     if (!finishedVoting)
                         throw new RuntimeException(
                                 "Someone said the ballot was printed, but this machine hasn't finished voting yet");
 
-                    //This should never really happen...
-                    if(!_constants.getUseCommitChallengeModel()){
-                        Bugout.err("Received BallotPrinted message while not in Challenge-Commit mode!");
-                        return;
-                    }
 
                     broadcastStatus();
 

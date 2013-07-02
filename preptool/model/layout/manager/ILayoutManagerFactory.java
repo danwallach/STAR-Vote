@@ -32,12 +32,12 @@ public interface ILayoutManagerFactory {
 
 	/**
 	 * Constructs a new LayoutManager with the given language
-	 * @param language the language
-	 * @param numCardsPerReviewPage number of cards per review page
-	 * @param fontSize size of font to use
-	 * @param commitChallenge whether or not to use the challenge-commit model when generating the ballot layour.
-	 * @return the LayoutManager
+	 *
+     * @param language the language
+     * @param numCardsPerReviewPage number of cards per review page
+     * @param fontSize size of font to use
+     * @return the LayoutManager
 	 */
-	public ILayoutManager makeLayoutManager(Language language, int numCardsPerReviewPage, int fontSize, boolean commitChallenge);
+	public ILayoutManager makeLayoutManager(Language language, int numCardsPerReviewPage, int fontSize);
 
 }

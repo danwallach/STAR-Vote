@@ -92,7 +92,6 @@ public class Launcher {
 			e.printStackTrace();
 			return;
 		}
-		System.out.println(baldir.getAbsolutePath());
 
 		// Check that ballot location is legit.
 		// Check that it's a directory.
@@ -162,17 +161,15 @@ public class Launcher {
 
                     public String getElectionName() { return null; }
 
+                    public int getPort() { return 0; }
+
                     public boolean getUseWindowedView() {return true;}
 					
 					public String getBroadcastAddress() {return null;}
 
 					public boolean getCastBallotEncryptionEnabled() {return false;}
 
-					public String getChallengeBallotFile() {return null;}
-
-					public int getChallengePort() {return 0;}
-
-					public int getDefaultSerialNumber() {return 0;}
+                    public int getDefaultSerialNumber() {return 0;}
 
 					public int getDiscoverPort() {return 0;}
 
@@ -184,9 +181,7 @@ public class Launcher {
 
 					public String getEloTouchScreenDevice() {return null;}
 
-					public int getHttpPort() {return 0;}
-
-					public int getJoinTimeout() {return 0;}
+                    public int getJoinTimeout() {return 0;}
 
 					public IKeyStore getKeyStore() {return null;}
 
@@ -217,8 +212,6 @@ public class Launcher {
 					public String getReportAddress() {return null;}
 
 					public String getRuleFile() {return null;}
-
-					public boolean getUseCommitChallengeModel() {return false;}
 
 					public boolean getUseEloTouchScreen() {return false;}
 

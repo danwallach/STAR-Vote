@@ -64,6 +64,10 @@ public class LiteralStrings {
         map.put("RECORD_TITLE", ls);
 
         ls = new LocalizedString();
+        ls.set(ENGLISH, "Straight Party");
+        map.put("STRAIGHT_PARTY", ls);
+
+        ls = new LocalizedString();
         ls.set(ENGLISH, "Thank you for voting!");
         map.put("SUCCESS_TITLE", ls);
 
@@ -99,10 +103,6 @@ public class LiteralStrings {
         ls = new LocalizedString();
         ls.set(ENGLISH, "Print Ballot" + '\u2192');
         map.put("COMMIT_BUTTON", ls);
-
-//        ls = new LocalizedString();
-//        ls.set(ENGLISH, "Challenge Vote");
-//        map.put("CHALLENGE_BUTTON", ls);
 
         ls = new LocalizedString();
         ls.set(ENGLISH, "Next Page" + '\u2192');
@@ -207,11 +207,10 @@ public class LiteralStrings {
         map.put("RACE_INSTRUCTIONS", ls);
 
         ls = new LocalizedString();
-        ls.set(ENGLISH, "To make your choice, click on the party name or on the box next to the name."
+        ls.set(ENGLISH, "To make your choice, click on the party name or on the box next to the name. "
                 + "\n A green checkmark will appear next to your choice. If you want to change "
-                + "\n your choice, just click on a different party or box."
-                + "\n Selecting a party here will select candidates from that party on all subsequent"
-                + "\n screens, where applicable.");
+                + "\n your choice, just click on a different party or box. Selecting a party here will "
+                + "\n select candidates from that party on all subsequent screens, where applicable. ");
         map.put("PARTY_INSTRUCTIONS", ls);
 
         ls = new LocalizedString();
@@ -321,21 +320,6 @@ public class LiteralStrings {
         ls.set(ENGLISH, "No, Ignore this Request");
         map.put("OVERRIDE_DENY", ls);
 
-//        ls = new LocalizedString();
-//        ls.set(ENGLISH, "Challenge");
-//        map.put("CHALLENGE_TITLE", ls);
-//
-//        ls = new LocalizedString();
-//        ls.set(ENGLISH, "You have the option of challenging the VoteBox. \n Do you wish to challenge this VoteBox?");
-//        map.put("CHALLENGE_INSTRUCTIONS", ls);
-//
-//        ls = new LocalizedString();
-//        ls.set(ENGLISH, "Yes, Challenge this VoteBox");
-//        map.put("CHALLENGE_CONFIRM", ls);
-//
-//        ls = new LocalizedString();
-//        ls.set(ENGLISH, "Record and Print my Ballot");
-//        map.put("CHALLENGE_DENY", ls);
     }
 
     /**

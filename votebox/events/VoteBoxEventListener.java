@@ -72,10 +72,6 @@ public interface VoteBoxEventListener {
 
     public void commitBallot(CommitBallotEvent e);
 
-    public void challenge(ChallengeEvent e);
-    
-    public void challengeResponse(ChallengeResponseEvent e);
-
     /**
      * Fired when a connection is established with another machine on the
      * network (regardless of which machine initiated it)

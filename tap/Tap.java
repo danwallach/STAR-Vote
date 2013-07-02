@@ -42,7 +42,7 @@ import votebox.AuditoriumParams;
 import votebox.events.*;
 
 /**
- * Class used to "Tap" outgoing commit, cast, and challenge messages.<BR>
+ * Class used to "Tap" outgoing commit and cast messages.<BR>
  * Forwards - ideally across a one-way connection, or diode - these messages to a machine<BR>
  * outside of the Auditorium network, which a voter would then interrogate.<BR>
  * <BR>
@@ -136,7 +136,7 @@ public class Tap {
 
     /**
      * Connects the Trapper instance to the Auditorium network and listens for<BR>
-     * Commit, EncryptedCastBallot, and ChallengeResponse messages to forward.
+     * Commit and EncryptedCastBallot messages to forward.
      *
      */
     public void start(){
@@ -145,9 +145,7 @@ public class Tap {
                     AuditoriumParams.Singleton,
                     CommitBallotEvent.getMatcher(),
                     BallotScanAcceptedEvent.getMatcher(),
-                    ChallengeEvent.getMatcher(),
                     AuthorizedToCastWithNIZKsEvent.getMatcher(),
-                    AdderChallengeEvent.getMatcher(),
                     CastBallotUploadEvent.getMatcher(),
                     ChallengedBallotUploadEvent.getMatcher(),
                     PollsClosedEvent.getMatcher()
@@ -170,13 +168,11 @@ public class Tap {
                 System.out.println("TAP: committing ballot " + e.getBID().toString());
             }
 
-            //Ignored events
-            public void challenge(ChallengeEvent e) {}
             public void activated(ActivatedEvent e) {}
             public void assignLabel(AssignLabelEvent e) {}
             public void authorizedToCast(AuthorizedToCastEvent e) {}
             public void ballotReceived(BallotReceivedEvent e) {}
-            public void challengeResponse(ChallengeResponseEvent e) {}
+
             public void joined(JoinEvent e) {}
             public void lastPollsOpen(LastPollsOpenEvent e) {}
             public void left(LeaveEvent e) {}
@@ -269,7 +265,7 @@ public class Tap {
                 }
             }
 
-            port = params.getChallengePort();
+            port = params.getPort();
 
             if(port == -1){
                 try{

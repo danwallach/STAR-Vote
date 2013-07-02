@@ -53,7 +53,6 @@ public class ViewManager implements IViewManager {
     private final IBallotVars _variables;
     private final ArrayList<String> _supportedLanguages;
     private final ObservableEvent _castBallotEvent;
-    private final ObservableEvent _challengeEvent;
     private final ObservableEvent _commitEvent;
     private final ObservableEvent _overrideCancelConfirm;
     private final ObservableEvent _overrideCancelDeny;
@@ -97,7 +96,6 @@ public class ViewManager implements IViewManager {
         _variables = vars;
         _supportedLanguages = new ArrayList<String>();
         _castBallotEvent = new ObservableEvent();
-        _challengeEvent = new ObservableEvent();
         _commitEvent = new ObservableEvent();
         _overrideCancelConfirm = new ObservableEvent();
         _overrideCancelDeny = new ObservableEvent();
@@ -146,8 +144,6 @@ public class ViewManager implements IViewManager {
      *            Draw this page number to this display.
      */
     public void drawPage(int pagenum) {
-        System.out.println(_view);
-
         _view.clearDisplay();
 
 
@@ -311,30 +307,6 @@ public class ViewManager implements IViewManager {
      */
     public void registerForCommit(Observer observer) {
         _commitEvent.addObserver(observer);
-    }
-
-    /**
-     * This method is called when the voter indicates he would like to challenge
-     * the machine's commitment. <br>
-     */
-    public void challenge() throws IncorrectTypeException {
-        _challengeEvent.notifyObservers();
-        if (!_layout.getProperties().contains(Properties.RESPONSE_PAGE))
-            throw new BallotBoxViewException(
-                    "Response Page does not exist", null);
-        drawPage(_layout.getProperties().getInteger(
-                Properties.RESPONSE_PAGE));
-    }
-
-    /**
-     * Register to be notifeid when someone calls challengeResponse().
-     * 
-     * @param obs
-     *            Register this observer to be notified when the voter wants to
-     *            challenge.
-     */
-    public void registerForChallenge(Observer obs) {
-        _challengeEvent.addObserver(obs);
     }
 
     /**

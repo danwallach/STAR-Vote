@@ -85,7 +85,7 @@ public class PiecemealBallotEncrypter {
 	/**
 	 * Actual implementation of  adderUpdate(...)
 	 * 
-	 * @see PiecemealBallotEncrypter#adderUpdate(String, ListExpression, List, PublicKey)
+	 * @see PiecemealBallotEncrypter
 	 */
 	protected void adderUpdateImpl(String id, ListExpression singleCard, List<String> cardGroup, PublicKey publicKey){
 		List<List<String>> groups = new ArrayList<List<String>>();
@@ -129,7 +129,7 @@ public class PiecemealBallotEncrypter {
 	/**
 	 * Actual implementation of  update(...)
 	 * 
-	 * @see PiecemealBallotEncrypter#update(String, ListExpression, Key)
+	 * @see PiecemealBallotEncrypter
 	 */
 	protected void updateImpl(String id, ListExpression singleCard, Key publicKey){
 		_voteCache.put(id, BallotEncrypter.SINGLETON.encrypt(singleCard, publicKey));
@@ -138,7 +138,7 @@ public class PiecemealBallotEncrypter {
 
 	/**
 	 * Destroys data in the encrypter.
-	 * Call after concluding a voting session (following challenge/cast-commit, etc.)
+	 * Call after concluding a voting session (following cast-commit, etc.)
 	 */
 	public void clear(){
 		_voteCache.clear();

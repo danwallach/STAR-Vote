@@ -93,7 +93,7 @@ public final class SelectableCardElement {
 	}
 
 	/**
-	 * This method is used to initialize the DeselectDelegate. < summary>
+	 * This method is used to initialize the DeselectDelegate. <summary>
 	 * 
 	 * @return This method returns the observer whose job is to deselect the
 	 *         corresponding element in the view.

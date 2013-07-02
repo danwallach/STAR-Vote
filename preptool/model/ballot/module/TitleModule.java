@@ -13,6 +13,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
@@ -54,19 +56,32 @@ public class TitleModule extends AModule {
             c.gridy = 0;
             c.insets = new Insets( 0, 10, 0, 0 );
             c.anchor = GridBagConstraints.LINE_START;
-            JLabel prompt = new JLabel( label  );
+
+            //This label is not used, since we don't need to inform the user that this is a title.
+            //However, we keep it in (blank) for formatting reasons
+            JLabel prompt = new JLabel( );
             add( prompt, c );
             title = new JLabel();
 
-            //setData(language, label);
+//            setData(primaryLanguage, label);
+//            System.out.println(primaryLanguage);
+
+            JTextField field = new JTextField();
+
+            field.addMouseListener(new MouseAdapter() {
+
+                public void mouseClicked(MouseEvent e) {
+                    setData(language, label);
+                }
+            });
 
 
             JPopupMenu contextMenu = new JPopupMenu();
             copyFromItem = new JMenuItem();
             copyFromItem.addActionListener( new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    setData( language, getData( primaryLanguage ) );
-                    title.setText( getData( language ) );
+                    setData( primaryLanguage, getData( primaryLanguage ) );
+                    title.setText( getData( primaryLanguage ) );
                 }
             } );
             contextMenu.add( copyFromItem );
@@ -82,7 +97,7 @@ public class TitleModule extends AModule {
          */
         public void languageSelected(Language lang) {
             language = lang;
-            title.setText( getData( lang ) );
+            title.setText(getData(lang));
         }
 
         /**
@@ -146,14 +161,13 @@ public class TitleModule extends AModule {
         this.label = label;
         data = new LocalizedString();
 
-        //TODO This is sort of a hack, should probably find a way to better support languages
-        data.set(Language.getLanguageForName("English"), label);
+//        TODO This is sort of a hack, should probably find a way to better support languages
+//        data.set(Language.getLanguageForName("English"), "");
     }
 
     /**
      * Generates ane returns this module's view
      */
-    @Override
     public AModuleView generateView(View view) {
         return new ModuleView( view );
     }
@@ -169,9 +183,8 @@ public class TitleModule extends AModule {
     }
 
     /**
-     * Returns true if the module needs translation in the given languagex
+     * Returns true if the module needs translation in the given language
      */
-    @Override
     public boolean needsTranslation(Language lang) {
         return getData( lang ).equals( "" );
     }
@@ -193,11 +206,11 @@ public class TitleModule extends AModule {
     /**
      * Formats this TextFieldModule as a savable XML Element
      */
-    @Override
     public Element toSaveXML(Document doc) {
         Element moduleElt = doc.createElement( "Module" );
         moduleElt.setAttribute( "type", "TitleModule" );
         moduleElt.setAttribute( "name", getName() );
+
 
         XMLTools.addProperty( doc, moduleElt, "label", "String", label );
 

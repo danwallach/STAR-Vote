@@ -425,9 +425,16 @@ public class View extends JFrame {
                 newIdx = idx - 1;
             else
                 newIdx = idx + 1;
+
             cardList.setSelectedIndex( newIdx );
             model.deleteCard( idx );
-            cardListModel.remove( idx );
+
+            //Re-enable the Straight Party option if it gets removed
+            String removed = (String)cardListModel.remove( idx );
+            if(removed.contains("Straight Party"))
+                addCardMenu.getComponent(idx).setEnabled(true);
+
+
         }
     }
 
@@ -582,7 +589,11 @@ public class View extends JFrame {
             cardListModel.removeAllElements();
             setCardPane( noCardsPanel );
             fireLanguagesChanged( model.getLanguages() );
+
+            addCardMenu.getComponent(0).setEnabled(true);
         }
+
+
     }
 
     /**
@@ -625,9 +636,18 @@ public class View extends JFrame {
                         cardList.setSelectedIndex( 0 );
                     else
                         cardList.setSelectedIndex( -1 );
+
                 }
                 fireLanguagesChanged( model.getLanguages() );
+
+                if(((String)cardListModel.get(0)).contains("Straight Party"))
+                    addCardMenu.getComponent(0).setEnabled(false);
+                else
+                    addCardMenu.getComponent(0).setEnabled(true);
+
             }
+
+
         }
         catch (BallotOpenException e) {
             JOptionPane
@@ -1050,7 +1070,7 @@ public class View extends JFrame {
         addCardMenu = new JPopupMenu();
 
         for (final ICardFactory fac : model.getCardFactories()) {
-            JMenuItem item = new JMenuItem( fac.getMenuString() );
+            final JMenuItem item = new JMenuItem( fac.getMenuString() );
             item.addActionListener( new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     ACard card = fac.makeCard();
@@ -1061,10 +1081,18 @@ public class View extends JFrame {
                     // at the beginning of a voting session
                     if(card instanceof PartyCard){
                         idx = 0;
+
+                        //For reasons stemming from implementation, it helps to update the data
+                        //within the card before adding it to the pane, so its name is actually displayed.
+                        card.getReviewBlankText(languageBar.getPrimaryLanguage());
+
                         //Should parties automatically be added to the card?
                         model.addCardAtFront( card );
                         cardListModel.insertElementAt("", 0 );
 
+                        //We only allow for one straight party card at a time
+                        //Why would you need more?
+                        item.setEnabled(false);
 
                     }
                     else{
@@ -1249,16 +1277,7 @@ public class View extends JFrame {
     	} );
     	prefMenu.add( font );
     	
-    	final JCheckBoxMenuItem challenge = new JCheckBoxMenuItem("Use Commit-Challenge Model");
-        challenge.setState(true);
-        //We're always using commit-challenge by default
-        model.setCommitChallenge(true);
-    	challenge.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent e) {
-				model.setCommitChallenge(challenge.getState());
-			}
-    	});
-    	prefMenu.add( challenge );
+
     }
 
 }

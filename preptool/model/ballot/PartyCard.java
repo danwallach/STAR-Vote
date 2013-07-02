@@ -26,6 +26,8 @@ import java.util.List;
  */
 public class PartyCard extends ACard {
 
+    private TitleModule title;
+
     /**
      * Factory to create a PartyCard
      */
@@ -46,7 +48,8 @@ public class PartyCard extends ACard {
      */
     public PartyCard() {
         super("Party");
-        modules.add(new TitleModule("Label", "Straight Party"));
+        title = new TitleModule("Title", "Title");
+        modules.add(title);
         modules.add(new CandidatesModule("Party", new String[]{ "Party" }));
     }
 
@@ -70,6 +73,7 @@ public class PartyCard extends ACard {
      * @param language the language
      */
     public String getReviewBlankText(Language language) {
+        title.setData(language, LiteralStrings.Singleton.get("STRAIGHT_PARTY").get(language));
         return LiteralStrings.Singleton.get("NONE", language);
     }
 
@@ -80,7 +84,8 @@ public class PartyCard extends ACard {
      * @return the review title
      */
     public String getReviewTitle(Language language) {
-        TitleModule titleModule = (TitleModule) getModuleByName("Label");
+        title.setData(language, LiteralStrings.Singleton.get("STRAIGHT_PARTY").get(language));
+        TitleModule titleModule = (TitleModule) getModuleByName("Title");
         return titleModule.getData(language) + ":";
     }
 
@@ -93,7 +98,8 @@ public class PartyCard extends ACard {
      */
     public ALayoutManager.ICardLayout layoutCard(ALayoutManager manager, ALayoutManager.ICardLayout cardLayout) {
         Language lang = manager.getLanguage();
-        TitleModule title = (TitleModule) getModuleByName("Label");
+        title.setData(lang, LiteralStrings.Singleton.get("STRAIGHT_PARTY").get(lang));
+        TitleModule title = (TitleModule) getModuleByName("Title");
         CandidatesModule candidatesModule = (CandidatesModule) getModuleByName("Party");
 
         cardLayout.setTitle(title.getData(lang));
@@ -111,7 +117,10 @@ public class PartyCard extends ACard {
      * @return the title, if any
      */
     public String getTitle(Language lang) {
-        return "Parties";
+        //Since there will only be one of these, we can just return the string literal
+        // of it for a given language
+        return LiteralStrings.Singleton.get("STRAIGHT_PARTY").get(lang);
+
     }
 
     public Element toXML(Document doc) {

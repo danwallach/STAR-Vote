@@ -60,10 +60,7 @@ public class AuditoriumParams implements IAuditoriumParams,
     
     //Default for cast_ballot_encryption_enabled.  Will probably need to be set to true in the future
     public static final boolean CAST_BALLOT_ENCRYPTION_ENABLED = true;
-    
-    //Default for use_commit_challenge_model.  Likewise, will probably be switched on in the future
-    public static final boolean USE_COMMIT_CHALLENGE_MODEL = false;
-    
+
     //If true will attempt to use SDL to enable the touchscreen.  Should not be set if not using SDL view.
     public static final boolean USE_ELO_TOUCH_SCREEN = false;
     
@@ -78,13 +75,13 @@ public class AuditoriumParams implements IAuditoriumParams,
     //Default report address, used exclusively by tap.  if "", must be specified explicitly somehow.
     public static final String DEFAULT_REPORT_ADDRESS = "";
     
-    //Default challenge port, used by challenge web server and tap.  If -1, must be specified explicitly somehow.
-    public static final int DEFAULT_CHALLENGE_PORT = 9700;
+    //Default server port, used by web server and tap.  If -1, must be specified explicitly somehow.
+    public static final int DEFAULT_PORT = 9700;
     
-    //Default http port, used by challenge web server.
+    //Default http port, used by web server.
     public static final int DEFAULT_HTTP_PORT = 8080;
     
-    //Default challenge ballot file.  If "", must be specified explicitly somehow.
+    //Default ballot file.  If "", must be specified explicitly somehow.
     public static final String DEFAULT_BALLOT_FILE = "";
     
     //Default printer for VVPAT. If "", do not use VVPAT.
@@ -137,6 +134,8 @@ public class AuditoriumParams implements IAuditoriumParams,
     public static final String PARAMETER_SEPARATOR = "!!!";
 
     public static final String DEFAULT_OPERATING_SYSTEM = "Windows";
+
+    public static final boolean DEFAULT_SHUFFLE_CANDIDATE_ORDER = false;
 
 
     /**
@@ -240,13 +239,7 @@ public class AuditoriumParams implements IAuditoriumParams,
 		return CAST_BALLOT_ENCRYPTION_ENABLED;
 	}
 	
-	public boolean getUseCommitChallengeModel(){
-		if(_config.containsKey("USE_COMMIT_CHALLENGE_MODEL"))
-			return Boolean.parseBoolean(_config.get("USE_COMMIT_CHALLENGE_MODEL"));
-		
-		return USE_COMMIT_CHALLENGE_MODEL;
-	}
-    
+
 	public boolean getUseEloTouchScreen(){
 		if(_config.containsKey("USE_ELO_TOUCH_SCREEN"))
 			return Boolean.parseBoolean(_config.get("USE_ELO_TOUCH_SCREEN"));
@@ -282,29 +275,8 @@ public class AuditoriumParams implements IAuditoriumParams,
 		
 		return DEFAULT_REPORT_ADDRESS;
 	}
-	
-	public int getChallengePort(){
-		if(_config.containsKey("DEFAULT_CHALLENGE_PORT"))
-			return Integer.parseInt(_config.get("DEFAULT_CHALLENGE_PORT"));
-		
-		return DEFAULT_CHALLENGE_PORT;
-	}
-	
-	public int getHttpPort(){
-		if(_config.containsKey("DEFAULT_HTTP_PORT"))
-			return Integer.parseInt(_config.get("DEFAULT_HTTP_PORT"));
-		
-		return DEFAULT_HTTP_PORT;
-	}
-	
-	public String getChallengeBallotFile(){
-		if(_config.containsKey("DEFAULT_BALLOT_FILE"))
-			return _config.get("DEFAULT_BALLOT_FILE");
-		
-		return DEFAULT_BALLOT_FILE;
-	}
-	
-	public String getPrinterForVVPAT() {
+
+    public String getPrinterForVVPAT() {
 		if(_config.containsKey("PRINTER_FOR_VVPAT"))
 			return _config.get("PRINTER_FOR_VVPAT");
 		
@@ -431,6 +403,24 @@ public class AuditoriumParams implements IAuditoriumParams,
             return _config.get("ELECTION_NAME");
 
         return ELECTION_NAME;
+    }
+
+    @Override
+    public int getPort() {
+        if(_config.containsKey("SERVER_PORT"))
+            return Integer.parseInt(_config.get("SERVER_PORT"));
+        return DEFAULT_PORT;
+    }
+
+
+    /**
+     * This parameter is used if the order in which the candidates are shown is supposed to be shuffled
+     */
+    public boolean shuffleCandidates() {
+        if(_config.containsKey("SHUFFLE_CANDIDATE_ORDER"))
+            return Boolean.parseBoolean(_config.get("SHUFFLE_CANDIDATE_ORDER"));
+
+        return DEFAULT_SHUFFLE_CANDIDATE_ORDER;
     }
 
     public boolean getUseTwoColumns(){

@@ -187,7 +187,6 @@ public class TextFieldModule extends AModule {
     /**
      * Generates ane returns this module's view
      */
-    @Override
     public AModuleView generateView(View view) {
         return new ModuleView( view );
     }
@@ -203,9 +202,8 @@ public class TextFieldModule extends AModule {
     }
 
     /**
-     * Returns true if the module needs translation in the given languagex
+     * Returns true if the module needs translation in the given language
      */
-    @Override
     public boolean needsTranslation(Language lang) {
         return getData( lang ).equals( "" );
     }
@@ -227,7 +225,6 @@ public class TextFieldModule extends AModule {
     /**
      * Formats this TextFieldModule as a savable XML Element
      */
-    @Override
     public Element toSaveXML(Document doc) {
         Element moduleElt = doc.createElement( "Module" );
         moduleElt.setAttribute( "type", "TextFieldModule" );
