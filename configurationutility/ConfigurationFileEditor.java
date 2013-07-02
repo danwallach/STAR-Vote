@@ -121,15 +121,6 @@ public class ConfigurationFileEditor extends JFrame {
     /* The main panel of the GUI. It contains all other components. */
     private JPanel contentPane;
 
-    /* The title panel of the GUI. It contains the title of the application. */
-    private JPanel titlePanel;
-
-    /* The main panel of the GUI. It contains the tabbed pane with the attribute names and values. */
-    private JPanel mainPanel;
-
-    /* The bottom panel of the GUI. It contains descriptions of each section of the GUI. */
-    private JPanel bottomPanel;
-
     /* Text fields for file IO */
     private JTextField fileInTextField;
     private JTextField fileOutTextField;
@@ -140,6 +131,9 @@ public class ConfigurationFileEditor extends JFrame {
 
     /* The text area that shows the current contents of the file to be written, including the modifications made in the current session. */
     private final JTextArea outputFileTextArea;
+
+    /* The text area that shows the file description comments. */
+    private final JTextArea fileDescriptionTextArea;
 
     /* The list of lines of text, as they are read from a file. */
     private ArrayList<String> fileLines = new ArrayList<String> ();
@@ -223,7 +217,8 @@ public class ConfigurationFileEditor extends JFrame {
 		/*
 		 * TITLE PANEL
 		 */
-
+        /* The title panel of the GUI. It contains the title of the application. */
+        JPanel titlePanel;
         titlePanel = new JPanel();
         titlePanel.setPreferredSize(new Dimension(TITLE_PANEL_WIDTH, TITLE_PANEL_HEIGHT));
         titlePanel.setBackground(Color.BLACK);
@@ -241,6 +236,8 @@ public class ConfigurationFileEditor extends JFrame {
         JScrollBar namesScrollBar;
         JScrollBar valuesScrollBar;
 
+        /* The main panel of the GUI. It contains the tabbed pane with the attribute names and values. */
+        JPanel mainPanel;
         mainPanel = new JPanel();
         mainPanel.setPreferredSize(new Dimension(MAIN_PANEL_WIDTH, MIDDLE_PANELS_HEIGHT));
         mainPanel.setBackground(Color.WHITE);
@@ -337,10 +334,31 @@ public class ConfigurationFileEditor extends JFrame {
         final JList<String> printValuesList = new JList<String> (printValuesListModel);
         printValuesScrollPane.setViewportView(printValuesList);
 
+        /*
+         * File comments Tab
+         */
+        JPanel descriptionTabPanel = new JPanel();
+        FlowLayout flowLayout_5 = (FlowLayout) descriptionTabPanel.getLayout();
+        flowLayout_5.setAlignment(FlowLayout.LEFT);
+        mainTabbedPane.addTab("File Description", null, descriptionTabPanel, null);
+
+        JScrollPane fileDescriptionScrollPane = new JScrollPane();
+        descriptionTabPanel.add(fileDescriptionScrollPane);
+        fileDescriptionScrollPane.setPreferredSize(new Dimension(MAIN_PANEL_WIDTH - 2 * PANEL_CONTENTS_X_OFFSET, MIDDLE_PANELS_HEIGHT - TABBED_CONTENTS_Y_OFFSET));
+
+        fileDescriptionTextArea = new JTextArea();
+        fileDescriptionScrollPane.setViewportView(fileDescriptionTextArea);
+        fileDescriptionTextArea.setTabSize(4);
+        fileDescriptionTextArea.setWrapStyleWord(true);
+        fileDescriptionTextArea.setLineWrap(true);
+
+
+
 		/*
 		 * BOTTOM PANEL
 		 */
-
+        /* The bottom panel of the GUI. It contains descriptions of each section of the GUI. */
+        JPanel bottomPanel;
         bottomPanel = new JPanel();
         bottomPanel.setPreferredSize(new Dimension(BOTTOM_PANEL_WIDTH, BOTTOM_PANEL_HEIGHT));
         bottomPanel.setBackground(Color.WHITE);
@@ -401,7 +419,7 @@ public class ConfigurationFileEditor extends JFrame {
         inputFileTextArea.setText("");
 
 		/*
-		 * Input File Tab
+		 * Output File Tab
 		 */
         JPanel outputFileTabPanel = new JPanel();
         FlowLayout flowLayout_4 = (FlowLayout) outputFileTabPanel.getLayout();
@@ -676,6 +694,7 @@ public class ConfigurationFileEditor extends JFrame {
                 // Clear the text-storing variables and components.
                 inputFileTextArea.setText("");
                 outputFileTextArea.setText("");
+                fileDescriptionTextArea.setText("");
                 configurationAttributeNames.clear();
                 configurationAttributeValues.clear();
                 configurationAttributeComments.clear();
@@ -849,6 +868,12 @@ public class ConfigurationFileEditor extends JFrame {
                     configurationAttributeNames.add(printNamesListModel.getElementAt(idx));
                     configurationAttributeValues.add(printValuesListModel.getElementAt(idx));
                     configurationAttributeComments.add(printComments.get(idx));
+                }
+
+                // Write the file description comments to the appropriate text area.
+                for (String comment : fileComments)
+                {
+                    fileDescriptionTextArea.append(comment + "\n");
                 }
 
                 // Print a success message.
@@ -1051,9 +1076,11 @@ public class ConfigurationFileEditor extends JFrame {
         // Clear the output file text.
         outputFileTextArea.setText("");
 
-        // Add in the file comments.
-        for (String fileComment : fileComments)
+        // Update the file comments and add them to the output file text.
+        fileComments.clear();
+        for (String fileComment : fileDescriptionTextArea.getText().split("\n"))
         {
+            fileComments.add(fileComment);
             outputFileTextArea.append("## " + fileComment + "\n");
         }
 
