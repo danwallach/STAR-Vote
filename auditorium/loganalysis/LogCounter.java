@@ -50,7 +50,7 @@ public class LogCounter {
             new Lexer(
                     new CharArrayReader(
                             new String(
-                                    "(announce(host #string #string #string) #string (signed-message (cert (signature #string #string (key #string #string #string #string)))(signature #string #string (succeeds #listof:(ptr #string #string #string) #any))))" )
+                                    "(announce(host #string #string #string) #string (signed-message (cert (signature #string #string (key #string #string #string #string)))(signature #string #string (succeeds #list:(ptr #string #string #string) #any))))" )
                                     .toCharArray() ) ) ).read();
 
     public static void main(String[] args) throws Exception {

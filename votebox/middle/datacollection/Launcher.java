@@ -92,7 +92,6 @@ public class Launcher {
 			e.printStackTrace();
 			return;
 		}
-		System.out.println(baldir.getAbsolutePath());
 
 		// Check that ballot location is legit.
 		// Check that it's a directory.

@@ -589,7 +589,11 @@ public class View extends JFrame {
             cardListModel.removeAllElements();
             setCardPane( noCardsPanel );
             fireLanguagesChanged( model.getLanguages() );
+
+            addCardMenu.getComponent(0).setEnabled(true);
         }
+
+
     }
 
     /**
@@ -632,9 +636,18 @@ public class View extends JFrame {
                         cardList.setSelectedIndex( 0 );
                     else
                         cardList.setSelectedIndex( -1 );
+
                 }
                 fireLanguagesChanged( model.getLanguages() );
+
+                if(((String)cardListModel.get(0)).contains("Straight Party"))
+                    addCardMenu.getComponent(0).setEnabled(false);
+                else
+                    addCardMenu.getComponent(0).setEnabled(true);
+
             }
+
+
         }
         catch (BallotOpenException e) {
             JOptionPane

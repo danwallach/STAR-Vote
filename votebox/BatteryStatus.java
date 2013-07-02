@@ -72,7 +72,6 @@ public class BatteryStatus {
 
                 }//if
 
-                System.out.println("Running " + file.getAbsolutePath());
                 Process child = Runtime.getRuntime().exec(file.getAbsolutePath().split("!!!"));
 
 

@@ -13,6 +13,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
@@ -54,12 +56,24 @@ public class TitleModule extends AModule {
             c.gridy = 0;
             c.insets = new Insets( 0, 10, 0, 0 );
             c.anchor = GridBagConstraints.LINE_START;
-            JLabel prompt = new JLabel( label  );
+
+            //This label is not used, since we don't need to inform the user that this is a title.
+            //However, we keep it in (blank) for formatting reasons
+            JLabel prompt = new JLabel( );
             add( prompt, c );
             title = new JLabel();
 
-//            setData(language, label);
-//            System.out.println(language);
+//            setData(primaryLanguage, label);
+//            System.out.println(primaryLanguage);
+
+            JTextField field = new JTextField();
+
+            field.addMouseListener(new MouseAdapter() {
+
+                public void mouseClicked(MouseEvent e) {
+                    setData(language, label);
+                }
+            });
 
 
             JPopupMenu contextMenu = new JPopupMenu();
@@ -83,9 +97,7 @@ public class TitleModule extends AModule {
          */
         public void languageSelected(Language lang) {
             language = lang;
-            title.setText( getData( lang ) );
-            validate();
-            repaint();
+            title.setText(getData(lang));
         }
 
         /**
@@ -149,7 +161,7 @@ public class TitleModule extends AModule {
         this.label = label;
         data = new LocalizedString();
 
-//        //TODO This is sort of a hack, should probably find a way to better support languages
+//        TODO This is sort of a hack, should probably find a way to better support languages
 //        data.set(Language.getLanguageForName("English"), "");
     }
 
@@ -186,7 +198,6 @@ public class TitleModule extends AModule {
      *            the string
      */
     public void setData(Language lang, String s) {
-        System.out.println("Setting data with string " + s + " in language " + lang);
         data.set( lang, s );
         setChanged();
         notifyObservers();
@@ -200,9 +211,6 @@ public class TitleModule extends AModule {
         moduleElt.setAttribute( "type", "TitleModule" );
         moduleElt.setAttribute( "name", getName() );
 
-        for(Language lang : Language.getAllLanguages()){
-            System.out.println(">>>> Data: " + data.get(lang) + " in language " + lang.getName()) ;
-        }
 
         XMLTools.addProperty( doc, moduleElt, "label", "String", label );
 

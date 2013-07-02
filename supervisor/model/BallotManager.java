@@ -22,7 +22,6 @@ public class BallotManager {
 
     //generates a random pin and adds it to the list of pins and its corresponding ballot based on its precinct
     public String generatePin(String precinct){
-        System.out.println(">>> Generating pin for precinct " + precinct);
         String pin = "" + rand.nextInt(10000);
 
 

@@ -67,7 +67,7 @@ import verifier.value.Value;
  * module using the verifier.
  * 
  * @see verifier.IVerifierPlugin
- * @see verifier.ast.IAST
+ * @see verifier.ast.AST
  * @see verifier.ast.ASTParser
  * @author kyle
  * 
@@ -76,7 +76,7 @@ public class Verifier {
 
 	/**
 	 * @return This method constructs and returns the collection of known
-	 *         primitive AST fatories. This is currently used in place a
+	 *         primitive AST factories. This is currently used in place a
 	 *         configuration file -- it is essentially the "list" of hard-wired
 	 *         primitives. Others can, of course, be added via the plugin
 	 *         interface.

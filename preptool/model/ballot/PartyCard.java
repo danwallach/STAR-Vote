@@ -48,7 +48,7 @@ public class PartyCard extends ACard {
      */
     public PartyCard() {
         super("Party");
-        title = new TitleModule("Label", "");
+        title = new TitleModule("Title", "Title");
         modules.add(title);
         modules.add(new CandidatesModule("Party", new String[]{ "Party" }));
     }
@@ -85,7 +85,7 @@ public class PartyCard extends ACard {
      */
     public String getReviewTitle(Language language) {
         title.setData(language, LiteralStrings.Singleton.get("STRAIGHT_PARTY").get(language));
-        TitleModule titleModule = (TitleModule) getModuleByName("Label");
+        TitleModule titleModule = (TitleModule) getModuleByName("Title");
         return titleModule.getData(language) + ":";
     }
 
@@ -99,7 +99,7 @@ public class PartyCard extends ACard {
     public ALayoutManager.ICardLayout layoutCard(ALayoutManager manager, ALayoutManager.ICardLayout cardLayout) {
         Language lang = manager.getLanguage();
         title.setData(lang, LiteralStrings.Singleton.get("STRAIGHT_PARTY").get(lang));
-        TitleModule title = (TitleModule) getModuleByName("Label");
+        TitleModule title = (TitleModule) getModuleByName("Title");
         CandidatesModule candidatesModule = (CandidatesModule) getModuleByName("Party");
 
         cardLayout.setTitle(title.getData(lang));
@@ -117,7 +117,9 @@ public class PartyCard extends ACard {
      * @return the title, if any
      */
     public String getTitle(Language lang) {
-        return title.getData(lang);
+        //Since there will only be one of these, we can just return the string literal
+        // of it for a given language
+        return LiteralStrings.Singleton.get("STRAIGHT_PARTY").get(lang);
 
     }
 

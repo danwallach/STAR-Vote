@@ -211,11 +211,10 @@ public class LiteralStrings {
         map.put("RACE_INSTRUCTIONS", ls);
 
         ls = new LocalizedString();
-        ls.set(ENGLISH, "To make your choice, click on the party name or on the box next to the name."
+        ls.set(ENGLISH, "To make your choice, click on the party name or on the box next to the name. "
                 + "\n A green checkmark will appear next to your choice. If you want to change "
-                + "\n your choice, just click on a different party or box."
-                + "\n Selecting a party here will select candidates from that party on all subsequent"
-                + "\n screens, where applicable.");
+                + "\n your choice, just click on a different party or box. Selecting a party here will "
+                + "\n select candidates from that party on all subsequent screens, where applicable. ");
         map.put("PARTY_INSTRUCTIONS", ls);
 
         ls = new LocalizedString();

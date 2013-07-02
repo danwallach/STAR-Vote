@@ -76,7 +76,7 @@ import java.io.*;
  * 
  * </dl>
  * 
- * @version v0.1, 2003/12/04 (Decembre)
+ * @version v0.1, 2003/12/04 (December)
  * @author Laszlo Szathmary (<a
  *         href="szathml@delfin.unideb.hu">szathml@delfin.unideb.hu</a>)
  */
@@ -89,7 +89,7 @@ public class GraphViz {
     /**
      * Where is your dot program located? It will be called externally.
      */
-    private static String DOT = "/home/kyle/gvznew/bin/dot";
+    private static String DOT = "/usr/bin/dot";
 
     /**
      * The source of the graph written in dot language.

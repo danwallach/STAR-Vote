@@ -185,12 +185,8 @@ public class BallotParser {
         		try{
                     List<String> r = cardProps.getStringList(Properties.RACE_GROUP);
 
-
                     //Randomly permute the candidates (i.e. ballot rotation)
                     Collections.shuffle(r);
-
-                    for(String i : r)
-                        System.out.println("Race groups entry: " + i);
 
         			raceGroups.add(r);
 

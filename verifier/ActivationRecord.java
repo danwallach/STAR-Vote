@@ -35,12 +35,12 @@ import sexpression.*;
  * An instance of this class represents a single record in the static chain
  * (which is a set of variable bindings). The environment is simply a chain of
  * these activation records (each which holds a set of bindings). The
- * environment is extended by chaning on a new activation record. Only the
- * evaluation of a let or a generic application (application of a nonprimitive
+ * environment is extended by chaining on a new activation record. Only the
+ * evaluation of a let or a generic application (application of a non-primitive
  * function to a set of arguments) can extend the environment. In the former
  * case, the environment will be extended so that the bindings introduced in the
  * let are accessible in the body of the let. In the latter case, the
- * environment will be extended such that the argument varibles are bound during
+ * environment will be extended such that the argument variables are bound during
  * the execution of the lambda's body.
  * 
  * @author kyle
@@ -152,7 +152,7 @@ public class ActivationRecord {
 	 * 
 	 * @param name
 	 *            Lookup this identifier
-	 * @return This method returns the value that the given identifer is bound
+	 * @return This method returns the value that the given identifier is bound
 	 *         to.
 	 * @throws NotFoundException
 	 *             This method throws if the given variable is not bound in the
