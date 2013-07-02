@@ -645,11 +645,6 @@ public class VoteBox{
                     if (!committedBallot )
                         throw new RuntimeException(
                                 "Someone said the ballot was received, but this machine hasn't committed it yet. Maybe the supervisor is not configured properly?");
-                    
-                    if(!finishedVoting )
-                    	throw new RuntimeException(
-                    			"Someone said the ballot was received, but this machine hasn't finished voting yet");
-
 
 
                     if(isProvisional)  {

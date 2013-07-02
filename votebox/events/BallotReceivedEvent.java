@@ -60,8 +60,11 @@ public class BallotReceivedEvent implements IAnnounceEvent {
                 StringWildcard.SINGLETON, StringWildcard.SINGLETON, StringWildcard.SINGLETON);
 
         public IAnnounceEvent match(int serial, ASExpression sexp) {
+
             ASExpression res = pattern.match( sexp );
             if (res != NoMatch.SINGLETON) {
+                System.out.println("Matching a BallotReceivedEvent!");
+
                 int node = Integer.parseInt( ((ListExpression) res).get( 0 )
                         .toString() );
                 /*byte[] nonce = ((StringExpression) ((ListExpression) res)

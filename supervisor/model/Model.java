@@ -1004,11 +1004,11 @@ public class Model {
                     BallotStore.addBallot(e.getBID().toString(), e.getBallot());
                     bManager.setPrecinctByBID(e.getBID().toString(), e.getPrecinct().toString());
                     bManager.testMapPrint();
-                    auditorium.announce(new BallotReceivedEvent(mySerial, e
-                            .getSerial(), ((StringExpression) e.getNonce())
+                    auditorium.announce(new BallotReceivedEvent(mySerial, e.getSerial(),
+                            ((StringExpression) e.getNonce())
                             .getBytes(), e.getBID().toString(), e.getPrecinct().toString()));
 
-                    String precinct = bManager.getPrecinctByBallot(e.getBID().toString());
+                    String precinct = bManager.getPrecinctByBID(e.getBID().toString());
                     talliers.get(precinct).recordVotes(e.getBallot().toVerbatim(), e.getNonce());
                     String bid = e.getBID().toString();
                     committedBids.put(bid, e.getNonce());
