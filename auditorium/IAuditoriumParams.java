@@ -99,14 +99,6 @@ public interface IAuditoriumParams {
     public boolean getCastBallotEncryptionEnabled();
 
     /**
-     * 
-     * @return Returns true if VoteBox should make use of the "commit-challenge" model for voting.
-     * 		   If false, a single event is used for casting ballots in place of the two stage
-     * 	 	   commit & cast.
-     */
-    public boolean getUseCommitChallengeModel();
-    
-    /**
      * @return Returns true if VoteBox should use SDL to connect toe an Elo touchscreen as an input device.
      *         Should only be true on linux, SDL view, framebuffer driven machines.  All other configurations
      *         are likely to fail, and ungracefully at that.
@@ -135,22 +127,7 @@ public interface IAuditoriumParams {
      * @return the report address for Tap to use (if not specified on the command line).
      */
     public String getReportAddress();
-    
-    /**
-     * @return the port for the challenge web server and tap to use to communicate (if not specified on the command line).
-     */
-    public int getChallengePort();
-    
-    /**
-     * @return the port for the challenge web server to server http requests on.
-     */
-    public int getHttpPort();
-    
-    /**
-     * @return the ballot file to be used for images by the challenge web server (if not specified on the command line).
-     */
-    public String getChallengeBallotFile();
-    
+
     /**
      * @return the name of the VVPAT printer to use, if any
      */
@@ -211,4 +188,5 @@ public interface IAuditoriumParams {
      */
     public String getElectionName();
 
+    int getPort();
 }

@@ -26,7 +26,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.GridBagConstraints;
@@ -80,8 +79,6 @@ public class PsychLayoutManager extends ALayoutManager {
 	private static final int REVIEW_SCREEN_NUM_COLUMNS = 1;
 	private static int CARDS_PER_REVIEW_PAGE = 10;
 	
-	private static boolean USE_COMMIT_CHALLENGE_MODEL = true;
-
     /**
      * Constant for the width of the language selection page box.
      */
@@ -357,11 +354,7 @@ public class PsychLayoutManager extends ALayoutManager {
             
             Spacer PCastButton = null;
             
-            //The cast button should be sub'd for the commit if we're not using the challenge-commit model
-            if(USE_COMMIT_CHALLENGE_MODEL)
-            	PCastButton = new Spacer(commitButton, south);
-            else
-            	PCastButton = new Spacer(castButton, south);
+            PCastButton = new Spacer(commitButton, south);
 
             // Setup constraints and add label and button
             GridBagConstraints constraints = new GridBagConstraints();
@@ -578,8 +571,7 @@ public class PsychLayoutManager extends ALayoutManager {
      */
     private static final int WINDOW_HEIGHT = 768;
 
-    //private static Layout LAST_LAYOUT = null;
-    
+
     /**
      * Visitor that renders a component and returns an image
      */
@@ -836,11 +828,6 @@ public class PsychLayoutManager extends ALayoutManager {
     protected Button commitButton;
 
     /**
-     * A Common Challenge Button
-     */
-    protected Button challengeButton;
-
-    /**
      * A Common NextButton
      */
     protected Button nextButton;
@@ -936,12 +923,11 @@ public class PsychLayoutManager extends ALayoutManager {
      * Creates a new PsychLayoutManager and initializes many of the "common"
      * components, such as the next button.
      */
-    public PsychLayoutManager(Language language, int numCardsPerReviewPage, int fontSize, boolean commitChallenge) {
+    public PsychLayoutManager(Language language, int numCardsPerReviewPage, int fontSize) {
         this.language = language;
         
         CARDS_PER_REVIEW_PAGE = numCardsPerReviewPage;
     	FONT_SIZE_MULTIPLE = fontSize;
-    	USE_COMMIT_CHALLENGE_MODEL = commitChallenge;
 
         instructions = new Label(getNextLayoutUID(), LiteralStrings.Singleton
                 .get("SIDEBAR_INSTRUCTIONS", language));
@@ -1034,11 +1020,6 @@ public class PsychLayoutManager extends ALayoutManager {
                 .get("COMMIT_BUTTON", language), "CommitBallot");
         commitButton.setIncreasedFontSize(true);
         commitButton.setSize(commitButton.execute(sizeVisitor));
-        
-//        challengeButton = new Button(getNextLayoutUID(), LiteralStrings.Singleton
-//                .get("CHALLENGE_BUTTON", language), "Challenge");
-//        challengeButton.setIncreasedFontSize(true);
-//        challengeButton.setSize(challengeButton.execute(sizeVisitor));
 
         nextInfo = new Label(getNextLayoutUID(), LiteralStrings.Singleton.get(
                 "FORWARD_NEXT_RACE", language), sizeVisitor);
@@ -1129,10 +1110,6 @@ public class PsychLayoutManager extends ALayoutManager {
         	int additionalReviewPages = (ballot.getCards().size() - 1) / CARDS_PER_REVIEW_PAGE;
         	//there are 2 pages after the last review screen: Cast and Success 
         	int reviewCardNumber = raceN + 3;
-//        	if (USE_COMMIT_CHALLENGE_MODEL){
-//        		//there is an additional page between Cast and Success: Challenge
-//        		reviewCardNumber++;
-//        	}       Should no longer need this in STAR-Vote model
 
             pageTargets.put(raceN, reviewPageNum + additionalReviewPages + reviewCardNumber);
             int currentReviewPage = raceN / CARDS_PER_REVIEW_PAGE;
@@ -1149,12 +1126,6 @@ public class PsychLayoutManager extends ALayoutManager {
 
         layout.getPages().add(reviewPageNum + (ballot.getCards().size() / CARDS_PER_REVIEW_PAGE) + 1, makeCastPage());
 
-        //No challenge page necessary since challenges can't happen?
-//        if (USE_COMMIT_CHALLENGE_MODEL){
-//        	layout.getPages().add(reviewPageNum + (ballot.getCards().size() / CARDS_PER_REVIEW_PAGE) + 2, makeChallengePage());
-//        	reviewPageNum++;
-//        }
-        
         layout.getPages().add(reviewPageNum + (ballot.getCards().size() / CARDS_PER_REVIEW_PAGE) + 2, makeSuccessPage());
         
         layout.getPages().add(makeOverrideCancelPage());
@@ -1162,12 +1133,12 @@ public class PsychLayoutManager extends ALayoutManager {
         layout.getPages().add(makeOverrideCastPage());
         layout.setOverrideCastPage(layout.getPages().size()-1);
         
-        if (USE_COMMIT_CHALLENGE_MODEL){
-        	layout.getPages().add(makeResponsePage());
-            layout.getPages().add(makeProvisionalSuccessPage());
-        	layout.setReponsePage(layout.getPages().size()-2);
-            layout.setProvisionalPage(layout.getPages().size() - 1);
-        }
+
+        layout.getPages().add(makeResponsePage());
+        layout.getPages().add(makeProvisionalSuccessPage());
+        layout.setReponsePage(layout.getPages().size()-2);
+        layout.setProvisionalPage(layout.getPages().size() - 1);
+
         
         //LAST_LAYOUT = layout;
         
@@ -1969,60 +1940,7 @@ public class PsychLayoutManager extends ALayoutManager {
         return page;
     }
     
-    @Override
-    protected Page makeChallengePage() {
-        PsychLayoutPanel frame = new PsychLayoutPanel();
-        Label challengeTitle = new Label(getNextLayoutUID(),
-                LiteralStrings.Singleton.get("CHALLENGE_TITLE", language));
-        challengeTitle.setBold(true);
-        challengeTitle.setCentered(true);
-        challengeTitle.setSize(challengeTitle.execute(sizeVisitor));
-        frame.addTitle(challengeTitle);
-        frame.remove(frame.west);
-
-        Label challengeInstructions = new Label(getNextLayoutUID(),
-                LiteralStrings.Singleton.get("CHALLENGE_INSTRUCTIONS",
-                        language), sizeVisitor);
-        GridBagConstraints c = new GridBagConstraints();
-        c.anchor = GridBagConstraints.NORTH;
-        c.fill = GridBagConstraints.VERTICAL;
-        c.gridy = 1;
-        c.gridx = 0;
-        c.weightx = 1;
-        c.weighty = 1;
-        Spacer instspacer = new Spacer(challengeInstructions, frame.north);
-        frame.north.add(instspacer, c);
-
-        JPanel east = new JPanel();
-        east.setLayout(new GridBagLayout());
-        c = new GridBagConstraints();
-
-//        Spacer sp = new Spacer(challengeButton, east);
-//        east.add(sp, c);
-        
-        Spacer sp = new Spacer(castButton, east);
-        c.gridy = 1;
-        c.insets = new Insets(50, 0, 0, 0);
-        east.add(sp, c);
-        
-        frame.addAsEastPanel(east);
-        frame.validate();
-        frame.pack();
-
-        Page page = new Page();
-        page.getComponents().add(simpleBackground);
-        page.setBackgroundLabel(simpleBackground.getUID());
-
-        for (Component co : frame.getAllComponents()) {
-            Spacer s = (Spacer) co;
-            s.updatePosition();
-            page.getComponents().add(s.getComponent());
-        }
-        return page;
-    }
-    
-    @Override
-    protected Page makeResponsePage() {
+    private Page makeResponsePage() {
         PsychLayoutPanel frame = new PsychLayoutPanel();
         Label responseTitle = new Label(getNextLayoutUID(),
                 LiteralStrings.Singleton.get("RESPONSE_TITLE", language));

@@ -1277,16 +1277,7 @@ public class View extends JFrame {
     	} );
     	prefMenu.add( font );
     	
-    	final JCheckBoxMenuItem challenge = new JCheckBoxMenuItem("Use Commit-Challenge Model");
-        challenge.setState(true);
-        //We're always using commit-challenge by default
-        model.setCommitChallenge(true);
-    	challenge.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent e) {
-				model.setCommitChallenge(challenge.getState());
-			}
-    	});
-    	prefMenu.add( challenge );
+
     }
 
 }

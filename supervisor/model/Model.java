@@ -87,7 +87,9 @@ public class Model {
 
     private String ballotLocation;
 
-    private ITallier tallier;
+    //private ITallier tallier;
+
+    private HashMap<String, ITallier> talliers;
 
     private Timer statusTimer;
 
@@ -136,7 +138,8 @@ public class Model {
         bManager = new BallotManager();
         keyword = "";
         ballotLocation = "ballot.zip";
-        tallier = new Tallier();
+//        talliers = new Tallier();
+        talliers = new HashMap<String, ITallier>();
         committedBids = new HashMap<String, ASExpression>();
         statusTimer = new Timer(300000, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -284,11 +287,17 @@ public class Model {
      * 
      * @return the output from the tally
      */
-    public Map<String, BigInteger> closePolls() {
+    public List<Map<String, BigInteger>> closePolls() {
         auditorium
                 .announce(new PollsClosedEvent(mySerial, new Date().getTime()));
         //return tallier.getReport(privateKey);
-        return tallier.getReport();
+        ArrayList<Map<String, BigInteger>> out = new ArrayList<Map<String, BigInteger>>();
+
+        for(ITallier t : (ITallier[])talliers.entrySet().toArray()){
+            out.add(t.getReport());
+        }
+
+        return out;
     }
 
     /**
@@ -623,7 +632,9 @@ public class Model {
                             .getSerial(), ((StringExpression) e.getNonce())
                             .getBytes()));
 
-                    tallier.confirmed(e.getNonce());
+                    String precinct = bManager.getPrecinctByBallot(e.getBID().toString());
+                    talliers.get(precinct).confirmed(e.getNonce());
+
                 }
             }
 
@@ -725,8 +736,11 @@ public class Model {
              * @throws AuditoriumCryptoException 
              */
             public void pollsOpen(PollsOpenEvent e){
+
+                //Moving this code so that a new tallier is created when a new ballot is
+                //So we can have precinct-by-precinct tallying
                 
-            	if(auditoriumParams.getUseCommitChallengeModel()){
+/*            	if(auditoriumParams.getUseCommitChallengeModel()){
     				try {
 						if(!auditoriumParams.getEnableNIZKs()){
 							//Loading privateKey well in advance so the whole affair is "fail-fast"
@@ -768,7 +782,7 @@ public class Model {
     						e1.printStackTrace();
             			}//catch
             		}//if
-            	}//if
+            	}//if*/
             	
                 setPollsOpen(true);
             }
@@ -976,26 +990,6 @@ public class Model {
             }
 
             /**
-             * Indicate to the tallier that the vote in question is being challenged,
-             * and as such should be excluded from the final tally.
-             */
-            public void challengeResponse(ChallengeResponseEvent e) {
-            	//NO-OP
-            }
-            
-            /**
-             * Indicate to the tallier that the vote in question is being challenged,
-             * and as such should be excluded from the final tally.
-             */
-            public void challenge(ChallengeEvent e) {
-            	System.out.println("Received challenge: "+e);
-            	
-            	tallier.challenged(e.getNonce());
-            	auditorium.announce(new ChallengeResponseEvent(mySerial,
-            			e.getSerial(), e.getNonce()));
-            }
-
-            /**
              * Record the vote received in the commit event.
              * It should not yet be tallied.
              */
@@ -1010,7 +1004,9 @@ public class Model {
                     auditorium.announce(new BallotReceivedEvent(mySerial, e
                             .getSerial(), ((StringExpression) e.getNonce())
                             .getBytes()));
-                    tallier.recordVotes(e.getBallot().toVerbatim(), e.getNonce());
+
+                    String precinct = bManager.getPrecinctByBallot(e.getBID().toString());
+                    talliers.get(precinct).recordVotes(e.getBallot().toVerbatim(), e.getNonce());
                     String bid = e.getBID().toString();
                     committedBids.put(bid, e.getNonce());
                 }
@@ -1190,8 +1186,32 @@ public class Model {
     public void addBallot(File fileIn) {
         String fileName = fileIn.getName();
         try{
-        String precinct = fileName.substring(fileName.length()-7,fileName.length()-4);
-        bManager.addBallot(precinct, fileIn.getAbsolutePath());
+            String precinct = fileName.substring(fileName.length()-7,fileName.length()-4);
+            ITallier tallier = null;
+
+                try {
+                    if(!auditoriumParams.getEnableNIZKs()){
+                        //Loading privateKey well in advance so the whole affair is "fail-fast"
+                        Key privateKey = auditoriumParams.getKeyStore().loadKey("private");
+                        tallier = new ChallengeDelayedTallier(privateKey);
+                    }else{
+                        //Loading privateKey well in advance so the whole affair is "fail-fast"
+                        PrivateKey privateKey = (PrivateKey)auditoriumParams.getKeyStore().loadAdderKey("private");
+                        PublicKey publicKey = (PublicKey)auditoriumParams.getKeyStore().loadAdderKey("public");
+                        tallier = new ChallengeDelayedWithNIZKsTallier(publicKey, privateKey);
+                    }//if
+                } catch (AuditoriumCryptoException e1) {
+                    System.err.println("Crypto error encountered: "+e1.getMessage());
+                    e1.printStackTrace();
+                }
+
+
+            if(tallier != null)
+                talliers.put(precinct, tallier);
+            else
+                throw new RuntimeException("Tallier was not properly initialized for precinct " + precinct);
+
+            bManager.addBallot(precinct, fileIn.getAbsolutePath());
         }catch(NumberFormatException e){
             JOptionPane.showMessageDialog(null, "Please choose a valid ballot");
         }

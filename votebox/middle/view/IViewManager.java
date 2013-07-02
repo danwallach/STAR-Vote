@@ -62,12 +62,7 @@ public interface IViewManager {
      * Cast the ballot.
      */
     void castCommittedBallot();
-    
-    /**
-     * Cast the ballot.
-     */
-    void challenge() throws IncorrectTypeException;
-    
+
     /**
      * Fired when the override-cancel operation is confirmed on the booth.
      */

@@ -78,7 +78,6 @@ public class Model {
     
     private int cardsPerReviewPage = 10;
     private int fontSize = 8;
-    private boolean commitChallenge = false;
 
     /**
      * Creates a new Model with a blank Ballot and using the PsychLayoutManager.
@@ -88,10 +87,9 @@ public class Model {
 
         managerFactory = new ILayoutManagerFactory() {
             public ILayoutManager makeLayoutManager(Language language,
-            		int numCardsPerReviewPage, int fontSize,
-            		boolean commitChallenge) {
+                                                    int numCardsPerReviewPage, int fontSize) {
                 return new PsychLayoutManager( language,
-                		numCardsPerReviewPage, fontSize, commitChallenge );
+                		numCardsPerReviewPage, fontSize);
             }
         };
 
@@ -227,7 +225,7 @@ public class Model {
                         info.setProgress( "Laying out Ballot", 0 );
                         ILayoutManager manager = getManagerFactory()
                                 .makeLayoutManager( lang, cardsPerReviewPage,
-                                		fontSize, commitChallenge  );
+                                		fontSize);
 
                         Layout layout = manager.makeLayout( getBallot() );
 
@@ -335,7 +333,7 @@ public class Model {
                         info.setProgress( "Laying out Ballot", 0 );
                         ILayoutManager manager = getManagerFactory()
                                 .makeLayoutManager( lang, cardsPerReviewPage,
-                                		fontSize, commitChallenge );
+                                		fontSize);
 
                         Layout layout = manager.makeLayout( getBallot() );
                         
@@ -607,7 +605,7 @@ public class Model {
      */
     public ArrayList<JPanel> previewCard(int idx, Language language) {
         final ILayoutManager manager = getManagerFactory().makeLayoutManager(
-            language, cardsPerReviewPage, fontSize, commitChallenge );
+            language, cardsPerReviewPage, fontSize);
         final ArrayList<JPanel> panels = manager.makeCardPage( getBallot()
                 .getCards().get( idx ) );
         new Thread() {
@@ -689,15 +687,6 @@ public class Model {
      */
     public void setFontSize(int fontSizeMultiplier){
     	fontSize = fontSizeMultiplier;
-    }
-    
-    /**
-     * Sets the properties of the layout
-     * 
-     * @param commitChallengeModel whether the ballot will be in Commit-Challenge style
-     */
-    public void setCommitChallenge(boolean commitChallengeModel){
-    	commitChallenge = commitChallengeModel;
     }
 
     /**

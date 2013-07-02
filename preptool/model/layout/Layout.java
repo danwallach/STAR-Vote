@@ -52,11 +52,7 @@ public class Layout {
      * The page number of the override-cast page
      */
     private int overrideCastPage;
-    
-    /**
-     * The page number of the challenge-response page
-     */
-    private int responsePage;
+
     private int provisionalPage;
 
     /**
@@ -78,13 +74,6 @@ public class Layout {
      */
     public int getOverrideCastPage() {
         return overrideCastPage;
-    }
-    
-    /**
-     * @return the responsePage
-     */
-    public int getResponsePage() {
-        return responsePage;
     }
 
     /**
@@ -112,7 +101,6 @@ public class Layout {
      * @param responsePage the responsePage number
      */
     public void setReponsePage(int responsePage) {
-        this.responsePage = responsePage;
     }
 
     /**
@@ -132,7 +120,6 @@ public class Layout {
 		Element layoutElt = doc.createElement("Layout");
         XMLTools.addProperty(doc, layoutElt, "OverrideCancelPage", "Integer", overrideCancelPage);
         XMLTools.addProperty(doc, layoutElt, "OverrideCastPage", "Integer", overrideCastPage);
-        XMLTools.addProperty(doc, layoutElt, "ResponsePage", "Integer", responsePage);
         XMLTools.addProperty(doc, layoutElt, "ProvisionalSuccessPage", "Integer", provisionalPage);
         
 		for (Page p : pages) {

@@ -34,6 +34,7 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.*;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -361,10 +362,14 @@ public class ActiveUI extends JPanel {
      */
     private void leftButtonPressed() {
         if (model.isPollsOpen()) {
-            Map<String, BigInteger> tally = model.closePolls();
-            JDialog tallyDlg = new TallyDialog(this, tally, ballotLocChooser.getSelectedFile()
+            List<Map<String, BigInteger>> tally = model.closePolls();
+
+            for(Map<String, BigInteger> m : tally){
+                JDialog tallyDlg = new TallyDialog(this, m, ballotLocChooser.getSelectedFile()
                     .getAbsolutePath());
-            tallyDlg.setVisible(true);
+                tallyDlg.setVisible(true);
+            }
+
         } else
             model.openPolls();
     }

@@ -301,22 +301,7 @@ public class Button extends Label implements IFocusable {
 
             };
         }
-        else if (strategy.equals( "Challenge" )) {
-            _buttonStrategy = new IButtonStrategy() {
 
-                public void execute(Button context)
-                        throws BallotBoxViewException {
-                    try {
-						viewManager.challenge();
-					} catch (IncorrectTypeException e) {
-                        throw new BallotBoxViewException(
-                                "The UID property for button with uid "
-                                        + context.getUniqueID()
-                                        + " has the incorrect type", e );
-					}
-                }
-            };
-        }
         else if (strategy.equals( "CastBallot" )) {
             _buttonStrategy = new IButtonStrategy() {
 

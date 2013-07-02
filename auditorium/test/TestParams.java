@@ -52,13 +52,12 @@ public class TestParams implements IAuditoriumParams {
     public static final String KEYS_DIRECTORY = "/keys/";
     public static final String RULE_FILE = "rules";
     public static final boolean ENCRYPTION_ENABLED = false;
-    public static final boolean USE_COMMIT_CHALLENGE_MODEL = false;
     public static final boolean USE_ELO_TOUCH_SCREEN = false;
 	public static final String ELO_TOUCH_SCREEN_DEVICE = null;
 	public static final int VIEW_RESTART_TIMEOUT = 5000;
 	public static final int DEFAULT_SERIAL_NUMBER = -1;
 	public static final String DEFAULT_REPORT_ADDRESS = "";
-    public static final int DEFAULT_CHALLENGE_PORT = -1;
+    public static final int DEFAULT_PORT = -1;
     public static final int DEFAULT_HTTP_PORT = 80;
     public static final String DEFAULT_BALLOT_FILE = "";
     public static final String DEFAULT_PRINTER_FOR_VVPAT = "";
@@ -112,10 +111,6 @@ public class TestParams implements IAuditoriumParams {
 	public boolean getCastBallotEncryptionEnabled() {
 		return ENCRYPTION_ENABLED;
 	}
-	
-	public boolean getUseCommitChallengeModel(){
-		return USE_COMMIT_CHALLENGE_MODEL;
-	}
 
 	public boolean getUseEloTouchScreen() {
 		return USE_ELO_TOUCH_SCREEN;
@@ -133,23 +128,11 @@ public class TestParams implements IAuditoriumParams {
 		return DEFAULT_SERIAL_NUMBER;
 	}
 
-	public int getChallengePort() {
-		return DEFAULT_CHALLENGE_PORT;
-	}
-
-	public String getReportAddress() {
+    public String getReportAddress() {
 		return DEFAULT_REPORT_ADDRESS;
 	}
-	
-	public int getHttpPort(){
-		return DEFAULT_HTTP_PORT;
-	}
-	
-	public String getChallengeBallotFile(){
-		return DEFAULT_BALLOT_FILE;
-	}
 
-	public String getPrinterForVVPAT() {
+    public String getPrinterForVVPAT() {
 		return DEFAULT_PRINTER_FOR_VVPAT;
 	}
 
@@ -194,8 +177,11 @@ public class TestParams implements IAuditoriumParams {
 		return DEFAULT_ALLOW_UI_SCALING;
 	}
 
-    @Override
     public String getElectionName() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
+    }
+
+    public int getPort() {
+        return 0;
     }
 }
