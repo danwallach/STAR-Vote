@@ -367,8 +367,8 @@ public class BallotScanner{
 
             public void ballotAccepted(BallotScanAcceptedEvent event){
 
-//                System.out.println("Accepted event: Event BID: " + event.getBID());
-//                System.out.println("Accepted event: Last BID: " + lastFoundBID);
+                System.out.println("Accepted event: Event BID: " + event.getBID());
+                System.out.println("Accepted event: Last BID: " + lastFoundBID);
 
                 //If this event corresponds with our last scanned ballot, display a confirmation message
                 if(lastFoundBID.equals(event.getBID())){
@@ -385,8 +385,8 @@ public class BallotScanner{
             }
 
             public void ballotRejected(BallotScanRejectedEvent event){
-//                System.out.println("Rejected event: Event BID: " + event.getBID());
-//                System.out.println("Rejected event: Last BID: " + lastFoundBID);
+                System.out.println("Rejected event: Event BID: " + event.getBID());
+                System.out.println("Rejected event: Last BID: " + lastFoundBID);
 
                 //If our ballot was rejected, display a message
                 if(lastFoundBID.equals(event.getBID())){

@@ -148,12 +148,15 @@ public class Printer{
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         // This is where the HTML Printing occurs.
 
-        String cleanFilePath = _currentBallotFile.getAbsolutePath().substring(0, _currentBallotFile.getAbsolutePath().lastIndexOf('\\') + 1);
+        String fileChar = System.getProperty("file.separator");
+        String cleanFilePath = _currentBallotFile.getAbsolutePath().substring(0, _currentBallotFile.getAbsolutePath().lastIndexOf(fileChar) + 1);
+        System.out.println(cleanFilePath);
         // Print to an HTML file. Parameters to be used:
         String htmlFileName = cleanFilePath + "PrintableBallot.html";
         Boolean useTwoColumns = true;
         Boolean printerFriendly = true;
-        String pathToVVPATFolder = cleanFilePath + "data\\media\\vvpat\\";
+
+        String pathToVVPATFolder = cleanFilePath + "data" + fileChar + "media" + fileChar + "vvpat" + fileChar;
         String barcodeFileNameNoExtension = pathToVVPATFolder + "Barcode";
         String lineSeparatorFileName = pathToVVPATFolder + "LineSeparator.png";
 
@@ -200,6 +203,8 @@ public class Printer{
         String filename = _printerConstants.getCommandsFileFilename();
         String fileSeparator = _printerConstants.getCommandsFileParameterSeparator();
 
+        ProcessBuilder pb;
+
         // Open the file.
         File file = new File (filename);
 
@@ -229,13 +234,17 @@ public class Printer{
         }
 
         // Create arrays of the command and its parameters (to use with the exec method in JDK 7+
-        String[] convertHTMLtoPDFCommandArray = convertHTMLtoPDFCommandLine.split(fileSeparator);
-        String[] printPDFCommandArray = printPDFCommandLine.split(fileSeparator);
+//        String[] convertHTMLtoPDFCommandArray = convertHTMLtoPDFCommandLine.split(fileSeparator);
 
         // Attempt to convert HTML to PDF.
         try
         {
-            Runtime.getRuntime().exec(convertHTMLtoPDFCommandArray);
+            if(_constants.getOS().equals("Linux"))
+                pb = new ProcessBuilder("bash", "-c", convertHTMLtoPDFCommandLine);
+            else
+                pb = new ProcessBuilder("cmd.exe", "/C start", convertHTMLtoPDFCommandLine);
+
+            pb.start();
 
         }
         catch (IOException e)
@@ -251,7 +260,12 @@ public class Printer{
         // Attempt to print PDF.
         try
         {
-            Runtime.getRuntime().exec(printPDFCommandArray);
+            if(_constants.getOS().equals("Linux"))
+                pb = new ProcessBuilder("bash", "-c", printPDFCommandLine);
+            else
+                pb = new ProcessBuilder("cmd.exe", "/C start", printPDFCommandLine);
+
+            pb.start();
 
         }
         catch (IOException e)

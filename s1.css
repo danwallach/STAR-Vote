@@ -1,0 +1,4 @@
+@page { margin: 0pt 0pt 0pt 0pt} /* Removes all margins from the PDF pages. */
+@media print { p {page-break-before:always} } /* Puts a page break before every paragraph. Because the election name is a paragraph, it would split the pages nicely. */
+div {font-size: 0} /*Removes whitespace between images.*/
+*[id = "line_separator"] {padding: 3px 0px 10px 0px} /* Adds whitespace before and after a line separator. */
