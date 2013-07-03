@@ -148,12 +148,15 @@ public class Printer{
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         // This is where the HTML Printing occurs.
 
-        String cleanFilePath = _currentBallotFile.getAbsolutePath().substring(0, _currentBallotFile.getAbsolutePath().lastIndexOf('\\') + 1);
+        String fileChar = System.getProperty("file.separator");
+        String cleanFilePath = _currentBallotFile.getAbsolutePath().substring(0, _currentBallotFile.getAbsolutePath().lastIndexOf(fileChar) + 1);
+        System.out.println(cleanFilePath);
         // Print to an HTML file. Parameters to be used:
         String htmlFileName = cleanFilePath + "PrintableBallot.html";
         Boolean useTwoColumns = true;
         Boolean printerFriendly = true;
-        String pathToVVPATFolder = cleanFilePath + "data\\media\\vvpat\\";
+
+        String pathToVVPATFolder = cleanFilePath + "data" + fileChar + "media" + fileChar + "vvpat" + fileChar;
         String barcodeFileNameNoExtension = pathToVVPATFolder + "Barcode";
         String lineSeparatorFileName = pathToVVPATFolder + "LineSeparator.png";
 
@@ -228,36 +231,76 @@ public class Printer{
             e.printStackTrace();
         }
 
-        // Create arrays of the command and its parameters (to use with the exec method in JDK 7+
-        String[] convertHTMLtoPDFCommandArray = convertHTMLtoPDFCommandLine.split(fileSeparator);
-        String[] printPDFCommandArray = printPDFCommandLine.split(fileSeparator);
+        // Get the OS.
+        String currentOS = _constants.getOS();
 
-        // Attempt to convert HTML to PDF.
-        try
+        if (currentOS.equals("Windows"))
         {
-            Runtime.getRuntime().exec(convertHTMLtoPDFCommandArray);
+            // Create arrays of the command and its parameters (to use with the exec method in JDK 7+
+            String[] convertHTMLtoPDFCommandArray = convertHTMLtoPDFCommandLine.split(fileSeparator);
+            String[] printPDFCommandArray = printPDFCommandLine.split(fileSeparator);
 
+            // Attempt to convert HTML to PDF.
+            try
+            {
+                Runtime.getRuntime().exec(convertHTMLtoPDFCommandArray);
+            }
+            catch (IOException e)
+            {
+                System.err.println("Converting HTML to PDF failed.");
+                e.printStackTrace();
+            }
+
+            // Need to make the thread wait for the PDF to get created.
+            long start = System.currentTimeMillis();
+            while (System.currentTimeMillis() - start < 1000);
+
+            // Attempt to print PDF.
+            try
+            {
+                Runtime.getRuntime().exec(printPDFCommandArray);
+            }
+            catch (IOException e)
+            {
+                System.err.println("Printing PDF failed.");
+                e.printStackTrace();
+            }
         }
-        catch (IOException e)
+        else
         {
-            System.err.println("Converting HTML to PDF failed.");
-            e.printStackTrace();
-        }
+            if (currentOS.equals("Linux"))
+            {
+                // Create a ProcessBuilder.
+                ProcessBuilder pb;
 
-        // Need to make the thread wait for the PDF to get created.
-        long start = System.currentTimeMillis();
-        while (System.currentTimeMillis() - start < 1000);
+                // Attempt to convert HTML to PDF.
+                try
+                {
+                    pb = new ProcessBuilder("bash", "-c", convertHTMLtoPDFCommandLine);
+                    pb.start();
+                }
+                catch (IOException e)
+                {
+                    System.err.println("Converting HTML to PDF failed.");
+                    e.printStackTrace();
+                }
 
-        // Attempt to print PDF.
-        try
-        {
-            Runtime.getRuntime().exec(printPDFCommandArray);
+                // Need to make the thread wait for the PDF to get created.
+                long start = System.currentTimeMillis();
+                while (System.currentTimeMillis() - start < 1000);
 
-        }
-        catch (IOException e)
-        {
-            System.err.println("Printing PDF failed.");
-            e.printStackTrace();
+                // Attempt to print PDF.
+                try
+                {
+                    pb = new ProcessBuilder("bash", "-c", printPDFCommandLine);
+                    pb.start();
+                }
+                catch (IOException e)
+                {
+                    System.err.println("Printing PDF failed.");
+                    e.printStackTrace();
+                }
+            }
         }
 
 

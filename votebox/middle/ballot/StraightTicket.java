@@ -173,6 +173,7 @@ public class StraightTicket extends ACardStrategy {
 				try {
 					sce.getParentCard().getParent().getViewAdapter().select(
 							sce.getUniqueID());
+                    System.out.println("Selected element uid: " + sce.getUniqueID() + " | Parent's selected element" + sce.getParentCard().getSelectedElement() + " | ");
 				} catch (UnknownUIDException e) {
 					throw new CardStrategyException(
 							"When executing straight ticket behavior, an error occurred: "
@@ -183,8 +184,10 @@ public class StraightTicket extends ACardStrategy {
 					throw new CardStrategyException(
 							"When executing straight ticket behavior, an error occurred in the view: "
 									+ e.getMessage(), e);
-				}
-			}
+				} catch (CardException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
+            }
 		});
 		
 		return RadioButton.Singleton.select(element);

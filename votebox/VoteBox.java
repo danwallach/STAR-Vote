@@ -832,7 +832,8 @@ public class VoteBox{
             }
 
             public void invalidPin(InvalidPinEvent e) {
-                promptForPin("Invalid PIN: Enter Valid PIN");
+                if(e.getNode() == mySerial)
+                    promptForPin("Invalid PIN: Enter Valid PIN");
             }
 
             public void pollStatus(PollStatusEvent pollStatusEvent) {
@@ -981,7 +982,10 @@ public class VoteBox{
     }
 
     public void promptForPin(String message) {
-            if(promptingForPin) return;
+            if(promptingForPin){
+                System.out.println("Still prompting for PIN!");
+                return;
+            }
             //if(!superOnline) return;
             promptingForPin = true;
             JTextField limitedField = new JTextField(new PlainDocument() {

@@ -294,8 +294,8 @@ public class Model {
         //return tallier.getReport(privateKey);
         ArrayList<Map<String, BigInteger>> out = new ArrayList<Map<String, BigInteger>>();
 
-        for(ITallier t : (ITallier[])talliers.entrySet().toArray()){
-            out.add(t.getReport());
+        for(String t : talliers.keySet()){
+            out.add(talliers.get(t).getReport());
         }
 
         return out;
@@ -994,7 +994,6 @@ public class Model {
              * It should not yet be tallied.
              */
             public void commitBallot(CommitBallotEvent e) {
-                //System.err.println("Ballot committed! BID: " + e.getBID());
             	AMachine m = getMachineForSerial(e.getSerial());
                 if (m != null && m instanceof VoteBoxBooth) {
                     VoteBoxBooth booth = (VoteBoxBooth) m;
@@ -1070,7 +1069,7 @@ public class Model {
                         }
                     }
                     else {
-                        auditorium.announce(new InvalidPinEvent(mySerial, e.getNonce()));
+                        auditorium.announce(new InvalidPinEvent(mySerial, e.getSerial(), e.getNonce()));
                     }
                 }
             }
