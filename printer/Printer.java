@@ -308,27 +308,27 @@ public class Printer{
 
 
 
+//
+//		Printable printedBallot = new Printable(){
+//
+//			public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
+//
+//                int numPages = fTotalSize / (int)pageFormat.getImageableHeight();
+//				if(fTotalSize % (int)pageFormat.getImageableHeight() != 0)
+//					numPages++;
+//
+//				if(pageIndex >= numPages)
+//					return Printable.NO_SUCH_PAGE;
+//
+//				return Printable.PAGE_EXISTS;
+//
+//			}
+//
+//		};
+//
+//		return printOnVVPAT(printedBallot);
 
-		Printable printedBallot = new Printable(){
-
-			public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
-
-                int numPages = fTotalSize / (int)pageFormat.getImageableHeight();
-				if(fTotalSize % (int)pageFormat.getImageableHeight() != 0)
-					numPages++;
-
-				if(pageIndex >= numPages)
-					return Printable.NO_SUCH_PAGE;
-
-				return Printable.PAGE_EXISTS;
-
-			}
-
-		};
-
-		return printOnVVPAT(printedBallot);
-
-
+        return true;
 	}
 
     protected ArrayList<RaceTitlePair> getRaceNameImagePairs(Map<String, Image> imageMap) {

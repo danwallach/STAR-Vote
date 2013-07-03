@@ -303,7 +303,7 @@ public class LayoutParser {
             else if (child.getNodeName().equals( "#text" ))
                 ; // Do nothing
             else
-                throw new LayoutParserException( "I dont recognize "
+                throw new LayoutParserException( "I don't recognize "
                         + child.getNodeName()
                         + " as a property or toggle button.", null );
         }

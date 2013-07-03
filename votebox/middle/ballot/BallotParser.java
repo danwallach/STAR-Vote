@@ -186,7 +186,7 @@ public class BallotParser {
                     List<String> r = cardProps.getStringList(Properties.RACE_GROUP);
 
                     //Randomly permute the candidates (i.e. ballot rotation)
-                    Collections.shuffle(r);
+//                    Collections.shuffle(r);
 
         			raceGroups.add(r);
 
@@ -242,7 +242,7 @@ public class BallotParser {
         }
 
         //Shuffle the elements of the card to hopefully reorder them
-        Collections.shuffle(elements);
+//        Collections.shuffle(elements);
 
         String uniqueID = node.getAttributes().getNamedItem( "uid" )
                 .getNodeValue();
