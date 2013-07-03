@@ -633,8 +633,19 @@ public class Model {
                             .getBytes(), "", ""));
 
 
-                    String precinct = bManager.getPrecinctByBallot(e.getBID().toString());
-                    talliers.get(precinct).confirmed(e.getNonce());
+                    String precinct = bManager.getPrecinctByBID(e.getBID().toString());
+                    System.err.println("Attempting to get entry for key " + precinct + " from map\n" + talliers);
+                    ITallier currentTallier = talliers.get(precinct);
+                    if (currentTallier != null)
+                    {
+                        System.err.println(">>>>Got a valid tallier!");
+                    }
+                    else
+                    {
+                        System.err.println(">>>>Got a null tallier!");
+                    }
+                    currentTallier.confirmed(e.getNonce());
+                    System.err.println(">>>>Program execution got to the part after where the vote was confirmed.");
 
                 }
             }

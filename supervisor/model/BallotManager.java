@@ -102,7 +102,10 @@ public class BallotManager {
     }
 
     public String getPrecinctByBID(String bID){
-        return precinctByBID.get(bID);
+        if(precinctByBID.containsKey(bID)){
+            return precinctByBID.get(bID);
+        }
+        return null;
     }
 
     //returns array of precincts
