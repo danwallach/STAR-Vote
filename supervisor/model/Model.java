@@ -1069,7 +1069,7 @@ public class Model {
                         }
                     }
                     else {
-                        auditorium.announce(new InvalidPinEvent(mySerial, e.getNonce()));
+                        auditorium.announce(new InvalidPinEvent(mySerial, e.getSerial(), e.getNonce()));
                     }
                 }
             }
