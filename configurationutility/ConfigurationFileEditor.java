@@ -377,7 +377,7 @@ public class ConfigurationFileEditor extends JFrame {
         bottomPanel.add(valuesListsDescriptionLabel);
 
         JLabel logsDescriptionLabel = new JLabel("File Contents");
-        logsDescriptionLabel.setPreferredSize(new Dimension(LOG_PANEL_WIDTH - UPDATE_FILE_CONTENTS_BUTTON_WIDTH, 14));
+        logsDescriptionLabel.setPreferredSize(new Dimension(LOG_PANEL_WIDTH - UPDATE_FILE_CONTENTS_BUTTON_WIDTH - PANEL_CONTENTS_X_OFFSET, 14));
         bottomPanel.add(logsDescriptionLabel);
 
         JButton updateFileContentsButton = new JButton("Update File Contents");
