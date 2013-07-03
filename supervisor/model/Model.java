@@ -294,8 +294,8 @@ public class Model {
         //return tallier.getReport(privateKey);
         ArrayList<Map<String, BigInteger>> out = new ArrayList<Map<String, BigInteger>>();
 
-        for(ITallier t : (ITallier[])talliers.entrySet().toArray()){
-            out.add(t.getReport());
+        for(String t : talliers.keySet()){
+            out.add(talliers.get(t).getReport());
         }
 
         return out;
