@@ -13,4 +13,5 @@ out
 *.conf
 ballotscanner/BallotScannerUITester.java
 supervisor/view/BallotScannerMachineViewTester.java
+CommandsFile.txt
 
