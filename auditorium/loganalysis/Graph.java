@@ -53,6 +53,7 @@ public class Graph {
     public static void graph(String filename) throws Exception {
         Dag d = new Dag( filename );
         d.build();
+        HashMap<MessagePointer, String> types = d.getTypes();
         GraphViz gvz = new GraphViz();
         gvz.addln( "digraph gr {" );
         gvz.addln( "nodesep=1.0;" );
@@ -63,7 +64,7 @@ public class Graph {
 
         for (MessagePointer mp : d.getDag().keySet()) {
             String str = "A" + mp.getNodeId() + "_" + mp.getNumber()
-                    + " [label=\"" + mp.toString() + "\"]";
+                    + " [label=\"" + mp.toString() + " " + types.get(mp) + "\"]";
             gvz.addln( str );
         }
 

@@ -55,6 +55,7 @@ public class Dag {
 
     private final String _filename;
     private final HashMap<MessagePointer, ArrayList<MessagePointer>> _dag;
+    private final HashMap<MessagePointer, String> _messageTypes;
 
     /**
      * @param filename
@@ -63,6 +64,7 @@ public class Dag {
     public Dag(String filename) {
         _filename = filename;
         _dag = new HashMap<MessagePointer, ArrayList<MessagePointer>>();
+        _messageTypes = new HashMap<MessagePointer, String>();
     }
 
     /**
@@ -81,9 +83,12 @@ public class Dag {
 
                 ArrayList<MessagePointer> predlist = new ArrayList<MessagePointer>();
                 ListExpression matchresult = (ListExpression) PATTERN
-                        .match( message );
-                for (ASExpression ase : (ListExpression) matchresult.get( 12 ))
+                        .match(message);
+
+                for (ASExpression ase : (ListExpression) matchresult.get( 12 ))  {
                     predlist.add( new MessagePointer( ase ) );
+                }
+                _messageTypes.put(ptr, ((ListExpression)matchresult.get(13)).get(0).toString());
                 _dag.put( ptr, predlist );
             }
         }
@@ -96,6 +101,14 @@ public class Dag {
      */
     public HashMap<MessagePointer, ArrayList<MessagePointer>> getDag() {
         return _dag;
+    }
+
+    /**
+     * @return This method gets the message type associated with a message pointer
+     *         so graphing is clearer.
+     */
+    public HashMap<MessagePointer, String> getTypes(){
+        return _messageTypes;
     }
 
     /**
