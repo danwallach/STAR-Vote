@@ -103,7 +103,7 @@ public class ConfigurationFileEditor extends JFrame {
 
     /* Group IDs for the valid attribute groups. */
     public static final int INVALID_GROUP = -1;
-    public static final int VOTEBOX_GROUP = 0;
+    public static final int GENERAL_GROUP = 0;
     public static final int NETWORK_GROUP = 1;
     public static final int PRINT_GROUP = 2;
 
@@ -151,15 +151,15 @@ public class ConfigurationFileEditor extends JFrame {
     private ArrayList<String> fileComments = new ArrayList<String> ();
 
     /* Models for the JLists of the tabs in the main tabbed pane. These are used to add names/values to the JLists. */
-    private final DefaultListModel<String> voteboxNamesListModel;
-    private final DefaultListModel<String> voteboxValuesListModel;
+    private final DefaultListModel<String> generalNamesListModel;
+    private final DefaultListModel<String> generalValuesListModel;
     private final DefaultListModel<String> networkNamesListModel;
     private final DefaultListModel<String> networkValuesListModel;
     private final DefaultListModel<String> printNamesListModel;
     private final DefaultListModel<String> printValuesListModel;
 
     /* ArrayLists for storing the comments associated with the displayed attributes. Comments are not displayed. */
-    private ArrayList<String> voteboxComments = new ArrayList<String> ();
+    private ArrayList<String> generalComments = new ArrayList<String> ();
     private ArrayList<String> networkComments = new ArrayList<String> ();
     private ArrayList<String> printComments = new ArrayList<String> ();
 
@@ -248,33 +248,33 @@ public class ConfigurationFileEditor extends JFrame {
         mainPanel.add(mainTabbedPane);
 
 		/*
-		 * Votebox Tab
+		 * General Tab
 		 */
-        JPanel voteboxTabPanel = new JPanel();
-        FlowLayout flowLayout_1 = (FlowLayout) voteboxTabPanel.getLayout();
+        JPanel generalTabPanel = new JPanel();
+        FlowLayout flowLayout_1 = (FlowLayout) generalTabPanel.getLayout();
         flowLayout_1.setAlignment(FlowLayout.LEFT);
-        mainTabbedPane.addTab("Votebox", null, voteboxTabPanel, null);
+        mainTabbedPane.addTab("General", null, generalTabPanel, null);
 
-        JScrollPane voteboxAttributesScrollPane = new JScrollPane();
-        voteboxTabPanel.add(voteboxAttributesScrollPane);
-        voteboxAttributesScrollPane.setPreferredSize(new Dimension(3 * (MAIN_PANEL_WIDTH - PANEL_CONTENTS_X_OFFSET) / 5 - 15, MIDDLE_PANELS_HEIGHT - TABBED_CONTENTS_Y_OFFSET));
+        JScrollPane generalAttributesScrollPane = new JScrollPane();
+        generalTabPanel.add(generalAttributesScrollPane);
+        generalAttributesScrollPane.setPreferredSize(new Dimension(3 * (MAIN_PANEL_WIDTH - PANEL_CONTENTS_X_OFFSET) / 5 - 15, MIDDLE_PANELS_HEIGHT - TABBED_CONTENTS_Y_OFFSET));
 
-        voteboxNamesListModel = new DefaultListModel<String>();
-        final JList<String> voteboxAttributesList = new JList<String> (voteboxNamesListModel);
-        voteboxAttributesScrollPane.setViewportView(voteboxAttributesList);
+        generalNamesListModel = new DefaultListModel<String>();
+        final JList<String> generalAttributesList = new JList<String> (generalNamesListModel);
+        generalAttributesScrollPane.setViewportView(generalAttributesList);
 
-        JScrollPane voteboxValuesScrollPane = new JScrollPane();
-        voteboxTabPanel.add(voteboxValuesScrollPane);
-        voteboxValuesScrollPane.setPreferredSize(new Dimension(2 * (MAIN_PANEL_WIDTH - PANEL_CONTENTS_X_OFFSET) / 5, MIDDLE_PANELS_HEIGHT - TABBED_CONTENTS_Y_OFFSET));
+        JScrollPane generalValuesScrollPane = new JScrollPane();
+        generalTabPanel.add(generalValuesScrollPane);
+        generalValuesScrollPane.setPreferredSize(new Dimension(2 * (MAIN_PANEL_WIDTH - PANEL_CONTENTS_X_OFFSET) / 5, MIDDLE_PANELS_HEIGHT - TABBED_CONTENTS_Y_OFFSET));
 
 		/* Synchronize the two scroll bars. */
-        namesScrollBar = voteboxAttributesScrollPane.getVerticalScrollBar();
-        valuesScrollBar = voteboxValuesScrollPane.getVerticalScrollBar();
+        namesScrollBar = generalAttributesScrollPane.getVerticalScrollBar();
+        valuesScrollBar = generalValuesScrollPane.getVerticalScrollBar();
         valuesScrollBar.setModel(namesScrollBar.getModel());
 
-        voteboxValuesListModel = new DefaultListModel<String>();
-        final JList<String> voteboxValuesList = new JList<String> (voteboxValuesListModel);
-        voteboxValuesScrollPane.setViewportView(voteboxValuesList);
+        generalValuesListModel = new DefaultListModel<String>();
+        final JList<String> generalValuesList = new JList<String> (generalValuesListModel);
+        generalValuesScrollPane.setViewportView(generalValuesList);
 
 		/*
 		 * Network Tab
@@ -573,18 +573,18 @@ public class ConfigurationFileEditor extends JFrame {
 		/*
 		 * JList selection change listeners for each group:
 		 */
-		/* 1. Votebox */
+		/* 1. General */
 		/* List selection listener for a value change on the attribute Name. */
-        voteboxAttributesList.addListSelectionListener(new ListSelectionListener() {
+        generalAttributesList.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent arg0) {
-                loadAttributeAtPosition(voteboxAttributesList.getSelectedIndex());
+                loadAttributeAtPosition(generalAttributesList.getSelectedIndex());
             }
         });
 
 		/* List selection listener for a value change on the attribute Value. */
-        voteboxValuesList.addListSelectionListener(new ListSelectionListener() {
+        generalValuesList.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent arg0) {
-                loadAttributeAtPosition(voteboxValuesList.getSelectedIndex());
+                loadAttributeAtPosition(generalValuesList.getSelectedIndex());
             }
         });
 
@@ -592,14 +592,14 @@ public class ConfigurationFileEditor extends JFrame {
 		/* List selection listener for a value change on the attribute Name. */
         networkAttributesList.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent arg0) {
-                loadAttributeAtPosition(networkAttributesList.getSelectedIndex() + voteboxNamesListModel.getSize());
+                loadAttributeAtPosition(networkAttributesList.getSelectedIndex() + generalNamesListModel.getSize());
             }
         });
 
 		/* List selection listener for a value change on the attribute Value. */
         networkValuesList.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent arg0) {
-                loadAttributeAtPosition(networkValuesList.getSelectedIndex() + voteboxValuesListModel.getSize());
+                loadAttributeAtPosition(networkValuesList.getSelectedIndex() + generalValuesListModel.getSize());
             }
         });
 
@@ -607,14 +607,14 @@ public class ConfigurationFileEditor extends JFrame {
 		/* List selection listener for a value change on the attribute Name. */
         printAttributesList.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent arg0) {
-                loadAttributeAtPosition(printAttributesList.getSelectedIndex() + voteboxNamesListModel.getSize() + networkNamesListModel.getSize());
+                loadAttributeAtPosition(printAttributesList.getSelectedIndex() + generalNamesListModel.getSize() + networkNamesListModel.getSize());
             }
         });
 
 		/* List selection listener for a value change on the attribute Value. */
         printValuesList.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent arg0) {
-                loadAttributeAtPosition(printValuesList.getSelectedIndex() + voteboxValuesListModel.getSize() + networkValuesListModel.getSize());
+                loadAttributeAtPosition(printValuesList.getSelectedIndex() + generalValuesListModel.getSize() + networkValuesListModel.getSize());
             }
         });
 
@@ -699,9 +699,9 @@ public class ConfigurationFileEditor extends JFrame {
                 configurationAttributeValues.clear();
                 configurationAttributeComments.clear();
                 fileComments.clear();
-                voteboxNamesListModel.clear();
-                voteboxValuesListModel.clear();
-                voteboxComments.clear();
+                generalNamesListModel.clear();
+                generalValuesListModel.clear();
+                generalComments.clear();
                 networkNamesListModel.clear();
                 networkValuesListModel.clear();
                 networkComments.clear();
@@ -785,24 +785,24 @@ public class ConfigurationFileEditor extends JFrame {
                                     }
                                 }
 
-				        		/* If it is still not placed, place the current attribute name in the Votebox attribute group. */
+				        		/* If it is still not placed, place the current attribute name in the General attribute group. */
                                 if (isNotPlaced)
                                 {
-                                    // Add the current line as an attribute name in the Votebox group.
-                                    voteboxNamesListModel.add(voteboxNamesListModel.getSize(), line);
+                                    // Add the current line as an attribute name in the General group.
+                                    generalNamesListModel.add(generalNamesListModel.getSize(), line);
                                     // Because there is always a space added in front of each line of comment, the current comment will always contain a leading space.
                                     if (!currentComment.equals(""))
                                     {
-                                        voteboxComments.add(currentComment.substring(1)); // Remove that leading space.
+                                        generalComments.add(currentComment.substring(1)); // Remove that leading space.
                                     }
                                     else
                                     {
-                                        voteboxComments.add(currentComment);
+                                        generalComments.add(currentComment);
                                     }
                                     // Reset the current comment.
                                     currentComment = "";
                                     // Set the index of the last found attribute to be this group's index.
-                                    groupIndexOfLastFoundAttributeName = ConfigurationFileEditor.VOTEBOX_GROUP;
+                                    groupIndexOfLastFoundAttributeName = ConfigurationFileEditor.GENERAL_GROUP;
                                 }
                             }
                             else // Line is an attribute value.
@@ -810,10 +810,10 @@ public class ConfigurationFileEditor extends JFrame {
                                 switch (groupIndexOfLastFoundAttributeName)
                                 {
                                     case ConfigurationFileEditor.INVALID_GROUP:
-                                        voteboxValuesListModel.add(voteboxValuesListModel.getSize(), "ERROR: " + line + " has no associated attribute name!");
+                                        generalValuesListModel.add(generalValuesListModel.getSize(), "ERROR: " + line + " has no associated attribute name!");
                                         break;
-                                    case ConfigurationFileEditor.VOTEBOX_GROUP:
-                                        voteboxValuesListModel.add(voteboxValuesListModel.getSize(), line);
+                                    case ConfigurationFileEditor.GENERAL_GROUP:
+                                        generalValuesListModel.add(generalValuesListModel.getSize(), line);
                                         break;
                                     case ConfigurationFileEditor.NETWORK_GROUP:
                                         networkValuesListModel.add(networkValuesListModel.getSize(), line);
@@ -822,7 +822,7 @@ public class ConfigurationFileEditor extends JFrame {
                                         printValuesListModel.add(printValuesListModel.getSize(), line);
                                         break;
                                     default:
-                                        voteboxValuesListModel.add(voteboxValuesListModel.getSize(), "ERROR: " + line + " is associated to an attribute name that got placed in an invalid group!");
+                                        generalValuesListModel.add(generalValuesListModel.getSize(), "ERROR: " + line + " is associated to an attribute name that got placed in an invalid group!");
                                         break;
                                 }
 
@@ -846,12 +846,12 @@ public class ConfigurationFileEditor extends JFrame {
                 }
 
 		        /* Add the attribute names and values to the list of attribute names and the list of attribute values, respectively. */
-                // From the Votebox tab...
-                for (int idx = 0; idx < voteboxNamesListModel.getSize(); idx++)
+                // From the General tab...
+                for (int idx = 0; idx < generalNamesListModel.getSize(); idx++)
                 {
-                    configurationAttributeNames.add(voteboxNamesListModel.getElementAt(idx));
-                    configurationAttributeValues.add(voteboxValuesListModel.getElementAt(idx));
-                    configurationAttributeComments.add(voteboxComments.get(idx));
+                    configurationAttributeNames.add(generalNamesListModel.getElementAt(idx));
+                    configurationAttributeValues.add(generalValuesListModel.getElementAt(idx));
+                    configurationAttributeComments.add(generalComments.get(idx));
                 }
 
                 // ... and the Network tab ...
@@ -979,16 +979,16 @@ public class ConfigurationFileEditor extends JFrame {
             configurationAttributeComments.set(position, attributeComment);
 
             // Replace the entries in the JListModels.
-            if (position < voteboxNamesListModel.size()) // If the position represents a position in the Votebox tab, update it.
+            if (position < generalNamesListModel.size()) // If the position represents a position in the General tab, update it.
             {
-                voteboxNamesListModel.set(position, attributeName);
-                voteboxValuesListModel.set(position, attributeValue);
-                voteboxComments.set(position, attributeComment);
+                generalNamesListModel.set(position, attributeName);
+                generalValuesListModel.set(position, attributeValue);
+                generalComments.set(position, attributeComment);
                 return;
             }
-            else // Otherwise, update the position by subtracting the number of items in the Votebox tab.
+            else // Otherwise, update the position by subtracting the number of items in the General tab.
             {
-                position -= voteboxNamesListModel.getSize();
+                position -= generalNamesListModel.getSize();
             }
 
             if (position < networkNamesListModel.size()) // If the position represents a position in the Network tab, update it.
@@ -1026,22 +1026,22 @@ public class ConfigurationFileEditor extends JFrame {
 
         switch (group)
         {
-            case ConfigurationFileEditor.VOTEBOX_GROUP:
+            case ConfigurationFileEditor.GENERAL_GROUP:
                 // Add the attribute to the ArrayLists.
-                int voteboxIndex = voteboxNamesListModel.getSize();
+                int generalIndex = generalNamesListModel.getSize();
 
-                configurationAttributeNames.add(voteboxIndex, attributeName);
-                configurationAttributeValues.add(voteboxIndex, attributeValue);
-                configurationAttributeComments.add(voteboxIndex, attributeComment);
+                configurationAttributeNames.add(generalIndex, attributeName);
+                configurationAttributeValues.add(generalIndex, attributeValue);
+                configurationAttributeComments.add(generalIndex, attributeComment);
 
                 // Add the attribute to the group.
-                voteboxNamesListModel.add(voteboxNamesListModel.getSize(), attributeName);
-                voteboxValuesListModel.add(voteboxValuesListModel.getSize(), attributeValue);
-                voteboxComments.add(attributeComment);
+                generalNamesListModel.add(generalNamesListModel.getSize(), attributeName);
+                generalValuesListModel.add(generalValuesListModel.getSize(), attributeValue);
+                generalComments.add(attributeComment);
                 break;
             case ConfigurationFileEditor.NETWORK_GROUP:
                 // Add the attribute to the ArrayLists.
-                int networkIndex = networkNamesListModel.getSize() + voteboxNamesListModel.getSize();
+                int networkIndex = networkNamesListModel.getSize() + generalNamesListModel.getSize();
 
                 configurationAttributeNames.add(networkIndex, attributeName);
                 configurationAttributeValues.add(networkIndex, attributeValue);
@@ -1054,7 +1054,7 @@ public class ConfigurationFileEditor extends JFrame {
                 break;
             case ConfigurationFileEditor.PRINT_GROUP:
                 // Add the attribute to the ArrayLists.
-                int printIndex = printNamesListModel.getSize() + voteboxNamesListModel.getSize() + networkNamesListModel.getSize();
+                int printIndex = printNamesListModel.getSize() + generalNamesListModel.getSize() + networkNamesListModel.getSize();
 
                 configurationAttributeNames.add(printIndex, attributeName);
                 configurationAttributeValues.add(printIndex, attributeValue);
