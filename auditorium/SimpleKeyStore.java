@@ -129,7 +129,8 @@ public class SimpleKeyStore implements IKeyStore {
 				//pubKey = PublicKey.fromString(str);
 				pubKey = PublicKey.fromASE(ASExpression.makeVerbatim(baos.toByteArray()));
 			}catch(Exception e){
-				e.printStackTrace();
+                //TODO This should probably be made less stupid
+				//e.printStackTrace();
 				try{
 					//privKey = PrivateKey.fromString(str);
 					privKey = PrivateKey.fromASE(ASExpression.makeVerbatim(baos.toByteArray()));

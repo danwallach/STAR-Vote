@@ -104,7 +104,7 @@ public class AuditoriumParams implements IAuditoriumParams,
     public static final int JAVA_DEFAULT_DPI = 72;
                           
     //By default, we don't enable NIZKs.
-    public static final boolean ENABLE_NIZKS = false;
+    public static final boolean ENABLE_NIZKS = true;
     
     //By default, we don't enable Piecemeal Encryption
     public static final boolean USE_PIECEMEAL_ENCRYPTION = false;

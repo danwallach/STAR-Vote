@@ -98,7 +98,7 @@ public class BallotEncrypter {
      * 
      * @param ballot 
      *          This is the pre-encrypt ballot in the form ((race-id counter) ...)
-     * @param publicKey
+     * @param pubKey
      *          this is an Adder-style public key
      * @return An ListExpression of the form ((vote [vote]) (vote-ids ([id1], [id2], ...)) (proof [proof]) (public-key [key]))
      */
@@ -185,7 +185,8 @@ public class BallotEncrypter {
      * Decrypt an Adder Election using a PrivateKey.
      * 
      * @param election
-     * @param privKey
+     * @param publicKey
+     * @param privateKey
      * @return Decrypted results
      */
     @SuppressWarnings("unchecked")
@@ -213,7 +214,6 @@ public class BallotEncrypter {
      * 
      * @param ballot
      * @param rVals
-     * @param publicKey
      * @return Decrypted ballot, of the form ((race-id [adder integer]) ...)
      */
     public ListExpression adderDecrypt(ListExpression ballot, List<List<AdderInteger>> rVals){
@@ -290,7 +290,7 @@ public class BallotEncrypter {
      */
     @SuppressWarnings("unchecked")
 	public List<AdderInteger> adderDecryptSublist(Vote vote, List<AdderInteger> rVals, PublicKey key){
-    	//Adder encrypt is of m (public initial g, p, h) [infered from code]
+    	//Adder encrypt is of m (public initial g, p, h) [inferred from code]
     	//                    m = {0, 1}
     	//                    g' = g^r
     	//                    h' = (h^r) * f^m

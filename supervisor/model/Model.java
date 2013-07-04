@@ -259,7 +259,7 @@ public class Model {
                     precinct, ballot));
         }else{
         	auditorium.announce(new AuthorizedToCastWithNIZKsEvent(mySerial, node,
-        			nonce, ballot, precinct,
+        			nonce, precinct, ballot,
         			AdderKeyManipulator.generateFinalPublicKey((PublicKey)auditoriumParams.getKeyStore().loadAdderKey("public"))));
         }
     }

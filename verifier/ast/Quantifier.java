@@ -131,7 +131,7 @@ public abstract class Quantifier extends AST {
 
 						@Override
 						public Value forReduction(Reduction r) {
-							newUnknowns.add(_unknowns.get(flcv));
+                            newUnknowns.add(_unknowns.get(flcv));
 							return null;
 						}
 
