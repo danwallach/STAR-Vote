@@ -798,7 +798,7 @@ public class ConfigurationFileEditor extends JFrame {
         defaultAttributeComments.add("");
 
         defaultAttributeNames.add("DEFAULT_REPORT_ADDRESS");
-        defaultAttributeValues.add("");
+        defaultAttributeValues.add(" ");
         defaultAttributeComments.add("Default report address, used exclusively by tap.  if \"\", must be specified explicitly somehow.");
 
         defaultAttributeNames.add("SERVER_PORT");
@@ -824,7 +824,7 @@ public class ConfigurationFileEditor extends JFrame {
 
         /* Add the default printing attributes. */
         defaultAttributeNames.add("PRINTER_FOR_VVPAT");
-        defaultAttributeValues.add("");
+        defaultAttributeValues.add(" ");
         defaultAttributeComments.add("Default printer for VVPAT. If \"\", do not use VVPAT.");
 
         defaultAttributeNames.add("PAPER_WIDTH_FOR_VVPAT");
@@ -910,7 +910,7 @@ public class ConfigurationFileEditor extends JFrame {
         defaultAttributeComments.add("");
 
         defaultAttributeNames.add("DEFAULT_BALLOT_FILE");
-        defaultAttributeValues.add("");
+        defaultAttributeValues.add(" ");
         defaultAttributeComments.add("Default ballot file.  If \"\", must be specified explicitly somehow.");
 
         defaultAttributeNames.add("CAST_BALLOT_ENCRYPTION_ENABLED");

@@ -4,12 +4,7 @@ import java.math.BigInteger;
 
 import edu.uconn.cse.adder.PublicKey;
 
-import sexpression.ASExpression;
-import sexpression.ListExpression;
-import sexpression.NoMatch;
-import sexpression.StringExpression;
-import sexpression.StringWildcard;
-import sexpression.WildcardWildcard;
+import sexpression.*;
 import votebox.crypto.interop.AdderKeyManipulator;
 
 /**
@@ -27,7 +22,7 @@ public class AuthorizedToCastWithNIZKsEvent extends AuthorizedToCastEvent {
     private static MatcherRule MATCHER = new MatcherRule() {
         private ASExpression pattern = new ListExpression( StringExpression
                 .makeString( "authorized-to-cast-with-nizks" ), StringWildcard.SINGLETON,
-                StringWildcard.SINGLETON, StringWildcard.SINGLETON, StringWildcard.SINGLETON, WildcardWildcard.SINGLETON );
+                StringWildcard.SINGLETON, StringWildcard.SINGLETON, StringWildcard.SINGLETON, Wildcard.SINGLETON );
 
         public IAnnounceEvent match(int serial, ASExpression sexp) {
             ASExpression res = pattern.match( sexp );
