@@ -297,23 +297,23 @@ public class ConfigurationFileEditor extends JFrame {
 		 * General Tab
 		 */
         JPanel generalTabPanel = new JPanel();
-        FlowLayout flowLayout_1 = (FlowLayout) generalTabPanel.getLayout();
-        flowLayout_1.setAlignment(FlowLayout.LEFT);
+        FlowLayout flowLayout_0 = (FlowLayout) generalTabPanel.getLayout();
+        flowLayout_0.setAlignment(FlowLayout.LEFT);
         mainTabbedPane.addTab("General", null, generalTabPanel, null);
 
-        JScrollPane generalAttributesScrollPane = new JScrollPane();
-        generalTabPanel.add(generalAttributesScrollPane);
-        generalAttributesScrollPane.setPreferredSize(new Dimension(3 * (MAIN_PANEL_WIDTH - PANEL_CONTENTS_X_OFFSET) / 5 - 15, MIDDLE_PANELS_HEIGHT - TABBED_CONTENTS_Y_OFFSET));
+        JScrollPane generalNamesScrollPane = new JScrollPane();
+        generalTabPanel.add(generalNamesScrollPane);
+        generalNamesScrollPane.setPreferredSize(new Dimension(3 * (MAIN_PANEL_WIDTH - PANEL_CONTENTS_X_OFFSET) / 5 - 15, MIDDLE_PANELS_HEIGHT - TABBED_CONTENTS_Y_OFFSET));
 
-        final JList<String> generalAttributesList = new JList<String> (generalNamesListModel);
-        generalAttributesScrollPane.setViewportView(generalAttributesList);
+        final JList<String> generalNamesList = new JList<String> (generalNamesListModel);
+        generalNamesScrollPane.setViewportView(generalNamesList);
 
         JScrollPane generalValuesScrollPane = new JScrollPane();
         generalTabPanel.add(generalValuesScrollPane);
         generalValuesScrollPane.setPreferredSize(new Dimension(2 * (MAIN_PANEL_WIDTH - PANEL_CONTENTS_X_OFFSET) / 5, MIDDLE_PANELS_HEIGHT - TABBED_CONTENTS_Y_OFFSET));
 
 		/* Synchronize the two scroll bars. */
-        namesScrollBar = generalAttributesScrollPane.getVerticalScrollBar();
+        namesScrollBar = generalNamesScrollPane.getVerticalScrollBar();
         valuesScrollBar = generalValuesScrollPane.getVerticalScrollBar();
         valuesScrollBar.setModel(namesScrollBar.getModel());
 
@@ -324,23 +324,23 @@ public class ConfigurationFileEditor extends JFrame {
 		 * Network Tab
 		 */
         JPanel networkTabPanel = new JPanel();
-        FlowLayout flowLayout = (FlowLayout) networkTabPanel.getLayout();
-        flowLayout.setAlignment(FlowLayout.LEFT);
+        FlowLayout flowLayout_1 = (FlowLayout) networkTabPanel.getLayout();
+        flowLayout_1.setAlignment(FlowLayout.LEFT);
         mainTabbedPane.addTab("Network", null, networkTabPanel, null);
 
-        JScrollPane networkAttributesScrollPane = new JScrollPane();
-        networkTabPanel.add(networkAttributesScrollPane);
-        networkAttributesScrollPane.setPreferredSize(new Dimension(3 * (MAIN_PANEL_WIDTH - PANEL_CONTENTS_X_OFFSET) / 5 - 15, MIDDLE_PANELS_HEIGHT - TABBED_CONTENTS_Y_OFFSET));
+        JScrollPane networkNamesScrollPane = new JScrollPane();
+        networkTabPanel.add(networkNamesScrollPane);
+        networkNamesScrollPane.setPreferredSize(new Dimension(3 * (MAIN_PANEL_WIDTH - PANEL_CONTENTS_X_OFFSET) / 5 - 15, MIDDLE_PANELS_HEIGHT - TABBED_CONTENTS_Y_OFFSET));
 
-        final JList<String> networkAttributesList = new JList<String> (networkNamesListModel);
-        networkAttributesScrollPane.setViewportView(networkAttributesList);
+        final JList<String> networkNamesList = new JList<String> (networkNamesListModel);
+        networkNamesScrollPane.setViewportView(networkNamesList);
 
         JScrollPane networkValuesScrollPane = new JScrollPane();
         networkTabPanel.add(networkValuesScrollPane);
         networkValuesScrollPane.setPreferredSize(new Dimension(2 * (MAIN_PANEL_WIDTH - PANEL_CONTENTS_X_OFFSET) / 5, MIDDLE_PANELS_HEIGHT - TABBED_CONTENTS_Y_OFFSET));
 
 		/* Synchronize the two scroll bars. */
-        namesScrollBar = networkAttributesScrollPane.getVerticalScrollBar();
+        namesScrollBar = networkNamesScrollPane.getVerticalScrollBar();
         valuesScrollBar = networkValuesScrollPane.getVerticalScrollBar();
         valuesScrollBar.setModel(namesScrollBar.getModel());
 
@@ -355,19 +355,19 @@ public class ConfigurationFileEditor extends JFrame {
         flowLayout_2.setAlignment(FlowLayout.LEFT);
         mainTabbedPane.addTab("Print", null, printTabPanel, null);
 
-        JScrollPane printAttributesScrollPane = new JScrollPane();
-        printTabPanel.add(printAttributesScrollPane);
-        printAttributesScrollPane.setPreferredSize(new Dimension(3 * (MAIN_PANEL_WIDTH - PANEL_CONTENTS_X_OFFSET) / 5 - 15, MIDDLE_PANELS_HEIGHT - TABBED_CONTENTS_Y_OFFSET));
+        JScrollPane printNamesScrollPane = new JScrollPane();
+        printTabPanel.add(printNamesScrollPane);
+        printNamesScrollPane.setPreferredSize(new Dimension(3 * (MAIN_PANEL_WIDTH - PANEL_CONTENTS_X_OFFSET) / 5 - 15, MIDDLE_PANELS_HEIGHT - TABBED_CONTENTS_Y_OFFSET));
 
-        final JList<String> printAttributesList = new JList<String> (printNamesListModel);
-        printAttributesScrollPane.setViewportView(printAttributesList);
+        final JList<String> printNamesList = new JList<String> (printNamesListModel);
+        printNamesScrollPane.setViewportView(printNamesList);
 
         JScrollPane printValuesScrollPane = new JScrollPane();
         printTabPanel.add(printValuesScrollPane);
         printValuesScrollPane.setPreferredSize(new Dimension(2 * (MAIN_PANEL_WIDTH - PANEL_CONTENTS_X_OFFSET) / 5, MIDDLE_PANELS_HEIGHT - TABBED_CONTENTS_Y_OFFSET));
 
 		/* Synchronize the two scroll bars. */
-        namesScrollBar = printAttributesScrollPane.getVerticalScrollBar();
+        namesScrollBar = printNamesScrollPane.getVerticalScrollBar();
         valuesScrollBar = printValuesScrollPane.getVerticalScrollBar();
         valuesScrollBar.setModel(namesScrollBar.getModel());
 
@@ -375,11 +375,65 @@ public class ConfigurationFileEditor extends JFrame {
         printValuesScrollPane.setViewportView(printValuesList);
 
         /*
+		 * View Tab
+		 */
+        JPanel viewTabPanel = new JPanel();
+        FlowLayout flowLayout_3 = (FlowLayout) viewTabPanel.getLayout();
+        flowLayout_3.setAlignment(FlowLayout.LEFT);
+        mainTabbedPane.addTab("View", null, viewTabPanel, null);
+
+        JScrollPane viewNamesScrollPane = new JScrollPane();
+        viewTabPanel.add(viewNamesScrollPane);
+        viewNamesScrollPane.setPreferredSize(new Dimension(3 * (MAIN_PANEL_WIDTH - PANEL_CONTENTS_X_OFFSET) / 5 - 15, MIDDLE_PANELS_HEIGHT - TABBED_CONTENTS_Y_OFFSET));
+
+        final JList<String> viewNamesList = new JList<String> (viewNamesListModel);
+        viewNamesScrollPane.setViewportView(viewNamesList);
+
+        JScrollPane viewValuesScrollPane = new JScrollPane();
+        viewTabPanel.add(viewValuesScrollPane);
+        viewValuesScrollPane.setPreferredSize(new Dimension(2 * (MAIN_PANEL_WIDTH - PANEL_CONTENTS_X_OFFSET) / 5, MIDDLE_PANELS_HEIGHT - TABBED_CONTENTS_Y_OFFSET));
+
+		/* Synchronize the two scroll bars. */
+        namesScrollBar = viewNamesScrollPane.getVerticalScrollBar();
+        valuesScrollBar = viewValuesScrollPane.getVerticalScrollBar();
+        valuesScrollBar.setModel(namesScrollBar.getModel());
+
+        final JList<String> viewValuesList = new JList<String> (viewValuesListModel);
+        viewValuesScrollPane.setViewportView(viewValuesList);
+
+        /*
+		 * Election Tab
+		 */
+        JPanel electionTabPanel = new JPanel();
+        FlowLayout flowLayout_4 = (FlowLayout) electionTabPanel.getLayout();
+        flowLayout_4.setAlignment(FlowLayout.LEFT);
+        mainTabbedPane.addTab("Election", null, electionTabPanel, null);
+
+        JScrollPane electionNamesScrollPane = new JScrollPane();
+        electionTabPanel.add(electionNamesScrollPane);
+        electionNamesScrollPane.setPreferredSize(new Dimension(3 * (MAIN_PANEL_WIDTH - PANEL_CONTENTS_X_OFFSET) / 5 - 15, MIDDLE_PANELS_HEIGHT - TABBED_CONTENTS_Y_OFFSET));
+
+        final JList<String> electionNamesList = new JList<String> (electionNamesListModel);
+        electionNamesScrollPane.setViewportView(electionNamesList);
+
+        JScrollPane electionValuesScrollPane = new JScrollPane();
+        electionTabPanel.add(electionValuesScrollPane);
+        electionValuesScrollPane.setPreferredSize(new Dimension(2 * (MAIN_PANEL_WIDTH - PANEL_CONTENTS_X_OFFSET) / 5, MIDDLE_PANELS_HEIGHT - TABBED_CONTENTS_Y_OFFSET));
+
+		/* Synchronize the two scroll bars. */
+        namesScrollBar = electionNamesScrollPane.getVerticalScrollBar();
+        valuesScrollBar = electionValuesScrollPane.getVerticalScrollBar();
+        valuesScrollBar.setModel(namesScrollBar.getModel());
+
+        final JList<String> electionValuesList = new JList<String> (electionValuesListModel);
+        electionValuesScrollPane.setViewportView(electionValuesList);
+
+        /*
          * File comments Tab
          */
         JPanel descriptionTabPanel = new JPanel();
-        FlowLayout flowLayout_5 = (FlowLayout) descriptionTabPanel.getLayout();
-        flowLayout_5.setAlignment(FlowLayout.LEFT);
+        FlowLayout flowLayout_fileComments = (FlowLayout) descriptionTabPanel.getLayout();
+        flowLayout_fileComments.setAlignment(FlowLayout.LEFT);
         mainTabbedPane.addTab("File Description", null, descriptionTabPanel, null);
 
         JScrollPane fileDescriptionScrollPane = new JScrollPane();
@@ -442,8 +496,8 @@ public class ConfigurationFileEditor extends JFrame {
 		 * Input File Tab
 		 */
         JPanel inputFileTabPanel = new JPanel();
-        FlowLayout flowLayout_3 = (FlowLayout) inputFileTabPanel.getLayout();
-        flowLayout_3.setAlignment(FlowLayout.LEFT);
+        FlowLayout flowLayout_inputFileTab = (FlowLayout) inputFileTabPanel.getLayout();
+        flowLayout_inputFileTab.setAlignment(FlowLayout.LEFT);
         logTabbedPane.addTab("Input File", null, inputFileTabPanel, null);
 
         JScrollPane inputFileScrollPane = new JScrollPane();
@@ -460,8 +514,8 @@ public class ConfigurationFileEditor extends JFrame {
 		 * Output File Tab
 		 */
         JPanel outputFileTabPanel = new JPanel();
-        FlowLayout flowLayout_4 = (FlowLayout) outputFileTabPanel.getLayout();
-        flowLayout_4.setAlignment(FlowLayout.LEFT);
+        FlowLayout flowLayout_outputFileTab = (FlowLayout) outputFileTabPanel.getLayout();
+        flowLayout_outputFileTab.setAlignment(FlowLayout.LEFT);
         logTabbedPane.addTab("Output File", null, outputFileTabPanel, null);
 
         JScrollPane outputFileScrollPane = new JScrollPane();
@@ -612,9 +666,9 @@ public class ConfigurationFileEditor extends JFrame {
 		 */
 		/* 1. General */
 		/* List selection listener for a value change on the attribute Name. */
-        generalAttributesList.addListSelectionListener(new ListSelectionListener() {
+        generalNamesList.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent arg0) {
-                loadAttributeAtPosition(generalAttributesList.getSelectedIndex());
+                loadAttributeAtPosition(generalNamesList.getSelectedIndex());
             }
         });
 
@@ -627,9 +681,9 @@ public class ConfigurationFileEditor extends JFrame {
 
 		/* 2. Network */
 		/* List selection listener for a value change on the attribute Name. */
-        networkAttributesList.addListSelectionListener(new ListSelectionListener() {
+        networkNamesList.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent arg0) {
-                loadAttributeAtPosition(networkAttributesList.getSelectedIndex() + generalNamesListModel.getSize());
+                loadAttributeAtPosition(networkNamesList.getSelectedIndex() + generalNamesListModel.getSize());
             }
         });
 
@@ -642,9 +696,9 @@ public class ConfigurationFileEditor extends JFrame {
 
 		/* 3. Print */
 		/* List selection listener for a value change on the attribute Name. */
-        printAttributesList.addListSelectionListener(new ListSelectionListener() {
+        printNamesList.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent arg0) {
-                loadAttributeAtPosition(printAttributesList.getSelectedIndex() + generalNamesListModel.getSize() + networkNamesListModel.getSize());
+                loadAttributeAtPosition(printNamesList.getSelectedIndex() + generalNamesListModel.getSize() + networkNamesListModel.getSize());
             }
         });
 
@@ -654,6 +708,38 @@ public class ConfigurationFileEditor extends JFrame {
                 loadAttributeAtPosition(printValuesList.getSelectedIndex() + generalValuesListModel.getSize() + networkValuesListModel.getSize());
             }
         });
+        /* 4. View */
+		/* List selection listener for a value change on the attribute Name. */
+        viewNamesList.addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent arg0) {
+                loadAttributeAtPosition(viewNamesList.getSelectedIndex() + generalNamesListModel.getSize() + networkNamesListModel.getSize() + printNamesListModel.getSize());
+            }
+        });
+
+		/* List selection listener for a value change on the attribute Value. */
+        viewValuesList.addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent arg0) {
+                loadAttributeAtPosition(viewValuesList.getSelectedIndex() + generalValuesListModel.getSize() + networkValuesListModel.getSize() + printValuesListModel.getSize());
+            }
+        });
+        /* 5. Election */
+		/* List selection listener for a value change on the attribute Name. */
+        electionNamesList.addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent arg0) {
+                loadAttributeAtPosition(electionNamesList.getSelectedIndex() + generalNamesListModel.getSize() + networkNamesListModel.getSize() + printNamesListModel.getSize() + viewNamesListModel.getSize());
+            }
+        });
+
+		/* List selection listener for a value change on the attribute Value. */
+        electionValuesList.addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent arg0) {
+                loadAttributeAtPosition(electionValuesList.getSelectedIndex() + generalValuesListModel.getSize() + networkValuesListModel.getSize() + printValuesListModel.getSize() + viewValuesListModel.getSize());
+            }
+        });
+
+        /*
+         * End of selection change listeners.
+         */
 
 		/* Action listener for a button click on the Save Changes button. */
         saveChangesButton.addActionListener(new ActionListener() {
