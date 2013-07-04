@@ -1,12 +1,9 @@
 package configurationutility;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
+import java.awt.*;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import java.awt.Color;
-import java.awt.Dimension;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -17,8 +14,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.awt.Font;
-import java.awt.FlowLayout;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
 
@@ -35,9 +30,9 @@ public class ConfigurationFileEditor extends JFrame {
     // My second monitor's screen resolution: 1920 x 1080
 
     /* The width of the drawable/viewable space on the screen. */
-    private static final int GUI_WIDTH = 1366;
+    private static final int GUI_WIDTH = 1920;//1366;
     /* The height of the drawable/viewable space on the screen. */
-    private static final int GUI_HEIGHT = 710;
+    private static final int GUI_HEIGHT = 1080;//710;
     /* The height of the title bar (the bar at the top of the GUI display window that contains the name, program, minimize button, exit button and others). */
     private static final int TITLE_BAR_HEIGHT = 50;
     /* The combined width of the side bars. The side bars are the bars on both sides of the display window. */
@@ -98,6 +93,8 @@ public class ConfigurationFileEditor extends JFrame {
     private static final Color STAR_VOTE_BLUE = new Color (48, 149, 242);
     private static final Color STAR_VOTE_PINK = Color.PINK;
 
+    /* Title background color. */
+    private static final Color TITLE_PANEL_BACKGROUND_COLOR = Color.LIGHT_GRAY;
     /* Title font. */
     private static final Font TITLE_FONT = new Font("Tahoma", Font.PLAIN, 40);
 
@@ -221,12 +218,16 @@ public class ConfigurationFileEditor extends JFrame {
         JPanel titlePanel;
         titlePanel = new JPanel();
         titlePanel.setPreferredSize(new Dimension(TITLE_PANEL_WIDTH, TITLE_PANEL_HEIGHT));
-        titlePanel.setBackground(Color.BLACK);
+        titlePanel.setBackground(TITLE_PANEL_BACKGROUND_COLOR);
         contentPane.add(titlePanel, BorderLayout.NORTH);
 
-        JLabel titleLabel = new JLabel("CONFIGURATION FILE EDITOR");
-        titleLabel.setForeground(Color.WHITE);
+        // Resize the image to make the image icon smaller.
+        ImageIcon originalSTARVoteLogoImageIcon = createImageIcon("../images/logo_small.png", "The STAR-Vote Logo");
+
+        // Add the STAR-Vote Logo to the title.
+        JLabel titleLabel = new JLabel("CONFIGURATION EDITOR", originalSTARVoteLogoImageIcon, JLabel.CENTER);
         titleLabel.setFont(TITLE_FONT);
+        titleLabel.setPreferredSize(new Dimension(TITLE_PANEL_WIDTH - 2 * PANEL_CONTENTS_X_OFFSET, TITLE_PANEL_HEIGHT - 2 * PANEL_CONTENTS_Y_OFFSET));
         titlePanel.add(titleLabel);
 
 		/*
@@ -1094,6 +1095,18 @@ public class ConfigurationFileEditor extends JFrame {
             }
             outputFileTextArea.append(configurationAttributeNames.get(index) + "\n"); // Add the attribute name.
             outputFileTextArea.append(configurationAttributeValues.get(index) + "\n"); // Add the attribute value.
+        }
+    }
+
+    /** Returns an ImageIcon, or null if the path was invalid. */
+    protected ImageIcon createImageIcon(String path,
+                                        String description) {
+        java.net.URL imgURL = getClass().getResource(path);
+        if (imgURL != null) {
+            return new ImageIcon(imgURL, description);
+        } else {
+            System.err.println("Couldn't find file: " + path);
+            return null;
         }
     }
 }
