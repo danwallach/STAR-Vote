@@ -78,6 +78,8 @@ public class ActiveUI extends JPanel {
 
     private JFileChooser ballotLocChooser;
 
+    private HashMap<String, String> precinctsToBallots;
+
     private static String ballotID;
 
     private static boolean scanned = false;
@@ -95,6 +97,8 @@ public class ActiveUI extends JPanel {
         viewGen = new MachineViewGenerator();
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
+
+        precinctsToBallots = new HashMap<String, String>();
 
         initializeLeftPanel();
         c.gridx = 0;
@@ -214,6 +218,11 @@ public class ActiveUI extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 int answer = ballotLocChooser.showOpenDialog(ActiveUI.this);
                 if (answer == JFileChooser.APPROVE_OPTION) {
+                    File selected = ballotLocChooser.getSelectedFile();
+                    String ballot = selected.getName();
+                    String precinct = ballot.substring(ballot.length()-7, ballot.length()-4);
+                    System.out.println(precinct);
+                    precinctsToBallots.put(precinct, selected.getAbsolutePath());
                     model.addBallot(ballotLocChooser.getSelectedFile());
                 }
             }
@@ -362,11 +371,10 @@ public class ActiveUI extends JPanel {
      */
     private void leftButtonPressed() {
         if (model.isPollsOpen()) {
-            List<Map<String, BigInteger>> tally = model.closePolls();
+            Map<String, Map<String, BigInteger>> tally = model.closePolls();
 
-            for(Map<String, BigInteger> m : tally){
-                JDialog tallyDlg = new TallyDialog(this, m, ballotLocChooser.getSelectedFile()
-                    .getAbsolutePath());
+            for(String precinct : tally.keySet()){
+                JDialog tallyDlg = new TallyDialog(this, tally.get(precinct), precinctsToBallots.get(precinct));
                 tallyDlg.setVisible(true);
             }
 

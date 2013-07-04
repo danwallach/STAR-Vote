@@ -19,8 +19,6 @@
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/javacv-linux-x86_64.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/jl1.0.1.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/JavaOCR.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/Votebox.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/Supervisor.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>

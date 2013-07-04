@@ -87,8 +87,9 @@ public class Model {
 
     private String ballotLocation;
 
-    //private ITallier tallier;
-
+    /**
+     * A mapping of precinct names to their talliers
+     */
     private HashMap<String, ITallier> talliers;
 
     private Timer statusTimer;
@@ -288,14 +289,14 @@ public class Model {
      * 
      * @return the output from the tally
      */
-    public List<Map<String, BigInteger>> closePolls() {
+    public Map<String, Map<String, BigInteger>> closePolls() {
         auditorium
                 .announce(new PollsClosedEvent(mySerial, new Date().getTime()));
         //return tallier.getReport(privateKey);
-        ArrayList<Map<String, BigInteger>> out = new ArrayList<Map<String, BigInteger>>();
+        HashMap<String, Map<String, BigInteger>> out = new HashMap<String, Map<String, BigInteger>>();
 
         for(String t : talliers.keySet()){
-            out.add(talliers.get(t).getReport());
+            out.put(t, talliers.get(t).getReport());
         }
 
         return out;
@@ -1048,7 +1049,7 @@ public class Model {
 
             }
 
-            public void pinEntered(PINEnteredEvent e){
+            public synchronized void pinEntered(PINEnteredEvent e){
                 if(isPollsOpen()) {
                     System.out.println(">>> PIN entered: " + e.getPin());
                     String ballot = bManager.getBallotByPin(e.getPin());
