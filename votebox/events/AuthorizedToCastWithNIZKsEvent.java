@@ -27,19 +27,22 @@ public class AuthorizedToCastWithNIZKsEvent extends AuthorizedToCastEvent {
     private static MatcherRule MATCHER = new MatcherRule() {
         private ASExpression pattern = new ListExpression( StringExpression
                 .makeString( "authorized-to-cast-with-nizks" ), StringWildcard.SINGLETON,
-                StringWildcard.SINGLETON, StringWildcard.SINGLETON,StringWildcard.SINGLETON, WildcardWildcard.SINGLETON );
+                StringWildcard.SINGLETON, StringWildcard.SINGLETON, StringWildcard.SINGLETON, WildcardWildcard.SINGLETON );
 
         public IAnnounceEvent match(int serial, ASExpression sexp) {
             ASExpression res = pattern.match( sexp );
+            System.out.println("Attempting to match " + sexp);
             if (res != NoMatch.SINGLETON) {
+                System.out.println("matched!");
                 int node = Integer.parseInt( ((ListExpression) res).get( 0 )
                         .toString() );
                 byte[] nonce = new BigInteger(((ListExpression) res)
                         .get( 1 ).toString()).toByteArray();
-                String precinct = ((ListExpression) res).get( 2 )
-                        .toString();
+
                 byte[] ballot = ((StringExpression) ((ListExpression) res)
-                        .get( 3 )).getBytesCopy();
+                        .get( 2 )).getBytesCopy();
+                String precinct = ((ListExpression) res).get( 3 )
+                        .toString();
                 PublicKey finalPubKey = PublicKey.fromASE(((ListExpression) res).get(4));
                 
                 return new AuthorizedToCastWithNIZKsEvent( serial, node, nonce, precinct, ballot,  finalPubKey );
@@ -61,7 +64,7 @@ public class AuthorizedToCastWithNIZKsEvent extends AuthorizedToCastEvent {
     public AuthorizedToCastWithNIZKsEvent(int serial, int node, byte[] nonce, String precinct, byte[] ballot,  PublicKey finalPubKey){
     	super(serial, node, nonce, precinct, ballot);
     	
-    	//System.out.println("AuthorizedToCastWithNIZKsEvent created: "+finalPubKey.toString());
+    	System.out.println("AuthorizedToCastWithNIZKsEvent created: "+finalPubKey.toString());
     	
     	_finalPubKey = finalPubKey;
     	
@@ -78,8 +81,9 @@ public class AuthorizedToCastWithNIZKsEvent extends AuthorizedToCastEvent {
     			StringExpression.makeString( "authorized-to-cast-with-nizks" ), 
                 StringExpression.makeString( Integer.toString( getNode() ) ), 
                 StringExpression.makeString( new BigInteger(getNonce()).toString() ),
-                StringExpression.makeString( precinct),
                 StringExpression.makeString( getBallot() ),
+                StringExpression.makeString( precinct),
+
                 //StringExpression.makeString(_finalPubKey.toString()));
                 _finalPubKey.toASE());
     }
