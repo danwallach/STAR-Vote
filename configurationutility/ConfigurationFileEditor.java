@@ -103,9 +103,15 @@ public class ConfigurationFileEditor extends JFrame {
     public static final int GENERAL_GROUP = 0;
     public static final int NETWORK_GROUP = 1;
     public static final int PRINT_GROUP = 2;
+    public static final int VIEW_GROUP = 3;
+    public static final int ELECTION_GROUP = 4;
 
+    /* Patterns of text to be contained by election-specific attributes. */
+    private static final String[] electionPatterns = new String[] {"ELECTION", "BALLOT", "CANDIDATE", "ENCRYPTION", "NIZK"};
+    /* Patterns of text to be contained by view-specific attributes. */
+    private static final String[] viewPatterns = new String[] {"VIEW", "_UI_"};
     /* Patterns of text to be contained by print-specific attributes. */
-    private static final String[] printPatterns = new String[] {"PRINT", "PAPER", "VVPAT"};
+    private static final String[] printPatterns = new String[] {"PRINT", "PAPER", "VVPAT", "DPI"};
     /* Patterns of text to be contained by network-specific attributes. */
     private static final String[] networkPatterns = new String[] {"PORT", "ADDRESS", "TIMEOUT", "DISCOVER"};
 
@@ -159,11 +165,17 @@ public class ConfigurationFileEditor extends JFrame {
     private final DefaultListModel<String> networkValuesListModel;
     private final DefaultListModel<String> printNamesListModel;
     private final DefaultListModel<String> printValuesListModel;
+    private final DefaultListModel<String> viewNamesListModel;
+    private final DefaultListModel<String> viewValuesListModel;
+    private final DefaultListModel<String> electionNamesListModel;
+    private final DefaultListModel<String> electionValuesListModel;
 
     /* ArrayLists for storing the comments associated with the displayed attributes. Comments are not displayed. */
     private ArrayList<String> generalComments = new ArrayList<String> ();
     private ArrayList<String> networkComments = new ArrayList<String> ();
     private ArrayList<String> printComments = new ArrayList<String> ();
+    private ArrayList<String> viewComments = new ArrayList<String> ();
+    private ArrayList<String> electionComments = new ArrayList<String> ();
 
     /* Stores the ID of the group of attributes that the last attribute name was placed into. Used to place the attribute value in the same group. */
     private int groupIndexOfLastFoundAttributeName = INVALID_GROUP;
@@ -214,6 +226,10 @@ public class ConfigurationFileEditor extends JFrame {
         networkValuesListModel = new DefaultListModel<String>();
         printNamesListModel = new DefaultListModel<String>();
         printValuesListModel = new DefaultListModel<String>();
+        viewNamesListModel = new DefaultListModel<String>();
+        viewValuesListModel = new DefaultListModel<String>();
+        electionNamesListModel = new DefaultListModel<String>();
+        electionValuesListModel = new DefaultListModel<String>();
         fileDescriptionTextArea = new JTextArea();
         inputFileTextArea = new JTextArea();
         outputFileTextArea = new JTextArea();
@@ -226,6 +242,9 @@ public class ConfigurationFileEditor extends JFrame {
 
     }
 
+    /**
+     * Builds all GUI Elements of the Configuration File Editor.
+     */
     private void buildGUIElements ()
     {
         /*
@@ -278,23 +297,23 @@ public class ConfigurationFileEditor extends JFrame {
 		 * General Tab
 		 */
         JPanel generalTabPanel = new JPanel();
-        FlowLayout flowLayout_1 = (FlowLayout) generalTabPanel.getLayout();
-        flowLayout_1.setAlignment(FlowLayout.LEFT);
+        FlowLayout flowLayout_0 = (FlowLayout) generalTabPanel.getLayout();
+        flowLayout_0.setAlignment(FlowLayout.LEFT);
         mainTabbedPane.addTab("General", null, generalTabPanel, null);
 
-        JScrollPane generalAttributesScrollPane = new JScrollPane();
-        generalTabPanel.add(generalAttributesScrollPane);
-        generalAttributesScrollPane.setPreferredSize(new Dimension(3 * (MAIN_PANEL_WIDTH - PANEL_CONTENTS_X_OFFSET) / 5 - 15, MIDDLE_PANELS_HEIGHT - TABBED_CONTENTS_Y_OFFSET));
+        JScrollPane generalNamesScrollPane = new JScrollPane();
+        generalTabPanel.add(generalNamesScrollPane);
+        generalNamesScrollPane.setPreferredSize(new Dimension(3 * (MAIN_PANEL_WIDTH - PANEL_CONTENTS_X_OFFSET) / 5 - 15, MIDDLE_PANELS_HEIGHT - TABBED_CONTENTS_Y_OFFSET));
 
-        final JList<String> generalAttributesList = new JList<String> (generalNamesListModel);
-        generalAttributesScrollPane.setViewportView(generalAttributesList);
+        final JList<String> generalNamesList = new JList<String> (generalNamesListModel);
+        generalNamesScrollPane.setViewportView(generalNamesList);
 
         JScrollPane generalValuesScrollPane = new JScrollPane();
         generalTabPanel.add(generalValuesScrollPane);
         generalValuesScrollPane.setPreferredSize(new Dimension(2 * (MAIN_PANEL_WIDTH - PANEL_CONTENTS_X_OFFSET) / 5, MIDDLE_PANELS_HEIGHT - TABBED_CONTENTS_Y_OFFSET));
 
 		/* Synchronize the two scroll bars. */
-        namesScrollBar = generalAttributesScrollPane.getVerticalScrollBar();
+        namesScrollBar = generalNamesScrollPane.getVerticalScrollBar();
         valuesScrollBar = generalValuesScrollPane.getVerticalScrollBar();
         valuesScrollBar.setModel(namesScrollBar.getModel());
 
@@ -305,23 +324,23 @@ public class ConfigurationFileEditor extends JFrame {
 		 * Network Tab
 		 */
         JPanel networkTabPanel = new JPanel();
-        FlowLayout flowLayout = (FlowLayout) networkTabPanel.getLayout();
-        flowLayout.setAlignment(FlowLayout.LEFT);
+        FlowLayout flowLayout_1 = (FlowLayout) networkTabPanel.getLayout();
+        flowLayout_1.setAlignment(FlowLayout.LEFT);
         mainTabbedPane.addTab("Network", null, networkTabPanel, null);
 
-        JScrollPane networkAttributesScrollPane = new JScrollPane();
-        networkTabPanel.add(networkAttributesScrollPane);
-        networkAttributesScrollPane.setPreferredSize(new Dimension(3 * (MAIN_PANEL_WIDTH - PANEL_CONTENTS_X_OFFSET) / 5 - 15, MIDDLE_PANELS_HEIGHT - TABBED_CONTENTS_Y_OFFSET));
+        JScrollPane networkNamesScrollPane = new JScrollPane();
+        networkTabPanel.add(networkNamesScrollPane);
+        networkNamesScrollPane.setPreferredSize(new Dimension(3 * (MAIN_PANEL_WIDTH - PANEL_CONTENTS_X_OFFSET) / 5 - 15, MIDDLE_PANELS_HEIGHT - TABBED_CONTENTS_Y_OFFSET));
 
-        final JList<String> networkAttributesList = new JList<String> (networkNamesListModel);
-        networkAttributesScrollPane.setViewportView(networkAttributesList);
+        final JList<String> networkNamesList = new JList<String> (networkNamesListModel);
+        networkNamesScrollPane.setViewportView(networkNamesList);
 
         JScrollPane networkValuesScrollPane = new JScrollPane();
         networkTabPanel.add(networkValuesScrollPane);
         networkValuesScrollPane.setPreferredSize(new Dimension(2 * (MAIN_PANEL_WIDTH - PANEL_CONTENTS_X_OFFSET) / 5, MIDDLE_PANELS_HEIGHT - TABBED_CONTENTS_Y_OFFSET));
 
 		/* Synchronize the two scroll bars. */
-        namesScrollBar = networkAttributesScrollPane.getVerticalScrollBar();
+        namesScrollBar = networkNamesScrollPane.getVerticalScrollBar();
         valuesScrollBar = networkValuesScrollPane.getVerticalScrollBar();
         valuesScrollBar.setModel(namesScrollBar.getModel());
 
@@ -336,19 +355,19 @@ public class ConfigurationFileEditor extends JFrame {
         flowLayout_2.setAlignment(FlowLayout.LEFT);
         mainTabbedPane.addTab("Print", null, printTabPanel, null);
 
-        JScrollPane printAttributesScrollPane = new JScrollPane();
-        printTabPanel.add(printAttributesScrollPane);
-        printAttributesScrollPane.setPreferredSize(new Dimension(3 * (MAIN_PANEL_WIDTH - PANEL_CONTENTS_X_OFFSET) / 5 - 15, MIDDLE_PANELS_HEIGHT - TABBED_CONTENTS_Y_OFFSET));
+        JScrollPane printNamesScrollPane = new JScrollPane();
+        printTabPanel.add(printNamesScrollPane);
+        printNamesScrollPane.setPreferredSize(new Dimension(3 * (MAIN_PANEL_WIDTH - PANEL_CONTENTS_X_OFFSET) / 5 - 15, MIDDLE_PANELS_HEIGHT - TABBED_CONTENTS_Y_OFFSET));
 
-        final JList<String> printAttributesList = new JList<String> (printNamesListModel);
-        printAttributesScrollPane.setViewportView(printAttributesList);
+        final JList<String> printNamesList = new JList<String> (printNamesListModel);
+        printNamesScrollPane.setViewportView(printNamesList);
 
         JScrollPane printValuesScrollPane = new JScrollPane();
         printTabPanel.add(printValuesScrollPane);
         printValuesScrollPane.setPreferredSize(new Dimension(2 * (MAIN_PANEL_WIDTH - PANEL_CONTENTS_X_OFFSET) / 5, MIDDLE_PANELS_HEIGHT - TABBED_CONTENTS_Y_OFFSET));
 
 		/* Synchronize the two scroll bars. */
-        namesScrollBar = printAttributesScrollPane.getVerticalScrollBar();
+        namesScrollBar = printNamesScrollPane.getVerticalScrollBar();
         valuesScrollBar = printValuesScrollPane.getVerticalScrollBar();
         valuesScrollBar.setModel(namesScrollBar.getModel());
 
@@ -356,11 +375,65 @@ public class ConfigurationFileEditor extends JFrame {
         printValuesScrollPane.setViewportView(printValuesList);
 
         /*
+		 * View Tab
+		 */
+        JPanel viewTabPanel = new JPanel();
+        FlowLayout flowLayout_3 = (FlowLayout) viewTabPanel.getLayout();
+        flowLayout_3.setAlignment(FlowLayout.LEFT);
+        mainTabbedPane.addTab("View", null, viewTabPanel, null);
+
+        JScrollPane viewNamesScrollPane = new JScrollPane();
+        viewTabPanel.add(viewNamesScrollPane);
+        viewNamesScrollPane.setPreferredSize(new Dimension(3 * (MAIN_PANEL_WIDTH - PANEL_CONTENTS_X_OFFSET) / 5 - 15, MIDDLE_PANELS_HEIGHT - TABBED_CONTENTS_Y_OFFSET));
+
+        final JList<String> viewNamesList = new JList<String> (viewNamesListModel);
+        viewNamesScrollPane.setViewportView(viewNamesList);
+
+        JScrollPane viewValuesScrollPane = new JScrollPane();
+        viewTabPanel.add(viewValuesScrollPane);
+        viewValuesScrollPane.setPreferredSize(new Dimension(2 * (MAIN_PANEL_WIDTH - PANEL_CONTENTS_X_OFFSET) / 5, MIDDLE_PANELS_HEIGHT - TABBED_CONTENTS_Y_OFFSET));
+
+		/* Synchronize the two scroll bars. */
+        namesScrollBar = viewNamesScrollPane.getVerticalScrollBar();
+        valuesScrollBar = viewValuesScrollPane.getVerticalScrollBar();
+        valuesScrollBar.setModel(namesScrollBar.getModel());
+
+        final JList<String> viewValuesList = new JList<String> (viewValuesListModel);
+        viewValuesScrollPane.setViewportView(viewValuesList);
+
+        /*
+		 * Election Tab
+		 */
+        JPanel electionTabPanel = new JPanel();
+        FlowLayout flowLayout_4 = (FlowLayout) electionTabPanel.getLayout();
+        flowLayout_4.setAlignment(FlowLayout.LEFT);
+        mainTabbedPane.addTab("Election", null, electionTabPanel, null);
+
+        JScrollPane electionNamesScrollPane = new JScrollPane();
+        electionTabPanel.add(electionNamesScrollPane);
+        electionNamesScrollPane.setPreferredSize(new Dimension(3 * (MAIN_PANEL_WIDTH - PANEL_CONTENTS_X_OFFSET) / 5 - 15, MIDDLE_PANELS_HEIGHT - TABBED_CONTENTS_Y_OFFSET));
+
+        final JList<String> electionNamesList = new JList<String> (electionNamesListModel);
+        electionNamesScrollPane.setViewportView(electionNamesList);
+
+        JScrollPane electionValuesScrollPane = new JScrollPane();
+        electionTabPanel.add(electionValuesScrollPane);
+        electionValuesScrollPane.setPreferredSize(new Dimension(2 * (MAIN_PANEL_WIDTH - PANEL_CONTENTS_X_OFFSET) / 5, MIDDLE_PANELS_HEIGHT - TABBED_CONTENTS_Y_OFFSET));
+
+		/* Synchronize the two scroll bars. */
+        namesScrollBar = electionNamesScrollPane.getVerticalScrollBar();
+        valuesScrollBar = electionValuesScrollPane.getVerticalScrollBar();
+        valuesScrollBar.setModel(namesScrollBar.getModel());
+
+        final JList<String> electionValuesList = new JList<String> (electionValuesListModel);
+        electionValuesScrollPane.setViewportView(electionValuesList);
+
+        /*
          * File comments Tab
          */
         JPanel descriptionTabPanel = new JPanel();
-        FlowLayout flowLayout_5 = (FlowLayout) descriptionTabPanel.getLayout();
-        flowLayout_5.setAlignment(FlowLayout.LEFT);
+        FlowLayout flowLayout_fileComments = (FlowLayout) descriptionTabPanel.getLayout();
+        flowLayout_fileComments.setAlignment(FlowLayout.LEFT);
         mainTabbedPane.addTab("File Description", null, descriptionTabPanel, null);
 
         JScrollPane fileDescriptionScrollPane = new JScrollPane();
@@ -423,8 +496,8 @@ public class ConfigurationFileEditor extends JFrame {
 		 * Input File Tab
 		 */
         JPanel inputFileTabPanel = new JPanel();
-        FlowLayout flowLayout_3 = (FlowLayout) inputFileTabPanel.getLayout();
-        flowLayout_3.setAlignment(FlowLayout.LEFT);
+        FlowLayout flowLayout_inputFileTab = (FlowLayout) inputFileTabPanel.getLayout();
+        flowLayout_inputFileTab.setAlignment(FlowLayout.LEFT);
         logTabbedPane.addTab("Input File", null, inputFileTabPanel, null);
 
         JScrollPane inputFileScrollPane = new JScrollPane();
@@ -441,8 +514,8 @@ public class ConfigurationFileEditor extends JFrame {
 		 * Output File Tab
 		 */
         JPanel outputFileTabPanel = new JPanel();
-        FlowLayout flowLayout_4 = (FlowLayout) outputFileTabPanel.getLayout();
-        flowLayout_4.setAlignment(FlowLayout.LEFT);
+        FlowLayout flowLayout_outputFileTab = (FlowLayout) outputFileTabPanel.getLayout();
+        flowLayout_outputFileTab.setAlignment(FlowLayout.LEFT);
         logTabbedPane.addTab("Output File", null, outputFileTabPanel, null);
 
         JScrollPane outputFileScrollPane = new JScrollPane();
@@ -593,9 +666,9 @@ public class ConfigurationFileEditor extends JFrame {
 		 */
 		/* 1. General */
 		/* List selection listener for a value change on the attribute Name. */
-        generalAttributesList.addListSelectionListener(new ListSelectionListener() {
+        generalNamesList.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent arg0) {
-                loadAttributeAtPosition(generalAttributesList.getSelectedIndex());
+                loadAttributeAtPosition(generalNamesList.getSelectedIndex());
             }
         });
 
@@ -608,9 +681,9 @@ public class ConfigurationFileEditor extends JFrame {
 
 		/* 2. Network */
 		/* List selection listener for a value change on the attribute Name. */
-        networkAttributesList.addListSelectionListener(new ListSelectionListener() {
+        networkNamesList.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent arg0) {
-                loadAttributeAtPosition(networkAttributesList.getSelectedIndex() + generalNamesListModel.getSize());
+                loadAttributeAtPosition(networkNamesList.getSelectedIndex() + generalNamesListModel.getSize());
             }
         });
 
@@ -623,9 +696,9 @@ public class ConfigurationFileEditor extends JFrame {
 
 		/* 3. Print */
 		/* List selection listener for a value change on the attribute Name. */
-        printAttributesList.addListSelectionListener(new ListSelectionListener() {
+        printNamesList.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent arg0) {
-                loadAttributeAtPosition(printAttributesList.getSelectedIndex() + generalNamesListModel.getSize() + networkNamesListModel.getSize());
+                loadAttributeAtPosition(printNamesList.getSelectedIndex() + generalNamesListModel.getSize() + networkNamesListModel.getSize());
             }
         });
 
@@ -635,6 +708,38 @@ public class ConfigurationFileEditor extends JFrame {
                 loadAttributeAtPosition(printValuesList.getSelectedIndex() + generalValuesListModel.getSize() + networkValuesListModel.getSize());
             }
         });
+        /* 4. View */
+		/* List selection listener for a value change on the attribute Name. */
+        viewNamesList.addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent arg0) {
+                loadAttributeAtPosition(viewNamesList.getSelectedIndex() + generalNamesListModel.getSize() + networkNamesListModel.getSize() + printNamesListModel.getSize());
+            }
+        });
+
+		/* List selection listener for a value change on the attribute Value. */
+        viewValuesList.addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent arg0) {
+                loadAttributeAtPosition(viewValuesList.getSelectedIndex() + generalValuesListModel.getSize() + networkValuesListModel.getSize() + printValuesListModel.getSize());
+            }
+        });
+        /* 5. Election */
+		/* List selection listener for a value change on the attribute Name. */
+        electionNamesList.addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent arg0) {
+                loadAttributeAtPosition(electionNamesList.getSelectedIndex() + generalNamesListModel.getSize() + networkNamesListModel.getSize() + printNamesListModel.getSize() + viewNamesListModel.getSize());
+            }
+        });
+
+		/* List selection listener for a value change on the attribute Value. */
+        electionValuesList.addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent arg0) {
+                loadAttributeAtPosition(electionValuesList.getSelectedIndex() + generalValuesListModel.getSize() + networkValuesListModel.getSize() + printValuesListModel.getSize() + viewValuesListModel.getSize());
+            }
+        });
+
+        /*
+         * End of selection change listeners.
+         */
 
 		/* Action listener for a button click on the Save Changes button. */
         saveChangesButton.addActionListener(new ActionListener() {
@@ -658,6 +763,9 @@ public class ConfigurationFileEditor extends JFrame {
         });
     }
 
+    /**
+     * Loads all the default attributes, as defined in AuditoriumParams.
+     */
     private void loadDefaultAttributes ()
     {
         /* Add the default network attributes. */
@@ -691,15 +799,15 @@ public class ConfigurationFileEditor extends JFrame {
 
         defaultAttributeNames.add("DEFAULT_REPORT_ADDRESS");
         defaultAttributeValues.add("");
-        defaultAttributeComments.add("");
+        defaultAttributeComments.add("Default report address, used exclusively by tap.  if \"\", must be specified explicitly somehow.");
 
         defaultAttributeNames.add("SERVER_PORT");
         defaultAttributeValues.add("9700");
-        defaultAttributeComments.add("");
+        defaultAttributeComments.add("Default server port, used by web server and tap.  If -1, must be specified explicitly somehow.");
 
         defaultAttributeNames.add("DEFAULT_HTTP_PORT");
         defaultAttributeValues.add("8080");
-        defaultAttributeComments.add("");
+        defaultAttributeComments.add("Default http port, used by web server.");
 
         /* Add the default file location attributes. */
         defaultAttributeNames.add("LOG_LOCATION");
@@ -717,51 +825,51 @@ public class ConfigurationFileEditor extends JFrame {
         /* Add the default printing attributes. */
         defaultAttributeNames.add("PRINTER_FOR_VVPAT");
         defaultAttributeValues.add("");
-        defaultAttributeComments.add("");
+        defaultAttributeComments.add("Default printer for VVPAT. If \"\", do not use VVPAT.");
 
         defaultAttributeNames.add("PAPER_WIDTH_FOR_VVPAT");
         defaultAttributeValues.add("249");
-        defaultAttributeComments.add("");
+        defaultAttributeComments.add("Default page size for VVPAT. Based off of Star TPS800 model printer.");
 
         defaultAttributeNames.add("PAPER_HEIGHT_FOR_VVPAT");
         defaultAttributeValues.add("322");
-        defaultAttributeComments.add("");
+        defaultAttributeComments.add("Default page size for VVPAT. Based off of Star TPS800 model printer.");
 
         defaultAttributeNames.add("PRINTABLE_WIDTH_FOR_VVPAT");
         defaultAttributeValues.add("239");
-        defaultAttributeComments.add("");
+        defaultAttributeComments.add("Default imageable area for VVPAT. Based off of Star TPS800 model printer.");
 
         defaultAttributeNames.add("PRINTABLE_HEIGHT_FOR_VVPAT");
         defaultAttributeValues.add("311");
-        defaultAttributeComments.add("");
+        defaultAttributeComments.add("Default imageable area for VVPAT. Based off of Star TPS800 model printer.");
 
         defaultAttributeNames.add("PRINTABLE_VERTICAL_MARGIN");
         defaultAttributeValues.add("25");
-        defaultAttributeComments.add("");
+        defaultAttributeComments.add("Configurable margins, may not be needed?");
 
         defaultAttributeNames.add("PRINTABLE_HORIZONTAL_MARGIN");
         defaultAttributeValues.add("25");
-        defaultAttributeComments.add("");
+        defaultAttributeComments.add("Configurable margins, may not be needed?");
 
         defaultAttributeNames.add("PRINT_USE_TWO_COLUMNS");
         defaultAttributeValues.add("true");
-        defaultAttributeComments.add("");
+        defaultAttributeComments.add("Setting which determines whether ballots will be printed using two columns.");
 
         defaultAttributeNames.add("PRINT_COMMANDS_FILE_FILENAME");
         defaultAttributeValues.add("CommandsFile.txt");
-        defaultAttributeComments.add("");
+        defaultAttributeComments.add("Setting for printing.");
 
         defaultAttributeNames.add("PRINT_COMMANDS_FILE_PARAMETER_SEPARATOR");
         defaultAttributeValues.add("!!!");
-        defaultAttributeComments.add("");
+        defaultAttributeComments.add("Setting for printing.");
 
         defaultAttributeNames.add("PRINTER_DEFAULT_DPI");
         defaultAttributeValues.add("300");
-        defaultAttributeComments.add("");
+        defaultAttributeComments.add("Configurable DPI");
 
         defaultAttributeNames.add("JAVA_DEFAULT_DPI");
         defaultAttributeValues.add("72");
-        defaultAttributeComments.add("");
+        defaultAttributeComments.add("Configurable DPI");
 
         /* Add the default View / GUI attributes. */
         defaultAttributeNames.add("VIEW_IMPLEMENTATION");
@@ -774,15 +882,15 @@ public class ConfigurationFileEditor extends JFrame {
 
         defaultAttributeNames.add("USE_SIMPLE_TALLY_VIEW");
         defaultAttributeValues.add("false");
-        defaultAttributeComments.add("");
+        defaultAttributeComments.add("By default, we use the \"fanciest\" tally view possible.");
 
         defaultAttributeNames.add("USE_TABLE_TALLY_VIEW");
         defaultAttributeValues.add("false");
-        defaultAttributeComments.add("");
+        defaultAttributeComments.add("By default, we use the \"fanciest\" tally view possible.");
 
         defaultAttributeNames.add("USE_WINDOWED_VIEW");
         defaultAttributeValues.add("false");
-        defaultAttributeComments.add("");
+        defaultAttributeComments.add("AWT view is windowed by default (as it may break if full-screen)");
 
         defaultAttributeNames.add("ALLOW_UI_SCALING");
         defaultAttributeValues.add("true");
@@ -790,11 +898,11 @@ public class ConfigurationFileEditor extends JFrame {
 
         defaultAttributeNames.add("USE_ELO_TOUCH_SCREEN");
         defaultAttributeValues.add("false");
-        defaultAttributeComments.add("");
+        defaultAttributeComments.add("If true will attempt to use SDL to enable the touchscreen.  Should not be set if not using SDL view.");
 
         defaultAttributeNames.add("ELO_TOUCH_SCREEN_DEVICE");
         defaultAttributeValues.add("null");
-        defaultAttributeComments.add("");
+        defaultAttributeComments.add("The path to use to the Elo touchscreen if USE_ELO_TOUCH_SCREEN is true.");
 
         /* Add the election and ballot attributes. */
         defaultAttributeNames.add("ELECTION_NAME");
@@ -803,19 +911,19 @@ public class ConfigurationFileEditor extends JFrame {
 
         defaultAttributeNames.add("DEFAULT_BALLOT_FILE");
         defaultAttributeValues.add("");
-        defaultAttributeComments.add("");
+        defaultAttributeComments.add("Default ballot file.  If \"\", must be specified explicitly somehow.");
 
         defaultAttributeNames.add("CAST_BALLOT_ENCRYPTION_ENABLED");
         defaultAttributeValues.add("true");
-        defaultAttributeComments.add("");
+        defaultAttributeComments.add("Default for cast_ballot_encryption_enabled.  Will probably need to be set to true in the future.");
 
         defaultAttributeNames.add("ENABLE_NIZKS");
         defaultAttributeValues.add("false");
-        defaultAttributeComments.add("");
+        defaultAttributeComments.add("By default, we don't enable NIZKs.");
 
         defaultAttributeNames.add("USE_PIECEMEAL_ENCRYPTION");
         defaultAttributeValues.add("false");
-        defaultAttributeComments.add("");
+        defaultAttributeComments.add("By default, we don't enable Piecemeal Encryption.");
 
         defaultAttributeNames.add("SHUFFLE_CANDIDATE_ORDER");
         defaultAttributeValues.add("false");
@@ -824,7 +932,7 @@ public class ConfigurationFileEditor extends JFrame {
         /* Add the machine attributes. */
         defaultAttributeNames.add("DEFAULT_SERIAL_NUMBER");
         defaultAttributeValues.add("-1");
-        defaultAttributeComments.add("");
+        defaultAttributeComments.add("Default for default serial number, -1 indicates that it MUST be specified explicitly somehow.");
 
         defaultAttributeNames.add("OPERATING_SYSTEM");
         defaultAttributeValues.add("Windows");
@@ -834,14 +942,115 @@ public class ConfigurationFileEditor extends JFrame {
 
         defaultAttributeNames.add("USE_SCAN_CONFIRMATION_SOUND");
         defaultAttributeValues.add("false");
-        defaultAttributeComments.add("");
+        defaultAttributeComments.add("Setting for the BallotScanner.");
 
         defaultAttributeNames.add("SCAN_CONFIRMATION_SOUND_PATH");
         defaultAttributeValues.add("sound/test.mp3");
-        defaultAttributeComments.add("");
+        defaultAttributeComments.add("Setting for the BallotScanner.");
 
     }
 
+    /**
+     * Adds each default attribute to its corresponding group of attributes.
+     */
+    private void addDefaultAttributesToGroups ()
+    {
+        for (int index = 0; index < defaultAttributeNames.size(); index++)
+        {
+            String attributeName = defaultAttributeNames.get(index);
+            String attributeValue = defaultAttributeValues.get(index);
+            String attributeComment = defaultAttributeComments.get(index);
+
+            /* Keeps track of whether or not the current attribute was placed in one of the attribute groups (tabs). */
+            Boolean isNotPlaced = true;
+
+            /* Try to place the current attribute in the Election attribute group. */
+            for (String electionPattern : electionPatterns)
+            {
+                if (attributeName.contains(electionPattern))
+                {
+                    // Add the attribute to the Election group.
+                    electionNamesListModel.add(electionNamesListModel.getSize(), attributeName);
+                    electionValuesListModel.add(electionValuesListModel.getSize(), attributeValue);
+                    electionComments.add(attributeComment);
+                    // Now that the attribute was placed in a group, set the flag to false.
+                    isNotPlaced = false;
+                    // Stop trying to find more election patterns for this attribute.
+                    break;
+                }
+            }
+
+            /* If it is still not placed, try to place the current attribute in the View attribute group. */
+            if (isNotPlaced)
+            {
+                for (String viewPattern : viewPatterns)
+                {
+                    if (attributeName.contains(viewPattern))
+                    {
+                        // Add the attribute to the View group.
+                        viewNamesListModel.add(viewNamesListModel.getSize(), attributeName);
+                        viewValuesListModel.add(viewValuesListModel.getSize(), attributeValue);
+                        viewComments.add(attributeComment);
+                        // Now that the attribute was placed in a group, set the flag to false.
+                        isNotPlaced = false;
+                        // Stop trying to find more view patterns for this attribute.
+                        break;
+                    }
+                }
+            }
+
+            /* If it is still not placed, try to place the current attribute in the Print attribute group. */
+            if (isNotPlaced)
+            {
+                for (String printPattern : printPatterns)
+                {
+                    if (attributeName.contains(printPattern))
+                    {
+                        // Add the attribute to the Print group.
+                        printNamesListModel.add(printNamesListModel.getSize(), attributeName);
+                        printValuesListModel.add(printValuesListModel.getSize(), attributeValue);
+                        printComments.add(attributeComment);
+                        // Now that the attribute was placed in a group, set the flag to false.
+                        isNotPlaced = false;
+                        // Stop trying to find more print patterns for this attribute.
+                        break;
+                    }
+                }
+            }
+
+            /* If it is still not placed, try to place the current attribute in the Network attribute group. */
+            if (isNotPlaced)
+            {
+                for (String networkPattern : networkPatterns)
+                {
+                    if (attributeName.contains(networkPattern))
+                    {
+                        // Add the attribute to the Network group.
+                        networkNamesListModel.add(networkNamesListModel.getSize(), attributeName);
+                        networkValuesListModel.add(networkValuesListModel.getSize(), attributeValue);
+                        networkComments.add(attributeComment);
+                        // Now that the attribute was placed in a group, set the flag to false.
+                        isNotPlaced = false;
+                        // Stop trying to find more network patterns for this attribute.
+                        break;
+                    }
+                }
+            }
+
+            /* If it is still not placed, place the current attribute in the General attribute group. */
+            if (isNotPlaced)
+            {
+                // Add the attribute to the General group.
+                generalNamesListModel.add(generalNamesListModel.getSize(), attributeName);
+                generalValuesListModel.add(generalValuesListModel.getSize(), attributeValue);
+                generalComments.add(attributeComment);
+            }
+        }
+    }
+
+    /**
+     * Opens a configuration file and reads its contents.
+     */
     private void openFileAndReadText ()
     {
         // Open the file chooser.
@@ -909,6 +1118,12 @@ public class ConfigurationFileEditor extends JFrame {
                 printNamesListModel.clear();
                 printValuesListModel.clear();
                 printComments.clear();
+                viewNamesListModel.clear();
+                viewValuesListModel.clear();
+                viewComments.clear();
+                electionNamesListModel.clear();
+                electionValuesListModel.clear();
+                electionComments.clear();
 
                 // Store the current comment somewhere, so it can be added to the appropriate group.
                 String currentComment = "";
@@ -929,30 +1144,90 @@ public class ConfigurationFileEditor extends JFrame {
 				        		/* Keeps track of whether or not the current attribute name was placed in one of the attribute groups (tabs). */
                                 Boolean isNotPlaced = true;
 
-					        	/* Try to place the current attribute name in the Print attribute group. */
-                                for (String printPattern : printPatterns)
+					        	/* Try to place the current attribute name in the Election attribute group. */
+                                for (String electionPattern : electionPatterns)
                                 {
-                                    if (line.contains(printPattern))
+                                    if (line.contains(electionPattern))
                                     {
-                                        // Add the current line as an attribute name in the Print group.
-                                        printNamesListModel.add(printNamesListModel.getSize(), line);
+                                        // Add the current line as an attribute name in the Election group.
+                                        electionNamesListModel.add(electionNamesListModel.getSize(), line);
                                         // Because there is always a space added in front of each line of comment, the current comment will always contain a leading space.
                                         if (!currentComment.equals(""))
                                         {
-                                            printComments.add(currentComment.substring(1)); // Remove that leading space.
+                                            electionComments.add(currentComment.substring(1)); // Remove that leading space.
                                         }
                                         else
                                         {
-                                            printComments.add(currentComment);
+                                            electionComments.add(currentComment);
                                         }
                                         // Reset the current comment.
                                         currentComment = "";
                                         // Set the index of the last found attribute to be this group's index.
-                                        groupIndexOfLastFoundAttributeName = ConfigurationFileEditor.PRINT_GROUP;
+                                        groupIndexOfLastFoundAttributeName = ConfigurationFileEditor.ELECTION_GROUP;
                                         // Now that the attribute was placed in a group, set the flag to false.
                                         isNotPlaced = false;
-                                        // Stop trying to find more print patterns in this line.
+                                        // Stop trying to find more election patterns in this line.
                                         break;
+                                    }
+                                }
+
+					        	/* If it is still not placed, try to place the current attribute name in the View attribute group. */
+                                if (isNotPlaced)
+                                {
+                                    for (String viewPattern : viewPatterns)
+                                    {
+                                        if (line.contains(viewPattern))
+                                        {
+                                            // Add the current line as an attribute name in the View group.
+                                            viewNamesListModel.add(viewNamesListModel.getSize(), line);
+                                            // Because there is always a space added in front of each line of comment, the current comment will always contain a leading space.
+                                            if (!currentComment.equals(""))
+                                            {
+                                                viewComments.add(currentComment.substring(1)); // Remove that leading space.
+                                            }
+                                            else
+                                            {
+                                                viewComments.add(currentComment);
+                                            }
+                                            // Reset the current comment.
+                                            currentComment = "";
+                                            // Set the index of the last found attribute to be this group's index.
+                                            groupIndexOfLastFoundAttributeName = ConfigurationFileEditor.VIEW_GROUP;
+                                            // Now that the attribute was placed in a group, set the flag to false.
+                                            isNotPlaced = false;
+                                            // Stop trying to find more view patterns in this line.
+                                            break;
+                                        }
+                                    }
+                                }
+
+					        	/* If it is still not placed, try to place the current attribute name in the Print attribute group. */
+                                if (isNotPlaced)
+                                {
+                                    for (String printPattern : printPatterns)
+                                    {
+                                        if (line.contains(printPattern))
+                                        {
+                                            // Add the current line as an attribute name in the Print group.
+                                            printNamesListModel.add(printNamesListModel.getSize(), line);
+                                            // Because there is always a space added in front of each line of comment, the current comment will always contain a leading space.
+                                            if (!currentComment.equals(""))
+                                            {
+                                                printComments.add(currentComment.substring(1)); // Remove that leading space.
+                                            }
+                                            else
+                                            {
+                                                printComments.add(currentComment);
+                                            }
+                                            // Reset the current comment.
+                                            currentComment = "";
+                                            // Set the index of the last found attribute to be this group's index.
+                                            groupIndexOfLastFoundAttributeName = ConfigurationFileEditor.PRINT_GROUP;
+                                            // Now that the attribute was placed in a group, set the flag to false.
+                                            isNotPlaced = false;
+                                            // Stop trying to find more print patterns in this line.
+                                            break;
+                                        }
                                     }
                                 }
 
@@ -1022,6 +1297,12 @@ public class ConfigurationFileEditor extends JFrame {
                                     case ConfigurationFileEditor.PRINT_GROUP:
                                         printValuesListModel.add(printValuesListModel.getSize(), line);
                                         break;
+                                    case ConfigurationFileEditor.VIEW_GROUP:
+                                        viewValuesListModel.add(viewValuesListModel.getSize(), line);
+                                        break;
+                                    case ConfigurationFileEditor.ELECTION_GROUP:
+                                        electionValuesListModel.add(electionValuesListModel.getSize(), line);
+                                        break;
                                     default:
                                         generalValuesListModel.add(generalValuesListModel.getSize(), "ERROR: " + line + " is associated to an attribute name that got placed in an invalid group!");
                                         break;
@@ -1035,7 +1316,7 @@ public class ConfigurationFileEditor extends JFrame {
                         {
                             if (line.startsWith("##")) // Line is a file comment.
                             {
-                                fileComments.add(line.substring(line.startsWith("## ") ? 3 : 2)); // Add this line to the file comments ArrayList and stip the leading '##'.
+                                fileComments.add(line.substring(line.startsWith("## ") ? 3 : 2)); // Add this line to the file comments ArrayList and strip the leading '##'.
                             }
                             else // Line is an attribute comment.
                             {
@@ -1045,6 +1326,11 @@ public class ConfigurationFileEditor extends JFrame {
                     } // End of if(!line.equals(""))
 
                 }
+
+
+                /* Place each default attribute in the corresponding group of attributes. */
+                addDefaultAttributesToGroups();
+
 
 		        /* Add the attribute names and values to the list of attribute names and the list of attribute values, respectively. */
                 // From the General tab...
@@ -1063,12 +1349,28 @@ public class ConfigurationFileEditor extends JFrame {
                     configurationAttributeComments.add(networkComments.get(idx));
                 }
 
-                // ... and finally, the Print tab.
+                // ... and the Print tab ...
                 for (int idx = 0; idx < printNamesListModel.getSize(); idx++)
                 {
                     configurationAttributeNames.add(printNamesListModel.getElementAt(idx));
                     configurationAttributeValues.add(printValuesListModel.getElementAt(idx));
                     configurationAttributeComments.add(printComments.get(idx));
+                }
+
+                // ... and the View tab ...
+                for (int idx = 0; idx < viewNamesListModel.getSize(); idx++)
+                {
+                    configurationAttributeNames.add(viewNamesListModel.getElementAt(idx));
+                    configurationAttributeValues.add(viewValuesListModel.getElementAt(idx));
+                    configurationAttributeComments.add(viewComments.get(idx));
+                }
+
+                // ... and finally, the Election tab.
+                for (int idx = 0; idx < electionNamesListModel.getSize(); idx++)
+                {
+                    configurationAttributeNames.add(electionNamesListModel.getElementAt(idx));
+                    configurationAttributeValues.add(electionValuesListModel.getElementAt(idx));
+                    configurationAttributeComments.add(electionComments.get(idx));
                 }
 
                 // Write the file description comments to the appropriate text area.
@@ -1087,6 +1389,9 @@ public class ConfigurationFileEditor extends JFrame {
         }
     }
 
+    /**
+     * Opens a configuration file and writes its contents.
+     */
     private void openFileAndWriteText ()
     {
         // Open the file chooser.
@@ -1150,6 +1455,10 @@ public class ConfigurationFileEditor extends JFrame {
         }
     }
 
+    /**
+     * Selects an attribute when the user clicks on it.
+     * @param position the position of the attribute in the ArrayLists of configuration attributes
+     */
     private void loadAttributeAtPosition (int position)
     {
         // Reset the active attribute.
@@ -1164,6 +1473,10 @@ public class ConfigurationFileEditor extends JFrame {
         }
     }
 
+    /**
+     * Updates an attribute with the values present in the editing panel.
+     * @param position the position of the attribute in the ArrayLists of configuration attributes
+     */
     private void saveAttributeAtPosition (int position)
     {
         // If the position is valid, replace the values in the configurationAttribute ArrayLists.
@@ -1180,7 +1493,7 @@ public class ConfigurationFileEditor extends JFrame {
             configurationAttributeComments.set(position, attributeComment);
 
             // Replace the entries in the JListModels.
-            if (position < generalNamesListModel.size()) // If the position represents a position in the General tab, update it.
+            if (position < generalNamesListModel.getSize()) // If the position represents a position in the General tab, update it.
             {
                 generalNamesListModel.set(position, attributeName);
                 generalValuesListModel.set(position, attributeValue);
@@ -1192,7 +1505,7 @@ public class ConfigurationFileEditor extends JFrame {
                 position -= generalNamesListModel.getSize();
             }
 
-            if (position < networkNamesListModel.size()) // If the position represents a position in the Network tab, update it.
+            if (position < networkNamesListModel.getSize()) // If the position represents a position in the Network tab, update it.
             {
                 networkNamesListModel.set(position, attributeName);
                 networkValuesListModel.set(position, attributeValue);
@@ -1204,11 +1517,33 @@ public class ConfigurationFileEditor extends JFrame {
                 position -= networkNamesListModel.getSize();
             }
 
-            if (position < printNamesListModel.size()) // If the position represents a position in the Print tab, update it.
+            if (position < printNamesListModel.getSize()) // If the position represents a position in the Print tab, update it.
             {
                 printNamesListModel.set(position, attributeName);
                 printValuesListModel.set(position, attributeValue);
                 printComments.set(position, attributeComment);
+            }
+            else // Otherwise, update the position by subtracting the number of items in the Print tab.
+            {
+                position -= printNamesListModel.getSize();
+            }
+
+            if (position < viewNamesListModel.getSize()) // If the position represents a position in the View tab, update it.
+            {
+                viewNamesListModel.set(position, attributeName);
+                viewValuesListModel.set(position, attributeValue);
+                viewComments.set(position, attributeComment);
+            }
+            else // Otherwise, update the position by subtracting the number of items in the View tab.
+            {
+                position -= viewNamesListModel.getSize();
+            }
+
+            if (position < electionNamesListModel.getSize()) // If the position represents a position in the Election tab, update it.
+            {
+                electionNamesListModel.set(position, attributeName);
+                electionValuesListModel.set(position, attributeValue);
+                electionComments.set(position, attributeComment);
             }
             else // Otherwise, print an error message.
             {
@@ -1218,6 +1553,10 @@ public class ConfigurationFileEditor extends JFrame {
         }
     }
 
+    /**
+     * Adds an attribute with the values present in the editing panel to the currently selected group of attributes.
+     * @param group the ID (index) of the group to which the attribute must be added
+     */
     private void addAttributeToGroup (int group)
     {
         // Read in the values to be saved.
@@ -1255,7 +1594,7 @@ public class ConfigurationFileEditor extends JFrame {
                 break;
             case ConfigurationFileEditor.PRINT_GROUP:
                 // Add the attribute to the ArrayLists.
-                int printIndex = printNamesListModel.getSize() + generalNamesListModel.getSize() + networkNamesListModel.getSize();
+                int printIndex = printNamesListModel.getSize() + networkNamesListModel.getSize() + generalNamesListModel.getSize();
 
                 configurationAttributeNames.add(printIndex, attributeName);
                 configurationAttributeValues.add(printIndex, attributeValue);
@@ -1266,12 +1605,41 @@ public class ConfigurationFileEditor extends JFrame {
                 printValuesListModel.add(printValuesListModel.getSize(), attributeValue);
                 printComments.add(attributeComment);
                 break;
+            case ConfigurationFileEditor.VIEW_GROUP:
+                // Add the attribute to the ArrayLists.
+                int viewIndex = viewNamesListModel.getSize() + printNamesListModel.getSize() + networkNamesListModel.getSize() + generalNamesListModel.getSize();
+
+                configurationAttributeNames.add(viewIndex, attributeName);
+                configurationAttributeValues.add(viewIndex, attributeValue);
+                configurationAttributeComments.add(viewIndex, attributeComment);
+
+                // Add the attribute to the group.
+                viewNamesListModel.add(viewNamesListModel.getSize(), attributeName);
+                viewValuesListModel.add(viewValuesListModel.getSize(), attributeValue);
+                viewComments.add(attributeComment);
+                break;
+            case ConfigurationFileEditor.ELECTION_GROUP:
+                // Add the attribute to the ArrayLists.
+                int electionIndex = electionNamesListModel.getSize() + viewNamesListModel.getSize() + printNamesListModel.getSize() + networkNamesListModel.getSize() + generalNamesListModel.getSize();
+
+                configurationAttributeNames.add(electionIndex, attributeName);
+                configurationAttributeValues.add(electionIndex, attributeValue);
+                configurationAttributeComments.add(electionIndex, attributeComment);
+
+                // Add the attribute to the group.
+                electionNamesListModel.add(electionNamesListModel.getSize(), attributeName);
+                electionValuesListModel.add(electionValuesListModel.getSize(), attributeValue);
+                electionComments.add(attributeComment);
+                break;
             default:
                 System.out.println("NO TAB SELECTED");
                 break;
         }
     }
 
+    /**
+     * Updates the displayed text of the configuration file with all the attributes present in the ArrayLists of configuration attributes.
+     */
     private void updateFileContents ()
     {
         // Clear the output file text.
@@ -1298,7 +1666,12 @@ public class ConfigurationFileEditor extends JFrame {
         }
     }
 
-    /** Returns an ImageIcon, or null if the path was invalid. */
+    /**
+     * Returns an ImageIcon, or null if the path was invalid.
+     * @param path the path to the image file
+     * @param description text description of the image to be opened
+     * @return the ImageIcon of the image in the file to which the path corresponds
+     */
     protected ImageIcon createImageIcon(String path,
                                         String description) {
         java.net.URL imgURL = getClass().getResource(path);

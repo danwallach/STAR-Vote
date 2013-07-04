@@ -95,7 +95,7 @@ public class AuditoriumParams implements IAuditoriumParams,
     public static final int PRINTABLE_WIDTH_FOR_VVPAT = 239;
     public static final int PRINTABLE_HEIGHT_FOR_VVPAT = 311;
 
-    //Configurable margins, may not bee needed?
+    //Configurable margins, may not be needed?
     public static final int PRINTABLE_VERTICAL_MARGIN  = 25;
     public static final int PRINTABLE_HORIZONTAL_MARGIN  = 25;
 
