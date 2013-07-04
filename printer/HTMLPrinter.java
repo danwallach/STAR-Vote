@@ -260,7 +260,7 @@ public class HTMLPrinter {
             }
             catch (IndexOutOfBoundsException e)
             {
-                System.out.println("HTML File Generator Exception Caught: IndexOutOfBoundsException: Found an odd number of columns when trying to print in two-columns format.");
+                //System.out.println("HTML File Generator Exception Caught: IndexOutOfBoundsException: Found an odd number of columns when trying to print in two-columns format.");
             }
 
             // End of the right column.
