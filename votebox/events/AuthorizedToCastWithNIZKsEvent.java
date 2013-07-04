@@ -26,9 +26,7 @@ public class AuthorizedToCastWithNIZKsEvent extends AuthorizedToCastEvent {
 
         public IAnnounceEvent match(int serial, ASExpression sexp) {
             ASExpression res = pattern.match( sexp );
-            System.out.println("Attempting to match " + sexp);
             if (res != NoMatch.SINGLETON) {
-                System.out.println("matched!");
                 int node = Integer.parseInt( ((ListExpression) res).get( 0 )
                         .toString() );
                 byte[] nonce = new BigInteger(((ListExpression) res)

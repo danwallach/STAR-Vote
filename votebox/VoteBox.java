@@ -633,7 +633,7 @@ public class VoteBox{
             }
 
             /**
-             * Handler for the authorized-to-cast message. If it is for this
+             * Handler for the authorized-to-cast-wth-nizks message. If it is for this
              * booth, and it is not already voting, unzip the ballot and fire
              * the VoteBox runtime. Also announce the new status.
              */

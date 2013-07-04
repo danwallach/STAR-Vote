@@ -122,26 +122,26 @@ public class Election {
 
             int numVotes = votes.size();
 
-            //System.out.println("Looping " + (numVotes + 1) + " times to look for result");
+            System.out.println("Looping " + (numVotes + 1) + " times to look for result");
 
             for (int k = 0; k <= numVotes; k++) {
                 j = new AdderInteger(k, q);
 
-                //System.out.println("DOES " + new AdderInteger(f, p).pow(j) + " equal " + target + "?");
+                System.out.println("DOES " + new AdderInteger(f, p).pow(j) + " equal " + target + "?");
 
                 if (f.pow(j).equals(target)) {
-                    //System.out.println("GOT RESULT!!!");
+                    System.out.println("GOT RESULT!!!");
                     gotResult = true;
                     break;
                 }
             }
 
             if (gotResult) {
-                //System.out.println("Adding result: " + j);
+                System.out.println("Adding result: " + j);
                 results.add(j);
                 gotResult = false;
             } else {
-                //System.out.println("THROWING EXCEPTION!!!");
+                System.out.println("THROWING EXCEPTION!!!");
                 throw new SearchSpaceExhaustedException("Error searching for "
                                                         + target);
             }

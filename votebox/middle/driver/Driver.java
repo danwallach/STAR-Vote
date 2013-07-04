@@ -96,7 +96,6 @@ public class Driver {
 
 		public boolean select(String uid) throws UnknownUIDException,
 				SelectionException {
-            System.out.println("View adapter selected! For " + uid);
 			return _view.select(uid);
 		}
 	};
@@ -114,7 +113,6 @@ public class Driver {
 
 		public boolean select(String uid) throws UnknownUIDException,
 				SelectionException {
-            System.out.println("Ballot adapter selected! For " + uid);
 			return _ballot.select(uid);
 		}
 
