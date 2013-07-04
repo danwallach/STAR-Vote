@@ -259,4 +259,9 @@ public class VoteBoxEventNotifier implements VoteBoxEventListener {
             l.provisionalCommitBallot(e);
     }
 
+    public void authorizedToCastWithNIZKS(AuthorizedToCastWithNIZKsEvent e) {
+        for (VoteBoxEventListener l : listeners)
+            l.authorizedToCastWithNIZKS(e);
+    }
+
 }

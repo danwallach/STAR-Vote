@@ -1027,6 +1027,10 @@ public class Model {
                 }
             }
 
+            public void authorizedToCastWithNIZKS(AuthorizedToCastWithNIZKsEvent e) {
+                // NO-OP
+            }
+
             public void ballotScanned(BallotScannedEvent e) {
                 String bid = e.getBID();
                 int serial = e.getSerial();

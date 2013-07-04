@@ -282,4 +282,6 @@ public interface VoteBoxEventListener {
      * Announces the end of a provisional voting session on the booth-end
      */
     public void provisionalCommitBallot(ProvisionalCommitEvent provisionalCommitEvent);
+
+    public void authorizedToCastWithNIZKS(AuthorizedToCastWithNIZKsEvent e);
 }

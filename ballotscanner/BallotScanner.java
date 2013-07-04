@@ -365,6 +365,9 @@ public class BallotScanner{
             public void provisionalCommitBallot(ProvisionalCommitEvent provisionalCommitEvent) {
             }
 
+            public void authorizedToCastWithNIZKS(AuthorizedToCastWithNIZKsEvent e) {
+            }
+
             public void ballotAccepted(BallotScanAcceptedEvent event){
 
                 System.out.println("Accepted event: Event BID: " + event.getBID());

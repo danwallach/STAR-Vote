@@ -205,9 +205,9 @@ public class Tap {
             public void pollMachines(PollMachinesEvent pollMachinesEvent){}
             public void spoilBallot(SpoilBallotEvent spoilBallotEvent) {}
             public void announceProvisionalBallot(ProvisionalBallotEvent provisionalBallotEvent) {}
-
             public void provisionalAuthorizedToCast(ProvisionalAuthorizeEvent provisionalAuthorizeEvent) {}
             public void provisionalCommitBallot(ProvisionalCommitEvent provisionalCommitEvent) {}
+            public void authorizedToCastWithNIZKS(AuthorizedToCastWithNIZKsEvent e) {}
 
 
             public void pollsClosed(PollsClosedEvent e) {

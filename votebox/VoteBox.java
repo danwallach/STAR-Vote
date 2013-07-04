@@ -633,6 +633,62 @@ public class VoteBox{
             }
 
             /**
+             * Handler for the authorized-to-cast message. If it is for this
+             * booth, and it is not already voting, unzip the ballot and fire
+             * the VoteBox runtime. Also announce the new status.
+             */
+            public void authorizedToCastWithNIZKS(AuthorizedToCastWithNIZKsEvent e) {
+                System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Authorized!");
+                if (e.getNode() == mySerial) {
+                    isProvisional = false;
+
+                    if (voting || currentDriver != null && killVBTimer == null)
+                        throw new RuntimeException(
+                                "VoteBox was authorized-to-cast, but was already voting");
+
+                    // If last VB runtime is on thank you screen and counting
+                    // down to when it disappears, kill it prematurely without
+                    // showing inactive UI
+                    if (killVBTimer != null && currentDriver != null) {
+                        killVBTimer.stop();
+                        killVBTimer = null;
+                        currentDriver.kill();
+                        currentDriver = null;
+                    }
+
+                    nonce = e.getNonce();
+
+                    //Current working directory
+                    File path = new File(System.getProperty("user.dir"));
+                    path = new File(path, "tmp");
+                    path = new File(path, "ballots");
+                    path = new File(path, "ballot" + protectedCount);
+                    path.mkdirs();
+
+                    bid = String.valueOf(rand.nextInt(Integer.MAX_VALUE));
+                    precinct = e.getPrecinct();
+
+                    try {
+                        _currentBallotFile = new File(path, "ballot.zip");
+
+
+                        FileOutputStream fout = new FileOutputStream(_currentBallotFile);
+                        byte[] ballot = e.getBallot();
+                        fout.write(ballot);
+
+                        Driver.unzip(new File(path, "ballot.zip").getAbsolutePath(), new File(path, "data").getAbsolutePath());
+                        Driver.deleteRecursivelyOnExit(path.getAbsolutePath());
+
+
+                        run(new File(path, "data").getAbsolutePath());
+                        broadcastStatus();
+                    } catch (IOException e1) {
+                        throw new RuntimeException(e1);
+                    }
+                }
+            }
+
+            /**
              * Handler for the ballot-received message. Show the next page on
              * the VB runtime (the thank you screen), and start a timer that
              * kills the runtime after a set amount of time (5 seconds), and
