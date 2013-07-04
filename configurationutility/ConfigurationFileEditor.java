@@ -107,7 +107,12 @@ public class ConfigurationFileEditor extends JFrame {
     /* Patterns of text to be contained by print-specific attributes. */
     private static final String[] printPatterns = new String[] {"PRINT", "PAPER", "VVPAT"};
     /* Patterns of text to be contained by network-specific attributes. */
-    private static final String[] networkPatterns = new String[] {"PORT"};
+    private static final String[] networkPatterns = new String[] {"PORT", "ADDRESS", "TIMEOUT", "DISCOVER"};
+
+    /* Default attributes. */
+    private static final ArrayList<String> defaultAttributeNames = new ArrayList<String> ();
+    private static final ArrayList<String> defaultAttributeValues = new ArrayList<String> ();
+    private static final ArrayList<String> defaultAttributeComments = new ArrayList<String>();
 
 
 
@@ -197,14 +202,35 @@ public class ConfigurationFileEditor extends JFrame {
      */
     public ConfigurationFileEditor() {
 
+        // Set Frame properties.
         setPreferredSize(new Dimension(GUI_WIDTH, GUI_HEIGHT));
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setBounds(0, 0, GUI_WIDTH, GUI_HEIGHT);
 
-		/*
+        // Instantiate 'final' fields.
+        generalNamesListModel = new DefaultListModel<String>();
+        generalValuesListModel = new DefaultListModel<String>();
+        networkNamesListModel = new DefaultListModel<String>();
+        networkValuesListModel = new DefaultListModel<String>();
+        printNamesListModel = new DefaultListModel<String>();
+        printValuesListModel = new DefaultListModel<String>();
+        fileDescriptionTextArea = new JTextArea();
+        inputFileTextArea = new JTextArea();
+        outputFileTextArea = new JTextArea();
+
+        // Build GUI Elements.
+        buildGUIElements();
+
+        // Load default attributes.
+        loadDefaultAttributes();
+
+    }
+
+    private void buildGUIElements ()
+    {
+        /*
 		 * CONTENT PANE
 		 */
-
         contentPane = new JPanel();
         contentPane.setPreferredSize(new Dimension(GUI_WIDTH, GUI_HEIGHT));
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -225,7 +251,7 @@ public class ConfigurationFileEditor extends JFrame {
         ImageIcon originalSTARVoteLogoImageIcon = createImageIcon("../images/logo_small.png", "The STAR-Vote Logo");
 
         // Add the STAR-Vote Logo to the title.
-        JLabel titleLabel = new JLabel("CONFIGURATION EDITOR", originalSTARVoteLogoImageIcon, JLabel.CENTER);
+        JLabel titleLabel = new JLabel("CONFIGURATION FILE EDITOR", originalSTARVoteLogoImageIcon, JLabel.CENTER);
         titleLabel.setFont(TITLE_FONT);
         titleLabel.setPreferredSize(new Dimension(TITLE_PANEL_WIDTH - 2 * PANEL_CONTENTS_X_OFFSET, TITLE_PANEL_HEIGHT - 2 * PANEL_CONTENTS_Y_OFFSET));
         titlePanel.add(titleLabel);
@@ -260,7 +286,6 @@ public class ConfigurationFileEditor extends JFrame {
         generalTabPanel.add(generalAttributesScrollPane);
         generalAttributesScrollPane.setPreferredSize(new Dimension(3 * (MAIN_PANEL_WIDTH - PANEL_CONTENTS_X_OFFSET) / 5 - 15, MIDDLE_PANELS_HEIGHT - TABBED_CONTENTS_Y_OFFSET));
 
-        generalNamesListModel = new DefaultListModel<String>();
         final JList<String> generalAttributesList = new JList<String> (generalNamesListModel);
         generalAttributesScrollPane.setViewportView(generalAttributesList);
 
@@ -273,7 +298,6 @@ public class ConfigurationFileEditor extends JFrame {
         valuesScrollBar = generalValuesScrollPane.getVerticalScrollBar();
         valuesScrollBar.setModel(namesScrollBar.getModel());
 
-        generalValuesListModel = new DefaultListModel<String>();
         final JList<String> generalValuesList = new JList<String> (generalValuesListModel);
         generalValuesScrollPane.setViewportView(generalValuesList);
 
@@ -289,7 +313,6 @@ public class ConfigurationFileEditor extends JFrame {
         networkTabPanel.add(networkAttributesScrollPane);
         networkAttributesScrollPane.setPreferredSize(new Dimension(3 * (MAIN_PANEL_WIDTH - PANEL_CONTENTS_X_OFFSET) / 5 - 15, MIDDLE_PANELS_HEIGHT - TABBED_CONTENTS_Y_OFFSET));
 
-        networkNamesListModel = new DefaultListModel<String>();
         final JList<String> networkAttributesList = new JList<String> (networkNamesListModel);
         networkAttributesScrollPane.setViewportView(networkAttributesList);
 
@@ -302,7 +325,6 @@ public class ConfigurationFileEditor extends JFrame {
         valuesScrollBar = networkValuesScrollPane.getVerticalScrollBar();
         valuesScrollBar.setModel(namesScrollBar.getModel());
 
-        networkValuesListModel = new DefaultListModel<String>();
         final JList<String> networkValuesList = new JList<String> (networkValuesListModel);
         networkValuesScrollPane.setViewportView(networkValuesList);
 
@@ -318,7 +340,6 @@ public class ConfigurationFileEditor extends JFrame {
         printTabPanel.add(printAttributesScrollPane);
         printAttributesScrollPane.setPreferredSize(new Dimension(3 * (MAIN_PANEL_WIDTH - PANEL_CONTENTS_X_OFFSET) / 5 - 15, MIDDLE_PANELS_HEIGHT - TABBED_CONTENTS_Y_OFFSET));
 
-        printNamesListModel = new DefaultListModel<String>();
         final JList<String> printAttributesList = new JList<String> (printNamesListModel);
         printAttributesScrollPane.setViewportView(printAttributesList);
 
@@ -331,7 +352,6 @@ public class ConfigurationFileEditor extends JFrame {
         valuesScrollBar = printValuesScrollPane.getVerticalScrollBar();
         valuesScrollBar.setModel(namesScrollBar.getModel());
 
-        printValuesListModel = new DefaultListModel<String>();
         final JList<String> printValuesList = new JList<String> (printValuesListModel);
         printValuesScrollPane.setViewportView(printValuesList);
 
@@ -347,7 +367,6 @@ public class ConfigurationFileEditor extends JFrame {
         descriptionTabPanel.add(fileDescriptionScrollPane);
         fileDescriptionScrollPane.setPreferredSize(new Dimension(MAIN_PANEL_WIDTH - 2 * PANEL_CONTENTS_X_OFFSET, MIDDLE_PANELS_HEIGHT - TABBED_CONTENTS_Y_OFFSET));
 
-        fileDescriptionTextArea = new JTextArea();
         fileDescriptionScrollPane.setViewportView(fileDescriptionTextArea);
         fileDescriptionTextArea.setTabSize(4);
         fileDescriptionTextArea.setWrapStyleWord(true);
@@ -411,7 +430,6 @@ public class ConfigurationFileEditor extends JFrame {
         JScrollPane inputFileScrollPane = new JScrollPane();
         inputFileScrollPane.setPreferredSize(new Dimension(LOG_PANEL_WIDTH - PANEL_CONTENTS_X_OFFSET - 15, MIDDLE_PANELS_HEIGHT - TABBED_CONTENTS_Y_OFFSET));
         inputFileTabPanel.add(inputFileScrollPane);
-        inputFileTextArea = new JTextArea();
         inputFileTextArea.setTabSize(4);
         inputFileTextArea.setEditable(false);
         inputFileScrollPane.setViewportView(inputFileTextArea);
@@ -430,7 +448,6 @@ public class ConfigurationFileEditor extends JFrame {
         JScrollPane outputFileScrollPane = new JScrollPane();
         outputFileScrollPane.setPreferredSize(new Dimension(LOG_PANEL_WIDTH - PANEL_CONTENTS_X_OFFSET - 15, MIDDLE_PANELS_HEIGHT - TABBED_CONTENTS_Y_OFFSET));
         outputFileTabPanel.add(outputFileScrollPane);
-        outputFileTextArea = new JTextArea();
         outputFileTextArea.setTabSize(4);
         outputFileTextArea.setEditable(false);
         outputFileScrollPane.setViewportView(outputFileTextArea);
@@ -641,6 +658,189 @@ public class ConfigurationFileEditor extends JFrame {
         });
     }
 
+    private void loadDefaultAttributes ()
+    {
+        /* Add the default network attributes. */
+        defaultAttributeNames.add("DISCOVER_TIMEOUT");
+        defaultAttributeValues.add("4000");
+        defaultAttributeComments.add("");
+
+        defaultAttributeNames.add("DISCOVER_PORT");
+        defaultAttributeValues.add("9782");
+        defaultAttributeComments.add("");
+
+        defaultAttributeNames.add("DISCOVER_REPLY_TIMEOUT");
+        defaultAttributeValues.add("1000");
+        defaultAttributeComments.add("");
+
+        defaultAttributeNames.add("DISCOVER_REPLY_PORT");
+        defaultAttributeValues.add("9783");
+        defaultAttributeComments.add("");
+
+        defaultAttributeNames.add("LISTEN_PORT");
+        defaultAttributeValues.add("9700");
+        defaultAttributeComments.add("");
+
+        defaultAttributeNames.add("JOIN_TIMEOUT");
+        defaultAttributeValues.add("1000");
+        defaultAttributeComments.add("");
+
+        defaultAttributeNames.add("BROADCAST_ADDRESS");
+        defaultAttributeValues.add("255.255.255.255");
+        defaultAttributeComments.add("");
+
+        defaultAttributeNames.add("DEFAULT_REPORT_ADDRESS");
+        defaultAttributeValues.add("");
+        defaultAttributeComments.add("");
+
+        defaultAttributeNames.add("SERVER_PORT");
+        defaultAttributeValues.add("9700");
+        defaultAttributeComments.add("");
+
+        defaultAttributeNames.add("DEFAULT_HTTP_PORT");
+        defaultAttributeValues.add("8080");
+        defaultAttributeComments.add("");
+
+        /* Add the default file location attributes. */
+        defaultAttributeNames.add("LOG_LOCATION");
+        defaultAttributeValues.add("log.out");
+        defaultAttributeComments.add("");
+
+        defaultAttributeNames.add("KEYS_DIRECTORY");
+        defaultAttributeValues.add("keys/");
+        defaultAttributeComments.add("");
+
+        defaultAttributeNames.add("RULE_FILE");
+        defaultAttributeValues.add("rules");
+        defaultAttributeComments.add("");
+
+        /* Add the default printing attributes. */
+        defaultAttributeNames.add("PRINTER_FOR_VVPAT");
+        defaultAttributeValues.add("");
+        defaultAttributeComments.add("");
+
+        defaultAttributeNames.add("PAPER_WIDTH_FOR_VVPAT");
+        defaultAttributeValues.add("249");
+        defaultAttributeComments.add("");
+
+        defaultAttributeNames.add("PAPER_HEIGHT_FOR_VVPAT");
+        defaultAttributeValues.add("322");
+        defaultAttributeComments.add("");
+
+        defaultAttributeNames.add("PRINTABLE_WIDTH_FOR_VVPAT");
+        defaultAttributeValues.add("239");
+        defaultAttributeComments.add("");
+
+        defaultAttributeNames.add("PRINTABLE_HEIGHT_FOR_VVPAT");
+        defaultAttributeValues.add("311");
+        defaultAttributeComments.add("");
+
+        defaultAttributeNames.add("PRINTABLE_VERTICAL_MARGIN");
+        defaultAttributeValues.add("25");
+        defaultAttributeComments.add("");
+
+        defaultAttributeNames.add("PRINTABLE_HORIZONTAL_MARGIN");
+        defaultAttributeValues.add("25");
+        defaultAttributeComments.add("");
+
+        defaultAttributeNames.add("PRINT_USE_TWO_COLUMNS");
+        defaultAttributeValues.add("true");
+        defaultAttributeComments.add("");
+
+        defaultAttributeNames.add("PRINT_COMMANDS_FILE_FILENAME");
+        defaultAttributeValues.add("CommandsFile.txt");
+        defaultAttributeComments.add("");
+
+        defaultAttributeNames.add("PRINT_COMMANDS_FILE_PARAMETER_SEPARATOR");
+        defaultAttributeValues.add("!!!");
+        defaultAttributeComments.add("");
+
+        defaultAttributeNames.add("PRINTER_DEFAULT_DPI");
+        defaultAttributeValues.add("300");
+        defaultAttributeComments.add("");
+
+        defaultAttributeNames.add("JAVA_DEFAULT_DPI");
+        defaultAttributeValues.add("72");
+        defaultAttributeComments.add("");
+
+        /* Add the default View / GUI attributes. */
+        defaultAttributeNames.add("VIEW_IMPLEMENTATION");
+        defaultAttributeValues.add("AWT");
+        defaultAttributeComments.add("Changed from SDL.");
+
+        defaultAttributeNames.add("VIEW_RESTART_TIMEOUT");
+        defaultAttributeValues.add("5000");
+        defaultAttributeComments.add("");
+
+        defaultAttributeNames.add("USE_SIMPLE_TALLY_VIEW");
+        defaultAttributeValues.add("false");
+        defaultAttributeComments.add("");
+
+        defaultAttributeNames.add("USE_TABLE_TALLY_VIEW");
+        defaultAttributeValues.add("false");
+        defaultAttributeComments.add("");
+
+        defaultAttributeNames.add("USE_WINDOWED_VIEW");
+        defaultAttributeValues.add("false");
+        defaultAttributeComments.add("");
+
+        defaultAttributeNames.add("ALLOW_UI_SCALING");
+        defaultAttributeValues.add("true");
+        defaultAttributeComments.add("");
+
+        defaultAttributeNames.add("USE_ELO_TOUCH_SCREEN");
+        defaultAttributeValues.add("false");
+        defaultAttributeComments.add("");
+
+        defaultAttributeNames.add("ELO_TOUCH_SCREEN_DEVICE");
+        defaultAttributeValues.add("null");
+        defaultAttributeComments.add("");
+
+        /* Add the election and ballot attributes. */
+        defaultAttributeNames.add("ELECTION_NAME");
+        defaultAttributeValues.add("Rice University General Election");
+        defaultAttributeComments.add("");
+
+        defaultAttributeNames.add("DEFAULT_BALLOT_FILE");
+        defaultAttributeValues.add("");
+        defaultAttributeComments.add("");
+
+        defaultAttributeNames.add("CAST_BALLOT_ENCRYPTION_ENABLED");
+        defaultAttributeValues.add("true");
+        defaultAttributeComments.add("");
+
+        defaultAttributeNames.add("ENABLE_NIZKS");
+        defaultAttributeValues.add("false");
+        defaultAttributeComments.add("");
+
+        defaultAttributeNames.add("USE_PIECEMEAL_ENCRYPTION");
+        defaultAttributeValues.add("false");
+        defaultAttributeComments.add("");
+
+        defaultAttributeNames.add("SHUFFLE_CANDIDATE_ORDER");
+        defaultAttributeValues.add("false");
+        defaultAttributeComments.add("");
+
+        /* Add the machine attributes. */
+        defaultAttributeNames.add("DEFAULT_SERIAL_NUMBER");
+        defaultAttributeValues.add("-1");
+        defaultAttributeComments.add("");
+
+        defaultAttributeNames.add("OPERATING_SYSTEM");
+        defaultAttributeValues.add("Windows");
+        defaultAttributeComments.add("");
+
+        /* Add the scanner attributes. */
+
+        defaultAttributeNames.add("USE_SCAN_CONFIRMATION_SOUND");
+        defaultAttributeValues.add("false");
+        defaultAttributeComments.add("");
+
+        defaultAttributeNames.add("SCAN_CONFIRMATION_SOUND_PATH");
+        defaultAttributeValues.add("sound/test.mp3");
+        defaultAttributeComments.add("");
+
+    }
 
     private void openFileAndReadText ()
     {
