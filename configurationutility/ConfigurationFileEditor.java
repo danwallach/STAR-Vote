@@ -969,14 +969,17 @@ public class ConfigurationFileEditor extends JFrame {
             {
                 if (attributeName.contains(electionPattern))
                 {
-                    // Add the attribute to the Election group.
-                    electionNamesListModel.add(electionNamesListModel.getSize(), attributeName);
-                    electionValuesListModel.add(electionValuesListModel.getSize(), attributeValue);
-                    electionComments.add(attributeComment);
                     // Now that the attribute was placed in a group, set the flag to false.
                     isNotPlaced = false;
-                    // Stop trying to find more election patterns for this attribute.
-                    break;
+                    // Add the attribute to the Election group, if the group does not already have an entry for it.
+                    if (!isAttributeInGroup(attributeName, electionNamesListModel))
+                    {
+                        electionNamesListModel.add(electionNamesListModel.getSize(), attributeName);
+                        electionValuesListModel.add(electionValuesListModel.getSize(), attributeValue);
+                        electionComments.add(attributeComment);
+                        // Stop trying to find more election patterns for this attribute.
+                        break;
+                    }
                 }
             }
 
@@ -987,14 +990,17 @@ public class ConfigurationFileEditor extends JFrame {
                 {
                     if (attributeName.contains(viewPattern))
                     {
-                        // Add the attribute to the View group.
-                        viewNamesListModel.add(viewNamesListModel.getSize(), attributeName);
-                        viewValuesListModel.add(viewValuesListModel.getSize(), attributeValue);
-                        viewComments.add(attributeComment);
                         // Now that the attribute was placed in a group, set the flag to false.
                         isNotPlaced = false;
-                        // Stop trying to find more view patterns for this attribute.
-                        break;
+                        // Add the attribute to the View group, if the group does not already have an entry for it.
+                        if (!isAttributeInGroup(attributeName, viewNamesListModel))
+                        {
+                            viewNamesListModel.add(viewNamesListModel.getSize(), attributeName);
+                            viewValuesListModel.add(viewValuesListModel.getSize(), attributeValue);
+                            viewComments.add(attributeComment);
+                            // Stop trying to find more view patterns for this attribute.
+                            break;
+                        }
                     }
                 }
             }
@@ -1006,14 +1012,17 @@ public class ConfigurationFileEditor extends JFrame {
                 {
                     if (attributeName.contains(printPattern))
                     {
-                        // Add the attribute to the Print group.
-                        printNamesListModel.add(printNamesListModel.getSize(), attributeName);
-                        printValuesListModel.add(printValuesListModel.getSize(), attributeValue);
-                        printComments.add(attributeComment);
                         // Now that the attribute was placed in a group, set the flag to false.
                         isNotPlaced = false;
-                        // Stop trying to find more print patterns for this attribute.
-                        break;
+                        // Add the attribute to the Print group, if the group does not already have an entry for it.
+                        if (!isAttributeInGroup(attributeName, printNamesListModel))
+                        {
+                            printNamesListModel.add(printNamesListModel.getSize(), attributeName);
+                            printValuesListModel.add(printValuesListModel.getSize(), attributeValue);
+                            printComments.add(attributeComment);
+                            // Stop trying to find more print patterns for this attribute.
+                            break;
+                        }
                     }
                 }
             }
@@ -1025,14 +1034,17 @@ public class ConfigurationFileEditor extends JFrame {
                 {
                     if (attributeName.contains(networkPattern))
                     {
-                        // Add the attribute to the Network group.
-                        networkNamesListModel.add(networkNamesListModel.getSize(), attributeName);
-                        networkValuesListModel.add(networkValuesListModel.getSize(), attributeValue);
-                        networkComments.add(attributeComment);
                         // Now that the attribute was placed in a group, set the flag to false.
                         isNotPlaced = false;
-                        // Stop trying to find more network patterns for this attribute.
-                        break;
+                        // Add the attribute to the Network group, if the group does not already have an entry for it.
+                        if (!isAttributeInGroup(attributeName, networkNamesListModel))
+                        {
+                            networkNamesListModel.add(networkNamesListModel.getSize(), attributeName);
+                            networkValuesListModel.add(networkValuesListModel.getSize(), attributeValue);
+                            networkComments.add(attributeComment);
+                            // Stop trying to find more network patterns for this attribute.
+                            break;
+                        }
                     }
                 }
             }
@@ -1040,10 +1052,13 @@ public class ConfigurationFileEditor extends JFrame {
             /* If it is still not placed, place the current attribute in the General attribute group. */
             if (isNotPlaced)
             {
-                // Add the attribute to the General group.
-                generalNamesListModel.add(generalNamesListModel.getSize(), attributeName);
-                generalValuesListModel.add(generalValuesListModel.getSize(), attributeValue);
-                generalComments.add(attributeComment);
+                // Add the attribute to the General group, if the group does not already have an entry for it.
+                if (!isAttributeInGroup(attributeName, generalNamesListModel))
+                {
+                    generalNamesListModel.add(generalNamesListModel.getSize(), attributeName);
+                    generalValuesListModel.add(generalValuesListModel.getSize(), attributeValue);
+                    generalComments.add(attributeComment);
+                }
             }
         }
     }
@@ -1672,8 +1687,7 @@ public class ConfigurationFileEditor extends JFrame {
      * @param description text description of the image to be opened
      * @return the ImageIcon of the image in the file to which the path corresponds
      */
-    protected ImageIcon createImageIcon(String path,
-                                        String description) {
+    protected ImageIcon createImageIcon(String path, String description) {
         java.net.URL imgURL = getClass().getResource(path);
         if (imgURL != null) {
             return new ImageIcon(imgURL, description);
@@ -1681,5 +1695,22 @@ public class ConfigurationFileEditor extends JFrame {
             System.err.println("Couldn't find file: " + path);
             return null;
         }
+    }
+
+    /**
+     * Returns a boolean based on whether or not the given attribute is a member of the given group.
+     * @param attribute the attribute to be searched
+     * @param group the group of attributes in which to search
+     */
+    private Boolean isAttributeInGroup (String attribute, DefaultListModel<String> group)
+    {
+        for (int idx = 0; idx < group.getSize(); idx++)
+        {
+            if (attribute.equals(group.elementAt(idx)))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }
