@@ -84,7 +84,7 @@ public class Tallier implements ITallier{
 	}
 
 	/**
-	 * @see supervisor.model.tallier.ITallier#recordVotes(byte[])
+	 * @see supervisor.model.tallier.ITallier#recordVotes(byte[], ASExpression nonce)
 	 */
 	public void recordVotes(byte[] ballot, ASExpression ignoredNonce) {
 		ASEInputStreamReader in = new ASEInputStreamReader(

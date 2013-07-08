@@ -5,7 +5,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 /**
- * Miscelaneous static utility methods.
+ * Miscellaneous static utility methods.
  *
  * @author David Walluck
  * @version $LastChangedRevision$ $LastChangedDate$

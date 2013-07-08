@@ -125,7 +125,7 @@ public class Election {
             System.out.println("P - " + p);
             System.out.println("Q - " + q);
             System.out.println("G - " + g);
-            System.out.println("H - " + bigH);
+            System.out.println("H - " + target + "\nmaster H - " + masterKey.getH());
             System.out.println("F - " + f);
             System.out.println("--------------------------------------------------------------------------------");
 
