@@ -89,8 +89,9 @@ public class Election {
                     PublicKey masterKey) {
         AdderInteger p = masterKey.getP();
         AdderInteger q = masterKey.getQ();
-        AdderInteger f = masterKey.getF();
         AdderInteger g = masterKey.getG();
+        AdderInteger f = masterKey.getF();
+
 
         Polynomial poly = new Polynomial(p, g, f, coeffs);
         List<AdderInteger> lagrangeCoeffs = poly.lagrange();
@@ -120,6 +121,14 @@ public class Election {
             AdderInteger j = null;
             boolean gotResult = false;
 
+            System.out.println("Elections's public key --------------------------------------------------------");
+            System.out.println("P - " + p);
+            System.out.println("Q - " + q);
+            System.out.println("G - " + g);
+            System.out.println("H - " + bigH);
+            System.out.println("F - " + f);
+            System.out.println("--------------------------------------------------------------------------------");
+
             int numVotes = votes.size();
 
             System.out.println("Looping " + (numVotes + 1) + " times to look for result");
@@ -127,7 +136,7 @@ public class Election {
             for (int k = 0; k <= numVotes; k++) {
                 j = new AdderInteger(k, q);
 
-                System.out.println("DOES " + new AdderInteger(f, p).pow(j) + " equal " + target + "?");
+                System.out.println("DOES " + f.pow(j) + " equal " + target + "?");
 
                 if (f.pow(j).equals(target)) {
                     System.out.println("GOT RESULT!!!");

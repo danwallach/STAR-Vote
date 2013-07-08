@@ -523,12 +523,6 @@ public class Printer{
 
 		PrintService[] printers = PrinterJob.lookupPrintServices();
 
-        System.out.println("There are " + printers.length + " printers:");
-
-        for(PrintService printer : printers){
-            System.out.println(printer.getName());
-        }
-
 		PrintService vvpat = null;
 
 		for(PrintService printer : printers){
@@ -539,7 +533,7 @@ public class Printer{
 			}//if
 		}//for
         if(vvpat == null) System.out.println("No available printers");
-        else System.out.println(vvpat.getName());
+        else System.out.println("Printing on " + vvpat.getName());
 
 		if(vvpat == null){
 			Bugout.msg("VVPAT is configured, but not detected as ready.");

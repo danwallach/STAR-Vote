@@ -125,8 +125,7 @@ public class PublicKey {
 
     /**
      * Encrypts the given choice given the base.
-     * @param choice the choice
-     * @param base the base
+     * @param m
      *
      * @return the encrypted vote
      */

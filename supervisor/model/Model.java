@@ -1205,6 +1205,15 @@ public class Model {
                         PrivateKey privateKey = (PrivateKey)auditoriumParams.getKeyStore().loadAdderKey("private");
                         PublicKey publicKey = (PublicKey)auditoriumParams.getKeyStore().loadAdderKey("public");
                         tallier = new ChallengeDelayedWithNIZKsTallier(publicKey, privateKey);
+
+                        System.out.println("Supervisor's public key --------------------------------------------------------");
+                        System.out.println("P - " + publicKey.getP());
+                        System.out.println("Q - " + publicKey.getQ());
+                        System.out.println("G - " + publicKey.getG());
+                        System.out.println("H - " + publicKey.getH());
+                        System.out.println("F - " + publicKey.getF());
+                        System.out.println("--------------------------------------------------------------------------------");
+
                     }//if
                 } catch (AuditoriumCryptoException e1) {
                     System.err.println("Crypto error encountered: "+e1.getMessage());

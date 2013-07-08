@@ -582,7 +582,6 @@ public class VoteBox{
              * the VoteBox runtime. Also announce the new status.
              */
             public void authorizedToCast(AuthorizedToCastEvent e) {
-                System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Authorized!");
                 if (e.getNode() == mySerial) {
                     isProvisional = false;
 
@@ -638,7 +637,6 @@ public class VoteBox{
              * the VoteBox runtime. Also announce the new status.
              */
             public void authorizedToCastWithNIZKS(AuthorizedToCastWithNIZKsEvent e) {
-                System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Authorized!");
                 if (e.getNode() == mySerial) {
                     isProvisional = false;
 
