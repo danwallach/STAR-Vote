@@ -35,7 +35,6 @@ import sexpression.*;
 
 import sexpression.ASExpression;
 import sexpression.stream.ASEInputStreamReader;
-//import sexpression.stream.Base64;
 import sexpression.stream.InvalidVerbatimStreamException;
 import votebox.crypto.ElGamalCrypto;
 import votebox.crypto.Pair;

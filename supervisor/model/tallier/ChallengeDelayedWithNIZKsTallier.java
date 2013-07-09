@@ -50,12 +50,12 @@ public class ChallengeDelayedWithNIZKsTallier implements ITallier {
 	}
 
 	public void challenged(ASExpression nonce) {
-		System.out.println("ChallengeDelayedWithNIZKsTallier.challenged("+nonce+")");
+//		System.out.println("ChallengeDelayedWithNIZKsTallier.challenged("+nonce+")");
 		_pendingVotes.remove(nonce);
 	}
 
 	public void confirmed(ASExpression nonce) {
-		System.out.println("ChallengeDelayedWithNIZKsTallier.confirmed("+nonce+")");
+//		System.out.println("ChallengeDelayedWithNIZKsTallier.confirmed("+nonce+")");
 		byte[] ballotBytes = _pendingVotes.remove(nonce);
 		
 		if(_finalPublicKey == null)
@@ -164,7 +164,7 @@ public class ChallengeDelayedWithNIZKsTallier implements ITallier {
 	}
 
 	public void recordVotes(byte[] ballot, ASExpression nonce) {
-		System.out.println("ChallengeDelayedWithNIZKsTallier.recordVotes(..., "+nonce+")");
+//		System.out.println("ChallengeDelayedWithNIZKsTallier.recordVotes(..., "+nonce+")");
 		_pendingVotes.put(nonce, ballot);
 	}
 

@@ -251,7 +251,7 @@ public class Card {
      * <br>
      * "cand": If the possible selections are interpreted as being linked in a
      * circular list, this method will claim actual selections are, instead,
-     * their sucessors in the list. (1 is 2, 2 is 3, 3 is 1 in a card that has 3
+     * their successors in the list. (1 is 2, 2 is 3, 3 is 1 in a card that has 3
      * elements). If no selection is made, this element simply chooses the
      * second.
      * "last_non": Reports the last element on the page if it is not selected, otherwise responds that the second element is selected (if possible)
@@ -421,7 +421,7 @@ public class Card {
      *         values is paired with the selectable's unique ID that it
      *         represents. These pairs are represented as s-expressions. To get
      *         the BigInteger value back out of the s-expression, use the
-     *         BigInteger(String) contructor.
+     *         BigInteger(String) constructor.
      */
     public List<ASExpression> getCastBallot() {
         ArrayList<ASExpression> lst = new ArrayList<ASExpression>();

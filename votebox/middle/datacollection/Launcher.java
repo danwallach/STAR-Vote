@@ -147,7 +147,7 @@ public class Launcher {
 		_voteBox = null;
 		System.gc();
 		_voteBox = new Driver(baldir.getAbsolutePath(), new AWTViewFactory(
-				debug, false), false);
+				debug, false), true);
 		final Driver vbcopy = _voteBox;
         
 		_view.setRunning(true);

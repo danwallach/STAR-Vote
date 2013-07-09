@@ -28,7 +28,7 @@ public class Election {
     /**
      * Gets the votes of this election.
      *
-     * @return the voes
+     * @return the votes
      */
     public List<Vote> getVotes() {
         return votes;
@@ -69,6 +69,7 @@ public class Election {
             Vote vote2 = (Vote) it.next();
             total = vote2.multiply(total);
         }
+
 
         return total;
     }

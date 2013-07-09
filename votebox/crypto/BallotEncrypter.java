@@ -94,7 +94,7 @@ public class BallotEncrypter {
     }
     
     /**
-     * Take an unencryped ballot and make it encrypted, while also generating a NIZK.
+     * Take an unencrypted ballot and make it encrypted, while also generating a NIZK.
      * 
      * @param ballot 
      *          This is the pre-encrypt ballot in the form ((race-id counter) ...)
@@ -235,16 +235,20 @@ public class BallotEncrypter {
     		idsToPubKey.put(voteIds.toString(), finalPubKey);
     	}
 
+        int allCand = 0;
+
     	for(String ids : idsToVote.keySet()){
     		Vote vote = idsToVote.get(ids);
     		List<AdderInteger> rs = idsToRs.get(ids);
     		PublicKey finalPubKey = idsToPubKey.get(ids);
-    		
+
+            allCand += vote.getCipherList().size();
+
     		List<AdderInteger> d = adderDecryptSublist(vote, rs, finalPubKey);
     		
     		idsToDecrypted.put(ids, d);
     	}
-    	
+
     	return toTraditionalFormat(idsToDecrypted);
     }
     
@@ -265,7 +269,8 @@ public class BallotEncrypter {
     			subLists.add(new ListExpression(subList));
     		}
     	}
-    	
+        System.out.println("Number of ASE's: " + subLists.size());
+
     	return new ListExpression(subLists);
     }
     

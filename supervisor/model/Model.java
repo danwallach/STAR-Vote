@@ -135,7 +135,7 @@ public class Model {
         expectedBallots = new ArrayList<Integer>();
         bManager = new BallotManager();
         keyword = "";
-        ballotLocation = "votebox/crypto/interop/ballot.zip";
+        ballotLocation = "ballot.zip";
 //        talliers = new Tallier();
         talliers = new HashMap<String, ITallier>();
         committedBids = new HashMap<String, ASExpression>();
@@ -1005,7 +1005,6 @@ public class Model {
                             .getBytes(), e.getBID().toString(), e.getPrecinct().toString()));
 
                     String precinct = bManager.getPrecinctByBID(e.getBID().toString());
-                    System.out.println("__________________________________________" + precinct);
                     talliers.get(precinct).recordVotes(e.getBallot().toVerbatim(), e.getNonce());
                     String bid = e.getBID().toString();
                     committedBids.put(bid, e.getNonce());
