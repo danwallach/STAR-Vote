@@ -19,7 +19,7 @@ public class AdderKeyManipulator {
 	 * key usage.
 	 * 
 	 * @param newKey - the key to load into the cache.
-	 * @param baseKey - the key the newKey must be a derivative of.
+	 * /*@param baseKey - the key the newKey must be a derivative of.
 	 */
 	public static void setCachedKey(PublicKey newKey/*, PublicKey baseKey*/)/* throws AuditoriumCryptoException*/{
 		/*if(baseKey.getF() != null && !(baseKey.getF().equals(newKey.getF())))
@@ -48,7 +48,7 @@ public class AdderKeyManipulator {
 	 * This call returns the same key each time, but this key is different
 	 * from run to run.
 	 * 
-	 * @param publicKey - the precalculated public key.
+	 * @param publicKey - the pre-calculated public key.
 	 * @return the new PublicKey
 	 */
 	public static PublicKey generateFinalPublicKey(PublicKey publicKey){
@@ -66,7 +66,7 @@ public class AdderKeyManipulator {
 	 * Additionally, this call will return a different variant of the public key
 	 * every time it is called.
 	 * 
-	 * @param pubKey - the precalculated public key.
+	 * @param pubKey - the pre-calculated public key.
 	 * @return the new PublicKey
 	 */
 	protected static PublicKey generateFinalPublicKeyNoCache(PublicKey pubKey){
@@ -80,6 +80,7 @@ public class AdderKeyManipulator {
 		
 		AdderInteger gvalue = g.pow((_poly).
                 evaluate(new AdderInteger(AdderInteger.ZERO, q)));
+
 		finalH = finalH.multiply(gvalue);
 		
 		_cachedKey = new PublicKey(p, g, finalH, f);

@@ -46,7 +46,7 @@ public class NIZKsPerformanceTest {
 		}
 	}
 	
-	public static final String BALLOT_PATH = "votebox"+File.separatorChar+"crypto"+File.separatorChar+"interop"+File.separatorChar+"NIZK test ballot.zip";
+	public static final String BALLOT_PATH = "votebox"+File.separatorChar+"crypto"+File.separatorChar+"interop"+File.separatorChar+ "ballot.zip";
 	public static final int TRIAL_COUNT = 10;
 
 	public static Ballot _ballot = null;

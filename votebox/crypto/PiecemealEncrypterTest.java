@@ -41,7 +41,7 @@ public class PiecemealEncrypterTest {
 		}
 	}
 
-	public static final String BALLOT_PATH = "votebox"+File.separatorChar+"crypto"+File.separatorChar+"interop"+File.separatorChar+"NIZK test ballot.zip";
+	public static final String BALLOT_PATH = "votebox"+File.separatorChar+"crypto"+File.separatorChar+"interop"+File.separatorChar+ "ballot.zip";
 	public static final int TRIAL_COUNT = 10;
 
 	public static Ballot _ballot = null;
@@ -148,7 +148,7 @@ public class PiecemealEncrypterTest {
 		List<Card> cards = _ballot.getCards();
 
 		for(byte[] seed : _seeds){
-			System.out.println("Trail...");
+			System.out.println("Trial...");
 
 			SecureRandom rand = new SecureRandom(seed);
 

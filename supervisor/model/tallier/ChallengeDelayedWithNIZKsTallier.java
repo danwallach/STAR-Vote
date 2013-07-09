@@ -170,7 +170,7 @@ public class ChallengeDelayedWithNIZKsTallier implements ITallier {
 
 	/**
 	 * Using nizks imposes structure on our race format we haven't had before.
-	 * This method is 
+	 * This method is
 	 * @param voteIds
 	 * @return
 	 */

@@ -38,7 +38,6 @@ import javax.swing.text.PlainDocument;
 import edu.uconn.cse.adder.PublicKey;
 
 import sexpression.*;
-import supervisor.model.BallotManager;
 import votebox.crypto.*;
 import votebox.events.*;
 import votebox.middle.*;
@@ -612,14 +611,14 @@ public class VoteBox{
                     precinct = e.getPrecinct();
                     
                     try {
-                    	_currentBallotFile = new File(path, "ballot.zip");
+                    	_currentBallotFile = new File(path, "votebox/crypto/interop/ballot.zip");
 
                     	
                         FileOutputStream fout = new FileOutputStream(_currentBallotFile);
                         byte[] ballot = e.getBallot();
                         fout.write(ballot);
                         
-                        Driver.unzip(new File(path, "ballot.zip").getAbsolutePath(), new File(path, "data").getAbsolutePath());
+                        Driver.unzip(new File(path, "votebox/crypto/interop/ballot.zip").getAbsolutePath(), new File(path, "data").getAbsolutePath());
                         Driver.deleteRecursivelyOnExit(path.getAbsolutePath());
 
 
@@ -667,14 +666,14 @@ public class VoteBox{
                     precinct = e.getPrecinct();
 
                     try {
-                        _currentBallotFile = new File(path, "ballot.zip");
+                        _currentBallotFile = new File(path, "votebox/crypto/interop/ballot.zip");
 
 
                         FileOutputStream fout = new FileOutputStream(_currentBallotFile);
                         byte[] ballot = e.getBallot();
                         fout.write(ballot);
 
-                        Driver.unzip(new File(path, "ballot.zip").getAbsolutePath(), new File(path, "data").getAbsolutePath());
+                        Driver.unzip(new File(path, "votebox/crypto/interop/ballot.zip").getAbsolutePath(), new File(path, "data").getAbsolutePath());
                         Driver.deleteRecursivelyOnExit(path.getAbsolutePath());
 
 
@@ -982,14 +981,14 @@ public class VoteBox{
                     bid = String.valueOf(rand.nextInt(Integer.MAX_VALUE));
 
                     try {
-                        _currentBallotFile = new File(path, "ballot.zip");
+                        _currentBallotFile = new File(path, "votebox/crypto/interop/ballot.zip");
 
 
                         FileOutputStream fout = new FileOutputStream(_currentBallotFile);
                         byte[] ballot = e.getBallot();
                         fout.write(ballot);
 
-                        Driver.unzip(new File(path, "ballot.zip").getAbsolutePath(), new File(path, "data").getAbsolutePath());
+                        Driver.unzip(new File(path, "votebox/crypto/interop/ballot.zip").getAbsolutePath(), new File(path, "data").getAbsolutePath());
                         Driver.deleteRecursivelyOnExit(path.getAbsolutePath());
 
 

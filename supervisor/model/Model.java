@@ -41,10 +41,7 @@ import sexpression.NoMatch;
 import sexpression.StringExpression;
 import supervisor.model.tallier.ChallengeDelayedTallier;
 import supervisor.model.tallier.ChallengeDelayedWithNIZKsTallier;
-import supervisor.model.tallier.EncryptedTallier;
-import supervisor.model.tallier.EncryptedTallierWithNIZKs;
 import supervisor.model.tallier.ITallier;
-import supervisor.model.tallier.Tallier;
 import votebox.crypto.interop.AdderKeyManipulator;
 import votebox.events.*;
 import auditorium.AuditoriumCryptoException;
@@ -138,7 +135,7 @@ public class Model {
         expectedBallots = new ArrayList<Integer>();
         bManager = new BallotManager();
         keyword = "";
-        ballotLocation = "ballot.zip";
+        ballotLocation = "votebox/crypto/interop/ballot.zip";
 //        talliers = new Tallier();
         talliers = new HashMap<String, ITallier>();
         committedBids = new HashMap<String, ASExpression>();
@@ -1008,6 +1005,7 @@ public class Model {
                             .getBytes(), e.getBID().toString(), e.getPrecinct().toString()));
 
                     String precinct = bManager.getPrecinctByBID(e.getBID().toString());
+                    System.out.println("__________________________________________" + precinct);
                     talliers.get(precinct).recordVotes(e.getBallot().toVerbatim(), e.getNonce());
                     String bid = e.getBID().toString();
                     committedBids.put(bid, e.getNonce());

@@ -148,7 +148,7 @@ public class PiecemealBallotEncrypter {
 	}
 
 	/**
-	 * Blocks until all pending encryptions are processed.
+	 * Blocks until all pending encryption are processed.
 	 * 
 	 * @return the encrypted ballot, in a form dependent upon which update was called.
 	 */
