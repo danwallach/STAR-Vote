@@ -10,6 +10,7 @@ import votebox.events.*;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.InputMismatchException;
 import java.util.Observer;
 import java.util.Scanner;
 
@@ -170,7 +171,12 @@ public class BallotScanner{
                 while(true){
 
                     //BinaryBitmap bitmap = webcam.getBitmap();
-                    lastFoundBID = scanner.nextInt()+"";
+                    try{
+                        lastFoundBID = scanner.nextInt()+"";
+                    } catch (InputMismatchException e){
+                        System.out.println("Leave our console alone!");
+                        lastFoundBID = "-1";
+                    }
 
                     if(frame.state.getStateName().equals(PromptState.SINGLETON.getStateName()) && receivedResponse){
 

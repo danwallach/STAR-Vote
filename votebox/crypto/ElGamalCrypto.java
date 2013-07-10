@@ -55,7 +55,7 @@ public class ElGamalCrypto {
     private static final String PRIVATE_ANNOTATION = "ElGamalPrivate";
     private static final String PUBLIC_ANNOTATION = "ElGamalPublic";
 
-    // Precompute this many values for the member table (0 for now..)
+    // Pre[-compute this many values for the member table (0 for now..)
     private static final int TABLE_SIZE = 0;
 
     // Member fields
