@@ -245,8 +245,8 @@ public class Model {
 
         File file = new File(ballotLocation);
         String precinct = bManager.getPrecinctByBallot(ballotLocation);
-        System.out.println(ballotLocation);
-        System.out.println("<+++++++"+ precinct);
+//        System.out.println(ballotLocation);
+//        System.out.println("<+++++++"+ precinct);
         FileInputStream fin = new FileInputStream(file);
         byte[] ballot = new byte[(int) file.length()];
         fin.read(ballot);
@@ -707,14 +707,13 @@ public class Model {
              * Handler for the override-cast-confirm event. Similar to
              * cast-ballot, but no received reply is sent.
              */
-            public void overrideCastConfirm(OverrideCastConfirmEvent e) {            	
-                /*AMachine m = getMachineForSerial(e.getSerial());
-                if (m != null && m instanceof VoteBoxBooth) {
-                    VoteBoxBooth booth = (VoteBoxBooth) m;
-                    booth.setPublicCount(booth.getPublicCount() + 1);
-                    booth.setProtectedCount(booth.getProtectedCount() + 1);
-                    tallier.recordVotes(e.getBallot(), StringExpression.makeString(e.getNonce()));
-                }*/
+            public void overrideCastConfirm(OverrideCastConfirmEvent e) {
+                AMachine m = getMachineForSerial(e.getSerial());
+                if (m != null && m instanceof BallotScannerMachine) {
+                    //TODO Make this work with ballot hashes
+                    /*String precinct = bManager.getPrecinctByBID(e.getBID().toString());
+                    talliers.get(precinct).confirmed(e.getNonce());*/
+                }
             }
 
             public void overrideCastDeny(OverrideCastDenyEvent e) {
