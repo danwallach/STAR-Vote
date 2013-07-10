@@ -8,8 +8,12 @@ import supervisor.model.tallier.EncryptedTallier;
 import supervisor.model.tallier.ITallier;
 
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.net.Socket;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.text.DecimalFormat;
 import java.util.*;
 
 /**
@@ -25,6 +29,12 @@ public class BallotStore {
     private static ArrayList<ASExpression> castBIDs = new ArrayList<ASExpression>();
     private static HashMap<String, ASExpression> unconfirmedBallots = new HashMap<String, ASExpression>();
     private static HashMap<String, String> precinctMap = new HashMap<String, String>();
+    private static String initialLastHash  = "00000000000000000000000000000000";
+    private static String lastHash = initialLastHash;
+    private static Random rand = new Random();
+    private static DecimalFormat uniquenessFormat = new DecimalFormat("0000000000");
+    private static DecimalFormat serialFormat = new DecimalFormat("00");
+    private static DecimalFormat hashFormat = new DecimalFormat("00000000000000000000000000000000");
 
 
     /**
@@ -103,6 +113,23 @@ public class BallotStore {
 
     public static List<ASExpression> getUnconfirmedBallots() {
         return new ArrayList<ASExpression>(unconfirmedBallots.values());
+    }
+
+    public static String createBallotHash(int serialNumber){
+        String elementsToBeHashed = "";
+        int ballotUniqueness = rand.nextInt(Integer.MAX_VALUE);
+        elementsToBeHashed+=uniquenessFormat.format(ballotUniqueness)+serialFormat.format(serialNumber)+hashFormat.format(Integer.parseInt(lastHash));
+        String hash = "";
+        MessageDigest digest = null;
+        try {
+            digest = MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException e) { e.printStackTrace(); }
+        try {
+            hash = digest.digest(elementsToBeHashed.getBytes("UTF-8")).toString();
+        } catch (UnsupportedEncodingException e) { e.printStackTrace(); }
+
+        return hash;
+
     }
 
 }

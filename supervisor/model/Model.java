@@ -245,6 +245,8 @@ public class Model {
 
         File file = new File(ballotLocation);
         String precinct = bManager.getPrecinctByBallot(ballotLocation);
+        String ballotHash = BallotStore.createBallotHash(node);
+        BallotStore.mapPrecinct(ballotHash, precinct);
 //        System.out.println(ballotLocation);
 //        System.out.println("<+++++++"+ precinct);
         FileInputStream fin = new FileInputStream(file);
@@ -252,11 +254,11 @@ public class Model {
         fin.read(ballot);
 
         if(!this.auditoriumParams.getEnableNIZKs()){
-        	auditorium.announce(new AuthorizedToCastEvent(mySerial, node, nonce,
+        	auditorium.announce(new AuthorizedToCastEvent(mySerial, node, nonce, ballotHash,
                     precinct, ballot));
         }else{
         	auditorium.announce(new AuthorizedToCastWithNIZKsEvent(mySerial, node,
-        			nonce, precinct, ballot,
+        			nonce, ballotHash, precinct, ballot,
         			AdderKeyManipulator.generateFinalPublicKey((PublicKey)auditoriumParams.getKeyStore().loadAdderKey("public"))));
         }
     }

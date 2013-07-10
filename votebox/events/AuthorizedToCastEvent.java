@@ -49,7 +49,9 @@ public class AuthorizedToCastEvent implements IAnnounceEvent {
 
     private byte[] ballot;
 
-    protected String precinct;
+    private String precinct;
+
+    private String ballotHash;
 
     /**
      * The matcher for the AuthorizedToCastEvent.
@@ -68,10 +70,11 @@ public class AuthorizedToCastEvent implements IAnnounceEvent {
                         .get( 1 )).getBytesCopy();*/
                 byte[] nonce = new BigInteger(((ListExpression) res)
                         .get( 1 ).toString()).toByteArray();
-                String precinct = ((ListExpression) res).get( 2 ).toString();
+                String ballotHash = ((ListExpression) res).get( 2 ).toString();
+                String precinct = ((ListExpression) res).get( 3 ).toString();
                 byte[] ballot = ((StringExpression) ((ListExpression) res)
-                        .get( 3 )).getBytesCopy();
-                return new AuthorizedToCastEvent( serial, node, nonce,  precinct, ballot );
+                        .get( 4 )).getBytesCopy();
+                return new AuthorizedToCastEvent( serial, node, nonce, ballotHash, precinct, ballot );
             }
             return null;
         };
@@ -97,12 +100,13 @@ public class AuthorizedToCastEvent implements IAnnounceEvent {
      * @param ballot
      *            the ballot in zip format, stored as an array of bytes
      */
-    public AuthorizedToCastEvent(int serial, int node, byte[] nonce, String precinct, byte[] ballot) {
+    public AuthorizedToCastEvent(int serial, int node, byte[] nonce, String ballotHash, String precinct, byte[] ballot) {
         this.serial = serial;
         this.node = node;
         this.nonce = nonce;
         this.precinct = precinct;
         this.ballot = ballot;
+        this.ballotHash = ballotHash;
     }
 
     /**
@@ -117,6 +121,10 @@ public class AuthorizedToCastEvent implements IAnnounceEvent {
      */
     public int getNode() {
         return node;
+    }
+
+    public String getBallotHash(){
+        return ballotHash;
     }
 
     /**
@@ -147,7 +155,9 @@ public class AuthorizedToCastEvent implements IAnnounceEvent {
                 .makeString( "authorized-to-cast" ), StringExpression
                 .makeString( Integer.toString( node ) ), StringExpression
                 .makeString( new BigInteger(nonce).toString() ), StringExpression
-                .makeString( precinct), StringExpression.makeString( ballot ));
+                .makeString( ballotHash), StringExpression
+                .makeString( precinct), StringExpression
+                .makeString( ballot ));
     }
     
 }
