@@ -95,10 +95,6 @@ public class Model {
 
     private HashMap<String, ASExpression> committedBids;
 
-    private BallotManager bManager;
-
-    private ArrayList<Integer> expectedBallots;
-
     //private Key privateKey = null;
 
     /**
@@ -132,8 +128,6 @@ public class Model {
         activatedObs = new ObservableEvent();
         connectedObs = new ObservableEvent();
         pollsOpenObs = new ObservableEvent();
-        expectedBallots = new ArrayList<Integer>();
-        bManager = new BallotManager();
         keyword = "";
         ballotLocation = "ballot.zip";
 //        talliers = new Tallier();
@@ -244,7 +238,7 @@ public class Model {
             nonce[i] = (byte) (Math.random() * 256);
 
         File file = new File(ballotLocation);
-        String precinct = bManager.getPrecinctByBallot(ballotLocation);
+        String precinct = BallotStore.getPrecinctByBallot(ballotLocation);
         String ballotHash = BallotStore.createBallotHash(node);
         BallotStore.mapPrecinct(ballotHash, precinct);
 //        System.out.println(ballotLocation);
@@ -633,7 +627,7 @@ public class Model {
                             .getBytes(), "", ""));
 
 
-                    String precinct = bManager.getPrecinctByBID(e.getBID().toString());
+                    String precinct = BallotStore.getPrecinctByBID(e.getBID().toString());
                     talliers.get(precinct).confirmed(e.getNonce());
                 }
             }
@@ -728,7 +722,10 @@ public class Model {
             public void pollsClosed(PollsClosedEvent e) {
                 setPollsOpen(false);
                 BallotStore.closeHashChain();
-                System.out.println(BallotStore.isHashChainCompromised());
+                System.out.println("Polls Closing!");
+                if(BallotStore.isHashChainCompromised()){
+                    JOptionPane.showMessageDialog(null, "ERROR: The hash chain is incomplete, votes may have been removed or tampered with!");
+                }
             }
 
             /**
@@ -1001,13 +998,13 @@ public class Model {
                     booth.setPublicCount(booth.getPublicCount() + 1);
                     booth.setProtectedCount(booth.getProtectedCount() + 1);
                     BallotStore.addBallot(e.getBID().toString(), e.getBallot());
-                    bManager.setPrecinctByBID(e.getBID().toString(), e.getPrecinct().toString());
-                    bManager.testMapPrint();
+                    BallotStore.setPrecinctByBID(e.getBID().toString(), e.getPrecinct().toString());
+                    BallotStore.testMapPrint();
                     auditorium.announce(new BallotReceivedEvent(mySerial, e.getSerial(),
                             ((StringExpression) e.getNonce())
                             .getBytes(), e.getBID().toString(), e.getPrecinct().toString()));
 
-                    String precinct = bManager.getPrecinctByBID(e.getBID().toString());
+                    String precinct = BallotStore.getPrecinctByBID(e.getBID().toString());
                     talliers.get(precinct).recordVotes(e.getBallot().toVerbatim(), e.getNonce());
                     String bid = e.getBID().toString();
                     committedBids.put(bid, e.getNonce());
@@ -1023,7 +1020,7 @@ public class Model {
                     booth.setProtectedCount(booth.getProtectedCount() + 1);
                     auditorium.announce(new BallotReceivedEvent(mySerial, e
                             .getSerial(), ((StringExpression) e.getNonce())
-                            .getBytes(), e.getBID().toString(), bManager.getPrecinctByBallot(e.getBID().toString())));
+                            .getBytes(), e.getBID().toString(), BallotStore.getPrecinctByBallot(e.getBID().toString())));
                 }
             }
 
@@ -1056,13 +1053,13 @@ public class Model {
             public synchronized void pinEntered(PINEnteredEvent e){
                 if(isPollsOpen()) {
                     System.out.println(">>> PIN entered: " + e.getPin());
-                    String ballot = bManager.getBallotByPin(e.getPin());
+                    String ballot = BallotStore.getBallotByPin(e.getPin());
                     System.out.println(ballot);
                     if(ballot!=null){
                         try {
-                            System.out.println(bManager.getPrecinctByBallot(ballot));
+                            System.out.println(BallotStore.getPrecinctByBallot(ballot));
                             setBallotLocation(ballot);
-                            if(bManager.getPrecinctByBallot(ballot).contains("provisional")) {
+                            if(BallotStore.getPrecinctByBallot(ballot).contains("provisional")) {
                                 provisionalAuthorize(e.getSerial());
                                 System.out.println(">>>>>>> It's working!");
                             }
@@ -1101,7 +1098,7 @@ public class Model {
             }
 
             public void ballotPrintSuccess(BallotPrintSuccessEvent e) {
-                expectedBallots.add(Integer.valueOf(e.getBID()));
+                //NO-OP
             }
 
             public void ballotPrintFail(BallotPrintFailEvent e) {
@@ -1226,7 +1223,7 @@ public class Model {
             else
                 throw new RuntimeException("Tallier was not properly initialized for precinct " + precinct);
 
-            bManager.addBallot(precinct, fileIn.getAbsolutePath());
+            BallotStore.addBallot(precinct, fileIn.getAbsolutePath());
         }catch(NumberFormatException e){
             JOptionPane.showMessageDialog(null, "Please choose a valid ballot");
         }
@@ -1249,18 +1246,19 @@ public class Model {
     }
 
     public String generatePin(String precinct){
-        return bManager.generatePin(precinct);
+        return BallotStore.generatePin(precinct);
     }
 
     public String generateProvisionalPin(String precinct){
-        return bManager.generateProvisionalPin(precinct);
+        return BallotStore.generateProvisionalPin(precinct);
     }
 
     public String[] getSelections(){
-        return bManager.getSelections();
+        return BallotStore.getSelections();
     }
 
     public String getInitialSelection(){
-        return bManager.getInitialSelection();
+        return BallotStore.getInitialSelection();
     }
+
 }
