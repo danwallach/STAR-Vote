@@ -137,6 +137,9 @@ public class AuditoriumParams implements IAuditoriumParams,
 
     public static final boolean DEFAULT_SHUFFLE_CANDIDATE_ORDER = false;
 
+    //Position of the center of the screen (used for GUIs)
+    public static final int DEFAULT_SCREEN_CENTER_X = 680;
+    public static final int DEFAULT_SCREEN_CENTER_Y = 384;
 
     /**
      * @param path
@@ -450,7 +453,22 @@ public class AuditoriumParams implements IAuditoriumParams,
 
         return DEFAULT_OPERATING_SYSTEM;
     }
-	
+
+    public int getScreenCenterX(){
+        if(_config.containsKey("SCREEN_CENTER_X"))
+            return Integer.parseInt(_config.get("SCREEN_CENTER_X"));
+
+        return DEFAULT_SCREEN_CENTER_X;
+    }
+
+    public int getScreenCenterY(){
+        if(_config.containsKey("SCREEN_CENTER_Y"))
+            return Integer.parseInt(_config.get("SCREEN_CENTER_Y"));
+
+        return DEFAULT_SCREEN_CENTER_Y;
+    }
+
+
     /**
      * Read from the configuration file.
      */
