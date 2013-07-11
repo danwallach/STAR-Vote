@@ -29,12 +29,15 @@ public class BallotStore {
     private static ArrayList<ASExpression> castBIDs = new ArrayList<ASExpression>();
     private static HashMap<String, ASExpression> unconfirmedBallots = new HashMap<String, ASExpression>();
     private static HashMap<String, String> precinctMap = new HashMap<String, String>();
-    private static String initialLastHash  = "00000000000000000000000000000000";
+    private static String initialLastHash  = "00000000000000000000000000000000";     //initial value passed to hash function to act as a previous node in the chain
     private static String lastHash = initialLastHash;
     private static Random rand = new Random();
     private static DecimalFormat uniquenessFormat = new DecimalFormat("0000000000");
     private static DecimalFormat serialFormat = new DecimalFormat("00");
     private static DecimalFormat hashFormat = new DecimalFormat("00000000000000000000000000000000");
+    private static HashMap<String, String> HashToBID = new HashMap<String, String>();       //BID to hash values for chaining
+    private static HashMap<String, String> HashToMID = new HashMap<String, String>();       //Machine ID numbers to hash values for chaining
+
 
 
     /**
@@ -116,20 +119,47 @@ public class BallotStore {
     }
 
     public static String createBallotHash(int serialNumber){
+        //creates a hash for voting session and saves BID and MID for hash Chain checking later
         String elementsToBeHashed = "";
         int ballotUniqueness = rand.nextInt(Integer.MAX_VALUE);
         elementsToBeHashed+=uniquenessFormat.format(ballotUniqueness)+serialFormat.format(serialNumber)+hashFormat.format(Integer.parseInt(lastHash));
+        String hash = hashWithSHA256(elementsToBeHashed);
+        HashToBID.put(lastHash, String.valueOf(ballotUniqueness));     // mapped to last hash so that with previous hash value can compute next hash value
+        HashToMID.put(lastHash, String.valueOf(serialNumber));
+        return hash;
+    }
+    public static String hashWithSHA256(String toBeHashed){
+        //SHA256 hashing algorithm for string "toBeHashed"
         String hash = "";
         MessageDigest digest = null;
         try {
             digest = MessageDigest.getInstance("SHA-256");
         } catch (NoSuchAlgorithmException e) { e.printStackTrace(); }
         try {
-            hash = digest.digest(elementsToBeHashed.getBytes("UTF-8")).toString();
+            hash = digest.digest(toBeHashed.getBytes("UTF-8")).toString();
         } catch (UnsupportedEncodingException e) { e.printStackTrace(); }
-
         return hash;
+    }
+    public static Boolean isHashChainCompromised(){
+        // Method goes through ballots in voting session checking that all ballot's hashes are computed from the preious ballots' Hash and that ballot's machineID and BID, proving if any
+        // are missing in the chain
+        boolean compromised = false;
+        String previousHash = initialLastHash;
+        String elementsToBeHashed = "";
+        while(Integer.valueOf(HashToBID.get(previousHash))!=0&&!compromised){      //size minus one because can not check last hash since it will not be stored in Ballot Store
+            if(HashToBID.containsKey(previousHash)){
+                elementsToBeHashed =uniquenessFormat.format(HashToBID.get(previousHash))+serialFormat.format(HashToMID.get(previousHash))+hashFormat.format(Integer.parseInt(previousHash));
+                previousHash = hashWithSHA256(elementsToBeHashed);
+            }
+            else{
+                compromised = true;
+            }
+        }
+        return compromised;
+    }
 
+    public static void closeHashChain(){
+        HashToBID.put(lastHash, "0");   //adds flag to hash chain signalling end of chain
     }
 
 }

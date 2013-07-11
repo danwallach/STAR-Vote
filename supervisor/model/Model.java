@@ -727,6 +727,8 @@ public class Model {
              */
             public void pollsClosed(PollsClosedEvent e) {
                 setPollsOpen(false);
+                BallotStore.closeHashChain();
+                System.out.println(BallotStore.isHashChainCompromised());
             }
 
             /**
