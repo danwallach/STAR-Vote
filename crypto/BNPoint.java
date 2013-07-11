@@ -370,7 +370,7 @@ public class BNPoint {
     /**
      * Check if a point equals -this.
      */
-    public boolean opposite(BNPoint P) {
+    public boolean isOpposite(BNPoint P) {
         if (!isOnSameCurve(P)) {
             return false;
         }

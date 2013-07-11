@@ -269,7 +269,7 @@ public class BNPoint2 {
     /**
      * Check if a point equals -this.
      */
-    public boolean opposite(BNPoint2 P) {
+    public boolean isOposite(BNPoint2 P) {
         return this.equals(P.negate());
     }
 

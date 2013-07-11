@@ -100,7 +100,7 @@ public class BNPairing {
         if (V.isZero() || P.isZero() || Q.isZero()) {
             return Fp12_1;
         }
-        assert (!V.opposite(P));
+        assert (!V.isOpposite(P));
         BigInteger Vz3 = V.z.multiply(V.z).multiply(V.z).mod(p);
         if (V.equals(P)) {
             // y = Y/Z^3 => 1/2y = Z^3/2Y

@@ -33,11 +33,11 @@ import auditorium.Key;
 /**
  * Used to generate ElGamal public/private key pairs.<BR>
  * Usage:
- *   java crypto.KeyGenerator [generator string] [number of keys] [output directory]
+ *   java crypto.ElGamalKeyGenerator [generator string] [number of keys] [output directory]
  * @author Montrose
  *
  */
-public class KeyGenerator {
+public class ElGamalKeyGenerator {
 
 	/**
 	 * @param args
@@ -45,7 +45,7 @@ public class KeyGenerator {
 	public static void main(String[] args) {
 		if(args.length != 3){
 			System.out.println("Usage:");
-			System.out.println("\tjava crypto.KeyGenerator [generator string] [number of keys] [output directory]");
+			System.out.println("\tjava crypto.ElGamalKeyGenerator [generator string] [number of keys] [output directory]");
 			System.exit(0);
 		}//if
 		

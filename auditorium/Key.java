@@ -43,6 +43,10 @@ import sexpression.*;
  * 
  * @see sexpression
  * @author kyle
+ *
+ * This class has now been extended to support ECDH keys as well, with an
+ * overloaded constructor that can handle not taking in a modulus. The key
+ * value itself is largely unchanged, it is just
  * 
  */
 public class Key {
