@@ -6,7 +6,6 @@
         <element id="file-copy" path="$PROJECT_DIR$/preptool/controller/META-INF/MANIFEST.MF" />
       </element>
       <element id="module-output" name="STAR-Vote" />
-      <element id="library" level="project" name="keys" />
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/bsh.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/jdom.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/javacv.jar" path-in-jar="/" />

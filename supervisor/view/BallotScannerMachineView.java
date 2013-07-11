@@ -231,21 +231,23 @@ public class BallotScannerMachineView extends AMachineView{
             if (machine.getStatus() == BallotScannerMachine.ACTIVE)
             {
                 //button.add(new MyJLabel("Deactivate Scanner"), c);
-                button.setEnabled(false);
-                button.setVisible(false);
                 statusLabel.setText("Active");
-                updateBackground(Color.GREEN);
             }
             else
             {
                 //button.add(new MyJLabel("Activate Scanner"), c);
-                button.setEnabled(false);
-                button.setVisible(false);
-                updateBackground(Color.GREEN);
                 statusLabel.setText("Inactive");
             }
-
+            button.setEnabled(false);
+            button.setVisible(false);
+            updateBackground(Color.GREEN);
             batteryLabel.setVisible(true);
+            String batteryIcon = "images/batt" + ((m.getBattery() + 10) / 20)
+                    + ".png";
+
+            URL url = ClassLoader.getSystemClassLoader().getResource(
+                    batteryIcon);
+            if (url != null) batteryLabel.setIcon(new ImageIcon(url));
         }
         else
         {
@@ -254,14 +256,6 @@ public class BallotScannerMachineView extends AMachineView{
             statusLabel.setText("Offline");
             button.setVisible(false);
         }
-
-        batteryLabel.setVisible(true);
-        String batteryIcon = "images/batt" + ((m.getBattery() + 10) / 20)
-                + ".png";
-
-        URL url = ClassLoader.getSystemClassLoader().getResource(
-                batteryIcon);
-        if (url != null) batteryLabel.setIcon(new ImageIcon(url));
 
         revalidate();
         repaint();
