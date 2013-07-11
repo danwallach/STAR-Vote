@@ -2,10 +2,6 @@ package votebox;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.AttributeSet;
@@ -56,9 +52,9 @@ public class PINAuthorizationGUI extends JFrame {
     /* The amount of space between buttons. */
     private static final int BUTTON_SPACING = 10;
 
+    public JButton okButton;
+    public JTextField pinTextField;
     private JLabel enterAuthorizationPinLabel;
-    private JTextField pinTextField;
-    private VoteBox votebox;
 
     /**
      * Start displaying the GUI.
@@ -82,13 +78,12 @@ public class PINAuthorizationGUI extends JFrame {
      * @param ulX the x-coordinate of the center of the GUI
      * @param ulY the y-coordinate of the center of the GUI
      */
-    public PINAuthorizationGUI(int ulX, int ulY, VoteBox voteBox) {
+    public PINAuthorizationGUI(int ulX, int ulY) {
 
         setTitle("Authorization Required");
         setPreferredSize(new Dimension(GUI_WIDTH, GUI_HEIGHT));
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setBounds(ulX - (GUI_WIDTH + SIDE_BARS_WIDTH) / 2, ulY - (GUI_HEIGHT + TITLE_BAR_HEIGHT) / 2, GUI_WIDTH + SIDE_BARS_WIDTH, GUI_HEIGHT + TITLE_BAR_HEIGHT);
-        votebox = voteBox;
         buildGUIElements();
     }
 
@@ -130,31 +125,13 @@ public class PINAuthorizationGUI extends JFrame {
         pinTextField.setColumns(10);
 
         /* Buttons */
-        JButton okButton = new JButton("OK");
+        okButton = new JButton("OK");
         okButton.setBounds(getButtonULX(BUTTON_COUNT, 1), BUTTON_ULY, BUTTON_WIDTH, BUTTON_HEIGHT);
         mainPanel.add(okButton);
 
         JButton cancelButton = new JButton("Cancel");
         cancelButton.setBounds(getButtonULX(BUTTON_COUNT, 2), BUTTON_ULY, BUTTON_WIDTH, BUTTON_HEIGHT);
         mainPanel.add(cancelButton);
-
-        okButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent arg0) {
-                votebox.validatePin(pinTextField.getText());
-                stop();
-            }
-        });
-
-        pinTextField.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent arg0) {
-                if(arg0.getKeyCode() == KeyEvent.VK_ENTER)
-                {
-                    votebox.validatePin(pinTextField.getText());
-                    stop();
-                }
-            }
-        });
     }
 
     /**
@@ -163,6 +140,14 @@ public class PINAuthorizationGUI extends JFrame {
     public void setLabelText (String text)
     {
         enterAuthorizationPinLabel.setText(text);
+    }
+
+    /**
+     * Get the currently typed pin.
+     */
+    public String getPin ()
+    {
+        return pinTextField.getText();
     }
 
     /**

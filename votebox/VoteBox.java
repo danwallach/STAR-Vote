@@ -24,6 +24,8 @@ package votebox;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -1081,8 +1083,28 @@ public class VoteBox{
             promptForPin("Invalid PIN: Enter 4-digit PIN");
         }*/
 
-        PINAuthorizationGUI pinGUI = new PINAuthorizationGUI(_constants.getScreenCenterX(), _constants.getScreenCenterY(), this);
+        // Create a new GUI to prompt for PIN.
+        final PINAuthorizationGUI pinGUI = new PINAuthorizationGUI(_constants.getScreenCenterX(), _constants.getScreenCenterY());
+        // Set the GUI's label to our message.
         pinGUI.setLabelText(message);
+        // Add a listener for the OK button so that when it gets clicked, it validates the pin.
+        pinGUI.okButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                validatePin(pinGUI.getPin());
+                pinGUI.stop();
+            }
+        });
+        // Add a listener for the pin text field so that when the Enter key gets pressed, it validates the pin.
+        pinGUI.pinTextField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent arg0) {
+                if(arg0.getKeyCode() == KeyEvent.VK_ENTER)
+                {
+                    validatePin(pinGUI.getPin());
+                    pinGUI.stop();
+                }
+            }
+        });
         pinGUI.start();
 
         promptingForPin = false;
