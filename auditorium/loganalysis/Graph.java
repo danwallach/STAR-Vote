@@ -50,8 +50,8 @@ public class Graph {
             graph( s );
     }
 
-    public static void graph(String filename) throws Exception {
-        Dag d = new Dag( filename );
+    public static void graph(String filePath) throws Exception {
+        Dag d = new Dag( filePath );
         d.build();
         HashMap<MessagePointer, String> types = d.getTypes();
         GraphViz gvz = new GraphViz();
@@ -70,21 +70,27 @@ public class Graph {
 
         for (MessagePointer from : d.getDag().keySet()) {
             for (MessagePointer to : d.getDag().get( from )) {
-                String str = "A" + from.getNodeId() + "_" + from.getNumber()
-                        + " -> " + "A" + to.getNodeId() + "_" + to.getNumber()
+                String str = "A" + to.getNodeId() + "_" + to.getNumber()
+                        + " -> " + "A" + from.getNodeId() + "_" + from.getNumber()
                         + ";";
                 gvz.addln( str );
             }
         }
         gvz.addln( "}" );
 
-        gvz.writeGraph( new File( filename ) );
-        stats( d, filename );
+        String[] rawFileName = filePath.split(System.getProperty("file.separator"));
+        String fileName = rawFileName[rawFileName.length-1];
+
+        gvz.writeGraph( new File(  "logdata" + System.getProperty("file.separator") + fileName ) );
+        stats( d, fileName );
     }
 
-    public static void stats(Dag dag, String filename) throws Exception {
-        PrintWriter writer = new PrintWriter( new FileOutputStream( new File(
-                filename + ".stat" ) ) );
+    public static void stats(Dag dag, String filePath) throws Exception {
+        String[] rawFileName = filePath.split(System.getProperty("file.separator"));
+        String fileName = rawFileName[rawFileName.length-1];
+
+        PrintWriter writer = new PrintWriter( new FileOutputStream( new File( "logdata" + System.getProperty("file.separator") +
+                fileName + ".stat" ) ) );
         HashMap<Integer, Integer> stats = dag.getBranchStatistics();
         for (Integer i : stats.keySet())
             writer.write( i + ":" + stats.get( i ) + "\n" );
