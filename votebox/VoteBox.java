@@ -35,10 +35,11 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
 
+import crypto.BallotEncrypter;
+import crypto.PiecemealBallotEncrypter;
 import edu.uconn.cse.adder.PublicKey;
 
 import sexpression.*;
-import votebox.crypto.*;
 import votebox.events.*;
 import votebox.middle.*;
 import votebox.middle.Properties;

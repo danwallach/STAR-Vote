@@ -5,7 +5,7 @@ import java.math.BigInteger;
 import edu.uconn.cse.adder.PublicKey;
 
 import sexpression.*;
-import votebox.crypto.interop.AdderKeyManipulator;
+import crypto.interop.AdderKeyManipulator;
 
 /**
  * We need a way to send the final public key to the VoteBoxes (as well as preserve such a key

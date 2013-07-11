@@ -42,7 +42,7 @@ import sexpression.StringExpression;
 import supervisor.model.tallier.ChallengeDelayedTallier;
 import supervisor.model.tallier.ChallengeDelayedWithNIZKsTallier;
 import supervisor.model.tallier.ITallier;
-import votebox.crypto.interop.AdderKeyManipulator;
+import crypto.interop.AdderKeyManipulator;
 import votebox.events.*;
 import auditorium.AuditoriumCryptoException;
 import auditorium.Key;

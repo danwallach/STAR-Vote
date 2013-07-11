@@ -20,7 +20,7 @@
   * ACCESS OR USE OF THE SOFTWARE.
  */
 
-package votebox.crypto;
+package crypto;
 
 /**
  * This class represents a 2-tuple (or pair) of BigInteger values. This is

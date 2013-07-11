@@ -20,7 +20,7 @@
   * ACCESS OR USE OF THE SOFTWARE.
  */
 
-package votebox.crypto;
+package crypto;
 
 import junit.framework.TestCase;
 import java.math.BigInteger;

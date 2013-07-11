@@ -36,8 +36,8 @@ import sexpression.*;
 import sexpression.ASExpression;
 import sexpression.stream.ASEInputStreamReader;
 import sexpression.stream.InvalidVerbatimStreamException;
-import votebox.crypto.ElGamalCrypto;
-import votebox.crypto.Pair;
+import crypto.ElGamalCrypto;
+import crypto.Pair;
 
 public class EncryptedTallier implements ITallier {
 	private static ASExpression PATTERN = new ListWildcard(new ListExpression(StringWildcard.SINGLETON, Wildcard.SINGLETON));

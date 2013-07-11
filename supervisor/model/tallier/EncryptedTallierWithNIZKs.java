@@ -19,7 +19,7 @@ import edu.uconn.cse.adder.VoteProof;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.stream.ASEInputStreamReader;
-import votebox.crypto.interop.AdderKeyManipulator;
+import crypto.interop.AdderKeyManipulator;
 
 /**
  * Tallier for elections run with NIZKs but without the commit-challenge model enabled.
