@@ -838,7 +838,7 @@ public class VoteBox{
 
             public void pollsOpen(PollsOpenEvent e) {
                 if(!voting){
-                    promptForPin("Enter Authentication PIN");
+                    promptForPin("Enter Authorization PIN");
                 }
             }
 
@@ -891,9 +891,9 @@ public class VoteBox{
             }
 
             public void pollStatus(PollStatusEvent pollStatusEvent) {
-                System.out.println("Recieved Poll Status event and the polls are " + (pollStatusEvent.getPollStatus() == 1 ? "open":"closed"));
+                System.out.println("Received Poll Status event and the polls are " + (pollStatusEvent.getPollStatus() == 1 ? "open":"closed"));
                 if(!voting && pollStatusEvent.getPollStatus() == 1){
-                    promptForPin("Enter Authentication PIN");
+                    promptForPin("Enter Authorization PIN");
                 }
             }
 
@@ -1036,51 +1036,56 @@ public class VoteBox{
     }
 
     public void promptForPin(String message) {
-            if(promptingForPin){
-                System.out.println("Still prompting for PIN!");
-                return;
-            }
-            //if(!superOnline) return;
-            promptingForPin = true;
-            JTextField limitedField = new JTextField(new PlainDocument() {
-                private int limit=4;
-                public void insertString(int offs, String str, AttributeSet attr) throws BadLocationException {
-                    if(str == null)
-                        return;
-                    if((getLength() + str.length()) <= this.limit) {
-                        super.insertString(offs, str, attr);
-                    }
+        if(promptingForPin){
+            System.out.println("Still prompting for PIN!");
+            return;
+        }
+        /*//if(!superOnline) return;
+        promptingForPin = true;
+        JTextField limitedField = new JTextField(new PlainDocument() {
+            private int limit=4;
+            public void insertString(int offs, String str, AttributeSet attr) throws BadLocationException {
+                if(str == null)
+                    return;
+                if((getLength() + str.length()) <= this.limit) {
+                    super.insertString(offs, str, attr);
                 }
-            }, "", 5);
+            }
+        }, "", 5);
 
-            Object[] msg = {
-                    message, limitedField
-            };
-            int pinResult = JOptionPane.showConfirmDialog(
+        Object[] msg = {
+                message, limitedField
+        };
+        int pinResult = JOptionPane.showConfirmDialog(
+                (JFrame)inactiveUI,
+                msg,
+                "Authorization Required",
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.PLAIN_MESSAGE);
+
+        while(pinResult != JOptionPane.OK_OPTION) {
+            pinResult = JOptionPane.showConfirmDialog(
                     (JFrame)inactiveUI,
                     msg,
                     "Authorization Required",
                     JOptionPane.OK_CANCEL_OPTION,
                     JOptionPane.PLAIN_MESSAGE);
-
-            while(pinResult != JOptionPane.OK_OPTION) {
-                pinResult = JOptionPane.showConfirmDialog(
-                        (JFrame)inactiveUI,
-                        msg,
-                        "Authorization Required",
-                        JOptionPane.OK_CANCEL_OPTION,
-                        JOptionPane.PLAIN_MESSAGE);
-            }
+        }
 
 
-            try{
-                String pin = limitedField.getText();
-                validatePin(pin);
-            }catch(NumberFormatException nfe){
-                promptingForPin = false;
-                promptForPin("Invalid PIN: Enter 4-digit PIN");
-            }
+        try{
+            String pin = limitedField.getText();
+            validatePin(pin);
+        }catch(NumberFormatException nfe){
             promptingForPin = false;
+            promptForPin("Invalid PIN: Enter 4-digit PIN");
+        }*/
+
+        PINAuthorizationGUI pinGUI = new PINAuthorizationGUI(_constants.getScreenCenterX(), _constants.getScreenCenterY(), this);
+        pinGUI.setLabelText(message);
+        pinGUI.start();
+
+        promptingForPin = false;
     }
 
     public void validatePin(String pin) {

@@ -19,7 +19,7 @@ import javax.swing.event.ListSelectionEvent;
 
 /**
  * Author: Mircea C. Berechet
- * Added to project: 07/02/20113
+ * Added to project: 07/02/2013
  */
 public class ConfigurationFileEditor extends JFrame {
 
