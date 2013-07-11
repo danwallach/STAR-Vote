@@ -24,9 +24,7 @@ package supervisor.model;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.math.BigInteger;
 import java.util.*;
 
@@ -39,6 +37,7 @@ import edu.uconn.cse.adder.PublicKey;
 import sexpression.ASExpression;
 import sexpression.NoMatch;
 import sexpression.StringExpression;
+import sexpression.stream.Base64;
 import supervisor.model.tallier.ChallengeDelayedTallier;
 import supervisor.model.tallier.ChallengeDelayedWithNIZKsTallier;
 import supervisor.model.tallier.ITallier;
@@ -100,6 +99,9 @@ public class Model {
     private ArrayList<Integer> expectedBallots;
 
     //private Key privateKey = null;
+
+    private ASExpression testBallot;
+    private ASExpression testNonce;
 
     /**
      * Equivalent to Model(-1, params);
@@ -1007,6 +1009,67 @@ public class Model {
                     talliers.get(precinct).recordVotes(e.getBallot().toVerbatim(), e.getNonce());
                     String bid = e.getBID().toString();
                     committedBids.put(bid, e.getNonce());
+
+                    /*/ Write the nonce and ballot to files, for testing purposes. /////////////////////////////////////////////////////////////////////////////////////////////////
+                    // Get the filename.
+                    String filename1 = "BallotAsAByteArray.out";
+                    String filename2 = "NonceAsAStringExpression.out";
+                    // Open the file.
+                    File file1 = new File (filename1);
+                    File file2 = new File (filename2);
+
+                    // If the file does not exist, then print error.
+                    boolean file1Existed = file1.exists();
+                    boolean file2Existed = file2.exists();
+                    boolean newFile1Created = false;
+                    boolean newFile2Created = false;
+                    if (!file1Existed)
+                    {
+                        try
+                        {
+                            newFile1Created = file1.createNewFile();
+                        }
+                        catch (IOException eio)
+                        {
+                            System.out.println("Unable to create new file " + filename1);
+                            eio.printStackTrace();
+                            return;
+                        }
+                    }
+                    if (!file2Existed)
+                    {
+                        try
+                        {
+                            newFile2Created = file2.createNewFile();
+                        }
+                        catch (IOException eio)
+                        {
+                            System.out.println("Unable to create new file " + filename2);
+                            eio.printStackTrace();
+                            return;
+                        }
+                    }
+                    // Create the writer.
+                    BufferedWriter writer1;
+                    BufferedWriter writer2;
+                    try
+                    {
+                        if ((file1Existed || newFile1Created) && (file2Existed || newFile2Created))
+                        {
+                            writer1 = new BufferedWriter(new FileWriter(file1.getAbsoluteFile()));
+                            writer1.write(e.getBallot().toString());
+                            writer1.close();
+                            writer2 = new BufferedWriter(new FileWriter(file2.getAbsoluteFile()));
+                            writer2.write(e.getNonce().toString());
+                            writer2.close();
+                        }
+                    }
+                    catch (IOException eio)
+                    {
+                        System.out.println("Unable to write to file.");
+                        eio.printStackTrace();
+                        return;
+                    }//*/
                 }
             }
 
@@ -1028,6 +1091,12 @@ public class Model {
             }
 
             public void ballotScanned(BallotScannedEvent e) {
+                readTestBallot();
+                committedBids.put("1357480413", testNonce);
+                BallotStore.addBallot("1357480413", testBallot);
+                bManager.setPrecinctByBID("1357480413", "006");
+                talliers.get("006").recordVotes(testBallot.toVerbatim(), testNonce);
+
                 String bid = e.getBID();
                 int serial = e.getSerial();
                 if (committedBids.containsKey(bid)){
@@ -1258,5 +1327,54 @@ public class Model {
 
     public String getInitialSelection(){
         return bManager.getInitialSelection();
+    }
+
+    public void readTestBallot()
+    {
+        // Get the filenames.
+        String filename1 = "BallotAsAStringExpressionCurrentSession.out";
+        String filename2 = "NonceAsAStringExpression.out";
+
+        // Open the files.
+        File file1 = new File (filename1);
+        File file2 = new File (filename2);
+
+        // Create the readers.
+        BufferedReader reader1;
+        BufferedReader reader2;
+        try
+        {
+            reader1 = new BufferedReader(new FileReader(file1.getAbsoluteFile()));
+            String ballotString = "";
+            String currentLine;
+            while((currentLine = reader1.readLine()) != null)
+            {
+                ballotString += currentLine;
+            }
+            reader1.close();
+            ASExpression ballot = StringExpression.make(ballotString);
+
+            reader2 = new BufferedReader(new FileReader(file2.getAbsoluteFile()));
+            String nonceString = "";
+            while((currentLine = reader2.readLine()) != null)
+            {
+                nonceString += currentLine;
+            }
+            reader2.close();
+            nonceString = nonceString.substring(1, nonceString.length()-1);
+            byte[] nonce = Base64.decode(nonceString);
+            testBallot = ballot;
+            testNonce = StringExpression.makeString(nonce);
+
+            System.out.println(testBallot);
+            System.out.println("============================");
+            System.out.println(testNonce);
+        }
+        catch (IOException e)
+        {
+            System.out.println("Unable to read from files.");
+            e.printStackTrace();
+            return;
+        }
     }
 }

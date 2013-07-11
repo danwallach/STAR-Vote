@@ -88,6 +88,8 @@ public class Election {
                     getFinalSum(List/*<List<AdderInteger>>*/ partialSums,
                     List/*<AdderInteger>*/ coeffs, Vote sum,
                     PublicKey masterKey) {
+
+        System.err.println("INPUTS TO getFinalSum:\n\tpartialSums: " + partialSums + "\n\tcoeffs: " + coeffs + "\n\tsum: " + sum + "\n\tmasterKey: " + masterKey);
         AdderInteger p = masterKey.getP();
         AdderInteger q = masterKey.getQ();
         AdderInteger g = masterKey.getG();
