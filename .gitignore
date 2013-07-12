@@ -4,7 +4,7 @@
 ##################################
 tmp
 out
-.idea/workspace.xml
+.idea
 *.class
 *.out
 *.pdf
