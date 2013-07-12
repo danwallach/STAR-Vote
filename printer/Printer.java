@@ -437,7 +437,7 @@ public class Printer{
                 printCenteredText("If you wish to challenge your ballot, take it home and scan the QRCode below", xBound, y, graphics);
                 y+=20;
                 String domain = "localhost:9000";
-                String URL = "http://"+domain+"/ballot?ballotid="+bid;
+                String URL = "http://"+domain+"/ballot?ballotid="+String.valueOf(Integer.parseInt(bid, 16)).substring(0,10);  //encode first 10 chars of string and convert to decimal for ease of client use
                 QRCodeGenerator qGen = new QRCodeGenerator();
                 BufferedImage i = qGen.getImage(URL);
                 int imgStartX = xBound/2-i.getWidth()/2;
