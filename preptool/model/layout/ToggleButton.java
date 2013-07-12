@@ -176,6 +176,10 @@ public class ToggleButton extends ALayoutComponent {
 				+ ",width=" + width + ",height=" + height + "]";
 	}
 
+    public ToggleButton clone(){
+        return new ToggleButton(getUID(), text);
+    }
+
 	/**
 	 * Converts this ToggleButton object to XML
 	 * @param doc the document

@@ -418,18 +418,9 @@ public abstract class
             public Void forToggleButtonGroup(ToggleButtonGroup tbg,
                     Object... param) {
 
-                boolean isFirst = true;
                 for (ToggleButton tb : tbg.getButtons())  {
                     tb.execute(this);
 
-                    //Set up the navigation within a ToggleButtonGroup
-                    if(!isFirst){
-                        tb.setPrevious(tbg.getButtons().get(tbg.getButtons().indexOf(tb) - 1));
-                        tb.setUp(tbg.getButtons().get(tbg.getButtons().indexOf(tb) - 1));
-                    }
-                    else{
-                        isFirst = false;
-                    }
                 }
                 return null;
             }
