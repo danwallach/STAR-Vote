@@ -98,6 +98,7 @@ public class Driver {
 				SelectionException {
 			return _view.select(uid);
 		}
+
 	};
 
 	private IAdapter _ballotAdapter = new IAdapter() {
@@ -271,7 +272,7 @@ public class Driver {
 				graphics.drawImage(accept, (int)pageFormat.getImageableX(), (int)pageFormat.getImageableY(), null);
 				return Printable.PAGE_EXISTS;
 			}
-    	};
+            	};
     	
     	printOnVVPAT(constants, toPrint);
     }

@@ -97,7 +97,6 @@ public class AWTView extends AView {
 	/**
 	 * @see votebox.middle.view.IView#clearDisplay()
 	 */
-    //TODO this is synchronized - investigate further
 	public synchronized  void clearDisplay() {
 		if (_frame.getGraphics() == null)
 			return;

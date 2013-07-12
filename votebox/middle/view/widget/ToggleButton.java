@@ -258,9 +258,6 @@ public class ToggleButton extends Label implements IFocusable {
      * This is the getter for _defaultImage
      * 
      * @return _defaultImage
-     * @throws MediaFileException
-     *             This method throws if the media for this drawable cant be
-     *             found on disk.
      */
     public IViewImage getDefaultImage() {
         if (_defaultImage == null) {
@@ -275,9 +272,6 @@ public class ToggleButton extends Label implements IFocusable {
      * This is the getter for _selectedImage
      * 
      * @return _selectedImage
-     * @throws MediaFileException
-     *             This method throws if the media for this drawable cant be
-     *             found on disk.
      */
     public IViewImage getSelectedImage() {
         if (_selectedImage == null) {
@@ -292,9 +286,6 @@ public class ToggleButton extends Label implements IFocusable {
      * This is the getter for _focusedImage
      * 
      * @return _focusedImage
-     * @throws MediaFileException
-     *             This method throws if the media for this drawable cant be
-     *             found on disk.
      */
     public IViewImage getFocusedImage() {
         if (_focusedImage == null) {
@@ -309,9 +300,6 @@ public class ToggleButton extends Label implements IFocusable {
      * This is the getter for _focusedSelectedImage
      * 
      * @return _focusedSelectedImage
-     * @throws MediaFileException
-     *             This method throws if the media for this drawable cant be
-     *             found on disk.
      */
     public IViewImage getFocusedSelectedImage() {
         if (_focusedSelectedImage == null) {

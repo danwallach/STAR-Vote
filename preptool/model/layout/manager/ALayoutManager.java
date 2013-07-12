@@ -344,16 +344,24 @@ public abstract class
 
                 if (!uids.contains(tb.getUID())) {
                     try {
+
                         BufferedImage img = tb
-                                .execute(getImageVisitor(), false);
+                                .execute(getImageVisitor(), false, false);
+
+                        BufferedImage focusedTb = tb.execute(getImageVisitor(), false, true);
+
+                        BufferedImage selectedTb = tb.execute(getImageVisitor(), true, false);
+
+                        BufferedImage focusedSelectedTb = tb.execute(getImageVisitor(), true, true);
+
                         ImageIO
                                 .write(img, "png", new File(location
                                         + tb.getUID() + "_1_" + langShortName
                                         + ".png"));
-                        ImageIO.write(img, "png", new File(location
+                        ImageIO.write(focusedTb, "png", new File(location
                                 + tb.getUID() + "_focused_1_" + langShortName
                                 + ".png"));
-                        img = tb.execute(getImageVisitor(), true);
+
 
                         /*// Save a copy of the selected image to the vvpat folder, to be displayed by the tallier. //////////////
                         File selectedTallyFile = new File(location);
@@ -365,11 +373,10 @@ public abstract class
                         ImageIO.write(img, "png", selectedTallyFile);
                         ////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
-
-                        ImageIO.write(img, "png", new File(location
+                        ImageIO.write(selectedTb, "png", new File(location
                                 + tb.getUID() + "_selected_1_" + langShortName
                                 + ".png"));
-                        ImageIO.write(img, "png", new File(location
+                        ImageIO.write(focusedSelectedTb, "png", new File(location
                                 + tb.getUID() + "_focusedSelected_1_"
                                 + langShortName + ".png"));
                         ReviewButton review = new ReviewButton(tb.getUID()
@@ -410,8 +417,20 @@ public abstract class
 
             public Void forToggleButtonGroup(ToggleButtonGroup tbg,
                     Object... param) {
-                for (ToggleButton tb : tbg.getButtons())
+
+                boolean isFirst = true;
+                for (ToggleButton tb : tbg.getButtons())  {
                     tb.execute(this);
+
+                    //Set up the navigation within a ToggleButtonGroup
+                    if(!isFirst){
+                        tb.setPrevious(tbg.getButtons().get(tbg.getButtons().indexOf(tb) - 1));
+                        tb.setUp(tbg.getButtons().get(tbg.getButtons().indexOf(tb) - 1));
+                    }
+                    else{
+                        isFirst = false;
+                    }
+                }
                 return null;
             }
 
@@ -448,7 +467,7 @@ public abstract class
                         {
                             //System.out.println("Rendering " + pb.getUID() + " with:\n\tText: " + pb.getText() + "\n\tSecond Line: " + pb.getSecondLine() + "\n\tParty: " + pb.getParty() + "\n\tFontsize: " + FONT_SIZE_SELECTED_IMAGES + "\n\tWidth: " + WIDTH_SELECTED_IMAGES + "\n\tBold: " + pb.isBold() + "\n\tSelected: true\n========================================================================================");
                             BufferedImage selectedImg = RenderingUtils.renderToggleButton(pb.getText(), pb.getSecondLine(), pb.getParty(),
-                                    FONT_SIZE_SELECTED_IMAGES, WIDTH_SELECTED_IMAGES, pb.isBold(), !(pb.getText().equals("NO SELECTION")));
+                                    FONT_SIZE_SELECTED_IMAGES, WIDTH_SELECTED_IMAGES, pb.isBold(), !(pb.getText().equals("NO SELECTION")), false);
                             File selectedFile = new File (file, uuid + "_selected_" + langShortName + ".png");
                             ImageIO.write(selectedImg, "png", selectedFile);
                         }

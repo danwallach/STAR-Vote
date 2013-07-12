@@ -203,6 +203,7 @@ public class ViewManager implements IViewManager {
         dt.focus();
         _view.invalidate( dt );
         _view.invalidate( _currentFocusedElement );
+
         // Keep track of who the new element is
         _currentFocusedElement = dt;
     }
@@ -697,8 +698,8 @@ public class ViewManager implements IViewManager {
     }
 
     /**
-     * This method takes the first IFocusabel in the current page and sets it to
-     * focused. This is useful as a focus initilization method: with every new
+     * This method takes the first IFocusable in the current page and sets it to
+     * focused. This is useful as a focus initialization method: with every new
      * page that is displayed, there should be an initial element that is
      * focused from which the voter can move. This method takes care of the job
      * of focusing that one initial element.
@@ -710,6 +711,7 @@ public class ViewManager implements IViewManager {
         for (IDrawable drawable : getCurrentPage().getChildren()) {
             if (drawable instanceof IFocusable) {
                 if (!(found)) {
+                    System.out.println("First item focused: " + drawable);
                     _currentFocusedElement = (IFocusable) drawable;
                     ((IFocusable) drawable).focus();
                     found = true;
@@ -770,9 +772,54 @@ public class ViewManager implements IViewManager {
 
             public void handle(InputEvent event) throws BallotBoxViewException {
             	if(!_ignoreMouseInput)
-            		select( event.focusedDrawable() );
+            		select( event.focusedDrawable() );    }
+        } );
+
+        _view.register( EventType.MOUSE_MOVE, new IEventHandler() {
+
+            public void handle(InputEvent event) {
+                if(!_ignoreMouseInput)
+                    focus( event.focusedDrawable() );
             }
         } );
+
+        _view.register( EventType.LEFT, new IEventHandler() {
+            public void handle(InputEvent event) {
+                moveFocusLeft();
+            }
+        });
+        _view.register( EventType.RIGHT, new IEventHandler() {
+            public void handle(InputEvent event) {
+                moveFocusRight();
+            }
+        });
+        _view.register( EventType.UP, new IEventHandler() {
+            public void handle(InputEvent event) {
+                moveFocusUp();
+            }
+        });
+        _view.register( EventType.DOWN, new IEventHandler() {
+            public void handle(InputEvent event) {
+                moveFocusDown();
+            }
+        });
+        _view.register( EventType.NEXT, new IEventHandler() {
+            public void handle(InputEvent event) {
+                moveFocusNext();
+            }
+        });
+        _view.register( EventType.PREVIOUS, new IEventHandler() {
+            public void handle(InputEvent event) {
+                moveFocusBack();
+            }
+        });
+        _view.register( EventType.SELECT, new IEventHandler() {
+            public void handle(InputEvent event) {
+                select();
+            }
+        });
+
+
         
         //Registering for notice that the view is being redrawn
         _view.register( EventType.BEGIN_PAGE_REDRAW, new IEventHandler() {

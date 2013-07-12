@@ -608,15 +608,15 @@ public class View extends JFrame {
                         "If you open a ballot, any changes you have made since the last time you saved the current ballot will be lost.  Continue?",
                         "Open Ballot", JOptionPane.YES_NO_OPTION );
             if (answer == JOptionPane.YES_OPTION) {
-                //JFileChooser fc = new JFileChooser();
-            	JFileChooser fc = fileChooser; 
+                JFileChooser fc = new JFileChooser();
+            	//JFileChooser fc = fileChooser;
                 fc.setFileFilter( new FileFilter() {
                     @Override
                     public boolean accept(File f) {
                         String path = f.getAbsolutePath();
-                        return (f.isDirectory() || path.length() > 4
+                        return (f.isDirectory() || (path.length() > 4
                                 && path.substring( path.length() - 4 ).equals(
-                                    ".bal" ));
+                                    ".bal" )));
                     }
 
                     @Override
@@ -637,13 +637,15 @@ public class View extends JFrame {
                     else
                         cardList.setSelectedIndex( -1 );
 
+                    if(((String)cardListModel.get(0)).contains("Straight Party"))
+                        addCardMenu.getComponent(0).setEnabled(false);
+                    else
+                        addCardMenu.getComponent(0).setEnabled(true);
+
                 }
                 fireLanguagesChanged( model.getLanguages() );
 
-                if(((String)cardListModel.get(0)).contains("Straight Party"))
-                    addCardMenu.getComponent(0).setEnabled(false);
-                else
-                    addCardMenu.getComponent(0).setEnabled(true);
+
 
             }
 

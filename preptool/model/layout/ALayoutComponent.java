@@ -235,6 +235,7 @@ public abstract class ALayoutComponent implements Cloneable {
 	 * @param previous the previous to set
 	 */
 	public void setPrevious(ALayoutComponent previous) {
+        System.out.println("Setting previous of " + uniqueID + " to " + previous.getUID());
 		this.previous = previous;
 	}
 
@@ -319,9 +320,11 @@ public abstract class ALayoutComponent implements Cloneable {
 					.getUID());
 		if (next != null)
 			XMLTools.addProperty(doc, compElt, "next", "String", next.getUID());
-		if (previous != null)
+		if (previous != null){
 			XMLTools.addProperty(doc, compElt, "previous", "String", previous
 					.getUID());
+            System.out.println("adding previous!");
+        }
 	}
 
 }

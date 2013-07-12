@@ -101,8 +101,7 @@ public class XMLTools {
 	 * @param file path of the file to write to
 	 */
 	public static void writeXML(Element rootElt, String file)
-			throws TransformerConfigurationException, IllegalArgumentException,
-			TransformerFactoryConfigurationError, TransformerException {
+			throws IllegalArgumentException, TransformerFactoryConfigurationError, TransformerException {
 		rootElt.normalize();
 		Transformer xformer = TransformerFactory.newInstance().newTransformer();
 		xformer.setOutputProperty("indent", "yes");

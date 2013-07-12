@@ -158,8 +158,10 @@ public class RenderPage {
      */
     public void setNavigation(HashMap<String, LinkedList<IDrawable>> uidmap)
             throws LayoutParserException {
+
+
         try {
-            // Go thru each card and "connect the dots."s
+            // Go through each card and "connect the dots."s
             for (IDrawable drawable : _children) {
                 if (drawable instanceof IFocusable) {
                     IFocusable rce = (IFocusable) drawable;

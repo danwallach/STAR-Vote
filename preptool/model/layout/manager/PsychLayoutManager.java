@@ -685,8 +685,27 @@ public class PsychLayoutManager extends ALayoutManager {
 
             return RenderingUtils.renderToggleButton(
             		tb.getText(), tb.getSecondLine(), tb.getParty(), fontsize,
-            		tb.getWidth(), tb.isBold(), param[0]);
+            		tb.getWidth(), tb.isBold(), param[0], param[1]);
         }
+
+        /**
+         * Renders a selected ToggleButton
+         */
+         public BufferedImage forSelectedToggleButton(ToggleButton tb, Boolean... param) {
+             //System.out.println("PsychLayout's forToggleButton");
+             int size = 1;
+
+             int fontsize = (size + 1) * FONT_SIZE_MULTIPLE;
+             if (tb.isIncreasedFontSize()) {
+                 fontsize += 4;
+             }
+
+
+
+             return RenderingUtils.renderToggleButton(
+                     tb.getText(), tb.getSecondLine(), tb.getParty(), fontsize,
+                     tb.getWidth(), tb.isBold(), param[0], param[1]);
+         }
 
         /**
          * Returns null

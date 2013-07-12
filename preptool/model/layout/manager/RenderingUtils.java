@@ -532,7 +532,7 @@ public class RenderingUtils {
 	 */
 	public static BufferedImage renderToggleButton(String text, String text2,
 			String party, int fontsize, int wrappingWidth, boolean bold,
-			boolean selected) {
+			boolean selected, boolean focused) {
 
 		Font font = new Font(FONT_NAME, (bold) ? Font.BOLD : Font.PLAIN,
 				fontsize);
@@ -548,7 +548,9 @@ public class RenderingUtils {
 				RenderingHints.VALUE_ANTIALIAS_ON);
 		graphs.setFont(font);
 
-		graphs.setColor(Color.BLACK); // Could make this a variable
+
+
+
 
 		int baseline = graphs.getFontMetrics().getAscent();
 
@@ -562,7 +564,14 @@ public class RenderingUtils {
 
         int partyPos = boxPos - 10 - partyLength;
 
+        //If the button is focused, display it with an orange background
+        if(focused){
+            graphs.setColor(Color.ORANGE);
+            graphs.fillRect(0, 0, wrappedImage.getWidth(), wrappedImage.getHeight());
 
+        }
+
+        graphs.setColor(Color.BLACK); // Could make this a variable
 
 		graphs.drawString(text, writePos, heightPos);
         graphs.drawString(box, boxPos, heightPos);
