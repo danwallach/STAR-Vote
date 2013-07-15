@@ -18,7 +18,7 @@ public class PINAuthorizationGUI extends JFrame {
 	 * CLASS CONSTANTS
 	 */
     /* The width of the drawable/viewable space on the screen. */
-    private static final int GUI_WIDTH = 250;
+    private static final int GUI_WIDTH = 300;
     /* The height of the drawable/viewable space on the screen. */
     private static final int GUI_HEIGHT = 100;
     /* The height of the title bar (the bar at the top of the GUI display window that contains the name, program, minimize button, exit button and others). */

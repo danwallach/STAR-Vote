@@ -22,19 +22,15 @@
 
 package votebox;
 
-import sun.misc.IOUtils;
-
 import java.io.*;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 
 /**
- * @author Montrose, Matt Bernhard
+ * @author Montrose, Matt Bernhard, Mircea Berechet
  *
  */
 public class BatteryStatus {
 
-    public static final String ROOT_JARS = "Votebox.jar";
+    //public static final String ROOT_JARS = "Votebox.jar";
 
     /**
      * Reads the batter status based on the operating system
@@ -44,10 +40,39 @@ public class BatteryStatus {
 	public static int read(String OS){
         try{
             if(OS.equals("Windows")){
+                String batteryCommandString = "@ECHO OFF\nSETLOCAL\n\nFOR /F \"tokens=*  delims=\"  %%A IN ('WMIC /NameSpace:\"\\\\root\\WMI\" Path BatteryStatus              Get PowerOnline^,RemainingCapacity  /Format:list ^| FIND \"=\"')     DO SET  Battery.%%A\nFOR /F \"tokens=*  delims=\"  %%A IN ('WMIC /NameSpace:\"\\\\root\\WMI\" Path BatteryFullChargedCapacity Get FullChargedCapacity             /Format:list ^| FIND \"=\"')     DO SET  Battery.%%A\n\n:: Calculate runtime capacity\nSET /A Battery.RemainingCapacity = ( %Battery.RemainingCapacity%00 + %Battery.FullChargedCapacity% / 2 ) / %Battery.FullChargedCapacity%\n\n:: Display results\nECHO %Battery.RemainingCapacity%\nGOTO:EOF\n\n:: End localization\nIF \"%OS%\"==\"Windows_NT\" ENDLOCAL\n";
                 //This will let us set the working directory for the command prompt
                 File file = new File("BatteryStatus.bat");
 
-                String entry = "BatteryStatus.bat";
+                // If the file does not exist, then create it.
+                if (!file.exists())
+                {
+                    try
+                    {
+                        file.createNewFile();
+                    }
+                    catch (IOException e)
+                    {
+                        System.out.println("Unable to create file.");
+                    }
+                }
+
+                // Create the writer.
+                BufferedWriter writer;
+                try
+                {
+                    writer = new BufferedWriter(new FileWriter(file.getAbsoluteFile()));
+                    writer.write(batteryCommandString);
+
+                    writer.flush();
+                    writer.close();
+                }
+                catch (IOException e)
+                {
+                    System.out.println("Unable to create BufferedWriter.");
+                }
+
+                /*String entry = "BatteryStatus.bat";
 
 
                 File jarFile = new File(ROOT_JARS);
@@ -70,7 +95,7 @@ public class BatteryStatus {
                     f.flush();
                     f.close();
 
-                }//if
+                }//if*/
 
                 Process child = Runtime.getRuntime().exec(file.getAbsolutePath().split("!!!"));
 
