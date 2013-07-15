@@ -192,7 +192,7 @@ public class Label implements IDrawable {
      * this behavior here.
      * 
      */
-    public void initFromViewmanager(IViewManager viewManagerAdapter,
+    public void initFromViewManager(IViewManager viewManagerAdapter,
             IBallotLookupAdapter ballotLookupAdapter, IAdapter ballotAdapter,
             IViewFactory factory, IBallotVars ballotVars) {
         _factory = factory;

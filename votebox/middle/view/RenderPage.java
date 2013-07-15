@@ -287,7 +287,7 @@ public class RenderPage {
     /**
      * The ViewManager will call this method when it wishes to initialize the
      * state of this drawable. This should include things like strategy/state
-     * setting/syncing with the ballot. Here, we simply call initFromViewmanager
+     * setting/syncing with the ballot. Here, we simply call initFromViewManager
      * on each of the child elements.
      * 
      * @param vmadapter
@@ -308,7 +308,7 @@ public class RenderPage {
             IBallotLookupAdapter lookupadapter, IAdapter ballotadapter,
             IViewFactory factory, IBallotVars ballotvars) {
         for (IDrawable d : _children)
-            d.initFromViewmanager( vmadapter, lookupadapter, ballotadapter,
+            d.initFromViewManager( vmadapter, lookupadapter, ballotadapter,
                 factory, ballotvars );
     }
     

@@ -91,10 +91,10 @@ public class ToggleButton extends Label implements IFocusable {
     }
 
     @Override
-    public void initFromViewmanager(IViewManager viewManagerAdapter,
+    public void initFromViewManager(IViewManager viewManagerAdapter,
             IBallotLookupAdapter ballotLookupAdapter, IAdapter ballotAdapter,
             IViewFactory factory, IBallotVars vars) {
-        super.initFromViewmanager( viewManagerAdapter, ballotLookupAdapter,
+        super.initFromViewManager( viewManagerAdapter, ballotLookupAdapter,
             ballotAdapter, factory, vars );
         try {
             if (ballotLookupAdapter.exists( getUniqueID() )

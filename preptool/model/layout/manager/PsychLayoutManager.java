@@ -460,8 +460,8 @@ public class PsychLayoutManager extends ALayoutManager {
         //#ifdef NONE_OF_ABOVE
         protected void addReturnRequireSelectionButton(Label l, int target, String parentCardUID) {
         	Button rButton = new Button(
-        			getNextLayoutUID(), 
-        			LiteralStrings.Singleton.get("RETURN_BUTTON", language), 
+        			getNextLayoutUID(),
+        			LiteralStrings.Singleton.get("RETURN_BUTTON", language),
         			"GoToPageRequireSelection");
             rButton.setIncreasedFontSize(true);
             rButton.setSize(rButton.execute(sizeVisitor));
