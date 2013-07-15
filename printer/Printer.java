@@ -1,5 +1,5 @@
 /**
- * @author Matt Bernhard
+ * @author Matt Bernhard, Mircea C. Berechet
  * @version 0.1 5/21/13
  *
  * This file is part of VoteBox.

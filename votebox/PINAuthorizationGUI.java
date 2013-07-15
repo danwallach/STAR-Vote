@@ -9,7 +9,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
 
 /**
- * Author: Mircea C. Berechet
+ * @author Mircea C. Berechet
  * Added to project: 07/11/2013
  */
 public class PINAuthorizationGUI extends JFrame {

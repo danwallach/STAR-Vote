@@ -16,7 +16,7 @@ import java.util.List;
 
 /**
  * A class which provides tools to write images to HTML files. Might be useful in printing higher quality images.
- * @author Mircea Berechet
+ * @author Mircea C. Berechet
  */
 public class HTMLPrinter {
 

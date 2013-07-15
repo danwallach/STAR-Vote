@@ -25,7 +25,7 @@ package votebox;
 import java.io.*;
 
 /**
- * @author Montrose, Matt Bernhard, Mircea Berechet
+ * @author Montrose, Matt Bernhard, Mircea C. Berechet
  *
  */
 public class BatteryStatus {

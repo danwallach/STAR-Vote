@@ -16,11 +16,8 @@ import java.util.Observable;
 import java.util.Observer;
 
 /**
- * Created with IntelliJ IDEA.
- * User: mrdouglass95
- * Date: 6/14/13
- * Time: 11:23 AM
- * To change this template use File | Settings | File Templates.
+ * @author Mircea C. Berechet, mrdouglass95
+ *
  */
 
 public class BallotScannerMachineView extends AMachineView{
