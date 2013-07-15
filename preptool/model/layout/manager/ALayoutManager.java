@@ -55,6 +55,7 @@ import preptool.model.layout.ReviewLabel;
 import preptool.model.layout.ToggleButton;
 import preptool.model.layout.ToggleButtonGroup;
 import preptool.view.ProgressInfo;
+import printer.PrintImageUtils;
 
 
 /**
@@ -310,7 +311,7 @@ public abstract class
                             + "_1_" + langShortName + ".png"));
                     ImageIO.write(image, "png", new File(location + uid
                             + "_" + langShortName + ".png"));
-                    boolean write = ImageIO.write(image, "png", file);
+                    boolean write = ImageIO.write(PrintImageUtils.trimImageHorizontally(image, true, 100), "png", file);
                 }
                 catch (IOException ie){
                     throw new RuntimeException(ie);
