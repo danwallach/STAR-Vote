@@ -225,10 +225,13 @@ public abstract class
             public Void forButton(Button b, Object... param) {
                 if (!uids.contains(b.getUID())) {
                     try {
-                        BufferedImage img = b.execute(getImageVisitor());
+                        BufferedImage img = b.execute(getImageVisitor(), false);
+
+                        BufferedImage focused = b.execute(getImageVisitor(), true);
+
                         ImageIO.write(img, "png", new File(location
                                 + b.getUID() + "_1_" + langShortName + ".png"));
-                        ImageIO.write(img, "png", new File(location
+                        ImageIO.write(focused, "png", new File(location
                                 + b.getUID() + "_focused_1_" + langShortName
                                 + ".png"));
                     } catch (IOException e) {
@@ -295,7 +298,8 @@ public abstract class
                 }
 
 
-                BufferedImage image = rb.execute(getImageVisitor());
+                BufferedImage image = rb.execute(getImageVisitor(), false);
+                BufferedImage focusedReview = rb.execute(getImageVisitor(), true);
 
 
 
@@ -311,7 +315,9 @@ public abstract class
                             + "_1_" + langShortName + ".png"));
                     ImageIO.write(image, "png", new File(location + uid
                             + "_" + langShortName + ".png"));
-                    boolean write = ImageIO.write(PrintImageUtils.trimImageHorizontally(image, true, 100), "png", file);
+                    ImageIO.write(focusedReview, "png", new File(location + uid
+                            + "_focused_1_" + langShortName + ".png"));
+                    boolean write = ImageIO.write(PrintImageUtils.trimImageHorizontally(image, true, 1000), "png", file);
                 }
                 catch (IOException ie){
                     throw new RuntimeException(ie);

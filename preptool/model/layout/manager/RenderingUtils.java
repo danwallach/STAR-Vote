@@ -293,7 +293,7 @@ public class RenderingUtils {
 	 */
 	public static BufferedImage renderButton(String text, int fontsize,
 			boolean bold, boolean boxed, int preferredWidth,
-			Color backGroundColor) {
+			Color backGroundColor, boolean focused) {
 
 		Font font = new Font(FONT_NAME, (bold) ? Font.BOLD : Font.PLAIN,
 				fontsize);
@@ -307,8 +307,13 @@ public class RenderingUtils {
 				RenderingHints.VALUE_ANTIALIAS_ON);
 		graphs.setFont(font);
 
-		graphs.setPaint(backGroundColor);
-		graphs.fillRect(0, 0, MAX_BUTTON_WIDTH, MAX_BUTTON_HEIGHT);
+        if(!focused){
+		    graphs.setPaint(backGroundColor);
+		    graphs.fillRect(0, 0, MAX_BUTTON_WIDTH, MAX_BUTTON_HEIGHT);
+        } else{
+            graphs.setPaint(Color.ORANGE);
+            graphs.fillRect(0, 0, MAX_BUTTON_WIDTH, MAX_BUTTON_HEIGHT);
+        }
 
 		graphs.setColor(Color.BLACK); // Could make this a variable
 

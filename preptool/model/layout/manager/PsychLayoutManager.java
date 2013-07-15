@@ -107,18 +107,6 @@ public class PsychLayoutManager extends ALayoutManager {
         public void addCandidate(String uid, String name) {
             ToggleButton tb = new ToggleButton(uid, name);
 
-            //update the states of the buttons
-            if(currentButton != null){
-                lastButton = currentButton.clone();
-            }
-
-            currentButton = nextButton.clone();
-
-            if(lastButton != null){
-                tb.setPrevious(lastButton);
-                lastButton.setNext(tb);
-            }
-
 
             candidates.add(tb);
         }
@@ -126,18 +114,6 @@ public class PsychLayoutManager extends ALayoutManager {
         public void addCandidate(String uid, String name, String party) {
             ToggleButton tb = new ToggleButton(uid, name);
             tb.setParty(party);
-
-            //update the states of the buttons
-            if(currentButton != null){
-                lastButton = currentButton.clone();
-            }
-
-            currentButton = nextButton.clone();
-
-            if(lastButton != null){
-                tb.setPrevious(lastButton);
-                lastButton.setNext(tb);
-            }
 
             candidates.add(tb);
         }
@@ -148,18 +124,6 @@ public class PsychLayoutManager extends ALayoutManager {
             tb.setSecondLine(name2);
             tb.setParty(party);
 
-            //update the states of the buttons
-            if(currentButton != null){
-                lastButton = currentButton.clone();
-
-            }
-
-            currentButton = nextButton.clone();
-
-            if(lastButton != null){
-                tb.setPrevious(lastButton);
-                lastButton.setNext(tb);
-            }
 
             candidates.add(tb);
         }
@@ -427,19 +391,6 @@ public class PsychLayoutManager extends ALayoutManager {
             Spacer PNextInfo = new Spacer(l, south);
             Spacer PNextButton = new Spacer(nextButton, south);
 
-            //update the states of the buttons
-            if(currentButton != null){
-                lastButton = currentButton.clone();
-            }
-
-            currentButton = nextButton.clone();
-
-            if(lastButton != null){
-                nextButton.setPrevious(lastButton);
-                lastButton.setNext(nextButton);
-            }
-
-
 
             // Setup constraints and add label and button
             GridBagConstraints constraints = new GridBagConstraints();
@@ -465,19 +416,6 @@ public class PsychLayoutManager extends ALayoutManager {
         protected void addPreviousButton(Label l) {
             Spacer PPreviousInfo = new Spacer(l, south);
             Spacer PPreviousButton = new Spacer(previousButton, south);
-
-            //update the states of the buttons
-            if(currentButton != null){
-                lastButton = currentButton.clone();
-            }
-
-            currentButton = nextButton.clone();
-
-            if(lastButton != null){
-                previousButton.setPrevious(lastButton);
-                lastButton.setNext(previousButton);
-            }
-
 
             // Setup constraints and add label and button
             GridBagConstraints constraints = new GridBagConstraints();
@@ -672,7 +610,7 @@ public class PsychLayoutManager extends ALayoutManager {
 
             return RenderingUtils.renderButton(button.getText(), fontsize,
                     button.isBold(), button.isBoxed(), 
-					-1, button.getBackgroundColor());
+					-1, button.getBackgroundColor(), param[0]);
         }
 
         /**
@@ -703,7 +641,7 @@ public class PsychLayoutManager extends ALayoutManager {
             BufferedImage buttonImg = RenderingUtils.renderButton(
 				rb.getText(), fontsize, rb.isBold(), rb.isBoxed(),
 				REVIEW_SCREEN_CAND_WIDTH,
-				rb.getBackgroundColor());
+				rb.getBackgroundColor(), param[0]);
             
 			// render party information [dsandler]
 			String aux = rb.getAuxText();

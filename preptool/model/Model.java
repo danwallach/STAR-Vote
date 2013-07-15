@@ -615,7 +615,7 @@ public class Model {
                         if (comp instanceof Spacer) {
                             final Spacer spacer = (Spacer) comp;
                             final BufferedImage image = spacer.getComponent()
-                                    .execute( manager.getImageVisitor(), false );
+                                    .execute( manager.getImageVisitor(), false, false );
                             if (image != null) {
                                 SwingUtilities.invokeLater( new Runnable() {
                                     public void run() {
