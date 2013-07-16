@@ -40,6 +40,9 @@ import java.util.HashSet;
 
 public class AWTView extends AView {
 
+    public static final int GUI_WIDTH = 1024;
+    public static final int GUI_HEIGHT = 768;
+    
 	public static final int CAST_BALLOT_BUTTON = KeyEvent.VK_C;
 	public static final int KILL_BUTTON = KeyEvent.VK_X;
 	public static final int NEXT_PAGE_BUTTON = KeyEvent.VK_PERIOD;
@@ -57,7 +60,7 @@ public class AWTView extends AView {
 	private boolean _windowed;
 
 	private volatile Frame _frame = new Frame();
-	private volatile BufferedImage _bufferImg = new BufferedImage(1024, 768, BufferedImage.TYPE_INT_ARGB);
+	private volatile BufferedImage _bufferImg = new BufferedImage(GUI_WIDTH, GUI_HEIGHT, BufferedImage.TYPE_INT_ARGB);
 
 	private double _scaleX = -1;
 	private double _scaleY = -1;
@@ -70,15 +73,15 @@ public class AWTView extends AView {
 			_scaleX = 1.0;
 			_scaleY = 1.0;
 		}else{
-			_scaleX = ((double)baseWidth)/1024.0;
-			_scaleY = ((double)baseHeight)/768.0;
+			_scaleX = ((double)baseWidth)/(double)GUI_WIDTH;
+			_scaleY = ((double)baseHeight)/(double)GUI_HEIGHT;
 		}
 
 		if(!allowScaling){ _scaleX = 1.0; _scaleY = 1.0;}
 	}
 
 	public AWTView(boolean windowed, boolean allowScaling) {
-		this(windowed, allowScaling, 1024, 768);
+		this(windowed, allowScaling, GUI_WIDTH, GUI_HEIGHT);
 	}
 
 	/**
@@ -188,7 +191,7 @@ public class AWTView extends AView {
 							.getX(), id.getY() + _yoffset, null );
 
 			if(buffering)
-				_frame.getGraphics().drawImage(_bufferImg.getScaledInstance((int)(1024 * _scaleX), (int)(768 * _scaleY), Image.SCALE_SMOOTH), 0, 0, null);
+				_frame.getGraphics().drawImage(_bufferImg.getScaledInstance((int)(GUI_WIDTH * _scaleX), (int)(GUI_HEIGHT * _scaleY), Image.SCALE_SMOOTH), 0, 0, null);
 		}
 		catch (ClassCastException e) {
 			throw new BallotBoxViewException( "Problem while invalidating. ", e );
@@ -221,7 +224,7 @@ public class AWTView extends AView {
 					}
 				}
 			};
-			_frame.setSize( new java.awt.Dimension( 1024, 800 ) );
+			_frame.setSize( new java.awt.Dimension( GUI_WIDTH, GUI_HEIGHT ) );
 		}
 		else {
 			_frame = new Frame( dev.getDefaultConfiguration() ){
@@ -249,23 +252,23 @@ public class AWTView extends AView {
 				DisplayMode bestMatch = modes[0];
 
 				for(DisplayMode mode : modes){
-					if(mode.getWidth() == 1024 && mode.getHeight() == 768){
+					if(mode.getWidth() == GUI_WIDTH && mode.getHeight() == GUI_HEIGHT){
 						bestMatch = mode;
 						break;
 					}
 
-					if(mode.getWidth() == 1024)
+					if(mode.getWidth() == GUI_WIDTH)
 						if(mode.getHeight() > bestMatch.getHeight())
 							bestMatch = mode;
 
-					if(mode.getHeight() == 768)
+					if(mode.getHeight() == GUI_HEIGHT)
 						if(mode.getWidth() > bestMatch.getWidth())
 							bestMatch = mode;
 				}
 
 				dev.setDisplayMode( bestMatch );
 
-				if(bestMatch.getWidth() == 1024 && bestMatch.getHeight() == 768){
+				if(bestMatch.getWidth() == GUI_WIDTH && bestMatch.getHeight() == GUI_HEIGHT){
 					_scaleX = 1.0;
 					_scaleY = 1.0;
 				}
