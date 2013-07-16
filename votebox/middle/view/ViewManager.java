@@ -193,6 +193,8 @@ public class ViewManager implements IViewManager {
      *            Switch to this RenderCardElement.
      */
     private void switchFocus(IFocusable dt) {
+
+        System.out.println("Switching focus to " + dt);
         // Check the validity of the reference we got
         if (dt == null) {
             return;
@@ -479,6 +481,7 @@ public class ViewManager implements IViewManager {
      * focused.
      */
     public void moveFocusNext() {
+        System.out.println("Moving focuse to the next item! " + _currentFocusedElement);
         switchFocus( _currentFocusedElement.getNext() );
     }
 
@@ -714,6 +717,7 @@ public class ViewManager implements IViewManager {
                 if (!(found)) {
                     System.out.println("First item focused: " + drawable);
                     _currentFocusedElement = (IFocusable) drawable;
+                    System.out.println("Current focus: " + _currentFocusedElement);
                     ((IFocusable) drawable).focus();
                     found = true;
                 }

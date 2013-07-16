@@ -242,7 +242,10 @@ public class LayoutParser {
                 parseToggleGroup( drawables, child );
             else if (child.getNodeName().equals( "Button" )
                     || child.getNodeName().equals( "Label" )) {
-                drawables.add( parseDrawable( child, null ) );
+                System.out.println("Found " + parseDrawable(child, null).getUniqueID() +
+                " with next " + parseDrawable( child, null ).getProperties().NEXT);
+                drawables.add(parseDrawable(child, null));
+
             }
             else if (child.getNodeName().equals( "#text" ))
                 ; // Do Nothing
@@ -259,7 +262,14 @@ public class LayoutParser {
         }
 
         RenderPage rp = new RenderPage( drawables, properties );
-        rp.setNavigation( _drawables );
+        System.out.println("Setting up the navigation");
+        rp.setNavigation(_drawables);
+        for(IDrawable d : rp.getChildren()){
+            if(d instanceof IFocusable){
+                System.out.println("Next of " + d.getUniqueID() + " is " + ((IFocusable) d).getNext());
+            }
+        }
+
         rp.setBackgroundImage( _drawables );
         return rp;
     }
@@ -413,6 +423,9 @@ public class LayoutParser {
             throws LayoutParserException {
         NamedNodeMap nodeAttributes = node.getAttributes();
         String key = nodeAttributes.getNamedItem( "name" ).getNodeValue();
+        if(key.equals("next"))
+            System.out.println("Found a next!");
+
         String value = nodeAttributes.getNamedItem( "value" ).getNodeValue();
         String type = nodeAttributes.getNamedItem( "type" ).getNodeValue();
         try {

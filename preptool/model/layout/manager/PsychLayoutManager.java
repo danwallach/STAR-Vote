@@ -1406,10 +1406,13 @@ public class PsychLayoutManager extends ALayoutManager {
         frame.addNextButton(new Label(getNextLayoutUID(),
                 LiteralStrings.Singleton.get("FORWARD_FIRST_RACE", language),
                 sizeVisitor));
-        if (hadLanguageSelect)
+        if (hadLanguageSelect){
             frame.addPreviousButton(new Label(getNextLayoutUID(),
                     LiteralStrings.Singleton.get("BACK_LANGUAGE_SELECT",
                             language), sizeVisitor));
+            nextButton.setPrevious(previousButton);
+            previousButton.setNext(nextButton);
+        }
 
         JPanel east = new JPanel();
         east.setLayout(new GridBagLayout());
@@ -1470,9 +1473,21 @@ public class PsychLayoutManager extends ALayoutManager {
         east.add(PTitle, eastConstraints);
 
         ToggleButtonGroup tbg = new ToggleButtonGroup("LanguageSelect");
+
+        ALayoutComponent tempButton = null;
+
         for (Language lang : languages) {
             LanguageButton button = new LanguageButton(getNextLayoutUID(), lang
                     .getName());
+
+            if(tempButton == null){
+                nextButton.setNext(button);
+                button.setPrevious(nextButton);
+            } else{
+                button.setPrevious(tempButton);
+                tempButton.setNext(button);
+            }
+
             button.setLanguage(lang);
             button.setWidth(LANG_SELECT_WIDTH);
             button.setIncreasedFontSize(true);
@@ -1482,7 +1497,13 @@ public class PsychLayoutManager extends ALayoutManager {
             Spacer PDrawable = new Spacer(button, east);
             east.add(PDrawable, eastConstraints);
             tbg.getButtons().add(button);
+
+            tempButton = button;
         }
+
+        tempButton.setNext(nextButton);
+        nextButton.setPrevious(tempButton);
+
         east.add(new Spacer(tbg, east));
         frame.addAsEastPanel(east);
 

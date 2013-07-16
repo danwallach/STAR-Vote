@@ -230,7 +230,6 @@ public class Label implements IDrawable {
      */
     protected String imagePath(IBallotVars vars, String uid, int size,
             String lang) {
-        System.out.println("The actual function, imagePath, is trying to open: " + vars.getBallotPath() + "/media/" + uid + "_" + size + "_" + lang + ".png");
         return vars.getBallotPath() + "/media/" + uid + "_" + size + "_" + lang + ".png";
     }
 

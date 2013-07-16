@@ -362,7 +362,6 @@ public class RenderingUtils {
 			graphs.drawRect(0, 0, maxWidth - 1, heightPos + padding - 1);
 		}
 
-        System.out.println(maxWidth);
 		// Cut the image down to the correct size
 		wrappedImage = wrappedImage.getSubimage(0, 0, maxWidth, heightPos
 				+ padding);

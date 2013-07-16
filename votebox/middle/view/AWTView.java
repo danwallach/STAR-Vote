@@ -289,7 +289,8 @@ public class AWTView extends AView {
 					deliver( EventType.KILL, InputEvent.NONE );
 					break;
 				case NEXT_PAGE_BUTTON:
-					deliver( EventType.NEXT_PAGE, InputEvent.NONE );
+                    System.out.println("Next pressed!");
+					deliver(EventType.NEXT_PAGE, InputEvent.NONE);
 					break;
 				case PREV_PAGE_BUTTON:
 					deliver( EventType.PREV_PAGE, InputEvent.NONE );
