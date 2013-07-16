@@ -426,7 +426,7 @@ public abstract class
                     Object... param) {
 
                 for (ToggleButton tb : tbg.getButtons())  {
-                    tb.execute(this);
+                    tb.execute(this, param);
 
                 }
                 return null;

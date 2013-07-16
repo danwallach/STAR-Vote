@@ -561,9 +561,7 @@ public class Button extends Label implements IFocusable {
      */
     public IViewImage getFocusedImage() {
         if (_focusedImage == null) {
-            _focusedImage = _factory.makeImage( imagePath( _vars, getUniqueID()
-                    + "_focused", _viewManager.getSize(), _viewManager
-                    .getLanguage() ) );
+            _focusedImage = _factory.makeImage(imagePath(_vars, getUniqueID() + "_focused", _viewManager.getSize(),_viewManager.getLanguage()));
         }
         return _focusedImage;
     }

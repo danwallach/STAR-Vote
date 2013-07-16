@@ -99,6 +99,8 @@ public abstract class AModule extends Observable {
         return true;
     }
 
+
+
     /**
      * Checks whether the information in this module is missing any translations
      * @param lang the language to check

@@ -107,6 +107,10 @@ public class PropositionCard extends ACard {
         return cardLayout;
     }
 
+    public ArrayList<String> getCardData(Language language) {
+        return null;
+    }
+
     @Override
     public Element toXML(Document doc) {
     	Element cardElt = super.toXML(doc);

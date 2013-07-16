@@ -42,9 +42,11 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import preptool.model.ballot.*;
+import preptool.model.ballot.module.AModule;
 import preptool.model.language.Language;
 import preptool.model.language.LiteralStrings;
 import preptool.model.layout.*;
+import sexpression.lexer.Mod;
 
 
 /**
@@ -72,7 +74,7 @@ public class PsychLayoutManager extends ALayoutManager {
 	/**
 	 * Width of each candidate or contest on the review screen (RenderButton).
 	 */
-	private static final int REVIEW_SCREEN_RACE_WIDTH = 200;
+	private static final int REVIEW_SCREEN_RACE_WIDTH = 330;
 	private static final int REVIEW_SCREEN_CAND_WIDTH = 330;
 	private static final Boolean REVIEW_SCREEN_SHOW_PARTY = true;
 	private static final Boolean REVIEW_SCREEN_PARENTHESIZE_PARTY = true;
@@ -996,7 +998,7 @@ public class PsychLayoutManager extends ALayoutManager {
         instructionsBold.setWidth(225);
         instructionsBold.setIncreasedFontSize(true);
         instructionsBold.setColor(Color.WHITE);
-        instructionsBold.setBold(true);
+        instructionsBold.setBold(false);
         instructionsBold.setSize(instructionsBold.execute(sizeVisitor));
 
         makeYourChoicesBold = new Label(getNextLayoutUID(),
@@ -1005,7 +1007,7 @@ public class PsychLayoutManager extends ALayoutManager {
         makeYourChoicesBold.setWidth(225);
         makeYourChoicesBold.setIncreasedFontSize(true);
         makeYourChoicesBold.setColor(Color.WHITE);
-        makeYourChoicesBold.setBold(true);
+        makeYourChoicesBold.setBold(false);
         makeYourChoicesBold.setSize(makeYourChoicesBold.execute(sizeVisitor));
 
         reviewYourChoicesBold = new Label(getNextLayoutUID(),
@@ -1014,7 +1016,7 @@ public class PsychLayoutManager extends ALayoutManager {
         reviewYourChoicesBold.setWidth(225);
         reviewYourChoicesBold.setIncreasedFontSize(true);
         reviewYourChoicesBold.setColor(Color.WHITE);
-        reviewYourChoicesBold.setBold(true);
+        reviewYourChoicesBold.setBold(false);
         reviewYourChoicesBold.setSize(reviewYourChoicesBold
                 .execute(sizeVisitor));
 
@@ -1024,7 +1026,7 @@ public class PsychLayoutManager extends ALayoutManager {
         recordYourVoteBold.setWidth(225);
         recordYourVoteBold.setIncreasedFontSize(true);
         recordYourVoteBold.setColor(Color.WHITE);
-        recordYourVoteBold.setBold(true);
+        recordYourVoteBold.setBold(false);
         recordYourVoteBold.setSize(recordYourVoteBold.execute(sizeVisitor));
 
         nextButton = new Button(getNextLayoutUID(), LiteralStrings.Singleton
@@ -1692,14 +1694,24 @@ public class PsychLayoutManager extends ALayoutManager {
     		for (int i = position; i < ballot.getCards().size(); i++) {
 
     			ACard card = ballot.getCards().get(i);
+
     			ReviewButton rl = new ReviewButton(getNextLayoutUID(), card.getReviewTitle(language), "GoToPage", sizeVisitor);
     			rl.setBold(true);
     			rl.setBoxed(false);
     			rl.setWidth(REVIEW_SCREEN_RACE_WIDTH);
     			rl.setPageNum(pageTargets.get(position));
 
+                ArrayList<String> data = card.getCardData(language);
+
+                if(data != null){
+                    int counter = 0;
+                    for(String datum : data){
+                        System.out.println(counter++ + " "  + datum);
+                    }
+                }
 
     			ReviewButton rb = new ReviewButton(card.getUID(), card.getReviewBlankText(language), "GoToPage", sizeVisitor);
+
 
 
     			rb.setBoxed(false);
@@ -1711,7 +1723,6 @@ public class PsychLayoutManager extends ALayoutManager {
     			Spacer rlSpacer = new Spacer(rl, east);
     			c.gridx = align;
     			east.add(rlSpacer, c);
-
     			Spacer rbSpacer = new Spacer(rb, east);
     			c.gridx = c.gridx + 1;
     			east.add(rbSpacer, c);

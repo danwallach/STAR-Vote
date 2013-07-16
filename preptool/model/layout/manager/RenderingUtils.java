@@ -296,6 +296,8 @@ public class RenderingUtils {
 			Color backGroundColor, boolean focused) {
 
 
+
+
 		Font font = new Font(FONT_NAME, (bold) ? Font.BOLD : Font.PLAIN,
 				fontsize);
 
@@ -308,17 +310,16 @@ public class RenderingUtils {
 				RenderingHints.VALUE_ANTIALIAS_ON);
 		graphs.setFont(font);
 
-//        if(!focused){
+        if(!focused){
 		    graphs.setPaint(backGroundColor);
 		    graphs.fillRect(0, 0, 330, MAX_BUTTON_HEIGHT);
             graphs.setPaint(Color.BLACK);
-            graphs.drawRect(0, 0, 330, MAX_BUTTON_HEIGHT);
-//        }
-//        } else {
-//            System.out.println(">>>>>>" + text);
-//            graphs.setPaint(Color.ORANGE);
-//            graphs.fillRect(0, 0, 330, MAX_BUTTON_HEIGHT);
-//        }
+            graphs.drawRect(0, 0, 329, MAX_BUTTON_HEIGHT-1);
+        } else {
+            System.out.println(">>>>>>" + text);
+            graphs.setPaint(Color.ORANGE);
+            graphs.fillRect(0, 0, 330, MAX_BUTTON_HEIGHT);
+        }
 
 		graphs.setColor(Color.BLACK); // Could make this a variable
 
@@ -332,14 +333,6 @@ public class RenderingUtils {
 
 		int lineWidth = padding;
 
-        boolean linebreak = false;
-
-        if(focused){
-            graphs.setColor(Color.ORANGE);
-            graphs.fillRect(0, 0, lineWidth, MAX_BUTTON_HEIGHT);
-            graphs.setColor(Color.BLACK);
-        }
-
 		int maxWidth = 0; // the max width of any line
 		for (String word : words) // For each word try placing it on the line,
 		// if not jump down a line and then write it
@@ -351,18 +344,13 @@ public class RenderingUtils {
 			lineWidth += wordWidth;
 
 			if (word.equals("\n")) {
-                linebreak = true;
 				maxWidth = Math.max(lineWidth, maxWidth);
 				heightPos += baseline + leading;
 				writePos = padding;
 				lineWidth = padding;
 			}
 
-            if(focused && !linebreak){
-                graphs.setColor(Color.ORANGE);
-                graphs.fillRect(writePos, 0, maxWidth, MAX_BUTTON_HEIGHT);
-                graphs.setColor(Color.BLACK);
-            }
+
 			graphs.drawString(word + " ", writePos, heightPos);
 
 		}
@@ -377,6 +365,7 @@ public class RenderingUtils {
 			graphs.drawRect(0, 0, maxWidth - 1, heightPos + padding - 1);
 		}
 
+        System.out.println(maxWidth);
 		// Cut the image down to the correct size
 		wrappedImage = wrappedImage.getSubimage(0, 0, maxWidth, heightPos
 				+ padding);

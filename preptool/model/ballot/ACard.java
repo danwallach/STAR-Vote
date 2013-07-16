@@ -213,6 +213,12 @@ public abstract class ACard {
     }
 
     /**
+     * Returns the pertinent internal data for this module (i.e. the candidates, proposition selection, etc)
+     */
+    public abstract ArrayList<String> getCardData(Language language);
+
+
+    /**
      * Formats this ACard as a savable XML element
      * @param doc the document
      * @return this ACard as an Element

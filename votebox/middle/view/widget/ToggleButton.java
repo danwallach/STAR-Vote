@@ -288,6 +288,8 @@ public class ToggleButton extends Label implements IFocusable {
      * @return _focusedImage
      */
     public IViewImage getFocusedImage() {
+
+        System.out.println(getUniqueID());
         if (_focusedImage == null) {
             _focusedImage = _factory.makeImage( imagePath( _vars, getUniqueID()
                     + "_focused", _viewManager.getSize(), _viewManager

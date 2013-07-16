@@ -307,7 +307,6 @@ public abstract class ALayoutComponent implements Cloneable {
 	 */
 	protected void addCommonAttributes(Document doc, Element compElt) {
 
-        System.out.println("++++++++++++++++ Common Attributes +++++++++++++++++");
 		compElt.setAttribute("uid", uniqueID);
 		compElt.setAttribute("x", Integer.toString(xPos));
 		compElt.setAttribute("y", Integer.toString(yPos));

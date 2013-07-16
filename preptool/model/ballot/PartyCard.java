@@ -110,6 +110,21 @@ public class PartyCard extends ACard {
         return cardLayout;
     }
 
+    @Override
+    public ArrayList<String> getCardData(Language language) {
+
+        CandidatesModule candidatesModule = (CandidatesModule) getModuleByName("Party");
+        ArrayList<CardElement> cardElements = candidatesModule.getData();
+
+        ArrayList<String> dataStrings = new ArrayList<String>();
+
+        for(CardElement ce : cardElements){
+            dataStrings.add(ce.getParty().getAbbrev(language));
+        }
+
+        return dataStrings;
+    }
+
     /**
      * Returns this card's title, by checking to see if there is a title module
      * and returning its data. If there is no title, returns the empty string

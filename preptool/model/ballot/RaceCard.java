@@ -90,6 +90,23 @@ public class RaceCard extends ACard {
         return titleModule.getData(language) + ":";
     }
 
+    public ArrayList<String> getCardData(Language language){
+        CandidatesModule candidatesModule = (CandidatesModule) getModuleByName("Candidates");
+        ArrayList<CardElement> cardElements = candidatesModule.getData();
+
+        ArrayList<String> dataStrings = new ArrayList<String>();
+
+        for(CardElement ce : cardElements){
+            dataStrings.add(ce.getName(language, 0));
+        }
+
+        return dataStrings;
+
+
+
+    }
+
+
     @Override
     public ICardLayout layoutCard(ALayoutManager manager, ICardLayout cardLayout) {
         Language lang = manager.getLanguage();
