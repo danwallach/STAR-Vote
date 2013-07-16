@@ -25,6 +25,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class BallotScaler {
+
+    private static final int WINDOW_WIDTH = 1600;
+    private static final int WINDOW_HEIGHT = 900;
 	
 	protected static void copy(InputStream in, String name, ZipOutputStream out) throws Exception{
 		out.putNextEntry(new ZipEntry(name));
@@ -154,8 +157,8 @@ public class BallotScaler {
 		int width = Integer.parseInt(args[2]);
 		int height = Integer.parseInt(args[3]);
 		
-		double scaleX = ((double)width)/1024.0;
-		double scaleY = ((double)height)/768.0;
+		double scaleX = ((double)width)/((double) WINDOW_WIDTH);
+		double scaleY = ((double)height)/((double) WINDOW_HEIGHT);
 		
 		System.out.println("Scaling <"+scaleX+", "+scaleY+">");
 		
