@@ -57,10 +57,12 @@ public class LiteralStrings {
 
         ls = new LocalizedString();
         ls.set(ENGLISH, "Review Choices \n ");
+        ls.set(SPANISH, "Revise las Opciones \n ");
         map.put("REVIEW_TITLE", ls);
 
         ls = new LocalizedString();
         ls.set(ENGLISH, "Print Ballot \n ");
+        ls.set(SPANISH, "Imprimir la Boleta \n ");
         map.put("RECORD_TITLE", ls);
 
         ls = new LocalizedString();
@@ -71,18 +73,22 @@ public class LiteralStrings {
 
         ls = new LocalizedString();
         ls.set(ENGLISH, "Thank you for voting!");
+        ls.set(SPANISH, "Gracias por votar!");
         map.put("SUCCESS_TITLE", ls);
 
         ls = new LocalizedString();
         ls.set(ENGLISH, "You must make a selection!");
+        ls.set(SPANISH, "Usted debe hacer una selección!");
         map.put("NO_SELECTION_TITLE", ls);
 
         ls = new LocalizedString();
         ls.set(ENGLISH, "You must make a selection on every page. If you do not want to vote, select 'None of the above'.");
+        ls.set(SPANISH, "Usted debe hacer una selección en cada página. Si usted no quiere votar, seleccione 'Ninguna de las Anteriores'.");
         map.put("NO_SELECTION", ls);
 
         ls = new LocalizedString();
         ls.set(ENGLISH, "Click to go back to the selection screen");
+        ls.set(SPANISH, "Haga clic para volver a la página de selección");
         map.put("RETURN_RACE", ls);
 
         ls = new LocalizedString();
@@ -92,120 +98,151 @@ public class LiteralStrings {
 
         ls = new LocalizedString();
         ls.set(ENGLISH, "Thank you for challenging!");
+        ls.set(SPANISH, "Gracias por desafiar!");
         map.put("RESPONSE_TITLE", ls);
 
         ls = new LocalizedString();
         ls.set(ENGLISH, "Language Selection");
+        ls.set(SPANISH, "Selección de Idioma");
         map.put("LANGUAGE_SELECT_TITLE", ls);
 
         ls = new LocalizedString();
         ls.set(ENGLISH, "Print Ballot");
+        ls.set(SPANISH, "Imprimir la Boleta");
         map.put("CAST_BUTTON", ls);
 
         ls = new LocalizedString();
         ls.set(ENGLISH, "Print Ballot" + '\u2192');
+        ls.set(SPANISH, "Imprimir la Boleta" + '\u2192');
         map.put("COMMIT_BUTTON", ls);
 
         ls = new LocalizedString();
         ls.set(ENGLISH, "Next Page" + '\u2192');
+        ls.set(SPANISH, "Página Siguiente" + '\u2192');
         map.put("NEXT_PAGE_BUTTON", ls);
 
         ls = new LocalizedString();
         ls.set(ENGLISH, '\u2190' + "Previous Page");
+        ls.set(SPANISH, '\u2190' + "Página Anterior");
         map.put("PREVIOUS_PAGE_BUTTON", ls);
 
         ls = new LocalizedString();
         ls.set(ENGLISH, "Return");
+        ls.set(SPANISH, "Volver");
         map.put("RETURN_BUTTON", ls);
 
         ls = new LocalizedString();
         ls.set(ENGLISH, "\n STEP 1 \n Read Instructions");
+        ls.set(SPANISH, "\n PASO 1 \n Lea las Instrucciones");
         map.put("SIDEBAR_INSTRUCTIONS", ls);
 
         ls = new LocalizedString();
         ls.set(ENGLISH, "\n STEP 2 \n Make your choices");
+        ls.set(SPANISH, "\n PASO 2 \n Elija sus opciones");
         map.put("SIDEBAR_MAKE_CHOICES", ls);
 
         ls = new LocalizedString();
         ls.set(ENGLISH, "\n STEP 3 \n Review your choices");
+        ls.set(SPANISH, "\n PASO 3 \n Revise sus opciones");
         map.put("SIDEBAR_REVIEW_CHOICES", ls);
 
         ls = new LocalizedString();
         ls.set(ENGLISH, "\n STEP 4 \n Record your vote");
+        ls.set(SPANISH, "\n PASO 4 \n Registre sus voto");
         map.put("SIDEBAR_RECORD_VOTE", ls);
 
         ls = new LocalizedString();
         ls.set(ENGLISH, "\n You are now on \n STEP 1 \n Read Instructions");
+        ls.set(SPANISH, "\n Ahora se encuentra en \n PASO 1 \n Lea las Instrucciones");
         map.put("SIDEBAR_INSTRUCTIONS_HIGHLIGHTED", ls);
 
         ls = new LocalizedString();
         ls.set(ENGLISH, "\n You are now on \n STEP 2 \n Make your choices");
+        ls.set(SPANISH, "\n Ahora se encuentra en \n PASO 2 \n Elija sus opciones");
         map.put("SIDEBAR_MAKE_CHOICES_HIGHLIGHTED", ls);
 
         ls = new LocalizedString();
         ls.set(ENGLISH, "\n You are now on \n STEP 3 \n Review your choices");
+        ls.set(SPANISH, "\n Ahora se encuentra en \n PASO 3 \n Revise sus opciones");
         map.put("SIDEBAR_REVIEW_CHOICES_HIGHLIGHTED", ls);
 
         ls = new LocalizedString();
         ls.set(ENGLISH, "\n You are now on \n STEP 4 \n Record your vote");
+        ls.set(SPANISH, "\n Ahora se encuentra en \n PASO 4 \n Registre sus voto");
         map.put("SIDEBAR_RECORD_VOTE_HIGHLIGHTED", ls);
 
         ls = new LocalizedString();
-        ls.set(ENGLISH, "Click to go foward to next race");
+        ls.set(ENGLISH, "Click to go forward to next race");
+        ls.set(SPANISH, "Haz clic para avanzar a la página siguiente");
         map.put("FORWARD_NEXT_RACE", ls);
 
         ls = new LocalizedString();
         ls.set(ENGLISH, "Click to go back to previous race");
+        ls.set(SPANISH, "Haga clic para volver a la página anterior");
         map.put("BACK_PREVIOUS_RACE", ls);
 
         ls = new LocalizedString();
         ls.set(ENGLISH, "Click to see more candidates");
+        ls.set(SPANISH, "Haga clic para ver más candidatos");
         map.put("MORE_CANDIDATES", ls);
 
         ls = new LocalizedString();
         ls.set(ENGLISH, "Click to go back to the review screen");
+        ls.set(SPANISH, "Haga clic para volver a la página de revisión");
         map.put("RETURN_REVIEW_SCREEN", ls);
 
         ls = new LocalizedString();
         ls.set(ENGLISH, "Click to go back to Instructions");
+        ls.set(SPANISH, "Haga clic para volver a las Instrucciones");
         map.put("BACK_INSTRUCTIONS", ls);
 
         ls = new LocalizedString();
         ls.set(ENGLISH, "Click to go to Step 3: Review your choices");
+        ls.set(SPANISH, "Haga clic para avanzar al Paso 3: Revise sus opciones");
         map.put("FORWARD_REVIEW", ls);
 
         ls = new LocalizedString();
         ls.set(ENGLISH, "Click to go back to Step 3: Review your choices");
+        ls.set(SPANISH, "Haga clic para volver al Paso 3: Revise sus opciones");
         map.put("BACK_REVIEW", ls);
 
         ls = new LocalizedString();
         ls.set(ENGLISH, "Click to record your vote");
+        ls.set(SPANISH, "Haga clic para registrar sus voto");
         map.put("FORWARD_SUCCESS", ls);
 
         ls = new LocalizedString();
         ls.set(ENGLISH, "Click to go to Step 2: Make your choices");
+        ls.set(SPANISH, "Haga clic para avanzar al Paso 2: Elija sus opciones");
         map.put("FORWARD_FIRST_RACE", ls);
 
         ls = new LocalizedString();
         ls.set(ENGLISH, "Click to go back to Step 2: Make your choices");
+        ls.set(SPANISH, "Haga clic para volver al Paso 2: Elija sus opciones");
         map.put("BACK_LAST_RACE", ls);
 
         ls = new LocalizedString();
         ls.set(ENGLISH, "Click to go to Step 4: Record your vote");
+        ls.set(SPANISH, "Haga clic para avanzar al Paso 4: Registre sus voto");
         map.put("FORWARD_RECORD", ls);
 
         ls = new LocalizedString();
         ls.set(ENGLISH, "Click to go back to Language Selection");
+        ls.set(SPANISH, "Haga clic para volver a la Selección de Idioma");
         map.put("BACK_LANGUAGE_SELECT", ls);
 
         ls = new LocalizedString();
         ls.set(ENGLISH, "Click to go to Step 1: Instructions");
+        ls.set(SPANISH, "Haga clic para avanzar al Paso 1: Instrucciones");
         map.put("FORWARD_INSTRUCTIONS", ls);
 
         ls = new LocalizedString();
         ls.set(ENGLISH, "To make your choice, click on the candidate's name or on the box next to his/her "
                 + "\n name. A green checkmark will appear next to your choice. If you want to change "
                 + "\n your choice, just click on a different candidate or box.");
+        ls.set(SPANISH, "Para seleccionar una opción, haga clic en el nombre del candidato o en la casilla "
+                + "\n junto a su nombre. Una marca de verificación verde aparecerá junto a su selección. "
+                + "\n Si desea cambiar sus selección, haga clic en un candidato o una casilla diferente.");
         map.put("RACE_INSTRUCTIONS", ls);
 
         ls = new LocalizedString();
@@ -213,19 +250,31 @@ public class LiteralStrings {
                 + "\n A green checkmark will appear next to your choice. If you want to change "
                 + "\n your choice, just click on a different party or box. Selecting a party here will "
                 + "\n select candidates from that party on all subsequent screens, where applicable. ");
+        ls.set(SPANISH, "Para seleccionar una opción, haga clic en el nombre del partido o en la casilla "
+                + "\n que aparece junto al nombre. Una marca de verificación verde aparecerá junto a su "
+                + "\n selección. Si desea cambiar su selección, haga clic en un partido o una casilla "
+                + "\n diferente. Selección de un partido aquí seleccionará los candidatos de ese partido "
+                + "\n en todas las páginas siguientes, donde se da el caso.");
         map.put("PARTY_INSTRUCTIONS", ls);
 
         ls = new LocalizedString();
         ls.set(ENGLISH, "To make your choice, click on the response or on the box next to the "
                 + "\n response. A green checkmark will appear next to your choice. If you want to change "
                 + "\n your choice, just click on a different response or box.");
+        ls.set(SPANISH, "Para seleccionar una opción, haga clic en la respuesta o en la casilla que aparece "
+                + "\n junto a la respuesta. Una marca de verificación verde aparecerá junto a su selección. "
+                + "\n Si desea cambiar su selección, haga clic en una respuesta o una casilla diferente.");
         map.put("PROPOSITION_INSTRUCTIONS", ls);
 
         ls = new LocalizedString();
-        ls.set(ENGLISH, "Below are the choices you have made. If you would like to make changes, click on the race you would "
-                + "\n like to change. If you do not want to make changes,"
+        ls.set(ENGLISH, "Below are the choices you have made. If you would like to make changes, "
+                + "\n click on the race you would like to change. If you do not want to make changes, "
                 + "\n click the 'Next Page' button to go to Step 4. "
-                + "\n **Your ballot will not be recorded and printed unless you finish step 4.**");
+                + "\n \n **Your ballot will not be recorded and printed unless you finish step 4.**");
+        ls.set(SPANISH, "A continuación se presentan las opciones que ha seleccionado. Si usted desea "
+                + "\n cambiarlos haga clic en la carrera que le gustaría cambiar. Si no desea cambios, "
+                + "\n haga clic en el botón 'Página siguiente' para ir al paso 4. "
+                + "\n \n ** Su boleta no se registrará y se imprimirá menos que usted finaliza el Paso 4. **");
         map.put("REVIEW_INSTRUCTIONS", ls);
 
         ls = new LocalizedString();
@@ -243,6 +292,7 @@ public class LiteralStrings {
                 + "\n instructions. "
                 + "\n \n At the bottom of the screen, there will be buttons you can click with your "
                 + "\n mouse. Click the 'Next Page' button to go to the next page.");
+        ls.set(SPANISH, "");
         map.put("INSTRUCTIONS", ls);
 
         ls = new LocalizedString();
@@ -251,22 +301,27 @@ public class LiteralStrings {
                 + "\n recorded and will be printed. "
                 + "\n \n If you want to make changes, click the 'Previous Page' button to "
                 + "\n go back to the Review Screen. ");
+        ls.set(SPANISH, "");
         map.put("RECORD_INSTRUCTIONS", ls);
 
         ls = new LocalizedString();
-        ls.set(ENGLISH, "Please select the language you would like to vote in.");
+        ls.set(ENGLISH, "Please select the language in which you would like to vote.");
+        ls.set(SPANISH, "Por favor seleccione el idioma en el que desea votar.");
         map.put("LANGUAGE_SELECT_INSTRUCTIONS", ls);
 
         ls = new LocalizedString();
         ls.set(ENGLISH, "\n Your ballot is being printed.  To cast your vote deposit your ballot in the ballot box. \n You may now leave the voting booth. ");
+        ls.set(SPANISH, "\n Se imprime su boleta. Para emitir su voto deposita su papeleta en la urna. \n Ahora puede salir de la cabina de votación. ");
         map.put("SUCCESS", ls);
 
         ls = new LocalizedString();
         ls.set(ENGLISH, "\n Your provisional ballot is being printed. \n Please see a poll worker to ensure that the proper protocols are being followed for this vote. ");
+        ls.set(SPANISH, "\n Se imprime su boleta provisional. \n Por favor, consulte a un trabajador electoral para asegurar que \n los protocolos adecuados se están siguiendo para esta votación.");
         map.put("PROVISIONAL", ls);
 
         ls = new LocalizedString();
         ls.set(ENGLISH, "\n Your vote has not been recorded. Please ask to re-authorize this booth to cast your vote. ");
+        ls.set(SPANISH, "\n Su voto no ha sido registrado. Por favor, pregunte a volver a autorizar esta cabina para emitir su voto.");
         map.put("RESPONSE", ls);
 
         ls = new LocalizedString();
@@ -296,30 +351,37 @@ public class LiteralStrings {
 
         ls = new LocalizedString();
         ls.set(ENGLISH, "Override Cancel");
+        ls.set(SPANISH, "Anular Cancelación");
         map.put("OVERRIDE_CANCEL_TITLE", ls);
 
         ls = new LocalizedString();
         ls.set(ENGLISH, "The election supervisor has requested that this ballot be cancelled. \n Proceed with this operation?");
+        ls.set(SPANISH, "El supervisor electoral ha solicitado que se cancele esta votación. \n ¿Continuar con esta operación?");
         map.put("OVERRIDE_CANCEL_INSTRUCTIONS", ls);
 
         ls = new LocalizedString();
         ls.set(ENGLISH, "Yes, Cancel this Ballot");
+        ls.set(SPANISH, "Sí, Cancele la Boleta");
         map.put("OVERRIDE_CANCEL_CONFIRM", ls);
 
         ls = new LocalizedString();
         ls.set(ENGLISH, "Override Cast");
+        ls.set(SPANISH, "Anular Emisión");
         map.put("OVERRIDE_CAST_TITLE", ls);
 
         ls = new LocalizedString();
         ls.set(ENGLISH, "The election supervisor has requested that this ballot be recorded. \n Proceed with this operation?");
+        ls.set(SPANISH, "El supervisor electoral ha solicitado que se registró esta votación. \n ¿Continuar con esta operación?");
         map.put("OVERRIDE_CAST_INSTRUCTIONS", ls);
 
         ls = new LocalizedString();
         ls.set(ENGLISH, "Yes, Record and Print this Ballot");
+        ls.set(SPANISH, "Sí, Registre e Imprima esta Boleta");
         map.put("OVERRIDE_CAST_CONFIRM", ls);
 
         ls = new LocalizedString();
         ls.set(ENGLISH, "No, Ignore this Request");
+        ls.set(SPANISH, "No, Ignorar este Solicitud");
         map.put("OVERRIDE_DENY", ls);
 
     }
