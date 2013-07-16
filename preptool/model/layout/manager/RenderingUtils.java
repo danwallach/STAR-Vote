@@ -313,10 +313,7 @@ public class RenderingUtils {
         if(!focused){
 		    graphs.setPaint(backGroundColor);
 		    graphs.fillRect(0, 0, 330, MAX_BUTTON_HEIGHT);
-            graphs.setPaint(Color.BLACK);
-            graphs.drawRect(0, 0, 329, MAX_BUTTON_HEIGHT-1);
         } else {
-            System.out.println(">>>>>>" + text);
             graphs.setPaint(Color.ORANGE);
             graphs.fillRect(0, 0, 330, MAX_BUTTON_HEIGHT);
         }

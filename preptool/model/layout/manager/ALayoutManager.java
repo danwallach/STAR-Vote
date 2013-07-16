@@ -396,7 +396,7 @@ public abstract class
 
                         //Added party info for ZH study here. [dsandler]
 						review.setAuxText(tb.getParty());
-                        review.setBoxed(false);
+                        review.setBoxed(true);
                         //System.out.println("Setting the width of review button to " + tb.getWidth());
                         review.setWidth(tb.getWidth());
                         review.execute(this, param);

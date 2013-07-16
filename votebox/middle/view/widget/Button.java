@@ -452,14 +452,22 @@ public class Button extends Label implements IFocusable {
         // associated with this element is the reviewScreenImage of the
         // currently selected drawable in the card.
         try {
-
             if (_ballot.exists( getUniqueID() )
                     && _ballot.isCard( getUniqueID() )
                     && !(_ballot.selectedElement( getUniqueID() )
-                            .equals( getUniqueID() )))
+                            .equals( getUniqueID() )) && _state.equals(DefaultButtonState.Singleton)){
+
                 return this.getParent().getParent().lookup(
-                    _ballot.selectedElement( getUniqueID() ) ).get( 0 )
-                        .getReviewImage();
+                    _ballot.selectedElement( getUniqueID() ) ).get( 0 ).getReviewImage();
+            }
+            else if(_ballot.exists( getUniqueID() )
+                    && _ballot.isCard( getUniqueID() )
+                    && !(_ballot.selectedElement( getUniqueID() )
+                    .equals( getUniqueID() )) && _state.equals(FocusedButtonState.Singleton)){
+
+                return ((Label)this.getParent().getParent().lookup(
+                        _ballot.selectedElement( getUniqueID() ) ).get( 0 )).getFocusedReviewImage();
+            }
         }
         catch (UnknownUIDException e) {
             throw new BallotBoxViewException(
@@ -560,6 +568,8 @@ public class Button extends Label implements IFocusable {
      * @return _focusedImages
      */
     public IViewImage getFocusedImage() {
+//        if(getUniqueID().equals("B1"))
+//            throw new RuntimeException("SDFASDFASDFASDFASdf");
         if (_focusedImage == null) {
             _focusedImage = _factory.makeImage(imagePath(_vars, getUniqueID() + "_focused", _viewManager.getSize(),_viewManager.getLanguage()));
         }
