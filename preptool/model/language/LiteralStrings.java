@@ -292,7 +292,20 @@ public class LiteralStrings {
                 + "\n instructions. "
                 + "\n \n At the bottom of the screen, there will be buttons you can click with your "
                 + "\n mouse. Click the 'Next Page' button to go to the next page.");
-        ls.set(SPANISH, "");
+        ls.set(SPANISH, "\n Bienvenido. Usted está a punto de comenzar la votación en un simulacro de "
+                + "\n elecciones en la Universidad Rice. "
+                + "\n \n Hay cuatro pasos para votar en esta elección. "
+                + "\n \n Paso 1: Finalizar de leer las Instrucciones. "
+                + "\n \n Paso 2: Haga su elección. Aquí es donde usted va a elegir a sus candidatos y "
+                + "\n votar a favor o en contra de las proposiciones. Va a hacer una opción por página. "
+                + "\n \n Paso 3: Revise sus opciones. Aquí es donde podrás ver todas las opciones que haya "
+                + "\n hecho y ser capaces de hacer los cambios que desee. "
+                + "\n \n Paso 4: Registre su voto haciendo clic en el botón 'Imprimir Boleta'. Este es el "
+                + "\n último paso. Una vez que termine este paso, usted no será capaz de hacer cualquier "
+                + "\n cambio, y se grabará su voto. "
+                + "\n \n Al llegar a cada uno de estos cuatro pasos, podrás ver instrucciones más detalladas. "
+                + "\n \n En la parte inferior de la página, habrá botones en los que puede hacer clic con el "
+                + "\n ratón. Haga clic en el botón 'Página Siguiente' para ir a la página siguiente. ");
         map.put("INSTRUCTIONS", ls);
 
         ls = new LocalizedString();
@@ -301,7 +314,10 @@ public class LiteralStrings {
                 + "\n recorded and will be printed. "
                 + "\n \n If you want to make changes, click the 'Previous Page' button to "
                 + "\n go back to the Review Screen. ");
-        ls.set(SPANISH, "");
+        ls.set(SPANISH, "No se puede hacer ningún cambio tras hacer clic en el botón 'Página Siguiente'. "
+                + "\n Al hacer clic en el botón, su voto será registrado oficialmente y será impreso. "
+                + "\n \n Si desea hacer cambios, haga clic en el botón 'Página Anterior' para volver a "
+                + "\n la página de la revisión. ");
         map.put("RECORD_INSTRUCTIONS", ls);
 
         ls = new LocalizedString();
