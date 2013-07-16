@@ -91,7 +91,7 @@ public class PsychLayoutManager extends ALayoutManager {
     /**
      * Constant for the width of the language selection page box.
      */
-    private static final int LANG_SELECT_WIDTH = 500;
+    private static final int LANG_SELECT_WIDTH = 600;
 
 
     public class PsychCardLayout implements ICardLayout {
