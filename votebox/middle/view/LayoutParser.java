@@ -251,7 +251,7 @@ public class LayoutParser {
             else if (child.getNodeName().equals( "ListProperty" ))
                 parseListProperties( child, properties );
             else
-                throw new LayoutParserException( "I dont recognize "
+                throw new LayoutParserException( "I don't recognize "
                         + child.getNodeName()
                         + " as being a ToggleButtonGroup, Button, or Label",
                         null );

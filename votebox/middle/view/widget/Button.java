@@ -22,10 +22,6 @@
 
 package votebox.middle.view.widget;
 
-import java.util.Date;
-import java.util.Observable;
-import java.util.Observer;
-
 import votebox.middle.Event;
 import votebox.middle.IBallotVars;
 import votebox.middle.IncorrectTypeException;
@@ -33,7 +29,6 @@ import votebox.middle.Properties;
 import votebox.middle.ballot.CardException;
 import votebox.middle.ballot.IBallotLookupAdapter;
 import votebox.middle.ballot.NonCardException;
-import votebox.middle.datacollection.DataLogger;
 import votebox.middle.driver.IAdapter;
 import votebox.middle.driver.UnknownUIDException;
 import votebox.middle.view.BallotBoxViewException;
@@ -94,7 +89,7 @@ public class Button extends Label implements IFocusable {
     private AButtonState _state = DefaultButtonState.Singleton;
 
     /**
-     * This is the buttons's strategy. Calls to select are delegated to this
+     * This is the button's strategy. Calls to select are delegated to this
      * instance.
      */
     private IButtonStrategy _buttonStrategy = null;
@@ -111,52 +106,14 @@ public class Button extends Label implements IFocusable {
      */
     public Button(String uid, Properties properties) {
         super( uid, properties );
-        
-        //#ifdef EVIL
-        insertDataCollectionEvil();
-        //#endif
     }
 
-    //#ifdef EVIL
-    
-    /**
-     * Call this method to connect this button with the datacollection package.
-     */
-    private void insertDataCollectionEvil() {
-        final Button outer = this;
-
-        _selectedEvent.addObserver( new Observer() {
-
-            public void update(Observable o, Object arg) {
-                DataLogger.CreateAndDump( outer.getUniqueID(), "Button",
-                    "Selected", new Date() );
-            }
-        } );
-
-        _focusedEvent.addObserver( new Observer() {
-
-            public void update(Observable o, Object arg) {
-                DataLogger.CreateAndDump( outer.getUniqueID(), "Button",
-                    "Focused", new Date() );
-            }
-        } );
-
-        _unfocusedEvent.addObserver( new Observer() {
-
-            public void update(Observable o, Object arg) {
-                DataLogger.CreateAndDump( outer.getUniqueID(), "Button",
-                    "Unfocused", new Date() );
-            }
-        } );
-    }
-    
-    //#endif
 
     @Override
-    public void initFromViewmanager(IViewManager viewManagerAdapter,
+    public void initFromViewManager(IViewManager viewManagerAdapter,
             IBallotLookupAdapter ballotLookupAdapter, IAdapter ballotAdapter,
             IViewFactory factory, IBallotVars ballotVars) {
-        super.initFromViewmanager( viewManagerAdapter, ballotLookupAdapter,
+        super.initFromViewManager( viewManagerAdapter, ballotLookupAdapter,
             ballotAdapter, factory, ballotVars );
         try {
             setStrategy( viewManagerAdapter );
