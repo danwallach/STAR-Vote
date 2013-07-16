@@ -253,8 +253,9 @@ public class ViewManager implements IViewManager {
      *            This is the drawable which has been focused on.
      */
     public void focus(IDrawable ce) {
-        if (ce instanceof IFocusable && ce != _currentFocusedElement)
+        if (ce instanceof IFocusable && ce != _currentFocusedElement){
             switchFocus( (IFocusable) ce );
+        }
     }
 
     /**

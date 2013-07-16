@@ -1697,24 +1697,13 @@ public class PsychLayoutManager extends ALayoutManager {
 
     			ReviewButton rl = new ReviewButton(getNextLayoutUID(), card.getReviewTitle(language), "GoToPage", sizeVisitor);
     			rl.setBold(true);
-    			rl.setBoxed(false);
+    			rl.setBoxed(true);
     			rl.setWidth(REVIEW_SCREEN_RACE_WIDTH);
     			rl.setPageNum(pageTargets.get(position));
 
-                ArrayList<String> data = card.getCardData(language);
-
-                if(data != null){
-                    int counter = 0;
-                    for(String datum : data){
-                        System.out.println(counter++ + " "  + datum);
-                    }
-                }
-
     			ReviewButton rb = new ReviewButton(card.getUID(), card.getReviewBlankText(language), "GoToPage", sizeVisitor);
 
-
-
-    			rb.setBoxed(false);
+    			rb.setBoxed(true);
     			rb.setWidth(REVIEW_SCREEN_CAND_WIDTH);
     			rb.setPageNum(pageTargets.get(position));
 
@@ -1723,6 +1712,7 @@ public class PsychLayoutManager extends ALayoutManager {
     			Spacer rlSpacer = new Spacer(rl, east);
     			c.gridx = align;
     			east.add(rlSpacer, c);
+
     			Spacer rbSpacer = new Spacer(rb, east);
     			c.gridx = c.gridx + 1;
     			east.add(rbSpacer, c);

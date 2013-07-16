@@ -954,8 +954,6 @@ public class VoteBox{
 
                 if (e.getNode() == mySerial) {
 
-                    System.out.println(">>>>> Start provisional session!");
-
                     isProvisional = true;
 
                     if (voting || currentDriver != null && killVBTimer == null)
