@@ -1753,8 +1753,8 @@ public class PsychLayoutManager extends ALayoutManager {
     		cardPage.setBackgroundLabel(background.getUID());
 
             // This variable is used to shift down all the race labels that come after a presidential election label.
-            int yShift = 0;
-            int currentIndex = 0;
+            //int yShift = 0;
+            //int currentIndex = 0;
             Component[] componentsArray = frame.getAllComponents();
     		for (Component cmp : componentsArray) {
     			int componentHeight = cmp.getHeight();
@@ -1764,15 +1764,15 @@ public class PsychLayoutManager extends ALayoutManager {
                 if (componentHeight == PRESIDENTIAL_RACE_LABEL_COMPONENT_HEIGHT) // This detects either a presidential race label or a presidential race selection.
                 {
                     // Use the old shift length.
-                    s.getComponent().setYPos(s.getComponent().getYPos() + yShift);
-                    if (s.getComponent().getUID().contains("B"))  // This uniquely detects presidential race selections. They always follow a label, so the latter of the two should set the yShift.
+                    s.getComponent().setYPos(s.getComponent().getYPos()/* + yShift*/);
+                    /*if (s.getComponent().getUID().contains("B"))  // This uniquely detects presidential race selections. They always follow a label, so the latter of the two should set the yShift.
                     {
                         //System.out.println("UID " + s.getComponent().getUID() + " is a presidential election. Updating yShift from " + yShift + " to " + (yShift + PRESIDENTIAL_RACE_SHIFT_HEIGHT));
                         // Update the shift length.
                         yShift += PRESIDENTIAL_RACE_SHIFT_HEIGHT;
-                    }
+                    }*/
                     cardPage.getComponents().add(s.getComponent());
-                    currentIndex++;
+                    //currentIndex++;
                     continue;
                 }
                 /**
@@ -1784,7 +1784,7 @@ public class PsychLayoutManager extends ALayoutManager {
                  *      The second button label comes after an L but before an L.
                  *      No other component meets these conditions.
                  */
-                // Detect if these are button labels.
+                /*/ Detect if these are button labels.
                 Boolean condition1 = false;
                 Boolean condition2 = false;
 
@@ -1802,7 +1802,7 @@ public class PsychLayoutManager extends ALayoutManager {
                         System.out.println("\tElement at index i's UID, " + ((Spacer) componentsArray[currentIndex]).getComponent().getUID() + ", contains L. <--" + c1sub1.toString());
                         System.out.println("\tElement at index i-1's UID, " + ((Spacer) componentsArray[currentIndex-1]).getComponent().getUID() + ", contains B. <--" + c1sub2.toString());
                         System.out.println("\tElement at index i+1's UID, " + ((Spacer) componentsArray[currentIndex+1]).getComponent().getUID() + ", contains L. <--" + c1sub3.toString());
-                        System.out.println("\tCondition 1 got set to " + condition1.toString());*/
+                        System.out.println("\tCondition 1 got set to " + condition1.toString());*-/
 
                         Boolean c2sub1 = ((Spacer) componentsArray[currentIndex]).getComponent().getUID().contains("L");
                         Boolean c2sub2 = ((Spacer) componentsArray[currentIndex-1]).getComponent().getUID().contains("L");
@@ -1812,7 +1812,7 @@ public class PsychLayoutManager extends ALayoutManager {
                         System.out.println("\tElement at index i's UID, " + ((Spacer) componentsArray[currentIndex]).getComponent().getUID() + ", contains L. <--" + c2sub1.toString());
                         System.out.println("\tElement at index i-1's UID, " + ((Spacer) componentsArray[currentIndex-1]).getComponent().getUID() + ", contains L. <--" + c2sub2.toString());
                         System.out.println("\tElement at index i+1's UID, " + ((Spacer) componentsArray[currentIndex+1]).getComponent().getUID() + ", contains L. <--" + c2sub3.toString());
-                        System.out.println("\tCondition 2 got set to " + condition2.toString());*/
+                        System.out.println("\tCondition 2 got set to " + condition2.toString());*-/
                     }
                     else
                     {
@@ -1824,7 +1824,7 @@ public class PsychLayoutManager extends ALayoutManager {
                             /*System.out.println("\tCONDITION 1:");
                             System.out.println("\tElement at index i's UID, " + ((Spacer) componentsArray[currentIndex]).getComponent().getUID() + ", contains L. <--" + c1sub1.toString());
                             System.out.println("\tElement at index i+1's UID, " + ((Spacer) componentsArray[currentIndex+1]).getComponent().getUID() + ", contains L. <--" + c1sub2.toString());
-                            System.out.println("\tCondition 1 got set to " + condition1.toString());*/
+                            System.out.println("\tCondition 1 got set to " + condition1.toString());*-/
 
                         }
                         if (currentIndex == componentsArray.length - 1)
@@ -1835,25 +1835,25 @@ public class PsychLayoutManager extends ALayoutManager {
                             /*System.out.println("\tCONDITION 2:");
                             System.out.println("\tElement at index i's UID, " + ((Spacer) componentsArray[currentIndex]).getComponent().getUID() + ", contains L. <--" + c2sub1.toString());
                             System.out.println("\tElement at index i-1's UID, " + ((Spacer) componentsArray[currentIndex-1]).getComponent().getUID() + ", contains L. <--" + c2sub2.toString());
-                            System.out.println("\tCondition 2 got set to " + condition2.toString());*/
+                            System.out.println("\tCondition 2 got set to " + condition2.toString());*-/
                         }
                     }
 
 
                     /*System.out.println("=====\n\tFor UID " + s.getComponent().getUID() + ", the variables are: ");
                     System.out.println("\t\tcondition1: " + condition1.toString());
-                    System.out.println("\t\tcondition2: " + condition2.toString());*/
+                    System.out.println("\t\tcondition2: " + condition2.toString());*-/
                 }
 
                 // Now check if they are button labels. If yes, leave them alone. If no, shift them down.
-                if(!condition1 && !condition2)
+                /if(!condition1 && !condition2)
                 {
                     //System.out.println("Shifting UID " + s.getComponent().getUID() + " " + yShift + " units down because of a presidential race.");
-                    s.getComponent().setYPos(s.getComponent().getYPos() + yShift);
-                }
+                    //s.getComponent().setYPos(s.getComponent().getYPos() + yShift);
+                }*/
 
                 cardPage.getComponents().add(s.getComponent());
-                currentIndex++;
+                //currentIndex++;
     		}
     		reviewPages.add(cardPage);
     		if (position < ballot.getCards().size())
