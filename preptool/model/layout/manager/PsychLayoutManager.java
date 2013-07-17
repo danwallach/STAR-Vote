@@ -391,6 +391,11 @@ public class PsychLayoutManager extends ALayoutManager {
          */
         protected void addNextButton(Label l) {
             Spacer PNextInfo = new Spacer(l, south);
+            nextButton = new Button(getNextLayoutUID(), LiteralStrings.Singleton
+                    .get("NEXT_PAGE_BUTTON", language), "NextPage");
+            nextButton.setIncreasedFontSize(true);
+            nextButton.setSize(nextButton.execute(sizeVisitor));
+
             Spacer PNextButton = new Spacer(nextButton, south);
 
 
@@ -417,6 +422,11 @@ public class PsychLayoutManager extends ALayoutManager {
          */
         protected void addPreviousButton(Label l) {
             Spacer PPreviousInfo = new Spacer(l, south);
+            previousButton = new Button(getNextLayoutUID(),
+                    LiteralStrings.Singleton.get("PREVIOUS_PAGE_BUTTON", language),
+                    "PreviousPage");
+            previousButton.setIncreasedFontSize(true);
+            previousButton.setSize(previousButton.execute(sizeVisitor));
             Spacer PPreviousButton = new Spacer(previousButton, south);
 
             // Setup constraints and add label and button
@@ -1339,13 +1349,36 @@ public class PsychLayoutManager extends ALayoutManager {
             Page cardPage = new Page();
             cardPage.getComponents().add(background);
             cardPage.setBackgroundLabel(background.getUID());
+
+            ALayoutComponent tempButton = null;
+
             for (Component c : cardFrame.getAllComponents()) {
                 Spacer s = (Spacer) c;
                 s.updatePosition();
                 if (!(s.getComponent() instanceof ToggleButton)){
                     cardPage.getComponents().add(s.getComponent());
                 }//if
+
+                ALayoutComponent button = s.getComponent();
+
+                if(button instanceof ToggleButton){
+                    if(tempButton == null){
+                        button.setPrevious(previousButton);
+                        previousButton.setNext(button);
+
+                    }else{
+                        button.setPrevious(tempButton);
+                        tempButton.setNext(button);
+                    }
+
+                    tempButton = button;
+
+                }
             }
+
+            tempButton.setNext(nextButton);
+            nextButton.setPrevious(tempButton);
+
             pages.add(cardPage);
         }
         return pages;
@@ -1480,6 +1513,7 @@ public class PsychLayoutManager extends ALayoutManager {
             LanguageButton button = new LanguageButton(getNextLayoutUID(), lang
                     .getName());
 
+            //TODO remember this
             if(tempButton == null){
                 nextButton.setNext(button);
                 button.setPrevious(nextButton);
@@ -1712,6 +1746,8 @@ public class PsychLayoutManager extends ALayoutManager {
 
     		int columnLength = (int)Math.ceil(ballot.getCards().size() / REVIEW_SCREEN_NUM_COLUMNS);
 
+            ALayoutComponent tempButton = null;
+
     		for (int i = position; i < ballot.getCards().size(); i++) {
 
     			ACard card = ballot.getCards().get(i);
@@ -1722,12 +1758,22 @@ public class PsychLayoutManager extends ALayoutManager {
     			rl.setWidth(REVIEW_SCREEN_RACE_WIDTH);
     			rl.setPageNum(pageTargets.get(position));
 
+
     			ReviewButton rb = new ReviewButton(card.getUID(), card.getReviewBlankText(language), "GoToPage", sizeVisitor);
 
     			rb.setBoxed(true);
     			rb.setWidth(REVIEW_SCREEN_CAND_WIDTH);
     			rb.setPageNum(pageTargets.get(position));
 
+                if(tempButton == null){
+                    previousButton.setNext(rl);
+                    rl.setPrevious(previousButton);
+                } else{
+                    rl.setPrevious(tempButton);
+                    tempButton.setNext(rl);
+                }
+                rl.setNext(rb);
+                rb.setPrevious(rl);
 
 
     			Spacer rlSpacer = new Spacer(rl, east);
@@ -1750,7 +1796,13 @@ public class PsychLayoutManager extends ALayoutManager {
     			position++;
     			if (i % CARDS_PER_REVIEW_PAGE >= CARDS_PER_REVIEW_PAGE - 1) //number of races to put on each card
     				break;
+
+                tempButton = rb;
     		}
+
+            nextButton.setPrevious(tempButton);
+            tempButton.setNext(nextButton);
+
     		frame.addAsEastPanel(east);
 
     		//add instructions
@@ -1772,6 +1824,9 @@ public class PsychLayoutManager extends ALayoutManager {
     		Page cardPage = new Page();
     		cardPage.getComponents().add(background);
     		cardPage.setBackgroundLabel(background.getUID());
+
+//            previousButton = returnButton;
+//            nextButton = returnButton;
 
             // This variable is used to shift down all the race labels that come after a presidential election label.
             //int yShift = 0;
@@ -1873,9 +1928,50 @@ public class PsychLayoutManager extends ALayoutManager {
                     //s.getComponent().setYPos(s.getComponent().getYPos() + yShift);
                 }*/
 
-                cardPage.getComponents().add(s.getComponent());
+
+
+                ALayoutComponent button = null;
+                ToggleButton newButton = null;
+                tempButton = null;
+
+
+                button = s.getComponent();
+
+
+
+                if(button instanceof ToggleButton){
+                    System.out.println("Creating toggle alias!");
+
+                    newButton = new ToggleButton(getNextLayoutUID(), ((ToggleButton) button).getText(), sizeVisitor);
+
+                    if(tempButton == null){
+                        newButton.setPrevious(returnButton);
+                        returnButton.setNext(newButton);
+
+                    }else{
+                        newButton.setPrevious(tempButton);
+                        tempButton.setNext(newButton);
+                    }
+
+                    tempButton = newButton;
+
+                }
+
+                if(newButton != null)
+                    cardPage.getComponents().add(newButton);
+                else
+                    cardPage.getComponents().add(s.getComponent());
+
+
+            }
+                //If the temporary button is still null at this point that means the
+                //page contains no ToggleButtons
+                if(tempButton != null){
+                    tempButton.setNext(returnButton);
+                    returnButton.setPrevious(tempButton);
+                }
                 //currentIndex++;
-    		}
+
     		reviewPages.add(cardPage);
     		if (position < ballot.getCards().size())
     			numReviewPages++;
@@ -1951,11 +2047,37 @@ public class PsychLayoutManager extends ALayoutManager {
         page.getComponents().add(simpleBackground);
         page.setBackgroundLabel(simpleBackground.getUID());
 
+        ALayoutComponent button = null;
+        ALayoutComponent tempButton = null;
+
         for (Component c : frame.getAllComponents()) {
             Spacer s = (Spacer) c;
             s.updatePosition();
             page.getComponents().add(s.getComponent());
+            button = s.getComponent();
+
+            if(button instanceof ToggleButton){
+                if(tempButton == null){
+                    button.setPrevious(previousButton);
+                    previousButton.setNext(button);
+
+                }else{
+                    button.setPrevious(tempButton);
+                    tempButton.setNext(button);
+                }
+
+                tempButton = button;
+
+            }
         }
+
+        //If the temporary button is still null at this point that means the
+        //page contains no ToggleButtons
+        if(tempButton != null){
+            tempButton.setNext(nextButton);
+            nextButton.setPrevious(tempButton);
+        }
+
         return page;
     }
     //#endif
@@ -1986,11 +2108,37 @@ public class PsychLayoutManager extends ALayoutManager {
         page.getComponents().add(simpleBackground);
         page.setBackgroundLabel(simpleBackground.getUID());
 
+        ALayoutComponent button = null;
+        ALayoutComponent tempButton = null;
+
         for (Component c : frame.getAllComponents()) {
             Spacer s = (Spacer) c;
             s.updatePosition();
             page.getComponents().add(s.getComponent());
+            button = s.getComponent();
+
+            if(button instanceof ToggleButton){
+                if(tempButton == null){
+                    button.setPrevious(previousButton);
+                    previousButton.setNext(button);
+
+                }else{
+                    button.setPrevious(tempButton);
+                    tempButton.setNext(button);
+                }
+
+                tempButton = button;
+
+            }
         }
+
+        //If the temporary button is still null at this point that means the
+        //page contains no ToggleButtons
+        if(tempButton != null){
+            tempButton.setNext(nextButton);
+            nextButton.setPrevious(tempButton);
+        }
+
         return page;
     }
     
@@ -2019,11 +2167,37 @@ public class PsychLayoutManager extends ALayoutManager {
         page.getComponents().add(simpleBackground);
         page.setBackgroundLabel(simpleBackground.getUID());
 
+        ALayoutComponent button = null;
+        ALayoutComponent tempButton = null;
+
         for (Component c : frame.getAllComponents()) {
             Spacer s = (Spacer) c;
             s.updatePosition();
             page.getComponents().add(s.getComponent());
+            button = s.getComponent();
+
+            if(button instanceof ToggleButton){
+                if(tempButton == null){
+                    button.setPrevious(previousButton);
+                    previousButton.setNext(button);
+
+                }else{
+                    button.setPrevious(tempButton);
+                    tempButton.setNext(button);
+                }
+
+                tempButton = button;
+
+            }
         }
+
+        //If the temporary button is still null at this point that means the
+        //page contains no ToggleButtons
+        if(tempButton != null){
+            tempButton.setNext(nextButton);
+            nextButton.setPrevious(tempButton);
+        }
+
         return page;
     }
 
@@ -2052,11 +2226,37 @@ public class PsychLayoutManager extends ALayoutManager {
         page.getComponents().add(simpleBackground);
         page.setBackgroundLabel(simpleBackground.getUID());
 
+        ALayoutComponent button = null;
+        ALayoutComponent tempButton = null;
+
         for (Component c : frame.getAllComponents()) {
             Spacer s = (Spacer) c;
             s.updatePosition();
             page.getComponents().add(s.getComponent());
+            button = s.getComponent();
+
+            if(button instanceof ToggleButton){
+                if(tempButton == null){
+                    button.setPrevious(previousButton);
+                    previousButton.setNext(button);
+
+                }else{
+                    button.setPrevious(tempButton);
+                    tempButton.setNext(button);
+                }
+
+                tempButton = button;
+
+            }
         }
+
+        //If the temporary button is still null at this point that means the
+        //page contains no ToggleButtons
+        if(tempButton != null){
+            tempButton.setNext(nextButton);
+            nextButton.setPrevious(tempButton);
+        }
+
         return page;
     }
 

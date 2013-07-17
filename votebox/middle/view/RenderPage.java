@@ -161,7 +161,7 @@ public class RenderPage {
 
 
         try {
-            // Go through each card and "connect the dots."s
+            // Go through each card and "connect the dots."
             for (IDrawable drawable : _children) {
 
                 if (drawable instanceof IFocusable) {
