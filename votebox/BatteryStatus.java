@@ -72,31 +72,6 @@ public class BatteryStatus {
                     System.out.println("Unable to create BufferedWriter.");
                 }
 
-                /*String entry = "BatteryStatus.bat";
-
-
-                File jarFile = new File(ROOT_JARS);
-
-
-
-                InputStream in = null;
-
-
-                if(jarFile.exists()){
-                    JarFile vbJar = new JarFile(jarFile);
-
-                    JarEntry jEntry = null;
-                    jEntry = vbJar.getJarEntry(entry);
-
-                    in = vbJar.getInputStream(jEntry);
-
-                    FileOutputStream f = new FileOutputStream(file);
-                    f.write(IOUtils.readFully(in, -1, false));
-                    f.flush();
-                    f.close();
-
-                }//if*/
-
                 Process child = Runtime.getRuntime().exec(file.getAbsolutePath().split("!!!"));
 
 
@@ -105,7 +80,8 @@ public class BatteryStatus {
 
                 String s = "";
                 //This should be at most one line
-                while((s = out.readLine()) != null){
+                while((s = out.readLine()) != null)
+                {
                     //TODO Figure out what actually happens when the batch file returns something that isn't an integer...
                     if(s.contains("error"))
                         return 100;
@@ -115,7 +91,10 @@ public class BatteryStatus {
                 }
 
 
-            } else if(OS.equals("Linux")){
+            }
+            else
+            {
+                if(OS.equals("Linux")){
 
                     String cmd = "acpi -b";
                     ProcessBuilder pb = new ProcessBuilder("bash", "-c", cmd);
@@ -139,7 +118,16 @@ public class BatteryStatus {
 
 
 
-             }
+                }
+
+                else
+                {
+                    if(OS.equals("OS X"))
+                    {
+                        return 100;
+                    }
+                }
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
