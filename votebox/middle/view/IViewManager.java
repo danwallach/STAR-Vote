@@ -47,11 +47,12 @@ public interface IViewManager {
 
     /**
      * Flip to a particular page.
-     * 
+     *
      * @param pagenum
      *            Flip to this page.
+     * @param previous
      */
-    void drawPage(int pagenum);
+    void drawPage(int pagenum, boolean previous);
     
     /**
      * Commit the ballot.

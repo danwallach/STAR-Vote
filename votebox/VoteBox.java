@@ -33,9 +33,6 @@ import java.util.*;
 
 import javax.swing.*;
 import javax.swing.Timer;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.PlainDocument;
 
 import crypto.BallotEncrypter;
 import crypto.PiecemealBallotEncrypter;
@@ -384,7 +381,7 @@ public class VoteBox{
                     auditorium.announce(new OverrideCancelDenyEvent(mySerial,
                             nonce));
                     override = false;
-                    currentDriver.getView().drawPage(pageBeforeOverride);
+                    currentDriver.getView().drawPage(pageBeforeOverride, false);
                 } else
                     throw new RuntimeException(
                             "Received an override-cancel-deny event at the incorrect time");
@@ -473,7 +470,7 @@ public class VoteBox{
                     auditorium.announce(new OverrideCastDenyEvent(mySerial,
                             nonce));
                     override = false;
-                    currentDriver.getView().drawPage(pageBeforeOverride);
+                    currentDriver.getView().drawPage(pageBeforeOverride, false);
                 } else
                     throw new RuntimeException(
                             "Received an override-cast-deny event at the incorrect time");
@@ -707,7 +704,7 @@ public class VoteBox{
                     if(isProvisional)  {
                         try{
                             currentDriver.getView().drawPage(currentDriver.getView().getCurrentLayout().getProperties().getInteger(
-                                Properties.PROVISIONAL_SUCCESS_PAGE));
+                                Properties.PROVISIONAL_SUCCESS_PAGE), false);
                         } catch (IncorrectTypeException e1) {
                             e1.printStackTrace();
                         }

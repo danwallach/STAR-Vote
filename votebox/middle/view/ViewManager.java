@@ -123,7 +123,7 @@ public class ViewManager implements IViewManager {
 
             public void run() {
                 makePages();
-                drawPage(0);
+                drawPage(0, false);
             }
         });
 
@@ -139,11 +139,12 @@ public class ViewManager implements IViewManager {
 
     /**
      * Draw a given page to the display.
-     * 
+     *
      * @param pagenum
      *            Draw this page number to this display.
+     * @param previous
      */
-    public void drawPage(int pagenum) {
+    public void drawPage(int pagenum, boolean previous) {
         _view.clearDisplay();
 
 
@@ -155,7 +156,7 @@ public class ViewManager implements IViewManager {
         }
         
         _page = pagenum;
-        setInitialFocus();
+        setInitialFocus(previous);
 
 
         _layout.initFromViewManager( _page, this, _ballotLookupAdapter,
@@ -326,7 +327,7 @@ public class ViewManager implements IViewManager {
                 Properties.OVERRIDE_CANCEL_PAGE);
         int currentPage = _page;
         //System.out.println("Trying to draw page " + newPage);
-        drawPage(newPage);
+        drawPage(newPage, false);
         return currentPage;
     }
 
@@ -343,7 +344,7 @@ public class ViewManager implements IViewManager {
                 Properties.OVERRIDE_CAST_PAGE);
         int currentPage = _page;
         //System.out.println("Trying to draw page " + newPage);
-        drawPage(newPage);
+        drawPage(newPage, false);
         return currentPage;
     }
 
@@ -502,16 +503,7 @@ public class ViewManager implements IViewManager {
      */
     public void nextPage() {
         if (_page + 1 < _layout.getPages().size()) {
-            drawPage( _page + 1 );
-        }
-    }
-
-    /**
-     * This method allows for the drawing of a specific page
-     */
-    public void goToPage(int pageNum){
-        if (pageNum < _layout.getPages().size()) {
-            drawPage( pageNum );
+            drawPage( _page + 1, false);
         }
     }
 
@@ -522,7 +514,7 @@ public class ViewManager implements IViewManager {
     public void previousPage() {
         if (_page - 1 >= 0) {
             //System.out.println("Trying to draw page " + (_page - 1));
-            drawPage( _page - 1 );
+            drawPage( _page - 1, true);
         }
     }
 
@@ -599,7 +591,7 @@ public class ViewManager implements IViewManager {
             _language = lang;
             makePages();
             //System.out.println("Trying to draw page " + _page);
-            drawPage( _page );
+            drawPage( _page, false);
         }
     }
 
@@ -614,7 +606,7 @@ public class ViewManager implements IViewManager {
         _mediaSize = size;
         makePages();
         //System.out.println("Trying to draw page " + _page);
-        drawPage( _page );
+        drawPage( _page, false);
     }
 
     /**
@@ -707,24 +699,47 @@ public class ViewManager implements IViewManager {
      * page that is displayed, there should be an initial element that is
      * focused from which the voter can move. This method takes care of the job
      * of focusing that one initial element.
+     *
+     * @param previous a boolean denoting whether or not we have selected next
+     *                or previous to get to this page
      */
-    private void setInitialFocus() {
+    private void setInitialFocus(boolean previous) {
         // Find a focusable element, Focus it, Unfocus the rest of the
         // elements.
-        boolean found = false;
-        for (IDrawable drawable : getCurrentPage().getChildren()) {
+
+        System.out.println(previous);
+
+        ArrayList<IDrawable> children = (ArrayList) getCurrentPage().getChildren();
+
+        IDrawable first = null;
+        IDrawable second = null;
+        for (int i = 0; i <  children.size(); i++) {
+            IDrawable drawable = children.get(i);
+
             if (drawable instanceof IFocusable) {
-                if (!(found)) {
-                    System.out.println("First item focused: " + drawable);
-                    _currentFocusedElement = (IFocusable) drawable;
-                    System.out.println("Current focus: " + _currentFocusedElement);
-                    ((IFocusable) drawable).focus();
-                    found = true;
-                }
-                else
-                    ((IFocusable) drawable).unfocus();
+                if(first == null)
+                    first = drawable;
+                else if(second == null)
+                    second = drawable;
+
+                ((IFocusable) drawable).unfocus();
             }
         }
+
+        System.out.println(first.getUniqueID());
+        System.out.println(second.getUniqueID());
+
+        if(previous && second != null){
+            _currentFocusedElement =  (IFocusable) second;
+            ((IFocusable) second).focus();
+            System.out.println("Focusing " + second.getUniqueID());
+        } else if (!previous && first != null){
+            _currentFocusedElement =  (IFocusable) first;
+            ((IFocusable) first).focus();
+            System.out.println("Focusing "  + first.getUniqueID());
+        }
+
+
     }
 
     /**
@@ -734,8 +749,7 @@ public class ViewManager implements IViewManager {
      */
     private void makePages() {
         try {
-        	System.out.println("Making Pages with Language: "+getLanguage());
-        	
+
             _layout = new LayoutParser().getLayout( _variables, getSize(),
                     getLanguage() );
             _layout.initFromViewManager( this, _ballotLookupAdapter,
@@ -860,7 +874,7 @@ public class ViewManager implements IViewManager {
 
     /**
      * Call this method to figure which languages are allowed. These should be
-     * declare's in the ballot's properties.
+     * declared in the ballot's properties.
      */
     private void setLanguages() {
         if (_ballotAdapter.getProperties().contains( Properties.LANGUAGES )) {

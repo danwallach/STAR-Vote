@@ -202,8 +202,7 @@ public class Button extends Label implements IFocusable {
                                         + context.getUniqueID()
                                         + " attempted to jump to new page, but the button does not define a page.",
                                 null );
-                    //System.out.println("Trying to draw page " + pagenum);
-                    viewManager.drawPage( pagenum );
+                    viewManager.drawPage( pagenum, true);
                 }
             };
         }
@@ -237,8 +236,8 @@ public class Button extends Label implements IFocusable {
                     try {
                         int jumpToPage = Button.this.getParent()
                                 .getParent().lookupPage( uid );
-                        //System.out.println("Trying to draw page " + jumpToPage);
-                        viewManager.drawPage( jumpToPage );
+//                        System.out.println("Trying to draw page " + jumpToPage);
+                        viewManager.drawPage( jumpToPage, true);
                     }
                     catch (UnknownUIDException e) {
                         throw new BallotBoxViewException(
@@ -354,7 +353,7 @@ public class Button extends Label implements IFocusable {
                                             + " attempted to jump to the no selection alert page, but the button does not define a page.",
                                     null );
                         //System.out.println("Trying to draw page " + pagenum);
-                        viewManager.drawPage(pagenum);
+                        viewManager.drawPage(pagenum, true);
                 	}
                 	else {
                         viewManager.nextPage();
@@ -404,8 +403,8 @@ public class Button extends Label implements IFocusable {
                                         + context.getUniqueID()
                                         + " attempted to jump to new page, but the button does not define a page.",
                                 null );
-                    //System.out.println("Trying to draw page " + pagenum);
-                    viewManager.drawPage( pagenum );
+                    System.out.println("Trying to draw page " + pagenum);
+                    viewManager.drawPage( pagenum, true);
                 }
             };
         }

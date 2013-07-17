@@ -1458,16 +1458,21 @@ public class PsychLayoutManager extends ALayoutManager {
         frame.addTitle(instructionsTitle);
         frame.addSideBar(1);
 
-        frame.addNextButton(new Label(getNextLayoutUID(),
-                LiteralStrings.Singleton.get("FORWARD_FIRST_RACE", language),
-                sizeVisitor));
+
+
         if (hadLanguageSelect){
             frame.addPreviousButton(new Label(getNextLayoutUID(),
                     LiteralStrings.Singleton.get("BACK_LANGUAGE_SELECT",
                             language), sizeVisitor));
+            frame.addNextButton(new Label(getNextLayoutUID(),
+                    LiteralStrings.Singleton.get("FORWARD_FIRST_RACE", language),
+                    sizeVisitor));
             nextButton.setPrevious(previousButton);
             previousButton.setNext(nextButton);
-        }
+        } else
+            frame.addNextButton(new Label(getNextLayoutUID(),
+                    LiteralStrings.Singleton.get("FORWARD_FIRST_RACE", language),
+                    sizeVisitor));
 
         JPanel east = new JPanel();
         east.setLayout(new GridBagLayout());
