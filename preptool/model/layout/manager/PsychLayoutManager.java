@@ -450,13 +450,13 @@ public class PsychLayoutManager extends ALayoutManager {
          * @param target page number of the target
          */
         protected void addReturnButton(Label l, int target) {
-        	Button rButton = new Button(getNextLayoutUID(), LiteralStrings.Singleton
+        	returnButton= new Button(getNextLayoutUID(), LiteralStrings.Singleton
                     .get("RETURN_BUTTON", language), "GoToPage");
-            rButton.setIncreasedFontSize(true);
-            rButton.setSize(rButton.execute(sizeVisitor));
-            rButton.setPageNum(target);
+            returnButton.setIncreasedFontSize(true);
+            returnButton.setSize(returnButton.execute(sizeVisitor));
+            returnButton.setPageNum(target);
             Spacer PReturnInfo = new Spacer(l, south);
-            Spacer PReturnButton = new Spacer(rButton, south);
+            Spacer PReturnButton = new Spacer(returnButton, south);
 
             // Setup constraints and add label and button
             GridBagConstraints constraints = new GridBagConstraints();
@@ -471,16 +471,16 @@ public class PsychLayoutManager extends ALayoutManager {
 
         //#ifdef NONE_OF_ABOVE
         protected void addReturnRequireSelectionButton(Label l, int target, String parentCardUID) {
-        	Button rButton = new Button(
+            returnButton = new Button(
         			getNextLayoutUID(),
         			LiteralStrings.Singleton.get("RETURN_BUTTON", language),
         			"GoToPageRequireSelection");
-            rButton.setIncreasedFontSize(true);
-            rButton.setSize(rButton.execute(sizeVisitor));
-            rButton.setPageNum(target);
-            rButton.setParentCardUID(parentCardUID);
+            returnButton.setIncreasedFontSize(true);
+            returnButton.setSize(returnButton.execute(sizeVisitor));
+            returnButton.setPageNum(target);
+            returnButton.setParentCardUID(parentCardUID);
             Spacer PReturnInfo = new Spacer(l, south);
-            Spacer PReturnButton = new Spacer(rButton, south);
+            Spacer PReturnButton = new Spacer(returnButton, south);
 
             // Setup constraints and add label and button
             GridBagConstraints constraints = new GridBagConstraints();
@@ -1362,22 +1362,44 @@ public class PsychLayoutManager extends ALayoutManager {
                 ALayoutComponent button = s.getComponent();
 
                 if(button instanceof ToggleButton){
-                    if(tempButton == null){
-                        button.setPrevious(previousButton);
-                        previousButton.setNext(button);
+                    if(jump){
 
-                    }else{
-                        button.setPrevious(tempButton);
-                        tempButton.setNext(button);
+                        //TODO Make this work with lots of candidates (i > 0)
+
+                        if(tempButton == null){
+                            button.setPrevious(returnButton);
+                            returnButton.setNext(button);
+
+                        }else{
+                            button.setPrevious(tempButton);
+                            tempButton.setNext(button);
+                        }
+                        tempButton = button;
+
                     }
+                    else{
+                        if(tempButton == null){
+                            button.setPrevious(previousButton);
+                            previousButton.setNext(button);
 
-                    tempButton = button;
+                        }else{
+                            button.setPrevious(tempButton);
+                            tempButton.setNext(button);
+                        }
+                        tempButton = button;
+
+                    }
 
                 }
             }
 
-            tempButton.setNext(nextButton);
-            nextButton.setPrevious(tempButton);
+            if(jump){
+                tempButton.setNext(returnButton);
+                returnButton.setPrevious(tempButton);
+            } else{
+                tempButton.setNext(nextButton);
+                nextButton.setPrevious(tempButton);
+            }
 
             pages.add(cardPage);
         }
@@ -1930,46 +1952,46 @@ public class PsychLayoutManager extends ALayoutManager {
 
 
 
-                ALayoutComponent button = null;
-                ToggleButton newButton = null;
-                tempButton = null;
-
-
-                button = s.getComponent();
-
-
-
-                if(button instanceof ToggleButton){
-                    System.out.println("Creating toggle alias!");
-
-                    newButton = new ToggleButton(getNextLayoutUID(), ((ToggleButton) button).getText(), sizeVisitor);
-
-                    if(tempButton == null){
-                        newButton.setPrevious(returnButton);
-                        returnButton.setNext(newButton);
-
-                    }else{
-                        newButton.setPrevious(tempButton);
-                        tempButton.setNext(newButton);
-                    }
-
-                    tempButton = newButton;
-
-                }
-
-                if(newButton != null)
-                    cardPage.getComponents().add(newButton);
-                else
+//                ALayoutComponent button = null;
+//                ToggleButton newButton = null;
+//                tempButton = null;
+//
+//
+//                button = s.getComponent();
+//
+//
+//
+//                if(button instanceof ToggleButton){
+//                    System.out.println("Creating toggle alias!");
+//
+//                    newButton = new ToggleButton(getNextLayoutUID(), ((ToggleButton) button).getText(), sizeVisitor);
+//
+//                    if(tempButton == null){
+//                        newButton.setPrevious(returnButton);
+//                        returnButton.setNext(newButton);
+//
+//                    }else{
+//                        newButton.setPrevious(tempButton);
+//                        tempButton.setNext(newButton);
+//                    }
+//
+//                    tempButton = newButton;
+//
+//                }
+//
+//                if(newButton != null)
+//                    cardPage.getComponents().add(newButton);
+//                else
                     cardPage.getComponents().add(s.getComponent());
 
 
             }
-                //If the temporary button is still null at this point that means the
-                //page contains no ToggleButtons
-                if(tempButton != null){
-                    tempButton.setNext(returnButton);
-                    returnButton.setPrevious(tempButton);
-                }
+//                //If the temporary button is still null at this point that means the
+//                //page contains no ToggleButtons
+//                if(tempButton != null){
+//                    tempButton.setNext(returnButton);
+//                    returnButton.setPrevious(tempButton);
+//                }
                 //currentIndex++;
 
     		reviewPages.add(cardPage);
