@@ -42,11 +42,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import preptool.model.ballot.*;
-import preptool.model.ballot.module.AModule;
 import preptool.model.language.Language;
 import preptool.model.language.LiteralStrings;
 import preptool.model.layout.*;
-import sexpression.lexer.Mod;
 
 
 /**
@@ -1365,27 +1363,45 @@ public class PsychLayoutManager extends ALayoutManager {
                     if(jump){
 
                         //TODO Make this work with lots of candidates (i > 0)
-
                         if(tempButton == null){
                             button.setPrevious(returnButton);
+                            button.setUp(returnButton);
                             returnButton.setNext(button);
+                            returnButton.setDown(button);
 
                         }else{
                             button.setPrevious(tempButton);
+                            button.setUp(tempButton);
                             tempButton.setNext(button);
+                            tempButton.setDown(button);
                         }
-                        tempButton = button;
 
+                        button.setLeft(previousButton);
+                        button.setRight(nextButton);
+
+
+                        tempButton = button;
                     }
                     else{
                         if(tempButton == null){
                             button.setPrevious(previousButton);
+                            button.setUp(previousButton);
                             previousButton.setNext(button);
+                            previousButton.setDown(button);
+                            previousButton.setRight(button);
+                            nextButton.setDown(button);
 
                         }else{
                             button.setPrevious(tempButton);
+                            button.setUp(tempButton);
                             tempButton.setNext(button);
+                            tempButton.setDown(button);
                         }
+
+                        button.setLeft(previousButton);
+                        button.setRight(nextButton);
+
+
                         tempButton = button;
 
                     }
@@ -1395,10 +1411,16 @@ public class PsychLayoutManager extends ALayoutManager {
 
             if(jump){
                 tempButton.setNext(returnButton);
+                tempButton.setDown(returnButton);
                 returnButton.setPrevious(tempButton);
+                returnButton.setUp(tempButton);
             } else{
                 tempButton.setNext(nextButton);
+                tempButton.setDown(nextButton);
                 nextButton.setPrevious(tempButton);
+                nextButton.setUp(tempButton);
+                nextButton.setLeft(tempButton);
+                previousButton.setUp(tempButton);
             }
 
             pages.add(cardPage);
@@ -1422,6 +1444,11 @@ public class PsychLayoutManager extends ALayoutManager {
         frame.addCommitButton(new Label(getNextLayoutUID(),
                 LiteralStrings.Singleton.get("NEXT_PAGE_BUTTON", language),
                 sizeVisitor));
+
+        previousButton.setNext(commitButton);
+        previousButton.setRight(commitButton);
+        commitButton.setPrevious(previousButton);
+        commitButton.setLeft(previousButton);
 
         JPanel east = new JPanel();
         east.setLayout(new GridBagLayout());
@@ -1468,7 +1495,9 @@ public class PsychLayoutManager extends ALayoutManager {
                     LiteralStrings.Singleton.get("FORWARD_FIRST_RACE", language),
                     sizeVisitor));
             nextButton.setPrevious(previousButton);
+            nextButton.setLeft(previousButton);
             previousButton.setNext(nextButton);
+            previousButton.setRight(nextButton);
         } else
             frame.addNextButton(new Label(getNextLayoutUID(),
                     LiteralStrings.Singleton.get("FORWARD_FIRST_RACE", language),
@@ -1540,14 +1569,23 @@ public class PsychLayoutManager extends ALayoutManager {
             LanguageButton button = new LanguageButton(getNextLayoutUID(), lang
                     .getName());
 
-            //TODO remember this
+            //Setup the navigation for this.
+            //TODO Write some sort of manual for how this all works
             if(tempButton == null){
                 nextButton.setNext(button);
+                nextButton.setDown(button);
                 button.setPrevious(nextButton);
+                button.setUp(nextButton);
+
             } else{
                 button.setPrevious(tempButton);
+                button.setUp(tempButton);
                 tempButton.setNext(button);
+                tempButton.setDown(button);
             }
+
+            button.setLeft(nextButton);
+            button.setRight(nextButton);
 
             button.setLanguage(lang);
             button.setWidth(LANG_SELECT_WIDTH);
@@ -1563,7 +1601,10 @@ public class PsychLayoutManager extends ALayoutManager {
         }
 
         tempButton.setNext(nextButton);
+        tempButton.setDown(nextButton);
         nextButton.setPrevious(tempButton);
+        nextButton.setUp(tempButton);
+        nextButton.setLeft(tempButton);
 
         east.add(new Spacer(tbg, east));
         frame.addAsEastPanel(east);
@@ -1640,6 +1681,12 @@ public class PsychLayoutManager extends ALayoutManager {
                         language), "OverrideCancelDeny");
         denyBtn.setIncreasedFontSize(true);
         denyBtn.setSize(denyBtn.execute(sizeVisitor));
+
+        confirmBtn.setNext(denyBtn);
+        confirmBtn.setDown(denyBtn);
+        denyBtn.setPrevious(confirmBtn);
+        denyBtn.setUp(confirmBtn);
+
         sp = new Spacer(denyBtn, east);
         c.gridy = 1;
         c.insets = new Insets(50, 0, 0, 0);
@@ -1702,6 +1749,12 @@ public class PsychLayoutManager extends ALayoutManager {
                         language), "OverrideCastDeny");
         denyBtn.setIncreasedFontSize(true);
         denyBtn.setSize(denyBtn.execute(sizeVisitor));
+
+        confirmBtn.setNext(denyBtn);
+        confirmBtn.setDown(denyBtn);
+        denyBtn.setPrevious(confirmBtn);
+        denyBtn.setUp(confirmBtn);
+
         sp = new Spacer(denyBtn, east);
         c.gridy = 1;
         c.insets = new Insets(50, 0, 0, 0);
@@ -1773,7 +1826,11 @@ public class PsychLayoutManager extends ALayoutManager {
 
     		int columnLength = (int)Math.ceil(ballot.getCards().size() / REVIEW_SCREEN_NUM_COLUMNS);
 
+            //Represents the button to the left of this one
             ALayoutComponent tempButton = null;
+
+            //Represents the button above this one
+            ALayoutComponent temp2Button = null;
 
     		for (int i = position; i < ballot.getCards().size(); i++) {
 
@@ -1792,15 +1849,29 @@ public class PsychLayoutManager extends ALayoutManager {
     			rb.setWidth(REVIEW_SCREEN_CAND_WIDTH);
     			rb.setPageNum(pageTargets.get(position));
 
-                if(tempButton == null){
+                if(temp2Button == null){
                     previousButton.setNext(rl);
+                    previousButton.setRight(rl);
+                    previousButton.setDown(rl);
                     rl.setPrevious(previousButton);
+                    rl.setUp(previousButton);
+                    rl.setLeft(previousButton);
+                    rb.setUp(nextButton);
+                    nextButton.setDown(rb);
                 } else{
-                    rl.setPrevious(tempButton);
-                    tempButton.setNext(rl);
+                    rl.setPrevious(temp2Button);
+                    rl.setUp(tempButton);
+                    rb.setUp(temp2Button);
+                    tempButton.setDown(rl);
+                    temp2Button.setDown(rb);
+                    temp2Button.setNext(rl);
                 }
                 rl.setNext(rb);
+                rl.setRight(rb);
+                rb.setLeft(previousButton);
                 rb.setPrevious(rl);
+                rb.setLeft(rl);
+                rb.setRight(nextButton);
 
 
     			Spacer rlSpacer = new Spacer(rl, east);
@@ -1824,11 +1895,19 @@ public class PsychLayoutManager extends ALayoutManager {
     			if (i % CARDS_PER_REVIEW_PAGE >= CARDS_PER_REVIEW_PAGE - 1) //number of races to put on each card
     				break;
 
-                tempButton = rb;
+                tempButton = rl;
+                temp2Button = rb;
+
     		}
 
-            nextButton.setPrevious(tempButton);
-            tempButton.setNext(nextButton);
+            previousButton.setUp(tempButton);
+            nextButton.setPrevious(temp2Button);
+            nextButton.setLeft(temp2Button);
+            nextButton.setUp(temp2Button);
+
+            temp2Button.setNext(nextButton);
+            temp2Button.setDown(nextButton);
+            tempButton.setDown(nextButton);
 
     		frame.addAsEastPanel(east);
 

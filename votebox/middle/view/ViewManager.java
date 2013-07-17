@@ -482,7 +482,6 @@ public class ViewManager implements IViewManager {
      * focused.
      */
     public void moveFocusNext() {
-        System.out.println("Moving focuse to the next item! " + _currentFocusedElement);
         switchFocus( _currentFocusedElement.getNext() );
     }
 
@@ -707,8 +706,6 @@ public class ViewManager implements IViewManager {
         // Find a focusable element, Focus it, Unfocus the rest of the
         // elements.
 
-        System.out.println(previous);
-
         ArrayList<IDrawable> children = (ArrayList) getCurrentPage().getChildren();
 
         IDrawable first = null;
@@ -726,17 +723,13 @@ public class ViewManager implements IViewManager {
             }
         }
 
-        System.out.println(first.getUniqueID());
-        System.out.println(second.getUniqueID());
 
         if(previous && second != null){
             _currentFocusedElement =  (IFocusable) second;
             ((IFocusable) second).focus();
-            System.out.println("Focusing " + second.getUniqueID());
         } else if (!previous && first != null){
-            _currentFocusedElement =  (IFocusable) first;
+            _currentFocusedElement = (IFocusable) first;
             ((IFocusable) first).focus();
-            System.out.println("Focusing "  + first.getUniqueID());
         }
 
 

@@ -417,6 +417,7 @@ public class ToggleButton extends Label implements IFocusable {
      * @see votebox.middle.view.IFocusable#setNext(votebox.middle.view.IFocusable)
      */
     public void setNext(IFocusable focusable) {
+        System.out.println("Setting " + getUniqueID() + "'s next to " + focusable);
         _links.Next = focusable;
     }
 

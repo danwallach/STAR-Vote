@@ -235,7 +235,6 @@ public abstract class ALayoutComponent implements Cloneable {
 	 * @param previous the previous to set
 	 */
 	public void setPrevious(ALayoutComponent previous) {
-        System.out.println("Setting previous of " + uniqueID + " to " + previous.getUID());
 		this.previous = previous;
 	}
 
