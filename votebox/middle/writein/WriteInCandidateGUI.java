@@ -31,7 +31,7 @@ public class WriteInCandidateGUI extends JFrame {
 
     /* The path to the directory that contains the images. */
     public static final String SLASH = System.getProperty("file.separator");
-    public static final String pathToImages = "C:" + SLASH + "Users" + SLASH + "Mircea" + SLASH + "Desktop" + SLASH + "Ballots" + SLASH + "WriteIn" + SLASH;
+    public static final String pathToImages = "images" + SLASH;//"C:" + SLASH + "Users" + SLASH + "Mircea" + SLASH + "Desktop" + SLASH + "Ballots" + SLASH + "WriteIn" + SLASH;
     /* The standard size of the character images. */
     public static final int IMAGE_STANDARD_WIDTH = 14;//24;
     public static final int IMAGE_STANDARD_HEIGHT = 14;
