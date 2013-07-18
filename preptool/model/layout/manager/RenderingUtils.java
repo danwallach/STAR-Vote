@@ -997,6 +997,9 @@ public class RenderingUtils {
     {
         // All the characters that are used in English names.
         String ALL_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ -'";
+        // The size of the images to be created.
+        int CHARACTER_IMAGE_WIDTH = 14;
+        int CHARACTER_IMAGE_HEIGHT = 14;
 
         // Set the font for the character.
         Font font = new Font("Monospaced", Font.PLAIN, fontsize);
@@ -1006,18 +1009,18 @@ public class RenderingUtils {
             // Get a character.
             String currentCharacter = ALL_LETTERS.substring(idx, idx+1);
             // Create a new BufferedImage, on which to draw that character.
-            BufferedImage currentImage = new BufferedImage(14, 14, BufferedImage.TYPE_INT_ARGB);
+            BufferedImage currentImage = new BufferedImage(CHARACTER_IMAGE_WIDTH, CHARACTER_IMAGE_HEIGHT, BufferedImage.TYPE_INT_ARGB);
             // Create a Graphics object for the BufferedImage, to actually draw the String on the image.
             Graphics g = currentImage.getGraphics();
             // Draw a white background.
             g.setColor(Color.WHITE);
-            g.fillRect(0, 0, 14, 14);
+            g.fillRect(0, 0, CHARACTER_IMAGE_WIDTH, CHARACTER_IMAGE_HEIGHT);
             // Set the colour to be used in drawing the character.
             g.setColor(Color.BLACK);
             // Set the font for the character.
             g.setFont(font);
             // Draw the character on the image's canvas.
-            g.drawString(currentCharacter, 1, 14);
+            g.drawString(currentCharacter, 1, CHARACTER_IMAGE_HEIGHT);
             // Create a new file, to write the image to a file.
             // All the file names start with 'W_'.
             // All the file names contain the character name, ending in the extension '.png'.
