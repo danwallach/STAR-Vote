@@ -1,5 +1,7 @@
 package votebox.middle.writein;
 
+import printer.PrintImageUtils;
+
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.Graphics;
@@ -106,6 +108,12 @@ public class WriteInCandidateGUI extends JFrame {
 
 					/* Draw the canvas into the JPanel. */
                     g.drawImage(canvas, 0, 0, null);
+
+                    /* Trim the image. */
+                    canvas = PrintImageUtils.trimImageVertically(canvas, false, Integer.MAX_VALUE); // Above
+                    canvas = PrintImageUtils.trimImageVertically(canvas, true, Integer.MAX_VALUE);  // Below
+                    canvas = PrintImageUtils.trimImageHorizontally(canvas, false, Integer.MAX_VALUE); // Left
+                    canvas = PrintImageUtils.trimImageHorizontally(canvas, true, Integer.MAX_VALUE); // Right
 
 					/* Save the image to a file. */
                     File file = new File(pathToImages, "result.png");
