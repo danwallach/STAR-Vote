@@ -94,6 +94,8 @@ public class Model {
 
     private HashMap<String, ASExpression> committedBids;
 
+    private HashMap<String, ASExpression> committedBallots;
+
     private BallotManager bManager;
 
     private ArrayList<Integer> expectedBallots;
@@ -141,6 +143,7 @@ public class Model {
 //        talliers = new Tallier();
         talliers = new HashMap<String, ITallier>();
         committedBids = new HashMap<String, ASExpression>();
+        committedBallots = new HashMap<String, ASExpression>();
         statusTimer = new Timer(300000, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (isConnected()) {
@@ -1009,6 +1012,7 @@ public class Model {
                     talliers.get(precinct).recordVotes(e.getBallot().toVerbatim(), e.getNonce());
                     String bid = e.getBID().toString();
                     committedBids.put(bid, e.getNonce());
+                    committedBallots.put(bid, e.getBallot());
 
                     /*/ Write the nonce and ballot to files, for testing purposes. /////////////////////////////////////////////////////////////////////////////////////////////////
                     // Get the filename.
@@ -1102,10 +1106,20 @@ public class Model {
                 if (committedBids.containsKey(bid)){
                     //ASExpression nonce = committedBids.get(bid);
                     ASExpression nonce = committedBids.remove(bid);
+                    ASExpression ballot = committedBallots.remove(bid);
 
                     BallotStore.castCommittedBallot(e.getBID());
+
                     // used to be in voteBox registerForCommit listener.
-                    auditorium.announce(new CastCommittedBallotEvent(serial, nonce, StringExpression.makeString(e.getBID())));
+                    if(auditoriumParams.getCastBallotEncryptionEnabled()){
+                        if(auditoriumParams.getEnableNIZKs()){
+                            auditorium.announce(new EncryptedCastBallotWithNIZKsEvent(serial, nonce, ballot, StringExpression.makeString(e.getBID())));
+                        } else{
+                            auditorium.announce(new EncryptedCastBallotEvent(serial, nonce, ballot, StringExpression.makeString(e.getBID())));
+                        }
+                    }
+                    else
+                        auditorium.announce(new CastCommittedBallotEvent(serial, nonce, StringExpression.makeString(e.getBID())));
                     // that should trigger my own castBallot listener.
                     System.out.println("Sending scan confirmation!");
                     System.out.println("BID: " + bid);
@@ -1305,6 +1319,7 @@ public class Model {
     public boolean spoilBallot(String bid){
         if(committedBids.containsKey(bid)){
             ASExpression nonce = committedBids.remove(bid);
+            committedBallots.remove(bid);
             auditorium.announce(new SpoilBallotEvent(mySerial, bid, nonce));
             return true;
         }
