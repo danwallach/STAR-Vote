@@ -1091,11 +1091,11 @@ public class Model {
             }
 
             public void ballotScanned(BallotScannedEvent e) {
-                readTestBallot();
-                committedBids.put("1357480413", testNonce);
-                BallotStore.addBallot("1357480413", testBallot);
-                bManager.setPrecinctByBID("1357480413", "006");
-                talliers.get("006").recordVotes(testBallot.toVerbatim(), testNonce);
+//                readTestBallot();
+//                committedBids.put("1357480413", testNonce);
+//                BallotStore.addBallot("1357480413", testBallot);
+//                bManager.setPrecinctByBID("1357480413", "006");
+//                talliers.get("006").recordVotes(testBallot.toVerbatim(), testNonce);
 
                 String bid = e.getBID();
                 int serial = e.getSerial();
