@@ -841,7 +841,7 @@ public class RenderingUtils {
 	 * @param font is the font
 	 * @return the height
 	 */
-	private static int lineHeight(String line, Font font) {
+	public static int lineHeight(String line, Font font) {
 		Rectangle2D measurement = font.getStringBounds(line + " ",
 				new FontRenderContext(new AffineTransform(), true, true));
 		return (int) measurement.getHeight();
@@ -854,7 +854,7 @@ public class RenderingUtils {
 	 * @param font is the font
 	 * @return the width
 	 */
-	private static int lineWidth(String[] line, Font font) {
+	public static int lineWidth(String[] line, Font font) {
 		int width = 0;
 		for (String word : line) {
 			Rectangle2D measurement = font.getStringBounds(word + " ",
@@ -990,4 +990,49 @@ public class RenderingUtils {
         }
     }
 
+    /**
+     * Saves images to files, to be used for write-in candidates' names.
+     */
+    public static void writeLettersToFile (String location, int fontsize)
+    {
+        // All the characters that are used in English names.
+        String ALL_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ -'";
+
+        // Set the font for the character.
+        Font font = new Font("Monospaced", Font.PLAIN, fontsize);
+
+        for (int idx = 0; idx < ALL_LETTERS.length(); idx++)
+        {
+            // Get a character.
+            String currentCharacter = ALL_LETTERS.substring(idx, idx+1);
+            // Create a new BufferedImage, on which to draw that character.
+            BufferedImage currentImage = new BufferedImage(14, 14, BufferedImage.TYPE_INT_ARGB);
+            // Create a Graphics object for the BufferedImage, to actually draw the String on the image.
+            Graphics g = currentImage.getGraphics();
+            // Draw a white background.
+            g.setColor(Color.WHITE);
+            g.fillRect(0, 0, 14, 14);
+            // Set the colour to be used in drawing the character.
+            g.setColor(Color.BLACK);
+            // Set the font for the character.
+            g.setFont(font);
+            // Draw the character on the image's canvas.
+            g.drawString(currentCharacter, 1, 14);
+            // Create a new file, to write the image to a file.
+            // All the file names start with 'W_'.
+            // All the file names contain the character name, ending in the extension '.png'.
+            File file = new File(location, "W_" + currentCharacter + ".png");
+            // Try to write the image to the file.
+            try
+            {
+                System.out.println("Attempting to create an image for '" + currentCharacter + "' at: " + file.getAbsolutePath());
+                ImageIO.write(currentImage, "png", file);
+            }
+            catch (IOException e)
+            {
+                System.out.println("Letter image creation failed!");
+                e.printStackTrace();
+            }
+        }
+    }
 }

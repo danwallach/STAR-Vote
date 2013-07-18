@@ -22,9 +22,7 @@
 
 package preptool.model.layout.manager;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -573,7 +571,12 @@ public abstract class
 				// pass
 			}
 		}
+
+        /* Write the letters to their respective files. */
+        RenderingUtils.writeLettersToFile(location, FONT_SIZE_SELECTED_IMAGES);
     }
+
+
 
     /**
      * @return the language
