@@ -403,7 +403,7 @@ public class Printer{
 
     public void printedReceipt(String bID){
 
-        final String bid = bID;
+        final String bid = bID.substring(0, 10);
         Printable printedReceipt = new Printable(){
 
             public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
@@ -436,7 +436,7 @@ public class Printer{
                 y+=20;
                 printCenteredText("If you wish to challenge your ballot, take it home and scan the QRCode below", xBound, y, graphics);
                 y+=20;
-                String domain = "localhost:9000";
+                String domain = "starvote.cs.rice.edu";
                 String URL = "http://"+domain+"/ballot?ballotid="+bid;
                 QRCodeGenerator qGen = new QRCodeGenerator();
                 BufferedImage i = qGen.getImage(URL);

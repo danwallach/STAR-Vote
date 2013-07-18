@@ -74,6 +74,10 @@ public class BallotStore {
         return precinctMap.get(bid);
     }
 
+    public static void clearBallots(){
+        castBIDs = new ArrayList<ASExpression>();
+        castNonces = new ArrayList<ASExpression>();
+    }
 
     /**
      * Decrypts and returns unconfirmed (challenged) ballots

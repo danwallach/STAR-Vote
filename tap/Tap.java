@@ -36,6 +36,7 @@ import auditorium.Key;
 import auditorium.NetworkException;
 
 import de.roderick.weberknecht.*;
+import sexpression.ASExpression;
 import sexpression.stream.ASEWriter;
 import supervisor.model.BallotStore;
 import votebox.AuditoriumParams;
@@ -59,6 +60,7 @@ public class Tap {
     private VoteBoxAuditoriumConnector _auditorium = null;
     private static IAuditoriumParams params;
     private Key privateKey;
+    private static String ballotDumpHTTPKey = "3FF968A3B47CT34C";
 
     /**
      * Initializes a new Trapper.<BR>
@@ -97,7 +99,6 @@ public class Tap {
           	// TODO revert this hard-coded value for demo
             URI url = new URI("ws://localhost:9000/ballotdump");
             WebSocket websocket = new WebSocketConnection(url);
-
             // Register Event Handlers
             websocket.setEventHandler(new WebSocketEventHandler() {
                 public void onOpen()
@@ -222,6 +223,7 @@ public class Tap {
             public void uploadChallengedBallots(ChallengedBallotUploadEvent e) {
                 dumpBallotList(e.getDumpList());
                 System.out.println("TAP: Uploading Challenged Ballots");
+                BallotStore.clearBallots();
             }
         });
 
