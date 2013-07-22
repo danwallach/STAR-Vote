@@ -1112,10 +1112,6 @@ public class Model {
                     // used to be in voteBox registerForCommit listener.
                     if(auditoriumParams.getCastBallotEncryptionEnabled()){
                         if(auditoriumParams.getEnableNIZKs()){
-                            ASExpression ballotcheck = ((ChallengeDelayedWithNIZKsTallier)talliers.get(bManager.getPrecinctByBID(e.getBID()))).getBallotByNonce(nonce);
-                            if(!ballot.equals(ballotcheck))
-                                System.err.println("OH GOD WHY");
-
                             auditorium.announce(new EncryptedCastBallotWithNIZKsEvent(serial, nonce, ballot, StringExpression.makeString(e.getBID())));
                         } else{
                             auditorium.announce(new EncryptedCastBallotEvent(serial, nonce, ballot, StringExpression.makeString(e.getBID())));
@@ -1285,16 +1281,16 @@ public class Model {
                     }else{
                         //Loading privateKey well in advance so the whole affair is "fail-fast"
                         PrivateKey privateKey = (PrivateKey)auditoriumParams.getKeyStore().loadAdderKey("private");
-                        PublicKey publicKey = (PublicKey)auditoriumParams.getKeyStore().loadAdderKey("public");
+                        PublicKey publicKey = AdderKeyManipulator.generateFinalPublicKey((PublicKey) auditoriumParams.getKeyStore().loadAdderKey("public"));
                         tallier = new ChallengeDelayedWithNIZKsTallier(publicKey, privateKey);
 
-                        System.out.println("Supervisor's public key --------------------------------------------------------");
-                        System.out.println("P - " + publicKey.getP());
-                        System.out.println("Q - " + publicKey.getQ());
-                        System.out.println("G - " + publicKey.getG());
-                        System.out.println("H - " + publicKey.getH());
-                        System.out.println("F - " + publicKey.getF());
-                        System.out.println("--------------------------------------------------------------------------------");
+//                        System.out.println("Supervisor's public key --------------------------------------------------------");
+//                        System.out.println("P - " + publicKey.getP());
+//                        System.out.println("Q - " + publicKey.getQ());
+//                        System.out.println("G - " + publicKey.getG());
+//                        System.out.println("H - " + publicKey.getH());
+//                        System.out.println("F - " + publicKey.getF());
+//                        System.out.println("--------------------------------------------------------------------------------");
 
                     }//if
                 } catch (AuditoriumCryptoException e1) {

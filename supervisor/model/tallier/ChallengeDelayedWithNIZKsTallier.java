@@ -47,8 +47,8 @@ public class ChallengeDelayedWithNIZKsTallier implements ITallier {
 	public ChallengeDelayedWithNIZKsTallier(PublicKey pubKey, PrivateKey privKey){
 		_publicKey = pubKey;
 		_privateKey = privKey;
-		//_finalPublicKey = AdderKeyManipulator.generateFinalPublicKey(_publicKey);
-		//_finalPrivateKey = AdderKeyManipulator.generateFinalPrivateKey(_publicKey, _privateKey);
+//		_finalPublicKey = AdderKeyManipulator.generateFinalPublicKey(_publicKey);
+//		_finalPrivateKey = AdderKeyManipulator.generateFinalPrivateKey(_publicKey, _privateKey);
 	}
 
 	public void challenged(ASExpression nonce) {
@@ -152,7 +152,7 @@ public class ChallengeDelayedWithNIZKsTallier implements ITallier {
 			List<AdderInteger> coeffs = new ArrayList<AdderInteger>();
 			coeffs.add(coeff);
 
-			List<AdderInteger> results = election.getFinalSum(partialSums, coeffs, cipherSum, _finalPublicKey);
+			List<AdderInteger> results = election.getFinalSum(partialSums, coeffs, cipherSum, _publicKey);
 			String[] ids = group.split(",");
 			
 			System.out.println("\tresults size: "+results.size());

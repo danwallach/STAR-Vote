@@ -36,6 +36,7 @@ import javax.swing.Timer;
 
 import crypto.BallotEncrypter;
 import crypto.PiecemealBallotEncrypter;
+import crypto.interop.AdderKeyManipulator;
 import edu.uconn.cse.adder.PublicKey;
 
 import sexpression.*;
@@ -246,17 +247,18 @@ public class VoteBox{
                         if(!_constants.getEnableNIZKs()){
                             auditorium.announce(new CommitBallotEvent(mySerial,
                                     StringExpression.makeString(nonce),
-                                    BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey("public")), StringExpression.makeString(bid), StringExpression.makeString(precinct)));
+                                    BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey(mySerial + "-public")), StringExpression.makeString(bid), StringExpression.makeString(precinct)));
                         } else{
                             auditorium.announce(new CommitBallotEvent(mySerial,
                                     StringExpression.makeString(nonce),
-                                    BallotEncrypter.SINGLETON.encryptWithProof(ballot, (List<List<String>>) arg[1], (PublicKey) _constants.getKeyStore().loadAdderKey("public")),
+                                    BallotEncrypter.SINGLETON.encryptWithProof(ballot, (List<List<String>>) arg[1],
+                                            AdderKeyManipulator.generateFinalPublicKey((PublicKey) _constants.getKeyStore().loadAdderKey("public"))),
                                     StringExpression.makeString(bid), StringExpression.makeString(precinct)));
                         }
                     } else {
                         auditorium.announce(new ProvisionalCommitEvent(mySerial,
                                 StringExpression.makeString(nonce),
-                                BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey("public")), StringExpression.makeString(bid)));
+                                BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey(mySerial + "-public")), StringExpression.makeString(bid)));
                     }
 
 
@@ -420,11 +422,12 @@ public class VoteBox{
                         if(!_constants.getEnableNIZKs()){
                             auditorium.announce(new CommitBallotEvent(mySerial,
                                     StringExpression.makeString(nonce),
-                                    BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey("public")), StringExpression.makeString(bid), StringExpression.makeString(precinct)));
+                                    BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey(mySerial + "-public")), StringExpression.makeString(bid), StringExpression.makeString(precinct)));
                         } else{
                             auditorium.announce(new CommitBallotEvent(mySerial,
                                     StringExpression.makeString(nonce),
-                                    BallotEncrypter.SINGLETON.encryptWithProof(ballot, (List<List<String>>) arg.get(1), (PublicKey) _constants.getKeyStore().loadAdderKey("public")),
+                                    BallotEncrypter.SINGLETON.encryptWithProof(ballot, (List<List<String>>) arg.get(1),
+                                            AdderKeyManipulator.generateFinalPublicKey((PublicKey) _constants.getKeyStore().loadAdderKey("public"))),
                                     StringExpression.makeString(bid), StringExpression.makeString(precinct))
                             );
                         }

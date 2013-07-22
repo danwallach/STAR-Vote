@@ -125,14 +125,6 @@ public class Election {
             AdderInteger j = null;
             boolean gotResult = false;
 
-            System.out.println("Elections's public key --------------------------------------------------------");
-            System.out.println("P - " + p);
-            System.out.println("Q - " + q);
-            System.out.println("G - " + g);
-            System.out.println("H - " + target + "\n master H - " + masterKey.getH());
-            System.out.println("F - " + f);
-            System.out.println("--------------------------------------------------------------------------------");
-
             int numVotes = votes.size();
 
             System.out.println("Looping " + (numVotes + 1) + " times to look for result");
