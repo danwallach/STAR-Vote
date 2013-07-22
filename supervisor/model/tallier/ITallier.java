@@ -69,4 +69,5 @@ public interface ITallier {
 	 * @param nonce - Nonce of this voting transaction
 	 */
 	public void challenged(ASExpression nonce);
+
 }

@@ -84,9 +84,9 @@ public class Election {
      * @param  masterKey   the master public key
      * @return the final vote tally
      */
-    public List/*<AdderInteger>*/
-                    getFinalSum(List/*<List<AdderInteger>>*/ partialSums,
-                    List/*<AdderInteger>*/ coeffs, Vote sum,
+    public List<AdderInteger>
+                    getFinalSum(List<List<AdderInteger>> partialSums,
+                    List<AdderInteger> coeffs, Vote sum,
                     PublicKey masterKey) {
 
         System.err.println("INPUTS TO getFinalSum:\n\tpartialSums: " + partialSums + "\n\tcoeffs: " + coeffs + "\n\tsum: " + sum + "\n\tmasterKey: " + masterKey);
@@ -97,31 +97,31 @@ public class Election {
 
 
         Polynomial poly = new Polynomial(p, g, f, coeffs);
-        List/*<AdderInteger>*/ lagrangeCoeffs = poly.lagrange();
+        List<AdderInteger> lagrangeCoeffs = poly.lagrange();
         int lsize = lagrangeCoeffs.size();
 
-        List/*<ElgamalCiphertext>*/ cipherList = sum.getCipherList();
+        List<ElgamalCiphertext> cipherList = sum.getCipherList();
         int csize = cipherList.size();
-        List/*<AdderInteger>*/ productList
-                = new ArrayList/*<AdderInteger>*/(csize);
-        List/*<AdderInteger>*/ results
-                = new ArrayList/*<AdderInteger>*/(csize);
+        List<AdderInteger> productList
+                = new ArrayList<AdderInteger>(csize);
+        List<AdderInteger> results
+                = new ArrayList<AdderInteger>(csize);
 
         for (int i = 0; i < csize; i++) {
             productList.add(new AdderInteger(AdderInteger.ONE, p));
 
             for (int j = 0; j < lsize; j++) {
-                AdderInteger pli = (AdderInteger) productList.get(i);
+                AdderInteger pli =  productList.get(i);
                 List ps = (List) partialSums.get(j);
                 AdderInteger psi = (AdderInteger) ps.get(i);
-                AdderInteger lcj = (AdderInteger) lagrangeCoeffs.get(j);
+                AdderInteger lcj = lagrangeCoeffs.get(j);
                 AdderInteger product = psi.pow(lcj).multiply(pli);
                 productList.set(i, product);
             }
 
 
-            AdderInteger bigH = ((ElgamalCiphertext) cipherList.get(i)).getH();
-            AdderInteger target = bigH.divide((AdderInteger) productList.get(i));
+            AdderInteger bigH = (cipherList.get(i)).getH();
+            AdderInteger target = bigH.divide(productList.get(i));
             AdderInteger j = null;
             boolean gotResult = false;
 

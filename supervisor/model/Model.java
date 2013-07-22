@@ -544,8 +544,7 @@ public class Model {
                     PollsOpenEvent.getMatcher(), PollsOpenQEvent.getMatcher(),
                     SupervisorEvent.getMatcher(), VoteBoxEvent.getMatcher(),
                     EncryptedCastBallotEvent.getMatcher(), CommitBallotEvent.getMatcher(),
-                    CastCommittedBallotEvent.getMatcher(), EncryptedCastBallotWithNIZKsEvent.getMatcher(),
-                    AuthorizedToCastWithNIZKsEvent.getMatcher(),
+                    EncryptedCastBallotWithNIZKsEvent.getMatcher(), AuthorizedToCastWithNIZKsEvent.getMatcher(),
                     PINEnteredEvent.getMatcher(), InvalidPinEvent.getMatcher(),
                     PollStatusEvent.getMatcher(), BallotPrintSuccessEvent.getMatcher(),
                     BallotScannedEvent.getMatcher(), BallotScannerEvent.getMatcher(),
@@ -1113,6 +1112,10 @@ public class Model {
                     // used to be in voteBox registerForCommit listener.
                     if(auditoriumParams.getCastBallotEncryptionEnabled()){
                         if(auditoriumParams.getEnableNIZKs()){
+                            ASExpression ballotcheck = ((ChallengeDelayedWithNIZKsTallier)talliers.get(bManager.getPrecinctByBID(e.getBID()))).getBallotByNonce(nonce);
+                            if(!ballot.equals(ballotcheck))
+                                System.err.println("OH GOD WHY");
+
                             auditorium.announce(new EncryptedCastBallotWithNIZKsEvent(serial, nonce, ballot, StringExpression.makeString(e.getBID())));
                         } else{
                             auditorium.announce(new EncryptedCastBallotEvent(serial, nonce, ballot, StringExpression.makeString(e.getBID())));
