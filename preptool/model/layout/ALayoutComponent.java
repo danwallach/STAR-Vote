@@ -235,7 +235,6 @@ public abstract class ALayoutComponent implements Cloneable {
 	 * @param previous the previous to set
 	 */
 	public void setPrevious(ALayoutComponent previous) {
-        System.out.println("Setting previous of " + uniqueID + " to " + previous.getUID());
 		this.previous = previous;
 	}
 
@@ -311,20 +310,19 @@ public abstract class ALayoutComponent implements Cloneable {
 		compElt.setAttribute("x", Integer.toString(xPos));
 		compElt.setAttribute("y", Integer.toString(yPos));
 		if (up != null)
-			XMLTools.addProperty(doc, compElt, "up", "String", up.getUID());
+			XMLTools.addProperty(doc, compElt, "Up", "String", up.getUID());
 		if (down != null)
-			XMLTools.addProperty(doc, compElt, "down", "String", down.getUID());
+			XMLTools.addProperty(doc, compElt, "Down", "String", down.getUID());
 		if (left != null)
-			XMLTools.addProperty(doc, compElt, "left", "String", left.getUID());
+			XMLTools.addProperty(doc, compElt, "Left", "String", left.getUID());
 		if (right != null)
-			XMLTools.addProperty(doc, compElt, "right", "String", right
+			XMLTools.addProperty(doc, compElt, "Right", "String", right
 					.getUID());
 		if (next != null)
-			XMLTools.addProperty(doc, compElt, "next", "String", next.getUID());
+			XMLTools.addProperty(doc, compElt, "Next", "String", next.getUID());
 		if (previous != null){
-			XMLTools.addProperty(doc, compElt, "previous", "String", previous
+			XMLTools.addProperty(doc, compElt, "Previous", "String", previous
 					.getUID());
-            System.out.println("adding previous!");
         }
 	}
 

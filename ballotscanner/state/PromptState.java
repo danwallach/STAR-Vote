@@ -1,6 +1,7 @@
 package ballotscanner.state;
 
 import ballotscanner.BallotScannerUI;
+import ballotscanner.ElectionInfoPanel;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -25,7 +26,7 @@ public class PromptState extends AState {
     private PromptState(String image, String name, String message){
         try
         {
-            BufferedImage si = ImageIO.read(new File(image));
+            BufferedImage si = ImageIO.read(ElectionInfoPanel.getFile(image));
             this.stateImage = si;
         }
         catch (IOException e)

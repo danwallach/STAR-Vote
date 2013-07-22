@@ -48,7 +48,7 @@ public class Label implements IDrawable {
     private int _y;
 
     private IViewImage _image;
-    private IViewImage _reviewImage;
+    private IViewImage _reviewImage, _focusedReviewImage;
     
     protected IViewFactory _factory;
     protected IViewManager _viewManager;
@@ -113,6 +113,20 @@ public class Label implements IDrawable {
                     .getLanguage() ) );
         }
         return _reviewImage;
+    }
+
+    /**
+     * Returns the focused review image of the label
+     */
+    public IViewImage getFocusedReviewImage(){
+        if(_focusedReviewImage == null){
+            _focusedReviewImage = _factory.makeImage( imagePath( _vars, _uniqueID
+                    + "_review_focused", _viewManager.getSize(), _viewManager
+                    .getLanguage() ) );
+        }
+
+        return _focusedReviewImage;
+
     }
 
     /**
@@ -216,7 +230,6 @@ public class Label implements IDrawable {
      */
     protected String imagePath(IBallotVars vars, String uid, int size,
             String lang) {
-        System.out.println("The actual function, imagePath, is trying to open: " + vars.getBallotPath() + "/media/" + uid + "_" + size + "_" + lang + ".png");
         return vars.getBallotPath() + "/media/" + uid + "_" + size + "_" + lang + ".png";
     }
 

@@ -102,9 +102,9 @@ public class EncryptedTallier implements ITallier {
 				Bugout.err("Received a malformed ballot.\n"+sexp+" does not match "+PATTERN);
 			}//if
 		}catch(IOException e){
-		    Bugout.err("Encounted IOException when counting encrypted vote: "+e.getMessage());
+		    Bugout.err("Encountered IOException when counting encrypted vote: "+e.getMessage());
 		} catch (InvalidVerbatimStreamException e) {
-			Bugout.err("Encounted InvalidVerbatimStream when counting encrypted vote: "+e.getMessage());
+			Bugout.err("Encountered InvalidVerbatimStream when counting encrypted vote: "+e.getMessage());
 		}
 	}
 

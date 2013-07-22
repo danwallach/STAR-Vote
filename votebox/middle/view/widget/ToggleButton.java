@@ -288,8 +288,6 @@ public class ToggleButton extends Label implements IFocusable {
      * @return _focusedImage
      */
     public IViewImage getFocusedImage() {
-
-        System.out.println(getUniqueID());
         if (_focusedImage == null) {
             _focusedImage = _factory.makeImage( imagePath( _vars, getUniqueID()
                     + "_focused", _viewManager.getSize(), _viewManager
@@ -419,6 +417,7 @@ public class ToggleButton extends Label implements IFocusable {
      * @see votebox.middle.view.IFocusable#setNext(votebox.middle.view.IFocusable)
      */
     public void setNext(IFocusable focusable) {
+        System.out.println("Setting " + getUniqueID() + "'s next to " + focusable);
         _links.Next = focusable;
     }
 

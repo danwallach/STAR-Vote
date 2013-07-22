@@ -40,6 +40,9 @@ import javax.swing.JLabel;
 @SuppressWarnings("serial")
 public class VoteBoxInactiveUI extends JFrame implements IVoteBoxInactiveUI {
 
+    public static final int WINDOW_WIDTH = 1600;
+    public static final int WINDOW_HEIGHT = 900;
+
     public static final String FONTNAME = "Sans";
     
     private VoteBox votebox;
@@ -54,7 +57,7 @@ public class VoteBoxInactiveUI extends JFrame implements IVoteBoxInactiveUI {
      */
     public VoteBoxInactiveUI(VoteBox vb) {
         super("VoteBox");
-        setSize(1024, 768);
+        setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         votebox = vb;

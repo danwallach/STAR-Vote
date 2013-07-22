@@ -33,12 +33,10 @@ import java.util.*;
 
 import javax.swing.*;
 import javax.swing.Timer;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.PlainDocument;
 
 import crypto.BallotEncrypter;
 import crypto.PiecemealBallotEncrypter;
+import crypto.interop.AdderKeyManipulator;
 import edu.uconn.cse.adder.PublicKey;
 
 import sexpression.*;
@@ -249,17 +247,18 @@ public class VoteBox{
                         if(!_constants.getEnableNIZKs()){
                             auditorium.announce(new CommitBallotEvent(mySerial,
                                     StringExpression.makeString(nonce),
-                                    BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey("public")), StringExpression.makeString(bid), StringExpression.makeString(precinct)));
+                                    BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey(mySerial + "-public")), StringExpression.makeString(bid), StringExpression.makeString(precinct)));
                         } else{
                             auditorium.announce(new CommitBallotEvent(mySerial,
                                     StringExpression.makeString(nonce),
-                                    BallotEncrypter.SINGLETON.encryptWithProof(ballot, (List<List<String>>) arg[1], (PublicKey) _constants.getKeyStore().loadAdderKey("public")),
+                                    BallotEncrypter.SINGLETON.encryptWithProof(ballot, (List<List<String>>) arg[1],
+                                            AdderKeyManipulator.generateFinalPublicKey((PublicKey) _constants.getKeyStore().loadAdderKey("public"))),
                                     StringExpression.makeString(bid), StringExpression.makeString(precinct)));
                         }
                     } else {
                         auditorium.announce(new ProvisionalCommitEvent(mySerial,
                                 StringExpression.makeString(nonce),
-                                BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey("public")), StringExpression.makeString(bid)));
+                                BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey(mySerial + "-public")), StringExpression.makeString(bid)));
                     }
 
 
@@ -384,7 +383,7 @@ public class VoteBox{
                     auditorium.announce(new OverrideCancelDenyEvent(mySerial,
                             nonce));
                     override = false;
-                    currentDriver.getView().drawPage(pageBeforeOverride);
+                    currentDriver.getView().drawPage(pageBeforeOverride, false);
                 } else
                     throw new RuntimeException(
                             "Received an override-cancel-deny event at the incorrect time");
@@ -423,11 +422,12 @@ public class VoteBox{
                         if(!_constants.getEnableNIZKs()){
                             auditorium.announce(new CommitBallotEvent(mySerial,
                                     StringExpression.makeString(nonce),
-                                    BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey("public")), StringExpression.makeString(bid), StringExpression.makeString(precinct)));
+                                    BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey(mySerial + "-public")), StringExpression.makeString(bid), StringExpression.makeString(precinct)));
                         } else{
                             auditorium.announce(new CommitBallotEvent(mySerial,
                                     StringExpression.makeString(nonce),
-                                    BallotEncrypter.SINGLETON.encryptWithProof(ballot, (List<List<String>>) arg.get(1), (PublicKey) _constants.getKeyStore().loadAdderKey("public")),
+                                    BallotEncrypter.SINGLETON.encryptWithProof(ballot, (List<List<String>>) arg.get(1),
+                                            AdderKeyManipulator.generateFinalPublicKey((PublicKey) _constants.getKeyStore().loadAdderKey("public"))),
                                     StringExpression.makeString(bid), StringExpression.makeString(precinct))
                             );
                         }
@@ -473,7 +473,7 @@ public class VoteBox{
                     auditorium.announce(new OverrideCastDenyEvent(mySerial,
                             nonce));
                     override = false;
-                    currentDriver.getView().drawPage(pageBeforeOverride);
+                    currentDriver.getView().drawPage(pageBeforeOverride, false);
                 } else
                     throw new RuntimeException(
                             "Received an override-cast-deny event at the incorrect time");
@@ -707,7 +707,7 @@ public class VoteBox{
                     if(isProvisional)  {
                         try{
                             currentDriver.getView().drawPage(currentDriver.getView().getCurrentLayout().getProperties().getInteger(
-                                Properties.PROVISIONAL_SUCCESS_PAGE));
+                                Properties.PROVISIONAL_SUCCESS_PAGE), false);
                         } catch (IncorrectTypeException e1) {
                             e1.printStackTrace();
                         }
@@ -953,8 +953,6 @@ public class VoteBox{
             public void provisionalAuthorizedToCast(ProvisionalAuthorizeEvent e) {
 
                 if (e.getNode() == mySerial) {
-
-                    System.out.println(">>>>> Start provisional session!");
 
                     isProvisional = true;
 

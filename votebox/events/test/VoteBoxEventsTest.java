@@ -134,10 +134,10 @@ public class VoteBoxEventsTest extends TestCase {
         byte[] nonce = getBlob();
         byte[] ballot = getBlob();
         AuthorizedToCastEvent event = new AuthorizedToCastEvent(50, 65, nonce,
-                "", ballot);
+                "007", ballot);
         ASExpression sexp = event.toSExp();
         assertEquals("(authorized-to-cast 65 "
-                + (new BigInteger(nonce)).toString() + " "
+                + (new BigInteger(nonce)).toString() + "007"
                 + StringExpression.makeString(ballot).toString() + ")", sexp
                 .toString());
 

@@ -41,6 +41,9 @@ public class View extends JFrame {
 
     ActiveUI activeUI;
 
+    public static final int WINDOW_WIDTH = 1600;
+    public static final int WINDOW_HEIGHT = 900;
+
     /**
      * Constructs a new View
      * @param model the model
@@ -48,7 +51,7 @@ public class View extends JFrame {
     public View(final Model model) {
         super("Supervisor Console");
 
-        setSize(1024, 768);
+        setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         // setUndecorated(true);
 

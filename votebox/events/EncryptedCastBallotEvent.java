@@ -39,22 +39,31 @@ import sexpression.StringExpression;
  */
 public class EncryptedCastBallotEvent extends CastCommittedBallotEvent{
 
+    ASExpression _ballot;
+
     /**
      * Matcher for the EncryptedCastBallotEvent
      */
     private static MatcherRule MATCHER = new MatcherRule() {
         private ASExpression pattern = ASExpression
-                .make("(encrypted-cast-ballot %nonce:#string %ballot:#any)");
+                .make("(encrypted-cast-ballot %nonce:#string %ballot:#any %bid:#any)");
 
         public IAnnounceEvent match(int serial, ASExpression sexp) {
             HashMap<String, ASExpression> result = pattern.namedMatch(sexp);
             if (result != NamedNoMatch.SINGLETON)
                 return new EncryptedCastBallotEvent(serial, result.get("nonce"), result
-                        .get("ballot"));
+                        .get("ballot"), result.get("bid"));
 
             return null;
         };
     };
+
+    /**
+     * @return the ballot
+     */
+    public ASExpression getBallot() {
+        return _ballot;
+    }
 
     /**
      *
@@ -72,8 +81,9 @@ public class EncryptedCastBallotEvent extends CastCommittedBallotEvent{
      * @param ballot
      *            the encrypted ballot, as an array of bytes
      */
-    public EncryptedCastBallotEvent(int serial, ASExpression nonce, ASExpression ballot) {
-        super(serial, nonce, ballot);
+    public EncryptedCastBallotEvent(int serial, ASExpression nonce, ASExpression ballot, ASExpression bid) {
+        super(serial, nonce, bid);
+        _ballot = ballot;
     }
 
     /**
@@ -81,6 +91,6 @@ public class EncryptedCastBallotEvent extends CastCommittedBallotEvent{
      */
     public ASExpression toSExp() {
         return new ListExpression(StringExpression.makeString("encrypted-cast-ballot"),
-                getNonce(), getBID());
+                getNonce(), getBallot(), getBID());
     }
 }

@@ -55,7 +55,7 @@ import sexpression.stream.*;
  */
 public class SimpleKeyStore implements IKeyStore {
 	//Name of file containing keys/classes/etc for votebox (generally, a jar file)
-	public static final String ROOT_JARS[] = {"Votebox.jar", "Supervisor.jar"};
+	public static final String ROOT_JARS[] = {"Votebox.jar", "Supervisor.jar", "Scanner.jar"};
 
 	private final String _dir;
 	private HashMap<String,Key>  _keyCache;

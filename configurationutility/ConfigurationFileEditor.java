@@ -21,6 +21,15 @@ import javax.swing.event.ListSelectionEvent;
  * Author: Mircea C. Berechet
  * Added to project: 07/02/2013
  */
+
+/**
+ * This enables the user to create a configuration file that contains all
+ * the attributes that are defined in AuditoriumParams. The user is prompted
+ * to open a file, if desired. If a file is opened, the values of the attributes
+ * are set to whatever values are present in the file. For the attributes
+ * that are not present in the file, the values are set to the default values
+ * defined in AuditoriumParams.
+ */
 public class ConfigurationFileEditor extends JFrame {
 
 	/*

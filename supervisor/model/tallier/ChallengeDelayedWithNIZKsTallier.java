@@ -9,6 +9,7 @@ import java.util.Map;
 
 import auditorium.Bugout;
 
+import com.sun.nio.sctp.InvalidStreamException;
 import edu.uconn.cse.adder.AdderInteger;
 import edu.uconn.cse.adder.Election;
 import edu.uconn.cse.adder.PrivateKey;
@@ -20,6 +21,7 @@ import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.stream.ASEInputStreamReader;
 import crypto.interop.AdderKeyManipulator;
+import sexpression.stream.InvalidVerbatimStreamException;
 
 /**
  * Tallier for elections with both NIZKs and the challenge-commit model enabled.
@@ -45,8 +47,8 @@ public class ChallengeDelayedWithNIZKsTallier implements ITallier {
 	public ChallengeDelayedWithNIZKsTallier(PublicKey pubKey, PrivateKey privKey){
 		_publicKey = pubKey;
 		_privateKey = privKey;
-		//_finalPublicKey = AdderKeyManipulator.generateFinalPublicKey(_publicKey);
-		//_finalPrivateKey = AdderKeyManipulator.generateFinalPrivateKey(_publicKey, _privateKey);
+//		_finalPublicKey = AdderKeyManipulator.generateFinalPublicKey(_publicKey);
+//		_finalPrivateKey = AdderKeyManipulator.generateFinalPrivateKey(_publicKey, _privateKey);
 	}
 
 	public void challenged(ASExpression nonce) {
@@ -150,7 +152,7 @@ public class ChallengeDelayedWithNIZKsTallier implements ITallier {
 			List<AdderInteger> coeffs = new ArrayList<AdderInteger>();
 			coeffs.add(coeff);
 
-			List<AdderInteger> results = election.getFinalSum(partialSums, coeffs, cipherSum, _finalPublicKey);
+			List<AdderInteger> results = election.getFinalSum(partialSums, coeffs, cipherSum, _publicKey);
 			String[] ids = group.split(",");
 			
 			System.out.println("\tresults size: "+results.size());
@@ -203,4 +205,15 @@ public class ChallengeDelayedWithNIZKsTallier implements ITallier {
 		if(!publicKey.get(0).toString().equals("public-key"))
 			throw new RuntimeException("Missing \"public-key\"");
 	}
+
+
+    public ASExpression getBallotByNonce(ASExpression nonce) {
+        try{
+            return ASExpression.makeVerbatim(_pendingVotes.get(nonce));
+        } catch(InvalidVerbatimStreamException e){
+            System.err.println(e.getMessage());
+            return null;
+        }
+
+    }
 }

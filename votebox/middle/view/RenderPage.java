@@ -161,10 +161,12 @@ public class RenderPage {
 
 
         try {
-            // Go through each card and "connect the dots."s
+            // Go through each card and "connect the dots."
             for (IDrawable drawable : _children) {
+
                 if (drawable instanceof IFocusable) {
                     IFocusable rce = (IFocusable) drawable;
+
                     if (rce.getProperties().contains( Properties.UP ))
                         rce.setUp( getFromDictionary( rce.getProperties()
                                 .getString( Properties.UP ), uidmap ) );
@@ -177,9 +179,10 @@ public class RenderPage {
                     if (rce.getProperties().contains( Properties.RIGHT ))
                         rce.setRight( getFromDictionary( rce.getProperties()
                                 .getString( Properties.RIGHT ), uidmap ) );
-                    if (rce.getProperties().contains( Properties.NEXT ))
+                    if (rce.getProperties().contains( Properties.NEXT )){
                         rce.setNext( getFromDictionary( rce.getProperties()
                                 .getString( Properties.NEXT ), uidmap ) );
+                    }
                     if (rce.getProperties().contains( Properties.PREVIOUS ))
                         rce.setPrevious( getFromDictionary( rce.getProperties()
                                 .getString( Properties.PREVIOUS ), uidmap ) );
