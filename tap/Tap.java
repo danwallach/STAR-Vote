@@ -24,11 +24,14 @@ package tap;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.List;
 
 import auditorium.AuditoriumCryptoException;
 import auditorium.IAuditoriumParams;
@@ -41,6 +44,16 @@ import sexpression.stream.ASEWriter;
 import supervisor.model.BallotStore;
 import votebox.AuditoriumParams;
 import votebox.events.*;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+
+
 
 /**
  * Class used to "Tap" outgoing commit and cast messages.<BR>
@@ -75,7 +88,7 @@ public class Tap {
         _output = new ASEWriter(_wrappedOut);
 
         try{
-            privateKey = params.getKeyStore().loadKey("private");
+            privateKey = params.getKeyStore().loadKey(_mySerial + "-private");
         }catch(AuditoriumCryptoException ex){
             ex.printStackTrace();
         }
@@ -95,43 +108,20 @@ public class Tap {
     }//forward
 
     protected void dumpBallotList(ArrayList<String> ballotList){
+
+        HttpClient client = new DefaultHttpClient();
+        HttpPost post = new HttpPost("http://starvote.cs.rice.edu/3FF968A3B47CT34C");
         try {
-          	// TODO revert this hard-coded value for demo
-            URI url = new URI("ws://localhost:9000/ballotdump");
-            WebSocket websocket = new WebSocketConnection(url);
-            // Register Event Handlers
-            websocket.setEventHandler(new WebSocketEventHandler() {
-                public void onOpen()
-                {
-					//System.out.println("--open");
-                }
-
-                public void onMessage(WebSocketMessage message)
-                {
-					//System.out.println("--received message: " + message.getText());
-                }
-
-                public void onClose()
-                {
-					//System.out.println("--close");
-                }
-            });
-
-            // Establish WebSocket Connection
-            websocket.connect();
+            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
 
             for (String ballotString : ballotList) {
-                websocket.send(ballotString);
+                nameValuePairs.add(new BasicNameValuePair("message", ballotString));
+                post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+                client.execute(post);
             }
 
-            // Close WebSocket Connection
-            websocket.close();
-        }
-        catch (WebSocketException wse) {
-            wse.printStackTrace();
-        }
-        catch (URISyntaxException use) {
-            use.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
