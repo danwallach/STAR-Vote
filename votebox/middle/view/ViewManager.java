@@ -61,6 +61,13 @@ public class ViewManager implements IViewManager {
     private final ObservableEvent _reviewScreenEncountered;
     private final ObservableEvent _pageChanged;
 
+    //A variable that will only allow focusing with orange backgrounds
+    //if and only if a key on the keyboard/other input device is pressed,
+    //not including the mouse
+    private static boolean focusEnabled = false;
+
+
+
     private IFocusable _currentFocusedElement = null;
     private Layout _layout = null;
 
@@ -91,6 +98,8 @@ public class ViewManager implements IViewManager {
             IBallotVars vars, IViewFactory factory) {
         _factory = factory;
         _view = factory.makeView();
+
+        focusEnabled = _view.focusEnabled();
         _ballotAdapter = adapter;
         _ballotLookupAdapter = lookupAdapter;
         _variables = vars;
@@ -203,7 +212,8 @@ public class ViewManager implements IViewManager {
 
         // Tell the view to change the focus to the new element
         _currentFocusedElement.unfocus();
-        dt.focus();
+        if(_view.focusEnabled())
+            dt.focus();
         _view.invalidate( dt );
         _view.invalidate( _currentFocusedElement );
 
@@ -441,6 +451,9 @@ public class ViewManager implements IViewManager {
      * of the one which is currently focused.
      */
     public void moveFocusLeft() {
+        if(_currentFocusedElement == null)
+            setInitialFocus(true);
+
         switchFocus( _currentFocusedElement.getLeft() );
     }
 
@@ -451,6 +464,9 @@ public class ViewManager implements IViewManager {
      * of the one which is currently focused.
      */
     public void moveFocusRight() {
+        if(_currentFocusedElement == null)
+            setInitialFocus(true);
+
         switchFocus( _currentFocusedElement.getRight() );
     }
 
@@ -461,6 +477,9 @@ public class ViewManager implements IViewManager {
      * that is currently focused.
      */
     public void moveFocusUp() {
+        if(_currentFocusedElement == null)
+            setInitialFocus(true);
+
         switchFocus( _currentFocusedElement.getUp() );
     }
 
@@ -471,6 +490,9 @@ public class ViewManager implements IViewManager {
      * which is currently focused.
      */
     public void moveFocusDown() {
+        if(_currentFocusedElement == null)
+            setInitialFocus(true);
+
         switchFocus( _currentFocusedElement.getDown() );
     }
 
@@ -482,6 +504,9 @@ public class ViewManager implements IViewManager {
      * focused.
      */
     public void moveFocusNext() {
+        if(_currentFocusedElement == null)
+            setInitialFocus(true);
+
         switchFocus( _currentFocusedElement.getNext() );
     }
 
@@ -493,6 +518,9 @@ public class ViewManager implements IViewManager {
      * focused.
      */
     public void moveFocusBack() {
+        if(_currentFocusedElement == null)
+            setInitialFocus(true);
+
         switchFocus( _currentFocusedElement.getPrevious() );
     }
 
@@ -706,33 +734,34 @@ public class ViewManager implements IViewManager {
         // Find a focusable element, Focus it, Unfocus the rest of the
         // elements.
 
-        ArrayList<IDrawable> children = (ArrayList) getCurrentPage().getChildren();
+        if(_view.focusEnabled()){
+            ArrayList<IDrawable> children = (ArrayList) getCurrentPage().getChildren();
 
-        IDrawable first = null;
-        IDrawable second = null;
-        for (int i = 0; i <  children.size(); i++) {
-            IDrawable drawable = children.get(i);
+            IDrawable first = null;
+            IDrawable second = null;
+            for (int i = 0; i <  children.size(); i++) {
+                IDrawable drawable = children.get(i);
 
-            if (drawable instanceof IFocusable) {
-                if(first == null)
-                    first = drawable;
-                else if(second == null)
-                    second = drawable;
+                if (drawable instanceof IFocusable) {
+                    if(first == null)
+                        first = drawable;
+                    else if(second == null)
+                        second = drawable;
 
-                ((IFocusable) drawable).unfocus();
+                    ((IFocusable) drawable).unfocus();
+                }
             }
+
+
+            if(previous && second != null){
+                _currentFocusedElement =  (IFocusable) second;
+                ((IFocusable) second).focus();
+            } else if (!previous && first != null){
+                _currentFocusedElement = (IFocusable) first;
+                ((IFocusable) first).focus();
+            }
+
         }
-
-
-        if(previous && second != null){
-            _currentFocusedElement =  (IFocusable) second;
-            ((IFocusable) second).focus();
-        } else if (!previous && first != null){
-            _currentFocusedElement = (IFocusable) first;
-            ((IFocusable) first).focus();
-        }
-
-
     }
 
     /**
@@ -790,7 +819,7 @@ public class ViewManager implements IViewManager {
         _view.register( EventType.MOUSE_MOVE, new IEventHandler() {
 
             public void handle(InputEvent event) {
-                if(!_ignoreMouseInput)
+                if(!_ignoreMouseInput && focusEnabled)
                     focus( event.focusedDrawable() );
             }
         } );

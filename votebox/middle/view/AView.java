@@ -35,6 +35,8 @@ public abstract class AView implements IView, Runnable{
     protected final HashMap<EventType, IEventHandler> _handlers;
     protected int _yoffset;
     protected IDrawable _background;
+
+
     
     private Thread _eventDispatcher = new Thread(this);
     private List<Object[]> _pendingEvents = new ArrayList<Object[]>();
@@ -144,11 +146,5 @@ public abstract class AView implements IView, Runnable{
     		}
     	}
     }
-    
-    /**
-     * @see votebox.middle.view.IEventPump#pump(EventType, InputEvent)
-     */
-    public void pump(EventType type, InputEvent event){
-    	deliver(type, event);
-    }//pumpEvent
+
 }

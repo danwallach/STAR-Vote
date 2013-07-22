@@ -64,6 +64,11 @@ public class AWTView extends AView {
 	private double _scaleX = -1;
 	private double _scaleY = -1;
 
+    //A variable that will only allow focusing with orange backgrounds
+    //if and only if a key on the keyboard/other input device is pressed,
+    //not including the mouse
+    private boolean focusEnabled = false;
+
 	public AWTView(boolean windowed, boolean allowScaling, int baseWidth, int baseHeight){
 		super();
 		_windowed = windowed;
@@ -280,6 +285,8 @@ public class AWTView extends AView {
 		_frame.addKeyListener( new KeyAdapter() {
 
 			public void keyReleased(KeyEvent e) {
+                focusEnabled = true;
+
 				switch (e.getKeyCode()) {
 				case CAST_BALLOT_BUTTON:
 					deliver( EventType.CAST_BALLOT, InputEvent.NONE );
@@ -349,4 +356,8 @@ public class AWTView extends AView {
 		_frame.setVisible( true );
 		lambda.run();
 	}
+
+    public boolean focusEnabled(){
+        return focusEnabled;
+    }
 }

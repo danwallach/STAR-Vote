@@ -1276,7 +1276,7 @@ public class Model {
                 try {
                     if(!auditoriumParams.getEnableNIZKs()){
                         //Loading privateKey well in advance so the whole affair is "fail-fast"
-                        Key privateKey = auditoriumParams.getKeyStore().loadKey("private");
+                        Key privateKey = auditoriumParams.getKeyStore().loadKey(mySerial + "-private");
                         tallier = new ChallengeDelayedTallier(privateKey);
                     }else{
                         //Loading privateKey well in advance so the whole affair is "fail-fast"

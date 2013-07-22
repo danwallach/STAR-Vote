@@ -42,7 +42,7 @@ public class PrivateKey {
     }
 
     /**
-     * Returns the partial decrytion of the given vote.
+     * Returns the partial decryption of the given vote.
      * @param vote the vote
      *
      * @return the partial decryption of the given vote

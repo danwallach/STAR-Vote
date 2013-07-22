@@ -139,8 +139,10 @@ public class ChallengeDelayedWithNIZKsTallier implements ITallier {
 			System.out.println("Decrypting election-id \""+group+"\"");
 			
 			Election election = _results.get(group);
-			
-			Vote cipherSum = election.sumVotes();
+
+            System.out.println(election.getVotes());
+
+            Vote cipherSum = election.sumVotes();
 
             //TODO: vet this.
 			List<AdderInteger> partialSum = _finalPrivateKey.partialDecrypt(cipherSum);

@@ -96,4 +96,9 @@ public interface IView {
      * This method destroys the view.
      */
     void dispose();
+
+    /**
+     * A method that will return whether or not items are focusable
+     */
+    boolean focusEnabled();
 }
