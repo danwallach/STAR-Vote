@@ -69,28 +69,28 @@ public class BallotEncrypter {
      * @return a ListExpression in the form (((vote [vote]) (vote-ids ([id1], [id2], ...)) (proof [proof]) (public-key [key])) ...)
      */
     public ListExpression encryptWithProof(ListExpression ballot, List<List<String>> raceGroups, PublicKey pubKey){
-    	_adderRandom = new ArrayList<List<AdderInteger>>();
-    	List<ASExpression> subBallots = new ArrayList<ASExpression>();
-    	
-    	Map<String, ListExpression> ballotMap = new HashMap<String, ListExpression>();
-    	for(int i = 0; i < ballot.size(); i++){
-    		ListExpression vote = (ListExpression)ballot.get(i);
-    		String id = vote.get(0).toString();
-    		ballotMap.put(id, vote);
-    	}
-    	
-    	for(List<String> group : raceGroups){
-    		List<ASExpression> races = new ArrayList<ASExpression>();
-    		for(String raceId : group)
-    			races.add(ballotMap.get(raceId));
-    		
-    		ListExpression subBallot = new ListExpression(races);
-    		subBallots.add(encryptSublistWithProof(subBallot, pubKey));
-    	}
-    	
-    	_recentBallot = new ListExpression(subBallots);
-    	
-    	return _recentBallot;
+        _adderRandom = new ArrayList<List<AdderInteger>>();
+        List<ASExpression> subBallots = new ArrayList<ASExpression>();
+
+        Map<String, ListExpression> ballotMap = new HashMap<String, ListExpression>();
+        for(int i = 0; i < ballot.size(); i++){
+                ListExpression vote = (ListExpression)ballot.get(i);
+                String id = vote.get(0).toString();
+                ballotMap.put(id, vote);
+        }
+
+        for(List<String> group : raceGroups){
+                List<ASExpression> races = new ArrayList<ASExpression>();
+                for(String raceId : group)
+                        races.add(ballotMap.get(raceId));
+
+                ListExpression subBallot = new ListExpression(races);
+                subBallots.add(encryptSublistWithProof(subBallot, pubKey));
+        }
+
+        _recentBallot = new ListExpression(subBallots);
+
+        return _recentBallot;
     }
     
     /**
@@ -103,20 +103,20 @@ public class BallotEncrypter {
      * @return An ListExpression of the form ((vote [vote]) (vote-ids ([id1], [id2], ...)) (proof [proof]) (public-key [key]))
      */
     @SuppressWarnings("unchecked")
-	public ListExpression encryptSublistWithProof(ListExpression ballot, PublicKey pubKey){
-    	List<AdderInteger> value = new ArrayList<AdderInteger>();
-    	List<ASExpression> valueIds = new ArrayList<ASExpression>();
-    	
-    	for(int i = 0; i < ballot.size(); i++){
-    		ListExpression choice = (ListExpression)ballot.get(i);
+        public ListExpression encryptSublistWithProof(ListExpression ballot, PublicKey pubKey){
+        List<AdderInteger> value = new ArrayList<AdderInteger>();
+        List<ASExpression> valueIds = new ArrayList<ASExpression>();
+
+        for(int i = 0; i < ballot.size(); i++){
+                ListExpression choice = (ListExpression)ballot.get(i);
     		value.add(new AdderInteger(choice.get(1).toString()));
-    		valueIds.add(choice.get(0));
-    	}//for
-    	
-    	PublicKey finalPubKey = AdderKeyManipulator.generateFinalPublicKey(pubKey);
-		
-		Vote vote = finalPubKey.encrypt(value);
-		
+                valueIds.add(choice.get(0));
+        }//for
+
+        PublicKey finalPubKey = AdderKeyManipulator.generateFinalPublicKey(pubKey);
+
+                Vote vote = finalPubKey.encrypt(value);
+
 		List<ElgamalCiphertext> ciphers = vote.getCipherList();
 		
 		List<AdderInteger> subRandom = new ArrayList<AdderInteger>();
@@ -235,14 +235,10 @@ public class BallotEncrypter {
     		idsToPubKey.put(voteIds.toString(), finalPubKey);
     	}
 
-        int allCand = 0;
-
     	for(String ids : idsToVote.keySet()){
     		Vote vote = idsToVote.get(ids);
     		List<AdderInteger> rs = idsToRs.get(ids);
     		PublicKey finalPubKey = idsToPubKey.get(ids);
-
-            allCand += vote.getCipherList().size();
 
     		List<AdderInteger> d = adderDecryptSublist(vote, rs, finalPubKey);
     		
@@ -269,7 +265,6 @@ public class BallotEncrypter {
     			subLists.add(new ListExpression(subList));
     		}
     	}
-        System.out.println("Number of ASE's: " + subLists.size());
 
     	return new ListExpression(subLists);
     }
@@ -388,7 +383,7 @@ public class BallotEncrypter {
             BigInteger cipher2 = new BigInteger(
                     ((StringExpression) ((ListExpression) ballotnext.get(1))
                             .get(1)).getBytes());*/
-            BigInteger r = new BigInteger(rnext.get(1).toString());
+            BigInteger r = new BigInteger(((StringExpression) rnext.get(1)).toString());
             BigInteger cipher1 = new BigInteger(((ListExpression)ballotnext.get(1)).get(0).toString());
             BigInteger cipher2 = new BigInteger(((ListExpression)ballotnext.get(1)).get(1).toString());
             

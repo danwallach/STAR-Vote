@@ -19,7 +19,7 @@ public class AdderKeyManipulator {
 	 * key usage.
 	 * 
 	 * @param newKey - the key to load into the cache.
-	 * /*@param baseKey - the key the newKey must be a derivative of.
+	 * //@param baseKey - the key the newKey must be a derivative of.
 	 */
 	public static void setCachedKey(PublicKey newKey/*, PublicKey baseKey*/)/* throws AuditoriumCryptoException*/{
 		/*if(baseKey.getF() != null && !(baseKey.getF().equals(newKey.getF())))
@@ -96,7 +96,7 @@ public class AdderKeyManipulator {
 	public static PrivateKey generateFinalPrivateKey(PublicKey publicKey, PrivateKey privateKey){
 		//Generate the final private key
 		List<ElgamalCiphertext> ciphertexts = new ArrayList<ElgamalCiphertext>();
-		ElgamalCiphertext ciphertext = publicKey.encryptPoly(_poly.evaluate(new AdderInteger(AdderInteger.ZERO, publicKey.getQ())));
+                ElgamalCiphertext ciphertext = publicKey.encryptPoly(_poly.evaluate(new AdderInteger(0, publicKey.getQ())));
 		ciphertexts.add(ciphertext);
 		PrivateKey finalPrivKey = privateKey.getFinalPrivKey(ciphertexts);
 		
