@@ -89,7 +89,7 @@ public class Election {
                     List<AdderInteger> coeffs, Vote sum,
                     PublicKey masterKey) {
 
-        System.err.println("INPUTS TO getFinalSum:\n\tpartialSums: " + partialSums + "\n\tcoeffs: " + coeffs + "\n\tsum: " + sum + "\n\tmasterKey: " + masterKey);
+        //System.err.println("INPUTS TO getFinalSum:\n\tpartialSums: " + partialSums + "\n\tcoeffs: " + coeffs + "\n\tsum: " + sum + "\n\tmasterKey: " + masterKey);
         AdderInteger p = masterKey.getP();
         AdderInteger q = masterKey.getQ();
         AdderInteger g = masterKey.getG();
@@ -132,7 +132,7 @@ public class Election {
             for (int k = 0; k <= numVotes; k++) {
                 j = new AdderInteger(k, q);
 
-                System.out.println("DOES " + f.pow(j) + " equal " + target + "?");
+                //System.out.println("DOES " + f.pow(j) + " equal " + target + "?");
 
                 if (f.pow(j).equals(target)) {
                     System.out.println("GOT RESULT!!!");

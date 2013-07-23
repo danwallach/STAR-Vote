@@ -130,7 +130,6 @@ public class VoteBox{
         
         numConnections = 0;
         labelChangedEvent = new Event<Integer>();
-
         statusTimer = new Timer(300000, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (connected) {
@@ -249,10 +248,11 @@ public class VoteBox{
                                     StringExpression.makeString(nonce),
                                     BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey(mySerial + "-public")), StringExpression.makeString(bid), StringExpression.makeString(precinct)));
                         } else{
+                            ASExpression encBallot = BallotEncrypter.SINGLETON.encryptWithProof(ballot, (List<List<String>>) arg[1], (PublicKey) _constants.getKeyStore().loadAdderKey("public"));
+                            System.out.println("Encrypting: " + encBallot);
                             auditorium.announce(new CommitBallotEvent(mySerial,
                                     StringExpression.makeString(nonce),
-                                    BallotEncrypter.SINGLETON.encryptWithProof(ballot, (List<List<String>>) arg[1],
-                                            AdderKeyManipulator.generateFinalPublicKey((PublicKey) _constants.getKeyStore().loadAdderKey("public"))),
+                                    encBallot,
                                     StringExpression.makeString(bid), StringExpression.makeString(precinct)));
                         }
                     } else {
@@ -426,8 +426,7 @@ public class VoteBox{
                         } else{
                             auditorium.announce(new CommitBallotEvent(mySerial,
                                     StringExpression.makeString(nonce),
-                                    BallotEncrypter.SINGLETON.encryptWithProof(ballot, (List<List<String>>) arg.get(1),
-                                            AdderKeyManipulator.generateFinalPublicKey((PublicKey) _constants.getKeyStore().loadAdderKey("public"))),
+                                    BallotEncrypter.SINGLETON.encryptWithProof(ballot, (List<List<String>>) arg.get(1), (PublicKey) _constants.getKeyStore().loadAdderKey("public")),
                                     StringExpression.makeString(bid), StringExpression.makeString(precinct))
                             );
                         }
@@ -616,7 +615,6 @@ public class VoteBox{
                     try {
                     	_currentBallotFile = new File(path, "ballot.zip");
 
-                    	
                         FileOutputStream fout = new FileOutputStream(_currentBallotFile);
                         byte[] ballot = e.getBallot();
                         fout.write(ballot);
@@ -624,7 +622,6 @@ public class VoteBox{
                         Driver.unzip(new File(path, "ballot.zip").getAbsolutePath(), new File(path, "data").getAbsolutePath());
                         Driver.deleteRecursivelyOnExit(path.getAbsolutePath());
 
-
                         run(new File(path, "data").getAbsolutePath());
                         broadcastStatus();
                     } catch (IOException e1) {
@@ -633,60 +630,7 @@ public class VoteBox{
                 }
             }
 
-            /**
-             * Handler for the authorized-to-cast-wth-nizks message. If it is for this
-             * booth, and it is not already voting, unzip the ballot and fire
-             * the VoteBox runtime. Also announce the new status.
-             */
-            public void authorizedToCastWithNIZKS(AuthorizedToCastWithNIZKsEvent e) {
-                if (e.getNode() == mySerial) {
-                    isProvisional = false;
 
-                    if (voting || currentDriver != null && killVBTimer == null)
-                        throw new RuntimeException(
-                                "VoteBox was authorized-to-cast, but was already voting");
-
-                    // If last VB runtime is on thank you screen and counting
-                    // down to when it disappears, kill it prematurely without
-                    // showing inactive UI
-                    if (killVBTimer != null && currentDriver != null) {
-                        killVBTimer.stop();
-                        killVBTimer = null;
-                        currentDriver.kill();
-                        currentDriver = null;
-                    }
-
-                    nonce = e.getNonce();
-
-                    //Current working directory
-                    File path = new File(System.getProperty("user.dir"));
-                    path = new File(path, "tmp");
-                    path = new File(path, "ballots");
-                    path = new File(path, "ballot" + protectedCount);
-                    path.mkdirs();
-
-                    bid = String.valueOf(rand.nextInt(Integer.MAX_VALUE));
-                    precinct = e.getPrecinct();
-
-                    try {
-                        _currentBallotFile = new File(path, "ballot.zip");
-
-
-                        FileOutputStream fout = new FileOutputStream(_currentBallotFile);
-                        byte[] ballot = e.getBallot();
-                        fout.write(ballot);
-
-                        Driver.unzip(new File(path, "ballot.zip").getAbsolutePath(), new File(path, "data").getAbsolutePath());
-                        Driver.deleteRecursivelyOnExit(path.getAbsolutePath());
-
-
-                        run(new File(path, "data").getAbsolutePath());
-                        broadcastStatus();
-                    } catch (IOException e1) {
-                        throw new RuntimeException(e1);
-                    }
-                }
-            }
 
             /**
              * Handler for the ballot-received message. Show the next page on
@@ -695,7 +639,6 @@ public class VoteBox{
              * then shows the inactive screen. Also responds with its status.
              */
             public void ballotReceived(BallotReceivedEvent e) {
-
                 if (e.getNode() == mySerial
                         && Arrays.equals(e.getNonce(), nonce)) {
 
@@ -753,6 +696,7 @@ public class VoteBox{
             }
 
             public void lastPollsOpen(LastPollsOpenEvent e) {
+                // NO-OP
             }
 
             /**
@@ -850,7 +794,6 @@ public class VoteBox{
              * and replies with a last-polls-open message if an appropriate
              * polls-open message is found.
              */
-
             public void pollsOpenQ(PollsOpenQEvent e) {
                 if (e.getSerial() != mySerial) {
                     // TODO: Search the log and extract an appropriate
@@ -1003,6 +946,10 @@ public class VoteBox{
             }
 
             public void provisionalCommitBallot(ProvisionalCommitEvent provisionalCommitEvent) {
+                // NO-OP
+            }
+
+            public void authorizedToCastWithNIZKS(AuthorizedToCastWithNIZKsEvent e) {
                 // NO-OP
             }
 

@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import edu.uconn.cse.adder.PrivateKey;
+import edu.uconn.cse.adder.SearchSpaceExhaustedException;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -18,8 +20,11 @@ import edu.uconn.cse.adder.PublicKey;
 import auditorium.Key;
 import auditorium.SimpleKeyStore;
 
+import sexpression.ASExpression;
 import sexpression.ListExpression;
 import crypto.BallotEncrypter;
+import sexpression.StringExpression;
+import supervisor.model.tallier.ChallengeDelayedWithNIZKsTallier;
 import votebox.middle.Properties;
 import votebox.middle.ballot.Ballot;
 import votebox.middle.ballot.BallotParser;
@@ -46,7 +51,7 @@ public class NIZKsPerformanceTest {
 		}
 	}
 	
-	public static final String BALLOT_PATH = "votebox"+File.separatorChar+"crypto"+File.separatorChar+"interop"+File.separatorChar+ "ballot.zip";
+	public static final String BALLOT_PATH = "crypto"+File.separatorChar+"interop"+File.separatorChar+ "ballot.zip";
 	public static final int TRIAL_COUNT = 10;
 
 	public static Ballot _ballot = null;
@@ -59,6 +64,8 @@ public class NIZKsPerformanceTest {
 	
 	private static List<Pair> _toDecryptWithoutNIZKs = new ArrayList<Pair>();
 	private static List<Pair> _toDecryptWithNIZKs = new ArrayList<Pair>();
+
+    SecureRandom r = new SecureRandom();
 
 	protected static void generateRandom(){
 		assert _seeds == null;
@@ -81,13 +88,15 @@ public class NIZKsPerformanceTest {
 
 		SimpleKeyStore store = new SimpleKeyStore("keys");
 
-		_publicKey = store.loadKey("public");
+		_publicKey = store.loadKey("0-public");
 		_adderPublicKey = (PublicKey)store.loadAdderKey("public");
 
 		File tempBallotPath = File.createTempFile("ballot", "path");
 		tempBallotPath.delete();
 		tempBallotPath = new File(tempBallotPath,"data");
 		tempBallotPath.mkdirs();
+
+        System.out.println(BALLOT_PATH);
 
 		Driver.unzip(BALLOT_PATH, tempBallotPath.getAbsolutePath());
 
@@ -311,6 +320,69 @@ public class NIZKsPerformanceTest {
 		
 		Assert.assertTrue(true);
 	}
+
+    @Test
+    public void tallyWithNIZKs() throws Exception{
+        System.out.println("tallyWithNIZKs:");
+        List<Card> cards = _ballot.getCards();
+
+        PrivateKey privateKey = _adderPublicKey.genKeyPair();
+
+        ChallengeDelayedWithNIZKsTallier tallier = new ChallengeDelayedWithNIZKsTallier(_adderPublicKey, privateKey);
+
+        long elapsedTime = 0;
+
+        SecureRandom r = new SecureRandom();
+
+        for(byte[] seed : _seeds){
+            System.out.println("Trial #"+_seeds.indexOf(seed));
+            SecureRandom rand = new SecureRandom(seed);
+
+            for(Card card : cards)
+                for(SelectableCardElement elem : card.getElements())
+                    elem.deselect();
+
+            for(Card card : cards){
+                if((r.nextInt() % 7) != 0){
+
+                    List<SelectableCardElement> elems = card.getElements();
+
+                    SelectableCardElement toSelect = elems.get(rand.nextInt(elems.size()));
+                    toSelect.select();
+                }
+            }
+
+            ListExpression exp = _ballot.getCastBallot();
+            List<List<String>> groups = _ballot.getRaceGroups();
+
+            ListExpression encBallot = BallotEncrypter.SINGLETON.encryptWithProof(exp, groups, _adderPublicKey);
+            System.out.println(exp);
+            System.out.println(encBallot);
+
+            ASExpression nonce = StringExpression.makeString(seed);
+
+            long encryptStart = System.currentTimeMillis();
+            tallier.recordVotes(encBallot.toVerbatim(), nonce);
+            tallier.confirmed(nonce);
+            long encryptStop = System.currentTimeMillis();
+
+            elapsedTime += (encryptStop - encryptStart);
+            System.out.println("\t"+(encryptStop - encryptStart)+" milliseconds");
+
+        }
+
+        Map report = null;
+        try{
+            report = tallier.getReport();
+            report.toString();
+        }catch (SearchSpaceExhaustedException e){
+            Assert.assertTrue(false);
+        }
+
+
+        Assert.assertTrue(true);
+
+    }
 	
 	public static void main(String[] args) throws Exception{
 		NIZKsPerformanceTest test = new NIZKsPerformanceTest();
@@ -318,7 +390,7 @@ public class NIZKsPerformanceTest {
 		test.withoutNIZKs();
 		test.withNIZKs();
 		test.decryptWithoutNIZKs();
-		test.decryptWithNIZKs();
+//		test.decryptWithNIZKs();
 		deleteTemporaryFiles();
 	}
 }

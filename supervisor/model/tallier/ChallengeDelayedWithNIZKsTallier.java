@@ -77,8 +77,10 @@ public class ChallengeDelayedWithNIZKsTallier implements ITallier {
 			ASExpression sexp = in.read();
 			//Check that the ballot is well-formed
 			ListExpression ballot = (ListExpression)sexp;
-				
-			for(int i = 0; i < ballot.size(); i++){
+            System.out.println(">>>> Tallying this ballot: " + ballot.toString());
+
+
+            for(int i = 0; i < ballot.size(); i++){
 				ListExpression raceGroup = (ListExpression)ballot.get(i);
 				ListExpression voteE = (ListExpression)raceGroup.get(0);
 				ListExpression voteIdsE = (ListExpression)raceGroup.get(1);
@@ -111,9 +113,9 @@ public class ChallengeDelayedWithNIZKsTallier implements ITallier {
 				
 				String subElectionId = makeId(voteIds);
 				
-				System.out.println("Updating election-id \""+subElectionId+"\"");
-				System.out.println("\t"+voteIds);
-				System.out.println("\t"+voteIdsE);
+//				System.out.println("Updating election-id \""+subElectionId+"\"");
+//				System.out.println("\t"+voteIds);
+//				System.out.println("\t"+voteIdsE);
 				
 				Election election = _results.get(subElectionId);
 				
@@ -136,11 +138,11 @@ public class ChallengeDelayedWithNIZKsTallier implements ITallier {
 		Map<String, BigInteger> report = new HashMap<String, BigInteger>();
 		
 		for(String group : _results.keySet()){
-			System.out.println("Decrypting election-id \""+group+"\"");
+			//System.out.println("Decrypting election-id \""+group+"\"");
 			
 			Election election = _results.get(group);
 
-            System.out.println(election.getVotes());
+//            System.out.println(election.getVotes());
 
             Vote cipherSum = election.sumVotes();
 
@@ -157,8 +159,8 @@ public class ChallengeDelayedWithNIZKsTallier implements ITallier {
 			List<AdderInteger> results = election.getFinalSum(partialSums, coeffs, cipherSum, _publicKey);
 			String[] ids = group.split(",");
 			
-			System.out.println("\tresults size: "+results.size());
-			System.out.println("\tids count: "+ids.length);
+//			System.out.println("\tresults size: "+results.size());
+//			System.out.println("\tids count: "+ids.length);
 			
 			for(int i = 0; i < ids.length; i++)
 				report.put(ids[i], results.get(i).bigintValue());

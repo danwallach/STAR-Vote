@@ -634,9 +634,6 @@ public class Model {
                             .getSerial(), ((StringExpression) e.getNonce())
                             .getBytes(), "", ""));
 
-
-                    String precinct = bManager.getPrecinctByBID(e.getBID().toString());
-                    talliers.get(precinct).confirmed(e.getNonce());
                 }
             }
 
@@ -1120,6 +1117,12 @@ public class Model {
                     else
                         auditorium.announce(new CastCommittedBallotEvent(serial, nonce, StringExpression.makeString(e.getBID())));
                     // that should trigger my own castBallot listener.
+
+
+
+                    String precinct = bManager.getPrecinctByBID(e.getBID().toString());
+                    talliers.get(precinct).confirmed(nonce);
+
                     System.out.println("Sending scan confirmation!");
                     System.out.println("BID: " + bid);
                     auditorium.announce(new BallotScanAcceptedEvent(mySerial, bid));
@@ -1281,7 +1284,7 @@ public class Model {
                     }else{
                         //Loading privateKey well in advance so the whole affair is "fail-fast"
                         PrivateKey privateKey = (PrivateKey)auditoriumParams.getKeyStore().loadAdderKey("private");
-                        PublicKey publicKey = AdderKeyManipulator.generateFinalPublicKey((PublicKey) auditoriumParams.getKeyStore().loadAdderKey("public"));
+                        PublicKey publicKey = (PublicKey) auditoriumParams.getKeyStore().loadAdderKey("public");
                         tallier = new ChallengeDelayedWithNIZKsTallier(publicKey, privateKey);
 
 //                        System.out.println("Supervisor's public key --------------------------------------------------------");
