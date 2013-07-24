@@ -34,6 +34,9 @@ import java.awt.Insets;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -1188,13 +1191,13 @@ public class PsychLayoutManager extends ALayoutManager {
         // Get the number of cards
         int numCards = ballot.getCards().size();
         // Add a "no-selection alert page" for each race
-        for (int raceN = 0; raceN < numCards; raceN++) {
-        	layout.getPages().add(makeNoSelectionPage(raceN+1));
-        }
-        // Add another no-selection alert page for each race-review screen
-        for (int raceN = 0; raceN < numCards; raceN++) {
-        	layout.getPages().add(makeNoSelectionPage(raceN+numCards+4));
-        }
+//        for (int raceN = 0; raceN < numCards; raceN++) {
+//        	layout.getPages().add(makeNoSelectionPage(raceN+1));
+//        }
+//        // Add another no-selection alert page for each race-review screen
+//        for (int raceN = 0; raceN < numCards; raceN++) {
+//        	layout.getPages().add(makeNoSelectionPage(raceN+numCards+4));
+//        }
         //#endif
 
 
@@ -1868,6 +1871,7 @@ public class PsychLayoutManager extends ALayoutManager {
                 }
                 rl.setNext(rb);
                 rl.setRight(rb);
+                rl.setLeft(previousButton);
                 rb.setLeft(previousButton);
                 rb.setPrevious(rl);
                 rb.setLeft(rl);
@@ -2124,68 +2128,68 @@ public class PsychLayoutManager extends ALayoutManager {
     }
 
     //#ifdef NONE_OF_ABOVE
-    protected Page makeNoSelectionPage(int target) {
-        PsychLayoutPanel frame = new PsychLayoutPanel();
-        Label successTitle = new Label(getNextLayoutUID(),
-                LiteralStrings.Singleton.get("NO_SELECTION_TITLE", language));
-        successTitle.setBold(true);
-        successTitle.setCentered(true);
-        successTitle.setSize(successTitle.execute(sizeVisitor));
-        frame.addTitle(successTitle);
-        frame.remove(frame.west);
-
-        JPanel east = new JPanel();
-        east.setLayout(new GridBagLayout());
-        Label instrLabel = new Label(getNextLayoutUID(),
-                LiteralStrings.Singleton.get("NO_SELECTION", language), sizeVisitor);
-        Spacer sp = new Spacer(instrLabel, east);
-        east.add(sp);
-        frame.addAsEastPanel(east);
-
-        Label returnLbl = new Label(getNextLayoutUID(), LiteralStrings.Singleton
-                .get("RETURN_RACE", language), sizeVisitor);
-        frame.addReturnButton(returnLbl, target);
-        
-        frame.validate();
-        frame.pack();
-
-        Page page = new Page();
-        page.getComponents().add(simpleBackground);
-        page.setBackgroundLabel(simpleBackground.getUID());
-
-        ALayoutComponent button = null;
-        ALayoutComponent tempButton = null;
-
-        for (Component c : frame.getAllComponents()) {
-            Spacer s = (Spacer) c;
-            s.updatePosition();
-            page.getComponents().add(s.getComponent());
-            button = s.getComponent();
-
-            if(button instanceof ToggleButton){
-                if(tempButton == null){
-                    button.setPrevious(previousButton);
-                    previousButton.setNext(button);
-
-                }else{
-                    button.setPrevious(tempButton);
-                    tempButton.setNext(button);
-                }
-
-                tempButton = button;
-
-            }
-        }
-
-        //If the temporary button is still null at this point that means the
-        //page contains no ToggleButtons
-        if(tempButton != null){
-            tempButton.setNext(nextButton);
-            nextButton.setPrevious(tempButton);
-        }
-
-        return page;
-    }
+//    protected Page makeNoSelectionPage(int target) {
+//        PsychLayoutPanel frame = new PsychLayoutPanel();
+//        Label successTitle = new Label(getNextLayoutUID(),
+//                LiteralStrings.Singleton.get("NO_SELECTION_TITLE", language));
+//        successTitle.setBold(true);
+//        successTitle.setCentered(true);
+//        successTitle.setSize(successTitle.execute(sizeVisitor));
+//        frame.addTitle(successTitle);
+//        frame.remove(frame.west);
+//
+//        JPanel east = new JPanel();
+//        east.setLayout(new GridBagLayout());
+//        Label instrLabel = new Label(getNextLayoutUID(),
+//                LiteralStrings.Singleton.get("NO_SELECTION", language), sizeVisitor);
+//        Spacer sp = new Spacer(instrLabel, east);
+//        east.add(sp);
+//        frame.addAsEastPanel(east);
+//
+//        Label returnLbl = new Label(getNextLayoutUID(), LiteralStrings.Singleton
+//                .get("RETURN_RACE", language), sizeVisitor);
+//        frame.addReturnButton(returnLbl, target);
+//
+//        frame.validate();
+//        frame.pack();
+//
+//        Page page = new Page();
+//        page.getComponents().add(simpleBackground);
+//        page.setBackgroundLabel(simpleBackground.getUID());
+//
+//        ALayoutComponent button = null;
+//        ALayoutComponent tempButton = null;
+//
+//        for (Component c : frame.getAllComponents()) {
+//            Spacer s = (Spacer) c;
+//            s.updatePosition();
+//            page.getComponents().add(s.getComponent());
+//            button = s.getComponent();
+//
+//            if(button instanceof ToggleButton){
+//                if(tempButton == null){
+//                    button.setPrevious(previousButton);
+//                    previousButton.setNext(button);
+//
+//                }else{
+//                    button.setPrevious(tempButton);
+//                    tempButton.setNext(button);
+//                }
+//
+//                tempButton = button;
+//
+//            }
+//        }
+//
+//        //If the temporary button is still null at this point that means the
+//        //page contains no ToggleButtons
+//        if(tempButton != null){
+//            tempButton.setNext(nextButton);
+//            nextButton.setPrevious(tempButton);
+//        }
+//
+//        return page;
+//    }
     //#endif
 
     @Override

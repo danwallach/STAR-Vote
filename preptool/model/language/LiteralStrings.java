@@ -371,8 +371,8 @@ public class LiteralStrings {
         map.put("OVERRIDE_CANCEL_TITLE", ls);
 
         ls = new LocalizedString();
-        ls.set(ENGLISH, "The election supervisor has requested that this ballot be cancelled. \n Proceed with this operation?");
-        ls.set(SPANISH, "El supervisor electoral ha solicitado que se cancele esta votación. \n ¿Continuar con esta operación?");
+        ls.set(ENGLISH, "The election supervisor has requested that this ballot be cancelled. \n Please cancel, or continue voting if this request was sent by mistake.");
+        ls.set(SPANISH, "El supervisor electoral ha solicitado que se cancele esta votación. \n Por favor, cancelar, o continuar votando si esta petición se envió por error.");
         map.put("OVERRIDE_CANCEL_INSTRUCTIONS", ls);
 
         ls = new LocalizedString();
@@ -386,8 +386,8 @@ public class LiteralStrings {
         map.put("OVERRIDE_CAST_TITLE", ls);
 
         ls = new LocalizedString();
-        ls.set(ENGLISH, "The election supervisor has requested that this ballot be recorded. \n Proceed with this operation?");
-        ls.set(SPANISH, "El supervisor electoral ha solicitado que se registró esta votación. \n ¿Continuar con esta operación?");
+        ls.set(ENGLISH, "The election supervisor has requested that this ballot be recorded. \n Please record this vote, or continue voting if this request was sent by mistake.");
+        ls.set(SPANISH, "El supervisor electoral ha solicitado que se registró esta votación. \n Registre esta votación, o continuar votando si esta petición se envió por error.");
         map.put("OVERRIDE_CAST_INSTRUCTIONS", ls);
 
         ls = new LocalizedString();

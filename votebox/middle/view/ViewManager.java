@@ -204,7 +204,6 @@ public class ViewManager implements IViewManager {
      */
     private void switchFocus(IFocusable dt) {
 
-        System.out.println("Switching focus to " + dt);
         // Check the validity of the reference we got
         if (dt == null) {
             return;

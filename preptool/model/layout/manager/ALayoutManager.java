@@ -24,8 +24,9 @@ package preptool.model.layout.manager;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -70,6 +71,11 @@ public abstract class
 	 * multi-core machines. Experimental. [dsandler]
 	 */
 	public static final Boolean USE_THREADS = true;
+
+    /**
+     * Generate synthesized audio files to speak all of the text on this component
+     */
+    public static final Boolean GENERATE_AUDIO = true;
 
     /**
      * Constant used when determining the font size
@@ -248,7 +254,58 @@ public abstract class
                         BufferedImage img = l.execute(getImageVisitor());
                         ImageIO.write(img, "png", new File(location
                                 + l.getUID() + "_1_" + langShortName + ".png"));
-                    } catch (IOException e) {
+
+
+                        if(GENERATE_AUDIO){
+                            String text=l.getText();
+
+                            ArrayList<InputStream> streams = new ArrayList<InputStream>();
+
+                            //Google can only translate strings of less than 100 characters
+                            String[] strings = text.split("\n");
+
+                            ArrayList<String> words = new ArrayList<String>();
+
+                            String line = "";
+
+                            for(String s : strings){
+                                if(line.length() + s.length() + 1 < 100)
+                                    line += " " + s;
+                                else{
+                                    words.add(line);
+                                    line = s;
+                                }
+
+                            }
+
+                            words.add(line);
+
+                            for(String s : words){
+                                line=java.net.URLEncoder.encode(s, "UTF-16");
+                                URL url = new URL("http://translate.google.com/translate_tts?tl=" + langShortName + "&q="+line);
+                                HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
+                                urlConn.addRequestProperty("User-Agent", "Mozilla/4.76");
+                                InputStream audioSrc = urlConn.getInputStream();
+                                streams.add(audioSrc);
+                            }
+
+                            OutputStream outstream = new FileOutputStream(new File(location  + l.getUID() + "_" + langShortName + ".mp3"));
+
+                            for(InputStream stream : streams){
+                                DataInputStream read = new DataInputStream(stream);
+
+                                byte[] buffer = new byte[1024];
+                                int len;
+                                while ((len = read.read(buffer)) > 0) {
+                                    outstream.write(buffer, 0, len);
+                                }
+                            }
+                            outstream.close();
+                        }
+
+
+                    }catch (IOException e) {
+                        System.out.println(l.getUID()+"_"+langShortName);
                         throw new RuntimeException(e);
                     }
                     uids.add(l.getUID());
