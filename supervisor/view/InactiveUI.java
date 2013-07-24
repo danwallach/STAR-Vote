@@ -40,6 +40,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import preptool.model.layout.manager.Spacer;
 import supervisor.model.BallotScannerMachine;
 import supervisor.model.AMachine;
 import supervisor.model.Model;
@@ -130,14 +131,18 @@ public class InactiveUI extends JPanel {
         }
         textPanel.removeAll();
 
+        boolean tapOn = false;
+
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
         c.insets = new Insets(0, 0, 5, 0);
         JLabel label = new MyJLabel("Currently connected to "
                 + model.getNumConnected() + " machines");
+        JLabel label2 = new JLabel();
         label.setFont(label.getFont().deriveFont(20f));
         textPanel.add(label, c);
+        textPanel.add(label2, c);
 
         c.gridy = 1;
         c.insets = new Insets(0, 0, 0, 0);
@@ -145,6 +150,7 @@ public class InactiveUI extends JPanel {
             int supervisors = 0;
             int booths = 0;
             int scanners = 0;
+            int tap = 0;
 
             for (AMachine m : model.getMachines()) {
                 if (m instanceof SupervisorMachine && m.isOnline() && m.getSerial() != model.getMySerial()) {
@@ -153,23 +159,43 @@ public class InactiveUI extends JPanel {
                     booths++;
                 } else if (m instanceof BallotScannerMachine && m.isOnline()){
                     scanners++;
+                } else if (m.isOnline() && m.getSerial() == 0 ){
+                    /**
+                     * We're designating the Tap connection with a serial number of 0 always.
+                     * This way we can tell that it is connected
+                     */
+                    tap++;
+                    tapOn = true;
                 }
             }
-            int unknown = model.getNumConnected() - supervisors - booths - scanners;
+            int unknown = model.getNumConnected() - supervisors - booths - scanners - tap;
             String str = "(" + supervisors + " supervisors, " + booths
                     + " booths, " + scanners + " scanners";
             if (unknown > 0)
                 str += ", " + unknown + " unknown)";
             else
                 str += ")";
+
+
             label = new MyJLabel(str);
+            if(tap > 0)
+                label2 = new MyJLabel("Tap Connected");
+            else
+                label2 = new MyJLabel("Tap Offline");
         } else {
             label = new MyJLabel(
                     "You must connect to at least one other machine before you can activate.");
             label.setForeground(Color.RED);
         }
         label.setFont(label.getFont().deriveFont(20f));
+        label2.setFont(label.getFont().deriveFont(20f));
         textPanel.add(label, c);
+        c.gridy = 2;
+        if(tapOn)
+            label2.setForeground(Color.GREEN);
+        else
+            label2.setForeground(Color.GRAY);
+        textPanel.add(label2, c);
         revalidate();
         repaint();
     }

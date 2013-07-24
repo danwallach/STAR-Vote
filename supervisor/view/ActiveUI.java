@@ -198,7 +198,7 @@ public class ActiveUI extends JPanel {
         c.insets = new Insets(20, 20, 80, 20);
         leftPanel.add(leftLabelPanel, c);
 
-        ballotLocChooser = new JFileChooser("");
+        ballotLocChooser = new JFileChooser(System.getProperty("user.dir"));
         ballotLocChooser.setFileFilter(new FileFilter() {
             @Override
             public boolean accept(File f) {
