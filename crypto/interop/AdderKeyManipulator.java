@@ -37,7 +37,7 @@ public class AdderKeyManipulator {
 		if(baseKey.getH() != null && baseKey.getH().equals(newKey.getH()))
 			throw new AuditoriumCryptoException("H's DO match", null);*/
 		
-		System.out.println("Cached Key Set: "+newKey);
+//		System.out.println("Cached Key Set: "+newKey);
 		
 		_cachedKey = newKey;
 	}
@@ -71,8 +71,6 @@ public class AdderKeyManipulator {
 	 */
 	protected static PublicKey generateFinalPublicKeyNoCache(PublicKey pubKey){
 		_poly = new Polynomial(pubKey.getP(), pubKey.getG(), pubKey.getF(), 0);
-
-        System.out.println(_poly);
 
         AdderInteger p = pubKey.getP();
 		AdderInteger q = pubKey.getQ();

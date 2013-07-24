@@ -117,7 +117,7 @@ public class BallotEncrypter {
 
         Vote vote = finalPubKey.encrypt(value);
 
-		List<ElgamalCiphertext> ciphers = vote.getCipherList();
+        List<ElgamalCiphertext> ciphers = (List<ElgamalCiphertext>)vote.getCipherList();
 		
 		List<AdderInteger> subRandom = new ArrayList<AdderInteger>();
 		for(ElgamalCiphertext cipher : ciphers)

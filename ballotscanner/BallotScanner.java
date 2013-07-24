@@ -174,7 +174,6 @@ public class BallotScanner{
                     try{
                         lastFoundBID = scanner.nextInt()+"";
                     } catch (InputMismatchException e){
-                        System.out.println("Leave our console alone!");
                         lastFoundBID = "-1";
                     }
 

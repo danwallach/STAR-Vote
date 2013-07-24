@@ -1112,7 +1112,6 @@ public class Model {
 
 
                     String precinct = bManager.getPrecinctByBID(e.getBID().toString());
-                    System.out.println("Confirming ballot " + e.getBID());
                     talliers.get(precinct).confirmed(nonce);
 
                     // used to be in voteBox registerForCommit listener.
@@ -1143,20 +1142,17 @@ public class Model {
                 if(isPollsOpen()) {
                     System.out.println(">>> PIN entered: " + e.getPin());
                     String ballot = bManager.getBallotByPin(e.getPin());
-                    System.out.println(ballot);
                     if(ballot!=null){
                         try {
-                            System.out.println(bManager.getPrecinctByBallot(ballot));
                             setBallotLocation(ballot);
                             if(bManager.getPrecinctByBallot(ballot).contains("provisional")) {
                                 provisionalAuthorize(e.getSerial());
-                                System.out.println(">>>>>>> It's working!");
                             }
                             else
                                 authorize(e.getSerial());
                         }
                         catch(IOException ex) {
-                            System.out.println(ex.getMessage());
+                            System.err.println(ex.getMessage());
                         }
                     }
                     else {
@@ -1234,10 +1230,6 @@ public class Model {
                     ((VoteBoxBooth) m).setNonce(e.getNonce());
                 }
             }
-
-
-
-
         });
 
         try {
@@ -1249,7 +1241,6 @@ public class Model {
             System.out.println("Recoverable error occurred: "+e1.getMessage());
             e1.printStackTrace(System.err);
         }
-
         statusTimer.start();
     }
 
@@ -1290,15 +1281,8 @@ public class Model {
                         //Loading privateKey well in advance so the whole affair is "fail-fast"
                         PrivateKey privateKey = (PrivateKey)auditoriumParams.getKeyStore().loadAdderKey("private");
                         PublicKey publicKey = (PublicKey) auditoriumParams.getKeyStore().loadAdderKey("public");
-                        tallier = new ChallengeDelayedWithNIZKsTallier(publicKey, privateKey);
 
-//                        System.out.println("Supervisor's public key --------------------------------------------------------");
-//                        System.out.println("P - " + publicKey.getP());
-//                        System.out.println("Q - " + publicKey.getQ());
-//                        System.out.println("G - " + publicKey.getG());
-//                        System.out.println("H - " + publicKey.getH());
-//                        System.out.println("F - " + publicKey.getF());
-//                        System.out.println("--------------------------------------------------------------------------------");
+                        tallier = new ChallengeDelayedWithNIZKsTallier(publicKey, privateKey);
 
                     }//if
                 } catch (AuditoriumCryptoException e1) {

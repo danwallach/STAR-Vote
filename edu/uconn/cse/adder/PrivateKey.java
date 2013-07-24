@@ -236,9 +236,9 @@ public class PrivateKey {
     		throw new RuntimeException("Not private-key");
     	
     	AdderInteger p = AdderInteger.fromASE(exp.get(1));
-    	AdderInteger g = AdderInteger.fromASE(exp.get(1));
-    	AdderInteger x = AdderInteger.fromASE(exp.get(1));
-    	AdderInteger f = AdderInteger.fromASE(exp.get(1));
+    	AdderInteger g = AdderInteger.fromASE(exp.get(2));
+    	AdderInteger x = AdderInteger.fromASE(exp.get(3));
+    	AdderInteger f = AdderInteger.fromASE(exp.get(4));
     	
     	return new PrivateKey(p, g, x, f);
     }

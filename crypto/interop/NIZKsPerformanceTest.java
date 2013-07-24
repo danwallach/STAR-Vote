@@ -66,6 +66,7 @@ public class NIZKsPerformanceTest {
 	private static  List<byte[]> _seeds = null;
 	private static  Key _publicKey = null;
 	private static PublicKey _adderPublicKey = null;
+    private static PrivateKey _adderPrivateKey = null;
 	
 	private static List<Pair> _toDecryptWithoutNIZKs = new ArrayList<Pair>();
 	private static List<Pair> _toDecryptWithNIZKs = new ArrayList<Pair>();
@@ -95,6 +96,7 @@ public class NIZKsPerformanceTest {
 
 		_publicKey = store.loadKey("0-public");
 		_adderPublicKey = (PublicKey)store.loadAdderKey("public");
+        _adderPrivateKey = (PrivateKey)store.loadAdderKey("private");
 
 		File tempBallotPath = File.createTempFile("ballot", "path");
 		tempBallotPath.delete();
@@ -330,9 +332,9 @@ public class NIZKsPerformanceTest {
         System.out.println("tallyWithNIZKs:");
         List<Card> cards = _ballot.getCards();
 
-        PrivateKey privateKey = _adderPublicKey.genKeyPair();
+        //PrivateKey privateKey = _adderPublicKey.genKeyPair();
 
-        ChallengeDelayedWithNIZKsTallier tallier = new ChallengeDelayedWithNIZKsTallier(_adderPublicKey, privateKey);
+        ChallengeDelayedWithNIZKsTallier tallier = new ChallengeDelayedWithNIZKsTallier(_adderPublicKey, _adderPrivateKey);
 
         long elapsedTime = 0;
 
@@ -364,10 +366,7 @@ public class NIZKsPerformanceTest {
             }
 
             ListExpression exp = _ballot.getCastBallot();
-            System.out.println(exp);
             List<List<String>> groups = _ballot.getRaceGroups();
-
-            System.out.println(groups);
 
             ListExpression encBallot = BallotEncrypter.SINGLETON.encryptWithProof(exp, groups, AdderKeyManipulator.generateFinalPublicKey(_adderPublicKey));
 

@@ -130,14 +130,11 @@ public class ChallengeDelayedWithNIZKsTallier implements ITallier {
 			Bugout.err("Malformed ballot received <"+e.getMessage()+">");
 			Bugout.err("Rejected ballot:\n"+new String(ballotBytes));
 		}
-        System.out.println("Ballot confirmed and tallied!");
     }
 
 	@SuppressWarnings("unchecked")
 	public Map<String, BigInteger> getReport() {
 		_finalPrivateKey = AdderKeyManipulator.generateFinalPrivateKey(_publicKey, _privateKey);
-        //To ensure the consistency of the keys
-        _finalPublicKey = AdderKeyManipulator.generateFinalPublicKey(_publicKey);
 		Map<String, BigInteger> report = new HashMap<String, BigInteger>();
 		
 		for(String group : _results.keySet()){

@@ -253,8 +253,7 @@ public class VoteBox{
                                     BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey(mySerial + "-public")), StringExpression.makeString(bid), StringExpression.makeString(precinct)));
                         } else{
                             ASExpression encBallot = BallotEncrypter.SINGLETON.encryptWithProof(ballot, (List<List<String>>) arg[1],
-                                    AdderKeyManipulator.generateFinalPublicKey((PublicKey) _constants.getKeyStore().loadAdderKey("public")));
-                            System.out.println("Encrypting: " + encBallot);
+                                    (PublicKey) _constants.getKeyStore().loadAdderKey("public"));
                             auditorium.announce(new CommitBallotEvent(mySerial,
                                     StringExpression.makeString(nonce),
                                     encBallot,
