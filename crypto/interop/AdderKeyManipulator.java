@@ -71,8 +71,10 @@ public class AdderKeyManipulator {
 	 */
 	protected static PublicKey generateFinalPublicKeyNoCache(PublicKey pubKey){
 		_poly = new Polynomial(pubKey.getP(), pubKey.getG(), pubKey.getF(), 0);
-		
-		AdderInteger p = pubKey.getP();
+
+        System.out.println(_poly);
+
+        AdderInteger p = pubKey.getP();
 		AdderInteger q = pubKey.getQ();
 		AdderInteger g = pubKey.getG();
 		AdderInteger f = pubKey.getF();
@@ -96,7 +98,7 @@ public class AdderKeyManipulator {
 	public static PrivateKey generateFinalPrivateKey(PublicKey publicKey, PrivateKey privateKey){
 		//Generate the final private key
 		List<ElgamalCiphertext> ciphertexts = new ArrayList<ElgamalCiphertext>();
-                ElgamalCiphertext ciphertext = publicKey.encryptPoly(_poly.evaluate(new AdderInteger(0, publicKey.getQ())));
+        ElgamalCiphertext ciphertext = publicKey.encryptPoly(_poly.evaluate(new AdderInteger(0, publicKey.getQ())));
 		ciphertexts.add(ciphertext);
 		PrivateKey finalPrivKey = privateKey.getFinalPrivKey(ciphertexts);
 		

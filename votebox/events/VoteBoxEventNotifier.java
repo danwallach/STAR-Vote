@@ -164,9 +164,9 @@ public class VoteBoxEventNotifier implements VoteBoxEventListener {
             l.votebox(e);
     }
 
-    public void ballotscanner(BallotScannerEvent e) {
+    public void ballotScanner(BallotScannerEvent e) {
         for (VoteBoxEventListener l : listeners)
-            l.ballotscanner(e);
+            l.ballotScanner(e);
     }
 
     public void commitBallot(CommitBallotEvent e) {
@@ -229,9 +229,9 @@ public class VoteBoxEventNotifier implements VoteBoxEventListener {
             l.uploadChallengedBallots(challengedBallotUploadEvent);
     }
 
-    public void scannerstart(StartScannerEvent e){
+    public void scannerStart(StartScannerEvent e){
         for(VoteBoxEventListener l : listeners)
-            l.scannerstart(e);
+            l.scannerStart(e);
     }
 
     public void pollMachines(PollMachinesEvent pollMachinesEvent) {

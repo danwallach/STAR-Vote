@@ -97,7 +97,7 @@ public class VoteBox{
     private byte[] pinNonce;
 
     private File _currentBallotFile;
-    
+
     /**
      * Equivalent to new VoteBox(-1).
      */
@@ -241,6 +241,10 @@ public class VoteBox{
                             "Incorrectly expected a cast-ballot");
                 ListExpression ballot = (ListExpression) arg[0];
 
+                for(Object i : arg){
+                    System.out.println(i);
+                }
+
                 try {
                     if(!isProvisional){
                         if(!_constants.getEnableNIZKs()){
@@ -248,7 +252,8 @@ public class VoteBox{
                                     StringExpression.makeString(nonce),
                                     BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey(mySerial + "-public")), StringExpression.makeString(bid), StringExpression.makeString(precinct)));
                         } else{
-                            ASExpression encBallot = BallotEncrypter.SINGLETON.encryptWithProof(ballot, (List<List<String>>) arg[1], (PublicKey) _constants.getKeyStore().loadAdderKey("public"));
+                            ASExpression encBallot = BallotEncrypter.SINGLETON.encryptWithProof(ballot, (List<List<String>>) arg[1],
+                                    AdderKeyManipulator.generateFinalPublicKey((PublicKey) _constants.getKeyStore().loadAdderKey("public")));
                             System.out.println("Encrypting: " + encBallot);
                             auditorium.announce(new CommitBallotEvent(mySerial,
                                     StringExpression.makeString(nonce),
@@ -275,7 +280,6 @@ public class VoteBox{
                     long start = System.currentTimeMillis();
                     while(System.currentTimeMillis() - start < 5000);
                     finishedVoting = true;
-                    BallotEncrypter.SINGLETON.clear();
 
                     if(success)
                         auditorium.announce(new BallotPrintSuccessEvent(mySerial, bid, nonce));
@@ -451,8 +455,7 @@ public class VoteBox{
                     long start = System.currentTimeMillis();
                     while(System.currentTimeMillis() - start < 5000);
                     finishedVoting = true;
-                    BallotEncrypter.SINGLETON.clear();
-                    
+
                     if(success)
                         auditorium.announce(new BallotPrintSuccessEvent(mySerial, bid, nonce));
                 } else
@@ -659,7 +662,7 @@ public class VoteBox{
                     }
 
 
-
+                    BallotEncrypter.SINGLETON.clear();
                     nonce = null;
                     voting = false;
                     finishedVoting = false;
@@ -873,7 +876,7 @@ public class VoteBox{
 
             public void uploadChallengedBallots(ChallengedBallotUploadEvent challengedBallotUploadEvent) {}
 
-            public void scannerstart(StartScannerEvent startScannerEvent) {
+            public void scannerStart(StartScannerEvent startScannerEvent) {
                 // NO-OP
             }
 
@@ -958,7 +961,7 @@ public class VoteBox{
                 // NO-OP
             }
 
-            public void ballotscanner(BallotScannerEvent e) {
+            public void ballotScanner(BallotScannerEvent e) {
                 // NO-OP
             }
 

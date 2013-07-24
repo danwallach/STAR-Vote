@@ -27,6 +27,7 @@ import java.awt.event.ActionListener;
 import java.io.*;
 import java.math.BigInteger;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.*;
 import javax.swing.Timer;
@@ -85,8 +86,9 @@ public class Model {
 
     /**
      * A mapping of precinct names to their talliers
+     * that is thread-safe
      */
-    private HashMap<String, ITallier> talliers;
+    private ConcurrentHashMap<String, ITallier> talliers;
 
     private Timer statusTimer;
 
@@ -141,7 +143,7 @@ public class Model {
         keyword = "";
         ballotLocation = "ballot.zip";
 //        talliers = new Tallier();
-        talliers = new HashMap<String, ITallier>();
+        talliers = new ConcurrentHashMap<String, ITallier>();
         committedBids = new HashMap<String, ASExpression>();
         committedBallots = new HashMap<String, ASExpression>();
         statusTimer = new Timer(300000, new ActionListener() {
@@ -759,7 +761,7 @@ public class Model {
             		if(!auditoriumParams.getCastBallotEncryptionEnabled()){
             			if(auditoriumParams.getEnableNIZKs())
             				throw new RuntimeException("Encryption must be enabled to use NIZKs");
-            			
+
             			//privateKey = null;
             			tallier = new Tallier();
             		}else{
@@ -809,16 +811,16 @@ public class Model {
             }
 
             /**
-             * Handler for a ballotscanner (status) event. Adds the machine if it
+             * Handler for a ballotScanner (status) event. Adds the machine if it
              * hasn't been seen, and updates its status if it has.
              */
-            public void ballotscanner(BallotScannerEvent e) {
+            public void ballotScanner(BallotScannerEvent e) {
                 AMachine m = getMachineForSerial(e.getSerial());
                 if (m != null && !(m instanceof BallotScannerMachine))
                     throw new IllegalStateException(
                             "Machine "
                                     + e.getSerial()
-                                    + " is not a ballotscanner, but broadcasted ballotscanner message");
+                                    + " is not a ballotScanner, but broadcasted ballotScanner message");
                 if (m == null) {
                     m = new BallotScannerMachine(e.getSerial());
                     System.out.println("Ballot Scanner Added: " + m);
@@ -1004,7 +1006,7 @@ public class Model {
                             ((StringExpression) e.getNonce())
                             .getBytes(), e.getBID().toString(), e.getPrecinct().toString()));
 
-                    String precinct = bManager.getPrecinctByBID(e.getBID().toString());
+                    String precinct = e.getPrecinct().toString();
                     talliers.get(precinct).recordVotes(e.getBallot().toVerbatim(), e.getNonce());
                     String bid = e.getBID().toString();
                     committedBids.put(bid, e.getNonce());
@@ -1106,6 +1108,13 @@ public class Model {
 
                     BallotStore.castCommittedBallot(e.getBID());
 
+
+
+
+                    String precinct = bManager.getPrecinctByBID(e.getBID().toString());
+                    System.out.println("Confirming ballot " + e.getBID());
+                    talliers.get(precinct).confirmed(nonce);
+
                     // used to be in voteBox registerForCommit listener.
                     if(auditoriumParams.getCastBallotEncryptionEnabled()){
                         if(auditoriumParams.getEnableNIZKs()){
@@ -1118,10 +1127,6 @@ public class Model {
                         auditorium.announce(new CastCommittedBallotEvent(serial, nonce, StringExpression.makeString(e.getBID())));
                     // that should trigger my own castBallot listener.
 
-
-
-                    String precinct = bManager.getPrecinctByBID(e.getBID().toString());
-                    talliers.get(precinct).confirmed(nonce);
 
                     System.out.println("Sending scan confirmation!");
                     System.out.println("BID: " + bid);
@@ -1197,7 +1202,7 @@ public class Model {
                 // NO-OP
             }
 
-            public void scannerstart(StartScannerEvent e) {
+            public void scannerStart(StartScannerEvent e) {
                 // NO-OP
                 for (AMachine machine:machines)
                 {
@@ -1302,7 +1307,7 @@ public class Model {
                 }
 
 
-            if(tallier != null)
+            if(tallier != null && !talliers.keySet().contains(tallier))
                 talliers.put(precinct, tallier);
             else
                 throw new RuntimeException("Tallier was not properly initialized for precinct " + precinct);

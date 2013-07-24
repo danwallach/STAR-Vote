@@ -3,14 +3,14 @@ package votebox.events;
 import sexpression.*;
 
 /**
-* Event that represents the ballotscanner message
+* Event that represents the ballotScanner message
 *
 * @author aroe, Matt Bernhard
 */
 public class BallotScannerEvent implements IAnnounceEvent {
 
     /**
-     * Matcher for the ballotscanner message
+     * Matcher for the ballotScanner message
      */
     private static MatcherRule MATCHER = new MatcherRule() {
         private ASExpression pattern = new ListExpression(StringExpression
@@ -101,7 +101,7 @@ public class BallotScannerEvent implements IAnnounceEvent {
     }
 
     public void fire(VoteBoxEventListener l) {
-        l.ballotscanner(this);
+        l.ballotScanner(this);
     }
 
     public ASExpression toSExp() {

@@ -28,7 +28,7 @@ public class BallotScannerMachine extends AMachine {
 
     /**
      * Constructs a new supervisor machine
-     * @param serial the serial number of the ballotscanner
+     * @param serial the serial number of the ballotScanner
      */
     public BallotScannerMachine(int serial) {
         super(serial);

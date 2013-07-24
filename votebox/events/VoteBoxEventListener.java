@@ -186,12 +186,12 @@ public interface VoteBoxEventListener {
     public void votebox(VoteBoxEvent e);
 
     /**
-     * Fired when the ballotscanner message is received
+     * Fired when the ballotScanner message is received
      *
      * @param e
      *            the event
      */
-    public void ballotscanner(BallotScannerEvent e);
+    public void ballotScanner(BallotScannerEvent e);
     
     /**
      * Fired when the ballot counted message is received
@@ -259,7 +259,7 @@ public interface VoteBoxEventListener {
      */
     public void uploadChallengedBallots(ChallengedBallotUploadEvent challengedBallotUploadEvent);
 
-    public void scannerstart(StartScannerEvent startScannerEvent);
+    public void scannerStart(StartScannerEvent startScannerEvent);
 
     /**
      * Polls all machines when an unknown connection is detected and attempts add that machine to known machines

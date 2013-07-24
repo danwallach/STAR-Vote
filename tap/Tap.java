@@ -182,7 +182,7 @@ public class Tap {
             public void pollsOpenQ(PollsOpenQEvent e) {}
             public void supervisor(SupervisorEvent e) {}
             public void votebox(VoteBoxEvent e) {}
-            public void ballotscanner(BallotScannerEvent e) {}
+            public void ballotScanner(BallotScannerEvent e) {}
             public void ballotScanned(BallotScannedEvent e) {}
             public void castCommittedBallot(CastCommittedBallotEvent e) {}
             public void pollStatus(PollStatusEvent pollStatusEvent) {}
@@ -192,7 +192,7 @@ public class Tap {
             public void ballotPrinting(BallotPrintingEvent ballotPrintingEvent) {}
             public void ballotPrintSuccess(BallotPrintSuccessEvent ballotPrintSuccessEvent) {}
             public void ballotPrintFail(BallotPrintFailEvent ballotPrintFailEvent) {}
-            public void scannerstart(StartScannerEvent startScannerEvent) {}
+            public void scannerStart(StartScannerEvent startScannerEvent) {}
             public void pollMachines(PollMachinesEvent pollMachinesEvent){}
             public void spoilBallot(SpoilBallotEvent spoilBallotEvent) {}
             public void announceProvisionalBallot(ProvisionalBallotEvent provisionalBallotEvent) {}

@@ -111,8 +111,6 @@ public class SimpleKeyStore implements IKeyStore {
 
 	public Object loadAdderKey(String nodeid){
 		try{
-            if(nodeid.equals("public"))
-                System.out.println("I'm actually getting a public adder key!");
 
             InputStream in = getInput(nodeid+".adder.key");
 
@@ -255,8 +253,6 @@ public class SimpleKeyStore implements IKeyStore {
 
 			if(!rootFile.exists() && entry.startsWith("/"))
 				rootFile = new File(entry.substring(1).replace('/', File.separatorChar));
-
-            System.out.println(rootFile.getAbsolutePath());
 
 			InputStream in = new FileInputStream(rootFile);
 

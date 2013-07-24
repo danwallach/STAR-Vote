@@ -77,7 +77,7 @@ public class ChallengeDelayedWithNIZKsTallier implements ITallier {
 			ASExpression sexp = in.read();
 			//Check that the ballot is well-formed
 			ListExpression ballot = (ListExpression)sexp;
-            System.out.println(">>>> Tallying this ballot: " + ballot.toString());
+//            System.out.println(">>>> Tallying this ballot: " + ballot.toString());
 
 
             for(int i = 0; i < ballot.size(); i++){
@@ -130,11 +130,14 @@ public class ChallengeDelayedWithNIZKsTallier implements ITallier {
 			Bugout.err("Malformed ballot received <"+e.getMessage()+">");
 			Bugout.err("Rejected ballot:\n"+new String(ballotBytes));
 		}
-	}
+        System.out.println("Ballot confirmed and tallied!");
+    }
 
 	@SuppressWarnings("unchecked")
 	public Map<String, BigInteger> getReport() {
 		_finalPrivateKey = AdderKeyManipulator.generateFinalPrivateKey(_publicKey, _privateKey);
+        //To ensure the consistency of the keys
+        _finalPublicKey = AdderKeyManipulator.generateFinalPublicKey(_publicKey);
 		Map<String, BigInteger> report = new HashMap<String, BigInteger>();
 		
 		for(String group : _results.keySet()){
@@ -146,7 +149,6 @@ public class ChallengeDelayedWithNIZKsTallier implements ITallier {
 
             Vote cipherSum = election.sumVotes();
 
-            //TODO: vet this.
 			List<AdderInteger> partialSum = _finalPrivateKey.partialDecrypt(cipherSum);
 			AdderInteger coeff = new AdderInteger(0);
 
@@ -156,7 +158,7 @@ public class ChallengeDelayedWithNIZKsTallier implements ITallier {
 			List<AdderInteger> coeffs = new ArrayList<AdderInteger>();
 			coeffs.add(coeff);
 
-			List<AdderInteger> results = election.getFinalSum(partialSums, coeffs, cipherSum, _publicKey);
+			List<AdderInteger> results = election.getFinalSum(partialSums, coeffs, cipherSum, _finalPublicKey);
 			String[] ids = group.split(",");
 			
 //			System.out.println("\tresults size: "+results.size());

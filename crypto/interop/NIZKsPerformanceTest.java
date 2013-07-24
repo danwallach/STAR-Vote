@@ -1,6 +1,7 @@
 package crypto.interop;
 
 import java.io.File;
+import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,6 +26,10 @@ import sexpression.ListExpression;
 import crypto.BallotEncrypter;
 import sexpression.StringExpression;
 import supervisor.model.tallier.ChallengeDelayedWithNIZKsTallier;
+import votebox.events.AuthorizedToCastWithNIZKsEvent;
+import votebox.events.BallotScannedEvent;
+import votebox.events.CommitBallotEvent;
+import votebox.events.IAnnounceEvent;
 import votebox.middle.Properties;
 import votebox.middle.ballot.Ballot;
 import votebox.middle.ballot.BallotParser;
@@ -95,8 +100,6 @@ public class NIZKsPerformanceTest {
 		tempBallotPath.delete();
 		tempBallotPath = new File(tempBallotPath,"data");
 		tempBallotPath.mkdirs();
-
-        System.out.println(BALLOT_PATH);
 
 		Driver.unzip(BALLOT_PATH, tempBallotPath.getAbsolutePath());
 
@@ -323,6 +326,7 @@ public class NIZKsPerformanceTest {
 
     @Test
     public void tallyWithNIZKs() throws Exception{
+
         System.out.println("tallyWithNIZKs:");
         List<Card> cards = _ballot.getCards();
 
@@ -332,7 +336,14 @@ public class NIZKsPerformanceTest {
 
         long elapsedTime = 0;
 
+        HashMap<String, ASExpression> map = new HashMap();
+
         SecureRandom r = new SecureRandom();
+
+        //To ensure that the adder caches the key
+        AuthorizedToCastWithNIZKsEvent ATCE = new AuthorizedToCastWithNIZKsEvent(0, 0, _seeds.get(0), "3", _ballot.toASExpression().toVerbatim(),
+                AdderKeyManipulator.generateFinalPublicKey(_adderPublicKey));
+//        AuthorizedToCastWithNIZKsEvent.getMatcher().match(0, ATCE.toSExp());
 
         for(byte[] seed : _seeds){
             System.out.println("Trial #"+_seeds.indexOf(seed));
@@ -353,30 +364,54 @@ public class NIZKsPerformanceTest {
             }
 
             ListExpression exp = _ballot.getCastBallot();
+            System.out.println(exp);
             List<List<String>> groups = _ballot.getRaceGroups();
 
-            ListExpression encBallot = BallotEncrypter.SINGLETON.encryptWithProof(exp, groups, _adderPublicKey);
-            System.out.println(exp);
-            System.out.println(encBallot);
+            System.out.println(groups);
+
+            ListExpression encBallot = BallotEncrypter.SINGLETON.encryptWithProof(exp, groups, AdderKeyManipulator.generateFinalPublicKey(_adderPublicKey));
 
             ASExpression nonce = StringExpression.makeString(seed);
+            String bid = (r.nextInt() + "");
+            CommitBallotEvent event = new CommitBallotEvent(0, nonce, encBallot, ASExpression.make(bid), ASExpression.make("456"));
+            IAnnounceEvent event1 = CommitBallotEvent.getMatcher().match(0, event.toSExp());
+
+
+            map.put(bid, ((CommitBallotEvent) event1).getNonce());
+
+            BallotScannedEvent ballotScannedEvent = new BallotScannedEvent(3, bid);
+            IAnnounceEvent bsE = BallotScannedEvent.getMatcher().match(3, ballotScannedEvent.toSExp());
+
 
             long encryptStart = System.currentTimeMillis();
-            tallier.recordVotes(encBallot.toVerbatim(), nonce);
-            tallier.confirmed(nonce);
+            tallier.recordVotes(((CommitBallotEvent)event1).getBallot().toVerbatim(), ((CommitBallotEvent)event1).getNonce());
+            map.put(((BallotScannedEvent) bsE).getBID(), ((CommitBallotEvent)event1).getNonce());
+            if(r.nextInt()%2 == 0){
+                tallier.confirmed(((CommitBallotEvent) event1).getNonce());
+                map.remove(((BallotScannedEvent) bsE).getBID());
+            }
+
             long encryptStop = System.currentTimeMillis();
 
             elapsedTime += (encryptStop - encryptStart);
-            System.out.println("\t"+(encryptStop - encryptStart)+" milliseconds");
+            System.out.println("\t" + (encryptStop - encryptStart) + " milliseconds");
 
         }
 
-        Map report = null;
+        Map<String, BigInteger> report = null;
         try{
+            for(String string : map.keySet())   {
+                tallier.confirmed(map.get(string));
+                System.out.println(string);
+            }
+
             report = tallier.getReport();
-            report.toString();
+            for(String s : report.keySet()){
+                System.out.println(s + " : " + report.get(s));
+            }
         }catch (SearchSpaceExhaustedException e){
-            Assert.assertTrue(false);
+            System.out.println("ERROR");
+            Assert.assertFalse(true);
         }
 
 

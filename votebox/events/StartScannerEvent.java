@@ -9,7 +9,7 @@ import sexpression.*;
 public class StartScannerEvent implements IAnnounceEvent{
 
     /**
-     * Matcher for the ballotscanner message
+     * Matcher for the ballotScanner message
      */
     private static MatcherRule MATCHER = new MatcherRule() {
         private ASExpression pattern = new ListExpression(StringExpression
@@ -43,7 +43,7 @@ public class StartScannerEvent implements IAnnounceEvent{
     }
 
     public void fire(VoteBoxEventListener l) {
-        l.scannerstart(this);
+        l.scannerStart(this);
     }
 
     public ASExpression toSExp() {

@@ -328,7 +328,7 @@ public class BallotScanner{
             public void supervisor(SupervisorEvent e) {
             }
 
-            public void ballotscanner(BallotScannerEvent e) {
+            public void ballotScanner(BallotScannerEvent e) {
             }
 
             public void votebox(VoteBoxEvent e) {
@@ -412,7 +412,7 @@ public class BallotScanner{
 
             public void ballotPrinting(BallotPrintingEvent ballotPrintingEvent) {}
 
-            public void scannerstart(StartScannerEvent startScannerEvent) {
+            public void scannerStart(StartScannerEvent startScannerEvent) {
                setActivated(true);
             }
 
