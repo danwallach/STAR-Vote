@@ -22,14 +22,10 @@
 
 package votebox.middle.view.widget;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.Date;
 import java.util.Observable;
 import java.util.Observer;
 
-import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.Player;
 import votebox.middle.Event;
 import votebox.middle.IBallotVars;
@@ -56,7 +52,7 @@ import votebox.middle.view.IViewManager;
  * In order to gain the focusing capability, this class must implement the
  * IFocusable interface.
  */
-public class ToggleButton extends Label {
+public class ToggleButton extends FocusableLabel {
 
     private Event _selectedEvent = new Event();
     private Event _deselectedEvent = new Event();
@@ -214,28 +210,27 @@ public class ToggleButton extends Label {
      * @see votebox.middle.view.IFocusable#focus()
      */
     public void focus() {
-        Thread soundThread  = new Thread(){
-            public void run() {
+//        Thread soundThread  = new Thread(){
+//            public void run() {
+//
+//                // prepare the mp3Player
+//                try {
+//                    FileInputStream fileInputStream = new FileInputStream(soundPath( _vars, getUniqueID(),
+//                             _viewManager.getLanguage() ));
+//                    BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
+//                    mp3Player = new Player(bufferedInputStream);
+//                    mp3Player.play();
+//                } catch (Exception e) {
+//                    mp3Player = null;
+//                    System.out.println("Problem playing audio: " + "media/" + getUniqueID() + ".mp3");
+//                    System.out.println(e);
+//                }
+//
+//            }
+//        };
+//
 
-                // prepare the mp3Player
-                try {
-                    FileInputStream fileInputStream = new FileInputStream(soundPath( _vars, getUniqueID(),
-                             _viewManager.getLanguage() ));
-                    BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
-                    mp3Player = new Player(bufferedInputStream);
-                    mp3Player.play();
-                } catch (Exception e) {
-                    mp3Player = null;
-                    System.out.println("Problem playing audio: " + "media/" + getUniqueID() + ".mp3");
-                    System.out.println(e);
-                }
-
-            }
-        };
-
-        //This way two threads won't play sound over each other
-
-        soundThread.start();
+//        soundThread.start();
 
         _state.focus( this );
     }
@@ -251,7 +246,7 @@ public class ToggleButton extends Label {
     }
 
     /**
-     * @see votebox.middle.view.widget.Label#getImage()
+     * @see FocusableLabel#getImage()
      */
     @Override
     public IViewImage getImage() {
@@ -259,7 +254,7 @@ public class ToggleButton extends Label {
     }
 
     /**
-     * @see votebox.middle.view.widget.Label#getReviewImage()
+     * @see FocusableLabel#getReviewImage()
      */
     @Override
     public IViewImage getReviewImage() {
@@ -452,7 +447,7 @@ public class ToggleButton extends Label {
      * @see votebox.middle.view.IFocusable#setNext(votebox.middle.view.IFocusable)
      */
     public void setNext(IFocusable focusable) {
-        System.out.println("Setting " + getUniqueID() + "'s next to " + focusable);
+//        System.out.println("Setting " + getUniqueID() + "'s next to " + focusable);
         _links.Next = focusable;
     }
 

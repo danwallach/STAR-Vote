@@ -1,6 +1,5 @@
 package votebox.middle.view.widget;
 
-import votebox.middle.view.IFocusable;
 import votebox.middle.view.IViewImage;
 
 /**
@@ -17,7 +16,7 @@ public abstract class ALabelState {
      * @param context
      *            This is the button that is delegating the behavior for focus.
      */
-    public abstract void focus(Label context);
+    public abstract void focus(FocusableLabel context);
 
     /**
      * This method is called by the Button when it has been asked to unfocus
@@ -26,7 +25,7 @@ public abstract class ALabelState {
      * @param context
      *            This is the button that is delegating the behavior for unfocus
      */
-    public abstract void unfocus(Label context);
+    public abstract void unfocus(FocusableLabel context);
 
     /**
      * This method is called by the Button when it has been asked to give its
@@ -36,5 +35,5 @@ public abstract class ALabelState {
      *            This is the button that is delegating the behavior for
      *            getImage.
      */
-    public abstract IViewImage getImage(Label context);
+    public abstract IViewImage getImage(FocusableLabel context);
 }

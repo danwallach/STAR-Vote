@@ -23,7 +23,7 @@ public class DefaultLabelState extends ALabelState{
     /**
      * When the Button wishes to be focused, switch to the focused state
      */
-    public void focus(Label context) {
+    public void focus(FocusableLabel context) {
         context.setState( FocusedLabelState.Singleton );
         context.getFocusedEvent().notifyObservers();
     }
@@ -32,14 +32,14 @@ public class DefaultLabelState extends ALabelState{
      * When the Button wishes to be unfocused, do nothing, it is already
      * unfocused.
      */
-    public void unfocus(Label context) {
+    public void unfocus(FocusableLabel context) {
         // NO-OP
     }
 
     /**
      * @see votebox.middle.view.widget.AButtonState#getImage(votebox.middle.view.widget.Button)
      */
-    public IViewImage getImage(Label context) {
+    public IViewImage getImage(FocusableLabel context) {
         return context.getDefaultImage();
     }
 }

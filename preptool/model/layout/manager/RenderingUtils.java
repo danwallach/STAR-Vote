@@ -140,7 +140,7 @@ public class RenderingUtils {
 	}
 
 	/**
-	 * Calculates the size of a Label.
+	 * Calculates the size of a  .
 	 * @param title is the text to be outputted
 	 * @param instructions are any instructions to be italicized, such as '(please
 	 *            select one)'
@@ -151,7 +151,7 @@ public class RenderingUtils {
 	 * @param bold whether the label is bold
 	 * @param titleCentered is a boolean flag as to whether or not the text
 	 *            should be centered
-	 * @return the size of the Label
+	 * @return the size of the
 	 */
 	public static Dimension getLabelSize(String title, String instructions,
 			String description, int fontsize, int wrappingWidth, boolean bold,
@@ -373,7 +373,7 @@ public class RenderingUtils {
 	}
 
 	/**
-	 * Renders a Label and returns it as a BufferedImage.
+	 * Renders a   and returns it as a BufferedImage.
 	 * @param title is the text to be outputted
 	 * @param instructions are any instructions to be italicized, such as '(please
 	 *            select one)'
@@ -387,11 +387,11 @@ public class RenderingUtils {
 	 *            placed around the label
 	 * @param titleCentered is a boolean flag as to whether or not the text
 	 *            should be centered
-	 * @return the rendered Label
+	 * @return the rendered
 	 */
 	public static BufferedImage renderLabel(String title, String instructions,
 			String description, int fontsize, int wrappingWidth, Color color,
-			boolean bold, boolean boxed, boolean titleCentered) {
+			boolean bold, boolean boxed, boolean titleCentered, boolean focused) {
 
 		Font font = new Font(FONT_NAME, (bold) ? Font.BOLD : Font.PLAIN,
 				fontsize);
@@ -405,8 +405,17 @@ public class RenderingUtils {
 		Graphics2D graphs = wrappedImage.createGraphics();
 		graphs.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 				RenderingHints.VALUE_ANTIALIAS_ON);
-		graphs.setFont(font);
-		graphs.setColor(color);
+
+
+        //If the button is focused, display it with an orange background
+        if(focused){
+            graphs.setColor(Color.ORANGE);
+            graphs.fillRect(0, 0, wrappedImage.getWidth(), wrappedImage.getHeight());
+
+        }
+
+        graphs.setFont(font);
+        graphs.setColor(color);
 
 		int baseline = graphs.getFontMetrics().getAscent();
 

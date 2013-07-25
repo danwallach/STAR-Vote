@@ -75,7 +75,7 @@ public abstract class
     /**
      * Generate synthesized audio files to speak all of the text on this component
      */
-    public static final Boolean GENERATE_AUDIO = true;
+    public static final Boolean GENERATE_AUDIO = false;
 
     /**
      * Constant used when determining the font size
@@ -253,9 +253,13 @@ public abstract class
             public Void forLabel(Label l, Object... param) {
                 if (!uids.contains(l.getUID())) {
                     try {
-                        BufferedImage img = l.execute(getImageVisitor());
+                        BufferedImage img = l.execute(getImageVisitor(), false);
                         ImageIO.write(img, "png", new File(location
                                 + l.getUID() + "_1_" + langShortName + ".png"));
+
+                        BufferedImage focused = l.execute(getImageVisitor(), true);
+                        ImageIO.write(focused, "png", new File(location
+                                + l.getUID() + "_focused_1_" + langShortName + ".png"));
 
 
                         if(GENERATE_AUDIO){
@@ -391,11 +395,18 @@ public abstract class
             public Void forReviewLabel(ReviewLabel rl, Object... param) {
                 if (!uids.contains(rl.getUID())) {
                     try {
-                        BufferedImage img = rl.execute(getImageVisitor());
+                        BufferedImage img = rl.execute(getImageVisitor(), false);
                         ImageIO
                                 .write(img, "png", new File(location
                                         + rl.getUID() + "_1_" + langShortName
                                         + ".png"));
+
+                        BufferedImage focused = rl.execute(getImageVisitor(), true);
+                        ImageIO
+                                .write(img, "png", new File(location
+                                        + rl.getUID() + "_focused_1_" + langShortName
+                                        + ".png"));
+
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }

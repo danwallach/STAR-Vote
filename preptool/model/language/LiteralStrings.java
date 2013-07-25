@@ -237,7 +237,7 @@ public class LiteralStrings {
         map.put("FORWARD_INSTRUCTIONS", ls);
 
         ls = new LocalizedString();
-        ls.set(ENGLISH, "To make your choice, click on the candidate's name or on the box next to his/her "
+        ls.set(ENGLISH, "To make your choice, click the candidate's name or the box next to his/her "
                 + "\n name. A green checkmark will appear next to your choice. If you want to change "
                 + "\n your choice, just click on a different candidate or box.");
         ls.set(SPANISH, "Para seleccionar una opción, haga clic en el nombre del candidato o en la casilla "

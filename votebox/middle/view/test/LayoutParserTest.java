@@ -31,7 +31,7 @@ import votebox.middle.view.Layout;
 import votebox.middle.view.LayoutParser;
 import votebox.middle.view.RenderPage;
 import votebox.middle.view.widget.Button;
-import votebox.middle.view.widget.Label;
+import votebox.middle.view.widget.FocusableLabel;
 import votebox.middle.view.widget.ToggleButton;
 import votebox.middle.view.widget.ToggleButtonGroup;
 import junit.framework.TestCase;
@@ -164,11 +164,11 @@ public class LayoutParserTest extends TestCase {
 		assertEquals(0, layout.getProperties().size());
 
 		RenderPage rp = layout.getPages().get(0);
-		Label l = (Label) rp.getChildren().get(0);
+		FocusableLabel l = (FocusableLabel) rp.getChildren().get(0);
 		assertEquals("one", l.getUniqueID());
 		assertEquals(100, l.getX());
 		assertEquals(101, l.getY());
-		l = (Label) rp.getChildren().get(1);
+		l = (FocusableLabel) rp.getChildren().get(1);
 		assertEquals("two", l.getUniqueID());
 		assertEquals(200, l.getX());
 		assertEquals(201, l.getY());
@@ -191,19 +191,19 @@ public class LayoutParserTest extends TestCase {
 		assertEquals(0, layout.getProperties().size());
 
 		RenderPage rp = layout.getPages().get(0);
-		Label l = (Label) rp.getChildren().get(0);
+		FocusableLabel l = (FocusableLabel) rp.getChildren().get(0);
 		assertEquals(0, l.getProperties().size());
 		assertEquals("one", l.getUniqueID());
 		assertEquals(100, l.getX());
 		assertEquals(101, l.getY());
-		l = (Label) rp.getChildren().get(1);
+		l = (FocusableLabel) rp.getChildren().get(1);
 		assertEquals(0, l.getProperties().size());
 		assertEquals("two", l.getUniqueID());
 		assertEquals(200, l.getX());
 		assertEquals(201, l.getY());
 
 		rp = layout.getPages().get(1);
-		l = (Label) rp.getChildren().get(0);
+		l = (FocusableLabel) rp.getChildren().get(0);
 		assertEquals(0, l.getProperties().size());
 		assertEquals("three", l.getUniqueID());
 		assertEquals(300, l.getX());
@@ -225,7 +225,7 @@ public class LayoutParserTest extends TestCase {
 
 		Properties p = layout.getPages().get(0).getChildren().get(0)
 				.getProperties();
-		assertTrue(layout.getPages().get(0).getChildren().get(0) instanceof Label);
+		assertTrue(layout.getPages().get(0).getChildren().get(0) instanceof FocusableLabel);
 		assertEquals(2, p.size());
 		assertTrue(p.contains("OnePropOne"));
 		assertEquals("property", p.getString("OnePropOne"));
@@ -254,7 +254,7 @@ public class LayoutParserTest extends TestCase {
 		assertEquals(2, layout.getPages().get(0).getChildren().size());
 		assertEquals(0, layout.getProperties().size());
 
-		Label l = (Label) layout.getPages().get(0).getChildren().get(0);
+		FocusableLabel l = (FocusableLabel) layout.getPages().get(0).getChildren().get(0);
 		assertEquals("one", l.getUniqueID());
 		assertEquals(100, l.getX());
 		assertEquals(101, l.getY());
@@ -291,7 +291,7 @@ public class LayoutParserTest extends TestCase {
 		assertEquals(6, layout.getPages().get(0).getChildren().size());
 		assertEquals(0, layout.getProperties().size());
 
-		Label l = (Label) layout.getPages().get(0).getChildren().get(0);
+		FocusableLabel l = (FocusableLabel) layout.getPages().get(0).getChildren().get(0);
 		assertEquals("one", l.getUniqueID());
 		assertEquals(100, l.getX());
 		assertEquals(101, l.getY());
@@ -378,7 +378,7 @@ public class LayoutParserTest extends TestCase {
 		assertEquals(4, layout.getPages().get(0).getChildren().size());
 		assertEquals(4, layout.getPages().get(1).getChildren().size());
 
-		Label l = (Label) layout.getPages().get(0).getChildren().get(0);
+		FocusableLabel l = (FocusableLabel) layout.getPages().get(0).getChildren().get(0);
 		assertEquals("one", l.getUniqueID());
 
 		Button b = (Button) layout.getPages().get(0).getChildren().get(1);
@@ -391,7 +391,7 @@ public class LayoutParserTest extends TestCase {
 		tb = (ToggleButton) layout.getPages().get(0).getChildren().get(3);
 		assertEquals("four", tb.getUniqueID());
 
-		l = (Label) layout.getPages().get(1).getChildren().get(0);
+		l = (FocusableLabel) layout.getPages().get(1).getChildren().get(0);
 		assertEquals("five", l.getUniqueID());
 
 		b = (Button) layout.getPages().get(1).getChildren().get(1);

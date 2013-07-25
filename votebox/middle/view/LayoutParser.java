@@ -40,7 +40,6 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.SchemaFactory;
 
-import auditorium.IAuditoriumParams;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -48,15 +47,9 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import votebox.AuditoriumParams;
-import votebox.middle.IBallotVars;
-import votebox.middle.Properties;
-import votebox.middle.UnknownFormatException;
-import votebox.middle.UnknownTypeException;
+import votebox.middle.*;
 import votebox.middle.ballot.BallotParserException;
-import votebox.middle.view.widget.Button;
-import votebox.middle.view.widget.Label;
-import votebox.middle.view.widget.ToggleButton;
-import votebox.middle.view.widget.ToggleButtonGroup;
+import votebox.middle.view.widget.*;
 
 
 /**
@@ -242,8 +235,8 @@ public class LayoutParser {
                 parseToggleGroup( drawables, child );
             else if (child.getNodeName().equals( "Button" )
                     || child.getNodeName().equals( "Label" )) {
-                System.out.println("Found " + parseDrawable(child, null).getUniqueID() +
-                " with next " + parseDrawable( child, null ).getProperties().NEXT);
+//                System.out.println("Found " + parseDrawable(child, null).getUniqueID() +
+//                " with next " + parseDrawable( child, null ).getProperties().NEXT);
                 drawables.add(parseDrawable(child, null));
 
             }
@@ -256,19 +249,19 @@ public class LayoutParser {
             else
                 throw new LayoutParserException( "I don't recognize "
                         + child.getNodeName()
-                        + " as being a ToggleButtonGroup, Button, or Label",
+                        + " as being a ToggleButtonGroup, Button, or FocusableLabel",
                         null );
 
         }
 
         RenderPage rp = new RenderPage( drawables, properties );
-        System.out.println("Setting up the navigation");
+//        System.out.println("Setting up the navigation");
         rp.setNavigation(_drawables);
-        for(IDrawable d : rp.getChildren()){
-            if(d instanceof IFocusable){
-                System.out.println("Next of " + d.getUniqueID() + " is " + ((IFocusable) d).getNext());
-            }
-        }
+//        for(IDrawable d : rp.getChildren()){
+//            if(d instanceof IFocusable){
+//                System.out.println("Next of " + d.getUniqueID() + " is " + ((IFocusable) d).getNext());
+//            }
+//        }
 
         rp.setBackgroundImage( _drawables );
         return rp;
@@ -370,14 +363,24 @@ public class LayoutParser {
             else if (child.getNodeName().equals( "#text" ))
                 ; // Do nothing
             else
-                throw new LayoutParserException( "I dont recgonize "
+                throw new LayoutParserException( "I don't recognize "
                         + child.getNodeName() + " as a property.", null );
         }
 
         // Create the new drawable
         IDrawable drawable = null;
         if (node.getNodeName().equals( "Label" )) {
-            drawable = new Label( uniqueID, properties );
+            try{
+                //If this node does not have any direction properties, it shouldn't be focusable
+                if(properties.getString("Down") == null && properties.getString("Up") == null
+                        && properties.getString("Left") == null && properties.getString("Right") == null
+                        && properties.getString("Next") == null && properties.getString("Previous") == null)
+                    drawable = new Label( uniqueID, properties);
+                else
+                    drawable = new FocusableLabel( uniqueID, properties );
+            } catch(IncorrectTypeException e){
+                throw new RuntimeException(e);
+            }
         }
         else if (node.getNodeName().equals( "Button" )) {
             drawable = new Button( uniqueID, properties );
@@ -423,10 +426,12 @@ public class LayoutParser {
             throws LayoutParserException {
         NamedNodeMap nodeAttributes = node.getAttributes();
         String key = nodeAttributes.getNamedItem( "name" ).getNodeValue();
-        if(key.equals("next"))
-            System.out.println("Found a next!");
+        System.out.println("-----------------------------------------");
+        System.out.println(key);
+
 
         String value = nodeAttributes.getNamedItem( "value" ).getNodeValue();
+        System.out.println(value);
         String type = nodeAttributes.getNamedItem( "type" ).getNodeValue();
         try {
             properties.add( key, value, type );

@@ -76,7 +76,7 @@ public class Background extends ALayoutComponent {
 	}
 
 	/**
-	 * Converts this Background object to XML (same as a Label)
+	 * Converts this Background object to XML (same as a  )
 	 * @param doc the document
 	 * @return the element for this Background
 	 */

@@ -754,11 +754,14 @@ public class ViewManager implements IViewManager {
 
             if(previous && second != null){
                 _currentFocusedElement =  (IFocusable) second;
+                System.out.println("Setting initial focus to " + second.getUniqueID());
                 ((IFocusable) second).focus();
             } else if (!previous && first != null){
                 _currentFocusedElement = (IFocusable) first;
+                System.out.println("Setting initial focus to " + first.getUniqueID());
                 ((IFocusable) first).focus();
             }
+
 
         }
     }

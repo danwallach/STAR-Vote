@@ -316,13 +316,11 @@ public abstract class ALayoutComponent implements Cloneable {
 		if (left != null)
 			XMLTools.addProperty(doc, compElt, "Left", "String", left.getUID());
 		if (right != null)
-			XMLTools.addProperty(doc, compElt, "Right", "String", right
-					.getUID());
+			XMLTools.addProperty(doc, compElt, "Right", "String", right.getUID());
 		if (next != null)
 			XMLTools.addProperty(doc, compElt, "Next", "String", next.getUID());
 		if (previous != null){
-			XMLTools.addProperty(doc, compElt, "Previous", "String", previous
-					.getUID());
+			XMLTools.addProperty(doc, compElt, "Previous", "String", previous.getUID());
         }
 	}
 

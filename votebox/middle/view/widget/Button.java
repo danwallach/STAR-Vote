@@ -39,9 +39,6 @@ import votebox.middle.view.IViewFactory;
 import votebox.middle.view.IViewImage;
 import votebox.middle.view.IViewManager;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-
 
 /**
  * Buttons, like labels, are defined in the ballot layout. In addition to the
@@ -52,7 +49,7 @@ import java.io.FileInputStream;
  * GetImage. They can exist in two states: focused and default.
  */
 
-public class Button extends Label {
+public class Button extends FocusableLabel {
     /**
      * This event is raised when the element is focused.
      */
@@ -110,7 +107,7 @@ public class Button extends Label {
     private Player mp3Player;
 
     /**
-     * This is the public constructor for Button. It simply invokes Label's
+     * This is the public constructor for Button. It simply invokes FocusableLabel's
      * constructor.
      */
     public Button(String uid, Properties properties) {
@@ -437,28 +434,26 @@ public class Button extends Label {
      * the image that GetImage(...) returns will need to be changed.
      */
     public void focus() {
-        Thread soundThread  = new Thread(){
-            public void run() {
-
-                // prepare the mp3Player
-                try {
-                    FileInputStream fileInputStream = new FileInputStream(soundPath( _vars, getUniqueID(),
-                            _viewManager.getLanguage() ));
-                    BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
-                    mp3Player = new Player(bufferedInputStream);
-                    mp3Player.play();
-                } catch (Exception e) {
-                    mp3Player = null;
-                    System.out.println("Problem playing audio: " + "media/" + getUniqueID() + ".mp3");
-                    System.out.println(e);
-                }
-
-            }
-        };
-
-        //This way two threads won't play sound over each other
-
-        soundThread.start();
+//        Thread soundThread  = new Thread(){
+//            public void run() {
+//
+//                // prepare the mp3Player
+//                try {
+//                    FileInputStream fileInputStream = new FileInputStream(soundPath( _vars, getUniqueID(),
+//                            _viewManager.getLanguage() ));
+//                    BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
+//                    mp3Player = new Player(bufferedInputStream);
+//                    mp3Player.play();
+//                } catch (Exception e) {
+//                    mp3Player = null;
+//                    System.out.println("Problem playing audio: " + "media/" + getUniqueID() + ".mp3");
+//                    System.out.println(e);
+//                }
+//
+//            }
+//        };
+//
+//        soundThread.start();
         _state.focus( this );
     }
 
@@ -472,7 +467,7 @@ public class Button extends Label {
     }
 
     /**
-     * @see votebox.middle.view.widget.Label#getImage()
+     * @see FocusableLabel#getImage()
      */
     @Override
     public IViewImage getImage() {
@@ -495,7 +490,7 @@ public class Button extends Label {
                     && !(_ballot.selectedElement( getUniqueID() )
                     .equals( getUniqueID() )) && _state.equals(FocusedButtonState.Singleton)){
 
-                return ((Label)this.getParent().getParent().lookup(
+                return ((FocusableLabel)this.getParent().getParent().lookup(
                         _ballot.selectedElement( getUniqueID() ) ).get( 0 )).getFocusedReviewImage();
             }
         }
