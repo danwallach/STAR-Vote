@@ -24,6 +24,7 @@ package preptool.model.layout;
 
 import java.awt.Dimension;
 
+import javazoom.jl.player.Player;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -59,6 +60,7 @@ public class ToggleButton extends ALayoutComponent {
 	 * Whether this ToggleButton has increased font size
 	 */
 	private boolean increasedFontSize;
+
 
 	/**
 	 * Constructs a new ToggleButton with given unique ID and text

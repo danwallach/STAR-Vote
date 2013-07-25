@@ -34,6 +34,7 @@ package votebox.middle.view;
  */
 
 public interface IFocusable extends IDrawable {
+
 	
 	/**
 	 * Invoke this method to ask this focusable item to "focus" itself.

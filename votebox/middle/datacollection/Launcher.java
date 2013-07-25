@@ -86,7 +86,8 @@ public class Launcher {
 			baldir = File.createTempFile("ballot", "");
 			baldir.delete();
 			baldir.mkdirs();
-			Driver.unzip(ballotLocation, baldir.getAbsolutePath());
+            System.out.println(baldir.getAbsolutePath());
+            Driver.unzip(ballotLocation, baldir.getAbsolutePath());
 			Driver.deleteRecursivelyOnExit(baldir.getAbsolutePath());
 		} catch (IOException e) {
 			e.printStackTrace();

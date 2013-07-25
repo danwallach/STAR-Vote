@@ -22,10 +22,15 @@
 
 package votebox.middle.view.widget;
 
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Date;
 import java.util.Observable;
 import java.util.Observer;
 
+import javazoom.jl.decoder.JavaLayerException;
+import javazoom.jl.player.Player;
 import votebox.middle.Event;
 import votebox.middle.IBallotVars;
 import votebox.middle.Properties;
@@ -47,11 +52,11 @@ import votebox.middle.view.IViewManager;
  * Focusing is strictly a gui capability. The "focused" element simply is the
  * element which the user is currently looking at. <br>
  * <br>
- * 
+ *
  * In order to gain the focusing capability, this class must implement the
  * IFocusable interface.
  */
-public class ToggleButton extends Label implements IFocusable {
+public class ToggleButton extends Label {
 
     private Event _selectedEvent = new Event();
     private Event _deselectedEvent = new Event();
@@ -70,9 +75,15 @@ public class ToggleButton extends Label implements IFocusable {
     private IViewImage _focusedSelectedImage;
     private IViewImage _reviewImage;
 
+
+    /**
+     * A player that plays the corresponding sound when this button is selected
+     */
+    private Player mp3Player;
+
     /**
      * This is the public constructor for ToggleButton. It invokes super.
-     * 
+     *
      * @param group
      *            This is the group to which this ToggleButton will belong.
      * @param uid
@@ -83,8 +94,9 @@ public class ToggleButton extends Label implements IFocusable {
     public ToggleButton(ToggleButtonGroup group, String uid,
             Properties properties) {
         super( uid, properties );
+
         _group = group;
-        
+
         //#ifdef EVIL
         insertDataCollectionEvil();
         //#endif
@@ -119,11 +131,11 @@ public class ToggleButton extends Label implements IFocusable {
     }
 
     //#ifdef EVIL
-    
+
     /**
      * Call this method to create and add callbacks for each of the events we
      * care about logging (selected, deselected, focused, unfocused).
-     * 
+     *
      */
     private void insertDataCollectionEvil() {
         final ToggleButton outer = this;
@@ -162,12 +174,12 @@ public class ToggleButton extends Label implements IFocusable {
     }
 
     //#endif
-    
+
     /**
      * This method is called by the view manager when this element gets chosen
      * by the voter as intending to be toggled. What happens next depends on
      * state, so this behavior is delegated.
-     * 
+     *
      * @throws this
      *             method throws if its strategy is Race and there's no ballot
      *             element that corresponds with its UID.
@@ -198,10 +210,33 @@ public class ToggleButton extends Label implements IFocusable {
      * when the user used an input device (directional hardware buttons or a
      * mouse) to dictate that he is currently wanting to "look" (and possibly
      * select) the item.
-     * 
+     *
      * @see votebox.middle.view.IFocusable#focus()
      */
     public void focus() {
+        Thread soundThread  = new Thread(){
+            public void run() {
+
+                // prepare the mp3Player
+                try {
+                    FileInputStream fileInputStream = new FileInputStream(soundPath( _vars, getUniqueID(),
+                             _viewManager.getLanguage() ));
+                    BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
+                    mp3Player = new Player(bufferedInputStream);
+                    mp3Player.play();
+                } catch (Exception e) {
+                    mp3Player = null;
+                    System.out.println("Problem playing audio: " + "media/" + getUniqueID() + ".mp3");
+                    System.out.println(e);
+                }
+
+            }
+        };
+
+        //This way two threads won't play sound over each other
+
+        soundThread.start();
+
         _state.focus( this );
     }
 

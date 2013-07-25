@@ -22,6 +22,7 @@
 
 package votebox.middle.view.widget;
 
+import javazoom.jl.player.Player;
 import votebox.middle.Event;
 import votebox.middle.IBallotVars;
 import votebox.middle.IncorrectTypeException;
@@ -38,6 +39,9 @@ import votebox.middle.view.IViewFactory;
 import votebox.middle.view.IViewImage;
 import votebox.middle.view.IViewManager;
 
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+
 
 /**
  * Buttons, like labels, are defined in the ballot layout. In addition to the
@@ -48,7 +52,7 @@ import votebox.middle.view.IViewManager;
  * GetImage. They can exist in two states: focused and default.
  */
 
-public class Button extends Label implements IFocusable {
+public class Button extends Label {
     /**
      * This event is raised when the element is focused.
      */
@@ -101,6 +105,11 @@ public class Button extends Label implements IFocusable {
     private NavigationLinks _links = new NavigationLinks();
 
     /**
+     * A player that plays the corresponding sound when this button is selected
+     */
+    private Player mp3Player;
+
+    /**
      * This is the public constructor for Button. It simply invokes Label's
      * constructor.
      */
@@ -128,7 +137,7 @@ public class Button extends Label implements IFocusable {
     /**
      * Call this method to make this Button's strategy agree with what is
      * defined in this Button's properties.
-     * 
+     *
      * @param viewManager
      *            Most of the button strategies will need to ask the ViewManager
      *            to do something in particular. Use this ViewManager reference
@@ -428,6 +437,28 @@ public class Button extends Label implements IFocusable {
      * the image that GetImage(...) returns will need to be changed.
      */
     public void focus() {
+        Thread soundThread  = new Thread(){
+            public void run() {
+
+                // prepare the mp3Player
+                try {
+                    FileInputStream fileInputStream = new FileInputStream(soundPath( _vars, getUniqueID(),
+                            _viewManager.getLanguage() ));
+                    BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
+                    mp3Player = new Player(bufferedInputStream);
+                    mp3Player.play();
+                } catch (Exception e) {
+                    mp3Player = null;
+                    System.out.println("Problem playing audio: " + "media/" + getUniqueID() + ".mp3");
+                    System.out.println(e);
+                }
+
+            }
+        };
+
+        //This way two threads won't play sound over each other
+
+        soundThread.start();
         _state.focus( this );
     }
 
