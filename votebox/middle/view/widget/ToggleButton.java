@@ -22,6 +22,8 @@
 
 package votebox.middle.view.widget;
 
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
 import java.util.Date;
 import java.util.Observable;
 import java.util.Observer;
@@ -76,6 +78,8 @@ public class ToggleButton extends FocusableLabel {
      * A player that plays the corresponding sound when this button is selected
      */
     private Player mp3Player;
+
+    private Thread soundThread;
 
     /**
      * This is the public constructor for ToggleButton. It invokes super.
@@ -210,27 +214,31 @@ public class ToggleButton extends FocusableLabel {
      * @see votebox.middle.view.IFocusable#focus()
      */
     public void focus() {
-//        Thread soundThread  = new Thread(){
-//            public void run() {
-//
-//                // prepare the mp3Player
-//                try {
-//                    FileInputStream fileInputStream = new FileInputStream(soundPath( _vars, getUniqueID(),
-//                             _viewManager.getLanguage() ));
-//                    BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
-//                    mp3Player = new Player(bufferedInputStream);
-//                    mp3Player.play();
-//                } catch (Exception e) {
-//                    mp3Player = null;
-//                    System.out.println("Problem playing audio: " + "media/" + getUniqueID() + ".mp3");
-//                    System.out.println(e);
-//                }
-//
-//            }
-//        };
-//
+        soundThread  = new Thread(){
+            public void run() {
 
-//        soundThread.start();
+                // prepare the mp3Player
+                try {
+                    FileInputStream fileInputStream = new FileInputStream(soundPath( _vars, getUniqueID(),
+                             _viewManager.getLanguage() ));
+                    BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
+                    mp3Player = new Player(bufferedInputStream);
+                    mp3Player.play();
+                    if(this.isInterrupted())
+                        mp3Player.close();
+                } catch (Exception e) {
+                    mp3Player = null;
+                    System.out.println("Problem playing audio: " + "media/" + getUniqueID() + ".mp3");
+                    System.out.println(e);
+                }
+
+
+
+            }
+        };
+
+
+        soundThread.start();
 
         _state.focus( this );
     }
@@ -243,6 +251,11 @@ public class ToggleButton extends FocusableLabel {
      */
     public void unfocus() {
         _state.unfocus( this );
+            if(soundThread != null){
+                soundThread.interrupt();
+
+
+        }
     }
 
     /**

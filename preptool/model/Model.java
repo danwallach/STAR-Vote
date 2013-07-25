@@ -78,6 +78,7 @@ public class Model {
     
     private int cardsPerReviewPage = 10;
     private int fontSize = 8;
+    private boolean textToSpeech = false;
 
     /**
      * Creates a new Model with a blank Ballot and using the PsychLayoutManager.
@@ -87,9 +88,9 @@ public class Model {
 
         managerFactory = new ILayoutManagerFactory() {
             public ILayoutManager makeLayoutManager(Language language,
-                                                    int numCardsPerReviewPage, int fontSize) {
+                                                    int numCardsPerReviewPage, int fontSize, boolean textToSpeech) {
                 return new PsychLayoutManager( language,
-                		numCardsPerReviewPage, fontSize);
+                		numCardsPerReviewPage, fontSize, textToSpeech);
             }
         };
 
@@ -225,7 +226,7 @@ public class Model {
                         info.setProgress( "Laying out Ballot", 0 );
                         ILayoutManager manager = getManagerFactory()
                                 .makeLayoutManager( lang, cardsPerReviewPage,
-                                		fontSize);
+                                		fontSize, textToSpeech);
 
                         Layout layout = manager.makeLayout( getBallot() );
 
@@ -333,7 +334,7 @@ public class Model {
                         info.setProgress( "Laying out Ballot", 0 );
                         ILayoutManager manager = getManagerFactory()
                                 .makeLayoutManager( lang, cardsPerReviewPage,
-                                		fontSize);
+                                		fontSize, textToSpeech);
 
                         Layout layout = manager.makeLayout( getBallot() );
                         
@@ -607,7 +608,7 @@ public class Model {
      */
     public ArrayList<JPanel> previewCard(int idx, Language language) {
         final ILayoutManager manager = getManagerFactory().makeLayoutManager(
-            language, cardsPerReviewPage, fontSize);
+            language, cardsPerReviewPage, fontSize, false);
         final ArrayList<JPanel> panels = manager.makeCardPage( getBallot()
                 .getCards().get( idx ) );
         new Thread() {
@@ -691,6 +692,10 @@ public class Model {
     	fontSize = fontSizeMultiplier;
     }
 
+    public void setTextToSpeech(boolean textToSpeech) {
+        this.textToSpeech = textToSpeech;
+    }
+
     /**
      * @return Number of cards/items found per review page
      */
@@ -704,5 +709,10 @@ public class Model {
 	public int getBaseFontSize() {
 		return fontSize;
 	}
+
+    public boolean getTextToSpeech(){
+        return textToSpeech;
+    }
+
 
 }

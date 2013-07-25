@@ -88,6 +88,7 @@ public class FocusableLabel implements IFocusable {
      */
     private Player mp3Player;
 
+    private Thread soundThread;
 
     /**
      * This is the public constructor for FocusableLabel.
@@ -310,26 +311,34 @@ public class FocusableLabel implements IFocusable {
      * @see votebox.middle.view.IFocusable#focus()
      */
     public void focus() {
-//        Thread soundThread  = new Thread(){
-//            public void run() {
-//
-//                // prepare the mp3Player
-//                try {
-//                    FileInputStream fileInputStream = new FileInputStream(soundPath( _vars, getUniqueID(),
-//                            _viewManager.getLanguage() ));
-//                    BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
-//                    mp3Player = new Player(bufferedInputStream);
-//                    mp3Player.play();
-//                } catch (Exception e) {
-//                    mp3Player = null;
-//                    System.out.println("Problem playing audio: " + "media/" + getUniqueID() + ".mp3");
-//                    System.out.println(e);
-//                }
-//
-//            }
-//        };
-//
-//        soundThread.start();
+        soundThread  = new Thread(){
+            public void run() {
+
+                // prepare the mp3Player
+                try {
+                    FileInputStream fileInputStream = new FileInputStream(soundPath( _vars, getUniqueID(),
+                            _viewManager.getLanguage() ));
+                    BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
+                    mp3Player = new Player(bufferedInputStream);
+                    mp3Player.play();
+
+                    while(true){
+                        if(this.isInterrupted()) {
+                            System.out.println("closing!");
+                            mp3Player.close();
+                            break;
+                        }
+                    }
+                } catch (Exception e) {
+                    mp3Player = null;
+                    System.out.println("Problem playing audio: " + "media/" + getUniqueID() + ".mp3");
+                    System.out.println(e);
+                }
+
+            }
+        };
+
+        soundThread.start();
 
         System.out.println("Focusing a label! " + _uniqueID);
 
@@ -344,6 +353,11 @@ public class FocusableLabel implements IFocusable {
      */
     public void unfocus() {
         _state.unfocus( this );
+        if(soundThread != null)  {
+            soundThread.interrupt();
+            System.out.println("Interrupting!");
+        }
+
     }
 
 

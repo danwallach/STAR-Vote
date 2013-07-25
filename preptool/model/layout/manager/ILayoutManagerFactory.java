@@ -38,6 +38,6 @@ public interface ILayoutManagerFactory {
      * @param fontSize size of font to use
      * @return the LayoutManager
 	 */
-	public ILayoutManager makeLayoutManager(Language language, int numCardsPerReviewPage, int fontSize);
+	public ILayoutManager makeLayoutManager(Language language, int numCardsPerReviewPage, int fontSize, boolean textToSpeech);
 
 }

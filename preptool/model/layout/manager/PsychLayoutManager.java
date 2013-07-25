@@ -972,8 +972,9 @@ public class PsychLayoutManager extends ALayoutManager {
      * Creates a new PsychLayoutManager and initializes many of the "common"
      * components, such as the next button.
      */
-    public PsychLayoutManager(Language language, int numCardsPerReviewPage, int fontSize) {
+    public PsychLayoutManager(Language language, int numCardsPerReviewPage, int fontSize, boolean textToSpeech) {
         this.language = language;
+        GENERATE_AUDIO = textToSpeech;
         
         CARDS_PER_REVIEW_PAGE = numCardsPerReviewPage;
     	FONT_SIZE_MULTIPLE = fontSize;

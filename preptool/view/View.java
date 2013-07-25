@@ -1278,6 +1278,15 @@ public class View extends JFrame {
     		}
     	} );
     	prefMenu.add( font );
+
+        final JCheckBoxMenuItem sound = new JCheckBoxMenuItem("Use Text-to-Speech");
+        sound.setState(true);
+        sound.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e) {
+                model.setTextToSpeech(sound.getState());
+            }
+        });
+        prefMenu.add( sound );
     	
 
     }

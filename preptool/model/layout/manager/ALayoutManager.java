@@ -75,7 +75,7 @@ public abstract class
     /**
      * Generate synthesized audio files to speak all of the text on this component
      */
-    public static final Boolean GENERATE_AUDIO = false;
+    public static Boolean GENERATE_AUDIO = false;
 
     /**
      * Constant used when determining the font size
@@ -621,7 +621,11 @@ public abstract class
 					public void run() {
 						if (_progressInfo.isCancelled()) return;
 						if (!uids.contains(_c.getUID())) {
-							_progressInfo.setProgress("Rendering Images and Generating Sound Files", 100
+                            String progress = "Rendering Images";
+                            if(GENERATE_AUDIO)
+                                progress += " and Generating Audio";
+
+							_progressInfo.setProgress(progress, 100
 									* graphicsDrawnF / totalIDs);
 							_c.execute(renderVisitor);
 						}
