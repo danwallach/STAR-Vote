@@ -208,6 +208,8 @@ public abstract class
         File path = new File(location);
         if (!path.exists()) path.mkdirs();
         final ILayoutComponentVisitor<Object, Void> renderVisitor = new ILayoutComponentVisitor<Object, Void>() {
+
+            private ArrayList<String> seenUIDs = new ArrayList<String>();
             private String _uid = null;
 
             public Void forBackground(Background bg, Object... param) {
@@ -424,17 +426,6 @@ public abstract class
                                 + tb.getUID() + "_focused_1_" + langShortName
                                 + ".png"));
 
-
-                        /*// Save a copy of the selected image to the vvpat folder, to be displayed by the tallier. //////////////
-                        File selectedTallyFile = new File(location);
-                        selectedTallyFile = new File(selectedTallyFile, "vvpat");
-                        if(!selectedTallyFile.exists())
-                            selectedTallyFile.mkdirs();
-
-                        selectedTallyFile = new File(selectedTallyFile, tb.getUID() + "_selected_" + langShortName + ".png");
-                        ImageIO.write(img, "png", selectedTallyFile);
-                        ////////////////////////////////////////////////////////////////////////////////////////////////////////*/
-
                         ImageIO.write(selectedTb, "png", new File(location
                                 + tb.getUID() + "_selected_1_" + langShortName
                                 + ".png"));
@@ -465,6 +456,61 @@ public abstract class
                         pb.setWidth(tb.getWidth());
                         pb.setIncreasedFontSize(tb.isIncreasedFontSize());
                         pb.execute(this, param);
+
+                        if(GENERATE_AUDIO){
+                            String text=tb.getBothLines();
+
+                            ArrayList<InputStream> streams = new ArrayList<InputStream>();
+
+                            //Google can only translate strings of less than 100 characters
+                            String[] strings = text.split("\n");
+
+                            ArrayList<String> words = new ArrayList<String>();
+
+                            String line = "";
+
+                            for(String s : strings){
+                                //Since URLs can't handle question marks, strip them out.
+                                //Digital voices aren't that good at inflection anyway.
+                                if(s.contains("?"))
+                                    s.replace("?", "");
+
+                                if(s.contains("'"))
+                                    s.replace("'", "");
+
+                                if(line.length() + s.length() + 1 < 100)
+                                    line += " " + s;
+                                else{
+                                    words.add(line);
+                                    line = s;
+                                }
+
+                            }
+
+                            words.add(line);
+
+                            for(String s : words){
+                                line=java.net.URLEncoder.encode(s, "UTF-16");
+                                URL url = new URL("http://translate.google.com/translate_tts?tl=" + langShortName + "&q="+line);
+                                HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
+                                urlConn.addRequestProperty("User-Agent", "Mozilla/4.76");
+                                InputStream audioSrc = urlConn.getInputStream();
+                                streams.add(audioSrc);
+                            }
+
+                            OutputStream outStream = new FileOutputStream(new File(location  + tb.getUID() + "_" + langShortName + ".mp3"));
+
+                            for(InputStream stream : streams){
+                                DataInputStream read = new DataInputStream(stream);
+
+                                byte[] buffer = new byte[1024];
+                                int len;
+                                while ((len = read.read(buffer)) > 0) {
+                                    outStream.write(buffer, 0, len);
+                                }
+                            }
+                            outStream.close();
+                        }
 
 
                     } catch (IOException e) {
@@ -564,7 +610,7 @@ public abstract class
 					public void run() {
 						if (_progressInfo.isCancelled()) return;
 						if (!uids.contains(_c.getUID())) {
-							_progressInfo.setProgress("Rendering Images", 100
+							_progressInfo.setProgress("Rendering Images and Generating Sound Files", 100
 									* graphicsDrawnF / totalIDs);
 							_c.execute(renderVisitor);
 						}
@@ -572,52 +618,6 @@ public abstract class
 				});
             }
         }
-        
-        exc.execute(new Runnable(){
-        	public void run(){
-        		File file = new File(location);
-                file = new File(file, "vvpat");
-                if(!file.exists())
-                	file.mkdirs();
-                
-                file = new File(file, "spoil.png");
-                
-                BufferedImage spoil = RenderingUtils.renderLabel("***Voter Rejected Ballot***", "", "", 12, 1024, Color.black, false, false, false);
-                
-                try {
-					ImageIO.write(spoil, "png", file);
-				} catch (IOException e) {
-					System.out.println("Spoiled image creation failed!");
-					e.printStackTrace();
-				}
-        	}
-        });
-        
-        exc.execute(new Runnable(){
-        	public void run(){
-        		File file = new File(location);
-                file = new File(file, "vvpat");
-                if(!file.exists())
-                	file.mkdirs();
-                
-                file = new File(file, "accept.png");
-                
-                BufferedImage subSpoil = RenderingUtils.renderLabel("***Voter Accepted Ballot***", "", "", 12, 1024, Color.black, false, false, false);
-                
-                BufferedImage spoil = new BufferedImage(subSpoil.getWidth(), subSpoil.getHeight(), BufferedImage.TYPE_BYTE_BINARY);
-                Graphics g = spoil.getGraphics();
-                g.setColor(Color.white);
-                g.fillRect(0, 0, spoil.getWidth(), spoil.getHeight());
-                g.drawImage(subSpoil, 0, 0, null);
-                
-                try {
-					ImageIO.write(spoil, "png", file);
-				} catch (IOException e) {
-					System.out.println("Accepted ballot creation failed!");
-					e.printStackTrace();
-				}
-        	}
-        });
 
 		exc.shutdown();
 		while (true) {
