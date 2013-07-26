@@ -287,7 +287,7 @@ public abstract class
                             words.add(line);
 
                             for(String s : words){
-                                line=java.net.URLEncoder.encode(s, "UTF-16");
+                                line=java.net.URLEncoder.encode(s, "UTF-8");
                                 URL url = new URL("http://translate.google.com/translate_tts?tl=" + langShortName + "&q="+line);
                                 HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
                                 urlConn.addRequestProperty("User-Agent", "Mozilla/4.76");
@@ -501,7 +501,7 @@ public abstract class
                             words.add(line);
 
                             for(String s : words){
-                                line=java.net.URLEncoder.encode(s, "UTF-16");
+                                line=java.net.URLEncoder.encode(s, "UTF-8");
                                 URL url = new URL("http://translate.google.com/translate_tts?tl=" + langShortName + "&q="+line);
                                 HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
                                 urlConn.addRequestProperty("User-Agent", "Mozilla/4.76");

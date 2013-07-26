@@ -47,7 +47,6 @@ public class FocusableLabel implements IFocusable {
     private int _x;
     private int _y;
 
-    private IViewImage _image;
     private IViewImage _reviewImage, _focusedReviewImage;
 
     private NavigationLinks _links = new NavigationLinks();

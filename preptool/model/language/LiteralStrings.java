@@ -48,7 +48,7 @@ public class LiteralStrings {
         for (Language lang: Language.getAllLanguages())
             langs.put(lang.getName(), lang);
         Language ENGLISH = langs.get("English");
-        Language SPANISH = langs.get("Spanish");
+        Language SPANISH = langs.get("Español");
 
         LocalizedString ls = new LocalizedString();
         ls.set(ENGLISH, "Instructions \n ");

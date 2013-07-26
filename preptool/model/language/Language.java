@@ -111,7 +111,7 @@ public class Language {
 		} catch (Exception e) {
 			icon = null;
 		}
-		allLanguages.add(new Language("Spanish", "es", icon));
+		allLanguages.add(new Language("Español", "es", icon));
 
 		try {
 			icon = new ImageIcon(ClassLoader.getSystemClassLoader()
@@ -119,7 +119,7 @@ public class Language {
 		} catch (Exception e) {
 			icon = null;
 		}
-		allLanguages.add(new Language("French", "fr", icon));
+		allLanguages.add(new Language("Français", "fr", icon));
 
 		try {
 			icon = new ImageIcon(ClassLoader.getSystemClassLoader()
@@ -127,7 +127,7 @@ public class Language {
 		} catch (Exception e) {
 			icon = null;
 		}
-		allLanguages.add(new Language("German", "de", icon));
+		allLanguages.add(new Language("Deutsch", "de", icon));
 
 		try {
 			icon = new ImageIcon(ClassLoader.getSystemClassLoader()
@@ -135,7 +135,7 @@ public class Language {
 		} catch (Exception e) {
 			icon = null;
 		}
-		allLanguages.add(new Language("Italian", "it", icon));
+		allLanguages.add(new Language("Italiano", "it", icon));
 
 		try {
 			icon = new ImageIcon(ClassLoader.getSystemClassLoader()
@@ -143,7 +143,7 @@ public class Language {
 		} catch (Exception e) {
 			icon = null;
 		}
-		allLanguages.add(new Language("Russian", "ru", icon));
+		allLanguages.add(new Language("Русский", "ru", icon));
 
 		try {
 			icon = new ImageIcon(ClassLoader.getSystemClassLoader()
@@ -151,7 +151,7 @@ public class Language {
 		} catch (Exception e) {
 			icon = null;
 		}
-		allLanguages.add(new Language("Chinese", "zh", icon));
+		allLanguages.add(new Language("中文", "zh", icon));
 
 		try {
 			icon = new ImageIcon(ClassLoader.getSystemClassLoader()
@@ -159,7 +159,7 @@ public class Language {
 		} catch (Exception e) {
 			icon = null;
 		}
-		allLanguages.add(new Language("Japanese", "jp", icon));
+		allLanguages.add(new Language("日本語", "jp", icon));
 
 		try {
 			icon = new ImageIcon(ClassLoader.getSystemClassLoader()
@@ -167,7 +167,7 @@ public class Language {
 		} catch (Exception e) {
 			icon = null;
 		}
-		allLanguages.add(new Language("Korean", "kr", icon));
+		allLanguages.add(new Language("한국말", "kr", icon));
 
 		try {
 			icon = new ImageIcon(ClassLoader.getSystemClassLoader()
@@ -175,7 +175,7 @@ public class Language {
 		} catch (Exception e) {
 			icon = null;
 		}
-		allLanguages.add(new Language("Arabic", "sa", icon));
+		allLanguages.add(new Language("العربية", "sa", icon));
 
 		return allLanguages;
 	}
