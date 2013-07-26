@@ -1033,11 +1033,17 @@ public class RenderingUtils {
             // Create a new file, to write the image to a file.
             // All the file names start with 'W_'.
             // All the file names contain the character name, ending in the extension '.png'.
-            File file = new File(location, "W_" + currentCharacter + ".png");
+            // Create the writein directory, if it does not already exist.
+            File file = new File(location, "writein");
+            if(!file.exists())
+            {
+                file.mkdirs();
+            }
+            file = new File(file, "W_" + currentCharacter + ".png");
             // Try to write the image to the file.
             try
             {
-                System.out.println("Attempting to create an image for '" + currentCharacter + "' at: " + file.getAbsolutePath());
+                //System.out.println("Attempting to create an image for '" + currentCharacter + "' at: " + file.getAbsolutePath());
                 ImageIO.write(currentImage, "png", file);
             }
             catch (IOException e)

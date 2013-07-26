@@ -86,8 +86,14 @@ public class ChallengeDelayedWithNIZKsTallier implements ITallier {
 				ListExpression voteIdsE = (ListExpression)raceGroup.get(1);
 				ListExpression proofE = (ListExpression)raceGroup.get(2);
 				ListExpression publicKeyE = (ListExpression)raceGroup.get(3);
-				
-				confirmValid(voteE, voteIdsE, proofE, publicKeyE);
+                // Print each ListExpression, to check its contents.
+                //System.err.println("Race Group:\n\t" + raceGroup);
+                System.out.println("Vote Expression:\n\t" + voteE);
+                System.out.println("Vote IDS Expression:\n\t" + voteIdsE);
+                System.out.println("Proof Expression:\n\t" + proofE);
+                System.out.println("Public Key Expression:\n\t" + publicKeyE);
+
+                confirmValid(voteE, voteIdsE, proofE, publicKeyE);
 				
 				//Vote vote = Vote.fromString(voteE.get(1).toString());
 				Vote vote = Vote.fromASE(voteE.get(1));

@@ -82,7 +82,7 @@ public class PINAuthorizationGUI extends JFrame {
 
         setTitle("Authorization Required");
         setPreferredSize(new Dimension(GUI_WIDTH, GUI_HEIGHT));
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         setBounds(ulX - (GUI_WIDTH + SIDE_BARS_WIDTH) / 2, ulY - (GUI_HEIGHT + TITLE_BAR_HEIGHT) / 2, GUI_WIDTH + SIDE_BARS_WIDTH, GUI_HEIGHT + TITLE_BAR_HEIGHT);
         buildGUIElements();
     }

@@ -106,6 +106,8 @@ public class Model {
 
     private ASExpression testBallot;
     private ASExpression testNonce;
+    private String testBallotFilename = "BallotSExpression.out";
+    private String testNonceFilename = "NonceByteArray.out";
 
     /**
      * Equivalent to Model(-1, params);
@@ -820,7 +822,7 @@ public class Model {
                     throw new IllegalStateException(
                             "Machine "
                                     + e.getSerial()
-                                    + " is not a ballotScanner, but broadcasted ballotScanner message");
+                                    + " is not a ballotScanner, but broadcast ballotScanner message");
                 if (m == null) {
                     m = new BallotScannerMachine(e.getSerial());
                     System.out.println("Ballot Scanner Added: " + m);
@@ -1013,12 +1015,9 @@ public class Model {
                     committedBallots.put(bid, e.getBallot());
 
                     /*/ Write the nonce and ballot to files, for testing purposes. /////////////////////////////////////////////////////////////////////////////////////////////////
-                    // Get the filename.
-                    String filename1 = "BallotAsAByteArray.out";
-                    String filename2 = "NonceAsAStringExpression.out";
                     // Open the file.
-                    File file1 = new File (filename1);
-                    File file2 = new File (filename2);
+                    File file1 = new File (testBallotFilename);
+                    File file2 = new File (testNonceFilename);
 
                     // If the file does not exist, then print error.
                     boolean file1Existed = file1.exists();
@@ -1033,7 +1032,7 @@ public class Model {
                         }
                         catch (IOException eio)
                         {
-                            System.out.println("Unable to create new file " + filename1);
+                            System.out.println("Unable to create new file " + testBallotFilename);
                             eio.printStackTrace();
                             return;
                         }
@@ -1046,7 +1045,7 @@ public class Model {
                         }
                         catch (IOException eio)
                         {
-                            System.out.println("Unable to create new file " + filename2);
+                            System.out.println("Unable to create new file " + testNonceFilename);
                             eio.printStackTrace();
                             return;
                         }
@@ -1093,15 +1092,17 @@ public class Model {
             }
 
             public void ballotScanned(BallotScannedEvent e) {
-//                readTestBallot();
-//                committedBids.put("1357480413", testNonce);
-//                BallotStore.addBallot("1357480413", testBallot);
-//                bManager.setPrecinctByBID("1357480413", "006");
-//                talliers.get("006").recordVotes(testBallot.toVerbatim(), testNonce);
+                // Test ballot stuff... TODO: Might want to implement a way to rapidly cast votes without going through multiple VoteBox sessions.
+                /*readTestBallot();
+                committedBids.put("711567939", testNonce);
+                BallotStore.addBallot("711567939", testBallot);
+                bManager.setPrecinctByBID("711567939", "007");
+                talliers.get("007").recordVotes(testBallot.toVerbatim(), testNonce);*/
 
                 String bid = e.getBID();
                 int serial = e.getSerial();
                 if (committedBids.containsKey(bid)){
+                    System.err.println("Got inside the if clause");
                     //ASExpression nonce = committedBids.get(bid);
                     ASExpression nonce = committedBids.remove(bid);
                     ASExpression ballot = committedBallots.remove(bid);
@@ -1111,7 +1112,7 @@ public class Model {
 
 
 
-                    String precinct = bManager.getPrecinctByBID(e.getBID().toString());
+                    String precinct = bManager.getPrecinctByBID(e.getBID());
                     talliers.get(precinct).confirmed(nonce);
 
                     // used to be in voteBox registerForCommit listener.
@@ -1131,6 +1132,7 @@ public class Model {
                     System.out.println("BID: " + bid);
                     auditorium.announce(new BallotScanAcceptedEvent(mySerial, bid));
                 } else {
+                    System.err.println("Got inside the else clause");
                     System.out.println("Sending scan rejection!");
                     System.out.println("BID: " + bid);
                     auditorium.announce(new BallotScanRejectedEvent(mySerial, bid));
@@ -1303,8 +1305,8 @@ public class Model {
     }
 
     /**
-     * Will spoil ballot by removing it from the commtedBids structure, return true if a bid was removed
-     * @param bid
+     * Will spoil ballot by removing it from the committedBids structure, return true if a bid was removed
+     * @param bid the ballot ID to spoil
      * @return whether or not a bid was actually spoiled
      */
     public boolean spoilBallot(String bid){
@@ -1337,13 +1339,9 @@ public class Model {
 
     public void readTestBallot()
     {
-        // Get the filenames.
-        String filename1 = "BallotAsAStringExpressionCurrentSession.out";
-        String filename2 = "NonceAsAStringExpression.out";
-
         // Open the files.
-        File file1 = new File (filename1);
-        File file2 = new File (filename2);
+        File file1 = new File ("CurrentSession" + testBallotFilename);
+        File file2 = new File (testNonceFilename);
 
         // Create the readers.
         BufferedReader reader1;
@@ -1380,7 +1378,6 @@ public class Model {
         {
             System.out.println("Unable to read from files.");
             e.printStackTrace();
-            return;
         }
     }
 }

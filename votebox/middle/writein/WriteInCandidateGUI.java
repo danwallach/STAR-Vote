@@ -29,22 +29,46 @@ import java.io.IOException;
  */
 public class WriteInCandidateGUI extends JFrame {
 
+    /* The width of the drawable/viewable space on the screen. */
+    private static final int GUI_WIDTH = 800;
+    /* The height of the drawable/viewable space on the screen. */
+    private static final int GUI_HEIGHT = 300;
     /* The path to the directory that contains the images. */
     public static final String SLASH = System.getProperty("file.separator");
     public static final String pathToImages = "images" + SLASH;//"C:" + SLASH + "Users" + SLASH + "Mircea" + SLASH + "Desktop" + SLASH + "Ballots" + SLASH + "WriteIn" + SLASH;
     /* The standard size of the character images. */
-    public static final int IMAGE_STANDARD_WIDTH = 14;//24;
+    public static final int IMAGE_STANDARD_WIDTH = 14;
     public static final int IMAGE_STANDARD_HEIGHT = 14;
     /* The size of the canvas. */
     public static final int CANVAS_WIDTH = 700;
-    public static final int CANVAS_HEIGHT = 600;
+    public static final int CANVAS_HEIGHT = 210;
     /* The location of the upper left corner of the next image to be drawn. */
     public static int nextUpperLeftX = 0;
     public static int nextUpperLeftY = 0;
+    /* STAR-Vote colors. */
+    private static final Color STAR_VOTE_BLUE = new Color (48, 149, 242);
+    private static final Color STAR_VOTE_PINK = Color.PINK;
 
 
     private JTextField candidateNameTextField;
     private JPanel candidateNamePanel;
+
+    /**
+     * Start displaying the GUI.
+     */
+    public void start ()
+    {
+        setVisible(true);
+    }
+
+    /**
+     * Stop displaying the GUI.
+     */
+    public void stop ()
+    {
+        setVisible(false);
+        dispose();
+    }
 
     /**
      * Launch the application.
@@ -53,7 +77,7 @@ public class WriteInCandidateGUI extends JFrame {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    WriteInCandidateGUI frame = new WriteInCandidateGUI();
+                    WriteInCandidateGUI frame = new WriteInCandidateGUI(680, 384);
                     frame.setVisible(true);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -63,13 +87,17 @@ public class WriteInCandidateGUI extends JFrame {
     }
 
     /**
-     * Create the frame.
+     * Create the GUI and build its GUI Elements.
+     * @param ulX the x-coordinate of the center of the GUI
+     * @param ulY the y-coordinate of the center of the GUI
      */
-    public WriteInCandidateGUI() {
-
+    public WriteInCandidateGUI(int ulX, int ulY) {
         // Set Frame properties.
+        setTitle("Type in Candidate Name");
+        //setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setBounds(0, 0, 800, 600);
+        //setBounds(0, 0, GUI_WIDTH, GUI_HEIGHT);
+        setBounds(ulX - GUI_WIDTH / 2, ulY - GUI_HEIGHT / 2, GUI_WIDTH, GUI_HEIGHT);
 
         // Build GUI Elements.
         buildGUIElements();
@@ -84,14 +112,31 @@ public class WriteInCandidateGUI extends JFrame {
 		 * CONTENT PANE
 		 */
         JPanel contentPane = new JPanel();
+        contentPane.setBackground(STAR_VOTE_BLUE);
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         contentPane.setLayout(new BorderLayout(0, 0));
         setContentPane(contentPane);
 
         JPanel mainPanel = new JPanel();
+        mainPanel.setBackground(STAR_VOTE_BLUE);
         contentPane.add(mainPanel, BorderLayout.CENTER);
 
         candidateNameTextField = new JTextField();
+
+        JLabel enterNameLabel = new JLabel("Enter your preferred candidate's name:");
+        mainPanel.add(enterNameLabel);
+        mainPanel.add(candidateNameTextField);
+        candidateNameTextField.setColumns(10);
+
+        candidateNamePanel = new JPanel();
+        candidateNamePanel.setBackground(Color.WHITE);
+        candidateNamePanel.setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
+        mainPanel.add(candidateNamePanel);
+        candidateNamePanel.setLayout(null);
+
+        /*
+         * Listeners for events.
+         */
         candidateNameTextField.addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent arg0) {
                 if(arg0.getKeyCode() == KeyEvent.VK_ENTER)
@@ -129,17 +174,6 @@ public class WriteInCandidateGUI extends JFrame {
                 }
             }
         });
-
-        JLabel enterNameLabel = new JLabel("Enter your preferred candidate's name:");
-        mainPanel.add(enterNameLabel);
-        mainPanel.add(candidateNameTextField);
-        candidateNameTextField.setColumns(10);
-
-        candidateNamePanel = new JPanel();
-        candidateNamePanel.setBackground(Color.WHITE);
-        candidateNamePanel.setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
-        mainPanel.add(candidateNamePanel);
-        candidateNamePanel.setLayout(null);
     }
 
     public BufferedImage renderCandidateName (String candidateName)
