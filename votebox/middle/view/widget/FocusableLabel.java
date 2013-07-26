@@ -152,7 +152,7 @@ public class FocusableLabel implements IFocusable {
     }
 
     /**
-     * This is the getter for _unqiueID.
+     * This is the getter for _uniqueID.
      * 
      * @return _uniqueID
      */
