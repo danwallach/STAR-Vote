@@ -39,6 +39,8 @@ import auditorium.Key;
 import auditorium.NetworkException;
 
 import de.roderick.weberknecht.*;
+import edu.uconn.cse.adder.PrivateKey;
+import edu.uconn.cse.adder.PublicKey;
 import sexpression.ASExpression;
 import sexpression.stream.ASEWriter;
 import supervisor.model.BallotStore;
@@ -72,7 +74,8 @@ public class Tap {
     private OutputStream _wrappedOut = null;
     private VoteBoxAuditoriumConnector _auditorium = null;
     private static IAuditoriumParams params;
-    private Key privateKey;
+    private PrivateKey privateKey;
+    private PublicKey publicKey;
     private static String ballotDumpHTTPKey = "3FF968A3B47CT34C";
 
     /**
@@ -87,11 +90,9 @@ public class Tap {
         _wrappedOut = out;
         _output = new ASEWriter(_wrappedOut);
 
-        try{
-            privateKey = params.getKeyStore().loadKey(_mySerial + "-private");
-        }catch(AuditoriumCryptoException ex){
-            ex.printStackTrace();
-        }
+        privateKey = (PrivateKey)params.getKeyStore().loadAdderKey("private");
+        publicKey = (PublicKey)params.getKeyStore().loadAdderKey("public");
+
     }//Trapper
 
     /**
@@ -208,7 +209,7 @@ public class Tap {
             public void uploadCastBallots(CastBallotUploadEvent e) {
                 dumpBallotList(e.getDumpList());
                 System.out.println("TAP: Uploading Cast Ballots");
-                _auditorium.announce(new ChallengedBallotUploadEvent(_mySerial, BallotStore.getDecryptedBallots(privateKey)));
+                _auditorium.announce(new ChallengedBallotUploadEvent(_mySerial, BallotStore.getDecryptedBallots(publicKey, privateKey)));
             }
             public void uploadChallengedBallots(ChallengedBallotUploadEvent e) {
                 dumpBallotList(e.getDumpList());

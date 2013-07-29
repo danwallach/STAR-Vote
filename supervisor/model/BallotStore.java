@@ -1,10 +1,13 @@
 package supervisor.model;
 
 import auditorium.Key;
+import edu.uconn.cse.adder.PrivateKey;
+import edu.uconn.cse.adder.PublicKey;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.StringExpression;
 import supervisor.model.tallier.EncryptedTallier;
+import supervisor.model.tallier.EncryptedTallierWithNIZKs;
 import supervisor.model.tallier.ITallier;
 
 import java.io.PrintWriter;
@@ -84,8 +87,8 @@ public class BallotStore {
      * @param privateKey - supervisor key
      * @return LE of 2 LEs: hashed ballots and decrypted ballots
      */
-    public static ListExpression getDecryptedBallots(Key privateKey) {
-        ITallier tallier = new EncryptedTallier(privateKey);
+    public static ListExpression getDecryptedBallots(PublicKey publicKey, PrivateKey privateKey) {
+        ITallier tallier = new EncryptedTallierWithNIZKs(publicKey, privateKey);
         List<ASExpression> hashes = new ArrayList<ASExpression>();
         List<ASExpression> decryptedBallots = new ArrayList<ASExpression>();
         List<ASExpression> ballotIDs = new ArrayList<ASExpression>();
