@@ -38,6 +38,7 @@ import auditorium.IAuditoriumParams;
 import auditorium.Key;
 import auditorium.NetworkException;
 
+import crypto.interop.AdderKeyManipulator;
 import de.roderick.weberknecht.*;
 import edu.uconn.cse.adder.PrivateKey;
 import edu.uconn.cse.adder.PublicKey;
@@ -91,7 +92,8 @@ public class Tap {
         _output = new ASEWriter(_wrappedOut);
 
         privateKey = (PrivateKey)params.getKeyStore().loadAdderKey("private");
-        publicKey = (PublicKey)params.getKeyStore().loadAdderKey("public");
+        publicKey = AdderKeyManipulator.generateFinalPublicKey((PublicKey)params.getKeyStore().loadAdderKey("public"));
+
 
     }//Trapper
 
@@ -124,6 +126,8 @@ public class Tap {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        client.getConnectionManager().shutdown();
     }
 
     /**
@@ -212,6 +216,7 @@ public class Tap {
                 _auditorium.announce(new ChallengedBallotUploadEvent(_mySerial, BallotStore.getDecryptedBallots(publicKey, privateKey)));
             }
             public void uploadChallengedBallots(ChallengedBallotUploadEvent e) {
+                System.out.println("TAP: Uploading Challenged Ballots : Pre");
                 dumpBallotList(e.getDumpList());
                 System.out.println("TAP: Uploading Challenged Ballots");
                 BallotStore.clearBallots();

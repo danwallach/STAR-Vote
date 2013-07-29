@@ -6,6 +6,7 @@ import edu.uconn.cse.adder.PublicKey;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.StringExpression;
+import supervisor.model.tallier.ChallengeDelayedWithNIZKsTallier;
 import supervisor.model.tallier.EncryptedTallier;
 import supervisor.model.tallier.EncryptedTallierWithNIZKs;
 import supervisor.model.tallier.ITallier;
@@ -88,7 +89,7 @@ public class BallotStore {
      * @return LE of 2 LEs: hashed ballots and decrypted ballots
      */
     public static ListExpression getDecryptedBallots(PublicKey publicKey, PrivateKey privateKey) {
-        ITallier tallier = new EncryptedTallierWithNIZKs(publicKey, privateKey);
+        ITallier tallier = new ChallengeDelayedWithNIZKsTallier(publicKey, privateKey);
         List<ASExpression> hashes = new ArrayList<ASExpression>();
         List<ASExpression> decryptedBallots = new ArrayList<ASExpression>();
         List<ASExpression> ballotIDs = new ArrayList<ASExpression>();
