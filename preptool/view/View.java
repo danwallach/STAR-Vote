@@ -1281,6 +1281,7 @@ public class View extends JFrame {
 
         final JCheckBoxMenuItem sound = new JCheckBoxMenuItem("Use Text-to-Speech");
         sound.setState(true);
+        model.setTextToSpeech(true);
         sound.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e) {
                 model.setTextToSpeech(sound.getState());

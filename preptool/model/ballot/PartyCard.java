@@ -3,10 +3,8 @@ package preptool.model.ballot;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import preptool.model.XMLTools;
-import preptool.model.ballot.module.AModule;
 import preptool.model.ballot.module.CandidatesModule;
 import preptool.model.ballot.module.TextFieldModule;
-import preptool.model.ballot.module.TitleModule;
 import preptool.model.language.Language;
 import preptool.model.language.LiteralStrings;
 import preptool.model.layout.manager.ALayoutManager;
@@ -26,7 +24,7 @@ import java.util.List;
  */
 public class PartyCard extends ACard {
 
-    private TitleModule title;
+    private TextFieldModule title;
 
     /**
      * Factory to create a PartyCard
@@ -48,7 +46,7 @@ public class PartyCard extends ACard {
      */
     public PartyCard() {
         super("Party");
-        title = new TitleModule("Title", "Title");
+        title = new TextFieldModule("Title", "Title");
         modules.add(title);
         modules.add(new CandidatesModule("Party", new String[]{ "Party" }));
     }
@@ -85,7 +83,7 @@ public class PartyCard extends ACard {
      */
     public String getReviewTitle(Language language) {
         title.setData(language, LiteralStrings.Singleton.get("STRAIGHT_PARTY").get(language));
-        TitleModule titleModule = (TitleModule) getModuleByName("Title");
+        TextFieldModule titleModule = (TextFieldModule) getModuleByName("Title");
         return titleModule.getData(language) + ":";
     }
 
@@ -99,7 +97,7 @@ public class PartyCard extends ACard {
     public ALayoutManager.ICardLayout layoutCard(ALayoutManager manager, ALayoutManager.ICardLayout cardLayout) {
         Language lang = manager.getLanguage();
         title.setData(lang, LiteralStrings.Singleton.get("STRAIGHT_PARTY").get(lang));
-        TitleModule title = (TitleModule) getModuleByName("Title");
+        TextFieldModule title = (TextFieldModule) getModuleByName("Title");
         CandidatesModule candidatesModule = (CandidatesModule) getModuleByName("Party");
 
         cardLayout.setTitle(title.getData(lang));

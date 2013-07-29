@@ -469,12 +469,10 @@ public class Button extends FocusableLabel {
      */
     public void unfocus() {
         _state.unfocus( this );
-        try{
-            if(soundThread != null)
-                soundThread.join();
-        } catch (InterruptedException e){
 
-        }
+        if(mp3Player != null)
+            mp3Player.close();
+
     }
 
     /**

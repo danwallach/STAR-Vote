@@ -60,8 +60,8 @@ public abstract class AModule extends Observable {
             return TextFieldModule.parseXML(elt);
         else if (type.equals("YesNoOptionsModule"))
             return YesNoOptionsModule.parseXML(elt);
-        else if (type.equals("TitleModule"))
-            return TitleModule.parseXML(elt);
+//        else if (type.equals("TitleModule"))
+//            return TitleModule.parseXML(elt);
         else
             throw new BallotOpenException("Invalid module: " + type);
     }

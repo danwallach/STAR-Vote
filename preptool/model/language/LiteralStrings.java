@@ -79,6 +79,7 @@ public class LiteralStrings {
         ls = new LocalizedString();
         ls.set(ENGLISH, "You must make a selection!");
         ls.set(SPANISH, "Usted debe hacer una selección!");
+        ls.set(SPANISH, "Usted debe hacer una selección!");
         map.put("NO_SELECTION_TITLE", ls);
 
         ls = new LocalizedString();
@@ -337,7 +338,7 @@ public class LiteralStrings {
 
         ls = new LocalizedString();
         ls.set(ENGLISH, "\n Your vote has not been recorded. Please ask to re-authorize this booth to cast your vote. ");
-        ls.set(SPANISH, "\n Su voto no ha sido registrado. Por favor, pregunte a volver a autorizar esta cabina para emitir su voto.");
+        ls.set(SPANISH, "\n Su voto no ha sido registrado. Pregunte a volver a autorizar esta cabina para emitir su voto.");
         map.put("RESPONSE", ls);
 
         ls = new LocalizedString();

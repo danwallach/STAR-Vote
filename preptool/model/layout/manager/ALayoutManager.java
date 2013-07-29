@@ -26,6 +26,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -75,7 +76,7 @@ public abstract class
     /**
      * Generate synthesized audio files to speak all of the text on this component
      */
-    public static Boolean GENERATE_AUDIO = false;
+    public static Boolean GENERATE_AUDIO = true;
 
     /**
      * Constant used when determining the font size
@@ -244,6 +245,9 @@ public abstract class
                         throw new RuntimeException(e);
                     }
                     uids.add(b.getUID());
+
+                    if(GENERATE_AUDIO)
+                        forAudio(b.getUID(), b.getText());
                 }
                 return null;
             }
@@ -262,52 +266,6 @@ public abstract class
                                 + l.getUID() + "_focused_1_" + langShortName + ".png"));
 
 
-                        if(GENERATE_AUDIO){
-                            String text=l.getText();
-
-                            ArrayList<InputStream> streams = new ArrayList<InputStream>();
-
-                            //Google can only translate strings of less than 100 characters
-                            String[] strings = text.split("\n");
-
-                            ArrayList<String> words = new ArrayList<String>();
-
-                            String line = "";
-
-                            for(String s : strings){
-                                if(line.length() + s.length() + 1 < 100)
-                                    line += " " + s;
-                                else{
-                                    words.add(line);
-                                    line = s;
-                                }
-
-                            }
-
-                            words.add(line);
-
-                            for(String s : words){
-                                line=java.net.URLEncoder.encode(s, "UTF-8");
-                                URL url = new URL("http://translate.google.com/translate_tts?tl=" + langShortName + "&q="+line);
-                                HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
-                                urlConn.addRequestProperty("User-Agent", "Mozilla/4.76");
-                                InputStream audioSrc = urlConn.getInputStream();
-                                streams.add(audioSrc);
-                            }
-
-                            OutputStream outstream = new FileOutputStream(new File(location  + l.getUID() + "_" + langShortName + ".mp3"));
-
-                            for(InputStream stream : streams){
-                                DataInputStream read = new DataInputStream(stream);
-
-                                byte[] buffer = new byte[1024];
-                                int len;
-                                while ((len = read.read(buffer)) > 0) {
-                                    outstream.write(buffer, 0, len);
-                                }
-                            }
-                            outstream.close();
-                        }
 
 
                     }catch (IOException e) {
@@ -315,6 +273,9 @@ public abstract class
                         throw new RuntimeException(e);
                     }
                     uids.add(l.getUID());
+
+                    if(GENERATE_AUDIO)
+                        forAudio(l.getUID(), l.getText());
                 }
                 return null;
             }
@@ -384,7 +345,12 @@ public abstract class
                     throw new RuntimeException(ie);
                 }
 
-
+                if(GENERATE_AUDIO){
+                    if(rb.getAuxText() != null)
+                        forAudio(rb.getUID(), rb.getText() + "\n" + rb.getAuxText());
+                    else
+                        forAudio(rb.getUID(), rb.getText());
+                }
 
 
                 return null;
@@ -411,6 +377,10 @@ public abstract class
                         throw new RuntimeException(e);
                     }
                     uids.add(rl.getUID());
+
+                    if(GENERATE_AUDIO)
+                        forAudio(rl.getUID(), rl.getText());
+
                 }
                 return null;
             }
@@ -468,60 +438,8 @@ public abstract class
                         pb.setIncreasedFontSize(tb.isIncreasedFontSize());
                         pb.execute(this, param);
 
-                        if(GENERATE_AUDIO){
-                            String text=tb.getBothLines();
-
-                            ArrayList<InputStream> streams = new ArrayList<InputStream>();
-
-                            //Google can only translate strings of less than 100 characters
-                            String[] strings = text.split("\n");
-
-                            ArrayList<String> words = new ArrayList<String>();
-
-                            String line = "";
-
-                            for(String s : strings){
-                                //Since URLs can't handle question marks, strip them out.
-                                //Digital voices aren't that good at inflection anyway.
-                                if(s.contains("?"))
-                                    s.replace("?", "");
-
-                                if(s.contains("'"))
-                                    s.replace("'", "");
-
-                                if(line.length() + s.length() + 1 < 100)
-                                    line += " " + s;
-                                else{
-                                    words.add(line);
-                                    line = s;
-                                }
-
-                            }
-
-                            words.add(line);
-
-                            for(String s : words){
-                                line=java.net.URLEncoder.encode(s, "UTF-8");
-                                URL url = new URL("http://translate.google.com/translate_tts?tl=" + langShortName + "&q="+line);
-                                HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
-                                urlConn.addRequestProperty("User-Agent", "Mozilla/4.76");
-                                InputStream audioSrc = urlConn.getInputStream();
-                                streams.add(audioSrc);
-                            }
-
-                            OutputStream outStream = new FileOutputStream(new File(location  + tb.getUID() + "_" + langShortName + ".mp3"));
-
-                            for(InputStream stream : streams){
-                                DataInputStream read = new DataInputStream(stream);
-
-                                byte[] buffer = new byte[1024];
-                                int len;
-                                while ((len = read.read(buffer)) > 0) {
-                                    outStream.write(buffer, 0, len);
-                                }
-                            }
-                            outStream.close();
-                        }
+                        if(GENERATE_AUDIO)
+                            forAudio(tb.getUID(), tb.getBothLines());
 
 
                     } catch (IOException e) {
@@ -596,6 +514,67 @@ public abstract class
                 return null;
 
 			}
+
+            public void forAudio(String uid, String text){
+                if(GENERATE_AUDIO){
+                    ArrayList<InputStream> streams = new ArrayList<InputStream>();
+
+                    //Google can only translate strings of less than 100 characters
+                    String[] strings = text.split("\n");
+
+                    ArrayList<String> words = new ArrayList<String>();
+
+                    String line = "";
+
+                    for(String s : strings){
+                        if(line.length() + s.length() + 1 < 100)
+                            line += " " + s;
+                        else{
+                            words.add(line);
+                            line = s;
+                        }
+
+                    }
+
+                    words.add(line);
+
+                    try{
+                    for(String s : words){
+                        line=java.net.URLEncoder.encode(s, "UTF-8");
+                        URL url = new URL("http://translate.google.com/translate_tts?tl=" + langShortName + "&q="+line);
+                        System.out.println(url.toString());
+
+                        HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
+                        urlConn.setRequestProperty("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.36 Safari/537.36");
+                        InputStream audioSrc = urlConn.getInputStream();
+                        streams.add(audioSrc);
+                    }
+
+                    OutputStream outstream = new FileOutputStream(new File(location  + uid + "_" + langShortName + ".mp3"));
+
+                    for(InputStream stream : streams){
+                        DataInputStream read = new DataInputStream(stream);
+
+                        byte[] buffer = new byte[1024];
+                        int len;
+                        while ((len = read.read(buffer)) > 0) {
+                            outstream.write(buffer, 0, len);
+                        }
+                    }
+                    outstream.close();
+
+                    } catch (MalformedURLException e) {
+                        throw new RuntimeException(e);
+                    } catch (FileNotFoundException e) {
+                        throw new RuntimeException(e);
+                    } catch (UnsupportedEncodingException e) {
+                        throw new RuntimeException(e);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
+            }
         };
         final int totalIDs = nextBUID + nextLUID;
         int graphicsDrawn = 0;

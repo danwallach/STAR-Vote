@@ -251,11 +251,8 @@ public class ToggleButton extends FocusableLabel {
      */
     public void unfocus() {
         _state.unfocus( this );
-            if(soundThread != null){
-                soundThread.interrupt();
-
-
-        }
+        if(mp3Player != null)
+            mp3Player.close();
     }
 
     /**
