@@ -83,7 +83,7 @@ public class MachineViewGenerator {
             }
             if((m instanceof TapMachine) && !(mv instanceof TapView)){
                 views.remove(m);
-                mv = new TapView();
+                mv = new TapView((TapMachine) m);
                 views.put(m, mv);
             }
 
@@ -98,7 +98,7 @@ public class MachineViewGenerator {
             } else if (m instanceof BallotScannerMachine){
                 mv = new BallotScannerMachineView(model, view, (BallotScannerMachine)m);
             } else if (m instanceof TapMachine){
-                mv = new TapView();
+                mv = new TapView((TapMachine) m );
             }
             views.put(m, mv);
             return mv;

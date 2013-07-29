@@ -66,6 +66,8 @@ public class ActiveUI extends JPanel {
 
     private JLabel pollsOpenLbl;
 
+    private JLabel tapConnectedLabel;
+
     private JButton leftButton;
 
     private JButton ballotButton;
@@ -177,17 +179,22 @@ public class ActiveUI extends JPanel {
         timeLbl = new MyJLabel(DateFormat.getTimeInstance(DateFormat.LONG)
                 .format(d));
         leftLabelPanel.add(timeLbl, c);
+
         new Timer(1000, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 timeLbl.setText(DateFormat.getTimeInstance(DateFormat.LONG)
                         .format(new Date()));
             }
         }).start();
+
         c.gridy = 3;
         c.weighty = .2;
         c.anchor = GridBagConstraints.PAGE_END;
         pollsOpenLbl = new MyJLabel("Polls currently closed");
         leftLabelPanel.add(pollsOpenLbl, c);
+
+
+
 
         c = new GridBagConstraints();
         c.gridx = 0;
