@@ -104,10 +104,6 @@ public class Button extends FocusableLabel {
      */
     private NavigationLinks _links = new NavigationLinks();
 
-    /**
-     * A player that plays the corresponding sound when this button is selected
-     */
-    private Player mp3Player;
 
     private Thread soundThread;
 
