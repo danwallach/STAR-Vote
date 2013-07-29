@@ -73,12 +73,6 @@ public class ToggleButton extends FocusableLabel {
     private IViewImage _focusedSelectedImage;
     private IViewImage _reviewImage;
 
-
-    /**
-     * A player that plays the corresponding sound when this button is selected
-     */
-    private Player mp3Player;
-
     private Thread soundThread;
 
     /**

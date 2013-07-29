@@ -85,7 +85,7 @@ public class FocusableLabel implements IFocusable {
     /**
      * A player that plays the corresponding sound when this button is selected
      */
-    private Player mp3Player;
+    protected static Player mp3Player;
 
     private Thread soundThread;
 

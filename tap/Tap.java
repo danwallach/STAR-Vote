@@ -95,6 +95,7 @@ public class Tap {
         publicKey = AdderKeyManipulator.generateFinalPublicKey((PublicKey)params.getKeyStore().loadAdderKey("public"));
 
 
+
     }//Trapper
 
     /**
