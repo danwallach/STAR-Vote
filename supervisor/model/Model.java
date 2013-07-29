@@ -193,9 +193,8 @@ public class Model {
                     else if (ma.getLabel() > maxlabel)
                         maxlabel = ma.getLabel();
                 }
-                else
-                    if(m instanceof BallotScannerMachine)
-                    {
+                else if(m instanceof BallotScannerMachine)
+                {
                         BallotScannerMachine ma = (BallotScannerMachine)m;
                         if(ma.getStatus() == BallotScannerMachine.ACTIVE)
                         {
@@ -211,7 +210,13 @@ public class Model {
                             unlabeled.add(ma);
                         else if (ma.getLabel() > maxlabel)
                             maxlabel = ma.getLabel();
-                    }
+                }
+                else if(m instanceof  TapMachine){
+                    TapMachine machine = (TapMachine)m;
+
+                    s = new TapMachineEvent(machine.getSerial(), machine.getLabel(),
+                            machine.getBattery(), machine.getProtectedCount(), machine.getPublicCount());
+                }
                 if (s == null)
                     throw new IllegalStateException("Unknown machine or status");
                 statuses.add(new StatusEvent(0, m.getSerial(), s));
@@ -307,7 +312,7 @@ public class Model {
 
         auditorium.announce(new CastBallotUploadEvent(mySerial, BallotStore.getCastNonces()));
         auditorium.announce(new ChallengedBallotUploadEvent(mySerial, BallotStore.getDecryptedBallots((PublicKey) auditoriumParams.getKeyStore().loadAdderKey("public"),
-            (PrivateKey)auditoriumParams.getKeyStore().loadAdderKey("private"))));
+                (PrivateKey) auditoriumParams.getKeyStore().loadAdderKey("private"))));
 
         return out;
     }
@@ -345,6 +350,11 @@ public class Model {
      * @return the machine
      */
     public AMachine getMachineForSerial(int serial) {
+        if(serial == 0){
+            TapMachine tapMachine = new TapMachine(serial);
+            machines.add(tapMachine);
+            return tapMachine;
+        }
         for (AMachine m : machines)
             if (m.getSerial() == serial)
                 return m;
@@ -652,7 +662,7 @@ public class Model {
              */
             public void joined(JoinEvent e) {
                 AMachine m = getMachineForSerial(e.getSerial());
-                if (m != null) {
+                if (m != null ) {
                     m.setOnline(true);
                 }
                 numConnected++;
@@ -1093,6 +1103,10 @@ public class Model {
             }
 
             public void authorizedToCastWithNIZKS(AuthorizedToCastWithNIZKsEvent e) {
+                // NO-OP
+            }
+
+            public void tapMachine(TapMachineEvent tapMachineEvent) {
                 // NO-OP
             }
 

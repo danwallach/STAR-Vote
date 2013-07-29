@@ -955,6 +955,10 @@ public class VoteBox{
                 // NO-OP
             }
 
+            public void tapMachine(TapMachineEvent tapMachineEvent) {
+                // NO-OP
+            }
+
 
             public void ballotScanned(BallotScannedEvent e) {
                 // NO-OP

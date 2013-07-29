@@ -24,11 +24,7 @@ package supervisor.view;
 
 import java.util.HashMap;
 
-import supervisor.model.BallotScannerMachine;
-import supervisor.model.AMachine;
-import supervisor.model.Model;
-import supervisor.model.SupervisorMachine;
-import supervisor.model.VoteBoxBooth;
+import supervisor.model.*;
 
 /**
  * The MachineViewGenerator is a sort of "cache" that only allows you to create
@@ -85,6 +81,11 @@ public class MachineViewGenerator {
                 mv = new BallotScannerMachineView(model, view, (BallotScannerMachine) m);
                 views.put(m, mv);
             }
+            if((m instanceof TapMachine) && !(mv instanceof TapView)){
+                views.remove(m);
+                mv = new TapView();
+                views.put(m, mv);
+            }
 
             return mv;
         }
@@ -96,6 +97,8 @@ public class MachineViewGenerator {
                 mv = new VoteBoxBoothView(model, view, (VoteBoxBooth) m);
             } else if (m instanceof BallotScannerMachine){
                 mv = new BallotScannerMachineView(model, view, (BallotScannerMachine)m);
+            } else if (m instanceof TapMachine){
+                mv = new TapView();
             }
             views.put(m, mv);
             return mv;

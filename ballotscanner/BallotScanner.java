@@ -373,6 +373,9 @@ public class BallotScanner{
             public void authorizedToCastWithNIZKS(AuthorizedToCastWithNIZKsEvent e) {
             }
 
+            public void tapMachine(TapMachineEvent tapMachineEvent) {
+            }
+
             public void ballotAccepted(BallotScanAcceptedEvent event){
 
                 System.out.println("Accepted event: Event BID: " + event.getBID());

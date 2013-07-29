@@ -205,6 +205,7 @@ public class Tap {
             public void provisionalAuthorizedToCast(ProvisionalAuthorizeEvent provisionalAuthorizeEvent) {}
             public void provisionalCommitBallot(ProvisionalCommitEvent provisionalCommitEvent) {}
             public void authorizedToCastWithNIZKS(AuthorizedToCastWithNIZKsEvent e) {}
+            public void tapMachine(TapMachineEvent tapMachineEvent) {}
 
 
             public void pollsClosed(PollsClosedEvent e) {

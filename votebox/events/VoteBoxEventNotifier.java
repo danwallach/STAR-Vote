@@ -264,4 +264,9 @@ public class VoteBoxEventNotifier implements VoteBoxEventListener {
             l.authorizedToCastWithNIZKS(e);
     }
 
+    public void tapMachine(TapMachineEvent e) {
+        for (VoteBoxEventListener l : listeners)
+            l.tapMachine(e);
+    }
+
 }

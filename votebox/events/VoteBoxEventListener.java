@@ -284,4 +284,6 @@ public interface VoteBoxEventListener {
     public void provisionalCommitBallot(ProvisionalCommitEvent provisionalCommitEvent);
 
     public void authorizedToCastWithNIZKS(AuthorizedToCastWithNIZKsEvent e);
+
+    public void tapMachine(TapMachineEvent tapMachineEvent);
 }
