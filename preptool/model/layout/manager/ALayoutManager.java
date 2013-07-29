@@ -208,6 +208,14 @@ public abstract class
         final String langShortName = getLanguage().getShortName();
         File path = new File(location);
         if (!path.exists()) path.mkdirs();
+
+        ArrayList<Language> langs = Language.getAllLanguages();
+        final ArrayList<String> langNames = new ArrayList<String>(langs.size());
+        for(Language lang: langs){
+           langNames.add(lang.getName());
+        }
+
+
         final ILayoutComponentVisitor<Object, Void> renderVisitor = new ILayoutComponentVisitor<Object, Void>() {
 
             private ArrayList<String> seenUIDs = new ArrayList<String>();
@@ -501,10 +509,13 @@ public abstract class
                         }
                         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-                        file = new File(file, uuid+"_printable_"+langShortName+".png");
 
+                        if(!langNames.contains(pb.getText())){
+                            file = new File(file, uuid+"_printable_"+langShortName+".png");
 
-                        ImageIO.write(img, "png", file);
+                            ImageIO.write(img, "png", file);
+                        }else
+                            System.out.println(pb.getText());
 
                     } catch (IOException e) {
                         throw new RuntimeException(e);

@@ -93,6 +93,7 @@ public class Tap {
         privateKey = (PrivateKey)params.getKeyStore().loadAdderKey("private");
         publicKey = (PublicKey)params.getKeyStore().loadAdderKey("public");
 
+
     }//Trapper
 
     /**

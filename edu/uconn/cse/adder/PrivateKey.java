@@ -17,7 +17,8 @@ import sexpression.StringExpression;
  * @version $LastChangedRevision$ $LastChangedDate$
  * @since 0.0.1
  */
-public class PrivateKey {
+public class
+        PrivateKey {
     private AdderInteger p;
     private AdderInteger q;
     private AdderInteger g;
