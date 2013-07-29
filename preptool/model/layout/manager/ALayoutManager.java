@@ -282,8 +282,11 @@ public abstract class
                     }
                     uids.add(l.getUID());
 
+                    String text = l.getText() + ", " + l.getDescription();
+
+
                     if(GENERATE_AUDIO)
-                        forAudio(l.getUID(), l.getText());
+                        forAudio(l.getUID(),text);
                 }
                 return null;
             }

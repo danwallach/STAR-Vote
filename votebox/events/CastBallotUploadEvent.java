@@ -3,6 +3,7 @@ package votebox.events;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.NamedNoMatch;
+import sexpression.StringExpression;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -64,7 +65,8 @@ public class CastBallotUploadEvent implements IAnnounceEvent {
 
 
     public ASExpression toSExp() {
-        return _nonces;
+        return new ListExpression(StringExpression.makeString("cast-ballot-upload"),
+                _nonces);
     }
 
     public void fire(VoteBoxEventListener l) {

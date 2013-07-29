@@ -305,6 +305,10 @@ public class Model {
             out.put(t, talliers.get(t).getReport());
         }
 
+        auditorium.announce(new CastBallotUploadEvent(mySerial, BallotStore.getCastNonces()));
+        auditorium.announce(new ChallengedBallotUploadEvent(mySerial, BallotStore.getDecryptedBallots((PublicKey) auditoriumParams.getKeyStore().loadAdderKey("public"),
+            (PrivateKey)auditoriumParams.getKeyStore().loadAdderKey("private"))));
+
         return out;
     }
 
@@ -1002,6 +1006,7 @@ public class Model {
                     booth.setPublicCount(booth.getPublicCount() + 1);
                     booth.setProtectedCount(booth.getProtectedCount() + 1);
                     BallotStore.addBallot(e.getBID().toString(), e.getBallot());
+                    BallotStore.mapPrecinct(e.getBID().toString(), e.getPrecinct().toString());
                     bManager.setPrecinctByBID(e.getBID().toString(), e.getPrecinct().toString());
                     bManager.testMapPrint();
                     auditorium.announce(new BallotReceivedEvent(mySerial, e.getSerial(),

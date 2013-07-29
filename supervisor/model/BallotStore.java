@@ -89,7 +89,7 @@ public class BallotStore {
      * @return LE of 2 LEs: hashed ballots and decrypted ballots
      */
     public static ListExpression getDecryptedBallots(PublicKey publicKey, PrivateKey privateKey) {
-        ITallier tallier = new ChallengeDelayedWithNIZKsTallier(publicKey, privateKey);
+        ITallier tallier = new EncryptedTallierWithNIZKs(publicKey, privateKey);
         List<ASExpression> hashes = new ArrayList<ASExpression>();
         List<ASExpression> decryptedBallots = new ArrayList<ASExpression>();
         List<ASExpression> ballotIDs = new ArrayList<ASExpression>();

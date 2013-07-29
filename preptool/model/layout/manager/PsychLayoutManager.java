@@ -572,11 +572,10 @@ public class PsychLayoutManager extends ALayoutManager {
          * Adds a title String to this frame
          * @param titleText the String title
          */
-        protected Label addTitle(String titleText) {
+        protected Spacer addTitle(String titleText) {
             Label title = new Label(getNextLayoutUID(), titleText, sizeVisitor);
-            addTitle(title);
+            return addTitle(title);
             
-            return title;
         }
 
     }
@@ -1273,9 +1272,9 @@ public class PsychLayoutManager extends ALayoutManager {
             int target, int idx, int total) {
         ArrayList<JPanel> cardPanels = makeCardPage(card);
         ArrayList<Page> pages = new ArrayList<Page>();
-        
+
         @SuppressWarnings("unused")
-		Label title = null;
+		Spacer title = null;
         
         for (int i = 0; i < cardPanels.size(); i++) {
             // Setup card frame
@@ -1309,12 +1308,8 @@ public class PsychLayoutManager extends ALayoutManager {
                     cardFrame.addNextButton(nextInfo);
                 }
             } else {
-            	//#ifdef NONE_OF_ABOVE
-                //cardFrame.addReturnRequireSelectionButton(returnInfo, target, card.getUID());
-            	//#endif
-        		//#ifndef NONE_OF_ABOVE
                 cardFrame.addReturnButton(returnInfo, target);
-                //#endif
+
                 if (i > 0)
                     cardFrame.addPreviousButton((Label) moreCandidatesInfo.clone());
                 if (i < cardPanels.size() - 1)
@@ -1343,6 +1338,7 @@ public class PsychLayoutManager extends ALayoutManager {
             else
                 instructions = getRaceInstructions();
 
+
             instspacer = new Spacer(instructions, cardFrame.north);
 
             cardFrame.north.add(instspacer, constraints);
@@ -1354,7 +1350,7 @@ public class PsychLayoutManager extends ALayoutManager {
             cardPage.getComponents().add(background);
             cardPage.setBackgroundLabel(background.getUID());
 
-
+            boolean titled = false;
 
             ALayoutComponent tempButton = null;
 
@@ -1366,10 +1362,24 @@ public class PsychLayoutManager extends ALayoutManager {
                 }//if
 
                 ALayoutComponent button = s.getComponent();
+                boolean flag = false;
 
-                if(button instanceof ToggleButton){
+
+                if(button instanceof Label){
+                    if(((Label) button).getText().equals(card.getTitle(language)))
+                        if(titled)
+                            flag = true;
+                        else
+                            titled = true;
+                }
+
+
+
+
+
+
+                if(button instanceof ToggleButton || flag){
                     if(jump){
-                        System.out.println("Jump!");
 
                         //TODO Make this work with lots of candidates (i > n)
                         if(tempButton == null){
@@ -1593,6 +1603,9 @@ public class PsychLayoutManager extends ALayoutManager {
                 LiteralStrings.Singleton.get("LANGUAGE_SELECT_INSTRUCTIONS",
                         language), sizeVisitor);
 
+        instLabel.setNext(title);
+        title.setPrevious(instLabel);
+
 
         instLabel.setRight(nextButton);
 
@@ -1607,10 +1620,10 @@ public class PsychLayoutManager extends ALayoutManager {
             //Setup the navigation for this.
             //TODO Write some sort of manual for how this all works
             if(tempButton == null){
-                instLabel.setNext(button);
-                instLabel.setDown(button);
-                button.setUp(instLabel);
-                button.setPrevious(instLabel);
+                title.setNext(button);
+                title.setDown(button);
+                button.setUp(title);
+                button.setPrevious(title);
 
             } else{
                 button.setPrevious(tempButton);
@@ -1944,6 +1957,7 @@ public class PsychLayoutManager extends ALayoutManager {
     		}
 
             previousButton.setUp(reviewInstructions);
+            previousButton.setNext(reviewInstructions);
             reviewInstructions.setPrevious(previousButton);
             reviewInstructions.setLeft(previousButton);
             reviewInstructions.setRight(nextButton);

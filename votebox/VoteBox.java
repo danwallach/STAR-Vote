@@ -1033,6 +1033,7 @@ public class VoteBox{
 
         // Create a new GUI to prompt for PIN.
         final PINAuthorizationGUI pinGUI = new PINAuthorizationGUI(_constants.getScreenCenterX(), _constants.getScreenCenterY());
+        pinGUI.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         // Set the GUI's label to our message.
         pinGUI.setLabelText(message);
         // Add a listener for the OK button so that when it gets clicked, it validates the pin.

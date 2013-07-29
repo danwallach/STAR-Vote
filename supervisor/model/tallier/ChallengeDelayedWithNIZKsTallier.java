@@ -86,12 +86,6 @@ public class ChallengeDelayedWithNIZKsTallier implements ITallier {
 				ListExpression voteIdsE = (ListExpression)raceGroup.get(1);
 				ListExpression proofE = (ListExpression)raceGroup.get(2);
 				ListExpression publicKeyE = (ListExpression)raceGroup.get(3);
-                // Print each ListExpression, to check its contents.
-                //System.err.println("Race Group:\n\t" + raceGroup);
-                System.out.println("Vote Expression:\n\t" + voteE);
-                System.out.println("Vote IDS Expression:\n\t" + voteIdsE);
-                System.out.println("Proof Expression:\n\t" + proofE);
-                System.out.println("Public Key Expression:\n\t" + publicKeyE);
 
                 confirmValid(voteE, voteIdsE, proofE, publicKeyE);
 				
@@ -118,11 +112,7 @@ public class ChallengeDelayedWithNIZKsTallier implements ITallier {
 				}
 				
 				String subElectionId = makeId(voteIds);
-				
-//				System.out.println("Updating election-id \""+subElectionId+"\"");
-//				System.out.println("\t"+voteIds);
-//				System.out.println("\t"+voteIdsE);
-				
+
 				Election election = _results.get(subElectionId);
 				
 				if(election == null)
@@ -148,8 +138,6 @@ public class ChallengeDelayedWithNIZKsTallier implements ITallier {
 			
 			Election election = _results.get(group);
 
-//            System.out.println(election.getVotes());
-
             Vote cipherSum = election.sumVotes();
 
 			List<AdderInteger> partialSum = _finalPrivateKey.partialDecrypt(cipherSum);
@@ -164,9 +152,6 @@ public class ChallengeDelayedWithNIZKsTallier implements ITallier {
 			List<AdderInteger> results = election.getFinalSum(partialSums, coeffs, cipherSum, _finalPublicKey);
 			String[] ids = group.split(",");
 			
-//			System.out.println("\tresults size: "+results.size());
-//			System.out.println("\tids count: "+ids.length);
-			
 			for(int i = 0; i < ids.length; i++)
 				report.put(ids[i], results.get(i).bigintValue());
 		}//for
@@ -175,7 +160,6 @@ public class ChallengeDelayedWithNIZKsTallier implements ITallier {
 	}
 
 	public void recordVotes(byte[] ballot, ASExpression nonce) {
-//		System.out.println("ChallengeDelayedWithNIZKsTallier.recordVotes(..., "+nonce+")");
 		_pendingVotes.put(nonce, ballot);
 	}
 
