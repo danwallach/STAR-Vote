@@ -85,7 +85,7 @@ public class FocusableLabel implements IFocusable {
     /**
      * A player that plays the corresponding sound when this button is selected
      */
-    protected static Player mp3Player;
+    public static Player mp3Player;
 
     private Thread soundThread;
 
@@ -297,7 +297,7 @@ public class FocusableLabel implements IFocusable {
         // NO-OP
     }
 
-    public void makeDeselected() {
+    public void makeDeselected(boolean playSound) {
         // NO-OP
     }
 

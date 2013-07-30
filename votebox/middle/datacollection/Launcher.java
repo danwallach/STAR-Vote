@@ -226,10 +226,7 @@ public class Launcher {
 
 					public boolean getUseTableTallyView() { return false; }
 				};
-				
-				//#ifdef EVIL
-				vbcopy.registerForReview(evilObserver);
-				//#endif
+
 				
 		        // Register for the cast ballot event, and "review page encountered" event
 				vbcopy.run(new Observer(){

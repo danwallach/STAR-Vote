@@ -688,16 +688,18 @@ public class ViewManager implements IViewManager {
      * currently in the layout be deselected. This method is implemented with a
      * best-effort approach.
      * 
+     *
      * @param uid
      *            This is the uid of the element that wants to be deselected.
+     * @param playSound
      * @return If the element does not exist or is not a toggle button, this
      *         method returns false. Otherwise, this method returns true.
      */
-    public boolean deselect(String uid) throws UnknownUIDException,
+    public boolean deselect(String uid, boolean playSound) throws UnknownUIDException,
             DeselectionException {
         try {
             for (IDrawable d : getCurrentLayout().lookup( uid ))
-                d.getGroup().deselect( (ToggleButton) d );
+                d.getGroup().deselect( (ToggleButton) d, playSound);
 
         }
         catch (BallotBoxViewException e) {

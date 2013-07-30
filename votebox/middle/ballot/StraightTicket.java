@@ -239,7 +239,7 @@ public class StraightTicket extends ACardStrategy {
 			public void invoke(SelectableCardElement sce) throws CardStrategyException {
 				try {
 					sce.getParentCard().getParent().getViewAdapter().deselect(
-							sce.getUniqueID());
+							sce.getUniqueID(), false);
 				} catch (UnknownUIDException e) {
 					throw new CardStrategyException(
 							"When executing straight ticket behavior, could not find an element in the view corresponding to a particular ballot ID"

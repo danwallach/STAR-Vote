@@ -46,9 +46,10 @@ public abstract class AToggleButtonGroupStrategy {
      * A toggle button calls this method to ask to be deselected. If an
      * implementing strategy allows this deselection to be made, it should call
      * the button's makeDeselected(...) method.
-     * 
+     *
      * @param context
      *            This is the button that wishes to be deselected.
+     * @param playSound
      */
-    public abstract void deselect(ToggleButton context);
+    public abstract void deselect(ToggleButton context, boolean playSound);
 }

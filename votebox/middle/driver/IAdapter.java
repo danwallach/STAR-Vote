@@ -52,11 +52,12 @@ public interface IAdapter {
 	 *         was allowed), and false otherwise.
 	 * @param uid
 	 *            Ask to deselect a card element that has this UID.
-	 * @throws UnknownUIDException
+	 * @param playSound
+     * @throws UnknownUIDException
 	 *             This method throws when the UID that is given as a parameter
 	 *             is not defined.
 	 */
-	public boolean deselect(String uid) throws UnknownUIDException, DeselectionException;
+	public boolean deselect(String uid, boolean playSound) throws UnknownUIDException, DeselectionException;
 
 	/**
 	 * Call this method to get properties.

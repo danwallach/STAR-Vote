@@ -32,12 +32,7 @@ import votebox.middle.ballot.IBallotLookupAdapter;
 import votebox.middle.ballot.NonCardException;
 import votebox.middle.driver.IAdapter;
 import votebox.middle.driver.UnknownUIDException;
-import votebox.middle.view.BallotBoxViewException;
-import votebox.middle.view.DuplicateUIDException;
-import votebox.middle.view.IFocusable;
-import votebox.middle.view.IViewFactory;
-import votebox.middle.view.IViewImage;
-import votebox.middle.view.IViewManager;
+import votebox.middle.view.*;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
@@ -435,24 +430,46 @@ public class Button extends FocusableLabel {
      * the image that GetImage(...) returns will need to be changed.
      */
     public void focus() {
-        soundThread = new Thread(){
-            public void run() {
 
-                // prepare the mp3Player
-                try {
-                    FileInputStream fileInputStream = new FileInputStream(soundPath( _vars, getUniqueID(),
-                            _viewManager.getLanguage() ));
-                    BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
-                    mp3Player = new Player(bufferedInputStream);
-                    mp3Player.play();
-                } catch (Exception e) {
-                    mp3Player = null;
-                    System.out.println("Problem playing audio: " + "media/" + getUniqueID() + ".mp3");
-                    System.out.println(e);
-                }
+        String uniqueID = "";
 
+        if(getUniqueID().contains("B")){
+            try{
+                uniqueID =   this.getParent().getParent().lookup(
+                    _ballot.selectedElement( getUniqueID() ) ).get( 0 ).getUniqueID();
+
+            } catch (CardException e) {
+                throw new RuntimeException(e);
+            } catch (NonCardException e) {
+                throw new RuntimeException(e);
+            } catch (UnknownUIDException e) {
+                //throw new RuntimeException(e);
             }
-        };
+        } else{
+            uniqueID = getUniqueID();
+        }
+            final String uid = uniqueID;
+            soundThread = new Thread(){
+                public void run() {
+
+
+
+                    // prepare the mp3Player
+                    try {
+                        FileInputStream fileInputStream = new FileInputStream(soundPath( _vars, uid,
+                                _viewManager.getLanguage() ));
+                        BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
+                        mp3Player = new Player(bufferedInputStream);
+                        mp3Player.play();
+                    } catch (Exception e) {
+                        mp3Player = null;
+                        System.out.println("Problem playing audio: " + "media/" + (soundPath( _vars, uid,
+                                _viewManager.getLanguage() ) + ".mp3"));
+                        System.out.println(e);
+                    }
+
+                }
+            };
 
         soundThread.start();
         _state.focus( this );

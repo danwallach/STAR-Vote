@@ -23,7 +23,6 @@
 package votebox.middle.view.widget;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 import votebox.middle.IncorrectTypeException;
 import votebox.middle.Properties;
@@ -105,12 +104,13 @@ public class ToggleButtonGroup {
 	/**
 	 * Toggle buttons should invoke this method when they want to deselect
 	 * themselves. The group should delegate to its strategy here.
-	 * 
-	 * @param context
-	 *            This is the button that would like to deselect itself.
-	 */
-	public void deselect(ToggleButton context){
-		_strategy.deselect(context);
+	 *
+     * @param context
+     *            This is the button that would like to deselect itself.
+     * @param playSound
+     */
+	public void deselect(ToggleButton context, boolean playSound){
+		_strategy.deselect(context, playSound);
 	}
 
 	/**

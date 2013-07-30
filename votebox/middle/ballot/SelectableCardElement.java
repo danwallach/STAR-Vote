@@ -104,7 +104,7 @@ public final class SelectableCardElement {
 			public void update(Observable o, Object arg) {
 				try {
 					getParentCard().getParent().getViewAdapter().deselect(
-							getUniqueID());
+							getUniqueID(), true);
 				} catch (UnknownUIDException e) {
 					//We can't nicely pass exceptions while using Observer
 					//  aren't checked exceptions nifty?

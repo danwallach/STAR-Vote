@@ -85,9 +85,9 @@ public class Driver {
 	
 	private IAdapter _viewAdapter = new IAdapter() {
 
-		public boolean deselect(String uid) throws UnknownUIDException,
+		public boolean deselect(String uid, boolean playSound) throws UnknownUIDException,
 				DeselectionException {
-			return _view.deselect(uid);
+			return _view.deselect(uid, playSound);
 		}
 
 		public Properties getProperties() {
@@ -103,7 +103,7 @@ public class Driver {
 
 	private IAdapter _ballotAdapter = new IAdapter() {
 
-		public boolean deselect(String uid) throws UnknownUIDException,
+		public boolean deselect(String uid, boolean playSound) throws UnknownUIDException,
 				DeselectionException {
 			return _ballot.deselect(uid);
 		}
@@ -197,35 +197,11 @@ public class Driver {
 		
 		if(reviewScreenObserver != null)
 			_view.registerForReview(reviewScreenObserver);
-	
-		//#ifdef EVIL
-		for(EvilObserver o : _pendingRegisterForCastBallot){
-			o.setAdapter(_ballotAdapter, _viewAdapter, _ballot);
-			_view.registerForCastBallot(o);
-		}//for
-		
-		_pendingRegisterForCastBallot.clear();
-		
-		for(EvilObserver o : _pendingRegisterForReview){
-			o.setAdapter(_ballotAdapter, _viewAdapter, _ballot);
-			_view.registerForReview(o);
-		}//for
-		
-		_pendingRegisterForReview.clear();
-		//#endif
+
 		
 		_view.run();
 	}
-	
-	//#ifdef EVIL
-	public void registerForReview(EvilObserver o){
-		_pendingRegisterForReview.add(o);
-	}
-	
-	public void registerForCastBallot(EvilObserver o){
-		_pendingRegisterForCastBallot.add(o);
-	}
-	//#endif
+
 	
 	public void run(){
 		run(null, null);

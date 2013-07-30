@@ -361,6 +361,7 @@ public class Model {
 
                         manager.renderAllImagesToDisk( layout, tempDir
                                 + "/media/", info );
+
                         BufferedWriter out = new BufferedWriter(
                                 new FileWriter( tempDir + "/ballotbox.cfg" ) );
                         out.write( "/ballot.xml" );

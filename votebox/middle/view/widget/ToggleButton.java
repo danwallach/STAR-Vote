@@ -180,22 +180,82 @@ public class ToggleButton extends FocusableLabel {
      * @see votebox.middle.view.IFocusable#select()
      */
     public void select() {
+
+
         _state.select( this );
     }
 
     /**
      * This method is called by the toggle button group when it decides that it
-     * neesd to make this element's state be selected
+     * needs to make this element's state be selected
      */
     public void makeSelected() {
+        soundThread  = new Thread(){
+            public void run() {
+
+                // prepare the mp3Player
+                try {
+                    FileInputStream fileInputStream = new FileInputStream(soundPath( _vars, "Selected",
+                            _viewManager.getLanguage() ));
+                    BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
+                    mp3Player = new Player(bufferedInputStream);
+                    mp3Player.play();
+                    if(this.isInterrupted())
+                        mp3Player.close();
+                } catch (Exception e) {
+                    mp3Player = null;
+                    System.out.println("Problem playing audio: " + "media/SelectedSound.mp3");
+                    System.out.println(e);
+                }
+
+
+
+            }
+        };
+
+
+        soundThread.start();
+
         _state.makeSelected( this );
     }
 
     /**
      * This method is called by the toggle button group when it decides that it
-     * neesd to make this element's state be deselected
+     * needs to make this element's state be deselected
+     * @param playSound
      */
-    public void makeDeselected() {
+    public void makeDeselected(boolean playSound) {
+
+        //Only do this if this button is selected
+        if(playSound){
+
+            soundThread  = new Thread(){
+                public void run() {
+
+                    // prepare the mp3Player
+                    try {
+                        FileInputStream fileInputStream = new FileInputStream(soundPath( _vars, "Deselected",
+                                _viewManager.getLanguage() ));
+                        BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
+                        mp3Player = new Player(bufferedInputStream);
+                        mp3Player.play();
+                        if(this.isInterrupted())
+                            mp3Player.close();
+                    } catch (Exception e) {
+                        mp3Player = null;
+                        System.out.println("Problem playing audio: " + "media/DeselectedSound.mp3");
+                        System.out.println(e);
+                    }
+
+
+
+                }
+            };
+
+
+            soundThread.start();
+        }
+
         _state.makeDeselected( this );
     }
 

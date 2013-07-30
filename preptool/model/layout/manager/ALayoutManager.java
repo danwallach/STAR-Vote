@@ -28,6 +28,9 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -209,6 +212,18 @@ public abstract class
         File path = new File(location);
         if (!path.exists()) path.mkdirs();
 
+//        File selectedSource = new File("sound/SelectedSound.mp3");
+//        File deselectedSource = new File("sound/DeselectedSound.mp3");
+//        File selectedTarget = new File(location + "SelectedSound.mp3");
+//        File deselectedTarget = new File(location + "DeselectedSound.mp3");
+//
+//        try{
+//            Files.copy(selectedSource.toPath(), selectedTarget.toPath(), StandardCopyOption.REPLACE_EXISTING);
+//            Files.copy(deselectedSource.toPath(), deselectedTarget.toPath(), StandardCopyOption.REPLACE_EXISTING);
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+
         ArrayList<Language> langs = Language.getAllLanguages();
         final ArrayList<String> langNames = new ArrayList<String>(langs.size());
         for(Language lang: langs){
@@ -220,6 +235,8 @@ public abstract class
 
             private ArrayList<String> seenUIDs = new ArrayList<String>();
             private String _uid = null;
+
+            private boolean first = true;
 
             public Void forBackground(Background bg, Object... param) {
                 if (!uids.contains(bg.getUID())) {
@@ -531,6 +548,14 @@ public abstract class
 
             public void forAudio(String uid, String text){
                 if(GENERATE_AUDIO){
+
+                    if(first){
+                        first = false;
+                        forAudio("Selected", "Selected");
+                        forAudio("Deselected", "Deselected");
+
+                    }
+
                     ArrayList<InputStream> streams = new ArrayList<InputStream>();
 
                     //Google can only translate strings of less than 100 characters
