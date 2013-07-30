@@ -92,11 +92,8 @@ public class Tap {
         _output = new ASEWriter(_wrappedOut);
 
         privateKey = (PrivateKey)params.getKeyStore().loadAdderKey("private");
-        publicKey = AdderKeyManipulator.generateFinalPublicKey((PublicKey)params.getKeyStore().loadAdderKey("public"));
-
-
-
-    }//Trapper
+        publicKey = (PublicKey)params.getKeyStore().loadAdderKey("public");
+    }
 
     /**
      * Forwards the given event.
@@ -158,16 +155,16 @@ public class Tap {
             }
 
             public void ballotAccepted(BallotScanAcceptedEvent e){
-                BallotStore.castCommittedBallot(e.getBID().toString());
+                //BallotStore.castCommittedBallot(e.getBID().toString());
             }
 
             public void commitBallot(CommitBallotEvent e) {
-			    BallotStore.addBallot(e.getBID().toString(), e.getBallot());
+			    //BallotStore.addBallot(e.getBID().toString(), e.getBallot());
                 System.out.println("TAP: committing ballot " + e.getBID().toString());
             }
 
             public void ballotReceived(BallotReceivedEvent e){
-                BallotStore.mapPrecinct(e.getBID(), e.getPrecinct());
+                //BallotStore.mapPrecinct(e.getBID(), e.getPrecinct());
                 System.out.println("Mapping BID: " + e.getBID() + "to precinct: " + e.getPrecinct());
             }
 
@@ -209,25 +206,25 @@ public class Tap {
 
 
             public void pollsClosed(PollsClosedEvent e) {
-                _auditorium.announce(new CastBallotUploadEvent(_mySerial, BallotStore.getCastNonces()));
+                //_auditorium.announce(new CastBallotUploadEvent(_mySerial, BallotStore.getCastNonces()));
             }
 
             public void uploadCastBallots(CastBallotUploadEvent e) {
-                dumpBallotList(e.getDumpList());
                 System.out.println("TAP: Uploading Cast Ballots");
-                _auditorium.announce(new ChallengedBallotUploadEvent(_mySerial, BallotStore.getDecryptedBallots(publicKey, privateKey)));
+                dumpBallotList(e.getDumpList());
+                //_auditorium.announce(new ChallengedBallotUploadEvent(_mySerial, BallotStore.getDecryptedBallots(publicKey, privateKey)));
             }
             public void uploadChallengedBallots(ChallengedBallotUploadEvent e) {
-                System.out.println("TAP: Uploading Challenged Ballots : Pre");
-                dumpBallotList(e.getDumpList());
                 System.out.println("TAP: Uploading Challenged Ballots");
-                BallotStore.clearBallots();
+                dumpBallotList(e.getDumpList());
+                //BallotStore.clearBallots();
             }
         });
 
         try{
             System.out.println("Connecting to auditorium...");
             _auditorium.connect();
+            _auditorium.announce(new TapMachineEvent(_mySerial));
         }catch(NetworkException e){
             throw new RuntimeException("Unable to connect to Auditorium network: "+e.getMessage(), e);
         }//catch

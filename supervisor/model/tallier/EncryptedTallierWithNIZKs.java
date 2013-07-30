@@ -58,6 +58,8 @@ public class EncryptedTallierWithNIZKs implements ITallier {
 
 	@SuppressWarnings("unchecked")
 	public Map<String, BigInteger> getReport() {
+        AdderKeyManipulator.setCachedKey(null);
+        _finalPublicKey = AdderKeyManipulator.generateFinalPublicKey(_publicKey);
 		_finalPrivateKey = AdderKeyManipulator.generateFinalPrivateKey(_publicKey, _privateKey);
 		Map<String, BigInteger> report = new HashMap<String, BigInteger>();
 		

@@ -95,7 +95,7 @@ public class BallotStore {
         List<ASExpression> ballotIDs = new ArrayList<ASExpression>();
         List<ASExpression> precincts = new ArrayList<ASExpression>();
         for (String ballotID : unconfirmedBallots.keySet()) {
-            tallier.recordVotes(unconfirmedBallots.get(ballotID).toVerbatim(), null);
+            tallier.recordVotes(unconfirmedBallots.get(ballotID).toVerbatim(), StringExpression.make(ballotID));
             Map<String, BigInteger> ballotMap = tallier.getReport();
             ArrayList<ASExpression> decryptedVotes = new ArrayList<ASExpression>();
             for (Map.Entry<String, BigInteger> entry : ballotMap.entrySet()) {

@@ -45,6 +45,7 @@ import javax.swing.filechooser.FileFilter;
 import printer.Printer;
 import supervisor.model.AMachine;
 import supervisor.model.Model;
+import supervisor.model.TapMachine;
 import votebox.AuditoriumParams;
 
 /**
@@ -83,6 +84,8 @@ public class ActiveUI extends JPanel {
     private HashMap<String, String> precinctsToBallots;
 
     private static String ballotID;
+
+    private TapView tapView;
 
     private static boolean scanned = false;
 
@@ -150,11 +153,19 @@ public class ActiveUI extends JPanel {
         c.anchor = GridBagConstraints.FIRST_LINE_START;
         int i = 0;
         for (AMachine m : model.getMachines()) {
+            if(m instanceof TapMachine){
+                tapView.setMachine((TapMachine)m);
+                continue;
+            }
             c.gridx = i % 4;
             c.gridy = i / 4;
             innerPanel.add(viewGen.generateView(model, this, m), c);
             ++i;
         }
+
+        System.out.println("Updating Tap's View");
+
+        tapView.updateView();
 
         c.gridx = 0;
         c.gridy = 0;
@@ -162,6 +173,7 @@ public class ActiveUI extends JPanel {
         validate();
         repaint();
     }
+
 
     private void initializeLeftPanel() {
         leftPanel = new JPanel();
@@ -193,9 +205,6 @@ public class ActiveUI extends JPanel {
         pollsOpenLbl = new MyJLabel("Polls currently closed");
         leftLabelPanel.add(pollsOpenLbl, c);
 
-
-
-
         c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
@@ -204,6 +213,12 @@ public class ActiveUI extends JPanel {
         c.ipady = 20;
         c.insets = new Insets(20, 20, 80, 20);
         leftPanel.add(leftLabelPanel, c);
+
+        tapView = new TapView(null);
+        c.ipady = 20;
+        c.gridy = 1;
+        c.insets = new Insets(20,20,20,20);
+        leftPanel.add(tapView, c);
 
         ballotLocChooser = new JFileChooser(System.getProperty("user.dir"));
         ballotLocChooser.setFileFilter(new FileFilter() {
@@ -235,7 +250,7 @@ public class ActiveUI extends JPanel {
             }
         });
         c.ipady = 50;
-        c.gridy = 1;
+        c.gridy = 2;
         c.fill = GridBagConstraints.HORIZONTAL;
         c.insets = new Insets(20, 20, 20, 20);
         leftPanel.add(ballotButton, c);
@@ -269,7 +284,7 @@ public class ActiveUI extends JPanel {
             }
         });
         c.ipady = 50;
-        c.gridy = 2;
+        c.gridy = 3;
         leftPanel.add(pinButton, c);
 
         spoilButton = new MyJButton("Spoil Ballot");
@@ -337,7 +352,7 @@ public class ActiveUI extends JPanel {
         });
 
         c.ipady = 50;
-        c.gridy = 3;
+        c.gridy = 4;
         leftPanel.add(spoilButton, c);
 
         leftButton = new MyJButton("Open Polls Now");
@@ -359,7 +374,7 @@ public class ActiveUI extends JPanel {
             }
         });
         c.ipady = 100;
-        c.gridy = 4;
+        c.gridy = 5;
         leftPanel.add(leftButton, c);
 
 

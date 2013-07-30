@@ -169,6 +169,7 @@ public interface VoteBoxEventListener {
      */
     public void pollsOpenQ(PollsOpenQEvent e);
 
+
     /**
      * Fired when the supervisor message is received
      * 

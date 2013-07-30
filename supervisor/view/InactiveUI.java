@@ -153,14 +153,14 @@ public class InactiveUI extends JPanel {
             int tap = 0;
 
             for (AMachine m : model.getMachines()) {
-                System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + m.getSerial());
+                System.out.println("Machine serial: " + m.getSerial() + " Machine online: " + m.isOnline());
                 if (m instanceof SupervisorMachine && m.isOnline() && m.getSerial() != model.getMySerial()) {
                     supervisors++;
                 } else if (m instanceof VoteBoxBooth && m.isOnline()){
                     booths++;
                 } else if (m instanceof BallotScannerMachine && m.isOnline()){
                     scanners++;
-                } else if (m.getSerial() == 0 ){
+                } else if (m.getSerial() == 0 && m.isOnline()){
                     System.out.println("err...");
                     /**
                      * We're designating the Tap connection with a serial number of 0 always.
@@ -194,7 +194,7 @@ public class InactiveUI extends JPanel {
         textPanel.add(label, c);
         c.gridy = 2;
         if(tapOn)
-            label2.setForeground(Color.GREEN);
+            label2.setForeground(new Color(0, 150, 0));
         else
             label2.setForeground(Color.GRAY);
         textPanel.add(label2, c);

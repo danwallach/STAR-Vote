@@ -214,8 +214,7 @@ public class Model {
                 else if(m instanceof  TapMachine){
                     TapMachine machine = (TapMachine)m;
 
-                    s = new TapMachineEvent(machine.getSerial(), machine.getLabel(),
-                            machine.getBattery(), machine.getProtectedCount(), machine.getPublicCount());
+                    s = new TapMachineEvent(machine.getSerial());
                 }
                 if (s == null)
                     throw new IllegalStateException("Unknown machine or status");
@@ -349,12 +348,7 @@ public class Model {
      * @param serial
      * @return the machine
      */
-    public AMachine getMachineForSerial(int serial) {
-        if(serial == 0){
-            TapMachine tapMachine = new TapMachine(serial);
-            machines.add(tapMachine);
-            return tapMachine;
-        }
+    public AMachine getMachineForSerial(int serial){
         for (AMachine m : machines)
             if (m.getSerial() == serial)
                 return m;
@@ -566,8 +560,8 @@ public class Model {
                     PINEnteredEvent.getMatcher(), InvalidPinEvent.getMatcher(),
                     PollStatusEvent.getMatcher(), BallotPrintSuccessEvent.getMatcher(),
                     BallotScannedEvent.getMatcher(), BallotScannerEvent.getMatcher(),
-                    ProvisionalCommitEvent.getMatcher(), ProvisionalAuthorizeEvent.getMatcher());
-
+                    ProvisionalCommitEvent.getMatcher(), ProvisionalAuthorizeEvent.getMatcher(),
+                    TapMachineEvent.getMatcher());
 
         } catch (NetworkException e1) {
             throw new RuntimeException(e1);
@@ -661,8 +655,10 @@ public class Model {
              * number of connections.
              */
             public void joined(JoinEvent e) {
+
                 AMachine m = getMachineForSerial(e.getSerial());
                 if (m != null ) {
+                    if(m instanceof TapMachine) System.out.println("TAP JOINED!");
                     m.setOnline(true);
                 }
                 numConnected++;
@@ -693,6 +689,7 @@ public class Model {
             public void left(LeaveEvent e) {            	
                 AMachine m = getMachineForSerial(e.getSerial());
                 if (m != null) {
+                    if(m instanceof TapMachine) System.out.println("TAP LEFT :(");
                     m.setOnline(false);
                 }else{
                     throw new RuntimeException("WARNING: Machine left without having been registered");
@@ -1107,7 +1104,7 @@ public class Model {
             }
 
             public void tapMachine(TapMachineEvent tapMachineEvent) {
-                // NO-OP
+                machines.add(new TapMachine(tapMachineEvent.getSerial()));
             }
 
             public void ballotScanned(BallotScannedEvent e) {
