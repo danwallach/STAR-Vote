@@ -67,10 +67,10 @@ public class LanguageSelect extends AToggleButtonGroupStrategy {
     }
 
     /**
-     * @see votebox.middle.view.widget.AToggleButtonGroupStrategy#deselect(votebox.middle.view.widget.ToggleButton)
+     * @see AToggleButtonGroupStrategy#deselect(ToggleButton, boolean)
      */
     @Override
-    public void deselect(ToggleButton context) {
+    public void deselect(ToggleButton context, boolean playSound) {
     // NO-OP
     }
 

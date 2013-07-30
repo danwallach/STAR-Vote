@@ -50,7 +50,7 @@ public class RadioButton extends AToggleButtonGroupStrategy {
 		// Deselect everyone else
 		for (ToggleButton button : element.getGroup().getButtons()) {
 			if (!button.equals(element)) {
-				button.makeDeselected();
+				button.makeDeselected(false);
 			}
 		}
 		// Select the new guy.
@@ -58,9 +58,9 @@ public class RadioButton extends AToggleButtonGroupStrategy {
 	}
 
 	/**
-	 * @see votebox.middle.view.widget.AToggleButtonGroupStrategy#deselect(votebox.middle.view.widget.ToggleButton)
+	 * @see AToggleButtonGroupStrategy#deselect(ToggleButton, boolean)
 	 */
-	public void deselect(ToggleButton element) {
+	public void deselect(ToggleButton element, boolean playSound) {
 		// NO-OP
 	}
 }

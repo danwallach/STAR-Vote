@@ -78,13 +78,13 @@ public class Race extends AToggleButtonGroupStrategy {
 	}
 
 	/**
-	 * @see votebox.middle.view.widget.AToggleButtonGroupStrategy#deselect(votebox.middle.view.widget.ToggleButton)
+	 * @see AToggleButtonGroupStrategy#deselect(ToggleButton, boolean)
 	 */
 	@Override
-	public void deselect(ToggleButton context) {
+	public void deselect(ToggleButton context, boolean playSound) {
 		try {
-			if (_adapter.deselect(context.getUniqueID()))
-				context.makeDeselected();
+			if (_adapter.deselect(context.getUniqueID(), playSound))
+				context.makeDeselected(playSound);
 		} catch (UnknownUIDException e) {
 			throw new BallotBoxViewException(
 					"A ToggleButton whose UID is "

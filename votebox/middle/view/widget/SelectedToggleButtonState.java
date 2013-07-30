@@ -53,11 +53,11 @@ public class SelectedToggleButtonState extends AToggleButtonState {
 	}
 
 	/**
-	 * @see votebox.middle.view.widget.AToggleButtonState#toggle(votebox.middle.view.widget.ToggleButton)
+	 * @see votebox.middle.view.widget.AToggleButtonState#select(votebox.middle.view.widget.ToggleButton)
 	 */
 	@Override
 	public void select(ToggleButton context) {
-		context.getGroup().deselect(context);
+		context.getGroup().deselect(context, true);
 	}
 
 	/**
@@ -69,7 +69,7 @@ public class SelectedToggleButtonState extends AToggleButtonState {
 	}
 
 	/**
-	 * @see votebox.middle.view.widget.AToggleButtonState#deselect(votebox.middle.view.widget.ToggleButton)
+	 * @see votebox.middle.view.widget.AToggleButtonState#makeDeselected(votebox.middle.view.widget.ToggleButton)
 	 */
 	@Override
 	public void makeDeselected(ToggleButton context) {

@@ -123,7 +123,7 @@ public class Layout {
      * @param uid
      *            The drawable with this UID will be looked up
      * @return This method returns a list containing the drawable instances
-     *         bound to a given UID, where lower orders indicies in the list
+     *         bound to a given UID, where lower orders indices in the list
      *         denote more recently bound instances.
      * @throws UnknownUIDException
      *             This method throws if the given uid is not bound to any

@@ -66,7 +66,8 @@ public class RadioButton extends ACardStrategy {
 			if (ce != element)
 				try {
 					ce.getParentCard().getParent().getViewAdapter().deselect(
-							ce.getUniqueID());
+                            ce.getUniqueID(), false);
+
 				} catch (UnknownUIDException e) {
 					throw new CardStrategyException(
 							"A RadioButton strategy wants to deselect an element in the view that does not exist.",
@@ -77,7 +78,7 @@ public class RadioButton extends ACardStrategy {
 									+ e.getMessage(), e);
 				}
 
-		// Select the new guy.
+        // Select the new guy.
 		element.setSelected(true);
 		return true;
 	}

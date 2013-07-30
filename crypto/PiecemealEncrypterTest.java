@@ -88,7 +88,7 @@ public class PiecemealEncrypterTest {
 		BallotParser parser = new BallotParser();
 		_ballot = parser.getBallot(new GlobalVarsReader(_folderPath.getAbsolutePath()).parse());
 		_ballot.setViewAdapter(new IAdapter(){
-			public boolean deselect(String uid) throws UnknownUIDException, DeselectionException {
+			public boolean deselect(String uid, boolean playSound) throws UnknownUIDException, DeselectionException {
 				return true;
 			}
 
