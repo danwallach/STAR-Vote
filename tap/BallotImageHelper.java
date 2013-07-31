@@ -166,7 +166,8 @@ public class BallotImageHelper {
 				ZipEntry entry = entries.nextElement();
 				String name = entry.getName();
 
-				boolean isLabel = name.startsWith("media/"+label+"_1_") && name.endsWith(".png");
+                //Force the this to only return English titles
+				boolean isLabel = name.startsWith("media/"+label+"_1_en") && name.endsWith(".png");
 
 				if(isLabel){
 					BufferedImage image = ImageIO.read(file.getInputStream(entry));
