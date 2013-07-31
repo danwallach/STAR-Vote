@@ -1912,7 +1912,7 @@ public class PsychLayoutManager extends ALayoutManager {
                     rl.setPrevious(reviewInstructions);
                     rl.setUp(reviewInstructions);
                     rl.setLeft(reviewInstructions);
-                    rb.setUp(nextButton);
+                    rb.setUp(reviewInstructions);
                 } else{
                     rl.setPrevious(temp2Button);
                     rl.setUp(tempButton);
@@ -1927,7 +1927,7 @@ public class PsychLayoutManager extends ALayoutManager {
                 rb.setLeft(previousButton);
                 rb.setPrevious(rl);
                 rb.setLeft(rl);
-                rb.setRight(nextButton);
+                rb.setRight(    nextButton);
 
 
     			Spacer rlSpacer = new Spacer(rl, east);

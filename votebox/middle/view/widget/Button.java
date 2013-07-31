@@ -433,6 +433,9 @@ public class Button extends FocusableLabel {
 
         String uniqueID = "";
 
+        // If this is not a label, we need to figure out what is actually being displayed (i.e. which candidate has
+        // been selected) so that the proper sound file can be loaded. This is necessary because the review screen only
+        // has one button per race, but the look of the button changes if the race it reflects changes.
         if(getUniqueID().contains("B")){
             try{
                 uniqueID =   this.getParent().getParent().lookup(
