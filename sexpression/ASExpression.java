@@ -119,6 +119,25 @@ public abstract class ASExpression {
         return md.digest();
     }
 
+    /**
+     * compute the sha-256 hash of a given byte array/
+     *
+     * @param expression
+     *            Compute the hash of this byte string.
+     * @return This method returns the SHA-256 hash of the given byte array.
+     */
+    public static byte[] computeSHA256(byte[] expression) {
+        MessageDigest md = null;
+        try {
+            md = MessageDigest.getInstance( "SHA-256" );
+            md.update( expression );
+        }
+        catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException( "SHA-256 not supported on this platform" );
+        }
+        return md.digest();
+    }
+
     // lazy eval save
     private byte[] _hash = null;
     private byte[] _verbatim = null;
@@ -150,10 +169,6 @@ public abstract class ASExpression {
      * 
      * @return This method returns the verbatim byte-string representation of
      *         this ASExpression.
-     * @throws IncorrectUseException
-     *             This method throws if this has objects composing it that make
-     *             it unable to be converted into a format that can be
-     *             serialized.
      */
     public abstract ByteArrayBuffer toVerbatimHelp();
 
@@ -188,7 +203,6 @@ public abstract class ASExpression {
      *         every named pattern in the pattern expression with name "x",
      *         there exists a mapping x->y where "y" is the subexpression in the
      *         target that matches the named pattern x.
-     * @throws IncorrectUseException
      * @see sexpression.NamedPattern
      */
     public HashMap<String, ASExpression> namedMatch(ASExpression target) {
@@ -203,7 +217,6 @@ public abstract class ASExpression {
      * List: "([elt] ...)"<br>
      * 
      * @return
-     * @throws IncorrectUseException
      */
     public byte[] toVerbatim() {
         if (_verbatim == null) {
@@ -217,15 +230,18 @@ public abstract class ASExpression {
      * S-Expression.
      * 
      * @return This method returns the SHA1 hash of this sexpression.
-     * @throws IncorrectUseException
-     *             This method throws if "This" cannot be converted into a
-     *             verbatim string.
      */
     public byte[] getSHA1() {
         if (_hash == null) {
             _hash = computeSHA1( toVerbatim() );
         }
         return _hash;
+    }
+
+
+    public byte[] getSHA256(){
+        return computeSHA256(toVerbatim());
+
     }
 
     /**

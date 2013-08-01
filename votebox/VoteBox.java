@@ -34,12 +34,15 @@ import java.util.*;
 import javax.swing.*;
 import javax.swing.Timer;
 
+import com.sun.deploy.util.ArrayUtil;
 import crypto.BallotEncrypter;
 import crypto.PiecemealBallotEncrypter;
 import crypto.interop.AdderKeyManipulator;
+import edu.uconn.cse.adder.AdderInteger;
 import edu.uconn.cse.adder.PublicKey;
 
 import sexpression.*;
+import sexpression.stream.InvalidVerbatimStreamException;
 import votebox.events.*;
 import votebox.middle.*;
 import votebox.middle.Properties;
@@ -89,6 +92,11 @@ public class VoteBox{
     private int superSerial;
     private JOptionPane pinPane;
     private String precinct;
+
+    /**
+     * Will keep the short code - nonce pairings to send over when the polls close
+     */
+    private HashMap<ASExpression, VotePair> plaintextAuditCommits;
 
     private  Printer printer;
 
@@ -146,6 +154,8 @@ public class VoteBox{
                     "Unknown view implementation defined in configuration");
 
         promptingForPin = false;
+
+        plaintextAuditCommits = new HashMap<ASExpression, VotePair>();
     }
 
     /**
@@ -254,6 +264,10 @@ public class VoteBox{
                         } else{
                             ASExpression encBallot = BallotEncrypter.SINGLETON.encryptWithProof(ballot, (List<List<String>>) arg[1],
                                     (PublicKey) _constants.getKeyStore().loadAdderKey("public"));
+
+                            //Compute and store shortcodes for this ballot
+                            shortCodes(ballot);
+
                             auditorium.announce(new CommitBallotEvent(mySerial,
                                     StringExpression.makeString(nonce),
                                     encBallot,
@@ -481,9 +495,47 @@ public class VoteBox{
             }
         });
     }
-    
 
-	/**
+    /**
+     * This method generates a short code for each vote on this machine, which will
+     * eventually be sent over the wire to the controller, who will then publish the
+     * short code - plaintext pairs and document the nonces generated here so that the
+     * votes can be audited and verified
+     *
+     * @param ballot - the ballot containing all of the votes to be short coded
+     *
+     */
+    private void shortCodes(ListExpression ballot) {
+        try{
+        for(int i = 0; i < ballot.size(); i++){
+            ListExpression choice = (ListExpression)ballot.get(i);
+
+            //If this is who the vote selected in this race, make a short code
+            if(AdderInteger.fromASE(choice.get(1)) == AdderInteger.ONE){
+
+
+                byte[] nonce = new byte[256];
+                for (int j = 0; j < 256; j++)
+                    nonce[j] = (byte) (Math.random() * 256);
+
+                ListExpression code =  new ListExpression(choice.get(0), ASExpression.make(bid), ASExpression.makeVerbatim(nonce));
+                ASExpression shortcode = ASExpression.makeVerbatim(code.getSHA256());
+
+                VotePair pair = new VotePair(shortcode, choice);
+                plaintextAuditCommits.put(ASExpression.makeVerbatim(nonce), pair);
+
+
+            }
+        }//for
+
+        } catch (InvalidVerbatimStreamException e) {
+            throw new RuntimeException("Malformed nonce!", e);
+        }
+
+    }
+
+
+    /**
      * Starts Auditorium, registers the listener, and connects to the network.
      */
     public void start() {
