@@ -913,6 +913,14 @@ public class ConfigurationFileEditor extends JFrame {
         defaultAttributeValues.add("null");
         defaultAttributeComments.add("The path to use to the Elo touchscreen if USE_ELO_TOUCH_SCREEN is true.");
 
+        defaultAttributeNames.add("SCREEN_CENTER_X");
+        defaultAttributeValues.add("800");
+        defaultAttributeComments.add("The X-coordinate of the point at the center of the screen.");
+
+        defaultAttributeNames.add("SCREEN_CENTER_Y");
+        defaultAttributeValues.add("450");
+        defaultAttributeComments.add("The Y-coordinate of the point at the center of the screen.");
+
         /* Add the election and ballot attributes. */
         defaultAttributeNames.add("ELECTION_NAME");
         defaultAttributeValues.add("Rice University General Election");
