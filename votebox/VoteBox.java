@@ -266,7 +266,7 @@ public class VoteBox{
                                     (PublicKey) _constants.getKeyStore().loadAdderKey("public"));
 
                             //Compute and store shortcodes for this ballot
-                            shortCodes(ballot);
+                            shortCodes(ballot, (List<List<String>>) arg[1]);
 
                             auditorium.announce(new CommitBallotEvent(mySerial,
                                     StringExpression.makeString(nonce),
@@ -505,28 +505,34 @@ public class VoteBox{
      * @param ballot - the ballot containing all of the votes to be short coded
      *
      */
-    private void shortCodes(ListExpression ballot) {
+    private void shortCodes(ListExpression ballot, List<List<String>> raceGroups) {
         try{
-        for(int i = 0; i < ballot.size(); i++){
-            ListExpression choice = (ListExpression)ballot.get(i);
+            for(int i = 0; i < ballot.size(); i++){
+                ListExpression choice = (ListExpression)ballot.get(i);
 
-            //If this is who the vote selected in this race, make a short code
-            if(AdderInteger.fromASE(choice.get(1)) == AdderInteger.ONE){
+                //If this is who the vote selected in this race, make a short code
+                if(AdderInteger.fromASE(choice.get(1)) == AdderInteger.ONE){
+
+                    ASExpression raceId = null;
+
+                    for(List<String> race : raceGroups){
+                        if(race.contains(choice.get(0)))
+                            raceId = ASExpression.make(race.get(0));
+                    }
+
+                    if(raceId == null)
+                        throw new RuntimeException("Found a vote with no race?");
 
 
-                byte[] nonce = new byte[256];
-                for (int j = 0; j < 256; j++)
-                    nonce[j] = (byte) (Math.random() * 256);
+                    ListExpression code =  new ListExpression(raceId, ASExpression.make(bid), ASExpression.makeVerbatim(nonce));
+                    ASExpression shortcode = ASExpression.makeVerbatim(code.getSHA256());
 
-                ListExpression code =  new ListExpression(choice.get(0), ASExpression.make(bid), ASExpression.makeVerbatim(nonce));
-                ASExpression shortcode = ASExpression.makeVerbatim(code.getSHA256());
-
-                VotePair pair = new VotePair(shortcode, choice);
-                plaintextAuditCommits.put(ASExpression.makeVerbatim(nonce), pair);
+                    VotePair pair = new VotePair(shortcode, choice);
+                    plaintextAuditCommits.put(ASExpression.makeVerbatim(nonce), pair);
 
 
-            }
-        }//for
+                }
+            }//for
 
         } catch (InvalidVerbatimStreamException e) {
             throw new RuntimeException("Malformed nonce!", e);
@@ -1089,7 +1095,6 @@ public class VoteBox{
 
         // Create a new GUI to prompt for PIN.
         final PINAuthorizationGUI pinGUI = new PINAuthorizationGUI(_constants.getScreenCenterX(), _constants.getScreenCenterY());
-        pinGUI.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         // Set the GUI's label to our message.
         pinGUI.setLabelText(message);
         // Add a listener for the OK button so that when it gets clicked, it validates the pin.
