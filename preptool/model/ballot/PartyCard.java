@@ -18,7 +18,7 @@ import java.util.List;
  * It will present the voter with a card containing a CandidatesModule with party names instead of candidates and no
  * "party" field.
  *
- * @author Matt Bernhard
+ * @author Matt Bernhard, Mircea C. Berechet
  * @version 0.0.1
  *          Date: 6/28/13
  */
@@ -48,7 +48,7 @@ public class PartyCard extends ACard {
         super("Party");
         title = new TextFieldModule("Title", "Title");
         modules.add(title);
-        modules.add(new CandidatesModule("Party", new String[]{ "Party" }));
+        modules.add(new CandidatesModule("Party", new String[]{ "Party" }, false));
     }
 
     /**

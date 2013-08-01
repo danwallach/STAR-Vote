@@ -28,6 +28,7 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -60,6 +61,7 @@ import org.w3c.dom.NodeList;
 import preptool.model.Party;
 import preptool.model.ballot.CardElement;
 import preptool.model.language.Language;
+import preptool.model.language.LocalizedString;
 import preptool.view.AModuleView;
 import preptool.view.IMovableTableModel;
 import preptool.view.View;
@@ -71,14 +73,14 @@ import preptool.view.dragndrop.TableTransferHandler;
  * candidates in a race. Candidates are stored as CardElements. The view of this
  * module is a table with the appropriate buttons.
  * 
- * @author cshaw
+ * @author cshaw, Mircea C. Berechet
  */
 public class CandidatesModule extends AModule {
 
     /**
      * An inner class for the CandidatesModule's view
-     * 
-     * @author cshaw
+     *
+     * @author cshaw, Mircea C. Berechet
      */
     private class ModuleView extends AModuleView {
 
@@ -88,7 +90,7 @@ public class CandidatesModule extends AModule {
          * Table model for the CandidatesModule's view. The table model contains
          * references directly to the CandidatesModule's data structures,
          * eliminating the need for the data to be in two places.
-         * 
+         *
          * @author cshaw
          */
         private class CandidateTableModel extends AbstractTableModel implements
@@ -98,6 +100,34 @@ public class CandidatesModule extends AModule {
 
             public void addRow() {
                 data.add( new CardElement( columns ) );
+                fireTableRowsInserted( data.size(), data.size() );
+                setChanged();
+                notifyObservers();
+            }
+
+            public void addWriteInRow() {
+                /* Create a mapping of language name to CardElement name. */
+                HashMap<String, String> names = new HashMap<String, String>();
+                names.put("English", "Write-In Candidate");
+                names.put("Français", "Ecrivez votre sélection");
+                /* Create a new CardElement with the name based on the language information defined above. */
+                CardElement writeInCardElement = new CardElement( columns );
+                /* Get the list of all the languages. */
+                ArrayList<Language> languages = Language.getAllLanguages();
+                /* Set the name based on the language. */
+                for (Language language : languages)
+                {
+                    if (names.keySet().contains(language.getName()))
+                    {
+                        writeInCardElement.setColumn(language, 0, names.get(language.getName()));
+                    }
+                    else
+                    {
+                        writeInCardElement.setColumn(language, 0, "MISSING TRANSLATION INFORMATION");
+                    }
+                }
+
+                data.add(writeInCardElement);
                 fireTableRowsInserted( data.size(), data.size() );
                 setChanged();
                 notifyObservers();
@@ -261,6 +291,11 @@ public class CandidatesModule extends AModule {
         private JButton addCandidateButton;
 
         /**
+         * Adds a write-in candidate to the table
+         */
+        private JButton addWriteInCandidateButton;
+
+        /**
          * Removes a candidate from the table
          */
         private JButton deleteCandidateButton;
@@ -306,10 +341,10 @@ public class CandidatesModule extends AModule {
 
         /**
          * Constructs a new ModuleView with the given main view
-         * 
+         *
          * @param view
          */
-        protected ModuleView(View view) {
+        protected ModuleView(View view, boolean enableWriteIn) {
             this.view = view;
             setLayout( new GridBagLayout() );
             setBorder( BorderFactory.createTitledBorder( "Candidates" ) );
@@ -325,7 +360,7 @@ public class CandidatesModule extends AModule {
             c.weightx = 1;
             add( candidatesScrollPane, c );
 
-            initializeCandidatesToolbar();
+            initializeCandidatesToolbar(enableWriteIn);
             c.gridy = 1;
             c.weighty = 0;
             c.anchor = GridBagConstraints.LAST_LINE_START;
@@ -337,6 +372,13 @@ public class CandidatesModule extends AModule {
          */
         public void addCandidateButtonPressed() {
             tableModel.addRow();
+        }
+
+        /**
+         * Adds a write-in candidate to the table
+         */
+        public void addWriteInCandidateButtonPressed() {
+            tableModel.addWriteInRow();
         }
 
         /**
@@ -529,7 +571,7 @@ public class CandidatesModule extends AModule {
         /**
          * Initializes the candidates toolbar (the add, remove, etc buttons)
          */
-        private void initializeCandidatesToolbar() {
+        private void initializeCandidatesToolbar(boolean enableWriteIn) {
             candidatesToolbar = new JToolBar();
             candidatesToolbar.setFloatable( false );
 
@@ -552,6 +594,7 @@ public class CandidatesModule extends AModule {
                     addCandidateButtonPressed();
                 }
             } );
+            addCandidateButton.setToolTipText("Add");
             candidatesToolbar.add( addCandidateButton );
 
             try {
@@ -573,6 +616,7 @@ public class CandidatesModule extends AModule {
                         }
                     } );
             deleteCandidateButton.setEnabled( false );
+            deleteCandidateButton.setToolTipText("Remove");
             candidatesToolbar.add( deleteCandidateButton );
 
             try {
@@ -593,6 +637,7 @@ public class CandidatesModule extends AModule {
                         }
                     } );
             moveUpCandidateButton.setEnabled( false );
+            moveUpCandidateButton.setToolTipText("Up");
             candidatesToolbar.add( moveUpCandidateButton );
 
             try {
@@ -613,7 +658,32 @@ public class CandidatesModule extends AModule {
                 }
             } );
             moveDownCandidateButton.setEnabled( false );
+            moveDownCandidateButton.setToolTipText("Down");
             candidatesToolbar.add( moveDownCandidateButton );
+
+            if (enableWriteIn)
+            {
+                // Add the option to write-in a candidate, if the card is not a Race Card.
+                try {
+                    icon = new ImageIcon( ClassLoader.getSystemClassLoader()
+                            .getResource( "images/list-add-write-in.png" ) );
+                    text = "";
+                }
+                catch (Exception e) {
+                    icon = null;
+                    text = "Add Write-in";
+                }
+                addWriteInCandidateButton = new JButton( new AbstractAction( text, icon ) {
+                    private static final long serialVersionUID = 1L;
+
+                    public void actionPerformed(ActionEvent e) {
+                        addWriteInCandidateButtonPressed();
+                        addWriteInCandidateButton.setEnabled(false);
+                    }
+                } );
+                addWriteInCandidateButton.setToolTipText("Add Write-in");
+                candidatesToolbar.add( addWriteInCandidateButton );
+            }
         }
 
     }
@@ -629,6 +699,8 @@ public class CandidatesModule extends AModule {
         assert elt.getTagName().equals( "Module" );
         assert elt.getAttribute( "type" ).equals( "CandidatesModule" );
         String name = elt.getAttribute( "name" );
+        String writeInEnabledString = elt.getAttribute( "writein" );
+        boolean enableWriteIn = writeInEnabledString.equals("true");
         ArrayList<String> columns = new ArrayList<String>();
 
         NodeList list = elt.getElementsByTagName( "Column" );
@@ -638,7 +710,7 @@ public class CandidatesModule extends AModule {
         }
 
         CandidatesModule module = new CandidatesModule( name, columns
-                .toArray( new String[columns.size()] ) );
+                .toArray( new String[columns.size()] ) , enableWriteIn);
 
         list = elt.getElementsByTagName( "CardElement" );
         for (int i = 0; i < list.getLength(); i++) {
@@ -655,6 +727,8 @@ public class CandidatesModule extends AModule {
 
     private String[] colNames;
 
+    private boolean writeInEnabled = false;
+
     /**
      * Constructs a new CandidatesModule with the given module name and names of
      * the columns. The number of candidates is assumed to be the number of
@@ -665,11 +739,12 @@ public class CandidatesModule extends AModule {
      * @param colNames
      *            column names
      */
-    public CandidatesModule(String name, String[] colNames) {
+    public CandidatesModule(String name, String[] colNames, boolean allowWriteIn) {
         super( name );
         data = new ArrayList<CardElement>();
         columns = colNames.length - 1;
         this.colNames = colNames;
+        this.writeInEnabled = allowWriteIn;
     }
 
     /**
@@ -677,7 +752,7 @@ public class CandidatesModule extends AModule {
      */
     @Override
     public AModuleView generateView(View view) {
-        return new ModuleView( view );
+        return new ModuleView( view , writeInEnabled );
     }
 
     /**
@@ -707,6 +782,7 @@ public class CandidatesModule extends AModule {
         Element moduleElt = doc.createElement( "Module" );
         moduleElt.setAttribute( "type", "CandidatesModule" );
         moduleElt.setAttribute( "name", getName() );
+        moduleElt.setAttribute( "writein", writeInEnabled ? "true" : "false" );
 
         for (String col : colNames) {
             Element columnElt = doc.createElement( "Column" );

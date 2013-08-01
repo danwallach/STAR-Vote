@@ -41,7 +41,7 @@ import votebox.middle.Properties;
 /**
  * PresidentialRaceCard is the implementation of an ACard that constitutes a
  * race between candidates that have running mates.
- * @author cshaw
+ * @author cshaw, Mircea C. Berechet
  */
 public class PresidentialRaceCard extends ACard {
 
@@ -69,7 +69,7 @@ public class PresidentialRaceCard extends ACard {
         modules.add(new TextFieldModule("TopOfTicket", "Top Of Ticket"));
         modules.add(new TextFieldModule("BottomOfTicket", "Bottom Of Ticket"));
         modules.add(new CandidatesModule("Candidates", new String[]{
-                "Candidate's Name", "Running Mate's Name", "Party" }));
+                "Candidate's Name", "Running Mate's Name", "Party" }, true));
     }
 
     @Override

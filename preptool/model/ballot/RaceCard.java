@@ -41,7 +41,7 @@ import votebox.middle.Properties;
 /**
  * RaceCard is the implementation of an ACard that constitutes a race with
  * single candidates.
- * @author cshaw
+ * @author cshaw, Mircea C. Berechet
  */
 public class RaceCard extends ACard {
 
@@ -67,7 +67,7 @@ public class RaceCard extends ACard {
         super("Race");
         modules.add(new TextFieldModule("Title", "Title"));
         modules.add(new CandidatesModule("Candidates", new String[]{
-                "Candidate's Name", "Party" }));
+                "Candidate's Name", "Party" }, true));
     }
 
     @Override
