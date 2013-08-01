@@ -396,8 +396,7 @@ public class ActiveUI extends JPanel {
             Map<String, Map<String, BigInteger>> tally = model.closePolls();
 
             for(String precinct : tally.keySet()){
-                JDialog tallyDlg = new TallyDialog(this, tally.get(precinct), precinctsToBallots.get(precinct));
-                tallyDlg.setVisible(true);
+                TallyResultsFrame tallyDlg = new TallyResultsFrame(this, tally.get(precinct), precinctsToBallots.get(precinct));
             }
 
         } else
