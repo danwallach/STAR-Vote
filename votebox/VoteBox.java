@@ -525,9 +525,11 @@ public class VoteBox{
 
 
                     ListExpression code =  new ListExpression(raceId, ASExpression.make(bid), ASExpression.makeVerbatim(nonce));
-                    ASExpression shortcode = ASExpression.makeVerbatim(code.getSHA256());
+                    ASExpression shortCode = ASExpression.makeVerbatim(code.getSHA256());
 
-                    VotePair pair = new VotePair(shortcode, choice);
+                    VotePair pair = new VotePair(shortCode, choice);
+
+                    //Pair this ballot's nonce with each of its short codes and votes
                     plaintextAuditCommits.put(ASExpression.makeVerbatim(nonce), pair);
 
 
