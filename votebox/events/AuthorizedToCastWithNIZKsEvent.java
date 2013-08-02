@@ -29,8 +29,8 @@ public class AuthorizedToCastWithNIZKsEvent extends AuthorizedToCastEvent {
             if (res != NoMatch.SINGLETON) {
                 int node = Integer.parseInt( ((ListExpression) res).get( 0 )
                         .toString() );
-                byte[] nonce = new BigInteger(((ListExpression) res)
-                        .get( 1 ).toString()).toByteArray();
+                ASExpression nonce = ((ListExpression) res)
+                        .get( 1 );
 
                 byte[] ballot = ((StringExpression) ((ListExpression) res)
                         .get( 2 )).getBytesCopy();
@@ -54,7 +54,7 @@ public class AuthorizedToCastWithNIZKsEvent extends AuthorizedToCastEvent {
     
     private PublicKey _finalPubKey;
     
-    public AuthorizedToCastWithNIZKsEvent(int serial, int node, byte[] nonce, String precinct, byte[] ballot,  PublicKey finalPubKey){
+    public AuthorizedToCastWithNIZKsEvent(int serial, int node, ASExpression nonce, String precinct, byte[] ballot,  PublicKey finalPubKey){
     	super(serial, node, nonce, precinct, ballot);
     	
     	_finalPubKey = finalPubKey;
@@ -71,7 +71,7 @@ public class AuthorizedToCastWithNIZKsEvent extends AuthorizedToCastEvent {
     	return new ListExpression( 
     			StringExpression.makeString( "authorized-to-cast-with-nizks" ), 
                 StringExpression.makeString( Integer.toString( getNode() ) ), 
-                StringExpression.makeString( new BigInteger(getNonce()).toString() ),
+                getNonce(),
                 StringExpression.makeString( getBallot() ),
                 StringExpression.makeString( precinct),
 
