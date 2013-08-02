@@ -5,16 +5,12 @@ import votebox.AuditoriumParams;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableModel;
+import javax.swing.table.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreeModel;
 import java.awt.*;
-import java.awt.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -64,12 +60,14 @@ public class TallyResultsFrame extends JFrame{
          }//if
 
          resultsField.setFont(new Font("Monospace", Font.PLAIN, 12));
+         // resultsField.setBackground(new Color(140,180,255));
          c.gridy = 1;
          c.weightx = 1;
          c.weighty = 1;
          c.fill = GridBagConstraints.BOTH;
          JScrollPane pane = new JScrollPane(resultsField);
          pane.getVerticalScrollBar().setUnitIncrement(8);
+         // pane.setBackground(new Color(48,149,242));
          add(pane, c);
 
          JButton okButton = new MyJButton("OK");
@@ -153,22 +151,8 @@ public class TallyResultsFrame extends JFrame{
                     Arrays.sort(rootChildren, new Comparator<DefaultMutableTreeNode>() {
 
                         public int compare(DefaultMutableTreeNode o1, DefaultMutableTreeNode o2){
-                            return min((ArrayList<String>)titleToRaces.get(o1.getUserObject()))
-                                 - min((ArrayList<String>)titleToRaces.get(o2.getUserObject()));
-                        }
-
-                        private int min(ArrayList<String> s){
-                            try{
-                                int min = Integer.parseInt(s.get(0).substring(1));
-                                for(int i=1; i<s.size(); i++){
-                                    if(Integer.parseInt(s.get(i).substring(1)) < min){
-                                        min = Integer.parseInt(s.get(0).substring(1));
-                                    }
-                                }
-                                return min;
-                            }catch(NumberFormatException ex){
-                                return 0;
-                            }
+                            return minRaceId((ArrayList<String>)titleToRaces.get(o1.getUserObject()))
+                                 - minRaceId((ArrayList<String>)titleToRaces.get(o2.getUserObject()));
                         }
                     });
                 }
@@ -233,10 +217,6 @@ public class TallyResultsFrame extends JFrame{
         return tree;
     }//createFancyTreeTable
 
-    /*private JTable createTitleTable(){
-
-    }*/
-
     /**
      * Creates a table with the columns "votes" & "candidates".
      * Votes holds the number of votes a candidate received.
@@ -249,12 +229,31 @@ public class TallyResultsFrame extends JFrame{
     private JTable createFancyTable(final Map<String, BigInteger> results, final Map<String, Image> raceImgMap) {
         JTable fancyTable = new JTable();
 
+        String max = "";
+        String second = "";
         int sum = 0;
-        for(BigInteger i: results.values()){
-            sum += i.intValue();
+        for(String race: results.keySet()){
+            if(race.equals("B" + minRaceId(new ArrayList<String>(results.keySet())))){
+                System.out.println(new ArrayList<String>(results.keySet()));
+                System.out.println(race);
+                continue;
+            }
+            if(max.equals("")){
+                max = race;
+            }else if(results.get(race).intValue() > results.get(max).intValue()){
+                second = max;
+                max = race;
+            } else if(second.equals("") || results.get(race).intValue() > results.get(second).intValue()){
+                second = race;
+            }
+            sum += results.get(race).intValue();
         }
 
-        final int voteTotal = sum;
+        final int totalVotes = sum;
+
+        final Image winnerImg = raceImgMap.get(max);
+
+        final double marginOfVictory = (results.get(max).intValue() - results.get(second).intValue())/(double)totalVotes;
 
         final DecimalFormat percentFormat = new DecimalFormat("00.000%");
 
@@ -289,23 +288,13 @@ public class TallyResultsFrame extends JFrame{
             @Override
             public Object getValueAt(int row, int col){
 
-                /*if(row == 0){
-                    switch(col){
-                        case 0: return "Candidate ID";
-                        case 1: return "Candidate Name";
-                        case 2: return "Votes Received";
-                        case 3: return "Percentage";
-                        default: throw new RuntimeException(col + " >= 4 column value requested.");
-                    }
-                }*/
-
                 Map.Entry entry = entries[row];
 
                 switch(col){
                     case 0: return entry.getKey();
                     case 1: return raceImgMap.get(entry.getKey());
                     case 2: return entry.getValue();
-                    case 3: return percentFormat.format(((BigInteger)entries[row].getValue()).intValue()/(double)voteTotal);
+                    case 3: return percentFormat.format(((BigInteger)entries[row].getValue()).intValue()/(double)totalVotes);
                     default: throw new RuntimeException(col + " >= 4 column value requested.");
                 }
             }//getValueAt
@@ -346,8 +335,7 @@ public class TallyResultsFrame extends JFrame{
                     JPanel panel = new JPanel();
                     panel.setLayout(new GridBagLayout());
                     panel.add(label);
-                    if(row == 0) panel.setBackground(new Color(150,220,150)); else panel.setBackground(Color.white);
-
+                    if(img == winnerImg) panel.setBackground(new Color(120,200,120)); else panel.setBackground(Color.white);
                     return panel;
                 }else{
                     return null;
@@ -384,6 +372,103 @@ public class TallyResultsFrame extends JFrame{
 
         return fancyTable;
     }
+
+    //decided against this code because it clutters the UI. This converts the children of the root node of the tree into
+    // single row columns with the race title, winner of the race, and margin of victory
+    /*private JTable createTitleTable(Map<String, BigInteger> results, java.util.List<String> races, Map<String, Image> raceImgMap, final Image titleImg){
+        JTable titleTable = new JTable();
+
+        String max = races.get(0);
+        String second = races.get(1);
+        int totalVotes = 0;
+        for(String race: races){
+            if(results.get(race).intValue() > results.get(max).intValue()){
+                second = max;
+                max = race;
+            } else if(results.get(race).intValue() > results.get(second).intValue()){
+                second = race;
+            }
+            totalVotes += results.get(race).intValue();
+        }
+
+        final Image winnerImg = raceImgMap.get(max);
+
+        final double marginOfVictory = (results.get(max).intValue() - results.get(second).intValue())/(double)totalVotes;
+
+        titleTable.setModel( new DefaultTableModel(){
+
+            public int getColumnCount(){return 3;}
+            public int getRowCount(){return 1;}
+            public boolean isCellEditable(int row, int col){return false;}
+            public Object getValueAt(int row, int col){
+                if(row != 0) throw new IndexOutOfBoundsException("This header table only has 1 row");
+                switch(col){
+                    case 0: return titleImg;
+                    case 1: return winnerImg;
+                    case 2: return "Margin of Victory: " + marginOfVictory;
+                    default: throw new IndexOutOfBoundsException("Column index <col> out of bounds");
+                }
+            }
+        });
+
+        TableCellRenderer cellRenderer = new DefaultTableCellRenderer(){
+            @Override
+            public void setValue(Object value) {
+                if (value instanceof Image) {
+                    setIcon(new ImageIcon((Image) value));
+                    return;
+                }//if
+
+                super.setValue(value);
+            }//setValue
+
+            @Override
+            public Component getTableCellRendererComponent(JTable table,
+                                                           Object value,
+                                                           boolean isSelected,
+                                                           boolean hasFocus,
+                                                           int row,
+                                                           int column){
+                if (value != null && value instanceof Image) {
+                    Image img = (Image) value;
+
+                    JLabel label = new JLabel(new ImageIcon(img));
+
+                    label.setMinimumSize(new Dimension(img.getWidth(null), img.getHeight(null)));
+
+                    JPanel panel = new JPanel();
+                    panel.setLayout(new GridBagLayout());
+                    panel.add(label);
+                    if (column == 1) panel.setBackground(new Color(150, 250, 150));
+                    else panel.setBackground(Color.lightGray);
+                    return panel;
+                } else {
+                    return null;
+                }
+
+            }
+        };
+
+        titleTable.getColumnModel().getColumn(0).setCellRenderer(cellRenderer);
+        titleTable.getColumnModel().getColumn(1).setCellRenderer(cellRenderer);
+
+        titleTable.setRowHeight(titleImg.getHeight(null));
+
+        titleTable.getColumnModel().getColumn(0).setHeaderValue("Race Title");
+        titleTable.getColumnModel().getColumn(0).setWidth(titleImg.getWidth(null));
+
+        titleTable.getColumnModel().getColumn(1).setHeaderValue("Race Winner");
+        titleTable.getColumnModel().getColumn(1).setWidth(winnerImg.getWidth(null));
+
+        titleTable.setPreferredSize(new Dimension(titleTable.getColumnModel().getColumn(0).getWidth() +
+                                                  titleTable.getColumnModel().getColumn(1).getWidth() +
+                                                  300,
+                                                  titleTable.getRowHeight() + 20));
+
+        titleTable.setFont(new Font("Courier New", Font.PLAIN, 14));
+
+        return titleTable;
+    }*/
 
     /**
      * @param images - a Map of images
@@ -511,12 +596,27 @@ public class TallyResultsFrame extends JFrame{
         return new JTable(model);
     }
 
+    private int minRaceId(ArrayList<String> s){
+        try{
+            int min = Integer.parseInt(s.get(0).substring(1));
+            for(int i=1; i<s.size(); i++){
+                if(Integer.parseInt(s.get(i).substring(1)) < min){
+                    min = Integer.parseInt(s.get(i).substring(1));
+                }
+            }
+            return min;
+        }catch(NumberFormatException ex){
+            System.out.println("Cannot Order Races");
+            return 0;
+        }
+    }
+
     public static void main(String[] args){
         Map<String, BigInteger> resMap = new TreeMap<String, BigInteger>();
         resMap.put("B1", new BigInteger("1"));
         resMap.put("B2", new BigInteger("2"));
         resMap.put("B3", new BigInteger("3"));
-        resMap.put("B4", new BigInteger("4"));
+        resMap.put("B4", new BigInteger("45"));
         resMap.put("B5", new BigInteger("5"));
         resMap.put("B6", new BigInteger("6"));
         resMap.put("B7", new BigInteger("7"));
