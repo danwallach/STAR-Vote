@@ -39,6 +39,7 @@ import sexpression.ASExpression;
 import sexpression.NoMatch;
 import sexpression.StringExpression;
 import sexpression.stream.Base64;
+import sexpression.stream.InvalidVerbatimStreamException;
 import supervisor.model.tallier.ChallengeDelayedTallier;
 import supervisor.model.tallier.ChallengeDelayedWithNIZKsTallier;
 import supervisor.model.tallier.ITallier;
@@ -264,13 +265,17 @@ public class Model {
         byte[] ballot = new byte[(int) file.length()];
         fin.read(ballot);
 
-        if(!this.auditoriumParams.getEnableNIZKs()){
-        	auditorium.announce(new AuthorizedToCastEvent(mySerial, node, nonce,
-                    precinct, ballot));
-        }else{
-        	auditorium.announce(new AuthorizedToCastWithNIZKsEvent(mySerial, node,
-        			nonce, precinct, ballot,
-        			AdderKeyManipulator.generateFinalPublicKey((PublicKey)auditoriumParams.getKeyStore().loadAdderKey("public"))));
+        try{
+            if(!this.auditoriumParams.getEnableNIZKs()){
+                auditorium.announce(new AuthorizedToCastEvent(mySerial, node, ASExpression.makeVerbatim(nonce),
+                        precinct, ballot));
+            }else{
+                auditorium.announce(new AuthorizedToCastWithNIZKsEvent(mySerial, node,
+                        ASExpression.makeVerbatim(nonce), precinct, ballot,
+                        AdderKeyManipulator.generateFinalPublicKey((PublicKey)auditoriumParams.getKeyStore().loadAdderKey("public"))));
+            }
+        } catch (InvalidVerbatimStreamException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -626,7 +631,7 @@ public class Model {
             public void authorizedToCast(AuthorizedToCastEvent e) {
                 AMachine m = getMachineForSerial(e.getNode());
                 if (m != null && m instanceof VoteBoxBooth) {
-                    ((VoteBoxBooth) m).setNonce(e.getNonce());
+                    ((VoteBoxBooth) m).setNonce(e.getNonce().toVerbatim());
                 }
             }
 

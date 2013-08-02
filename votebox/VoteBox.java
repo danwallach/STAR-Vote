@@ -662,7 +662,7 @@ public class VoteBox{
                         currentDriver = null;
                     }
 
-                    nonce = e.getNonce();
+                    nonce = e.getNonce().toVerbatim();
 
                     //Current working directory
                     File path = new File(System.getProperty("user.dir"));
