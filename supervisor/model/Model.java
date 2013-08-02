@@ -1105,6 +1105,7 @@ public class Model {
 
             public void tapMachine(TapMachineEvent tapMachineEvent) {
                 machines.add(new TapMachine(tapMachineEvent.getSerial()));
+                System.out.println("Yay!");
             }
 
             public void ballotScanned(BallotScannedEvent e) {

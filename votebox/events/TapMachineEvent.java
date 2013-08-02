@@ -14,9 +14,7 @@ public class TapMachineEvent implements IAnnounceEvent {
      */
     private static MatcherRule MATCHER = new MatcherRule() {
         private ASExpression pattern = new ListExpression(StringExpression
-                .makeString("tapmachine"),
-                StringWildcard.SINGLETON, StringWildcard.SINGLETON,
-                StringWildcard.SINGLETON, StringWildcard.SINGLETON );
+                .makeString("tapmachine"));
 
         public IAnnounceEvent match(int serial, ASExpression sexp){
             ASExpression res = pattern.match(sexp);
