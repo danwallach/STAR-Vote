@@ -7,9 +7,6 @@ java -jar supervisor.jar [serial number]
 Using Tap:
 java -jar tap.jar [serial number] [report address] [port]
 
-Using ChallengeWebServer:
-java -jar challenge.jar [ballot file] [port] [http port]
-
 [port] should be the same between Tap and ChallengeWebServer
 [serial number]s should all be distinct (and must have corresponding keys)
 
@@ -57,7 +54,7 @@ Default: "/keys/"
 
 VIEW_IMPLEMENTATION 
 String, one of SDL, AWT 
-Default: SDL 
+Default: AWT
 
 RULE_FILE 
 String, directoy path 
@@ -65,11 +62,11 @@ Default: rules
 
 CAST_BALLOT_ENCRYPTION_ENABLED 
 Boolean 
-Default: false 
+Default: true
 
 USE_COMMIT_CHALLENGE_MODEL 
 Boolean 
-Default: false 
+Default: true
 
 USE_ELO_TOUCH_SCREEN 
 Boolean 

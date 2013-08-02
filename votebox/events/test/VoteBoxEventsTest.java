@@ -29,6 +29,7 @@ import java.util.Arrays;
 import junit.framework.TestCase;
 import sexpression.ASExpression;
 import sexpression.StringExpression;
+import sexpression.stream.InvalidVerbatimStreamException;
 import votebox.events.ActivatedEvent;
 import votebox.events.AssignLabelEvent;
 import votebox.events.AuthorizedToCastEvent;
@@ -131,13 +132,18 @@ public class VoteBoxEventsTest extends TestCase {
     }
 
     public void testAuthorizedToCast() {
-        byte[] nonce = getBlob();
+        ASExpression nonce = null;
+        try{
+            nonce = ASExpression.makeVerbatim(getBlob());
+        } catch (InvalidVerbatimStreamException e) {
+            throw new RuntimeException(e);
+        }
         byte[] ballot = getBlob();
         AuthorizedToCastEvent event = new AuthorizedToCastEvent(50, 65, nonce,
                 "007", ballot);
         ASExpression sexp = event.toSExp();
         assertEquals("(authorized-to-cast 65 "
-                + (new BigInteger(nonce)).toString() + "007"
+                + nonce + "007"
                 + StringExpression.makeString(ballot).toString() + ")", sexp
                 .toString());
 
@@ -145,7 +151,7 @@ public class VoteBoxEventsTest extends TestCase {
                 50, sexp);
         assertEquals(event.getSerial(), event2.getSerial());
         assertEquals(event.getNode(), event2.getNode());
-        assertTrue(Arrays.equals(event.getNonce(), event2.getNonce()));
+        assertTrue(Arrays.equals(event.getNonce().toVerbatim(), event2.getNonce().toVerbatim()));
         assertTrue(Arrays.equals(event.getBallot(), event2.getBallot()));
     }
 /*

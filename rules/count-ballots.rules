@@ -11,8 +11,8 @@
                                      %key:(key #string #string #string #string)))
                     (signature %signer:#string %sigdata:#string 
                       (succeeds %preds:#list:(ptr #string #string #string)
-                                %payload:(cast-ballot %nonce:#string
-                                          %cast-ballot-data:#string)))))))
+                                %payload:(encrypted-cast-ballot-with-nizks %nonce:#string
+                                          %cast-ballot-data:#any %bid:#any)))))))
     (auth-ballot-message-fmt (quote ; the whole shebang all at once
         (announce (host %id:#string %addr:#string %port:#string)
                   %seqno:#string
@@ -22,9 +22,11 @@
                                      %key:(key #string #string #string #string)))
                     (signature %signer:#string %sigdata:#string 
                       (succeeds %preds:#list:(ptr #string #string #string)
-                                %payload:(authorized-to-cast %nodeid:#string
+                                %payload:(authorized-to-cast-with-nizks %nodeid:#string
                                           %nonce:#string
-                                          %ballot-data:#string)))))))
+                                          %precinct:#string
+                                          %ballot-data:#string
+                                          %publicKey:#any)))))))
     (ack-ballot-message-fmt (quote ; the whole shebang all at once
         (announce (host %id:#string %addr:#string %port:#string)
                   %seqno:#string
@@ -35,7 +37,9 @@
                     (signature %signer:#string %sigdata:#string 
                       (succeeds %preds:#list:(ptr #string #string #string)
                                 %payload:(ballot-received %nodeid:#string
-                                          %nonce:#string)))))))
+                                          %nonce:#string
+                                          %bid:#string
+                                          %precinct:#string)))))))
   )
 
 

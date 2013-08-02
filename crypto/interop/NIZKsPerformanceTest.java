@@ -343,7 +343,7 @@ public class NIZKsPerformanceTest {
         SecureRandom r = new SecureRandom();
 
         //To ensure that the adder caches the key
-        AuthorizedToCastWithNIZKsEvent ATCE = new AuthorizedToCastWithNIZKsEvent(0, 0, _seeds.get(0), "3", _ballot.toASExpression().toVerbatim(),
+        AuthorizedToCastWithNIZKsEvent ATCE = new AuthorizedToCastWithNIZKsEvent(0, 0, ASExpression.makeVerbatim(_seeds.get(0)), "3", _ballot.toASExpression().toVerbatim(),
                 AdderKeyManipulator.generateFinalPublicKey(_adderPublicKey));
 //        AuthorizedToCastWithNIZKsEvent.getMatcher().match(0, ATCE.toSExp());
 

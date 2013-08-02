@@ -216,7 +216,7 @@ public class Verifier {
 	 * @param args
 	 *            This mapping represents the arguments that were passed to the
 	 *            verifier on the command line. The elements of the map of the
-	 *            form x->y appaer on the command line in the form x=y.
+	 *            form x->y appear on the command line in the form x=y.
 	 * @throws IOException
 	 *             This method throws if there are IO errors reading the rule
 	 *             file.

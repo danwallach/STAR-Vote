@@ -45,7 +45,7 @@ public class AuthorizedToCastEvent implements IAnnounceEvent {
 
     private int node;
 
-    private byte[] nonce;
+    private ASExpression nonce;
 
     private byte[] ballot;
 
@@ -66,8 +66,8 @@ public class AuthorizedToCastEvent implements IAnnounceEvent {
                         .toString() );
                 /*byte[] nonce = ((StringExpression) ((ListExpression) res)
                         .get( 1 )).getBytesCopy();*/
-                byte[] nonce = new BigInteger(((ListExpression) res)
-                        .get( 1 ).toString()).toByteArray();
+                ASExpression nonce = ((ListExpression) res)
+                        .get( 1 );
                 String precinct = ((ListExpression) res).get( 2 ).toString();
                 byte[] ballot = ((StringExpression) ((ListExpression) res)
                         .get( 3 )).getBytesCopy();
@@ -87,17 +87,16 @@ public class AuthorizedToCastEvent implements IAnnounceEvent {
     
     /**
      * Constructs a new AuthorizedToCastEvent.
-     * 
+     *
      * @param serial
      *            the serial number of the sender
      * @param node
      *            the node id
      * @param nonce
-     *            the nonce (or authorization code), an array of bytes
+ *            the nonce (or authorization code), an array of bytes
      * @param ballot
-     *            the ballot in zip format, stored as an array of bytes
      */
-    public AuthorizedToCastEvent(int serial, int node, byte[] nonce, String precinct, byte[] ballot) {
+    public AuthorizedToCastEvent(int serial, int node, ASExpression nonce, String precinct, byte[] ballot) {
         this.serial = serial;
         this.node = node;
         this.nonce = nonce;
@@ -122,7 +121,7 @@ public class AuthorizedToCastEvent implements IAnnounceEvent {
     /**
      * @return the nonce, or authorization code
      */
-    public byte[] getNonce() {
+    public ASExpression getNonce() {
         return nonce;
     }
 
@@ -145,8 +144,7 @@ public class AuthorizedToCastEvent implements IAnnounceEvent {
                 .makeString( nonce ), StringExpression.makeString( ballot ) );*/
     	return new ListExpression( StringExpression
                 .makeString( "authorized-to-cast" ), StringExpression
-                .makeString( Integer.toString( node ) ), StringExpression
-                .makeString( new BigInteger(nonce).toString() ), StringExpression
+                .makeString( Integer.toString( node ) ), nonce, StringExpression
                 .makeString( precinct), StringExpression.makeString( ballot ));
     }
     

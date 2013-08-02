@@ -49,9 +49,9 @@
     (polls-open-fmt (quote (polls-open %timestamp:#string %keyword:#string)))
     (polls-closed-fmt (quote (polls-closed %timestamp:#string)))
 
-    (ballot-auth-fmt (quote (authorized-to-cast %nodeid:#string %nonce:#string %ballot-data:#string)))
-    (ballot-received-fmt (quote (ballot-received %nodeid:#string %nonce:#string)))
-    (cast-ballot-fmt (quote (cast-ballot %nonce:#string %cast-ballot-data:#string)))
+    (ballot-auth-fmt (quote (authorized-to-cast-with-nizks %nodeid:#string %nonce:#string %precinct:#string %ballot-data:#string %publicKey:#any)))
+    (ballot-received-fmt (quote (ballot-received %nodeid:#string %nonce:#any %bid:#string %precinct:#string)))
+    (cast-ballot-fmt (quote (encrypted-cast-ballot-with-nizks %nonce:#string %cast-ballot-data:#any %bid:#string)))
 
     ;; election maintenance messages
     ;(assign-label-fmt (quote (assign-label %nodeid:#string %label:#string)))
@@ -150,7 +150,7 @@
 ;
 ;    (exists x all-set (and (true true true)))
 
-;;    ; RULE: cast-ballot must be preceded by auth and succeded by
+;;    ; RULE: cast-ballot must be preceded by auth and succeeded by
 ;;    ; ballot-received
     (let ((result
     (forall ballot all-set
@@ -168,7 +168,8 @@
                     (let
                         ((n_result (= nonce cast-nonce))
                          (p_result (precedes auth ballot all-dag)))
-                      (and (n_result p_result)))
+
+                      (and ((print ((quote NONCE) nonce))(print ((quote CAST_NONCE) cast-nonce)) n_result p_result)))
                      false)
                   false))
               ; must be followed by receipt
@@ -193,7 +194,7 @@
                     false)))
               ))))
              (and (
-               ;(print ((quote LEGIT_BALLOT) result ballot))
+               (print ((quote LEGIT_BALLOT) result ballot))
                result))) ;end interior verbose let
             ) ; end exterior let-cast-nonce
           true) ;; if this message is not a ballot, this rule should return true
