@@ -110,7 +110,7 @@ public class BallotManager {
     }
 
     /**
-     * Creates a mapping between a ballot and a precincts
+     * Creates a mapping between a ballot and it's respective precinct
      *
      * @param precinct 3-digit precint
      * @param ballot absolute file path to ballot being used

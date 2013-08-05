@@ -33,7 +33,6 @@ public class ChoicePair {
     {
         return _label;
     }
-
     public int getStatus()
     {
         if (_selected)
