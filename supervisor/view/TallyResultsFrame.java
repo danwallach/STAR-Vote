@@ -24,10 +24,29 @@ import java.util.zip.ZipFile;
  * Created with IntelliJ IDEA.
  * User: mrdouglass95
  * Date: 7/31/13
- * Time: 2:03 PM
  * To change this template use File | Settings | File Templates.
+ *
+ * This Class is the graphical user interface that displays the results of the election to officials as soon as the polls
+ * are closed, or as soon as the final results have been tallied. It takes in the String absolute path to the ballot being
+ * used and a Map<String, BigInteger> representing the results of an election. This graphical interface is a JTree
+ * containing JTables in it's nodes. For each Race in an election, the candidateIDs, Candidate names, Votes Recieved and
+ * percentage of total votes received are displayed to the election officials.
+ *
+ * This interface can be tested independently by modifying the main method and running the class as stand-alone. A ballot
+ * is needed, as well as a custom mapping between all RaceID strings (The "B..." numbers) and a BigInteger representing
+ * votes received by that RaceID.
+ *
  */
+
 public class TallyResultsFrame extends JFrame{
+
+    /**
+     * Only Constructor for TallyResultsFrame. Automatically handles setting size and visibility.
+     *
+     * @param parent panel used in determining initial position of frame
+     * @param results represents a mapping from RaceIDs to the number of votes received by that ID
+     * @param ballot  absolute path of .zip ballot file being used
+     */
      public TallyResultsFrame(JPanel parent, Map<String, BigInteger> results, String ballot){
          super("Election Results Window");
 
@@ -233,6 +252,7 @@ public class TallyResultsFrame extends JFrame{
         String second = "";
         int sum = 0;
         for(String race: results.keySet()){
+            sum += results.get(race).intValue();
             if(race.equals("B" + minRaceId(new ArrayList<String>(results.keySet())))){
                 System.out.println(new ArrayList<String>(results.keySet()));
                 System.out.println(race);
@@ -246,7 +266,6 @@ public class TallyResultsFrame extends JFrame{
             } else if(second.equals("") || results.get(race).intValue() > results.get(second).intValue()){
                 second = race;
             }
-            sum += results.get(race).intValue();
         }
 
         final int totalVotes = sum;
@@ -255,7 +274,7 @@ public class TallyResultsFrame extends JFrame{
 
         final double marginOfVictory = (results.get(max).intValue() - results.get(second).intValue())/(double)totalVotes;
 
-        final DecimalFormat percentFormat = new DecimalFormat("00.000%");
+        final DecimalFormat percentFormat = new DecimalFormat("0.000%");
 
         fancyTable.setModel(new DefaultTableModel(){
             Map.Entry[] entries = null;
@@ -596,6 +615,14 @@ public class TallyResultsFrame extends JFrame{
         return new JTable(model);
     }
 
+    /**
+     * Determines the raceID with the minimum value number appended to "B"
+     * example min(["B1", "B2", "B3"]) = 1
+     *
+     * @param s List of RaceIDs of form "B" + some int
+     * @return integer value of least appended integer
+     */
+
     private int minRaceId(ArrayList<String> s){
         try{
             int min = Integer.parseInt(s.get(0).substring(1));
@@ -610,6 +637,12 @@ public class TallyResultsFrame extends JFrame{
             return 0;
         }
     }
+
+    /**
+     * Use for testing interface as stand alone.
+     *
+     * @param args command line args
+     */
 
     public static void main(String[] args){
         Map<String, BigInteger> resMap = new TreeMap<String, BigInteger>();
