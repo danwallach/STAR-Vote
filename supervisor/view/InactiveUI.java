@@ -86,6 +86,9 @@ public class InactiveUI extends JPanel {
         });
     }
 
+    /**
+     * Overrides paint(Graphics g) from jPanel. Renders Graphics
+     */
     public void paint(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
@@ -95,6 +98,9 @@ public class InactiveUI extends JPanel {
         super.paint(g);
     }
 
+    /**
+     * Adds button and initial text to the frame
+     */
     private void initializeComponents() {
         GridBagConstraints c = new GridBagConstraints();
 
@@ -123,6 +129,10 @@ public class InactiveUI extends JPanel {
         add(activateButton, c);
     }
 
+    /**
+     * Updates the text that displays type and quantity of machines on the network. Uses supervisors getMachines() method
+     * to identify all known machines on the network.
+     */
     private void updateTextPanel() {
         try {
             Thread.sleep(1000);    //sleep to make sure that all machines have time to identify themselves

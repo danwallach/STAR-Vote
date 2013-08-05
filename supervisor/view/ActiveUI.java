@@ -174,7 +174,10 @@ public class ActiveUI extends JPanel {
         repaint();
     }
 
-
+    /**
+     * Initializes all GUI components pertaining to the panel's left panel component, including Tap ribbon,
+     * ballot selection button, pin generating button, and open/close polls button.
+     */
     private void initializeLeftPanel() {
         leftPanel = new JPanel();
         leftPanel.setLayout(new GridBagLayout());
@@ -380,6 +383,9 @@ public class ActiveUI extends JPanel {
 
     }
 
+    /**
+     * Initializes and updates the main center panel where the machine views are displayed.
+     */
     private void initializeMainPanel() {
         mainPanel = new JPanel();
         mainPanel.setBorder(BorderFactory.createMatteBorder(0, 5, 0, 0,

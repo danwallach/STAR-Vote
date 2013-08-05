@@ -6,6 +6,9 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
+ * This is a Tap ribbon that is placed in the left panel of the Supervisor's ActiveUI and represents
+ * whether or not the Tap is responsive and on the network.
+ *
  * @author Matt Bernhard
  * @version 0.0.1
  *          Date: 7/29/13

@@ -51,9 +51,10 @@ import auditorium.NetworkException;
 import auditorium.IAuditoriumParams;
 
 /**
- * The main model of the Supervisor. Contains the status of the machines, and of
- * the election in general. Also contains a link to Auditorium, for broadcasting
- * (and hearing) messages on the network.
+ * The main model of the Supervisor in the model-view-controller. Contains the status of the machines, and of
+ * the election in general. Manages nearly all administrative functions of the election, including accepting machines
+ * onto the network, generating and traking voters and pins, authorizing machines, opening and closing elections, and
+ * much more. Also contains a link to Auditorium, for broadcasting (and hearing) messages on the network.
  * 
  * @author cshaw
  */
@@ -248,8 +249,7 @@ public class Model {
     /**
      * Authorizes a VoteBox booth
      * 
-     * @param node
-     *            the serial number of the booth
+     * @param node the serial number of the booth
      * @throws IOException
      */
     public void authorize(int node) throws IOException {
@@ -749,9 +749,7 @@ public class Model {
             }
 
             /**
-             * Handler for the polls-open event. Sets the polls to open, and
-             * gets a fresh tallier.
-             * @throws AuditoriumCryptoException 
+             * Handler for the polls-open event. Sets the polls to open.
              */
             public void pollsOpen(PollsOpenEvent e){
 
@@ -1091,6 +1089,9 @@ public class Model {
                 }
             }
 
+            /**
+             * Handler for the ProvisionalCommmitEvent. Recieves ballot as it would with a normal ballot
+             */
             public void provisionalCommitBallot(ProvisionalCommitEvent e) {
 
                 AMachine m = getMachineForSerial(e.getSerial());
@@ -1108,11 +1109,19 @@ public class Model {
                 // NO-OP
             }
 
+            /**
+             * Ocurrs once when tap joins the network and sends it's respective TapMachineEvent. Model adds a new
+             * instance of a TapMachine to it's list of machines for further reference.
+             */
             public void tapMachine(TapMachineEvent tapMachineEvent) {
                 machines.add(new TapMachine(tapMachineEvent.getSerial()));
                 System.out.println("Yay!");
             }
 
+            /**
+             * Handler for the BallotScannerEvent. Receives ballot ID from scan event and fires appropriate events in response,
+             * namely an EncryptedBastBallotWithNIZKsEvent and a BallotScanAccepted/BallotScanRejected events as needed.
+             */
             public void ballotScanned(BallotScannedEvent e) {
                 // Test ballot stuff... TODO: Might want to implement a way to rapidly cast votes without going through multiple VoteBox sessions.
                 /*readTestBallot();
@@ -1124,7 +1133,7 @@ public class Model {
                 String bid = e.getBID();
                 int serial = e.getSerial();
                 if (committedBids.containsKey(bid)){
-                    System.err.println("Got inside the if clause");
+                    //System.err.println("Got inside the if clause");
                     //ASExpression nonce = committedBids.get(bid);
                     ASExpression nonce = committedBids.remove(bid);
                     ASExpression ballot = committedBallots.remove(bid);
@@ -1162,6 +1171,10 @@ public class Model {
 
             }
 
+            /**
+             * Handler for the PinEnteredEvent. Retrieves the entered pin from the event and authorizes the booth if the
+             * pin is valid.
+             */
             public synchronized void pinEntered(PINEnteredEvent e){
                 if(isPollsOpen()) {
                     System.out.println(">>> PIN entered: " + e.getPin());
@@ -1187,6 +1200,9 @@ public class Model {
 
             public void invalidPin(InvalidPinEvent e) {}
 
+            /**
+             * Handler for PollStatusEvent
+             */
             public void pollStatus(PollStatusEvent pollStatusEvent) {
                 pollsOpen = pollStatusEvent.getPollStatus()==1;
                 sendStartScannerEvent();
@@ -1222,6 +1238,9 @@ public class Model {
                 // NO-OP
             }
 
+            /**
+             * Handler for StartScannerEvent. Activates scanner if present.
+             */
             public void scannerStart(StartScannerEvent e) {
                 // NO-OP
                 for (AMachine machine:machines)
@@ -1289,7 +1308,12 @@ public class Model {
         return auditoriumParams;
     }
 
-    //adds a new ballot to the ballot manager
+    /**
+     * Introduces a new ballot to the ballotmanager for use in the election. Extracts precinct name and creates a mapping
+     * between them
+     *
+     * @param fileIn java File object referencing a new ballot to be handled by this STAR-Vote election
+     */
     public void addBallot(File fileIn) {
         String fileName = fileIn.getName();
         try{

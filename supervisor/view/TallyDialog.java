@@ -71,6 +71,7 @@ import votebox.AuditoriumParams;
  * whenever the supervisor closes the polls, and the report from the Tallier is
  * displayed in the dialog.
  * @author cshaw
+ * @deprecated replaced with TallyResultsFrame
  */
 @SuppressWarnings("serial")
 public class TallyDialog extends JDialog {

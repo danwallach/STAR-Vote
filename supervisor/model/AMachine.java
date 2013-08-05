@@ -133,6 +133,11 @@ public abstract class AMachine implements Comparable {
         obs.notifyObservers();
     }
 
+    /**
+     * Overrides the default implementation of toString to produce a meaningful representation of this machine
+     *
+     * @return String representation of this machine in form "[MachineType]{serial = [machineSerial] status = [machineStatus]}"
+     */
     public String toString(){
         String res = "";
         if(this instanceof SupervisorMachine){

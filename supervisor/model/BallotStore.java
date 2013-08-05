@@ -17,10 +17,12 @@ import java.net.Socket;
 import java.util.*;
 
 /**
- * @author Nelson Chen
- *         Date: 11/26/12
+ * The BallotStore class is used to store the results of voter's decisions (often referred to ambiguously as "ballots"
+ * but actually representing encrypted voter selections from a ballot). This class keeps track of ballots
+ * (again, selections) as they are committed and optionally subsequently cast by the voter. The BallotStore is the key
+ * factor in storing all ballots during an election and determining which ballots are declared as Challenged and which
+ * are treated as Cast and therefore counted in the election results.
  */
-
 public class BallotStore {
     public static final String SERVER_IP = "192.168.1.13";
     public static final int SERVER_PORT = 9000;
@@ -32,8 +34,9 @@ public class BallotStore {
 
 
     /**
-     * Add printed ballot to the ballot store
-     * The ballot is considered challenged at this point
+     * Add printed ballot to the ballot store. If not cast before the closing of the elections, this ballot will be
+     * considered Challenged by the STAR-Vote System.
+     *
      * @param ballotID - unique ballot identifier
      * @param ballot - ballot wrapper class encapsulating hashed ballot and r-values
      */
@@ -44,7 +47,9 @@ public class BallotStore {
 
 
     /**
-     * Cast unconfirmed ballot
+     * Cast of a previously committed ballot. This action results from a voter scanner his/her ballot. This ballot is
+     * now cast and counted in the tallying of final results in the election.
+     *
      * @param ballotID - unique ballot identifier
      */
     public static void castCommittedBallot(String ballotID){
@@ -59,8 +64,7 @@ public class BallotStore {
     }
 
     /**
-     * Retrieves nonces of cast ballots
-     * @return
+     * @return all nonces of cast ballots
      */
     public static ListExpression getCastNonces() {
         List<ASExpression> precincts = new ArrayList<ASExpression>();
@@ -70,14 +74,27 @@ public class BallotStore {
         return new ListExpression(new ListExpression(castBIDs), new ListExpression(precincts), new ListExpression(castNonces));
     }
 
+    /**
+     * Creates a mapping between ballotids and respective precincts
+     *
+     * @param bid  ballot ID of voting session
+     * @param precinct 3-digit precinct of voting session
+     */
     public static void mapPrecinct(String bid, String precinct){
         precinctMap.put(bid, precinct);
     }
 
+    /**
+     * @param bid ballot ID of voting session
+     * @return precinct associated with this ballot, or null, if none exists.
+     */
     public static String getPrecinct(String bid){
         return precinctMap.get(bid);
     }
 
+    /**
+     * Re-initializes the list of cast ballot IDs and cast nonces
+     */
     public static void clearBallots(){
         castBIDs = new ArrayList<ASExpression>();
         castNonces = new ArrayList<ASExpression>();
@@ -109,6 +126,9 @@ public class BallotStore {
         return new ListExpression(new ListExpression(ballotIDs), new ListExpression(precincts), new ListExpression(hashes), new ListExpression(decryptedBallots));
     }
 
+    /**
+     * @return List of unconfirmed (not Cast) ballots so far in the system
+     */
     public static List<ASExpression> getUnconfirmedBallots() {
         return new ArrayList<ASExpression>(unconfirmedBallots.values());
     }

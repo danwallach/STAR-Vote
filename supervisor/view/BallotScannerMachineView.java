@@ -16,8 +16,10 @@ import java.util.Observable;
 import java.util.Observer;
 
 /**
- * @author Mircea C. Berechet, mrdouglass95
+ * This class is the machine tile view of the Ballot Scanner when it is on the network. It is updated when the Scanner
+ * comes online and when it leaves.
  *
+ * @author Mircea C. Berechet, mrdouglass95
  */
 
 public class BallotScannerMachineView extends AMachineView{
@@ -44,7 +46,13 @@ public class BallotScannerMachineView extends AMachineView{
 
     private JPanel buttonPanel;
 
-
+    /**
+     * Only constructor
+     *
+     * @param m the supervisor's model
+     * @param v the supervisor's active UI
+     * @param b the supervisor's stored internal representation of this machine
+     */
     public BallotScannerMachineView(Model m, ActiveUI v, BallotScannerMachine b){
         /*
         machine = b;
@@ -216,6 +224,10 @@ public class BallotScannerMachineView extends AMachineView{
         buttonPanel.setBackground(c);
     }
 
+    /**
+     * called when this view needs to change as a result of a change in the state of
+     * this view's machine member
+     */
     public void updateView(){
         // Prints the label in large font in the upper left section of the tile.
         nameLabel.setText(Integer.toString(machine.getLabel()));
