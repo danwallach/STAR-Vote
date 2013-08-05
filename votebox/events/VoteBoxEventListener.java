@@ -284,7 +284,13 @@ public interface VoteBoxEventListener {
      */
     public void provisionalCommitBallot(ProvisionalCommitEvent provisionalCommitEvent);
 
+    /**
+     * Authorizes a booth to cast votes on the network using Non-Interactive, Zero-Knowledge proofs
+     */
     public void authorizedToCastWithNIZKS(AuthorizedToCastWithNIZKsEvent e);
 
+    /**
+     * Initialization event of a Tap Machine
+     */
     public void tapMachine(TapMachineEvent tapMachineEvent);
 }

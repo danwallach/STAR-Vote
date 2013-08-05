@@ -1367,24 +1367,44 @@ public class Model {
 
     }
 
+    /**
+     * this method is used to generate a pin to be stored and used by a voter
+     *
+     * @param precinct 3-digit precinct number
+     * @return new pin as String
+     */
     public String generatePin(String precinct){
         return bManager.generatePin(precinct);
     }
 
+    /**
+     * same as generatePin but for provisional ballots
+     *
+     * @param precinct
+     * @return
+     */
     public String generateProvisionalPin(String precinct){
         return bManager.generateProvisionalPin(precinct);
     }
 
+    /**
+     *  @return array of precincts
+     */
     public String[] getSelections(){
         return bManager.getSelections();
     }
 
+    /**
+     * @return first precinct in the ballot manager's precinct list
+     */
     public String getInitialSelection(){
         return bManager.getInitialSelection();
     }
 
-    public void readTestBallot()
-    {
+    /**
+     * A test method for reading a testBallot from file
+     */
+    public void readTestBallot(){
         // Open the files.
         File file1 = new File ("CurrentSession" + testBallotFilename);
         File file2 = new File (testNonceFilename);

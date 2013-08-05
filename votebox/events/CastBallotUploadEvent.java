@@ -49,6 +49,10 @@ public class CastBallotUploadEvent implements IAnnounceEvent {
         this._nonces = nonces;
     }
 
+    /**
+     * used to retrieve all nonces that must be published as a result of the election
+     * @return a collection of nonces of cast ballots
+     */
     public ArrayList<String> getDumpList() {
         ListExpression ballotList = (ListExpression)_nonces;
         Iterator<ASExpression> iterator = ballotList.iterator();

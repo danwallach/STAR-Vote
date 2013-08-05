@@ -2,12 +2,17 @@ package votebox.events;
 
 import sexpression.*;
 
-/**
+/*
  * Created with IntelliJ IDEA.
  * User: martinnikol
  * Date: 6/10/13
  * Time: 4:15 PM
  * To change this template use File | Settings | File Templates.
+ */
+
+/**
+ * An event that holds information about the polls, mainly whether or not the polls are currently open. Used to
+ * notify VoteBox booths that join the network late the the polls are open and that they should prompt for a user PIN
  */
 public class PollStatusEvent implements IAnnounceEvent{
 

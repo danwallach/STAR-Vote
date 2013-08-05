@@ -48,6 +48,13 @@ public class ChallengedBallotUploadEvent implements IAnnounceEvent {
         this.challengedBallots = challengedBallots;
     }
 
+    /**
+     * Packages ballot encryptions as well as the plaintext, precincts, and ballot ids of ballots into an array of
+     * List Expressions
+     *
+     * @return A list of Strings representing list expressiong of ballot IDs, precincts, encryptedBallots, and
+     *         decryptedBallots
+     */
     public ArrayList<String> getDumpList() {
         ListExpression ballotList = (ListExpression) challengedBallots;
         ArrayList<String> dumpList = new ArrayList<String>();

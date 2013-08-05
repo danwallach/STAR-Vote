@@ -30,6 +30,9 @@ import sexpression.NoMatch;
 import sexpression.StringExpression;
 import sexpression.StringWildcard;
 
+/**
+ * Event that announces a counted ballot
+ */
 public class BallotCountedEvent extends BallotReceivedEvent{
 
 	public BallotCountedEvent(int serial, int node, byte[] nonce, String bid, String precinct) {

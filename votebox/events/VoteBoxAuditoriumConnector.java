@@ -190,6 +190,10 @@ public class VoteBoxAuditoriumConnector {
         e.fire( notifier );
     }
 
+    /**
+     * Runs continuously in a dedicated thread for auditorium events for which this instance is configured to
+     * hear (to hear a specific event, the events Matcher Rule must be sent in as part of the constructor's arguments)
+     */
     private void initEventThread() {
         new Thread() {
             @Override

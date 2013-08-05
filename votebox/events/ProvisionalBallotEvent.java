@@ -8,10 +8,9 @@ import sexpression.StringExpression;
 import java.util.HashMap;
 
 /**
- * @author Matt Bernhard
- * 6/26/13
- *
  * An event which represents that printing did not occur successfully
+ *
+ * @author Matt Bernhard
  */
 public class ProvisionalBallotEvent implements IAnnounceEvent{
 

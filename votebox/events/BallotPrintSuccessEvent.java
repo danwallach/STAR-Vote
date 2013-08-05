@@ -5,10 +5,7 @@ import sexpression.*;
 import java.math.BigInteger;
 
 /**
- * Created with IntelliJ IDEA.
- * User: martinnikol
- * Date: 6/12/13
- * An event to signify that a print has been successful
+ * An event to signify that a ballot print has been successful
  */
 public class BallotPrintSuccessEvent implements IAnnounceEvent{
 
@@ -42,6 +39,9 @@ public class BallotPrintSuccessEvent implements IAnnounceEvent{
             return serial;
         }
 
+        /**
+         * @return nonce of printed ballot
+         */
         public byte[] getNonce() {
             return nonce;
         }
@@ -54,6 +54,9 @@ public class BallotPrintSuccessEvent implements IAnnounceEvent{
             return MATCHER;
         }
 
+        /**
+         * @return ballot ID of associated ballot
+         */
         public String getBID() {
             return bID;
         }

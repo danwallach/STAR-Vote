@@ -7,10 +7,11 @@ import edu.uconn.cse.adder.PublicKey;
 import sexpression.*;
 import crypto.interop.AdderKeyManipulator;
 
+//TODO: We need a way to send the final public key to the VoteBoxes (as well as preserve such a key
+//TODO: in the record, as it changes from run to run).  Alongside the ballot seems as good a place as any other.
+
 /**
- * We need a way to send the final public key to the VoteBoxes (as well as preserve such a key
- * in the record, as it changes from run to run).  Alongside the ballot seems as good a place as any
- * other.
+ * Event to authorize a VoteBox booth to cast using NZIKS (Non-interactive, zero-knowledge proofs)
  * 
  * @author Montrose
  *

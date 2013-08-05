@@ -92,6 +92,9 @@ public class CastCommittedBallotEvent implements IAnnounceEvent {
         return _serial;
     }
 
+    /**
+     * @return the ballot Id of cast ballot
+     */
     public ASExpression getBID(){
         return _bid;
     }

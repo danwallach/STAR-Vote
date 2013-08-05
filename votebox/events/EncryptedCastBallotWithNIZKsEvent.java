@@ -7,6 +7,9 @@ import sexpression.ListExpression;
 import sexpression.NamedNoMatch;
 import sexpression.StringExpression;
 
+/**
+ * equivalent to EncryptedCastBallotEvent, however with functionality to deal with Non-Interactive, Zero-Knowledge proofs.
+ */
 public class EncryptedCastBallotWithNIZKsEvent extends EncryptedCastBallotEvent {
 
     /**

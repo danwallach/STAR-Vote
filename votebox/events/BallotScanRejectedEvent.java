@@ -6,10 +6,9 @@ import java.math.BigInteger;
 import java.util.HashMap;
 
 /**
- * @author Matt Bernhard
- * 6/14/13
- *
  * An event which signals that a scanned ballot was rejected, i.e. not recognized by the supervisor
+ *
+ * @author Matt Bernhard
  */
 public class BallotScanRejectedEvent implements IAnnounceEvent {
 

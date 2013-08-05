@@ -39,7 +39,7 @@ public class SignatureVerify extends AST {
 			}) {
 
 		@Override
-		public String getName() {
+		public String getName(){
 			return "signature-verify";
 		}
 	};

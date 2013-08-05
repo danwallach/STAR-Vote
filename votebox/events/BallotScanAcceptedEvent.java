@@ -5,10 +5,9 @@ import sexpression.*;
 import java.util.HashMap;
 
 /**
- * @author Matt Bernhard
- * 6/14/13
- *
  * This event confirms that a Supervisor has cast a ballot that a scanner has announced
+ *
+ * @author Matt Bernhard
  */
 public class BallotScanAcceptedEvent implements IAnnounceEvent{
 

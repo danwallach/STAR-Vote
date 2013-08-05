@@ -125,10 +125,16 @@ public class BallotReceivedEvent implements IAnnounceEvent {
         return serial;
     }
 
+    /**
+     * @return ballot ID of received ballot
+     */
     public String getBID(){
         return bid;
     }
 
+    /**
+     * @return precinct of received ballot
+     */
     public String getPrecinct(){
         return precinct;
     }

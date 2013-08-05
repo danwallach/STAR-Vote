@@ -8,10 +8,9 @@ import sexpression.StringExpression;
 import java.util.HashMap;
 
 /**
- * @author Matt Bernhard
- * Date: 6/21/13
- *
  * This is an event that gets fired when the supervisor spoils a voter's ballot
+ *
+ * @author Matt Bernhard
  */
 public class SpoilBallotEvent implements IAnnounceEvent {
 

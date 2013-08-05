@@ -6,10 +6,9 @@ import java.math.BigInteger;
 
 
 /**
- * @author Matt Bernhard
- * 6/26/13
- *
  * An event which sends a ballot to a votebox in a provisional voting session
+ *
+ * @author Matt Bernhard
  */
 public class ProvisionalAuthorizeEvent implements IAnnounceEvent {
 

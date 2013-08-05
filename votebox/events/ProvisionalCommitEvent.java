@@ -9,10 +9,9 @@ import votebox.events.IAnnounceEvent;
 import java.util.HashMap;
 
 /**
- * @author Matt Bernhard
- * 6/26/13
- *
  * An event which allows for unique handling of provionally committed ballots
+ *
+ * @author Matt Bernhard
  */
 public class ProvisionalCommitEvent implements IAnnounceEvent {
     private final int _serial;
@@ -49,14 +48,23 @@ public class ProvisionalCommitEvent implements IAnnounceEvent {
         _bid = bid;
     }
 
+    /**
+     * @return the nonce
+     */
     public ASExpression getNonce(){
         return _nonce;
     }
 
+    /**
+     * @return An S-Expression of the ballot
+     */
     public ASExpression getBallot(){
         return _ballot;
     }
 
+    /**
+     * @return the ballot's ID
+     */
     public ASExpression getBID(){
         return _bid;
     }

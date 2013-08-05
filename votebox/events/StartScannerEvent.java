@@ -15,7 +15,7 @@ public class StartScannerEvent implements IAnnounceEvent{
         private ASExpression pattern = new ListExpression(StringExpression
                 .makeString("start-scanner"));
 
-        public IAnnounceEvent match(int serial, ASExpression sexp) {
+        public IAnnounceEvent match(int serial, ASExpression sexp){
             ASExpression res = pattern.match(sexp);
             if (res != NoMatch.SINGLETON) {
                 return new StartScannerEvent(serial);

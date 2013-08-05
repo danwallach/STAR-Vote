@@ -93,26 +93,26 @@ public class AssignLabelEvent implements IAnnounceEvent {
     /**
      * @return the new label
      */
-    public int getLabel() {
+    public int getLabel(){
         return label;
     }
 
     /**
      * @return the node
      */
-    public int getNode() {
+    public int getNode(){
         return node;
     }
 
-    public int getSerial() {
+    public int getSerial(){
         return serial;
     }
 
-    public void fire(VoteBoxEventListener l) {
+    public void fire(VoteBoxEventListener l){
         l.assignLabel( this );
     }
 
-    public ASExpression toSExp() {
+    public ASExpression toSExp(){
         return new ListExpression(
                 StringExpression.makeString( "assign-label" ), StringExpression
                         .makeString( Integer.toString( node ) ),

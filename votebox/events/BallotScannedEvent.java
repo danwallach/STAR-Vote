@@ -41,10 +41,19 @@ public class BallotScannedEvent implements IAnnounceEvent {
     return serial;
   }
 
+  /**
+   * @return the ballot ID of accepted ballot
+   */
   public String getBID() {
     return BID;
   }
 
+    /**
+     * Constructor of ballot
+     *
+     * @param serial
+     * @param BID
+     */
   public BallotScannedEvent(int serial, String BID) {
     this.serial = serial;
     this.BID = BID;

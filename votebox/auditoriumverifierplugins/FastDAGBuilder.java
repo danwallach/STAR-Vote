@@ -70,7 +70,15 @@ public class FastDAGBuilder extends DagBuilder {
         _timelines = new HashMap<String, Map<Integer, Expression>>();
     }
 
-	
+    /**
+     * Add a message to the list of messages that this builder is holding
+     *
+     * @param message
+     *            Add this message to the list
+     * @throws FormatException
+     *             This method throws if the given message's datum is not
+     *             formatted as expected.
+     */
     public void add(Message message) throws FormatException {
         try {
         	MessagePointer msgPtr = new MessagePointer(message);
@@ -106,8 +114,12 @@ public class FastDAGBuilder extends DagBuilder {
         catch (IncorrectFormatException e) {
             throw new FormatException( message.getDatum(), e );
         }
-   }
+    }
 
+    /**
+     * @return This method returns a dag which reflects the collection of
+     *         messages that have been given so far.
+     */
     public DAGValue toDAG() {
     	return new FastDAG(_msgToPtr,
     			_predecessors,

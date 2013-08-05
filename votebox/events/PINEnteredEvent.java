@@ -5,7 +5,7 @@ import sexpression.*;
 import java.math.BigInteger;
 
 /**
- * Event class for when a pin gets entered on a votebox
+ * Event class for when a pin is entered on a VoteBox. Entered Pin is included in event
  */
 public class PINEnteredEvent implements IAnnounceEvent {
 
@@ -40,6 +40,9 @@ public class PINEnteredEvent implements IAnnounceEvent {
         return serial;
     }
 
+    /**
+     * @return the nonce
+     */
     public byte[] getNonce() {
         return nonce;
     }
@@ -52,6 +55,9 @@ public class PINEnteredEvent implements IAnnounceEvent {
         return MATCHER;
     }
 
+    /**
+     * @return the pin entered at the console
+     */
     public String getPin() {
         return pin;
     }

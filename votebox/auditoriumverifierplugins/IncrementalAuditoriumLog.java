@@ -112,6 +112,9 @@ public class IncrementalAuditoriumLog implements IIncrementalPlugin {
 		_alldagValue.seal();
 	}
 
+    /**
+     * Initialization of global variables.
+     */
 	private void registerGlobals() {
 		HashMap<String, Value> bindings = new HashMap<String, Value>();
 
@@ -136,6 +139,9 @@ public class IncrementalAuditoriumLog implements IIncrementalPlugin {
 		ActivationRecord.END.setBindings(bindings);
 	}
 
+    /**
+     * Registers handlers for this IncrementalAuditoriumLog
+     */
 	private void registerHandlers() {
 		_verifier.getPrimitiveFactories().put("signature-verify",
 				SignatureVerify.FACTORY);
