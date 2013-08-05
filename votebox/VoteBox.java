@@ -845,6 +845,9 @@ public class VoteBox{
                 // NO-OP
             }
 
+            /**
+             * Handler for Polls Open. If not voting, booth prompts for pin
+             */
             public void pollsOpen(PollsOpenEvent e) {
                 if(!voting){
                     promptForPin("Enter Authorization PIN");
@@ -893,11 +896,17 @@ public class VoteBox{
                 // NO-OP
             }
 
+            /**
+             * Handles InvalidPinEvent and reprompts for PIN
+             */
             public void invalidPin(InvalidPinEvent e) {
                 if(e.getNode() == mySerial)
                     promptForPin("Invalid PIN: Enter Valid PIN");
             }
 
+            /**
+             * received by VoteBox booth when it joins the network after a polls open event. PIN prompt is executed.
+             */
             public void pollStatus(PollStatusEvent pollStatusEvent) {
                 System.out.println("Received Poll Status event and the polls are " + (pollStatusEvent.getPollStatus() == 1 ? "open":"closed"));
                 if(!voting && pollStatusEvent.getPollStatus() == 1){
@@ -909,7 +918,9 @@ public class VoteBox{
                 // NO-OP
             }
 
-            //This indicates that the ballot was successfully printed and the voting session can safely end
+            /**
+             * This indicates that the ballot was successfully printed and the voting session can safely end
+             */
             public void ballotPrintSuccess(BallotPrintSuccessEvent e){
                 if (e.getBID() == bid
                         && Arrays.equals(e.getNonce(), nonce)) {
@@ -939,6 +950,9 @@ public class VoteBox{
                 // NO-OP
             }
 
+            /**
+             * Used as an intermittent poll on the status of this booth through auditorium
+             */
             public void pollMachines(PollMachinesEvent pollMachinesEvent) {
                 broadcastStatus();
                 try {
@@ -955,6 +969,9 @@ public class VoteBox{
             public void announceProvisionalBallot(ProvisionalBallotEvent e) {
             }
 
+            /**
+             * Handler for ProvisionalAuthorizeEvent from supervisor. Generates ballot file path and stores ballot
+             */
             public void provisionalAuthorizedToCast(ProvisionalAuthorizeEvent e) {
 
                 if (e.getNode() == mySerial) {
@@ -1049,6 +1066,12 @@ public class VoteBox{
         statusTimer.start();
     }
 
+    /**
+     * initializes a GUI dialog through which the user enters their assigned pin. Returns with no action if
+     * already prompting for PIN.
+     *
+     * @param message message displeyed as the header of the PIN prompt e.g. "Please Enter Your PIN"
+     */
     public void promptForPin(String message) {
         if(promptingForPin){
             System.out.println("Still prompting for PIN!");
@@ -1122,6 +1145,10 @@ public class VoteBox{
         promptingForPin = false;
     }
 
+    /**
+     * Generates a new PINEnteredEvent and sends over the network for validation by supervisor.
+     * @param pin 4-digit, decimal PIN to be validated
+     */
     public void validatePin(String pin) {
         byte[] pinNonce = new byte[256];
         for (int i = 0; i < 256; i++)

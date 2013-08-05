@@ -150,6 +150,11 @@ public class StraightTicket extends ACardStrategy {
 		}
 	}
 
+    /**
+     * Groups Card Elements with their party affiliations
+     * @return a Map from party-affiliation String to list of affiliated Card elements
+     * @throws CardStrategyException
+     */
 	private HashMap<String, ArrayList<SelectableCardElement>> getPartyAffiliations()
 			throws CardStrategyException {
 		if (_partyAffiliations == null)

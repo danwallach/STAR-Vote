@@ -176,6 +176,12 @@ public class WriteInCandidateGUI extends JFrame {
         });
     }
 
+    /**
+     * Creates a standardized image of the candidate's name
+     *
+     * @param candidateName name of candidate
+     * @return
+     */
     public BufferedImage renderCandidateName (String candidateName)
     {
 		/* Create the canvas on which the images will be drawn. */

@@ -25,8 +25,9 @@ package votebox;
 import java.io.*;
 
 /**
- * @author Montrose, Matt Bernhard, Mircea C. Berechet
+ * Utility for reading battery status of device
  *
+ * @author Montrose, Matt Bernhard, Mircea C. Berechet
  */
 public class BatteryStatus {
 

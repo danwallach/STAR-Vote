@@ -35,8 +35,15 @@ import votebox.middle.IVoteboxConstants;
 import auditorium.IAuditoriumParams;
 
 /**
- * This class reads constants
- * 
+ * This class reads constants from a configuration file specified by client software. It reads in configuration
+ * constants from a file with the following format: </br></br>
+ *
+ * #comment description of constant</br>
+ * CONSTANT_NAME</br>
+ * constantValue</br>
+ * ... more ...</br>
+ * .............</br>
+ *
  * @author kyle
  * 
  */

@@ -38,9 +38,9 @@ import sexpression.stream.*;
  * A data logger is a simple wrapper around an s-expression output writer. It
  * offers a few added benefits:<br>
  * 1) Every expression that gets written to disk needs to be in the form (UID
- * Type Event Timestamp) and this class will guarentee that only entries of this
+ * Type Event Timestamp) and this class will guarantee that only entries of this
  * type are written down in the log.<br>
- * 2) In order to accmplish #1, this class offeres a nice interface (a method
+ * 2) In order to accomplish #1, this class offers a nice interface (a method
  * definition) which eliminates the need for an outside user to even ever
  * construct an ASExpression.<br>
  * <br>
@@ -106,6 +106,9 @@ public class DataLogger {
         }
     }
 
+    /**
+     * Generate ASExpression and dump
+     */
     public static void CreateAndDump(String UID, String type, String event,
             Date timestamp) {
         if (Singleton == null)
@@ -113,6 +116,9 @@ public class DataLogger {
         Singleton.createAndDump( UID, type, event, timestamp );
     }
 
+    /**
+     * Dump the ballot
+     */
     public static void DumpBallot(ASExpression ballot) {
         if (Singleton == null){
         	System.out.println("Cancelled dumping ballot, [Singleton = null]");

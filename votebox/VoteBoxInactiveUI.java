@@ -86,7 +86,10 @@ public class VoteBoxInactiveUI extends JFrame implements IVoteBoxInactiveUI {
         c.insets = new Insets(0, 0, 0, 0);
         add(statusLbl, c);
     }
-    
+
+    /**
+     * If no label, label become "-". Otherwise, it becomes the VoteBox's label
+     */
     private void updateLabel() {
         if (votebox.getLabel()==0)
             numLbl.setText("-");

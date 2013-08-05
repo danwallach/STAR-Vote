@@ -22,6 +22,13 @@
 
 package votebox;
 
+/**
+ * An interface describing the inactive UI of a Votebox
+ */
 public interface IVoteBoxInactiveUI {
+    /**
+     *
+     * @param b visibility enabled param
+     */
 	public void setVisible(boolean b);
 }

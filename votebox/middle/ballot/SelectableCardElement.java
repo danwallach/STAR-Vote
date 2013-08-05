@@ -205,6 +205,7 @@ public final class SelectableCardElement {
 		return _deselectHandler;
 	}
 
+
 	public Event getSelectedEvent() {
 		return _selectedEvent;
 	}

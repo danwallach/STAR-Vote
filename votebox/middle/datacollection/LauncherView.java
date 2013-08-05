@@ -57,6 +57,9 @@ import votebox.middle.datacollection.evil.Flip4UndervoteTop;
 //#endif
 import votebox.middle.driver.IAdapter;
 
+/**
+ * GUI of Launcher
+ */
 public class LauncherView extends JFrame {
 	private static final String FLIP_NONE = "None";
 	private static final String FLIP_4_TO_CANDIDATE = "Flip random 4 in top 8 to candidate";
@@ -329,6 +332,7 @@ public class LauncherView extends JFrame {
 		return centerPanel;
 	}
 
+
 	private JComboBox getFlipField(){
 		if(flipField == null){
 			flipField = new JComboBox();
@@ -357,7 +361,6 @@ public class LauncherView extends JFrame {
 				}
 			});
 		}
-		
 		return vvpatBrowseButton;
 	}
 	
