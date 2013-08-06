@@ -70,6 +70,11 @@ public class Properties {
     public static final String PARTY = "Party";
 
     /**
+     * This property defines the type of Write-In Candidate for a WriteInCardElement.
+     */
+    public static final String WRITE_IN_TYPE = "WriteInType";
+
+    /**
      * Cards can have this property set to denote k in kofn in reference to KofN
      * voting, or voting in races where a certain number (k) of candidates can
      * be selected out of all the candidates in the race (n).
@@ -456,7 +461,7 @@ public class Properties {
     }
     
     /**
-     * For debuging purposes, a meaningful toString().
+     * For debugging purposes, a meaningful toString().
      * @return String representation of this Properties object.
      */
     public String toString(){
