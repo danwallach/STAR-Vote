@@ -33,7 +33,8 @@ public class WriteInCandidateGUI extends JFrame {
     /* The width of the drawable/viewable space on the screen. */
     private static final int GUI_WIDTH = 800;
     /* The height of the drawable/viewable space on the screen. */
-    private static final int GUI_HEIGHT = 320;
+    private static final int REGULAR_GUI_HEIGHT = 225;
+    private static final int PRESIDENTIAL_GUI_HEIGHT = 365;
     /* The path to the directory that contains the images. */
     public static final String SLASH = System.getProperty("file.separator");
     public static final String pathToImages = "images" + SLASH + "writein" + SLASH;
@@ -42,7 +43,7 @@ public class WriteInCandidateGUI extends JFrame {
     public static final int IMAGE_STANDARD_HEIGHT = 14;
     /* The size of the canvas. */
     public static final int CANVAS_WIDTH = 700;
-    public static final int CANVAS_HEIGHT = 210;
+    public static final int CANVAS_HEIGHT = 112;
     /* The location of the upper left corner of the next image to be drawn. */
     public static int nextUpperLeftX = 0;
     public static int nextUpperLeftY = 0;
@@ -55,8 +56,10 @@ public class WriteInCandidateGUI extends JFrame {
     /* The type of the write-in candidate. */
     private String CANDIDATE_TYPE;
 
-    private JTextField candidateNameTextField;
-    private JPanel candidateNamePanel;
+    private JTextField primaryCandidateNameTextField;
+    private JTextField secondaryCandidateNameTextField;
+    private JPanel primaryCandidateNamePanel;
+    private JPanel secondaryCandidateNamePanel;
 
     /**
      * Start displaying the GUI.
@@ -96,16 +99,19 @@ public class WriteInCandidateGUI extends JFrame {
      * @param cX the x-coordinate of the center of the GUI
      * @param cY the y-coordinate of the center of the GUI
      */
-    public WriteInCandidateGUI(int cX, int cY, String uid, String guiType) {
-        // Set Frame properties.
-        setTitle("Type in Candidate Name");
-        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        setBounds(cX - GUI_WIDTH / 2, cY - GUI_HEIGHT / 2, GUI_WIDTH, GUI_HEIGHT);
-
+    public WriteInCandidateGUI(int cX, int cY, String uid, String guiType)
+    {
         // Set the UID.
         CANDIDATE_UID = uid;
         // Set the TYPE.
         CANDIDATE_TYPE = guiType;
+        // Set the appropriate height for the GUI, based on the type of the candidate.
+        int GUI_HEIGHT = CANDIDATE_TYPE.equals("Regular") ? REGULAR_GUI_HEIGHT : PRESIDENTIAL_GUI_HEIGHT;
+
+        // Set Frame properties.
+        setTitle("Type in Candidate Name");
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        setBounds(cX - GUI_WIDTH / 2, cY - GUI_HEIGHT / 2, GUI_WIDTH, GUI_HEIGHT);
 
         // Build GUI Elements.
         buildGUIElements();
@@ -125,23 +131,43 @@ public class WriteInCandidateGUI extends JFrame {
         contentPane.setLayout(new BorderLayout(0, 0));
         setContentPane(contentPane);
 
+        /* Main panel of the GUI. */
         JPanel mainPanel = new JPanel();
         mainPanel.setBackground(STAR_VOTE_BLUE);
         contentPane.add(mainPanel, BorderLayout.CENTER);
 
-        candidateNameTextField = new JTextField();
+        /* GUI Elements for the primary candidate. */
+        primaryCandidateNameTextField = new JTextField();
 
-        JLabel enterNameLabel = new JLabel("Enter your preferred " + CANDIDATE_TYPE + " candidate's name (" + CANDIDATE_UID + "):");
-        mainPanel.add(enterNameLabel);
-        mainPanel.add(candidateNameTextField);
-        candidateNameTextField.setColumns(10);
+        JLabel primaryEnterNameLabel = new JLabel("Enter your preferred " + CANDIDATE_TYPE + " candidate's name (" + CANDIDATE_UID + "):");
+        mainPanel.add(primaryEnterNameLabel);
+        mainPanel.add(primaryCandidateNameTextField);
+        primaryCandidateNameTextField.setColumns(10);
 
-        candidateNamePanel = new JPanel();
-        candidateNamePanel.setBackground(Color.WHITE);
-        candidateNamePanel.setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
-        mainPanel.add(candidateNamePanel);
-        candidateNamePanel.setLayout(null);
+        primaryCandidateNamePanel = new JPanel();
+        primaryCandidateNamePanel.setBackground(Color.WHITE);
+        primaryCandidateNamePanel.setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
+        mainPanel.add(primaryCandidateNamePanel);
+        primaryCandidateNamePanel.setLayout(null);
 
+        if (CANDIDATE_TYPE.equals("Presidential"))
+        {
+            /* GUI Elements for the secondary candidate. */
+            secondaryCandidateNameTextField = new JTextField();
+
+            JLabel secondaryEnterNameLabel = new JLabel("Enter your preferred " + CANDIDATE_TYPE + " vice-candidate's name (" + CANDIDATE_UID + "):");
+            mainPanel.add(secondaryEnterNameLabel);
+            mainPanel.add(secondaryCandidateNameTextField);
+            secondaryCandidateNameTextField.setColumns(10);
+
+            secondaryCandidateNamePanel = new JPanel();
+            secondaryCandidateNamePanel.setBackground(Color.WHITE);
+            secondaryCandidateNamePanel.setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
+            mainPanel.add(secondaryCandidateNamePanel);
+            secondaryCandidateNamePanel.setLayout(null);
+        }
+
+        /* Button used to submit the entered name(s) and close the prompt. */
         JButton submitAndStopButton = new JButton("Submit name and close editor");
         mainPanel.add(submitAndStopButton);
 
@@ -149,22 +175,21 @@ public class WriteInCandidateGUI extends JFrame {
          * Listeners for events.
          */
         /*
-           Listens for an Enter key being pressed. It builds and displays a candidate name based
-           on the text that was entered in the text field.
+           Listens for an Enter key being pressed for the primary candidate.
+           It builds and displays a candidate name based on the text that was entered in the text field.
          */
-        candidateNameTextField.addKeyListener(new KeyAdapter() {
+        primaryCandidateNameTextField.addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent arg0) {
-                if(arg0.getKeyCode() == KeyEvent.VK_ENTER)
-                {
+                if (arg0.getKeyCode() == KeyEvent.VK_ENTER) {
 					/* Clear the canvas panel. */
-                    Graphics g = candidateNamePanel.getGraphics();
+                    Graphics g = primaryCandidateNamePanel.getGraphics();
                     g.setColor(Color.WHITE);
                     g.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
                     nextUpperLeftX = 0;
                     nextUpperLeftY = 0;
 
                     /* Render the candidate's name. */
-                    BufferedImage canvas = renderCandidateName(candidateNameTextField.getText());
+                    BufferedImage canvas = renderCandidateName(primaryCandidateNameTextField.getText());
 
 					/* Draw the canvas into the JPanel. */
                     g.drawImage(canvas, 0, 0, null);
@@ -177,18 +202,56 @@ public class WriteInCandidateGUI extends JFrame {
 
 					/* Save the image to a file. */
                     File file = new File(pathToImages, "result.png");
-                    try
-                    {
+                    try {
                         ImageIO.write(canvas, "png", file);
-                    }
-                    catch (IOException e)
-                    {
+                    } catch (IOException e) {
                         System.out.println("Canvas image creation failed!");
                         e.printStackTrace();
                     }
                 }
             }
         });
+
+        if (CANDIDATE_TYPE.equals("Presidential"))
+        {
+            /*
+               Listens for an Enter key being pressed for the secondary candidate.
+               It builds and displays a candidate name based on the text that was entered in the text field.
+             */
+            secondaryCandidateNameTextField.addKeyListener(new KeyAdapter() {
+                public void keyPressed(KeyEvent arg0) {
+                    if (arg0.getKeyCode() == KeyEvent.VK_ENTER) {
+                        /* Clear the canvas panel. */
+                        Graphics g = secondaryCandidateNamePanel.getGraphics();
+                        g.setColor(Color.WHITE);
+                        g.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+                        nextUpperLeftX = 0;
+                        nextUpperLeftY = 0;
+
+                        /* Render the candidate's name. */
+                        BufferedImage canvas = renderCandidateName(secondaryCandidateNameTextField.getText());
+
+                        /* Draw the canvas into the JPanel. */
+                        g.drawImage(canvas, 0, 0, null);
+
+                        /* Trim the image. */
+                        canvas = PrintImageUtils.trimImageVertically(canvas, false, Integer.MAX_VALUE); // Above
+                        canvas = PrintImageUtils.trimImageVertically(canvas, true, Integer.MAX_VALUE);  // Below
+                        canvas = PrintImageUtils.trimImageHorizontally(canvas, false, Integer.MAX_VALUE); // Left
+                        canvas = PrintImageUtils.trimImageHorizontally(canvas, true, Integer.MAX_VALUE); // Right
+
+                        /* Save the image to a file. */
+                        File file = new File(pathToImages, "result2.png");
+                        try {
+                            ImageIO.write(canvas, "png", file);
+                        } catch (IOException e) {
+                            System.out.println("Canvas image creation failed!");
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            });
+        }
 
         /*
            Listens for the submit and stop button being pressed. Once it is pressed, this should render
