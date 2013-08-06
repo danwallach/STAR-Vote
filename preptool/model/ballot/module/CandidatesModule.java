@@ -107,9 +107,7 @@ public class CandidatesModule extends AModule {
 
             public void addWriteInRow() {
                 /* Create a mapping of language name to CardElement name. */
-                HashMap<String, String> names = new HashMap<String, String>();
-                names.put("English", "Write-In Candidate");
-                names.put("Français", "Ecrivez votre sélection");
+                HashMap<String, String> writeInNames = CardElement.writeInNames;
                 /* Create a new CardElement with the name based on the language information defined above. */
                 CardElement writeInCardElement = new CardElement( columns );
                 /* Get the list of all the languages. */
@@ -117,16 +115,19 @@ public class CandidatesModule extends AModule {
                 /* Set the name based on the language. */
                 for (Language language : languages)
                 {
-                    if (names.keySet().contains(language.getName()))
+                    for (int columnIndex = 0; columnIndex < columns; columnIndex++)
                     {
-                        writeInCardElement.setColumn(language, 0, names.get(language.getName()));
-                    }
-                    else
-                    {
-                        writeInCardElement.setColumn(language, 0, "MISSING TRANSLATION INFORMATION");
+                        if (writeInNames.keySet().contains(language.getName()))
+                        {
+                            writeInCardElement.setColumn(language, columnIndex, writeInNames.get(language.getName()));
+                        }
+                        else
+                        {
+                            writeInCardElement.setColumn(language, columnIndex, "MISSING TRANSLATION INFORMATION");
+                        }
                     }
                 }
-
+                /* The card element will be distinguished from a regular candidate by its name being one of the LocalizedStrings defined in CardElement. */
                 data.add(writeInCardElement);
                 fireTableRowsInserted( data.size(), data.size() );
                 setChanged();

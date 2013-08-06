@@ -9,7 +9,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
 
 /**
- * GUI utilized by the ActiveUI of a VoteBox during polls open to promt user for PIN
+ * GUI utilized by the ActiveUI of a VoteBox during polls open to prompt user for PIN.
  *
  * @author Mircea C. Berechet
  * Added to project: 07/11/2013

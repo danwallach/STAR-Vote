@@ -32,13 +32,33 @@ import preptool.model.XMLTools;
 import preptool.model.language.Language;
 import preptool.model.language.LocalizedString;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /**
  * A CardElement is an option that the user has to choose from, that lies in the
  * ballot. For instance, candidates in a race would be represented using
  * CardElements.
- * @author cshaw
+ * @author cshaw, Mircea C. Berechet
  */
 public class CardElement {
+
+    /* Create a mapping of language name to CardElement name. */
+    /* This is used to identify names of write-in candidates. */
+    public static final HashMap<String, String> writeInNames = new HashMap<String, String>();
+    static
+    {
+        writeInNames.put("English", "Write-In Candidate");
+        writeInNames.put("Español", "Escribe el nombre de su selección");
+        writeInNames.put("Français", "Écrivez le nom de votre sélection");
+        writeInNames.put("Deutsch", "Schreiben Sie die Namen Ihrer Auswahl");
+        writeInNames.put("Italiano", "Scrivi il nome della tua selezione");
+        writeInNames.put("Русский", "Напишите имя вашего выбора");
+        writeInNames.put("中文", "撰写您的选择的名称");
+        writeInNames.put("日本語", "あなたの選択の名前を書く");
+        writeInNames.put("한국말", "선택의 이름을 작성");
+        writeInNames.put("العربية", "كتابة اسم من اختيارك");
+    }
 
 	/**
 	 * Parses XML into a CardElement object
@@ -216,10 +236,52 @@ public class CardElement {
 	 * @return the element for this ACardElement
 	 */
 	public Element toXML(Document doc) {
-		Element cardElementElt = doc.createElement("SelectableCardElement");
-		cardElementElt.setAttribute("uid", uniqueID);
+        Element cardElementElt;
+        if (numNames > 0)
+        {
+            boolean isWriteInCandidate = false;
+            /* Get the list of all the languages. */
+            ArrayList<Language> languages = Language.getAllLanguages();
+            /*for (Language language : languages)
+            {
+                System.out.println(numNames);
+                if (numNames == 1)
+                {
+                    System.out.println("Name 1 " + language.getName() + ": " + names[0].get(language));
+                }
+                else
+                {
+                    System.out.println("Name 1 " + language.getName() + ": " + names[0].get(language));
+                    System.out.println("Name 2 " + language.getName() + ": " + names[1].get(language));
+                }
+            }*/
+            for (Language language : languages)
+            {
+                /* If the name of this Element is a write-in candidate's generic name, then mark it as being a write-in candidate. */
+                if (getName(language, 0).equals(writeInNames.get(language.getName())))
+                {
+                    isWriteInCandidate = true;
+                    break;
+                }
+            }
+
+            if (isWriteInCandidate)
+            {
+                /* This is a write-in candidate: create a special Element, so that the VoteBox would treat it differently from a SelectableCardElement. */
+                cardElementElt = doc.createElement("WriteInCardElement");
+                /* Add in the unique ID. */
+                cardElementElt.setAttribute("uid", uniqueID);
+                /* Add a property that specifies the type of race that this write-in is part of ("Regular" Race or "Presidential" Race). */
+                XMLTools.addProperty(doc, cardElementElt, "WriteInType", "String", (numNames == 1) ? "Regular" : "Presidential");
+                return cardElementElt;
+            }
+        }
+
+        /* The default operation on a CardElement used to be only the code below. It will be kept as a default for anything that is not a write-in candidate. */
+        cardElementElt = doc.createElement("SelectableCardElement");
+        cardElementElt.setAttribute("uid", uniqueID);
         if(!party.equals(Party.NO_PARTY))
             XMLTools.addProperty(doc, cardElementElt, "Party", "String", getParty().getName(Language.getLanguageForName("English")));
-		return cardElementElt;
+        return cardElementElt;
 	}
 }
