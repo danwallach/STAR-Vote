@@ -59,7 +59,7 @@ import votebox.middle.UnknownTypeException;
  * to parse the ballot xml file into a w3c dom tree. This dom tree is first
  * validated with our schema and then interpreted recursively from the top down.
  * 
- * @author derrley
+ * @author derrley, Mircea C. Berechet
  * 
  */
 public class BallotParser {
@@ -220,25 +220,49 @@ public class BallotParser {
             Node child = children.item( lcv );
 
             if (child.getNodeName().equals( "Property" ))
-                parseProperties( child, properties );
-            else if (child.getNodeName().equals( "ListProperty" ))
-                parseListProperties( child, properties );
-            else if (child.getNodeName().equals( "CardElement" )
-                    || child.getNodeName().equals( "SelectableCardElement" )) {
-                elements.add( parseElement( child ) );
-            }
-            else if (child.getNodeName().equals("ListElement"))
             {
-                elements.add( parseElement( child ) );
+                parseProperties( child, properties );
             }
-            else if (child.getNodeName().equals( "#text" ))
-                ; // Do Nothing
             else
-                throw new BallotParserException(
-                        "I dont recognize "
-                                + child.getNodeName()
-                                + " as being a Property, CardElement, or SelectableCardElement",
-                        null );
+            {
+                if (child.getNodeName().equals( "ListProperty" ))
+                {
+                    parseListProperties( child, properties );
+                }
+                else
+                {
+                    if (child.getNodeName().equals( "CardElement" )
+                        || child.getNodeName().equals( "SelectableCardElement" ))
+                    {
+                        elements.add( parseElement( child ) );
+                    }
+                    else
+                    {
+                        if (child.getNodeName().equals("ListElement"))
+                        {
+                            elements.add( parseElement( child ) );
+                        }
+                        else
+                        {
+                            if (child.getNodeName().equals("WriteInCardElement"))
+                            {
+                                elements.add( parseWriteInElement( child ) );
+                            }
+                            else
+                            {
+                                if (child.getNodeName().equals( "#text" ))
+                                ; // Do Nothing
+                                else
+                                    throw new BallotParserException(
+                                            "I dont recognize "
+                                                    + child.getNodeName()
+                                                    + " as being a Property, CardElement, or SelectableCardElement",
+                                            null );
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         //Shuffle the elements of the card to hopefully reorder them
@@ -297,6 +321,53 @@ public class BallotParser {
         }
 
         // Make sure there are no duplicates
+        if (_elements.containsKey( uniqueID ))
+            throw new BallotParserException( "The unique ID " + uniqueID
+                    + " was declared more than once in the ballot's XML", null );
+
+        _elements.put( uniqueID, element );
+        return element;
+    }
+
+    /**
+     * This method is a helper method to parseCard. It is called when a
+     * WriteInCardElement is encountered in the dom tree.
+     *
+     * @param node
+     *            This is the dom node which represents the element
+     * @return This method returns the new element which represents the given
+     *         dom node.
+     * @throws Exception
+     *             This method throws an exception if the ballot parser
+     *             encountered any problems translating the tree.
+     */
+    private WriteInCardElement parseWriteInElement(Node node)
+            throws BallotParserException {
+        NamedNodeMap nodeAttributes = node.getAttributes();
+        NodeList children = node.getChildNodes();
+
+        String uniqueID = nodeAttributes.getNamedItem( "uid" ).getNodeValue();
+
+        // Parse all the properties.
+        Properties properties = new Properties();
+        for (int lcv = 0; lcv < children.getLength(); lcv++) {
+            Node child = children.item( lcv );
+
+            if (child.getNodeName().equals( "Property" ))
+                parseProperties( child, properties );
+            else if (child.getNodeName().equals( "ListProperty" ))
+                parseListProperties( child, properties );
+            else if (child.getNodeName().equals( "#text" ))
+                ; // Do nothing
+            else
+                throw new BallotParserException( "I dont recgonize "
+                        + child.getNodeName() + " as a property.", null );
+        }
+
+        // Create the new card element.
+        WriteInCardElement element = new WriteInCardElement( uniqueID, properties );
+
+        // Make sure there are no duplicates.
         if (_elements.containsKey( uniqueID ))
             throw new BallotParserException( "The unique ID " + uniqueID
                     + " was declared more than once in the ballot's XML", null );

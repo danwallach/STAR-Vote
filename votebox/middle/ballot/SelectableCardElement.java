@@ -54,7 +54,7 @@ import votebox.middle.driver.UnknownUIDException;
  * 
  */
 
-public final class SelectableCardElement {
+public class SelectableCardElement {
 
 	private Card _parentCard;
 

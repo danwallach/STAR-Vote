@@ -20,6 +20,7 @@
       <xs:element name="ListProperty" type="listPropertyType" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="CardElement" type="cardelementType" minOccurs="0"  maxOccurs="unbounded"/>
       <xs:element name="SelectableCardElement" type="cardelementType" minOccurs="0"  maxOccurs="unbounded"/>
+      <xs:element name="WriteInCardElement" type="cardelementType" minOccurs="0" maxOccurs="unbounded"/>
     </xs:choice>
     <xs:attribute name="uid"  type="xs:string" use="required"/>
   </xs:complexType>
