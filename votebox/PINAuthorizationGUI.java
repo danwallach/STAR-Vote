@@ -77,15 +77,15 @@ public class PINAuthorizationGUI extends JFrame {
 
     /**
      * Create the GUI and build its GUI Elements.
-     * @param ulX the x-coordinate of the center of the GUI
-     * @param ulY the y-coordinate of the center of the GUI
+     * @param cX the x-coordinate of the center of the GUI
+     * @param cY the y-coordinate of the center of the GUI
      */
-    public PINAuthorizationGUI(int ulX, int ulY) {
+    public PINAuthorizationGUI(int cX, int cY) {
 
         setTitle("Authorization Required");
         setPreferredSize(new Dimension(GUI_WIDTH, GUI_HEIGHT));
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        setBounds(ulX - (GUI_WIDTH + SIDE_BARS_WIDTH) / 2, ulY - (GUI_HEIGHT + TITLE_BAR_HEIGHT) / 2, GUI_WIDTH + SIDE_BARS_WIDTH, GUI_HEIGHT + TITLE_BAR_HEIGHT);
+        setBounds(cX - (GUI_WIDTH + SIDE_BARS_WIDTH) / 2, cY - (GUI_HEIGHT + TITLE_BAR_HEIGHT) / 2, GUI_WIDTH + SIDE_BARS_WIDTH, GUI_HEIGHT + TITLE_BAR_HEIGHT);
         buildGUIElements();
     }
 

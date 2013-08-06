@@ -2,26 +2,18 @@ package votebox.middle.ballot;
 
 import votebox.middle.IncorrectTypeException;
 import votebox.middle.Properties;
+import votebox.middle.writein.WriteInCandidateGUI;
 
 
 /**
- * A WriteInCardElement is a CardElement that can be toggled and focused on.
- * For the purposes of the voting machine runtime, toggling can be thought of as
- * the voter's expression of preference. Focusing is strictly a gui capability.
- * The "focused" element simply is the element which the user is currently
- * looking at. The only reason this state is supported model side is because the
- * model needs to define an image to hand to the view for when the element is
- * focused. This is important, since the voting machine should do no rendering
- * work during runtime. The focused, state, however unlike the selected state,
- * has nothing to do with the model.< para>
+ * A WriteInCardElement is a SelectableCardElement whose candidate name can be modified.
  *
- * In order to gain the focusing capability, this class must implement the
- * IFocusable interface. This class also extends CardElement, because the
- * WriteInCardElement is a special kind of ballot element -- one that can be
- * selected and have its corresponding image be rewritten.< para>
+ * This class extends SelectableCardElement, because the WriteInCardElement
+ * is a special kind of selectable ballot element -- one that can start a
+ * prompt and have its corresponding image be rewritten.
  *
- * @author Mircea C. Berechet
- * Date added to project: 08/06/2013
+ * Author: Mircea C. Berechet
+ * Added to project: 08/06/2013
  */
 
 public final class WriteInCardElement extends SelectableCardElement{
@@ -53,8 +45,10 @@ public final class WriteInCardElement extends SelectableCardElement{
     public void startWriteInCandidateGUI()
     {
         try
-        {
-        System.out.println("Starting a GUI for a " + getProperties().getString(Properties.WRITE_IN_TYPE) + " write-in candidate!");
+        {   String writeInType = getProperties().getString(Properties.WRITE_IN_TYPE);
+            //System.out.println("Starting a GUI for a " + writeInType + " write-in candidate (" + getUniqueID() + ")!");
+            WriteInCandidateGUI writeInGUI = new WriteInCandidateGUI(680, 384, getUniqueID(), writeInType);
+            writeInGUI.start();
         }
         catch (IncorrectTypeException e)
         {

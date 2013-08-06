@@ -1,7 +1,6 @@
 package votebox.middle.writein;
 
 import printer.PrintImageUtils;
-
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.Graphics;
@@ -11,6 +10,8 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.Dimension;
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
@@ -32,7 +33,7 @@ public class WriteInCandidateGUI extends JFrame {
     /* The width of the drawable/viewable space on the screen. */
     private static final int GUI_WIDTH = 800;
     /* The height of the drawable/viewable space on the screen. */
-    private static final int GUI_HEIGHT = 300;
+    private static final int GUI_HEIGHT = 320;
     /* The path to the directory that contains the images. */
     public static final String SLASH = System.getProperty("file.separator");
     public static final String pathToImages = "images" + SLASH + "writein" + SLASH;
@@ -49,6 +50,10 @@ public class WriteInCandidateGUI extends JFrame {
     private static final Color STAR_VOTE_BLUE = new Color (48, 149, 242);
     private static final Color STAR_VOTE_PINK = Color.PINK;
 
+    /* The UID of the write-in candidate whose name will be entered in this GUI prompt. */
+    private String CANDIDATE_UID;
+    /* The type of the write-in candidate. */
+    private String CANDIDATE_TYPE;
 
     private JTextField candidateNameTextField;
     private JPanel candidateNamePanel;
@@ -77,7 +82,7 @@ public class WriteInCandidateGUI extends JFrame {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    WriteInCandidateGUI frame = new WriteInCandidateGUI(680, 384);
+                    WriteInCandidateGUI frame = new WriteInCandidateGUI(680, 384, "Z22", "Regular");
                     frame.setVisible(true);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -88,16 +93,19 @@ public class WriteInCandidateGUI extends JFrame {
 
     /**
      * Create the GUI and build its GUI Elements.
-     * @param ulX the x-coordinate of the center of the GUI
-     * @param ulY the y-coordinate of the center of the GUI
+     * @param cX the x-coordinate of the center of the GUI
+     * @param cY the y-coordinate of the center of the GUI
      */
-    public WriteInCandidateGUI(int ulX, int ulY) {
+    public WriteInCandidateGUI(int cX, int cY, String uid, String guiType) {
         // Set Frame properties.
         setTitle("Type in Candidate Name");
-        //setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        //setBounds(0, 0, GUI_WIDTH, GUI_HEIGHT);
-        setBounds(ulX - GUI_WIDTH / 2, ulY - GUI_HEIGHT / 2, GUI_WIDTH, GUI_HEIGHT);
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        setBounds(cX - GUI_WIDTH / 2, cY - GUI_HEIGHT / 2, GUI_WIDTH, GUI_HEIGHT);
+
+        // Set the UID.
+        CANDIDATE_UID = uid;
+        // Set the TYPE.
+        CANDIDATE_TYPE = guiType;
 
         // Build GUI Elements.
         buildGUIElements();
@@ -123,7 +131,7 @@ public class WriteInCandidateGUI extends JFrame {
 
         candidateNameTextField = new JTextField();
 
-        JLabel enterNameLabel = new JLabel("Enter your preferred candidate's name:");
+        JLabel enterNameLabel = new JLabel("Enter your preferred " + CANDIDATE_TYPE + " candidate's name (" + CANDIDATE_UID + "):");
         mainPanel.add(enterNameLabel);
         mainPanel.add(candidateNameTextField);
         candidateNameTextField.setColumns(10);
@@ -134,8 +142,15 @@ public class WriteInCandidateGUI extends JFrame {
         mainPanel.add(candidateNamePanel);
         candidateNamePanel.setLayout(null);
 
+        JButton submitAndStopButton = new JButton("Submit name and close editor");
+        mainPanel.add(submitAndStopButton);
+
         /*
          * Listeners for events.
+         */
+        /*
+           Listens for an Enter key being pressed. It builds and displays a candidate name based
+           on the text that was entered in the text field.
          */
         candidateNameTextField.addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent arg0) {
@@ -172,6 +187,17 @@ public class WriteInCandidateGUI extends JFrame {
                         e.printStackTrace();
                     }
                 }
+            }
+        });
+
+        /*
+           Listens for the submit and stop button being pressed. Once it is pressed, this should render
+           the appropriate images and dispose of the frame.
+         */
+        submitAndStopButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // TODO render the images for the candidate's current name
+                stop();
             }
         });
     }
