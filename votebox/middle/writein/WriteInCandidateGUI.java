@@ -177,10 +177,10 @@ public class WriteInCandidateGUI extends JFrame {
     }
 
     /**
-     * Creates a standardized image of the candidate's name
+     * Creates a standardized image of the candidate's name.
      *
      * @param candidateName name of candidate
-     * @return
+     * @return a BufferedImage representing the candidate's name
      */
     public BufferedImage renderCandidateName (String candidateName)
     {
