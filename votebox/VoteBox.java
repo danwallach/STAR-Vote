@@ -511,6 +511,7 @@ public class VoteBox{
                 ListExpression choice = (ListExpression)ballot.get(i);
 
                 //If this is who the vote selected in this race, make a short code
+                System.err.println("Attempting to convert " + choice.get(1) + " to AdderInteger.");
                 if(AdderInteger.fromASE(choice.get(1)) == AdderInteger.ONE){
 
                     ASExpression raceId = null;
