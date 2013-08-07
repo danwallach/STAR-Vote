@@ -242,7 +242,6 @@ public class Model {
     public void sendStartScannerEvent ()
     {
         auditorium.announce(new StartScannerEvent( mySerial ));
-
     }
 
 
@@ -1113,8 +1112,8 @@ public class Model {
              */
             public void tapMachine(TapMachineEvent tapMachineEvent) {
                 AMachine m = getMachineForSerial(tapMachineEvent.getSerial());
-                if(!m = null && !(m instanceof TapMachine)){
-                    throw new IllegalStateExceptio("Machine " +
+                if(m != null && !(m instanceof TapMachine)){
+                    throw new IllegalStateException("Machine " +
                                                    tapMachineEvent.getSerial() +
                                                    " is not a Tap but broadcasted TapMachineEvent");
                 }else if(m == null){
@@ -1124,7 +1123,7 @@ public class Model {
                     machinesChangedObs.notifyObservers();
                 } else {
                     m.setOnline(true);
-                    machines.notifyObservers();
+                    machinesChangedObs.notifyObservers();
                 }
             }
 
