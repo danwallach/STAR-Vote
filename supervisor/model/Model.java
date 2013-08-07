@@ -663,7 +663,6 @@ public class Model {
 
                 AMachine m = getMachineForSerial(e.getSerial());
                 if (m != null ) {
-                    if(m instanceof TapMachine) System.out.println("TAP JOINED!");
                     m.setOnline(true);
                 }
                 numConnected++;
@@ -694,7 +693,6 @@ public class Model {
             public void left(LeaveEvent e) {            	
                 AMachine m = getMachineForSerial(e.getSerial());
                 if (m != null) {
-                    if(m instanceof TapMachine) System.out.println("TAP LEFT :(");
                     m.setOnline(false);
                 }else{
                     throw new RuntimeException("WARNING: Machine left without having been registered");
@@ -1115,7 +1113,7 @@ public class Model {
              */
             public void tapMachine(TapMachineEvent tapMachineEvent) {
                 machines.add(new TapMachine(tapMachineEvent.getSerial()));
-                System.out.println("Yay!");
+                machinesChangedObs.notifyObservers();
             }
 
             /**
