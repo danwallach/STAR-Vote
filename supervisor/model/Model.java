@@ -1112,8 +1112,20 @@ public class Model {
              * instance of a TapMachine to it's list of machines for further reference.
              */
             public void tapMachine(TapMachineEvent tapMachineEvent) {
-                machines.add(new TapMachine(tapMachineEvent.getSerial()));
-                machinesChangedObs.notifyObservers();
+                AMachine m = getMachineForSerial(tapMachineEvent.getSerial());
+                if(!m = null && !(m instanceof TapMachine)){
+                    throw new IllegalStateExceptio("Machine " +
+                                                   tapMachineEvent.getSerial() +
+                                                   " is not a Tap but broadcasted TapMachineEvent");
+                }else if(m == null){
+                    TapMachine tap = new TapMachine(tapMachineEvent.getSerial());
+                    tap.setOnline(true);
+                    machines.add(tap);
+                    machinesChangedObs.notifyObservers();
+                } else {
+                    m.setOnline(true);
+                    machines.notifyObservers();
+                }
             }
 
             /**
