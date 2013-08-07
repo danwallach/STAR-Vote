@@ -41,11 +41,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import preptool.model.layout.manager.Spacer;
-import supervisor.model.BallotScannerMachine;
-import supervisor.model.AMachine;
-import supervisor.model.Model;
-import supervisor.model.SupervisorMachine;
-import supervisor.model.VoteBoxBooth;
+import supervisor.model.*;
 import votebox.events.PollMachinesEvent;
 
 /**
@@ -170,7 +166,7 @@ public class InactiveUI extends JPanel {
                     booths++;
                 } else if (m instanceof BallotScannerMachine && m.isOnline()){
                     scanners++;
-                } else if (m.getSerial() == 0 && m.isOnline()){
+                } else if ((m instanceof TapMachine) && m.isOnline()){
                     System.out.println("err...");
                     /**
                      * We're designating the Tap connection with a serial number of 0 always.
