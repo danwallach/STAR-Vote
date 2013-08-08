@@ -509,7 +509,7 @@ public class VoteBox{
         try{
             for(int i = 0; i < ballot.size(); i++){
                 ListExpression choice = (ListExpression)ballot.get(i);
-
+                System.err.println("The choice ListExpression is:\n" + choice);
                 //If this is who the vote selected in this race, make a short code
                 System.err.println("Attempting to convert " + choice.get(1) + " to AdderInteger.");
                 if(AdderInteger.fromASE(choice.get(1)) == AdderInteger.ONE){
@@ -1158,6 +1158,26 @@ public class VoteBox{
         auditorium.announce(new PINEnteredEvent(mySerial, pin, pinNonce));
     }
 
+    /**
+     * Renders images for write-in candidates. It gets candidate name(s) from the write-in
+     * prompt, along with the corresponding uid (to get the filename) and type (so that this
+     * method knows how many names to read), and uses the names to render ballot images for
+     * the write-in candidate that contain his/her name.
+     *
+     * @param uid the uid of the candidate
+     * @param type the type of the candidate ("Regular" or "Presidential")
+     * @param names the name(s) of the candidate
+     */
+    public static void renderWriteInImages(String uid, String type, String... names)
+    {
+        System.out.println("Got name(s) for a " + type + " candidate with uid " + uid + ".\nName of Candidate: " + names[0]);
+        if (type.equals("Presidential"))
+        {
+            System.out.println("Name of Vice-Candidate: " + names[1]);
+        }
+
+        // TODO render the images for the candidate's current name
+    }
 
     /**
      * A getter method to send the BallotFile to the printer

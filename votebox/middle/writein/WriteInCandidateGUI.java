@@ -1,6 +1,8 @@
 package votebox.middle.writein;
 
 import printer.PrintImageUtils;
+import votebox.VoteBox;
+
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.Graphics;
@@ -259,7 +261,16 @@ public class WriteInCandidateGUI extends JFrame {
          */
         submitAndStopButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // TODO render the images for the candidate's current name
+                /* Render the appropriate images. */
+                if (CANDIDATE_TYPE.equals("Regular"))
+                {
+                    VoteBox.renderWriteInImages(CANDIDATE_UID, CANDIDATE_TYPE, primaryCandidateNameTextField.getText());
+                }
+                else
+                {
+                    VoteBox.renderWriteInImages(CANDIDATE_UID, CANDIDATE_TYPE, primaryCandidateNameTextField.getText(), secondaryCandidateNameTextField.getText());
+                }
+                /* Stop the prompt. */
                 stop();
             }
         });
