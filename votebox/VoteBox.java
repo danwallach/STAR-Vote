@@ -1068,10 +1068,10 @@ public class VoteBox{
     }
 
     /**
-     * initializes a GUI dialog through which the user enters their assigned pin. Returns with no action if
+     * Initializes a GUI dialog through which the user enters their assigned pin. Returns with no action if
      * already prompting for PIN.
      *
-     * @param message message displeyed as the header of the PIN prompt e.g. "Please Enter Your PIN"
+     * @param message message displayed as the header of the PIN prompt e.g. "Please Enter Your PIN"
      */
     public void promptForPin(String message) {
         if(promptingForPin){
