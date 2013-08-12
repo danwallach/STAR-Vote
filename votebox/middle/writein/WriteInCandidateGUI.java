@@ -42,7 +42,7 @@ public class WriteInCandidateGUI extends JDialog {
     public static final String SLASH = System.getProperty("file.separator");
     //Current working directory
     File path = new File(System.getProperty("user.dir"));
-    public static final String pathToImages = System.getProperty("user.dir") + SLASH + "tmp" + SLASH + "ballots" + SLASH + "ballot" + SLASH;
+    public static final String pathToImages = System.getProperty("user.dir") + SLASH + "tmp" + SLASH + "ballots" + SLASH + "ballot" + SLASH + "data" + SLASH + "media" + SLASH + "writein" + SLASH;
     /* The standard size of the character images. */
     public static final int IMAGE_STANDARD_WIDTH = 14;
     public static final int IMAGE_STANDARD_HEIGHT = 14;
