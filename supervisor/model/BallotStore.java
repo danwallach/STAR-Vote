@@ -45,7 +45,6 @@ public class BallotStore {
     private static Random rand = new Random();
     private static DecimalFormat uniquenessFormat = new DecimalFormat("0000000000");
     private static DecimalFormat serialFormat = new DecimalFormat("00");
-    private static DecimalFormat hashFormat = new DecimalFormat("00000000000000000000000000000000");
     private static HashMap<String, String> HashToBID = new HashMap<String, String>();       //BID to hash values for chaining
     private static HashMap<String, String> HashToMID = new HashMap<String, String>();       //Machine ID numbers to hash values for chaining
 
@@ -58,8 +57,6 @@ public class BallotStore {
     private static Map<String, String> precinctByBID = new HashMap<String, String>();
 
     private static DecimalFormat decimalFormat = new DecimalFormat("0000");
-
-
 
     /**
      * Add printed ballot to the ballot store. If not cast before the closing of the elections, this ballot will be

@@ -672,7 +672,6 @@ public class VoteBox{
                     path = new File(path, "ballot" + protectedCount);
                     path.mkdirs();
 
-                    bid = e.getBallotHash();
                     precinct = e.getPrecinct();
                     
                     try {
