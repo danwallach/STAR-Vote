@@ -20,12 +20,8 @@ import java.awt.*;
 
 public final class WriteInCardElement extends SelectableCardElement{
 
-    // Keeps track of whether or not the GUI was closed.
-    private static Boolean guiNotReady;
-
     public WriteInCardElement(String uid, Properties properties) {
         super(uid, properties);
-        guiNotReady = false;
     }
 
     /**
@@ -60,19 +56,10 @@ public final class WriteInCardElement extends SelectableCardElement{
             System.out.println("WRONG PROPERTY TYPE! Expected: String");
         }
 
-        guiNotReady = true;
         //System.out.println("Starting a GUI for a " + writeInType + " write-in candidate (" + getUniqueID() + ")!");
 
-        WriteInCandidateGUI writeInGUI = new WriteInCandidateGUI(680, 384, getUniqueID(), writeInType, this, true);
+        WriteInCandidateGUI writeInGUI = new WriteInCandidateGUI(680, 384, getUniqueID(), writeInType, true);
         writeInGUI.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
         writeInGUI.start();
-    }
-
-    /**
-     * Marks the GUI as being ready.
-     */
-    public void clearLock()
-    {
-        guiNotReady = false;
     }
 }

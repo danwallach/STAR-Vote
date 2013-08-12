@@ -60,8 +60,6 @@ public class WriteInCandidateGUI extends JDialog {
     private String CANDIDATE_UID;
     /* The type of the write-in candidate. */
     private String CANDIDATE_TYPE;
-    /* The CardElement of the write-in candidate. */
-    private WriteInCardElement CANDIDATE_CARD_ELEMENT;
 
     /* Enable KeyListeners. */
     private Boolean USE_KEY_LISTENERS;
@@ -86,7 +84,6 @@ public class WriteInCandidateGUI extends JDialog {
     {
         setVisible(false);
         dispose();
-        CANDIDATE_CARD_ELEMENT.clearLock();
     }
 
     /**
@@ -96,7 +93,7 @@ public class WriteInCandidateGUI extends JDialog {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    WriteInCandidateGUI frame = new WriteInCandidateGUI(680, 384, "Z22", "Regular", new WriteInCardElement("", null), true);
+                    WriteInCandidateGUI frame = new WriteInCandidateGUI(680, 384, "Z22", "Regular", true);
                     frame.setVisible(true);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -111,17 +108,14 @@ public class WriteInCandidateGUI extends JDialog {
      * @param cY the y-coordinate of the center of the GUI
      * @param uid the UID of the candidate
      * @param guiType the Type of GUI to start (Regular or Presidential)
-     * @param context the CardElement of the candidate
      * @param useKeyListeners whether or not to use KeyListeners
      */
-    public WriteInCandidateGUI(int cX, int cY, String uid, String guiType, WriteInCardElement context, Boolean useKeyListeners)
+    public WriteInCandidateGUI(int cX, int cY, String uid, String guiType, Boolean useKeyListeners)
     {
         // Set the UID.
         CANDIDATE_UID = uid;
         // Set the TYPE.
         CANDIDATE_TYPE = guiType;
-        // Set the CARD ELEMENT.
-        CANDIDATE_CARD_ELEMENT = context;
 
         // Set the KeyListener flag.
         USE_KEY_LISTENERS = useKeyListeners;
