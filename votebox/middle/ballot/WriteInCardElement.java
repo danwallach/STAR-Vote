@@ -61,7 +61,7 @@ public final class WriteInCardElement extends SelectableCardElement{
         guiNotReady = true;
         //System.out.println("Starting a GUI for a " + writeInType + " write-in candidate (" + getUniqueID() + ")!");
 
-        WriteInCandidateGUI writeInGUI = new WriteInCandidateGUI(680, 384, getUniqueID(), writeInType, this);
+        WriteInCandidateGUI writeInGUI = new WriteInCandidateGUI(680, 384, getUniqueID(), writeInType, this, true);
         writeInGUI.setModal(true);
         writeInGUI.start();
     }
