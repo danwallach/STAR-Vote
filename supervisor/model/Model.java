@@ -1027,7 +1027,6 @@ public class Model {
                     talliers.get(precinct).recordVotes(e.getBallot().toVerbatim(), e.getNonce());
                     String bid = e.getBID().toString();
                     committedBids.put(bid, e.getNonce());
-                    committedBallots.put(bid, e.getBallot());
 
                     /*/ Write the nonce and ballot to files, for testing purposes. /////////////////////////////////////////////////////////////////////////////////////////////////
                     // Open the file.
@@ -1148,7 +1147,7 @@ public class Model {
                     //System.err.println("Got inside the if clause");
                     //ASExpression nonce = committedBids.get(bid);
                     ASExpression nonce = committedBids.remove(bid);
-                    BallotStore.castCommittedBallot(e.getBID());
+                    ASExpression ballot = BallotStore.castCommittedBallot(e.getBID());
 
 
 

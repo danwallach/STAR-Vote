@@ -80,12 +80,12 @@ public class BallotStore {
      *
      * @param ballotID - unique ballot identifier
      */
-    public static void castCommittedBallot(String ballotID){
+    public static ASExpression castCommittedBallot(String ballotID){
         if(unconfirmedBallots.containsKey(ballotID)){
             System.out.println("A committed ballot was cast");
             castNonces.add(unconfirmedBallots.get(ballotID));
             castBIDs.add(ListExpression.make(ballotID));
-            unconfirmedBallots.remove(ballotID);
+            return unconfirmedBallots.remove(ballotID);
         }else{
             throw new RuntimeException("Ballot was cast before it was committed");
         }
