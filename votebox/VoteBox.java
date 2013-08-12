@@ -1013,7 +1013,7 @@ public class VoteBox{
                     File path = new File(System.getProperty("user.dir"));
                     path = new File(path, "tmp");
                     path = new File(path, "ballots");
-                    path = new File(path, "ballot" + protectedCount);
+                    path = new File(path, "ballot"/* + protectedCount*/);
                     path.mkdirs();
 
                     bid = String.valueOf(rand.nextInt(Integer.MAX_VALUE));
