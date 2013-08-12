@@ -461,6 +461,13 @@ public class AuditoriumParams implements IAuditoriumParams,
         return DEFAULT_OPERATING_SYSTEM;
     }
 
+    public String getBallotFile(){
+        if(_config.containsKey("BALLOT_FILE"))
+            return _config.get("BALLOT_FILE");
+
+        return DEFAULT_BALLOT_FILE;
+    }
+
     public int getScreenCenterX(){
         if(_config.containsKey("SCREEN_CENTER_X"))
             return Integer.parseInt(_config.get("SCREEN_CENTER_X"));

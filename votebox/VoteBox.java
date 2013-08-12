@@ -26,11 +26,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.*;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.Timer;
 
@@ -41,6 +43,10 @@ import crypto.interop.AdderKeyManipulator;
 import edu.uconn.cse.adder.AdderInteger;
 import edu.uconn.cse.adder.PublicKey;
 
+import preptool.model.language.Language;
+import preptool.model.layout.PrintButton;
+import preptool.model.layout.ReviewButton;
+import preptool.model.layout.manager.RenderingUtils;
 import sexpression.*;
 import sexpression.stream.InvalidVerbatimStreamException;
 import votebox.events.*;
@@ -106,6 +112,8 @@ public class VoteBox{
 
     private File _currentBallotFile;
 
+    private static File staticCurrentBallotFile;
+
     /**
      * Equivalent to new VoteBox(-1).
      */
@@ -156,6 +164,8 @@ public class VoteBox{
         promptingForPin = false;
 
         plaintextAuditCommits = new HashMap<ASExpression, VotePair>();
+
+        staticCurrentBallotFile = new File(_constants.getBallotFile());
     }
 
     /**
@@ -266,7 +276,7 @@ public class VoteBox{
                                     (PublicKey) _constants.getKeyStore().loadAdderKey("public"));
 
                             //Compute and store shortcodes for this ballot
-                            shortCodes(ballot, (List<List<String>>) arg[1]);
+                            //shortCodes(ballot, (List<List<String>>) arg[1]);
 
                             auditorium.announce(new CommitBallotEvent(mySerial,
                                     StringExpression.makeString(nonce),
@@ -672,10 +682,12 @@ public class VoteBox{
                     path = new File(path, "ballot" + protectedCount);
                     path.mkdirs();
 
+                    bid = String.valueOf(rand.nextInt(Integer.MAX_VALUE));
                     precinct = e.getPrecinct();
                     
                     try {
                     	_currentBallotFile = new File(path, "ballot.zip");
+                        staticCurrentBallotFile = _currentBallotFile;
 
                         FileOutputStream fout = new FileOutputStream(_currentBallotFile);
                         byte[] ballot = e.getBallot();
@@ -1005,7 +1017,7 @@ public class VoteBox{
 
                     try {
                         _currentBallotFile = new File(path, "ballot.zip");
-
+                        staticCurrentBallotFile = _currentBallotFile;
 
                         FileOutputStream fout = new FileOutputStream(_currentBallotFile);
                         byte[] ballot = e.getBallot();
@@ -1175,7 +1187,39 @@ public class VoteBox{
             System.out.println("Name of Vice-Candidate: " + names[1]);
         }
 
-        // TODO render the images for the candidate's current name
+        // Render the images for the candidate names.
+        BufferedImage writeInToggleButton = RenderingUtils.renderToggleButton(names[0], type.equals("Presidential") ? names[1] : "", "", 20, 600, true, false, false);
+        BufferedImage focusedWriteInToggleButton = RenderingUtils.renderToggleButton(names[0], type.equals("Presidential") ? names[1] : "", "", 20, 600, true, false, true);
+        BufferedImage selectedWriteInToggleButton = RenderingUtils.renderToggleButton(names[0], type.equals("Presidential") ? names[1] : "", "", 20, 600, true, true, false);
+        BufferedImage focusedSelectedWriteInToggleButton = RenderingUtils.renderToggleButton(names[0], type.equals("Presidential") ? names[1] : "", "", 20, 600, true, true, true);
+
+        // Save the images to files, overwriting the previous write-in candidate images for this UID.
+        String fileSeparator = System.getProperty("file.separator");
+        System.out.println("Static ballot file path: " + staticCurrentBallotFile.getAbsolutePath());
+        String filePath = staticCurrentBallotFile.getAbsolutePath().substring(0, staticCurrentBallotFile.getAbsolutePath().lastIndexOf(fileSeparator) + 1) + "data" + fileSeparator + "media" + fileSeparator;
+        System.out.println("Images being saved to " + filePath);
+        for (Language language : Language.getAllLanguages())
+        {
+            try
+            {
+                ImageIO.write(writeInToggleButton, "png", new File(filePath + uid + "_1_" + language.getShortName() + ".png"));
+                ImageIO.write(focusedWriteInToggleButton, "png", new File(filePath + uid + "_focused_1_" + language.getShortName() + ".png"));
+                ImageIO.write(selectedWriteInToggleButton, "png", new File(filePath + uid + "_selected_1_" + language.getShortName() + ".png"));
+                ImageIO.write(focusedSelectedWriteInToggleButton, "png", new File(filePath + uid + "_focusedSelected_1_" + language.getShortName() + ".png"));
+            }
+            catch (IOException e)
+            {
+                System.err.println("Unable to render write-in candidate images!");
+                return;
+            }
+        }
+
+        // Invalidate the view to force a repaint.
+
+
+        // Create a ReviewButton and a PrintButton.
+        //ReviewButton review = new ReviewButton(tb.getUID() + "_review", tb.getBothLines(), "GoToPage", getSizeVisitor());
+        //PrintButton pb = new PrintButton(tb.getUID() + "_printable", tb.getText(), getSizeVisitor());
     }
 
     /**

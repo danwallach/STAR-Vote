@@ -354,11 +354,11 @@ public class ToggleButton extends FocusableLabel {
      * @return _defaultImage
      */
     public IViewImage getDefaultImage() {
-        if (_defaultImage == null) {
+        //if (_defaultImage == null) {
             _defaultImage = _factory.makeImage( imagePath( _vars,
                 getUniqueID(), _viewManager.getSize(), _viewManager
                         .getLanguage() ) );
-        }
+        //}
         return _defaultImage;
     }
 
@@ -368,11 +368,11 @@ public class ToggleButton extends FocusableLabel {
      * @return _selectedImage
      */
     public IViewImage getSelectedImage() {
-        if (_selectedImage == null) {
+        //if (_selectedImage == null) {
             _selectedImage = _factory.makeImage( imagePath( _vars,
                 getUniqueID() + "_selected", _viewManager.getSize(),
                 _viewManager.getLanguage() ) );
-        }
+        //}
         return _selectedImage;
     }
 
@@ -382,11 +382,11 @@ public class ToggleButton extends FocusableLabel {
      * @return _focusedImage
      */
     public IViewImage getFocusedImage() {
-        if (_focusedImage == null) {
+        //if (_focusedImage == null) {
             _focusedImage = _factory.makeImage( imagePath( _vars, getUniqueID()
                     + "_focused", _viewManager.getSize(), _viewManager
                     .getLanguage() ) );
-        }
+        //}
         return _focusedImage;
     }
 
@@ -396,11 +396,11 @@ public class ToggleButton extends FocusableLabel {
      * @return _focusedSelectedImage
      */
     public IViewImage getFocusedSelectedImage() {
-        if (_focusedSelectedImage == null) {
+        //if (_focusedSelectedImage == null) {
             _focusedSelectedImage = _factory.makeImage( imagePath( _vars,
                 getUniqueID() + "_focusedSelected", _viewManager.getSize(),
                 _viewManager.getLanguage() ) );
-        }
+        //}
         return _focusedSelectedImage;
     }
 

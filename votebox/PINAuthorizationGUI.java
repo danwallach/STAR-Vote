@@ -14,7 +14,7 @@ import javax.swing.text.PlainDocument;
  * @author Mircea C. Berechet
  * Added to project: 07/11/2013
  */
-public class PINAuthorizationGUI extends JFrame {
+public class PINAuthorizationGUI extends JDialog {
 
     /*
 	 * CLASS CONSTANTS

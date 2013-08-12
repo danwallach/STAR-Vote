@@ -2,6 +2,7 @@ package votebox.middle.writein;
 
 import printer.PrintImageUtils;
 import votebox.VoteBox;
+import votebox.middle.ballot.WriteInCardElement;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
@@ -30,7 +31,7 @@ import java.io.IOException;
  * Based on the name that the voter enters, it renders an image that display the candidate's name
  * and adds it to the ballot files.
  */
-public class WriteInCandidateGUI extends JFrame {
+public class WriteInCandidateGUI extends JDialog {
 
     /* The width of the drawable/viewable space on the screen. */
     private static final int GUI_WIDTH = 800;
@@ -57,6 +58,11 @@ public class WriteInCandidateGUI extends JFrame {
     private String CANDIDATE_UID;
     /* The type of the write-in candidate. */
     private String CANDIDATE_TYPE;
+    /* The CardElement of the write-in candidate. */
+    private WriteInCardElement CANDIDATE_CARD_ELEMENT;
+
+    /* Enable KeyListeners. */
+    private Boolean USE_KEY_LISTENERS;
 
     private JTextField primaryCandidateNameTextField;
     private JTextField secondaryCandidateNameTextField;
@@ -78,6 +84,7 @@ public class WriteInCandidateGUI extends JFrame {
     {
         setVisible(false);
         dispose();
+        CANDIDATE_CARD_ELEMENT.clearLock();
     }
 
     /**
@@ -87,7 +94,7 @@ public class WriteInCandidateGUI extends JFrame {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    WriteInCandidateGUI frame = new WriteInCandidateGUI(680, 384, "Z22", "Regular");
+                    WriteInCandidateGUI frame = new WriteInCandidateGUI(680, 384, "Z22", "Regular", new WriteInCardElement("", null), true);
                     frame.setVisible(true);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -100,13 +107,23 @@ public class WriteInCandidateGUI extends JFrame {
      * Create the GUI and build its GUI Elements.
      * @param cX the x-coordinate of the center of the GUI
      * @param cY the y-coordinate of the center of the GUI
+     * @param uid the UID of the candidate
+     * @param guiType the Type of GUI to start (Regular or Presidential)
+     * @param context the CardElement of the candidate
+     * @param useKeyListeners whether or not to use KeyListeners
      */
-    public WriteInCandidateGUI(int cX, int cY, String uid, String guiType)
+    public WriteInCandidateGUI(int cX, int cY, String uid, String guiType, WriteInCardElement context, Boolean useKeyListeners)
     {
         // Set the UID.
         CANDIDATE_UID = uid;
         // Set the TYPE.
         CANDIDATE_TYPE = guiType;
+        // Set the CARD ELEMENT.
+        CANDIDATE_CARD_ELEMENT = context;
+
+        // Set the KeyListener flag.
+        USE_KEY_LISTENERS = useKeyListeners;
+
         // Set the appropriate height for the GUI, based on the type of the candidate.
         int GUI_HEIGHT = CANDIDATE_TYPE.equals("Regular") ? REGULAR_GUI_HEIGHT : PRESIDENTIAL_GUI_HEIGHT;
 
