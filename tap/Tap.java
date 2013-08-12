@@ -196,13 +196,16 @@ public class Tap {
             public void ballotPrintSuccess(BallotPrintSuccessEvent ballotPrintSuccessEvent) {}
             public void ballotPrintFail(BallotPrintFailEvent ballotPrintFailEvent) {}
             public void scannerStart(StartScannerEvent startScannerEvent) {}
-            public void pollMachines(PollMachinesEvent pollMachinesEvent){}
             public void spoilBallot(SpoilBallotEvent spoilBallotEvent) {}
             public void announceProvisionalBallot(ProvisionalBallotEvent provisionalBallotEvent) {}
             public void provisionalAuthorizedToCast(ProvisionalAuthorizeEvent provisionalAuthorizeEvent) {}
             public void provisionalCommitBallot(ProvisionalCommitEvent provisionalCommitEvent) {}
             public void authorizedToCastWithNIZKS(AuthorizedToCastWithNIZKsEvent e) {}
             public void tapMachine(TapMachineEvent tapMachineEvent) {}
+
+            public void pollMachines(PollMachinesEvent pollMachinesEvent){
+                _auditorium.announce(new TapMachineEvent(_mySerial));
+            }
 
 
             public void pollsClosed(PollsClosedEvent e) {
