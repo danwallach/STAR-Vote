@@ -40,7 +40,9 @@ public class WriteInCandidateGUI extends JDialog {
     private static final int PRESIDENTIAL_GUI_HEIGHT = 365;
     /* The path to the directory that contains the images. */
     public static final String SLASH = System.getProperty("file.separator");
-    public static final String pathToImages = "images" + SLASH + "writein" + SLASH;
+    //Current working directory
+    File path = new File(System.getProperty("user.dir"));
+    public static final String pathToImages = System.getProperty("user.dir") + SLASH + "tmp" + SLASH + "ballots" + SLASH + "ballot" + SLASH;
     /* The standard size of the character images. */
     public static final int IMAGE_STANDARD_WIDTH = 14;
     public static final int IMAGE_STANDARD_HEIGHT = 14;
@@ -192,63 +194,25 @@ public class WriteInCandidateGUI extends JDialog {
 
         /*
          * Listeners for events.
-         */
+        */
         /*
            Listens for an Enter key being pressed for the primary candidate.
            It builds and displays a candidate name based on the text that was entered in the text field.
-         */
-        primaryCandidateNameTextField.addKeyListener(new KeyAdapter() {
-            public void keyPressed(KeyEvent arg0) {
-                if (arg0.getKeyCode() == KeyEvent.VK_ENTER) {
-					/* Clear the canvas panel. */
-                    Graphics g = primaryCandidateNamePanel.getGraphics();
-                    g.setColor(Color.WHITE);
-                    g.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-                    nextUpperLeftX = 0;
-                    nextUpperLeftY = 0;
-
-                    /* Render the candidate's name. */
-                    BufferedImage canvas = renderCandidateName(primaryCandidateNameTextField.getText());
-
-					/* Draw the canvas into the JPanel. */
-                    g.drawImage(canvas, 0, 0, null);
-
-                    /* Trim the image. */
-                    canvas = PrintImageUtils.trimImageVertically(canvas, false, Integer.MAX_VALUE); // Above
-                    canvas = PrintImageUtils.trimImageVertically(canvas, true, Integer.MAX_VALUE);  // Below
-                    canvas = PrintImageUtils.trimImageHorizontally(canvas, false, Integer.MAX_VALUE); // Left
-                    canvas = PrintImageUtils.trimImageHorizontally(canvas, true, Integer.MAX_VALUE); // Right
-
-					/* Save the image to a file. */
-                    File file = new File(pathToImages, "result.png");
-                    try {
-                        ImageIO.write(canvas, "png", file);
-                    } catch (IOException e) {
-                        System.out.println("Canvas image creation failed!");
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
-
-        if (CANDIDATE_TYPE.equals("Presidential"))
+        */
+        if (USE_KEY_LISTENERS)
         {
-            /*
-               Listens for an Enter key being pressed for the secondary candidate.
-               It builds and displays a candidate name based on the text that was entered in the text field.
-             */
-            secondaryCandidateNameTextField.addKeyListener(new KeyAdapter() {
+            primaryCandidateNameTextField.addKeyListener(new KeyAdapter() {
                 public void keyPressed(KeyEvent arg0) {
                     if (arg0.getKeyCode() == KeyEvent.VK_ENTER) {
                         /* Clear the canvas panel. */
-                        Graphics g = secondaryCandidateNamePanel.getGraphics();
+                        Graphics g = primaryCandidateNamePanel.getGraphics();
                         g.setColor(Color.WHITE);
                         g.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
                         nextUpperLeftX = 0;
                         nextUpperLeftY = 0;
 
                         /* Render the candidate's name. */
-                        BufferedImage canvas = renderCandidateName(secondaryCandidateNameTextField.getText());
+                        BufferedImage canvas = renderCandidateName(primaryCandidateNameTextField.getText());
 
                         /* Draw the canvas into the JPanel. */
                         g.drawImage(canvas, 0, 0, null);
@@ -260,7 +224,7 @@ public class WriteInCandidateGUI extends JDialog {
                         canvas = PrintImageUtils.trimImageHorizontally(canvas, true, Integer.MAX_VALUE); // Right
 
                         /* Save the image to a file. */
-                        File file = new File(pathToImages, "result2.png");
+                        File file = new File(pathToImages, "result.png");
                         try {
                             ImageIO.write(canvas, "png", file);
                         } catch (IOException e) {
@@ -270,6 +234,50 @@ public class WriteInCandidateGUI extends JDialog {
                     }
                 }
             });
+        }
+
+        if (CANDIDATE_TYPE.equals("Presidential"))
+        {
+            /*
+               Listens for an Enter key being pressed for the secondary candidate.
+               It builds and displays a candidate name based on the text that was entered in the text field.
+            */
+            if (USE_KEY_LISTENERS)
+            {
+                secondaryCandidateNameTextField.addKeyListener(new KeyAdapter() {
+                    public void keyPressed(KeyEvent arg0) {
+                        if (arg0.getKeyCode() == KeyEvent.VK_ENTER) {
+                            /* Clear the canvas panel. */
+                            Graphics g = secondaryCandidateNamePanel.getGraphics();
+                            g.setColor(Color.WHITE);
+                            g.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+                            nextUpperLeftX = 0;
+                            nextUpperLeftY = 0;
+
+                            /* Render the candidate's name. */
+                            BufferedImage canvas = renderCandidateName(secondaryCandidateNameTextField.getText());
+
+                            /* Draw the canvas into the JPanel. */
+                            g.drawImage(canvas, 0, 0, null);
+
+                            /* Trim the image. */
+                            canvas = PrintImageUtils.trimImageVertically(canvas, false, Integer.MAX_VALUE); // Above
+                            canvas = PrintImageUtils.trimImageVertically(canvas, true, Integer.MAX_VALUE);  // Below
+                            canvas = PrintImageUtils.trimImageHorizontally(canvas, false, Integer.MAX_VALUE); // Left
+                            canvas = PrintImageUtils.trimImageHorizontally(canvas, true, Integer.MAX_VALUE); // Right
+
+                            /* Save the image to a file. */
+                            File file = new File(pathToImages, "result2.png");
+                            try {
+                                ImageIO.write(canvas, "png", file);
+                            } catch (IOException e) {
+                                System.out.println("Canvas image creation failed!");
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                });
+            }
         }
 
         /*
