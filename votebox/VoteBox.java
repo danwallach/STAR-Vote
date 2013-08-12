@@ -154,6 +154,7 @@ public class VoteBox{
             }
         });
 
+
         if (_constants.getViewImplementation().equals("AWT")) {
             // run fullscreen on OSX only
             _factory = new AWTViewFactory(_constants.getUseWindowedView(), _constants.getAllowUIScaling());
@@ -233,6 +234,8 @@ public class VoteBox{
         currentDriver = new Driver(location, _factory, _constants.getCastBallotEncryptionEnabled());
         voting = true;
         currentDriver.run();
+
+
 
         	
 

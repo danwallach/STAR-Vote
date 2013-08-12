@@ -13,7 +13,7 @@ java -jar tap.jar [serial number] [report address] [port]
 ---------------------
 Configuration Options
 ---------------------
-Must be placed in vb.conf, supervisor.conf, tap.conf, and webserver.conf.
+Must be placed in vb.conf, supervisor.conf, tap.conf, and bs.conf.
 
 
 DISCOVER_TIMEOUT 

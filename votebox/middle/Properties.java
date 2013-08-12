@@ -338,7 +338,7 @@ public class Properties {
      * @param key
      *            This is the key for which a value will be returned.
      * @return This method returns the value associated with key if there is
-     *         one, or null if there isn't. This method guarentees that the
+     *         one, or null if there isn't. This method guarantees that the
      *         value returned is of type String.
      * @throws IncorrectTypeException
      *             This method throws if the object associated with key is not

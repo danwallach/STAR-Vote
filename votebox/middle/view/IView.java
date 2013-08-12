@@ -46,11 +46,11 @@ public interface IView {
 
     /**
      * This method invalidates a given element. Calling this method tells the
-     * view to reload the texture for a given element, then rerender the display
+     * view to reload the texture for a given element, then re-render the display
      * 
      * @param element
      *            This is the element which is no longer valid. Reload this
-     *            element's image and rerender it to the display
+     *            element's image and re-render it to the display
      */
     void invalidate(IDrawable element);
 
@@ -68,7 +68,7 @@ public interface IView {
      * This method is the means that an outsider can use to register for an
      * input event with the view. In our system, "registering for an event"
      * involves asking a view to dispatch events of a certain abstract type to a
-     * queue that the requestor provides.
+     * queue that the requester provides.
      * 
      * @param eventType
      *            This is the abstract event type that is being registered on.

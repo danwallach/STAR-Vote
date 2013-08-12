@@ -4,6 +4,8 @@ import votebox.middle.IncorrectTypeException;
 import votebox.middle.Properties;
 import votebox.middle.writein.WriteInCandidateGUI;
 
+import java.awt.*;
+
 
 /**
  * A WriteInCardElement is a SelectableCardElement whose candidate name can be modified.
@@ -62,7 +64,7 @@ public final class WriteInCardElement extends SelectableCardElement{
         //System.out.println("Starting a GUI for a " + writeInType + " write-in candidate (" + getUniqueID() + ")!");
 
         WriteInCandidateGUI writeInGUI = new WriteInCandidateGUI(680, 384, getUniqueID(), writeInType, this, true);
-        writeInGUI.setModal(true);
+        writeInGUI.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
         writeInGUI.start();
     }
 
