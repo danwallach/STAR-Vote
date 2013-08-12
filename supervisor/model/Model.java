@@ -264,18 +264,20 @@ public class Model {
         byte[] ballot = new byte[(int) file.length()];
         fin.read(ballot);
 
-        try{
+        ASExpression ASENonce = StringExpression.makeString(nonce);
+
+        //try{
             if(!this.auditoriumParams.getEnableNIZKs()){
-                auditorium.announce(new AuthorizedToCastEvent(mySerial, node, ASExpression.makeVerbatim(nonce),
+                auditorium.announce(new AuthorizedToCastEvent(mySerial, node, /*ASExpression.makeVerbatim(nonce)*/ASENonce,
                         precinct, ballot));
             }else{
                 auditorium.announce(new AuthorizedToCastWithNIZKsEvent(mySerial, node,
-                        ASExpression.makeVerbatim(nonce), precinct, ballot,
+                        /*ASExpression.makeVerbatim(nonce)*/ASENonce, precinct, ballot,
                         AdderKeyManipulator.generateFinalPublicKey((PublicKey)auditoriumParams.getKeyStore().loadAdderKey("public"))));
             }
-        } catch (InvalidVerbatimStreamException e) {
+        /*} catch (InvalidVerbatimStreamException e) {
             throw new RuntimeException(e);
-        }
+        }*/
     }
 
     /**
