@@ -124,7 +124,7 @@ public class LayoutParser {
      *             read, if the schema did not validate, or upon further testing
      *             of our own, the layout content is not valid.
      */
-    public Layout getLayout(IBallotVars vars, int size, String lang)
+    public Layout getLayout(IBallotVars vars, int size, String lang, IView view)
             throws LayoutParserException {
         _drawables = new HashMap<String, LinkedList<IDrawable>>();
 
@@ -176,7 +176,7 @@ public class LayoutParser {
         }
 
         // translate dom tree -> Layout object.
-        return parseLayout( document.getElementsByTagName( "Layout" ).item( 0 ) );
+        return parseLayout( document.getElementsByTagName( "Layout" ).item( 0 ), view );
     }
 
     /**
@@ -188,7 +188,7 @@ public class LayoutParser {
      *            layout *
      * @return This method returns the newly constructed Layout object.
      */
-    private Layout parseLayout(Node node) throws LayoutParserException {
+    private Layout parseLayout(Node node, IView view) throws LayoutParserException {
         NodeList children = node.getChildNodes();
         ArrayList<RenderPage> pages = new ArrayList<RenderPage>();
         Properties properties = new Properties();
@@ -202,7 +202,7 @@ public class LayoutParser {
             else if (child.getNodeName().equals( "ListProperty" ))
                 parseListProperties( child, properties );
             else if (child.getNodeName().equals( "Page" ))
-                pages.add( parsePage( child ) );
+                pages.add( parsePage( child, view ) );
             else if (child.getNodeName().equals( "#text" ))
                 ;// Do nothing
             else
@@ -223,7 +223,7 @@ public class LayoutParser {
      * @return This method returns the RenderPage object that represents the
      *         given dom page.
      */
-    private RenderPage parsePage(Node node) throws LayoutParserException {
+    private RenderPage parsePage(Node node, IView view) throws LayoutParserException {
         NodeList children = node.getChildNodes();
         ArrayList<IDrawable> drawables = new ArrayList<IDrawable>();
         Properties properties = new Properties();
@@ -232,12 +232,12 @@ public class LayoutParser {
             Node child = children.item( lcv );
 
             if (child.getNodeName().equals( "ToggleButtonGroup" ))
-                parseToggleGroup( drawables, child );
+                parseToggleGroup( drawables, child, view );
             else if (child.getNodeName().equals( "Button" )
                     || child.getNodeName().equals( "Label" )) {
 //                System.out.println("Found " + parseDrawable(child, null).getUniqueID() +
 //                " with next " + parseDrawable( child, null ).getProperties().NEXT);
-                drawables.add(parseDrawable(child, null));
+                drawables.add(parseDrawable(child, null, view));
 
             }
             else if (child.getNodeName().equals( "#text" ))
@@ -280,7 +280,7 @@ public class LayoutParser {
      *            This is the node that is interpreted as the toggle button
      *            group.
      */
-    private void parseToggleGroup(ArrayList<IDrawable> list, Node node)
+    private void parseToggleGroup(ArrayList<IDrawable> list, Node node, IView view)
             throws LayoutParserException {
         NodeList children = node.getChildNodes();
         Properties properties = new Properties();
@@ -298,7 +298,7 @@ public class LayoutParser {
                 parseListProperties( child, properties );
             else if (child.getNodeName().equals( "ToggleButton" )) {
                 ToggleButton button = (ToggleButton) parseDrawable( child,
-                    group );
+                    group, view );
                 verticals.add(button.getY());
                 buttons.add(button);
 
@@ -343,7 +343,7 @@ public class LayoutParser {
      *             This method throws if its helpers throw or if one of its
      *             children is not a property.
      */
-    private IDrawable parseDrawable(Node node, ToggleButtonGroup group)
+    private IDrawable parseDrawable(Node node, ToggleButtonGroup group, IView view)
             throws LayoutParserException {
         NamedNodeMap nodeAttributes = node.getAttributes();
         NodeList children = node.getChildNodes();
@@ -384,6 +384,10 @@ public class LayoutParser {
         }
         else if (node.getNodeName().equals( "Button" )) {
             drawable = new Button( uniqueID, properties );
+        }
+        //TODO XML this
+        else if (node.getNodeName().equals("WriteIn")){
+            drawable = new WriteInToggleButton(group, uniqueID,  properties, view);
         }
         else {
             drawable = new ToggleButton( group, uniqueID, properties );

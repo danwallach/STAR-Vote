@@ -52,7 +52,7 @@ import votebox.middle.view.IViewManager;
  * <br>
  *
  * In order to gain the focusing capability, this class must implement the
- * IFocusable interface.
+ * IFocusable interface via FocusableLabel.
  */
 public class ToggleButton extends FocusableLabel {
 

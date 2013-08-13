@@ -52,7 +52,7 @@ public class DefaultToggleButtonState extends AToggleButtonState {
     }
 
     /**
-     * @see votebox.middle.view.widget.AToggleButtonState#toggle(votebox.middle.view.widget.ToggleButton)
+     * @see votebox.middle.view.widget.AToggleButtonState#select(votebox.middle.view.widget.ToggleButton)
      */
     @Override
     public void select(ToggleButton context) {
@@ -60,7 +60,7 @@ public class DefaultToggleButtonState extends AToggleButtonState {
     }
 
     /**
-     * @see votebox.middle.view.widget.AToggleButtonState#select(votebox.middle.view.widget.ToggleButton)
+     * @see votebox.middle.view.widget.AToggleButtonState#makeSelected(votebox.middle.view.widget.ToggleButton)
      */
     @Override
     public void makeSelected(ToggleButton context) {
@@ -69,7 +69,7 @@ public class DefaultToggleButtonState extends AToggleButtonState {
     }
 
     /**
-     * @see votebox.middle.view.widget.AToggleButtonState#deselect(votebox.middle.view.widget.ToggleButton)
+     * @see votebox.middle.view.widget.AToggleButtonState#makeDeselected(votebox.middle.view.widget.ToggleButton)
      */
     @Override
     public void makeDeselected(ToggleButton context) {

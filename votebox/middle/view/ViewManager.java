@@ -777,7 +777,7 @@ public class ViewManager implements IViewManager {
         try {
 
             _layout = new LayoutParser().getLayout( _variables, getSize(),
-                    getLanguage() );
+                    getLanguage(), _view );
             _layout.initFromViewManager( this, _ballotLookupAdapter,
                     _ballotAdapter, _factory, _variables );
         }

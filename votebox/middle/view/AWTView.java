@@ -291,9 +291,9 @@ public class AWTView extends AView {
 				case CAST_BALLOT_BUTTON:
 					deliver( EventType.CAST_BALLOT, InputEvent.NONE );
 					break;
-				case KILL_BUTTON:
-					deliver( EventType.KILL, InputEvent.NONE );
-					break;
+//				case KILL_BUTTON:
+//					deliver( EventType.KILL, InputEvent.NONE );
+//					break;
 				case NEXT_PAGE_BUTTON:
                     System.out.println("Next pressed!");
 					deliver(EventType.NEXT_PAGE, InputEvent.NONE);
