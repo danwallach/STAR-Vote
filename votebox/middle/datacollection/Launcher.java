@@ -37,9 +37,6 @@ import auditorium.IKeyStore;
 
 import sexpression.ASExpression;
 import sexpression.ListExpression;
-//#ifdef EVIL
-import votebox.middle.datacollection.evil.EvilObserver;
-//#endif
 import votebox.middle.driver.Driver;
 import votebox.middle.view.AWTViewFactory;
 
@@ -70,21 +67,18 @@ public class Launcher {
      * @param logDir This is the directory that log files should be written out
      *            to. (dir)
      * @param logFilename This is the desired filename for the log file.
-     * @param debug Passed to AWTViewFactory to determine windowed/fullscreen mode.
+     * @param debug Passed to AWTViewFactory to determine windowed/full screen mode.
      */
     public void launch(final String ballotLocation, String logDir,
 			String logFilename, boolean debug, final String vvpat, final int vvpatWidth,
-			final int vvpatHeight, final int printableWidth, final int printableHeight
-			//#ifdef EVIL
-			, final EvilObserver evilObserver
-			//#endif
-			) {
+			final int vvpatHeight, final int printableWidth, final int printableHeight){
 
 		// Unzip the ballot to a temporary directory
 		File baldir;
 		try {
-			baldir = File.createTempFile("ballot", "");
-			baldir.delete();
+			baldir = new File(System.getProperty("user.dir") + "/tmp/ballots/ballot");
+            System.out.println(baldir.getAbsolutePath());
+            baldir.delete();
 			baldir.mkdirs();
             System.out.println(baldir.getAbsolutePath());
             Driver.unzip(ballotLocation, baldir.getAbsolutePath());

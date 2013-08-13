@@ -89,7 +89,7 @@ public class AuditoriumParams implements IAuditoriumParams,
     public static final int DEFAULT_HTTP_PORT = 8080;
     
     //Default ballot file.  If "", must be specified explicitly somehow.
-    public static final String DEFAULT_BALLOT_FILE = "";
+    public static final String DEFAULT_BALLOT_FILE = System.getProperty("user.dir") + "/tmp/ballot";
     
     //Default printer for VVPAT. If "", do not use VVPAT.
     public static final String PRINTER_FOR_VVPAT = "";

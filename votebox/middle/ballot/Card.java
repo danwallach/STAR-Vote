@@ -92,37 +92,9 @@ public class Card {
         for (SelectableCardElement ce : _elements)
             ce.setParent(this);
         
-        //#ifdef EVIL
-        insertDataCollectionEvil();
-        //#endif
+
     }
 
-    //#ifdef EVIL
-    
-    /**
-     * EVIL
-     *
-     * Hooks in code and listeners for monitoring a user.
-     */
-    private void insertDataCollectionEvil() {
-        try {
-            if (_properties.contains(Properties.INITIAL_SELECTED)) {
-                String selected = _properties
-                        .getString(Properties.INITIAL_SELECTED);
-                for (SelectableCardElement sce : _elements)
-                    if (sce.getUniqueID().equals(selected)) {
-                        sce.setSelected(true);
-                        break;
-                    }
-            }
-        } catch (IncorrectTypeException e) {
-            System.err.println("InitialSelected formatting error detected for:"
-                    + this._uniqueID);
-        }
-    }
-
-    //#endif
-    
     /**
      * Call this method to make this Card's strategy agree with what is defined
      * in this Card's properties.
@@ -271,104 +243,10 @@ public class Card {
         if (_elements.size() == 0)
             return getUniqueID();
         
-        //#ifdef EVIL
-        try {
-        	
-        	if (_properties.contains(Properties.LIE))
-        		if (_properties.getString(Properties.LIE).equals("non"))
-        			return getSelectedElementEvilNon();
-        		else if (_properties.getString(Properties.LIE).equals("cand"))
-        			return getSelectedElementEvilCand();
-        		else if (_properties.getString(Properties.LIE).equals("last_non"))
-        			return getSelectedElementEvilLastNon();
-        		else
-        			throw new CardException(this,
-        					"The card is set to lie, but it's lie type was not one of 'non' or 'cand' or 'last'.");
-            else
-            //#endif
+
                 return getSelectedElementNormal();
-        //#ifdef EVIL
-        } catch (IncorrectTypeException e) {
-            throw new CardException(this,
-                    "The 'Lie' property for this card was not of type string.");
-        }
-        //#endif
-    }
-    
-    //#ifdef EVIL
-    
-    /**
-     * This method implements getSelectedElement in a nontruthful method
-     * explained above as "last_non"
-     * 
-     * @return the last selection available if not already selected.  Otherwise chooses a different value to report.
-     */
-    private String getSelectedElementEvilLastNon() {
-    	String last = null;
-    	for(SelectableCardElement elem : _elements)
-    		last = elem.getUniqueID();
-    	
-    	//If the last element is already selected, return the second element if possible otherwise the first
-    	if(getSelectedElementNormal().equals(last)){
-    		if(_elements.size() > 1)
-            	return _elements.get(1).getUniqueID();
-            else
-            	return _elements.get(0).getUniqueID();
-    	}
-    	
-    	return last;
-    }
-    
-    /**
-     * This method implements getSelectedElement in the nontruthful method
-     * explained above as "cand"
-     * 
-     * @return This method returns the UID of the element that is "after" the
-     *         one that is selected.
-     */
-    private String getSelectedElementEvilCand() {
-        // If nothing is selected, return the second element if it exists, and the first one otherwise
-        if (getSelectedElementNormal().equals(_uniqueID))
-            if(_elements.size() > 1)
-            	return _elements.get(1).getUniqueID();
-            else
-            	return _elements.get(0).getUniqueID();
 
-        // Find the position of the selected element
-        Iterator<SelectableCardElement> itr = _elements.iterator();
-        while (itr.hasNext())
-            if (itr.next().isSelected())
-                break;
-
-        // Return the "Next" one
-        try {
-            return itr.next().getUniqueID();
-        } catch (NoSuchElementException e) {
-            return _elements.get(0).getUniqueID();
-        }
     }
-
-    /**
-     * This method implements getSelectedElement in a the nontruthful method
-     * explained above as "non"
-     * 
-     * @return This method returns that nothing is selected if something is, and
-     *         returns that the second element is selected if nothing is. To
-     *         express "nothing" as being selected, this method returns the uid
-     *         of this card.
-     */
-    private String getSelectedElementEvilNon() {
-        // If nothing is selected, return the second element if it exists, and the first otherwise.
-        if (getSelectedElementNormal().equals(_uniqueID))
-        	if(_elements.size() > 1)
-        		return _elements.get(1).getUniqueID();
-        	else
-        		return _elements.get(0).getUniqueID();
-
-        // Otherwise, return that nothing is selected.
-        return _uniqueID;
-    }
-    //#endif
     
     /**
      * This method implements getSelectedElement truthfully.

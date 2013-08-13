@@ -112,7 +112,10 @@ public class VoteBox{
 
     private File _currentBallotFile;
 
-    private static File staticCurrentBallotFile;
+    /**
+     * A forced default value only used by the launcher
+     */
+    private static File staticCurrentBallotFile = new File(System.getProperty("user.dir") + "/tmp/ballots/ballot/ballot.zip");
 
     /**
      * Equivalent to new VoteBox(-1).
@@ -165,6 +168,8 @@ public class VoteBox{
         promptingForPin = false;
 
         plaintextAuditCommits = new HashMap<ASExpression, VotePair>();
+
+        System.out.println(">>>>>>>>>>>>>>>>>" + _constants.getBallotFile());
 
         staticCurrentBallotFile = new File(_constants.getBallotFile());
     }
@@ -256,7 +261,7 @@ public class VoteBox{
 
                 committedBallot = true;
 
-                Object[] arg = (Object[])argTemp;
+                Object[] arg = (Object[]) argTemp;
 
                 // arg1 should be the cast ballot structure, check
                 if (Ballot.BALLOT_PATTERN.match((ASExpression) arg[0]) == NoMatch.SINGLETON)
@@ -264,17 +269,17 @@ public class VoteBox{
                             "Incorrectly expected a cast-ballot");
                 ListExpression ballot = (ListExpression) arg[0];
 
-                for(Object i : arg){
+                for (Object i : arg) {
                     System.out.println(i);
                 }
 
                 try {
-                    if(!isProvisional){
-                        if(!_constants.getEnableNIZKs()){
+                    if (!isProvisional) {
+                        if (!_constants.getEnableNIZKs()) {
                             auditorium.announce(new CommitBallotEvent(mySerial,
                                     StringExpression.makeString(nonce),
                                     BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey(mySerial + "-public")), StringExpression.makeString(bid), StringExpression.makeString(precinct)));
-                        } else{
+                        } else {
                             ASExpression encBallot = BallotEncrypter.SINGLETON.encryptWithProof(ballot, (List<List<String>>) arg[1],
                                     (PublicKey) _constants.getKeyStore().loadAdderKey("public"));
 
@@ -304,17 +309,17 @@ public class VoteBox{
                     //By this time, the voter is done voting
                     //Wait before returning to inactive
                     long start = System.currentTimeMillis();
-                    while(System.currentTimeMillis() - start < 5000);
+                    while (System.currentTimeMillis() - start < 5000) ;
                     finishedVoting = true;
 
-                    if(success)
+                    if (success)
                         auditorium.announce(new BallotPrintSuccessEvent(mySerial, bid, nonce));
 
                 } catch (AuditoriumCryptoException e) {
-                    Bugout.err("Crypto error trying to commit ballot: "+e.getMessage());
+                    Bugout.err("Crypto error trying to commit ballot: " + e.getMessage());
                     e.printStackTrace();
                 }
-        	}
+            }
         });
         	
         //Listen for cast ui events.

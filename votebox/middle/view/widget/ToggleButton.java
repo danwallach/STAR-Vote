@@ -91,9 +91,6 @@ public class ToggleButton extends FocusableLabel {
 
         _group = group;
 
-        //#ifdef EVIL
-        insertDataCollectionEvil();
-        //#endif
     }
 
     @Override
@@ -124,50 +121,6 @@ public class ToggleButton extends FocusableLabel {
         }
     }
 
-    //#ifdef EVIL
-
-    /**
-     * Call this method to create and add callbacks for each of the events we
-     * care about logging (selected, deselected, focused, unfocused).
-     *
-     */
-    private void insertDataCollectionEvil() {
-        final ToggleButton outer = this;
-
-        _selectedEvent.addObserver( new Observer() {
-
-            public void update(Observable o, Object arg) {
-                DataLogger.CreateAndDump( outer.getUniqueID(), "ToggleButton",
-                    "Selected", new Date() );
-            }
-        } );
-
-        _deselectedEvent.addObserver( new Observer() {
-
-            public void update(Observable o, Object arg) {
-                DataLogger.CreateAndDump( outer.getUniqueID(), "ToggleButton",
-                    "Deselected", new Date() );
-            }
-        } );
-
-        _focusedEvent.addObserver( new Observer() {
-
-            public void update(Observable o, Object arg) {
-                DataLogger.CreateAndDump( outer.getUniqueID(), "ToggleButton",
-                    "Focused", new Date() );
-            }
-        } );
-
-        _unfocusedEvent.addObserver( new Observer() {
-
-            public void update(Observable o, Object arg) {
-                DataLogger.CreateAndDump( outer.getUniqueID(), "ToggleButton",
-                    "Unfocused", new Date() );
-            }
-        } );
-    }
-
-    //#endif
 
     /**
      * This method is called by the view manager when this element gets chosen

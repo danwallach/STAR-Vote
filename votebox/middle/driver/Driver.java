@@ -60,9 +60,7 @@ import votebox.middle.ballot.BallotParserException;
 import votebox.middle.ballot.CardException;
 import votebox.middle.ballot.IBallotLookupAdapter;
 import votebox.middle.ballot.NonCardException;
-//#ifdef EVIL
-import votebox.middle.datacollection.evil.EvilObserver;
-//#endif
+
 import votebox.middle.view.IViewFactory;
 import votebox.middle.view.ViewManager;
 
@@ -80,11 +78,6 @@ public class Driver {
 	
 	private boolean _encryptionEnabled;
 
-	//#ifdef EVIL
-	private List<EvilObserver> _pendingRegisterForCastBallot = new ArrayList<EvilObserver>();
-	private List<EvilObserver> _pendingRegisterForReview = new ArrayList<EvilObserver>();
-	//#endif
-	
 	private IAdapter _viewAdapter = new IAdapter() {
 
 		public boolean deselect(String uid, boolean playSound) throws UnknownUIDException,

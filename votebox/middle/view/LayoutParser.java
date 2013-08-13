@@ -426,12 +426,12 @@ public class LayoutParser {
             throws LayoutParserException {
         NamedNodeMap nodeAttributes = node.getAttributes();
         String key = nodeAttributes.getNamedItem( "name" ).getNodeValue();
-        System.out.println("-----------------------------------------");
-        System.out.println(key);
+//        System.out.println("-----------------------------------------");
+//        System.out.println(key);
 
 
         String value = nodeAttributes.getNamedItem( "value" ).getNodeValue();
-        System.out.println(value);
+//        System.out.println(value);
         String type = nodeAttributes.getNamedItem( "type" ).getNodeValue();
         try {
             properties.add( key, value, type );

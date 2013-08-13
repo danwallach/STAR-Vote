@@ -48,14 +48,6 @@ import java.util.Observable;
 
 import javax.swing.JCheckBox;
 
-import votebox.middle.ballot.Ballot;
-//#ifdef EVIL
-import votebox.middle.datacollection.evil.EvilObserver;
-import votebox.middle.datacollection.evil.Flip4CandidateTop;
-import votebox.middle.datacollection.evil.Flip4NoneOfTheAboveUndervoteTop;
-import votebox.middle.datacollection.evil.Flip4UndervoteTop;
-//#endif
-import votebox.middle.driver.IAdapter;
 
 /**
  * GUI of Launcher
@@ -171,7 +163,6 @@ public class LauncherView extends JFrame {
 			launchButton.setText("Launch");
 			launchButton.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					//#ifdef EVIL
 					parent
 							.launch(getBallotLocationField().getText(),
 									getDirectoryField().getText(),
@@ -181,10 +172,7 @@ public class LauncherView extends JFrame {
 									200,
 									310,
 									190,
-									300,
-									getEvilObserver()
-									);
-					//#endif
+									300);
 
 				}
 			});
@@ -192,33 +180,7 @@ public class LauncherView extends JFrame {
 		return launchButton;
 	}
 
-    //#ifdef EVIL
-	private EvilObserver getEvilObserver(){
-		
-		String selection = (String)getFlipField().getSelectedItem();
-		EvilObserver obs = null;
 
-		obs = new EvilObserver(){
-			public void update(Observable o, Object arg) {}
-
-			public void setAdapter(IAdapter ballotAdapter, IAdapter viewAdapter, Ballot ballot) {}
-		};
-
-		
-		if(selection.equals(FLIP_4_TO_CANDIDATE)){
-			obs = new Flip4CandidateTop();
-		}
-
-		if(selection.equals(FLIP_4_TO_UNDERVOTE)){
-			obs = new Flip4UndervoteTop();
-		}
-		
-		if(selection.equals(FLIP_4_TO_NONE_OF_THE_ABOVE_UNDERVOTE ))
-			obs = new Flip4NoneOfTheAboveUndervoteTop();
-
-		return obs;
-	}
-    //#endif
 	
 	/**
 	 * This method initializes centerPanel
