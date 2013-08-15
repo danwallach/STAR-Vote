@@ -23,10 +23,12 @@
 package preptool.model.layout;
 
 import java.awt.Dimension;
+import java.util.HashMap;
 
 import javazoom.jl.player.Player;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import preptool.model.language.Language;
 
 /**
  * A ToggleButton is similar to a button, but it holds state in that it can
@@ -35,6 +37,23 @@ import org.w3c.dom.Element;
  * @author cshaw
  */
 public class ToggleButton extends ALayoutComponent {
+
+    /* Create a mapping of language name to CardElement name. */
+    /* This is used to identify names of write-in candidates. */
+    public static final HashMap<String, String> writeInNames = new HashMap<String, String>();
+    static
+    {
+        writeInNames.put("English", "Write-In Candidate");
+        writeInNames.put("Español", "Escribe el nombre de su selección");
+        writeInNames.put("Français", "Écrivez le nom de votre sélection");
+        writeInNames.put("Deutsch", "Schreiben Sie die Namen Ihrer Auswahl");
+        writeInNames.put("Italiano", "Scrivi il nome della tua selezione");
+        writeInNames.put("Русский", "Напишите имя вашего выбора");
+        writeInNames.put("中文", "撰写您的选择的名称");
+        writeInNames.put("日本語", "あなたの選択の名前を書く");
+        writeInNames.put("한국말", "선택의 이름을 작성");
+        writeInNames.put("العربية", "كتابة اسم من اختيارك");
+    }
 
 	/**
 	 * The text of this ToggleButton
@@ -189,7 +208,35 @@ public class ToggleButton extends ALayoutComponent {
 	 */
 	@Override
 	public Element toXML(Document doc) {
-		Element toggleButtonElt = doc.createElement("ToggleButton");
+        Boolean isWriteIn = false;
+        /* Check if the ToggleButton is a write-in candidate, regardless of language. */
+        for (Language language : Language.getAllLanguages())
+        {
+            Boolean isValidLanguage = false;
+            /* Make sure that this language is a valid language for which write-in candidates are enabled. */
+            for (String languageName : writeInNames.keySet())
+            {
+                if (language.getName().equals(languageName))
+                {
+                    isValidLanguage = true;
+                    break;
+                }
+            }
+
+            /* If the language is valid, check the name on this ToggleButton for equality with the default write-in name. */
+            if (isValidLanguage && getText().equals(writeInNames.get(language.getName())))
+            {
+                isWriteIn = true;
+                break;
+            }
+        }
+        if (isWriteIn)
+        {
+            Element writeInToggleButtonElt = doc.createElement("WriteIn");
+            addCommonAttributes(doc, writeInToggleButtonElt);
+            return writeInToggleButtonElt;
+        }
+        Element toggleButtonElt = doc.createElement("ToggleButton");
 		addCommonAttributes(doc, toggleButtonElt);
 		return toggleButtonElt;
 	}
