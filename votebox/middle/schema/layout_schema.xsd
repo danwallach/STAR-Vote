@@ -45,6 +45,7 @@
       <xs:element name="Property" type="propertyType" minOccurs="0" maxOccurs="unbounded" />
       <xs:element name="ListProperty" type="listPropertyType" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="ToggleButton" type="drawableType" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="WriteIn" type="drawableType" minOccurs="0" maxOccurs="unbounded" />
     </xs:choice>
   </xs:complexType>
   

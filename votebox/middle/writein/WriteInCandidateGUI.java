@@ -69,6 +69,8 @@ public class WriteInCandidateGUI extends JDialog {
     private JPanel primaryCandidateNamePanel;
     private JPanel secondaryCandidateNamePanel;
 
+    private Boolean DONE;
+
     /**
      * Start displaying the GUI.
      */
@@ -83,6 +85,7 @@ public class WriteInCandidateGUI extends JDialog {
     public void stop ()
     {
         setVisible(false);
+        DONE = true;
         dispose();
     }
 
@@ -112,6 +115,10 @@ public class WriteInCandidateGUI extends JDialog {
      */
     public WriteInCandidateGUI(int cX, int cY, String uid, String guiType, Boolean useKeyListeners)
     {
+        System.out.println("Event Dispatch: " + SwingUtilities.isEventDispatchThread());
+
+        DONE = false;
+
         // Set the UID.
         CANDIDATE_UID = uid;
         // Set the TYPE.
@@ -293,6 +300,11 @@ public class WriteInCandidateGUI extends JDialog {
                 stop();
             }
         });
+    }
+
+    public Boolean isDone()
+    {
+        return DONE;
     }
 
     /**

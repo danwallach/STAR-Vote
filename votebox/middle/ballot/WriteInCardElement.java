@@ -4,6 +4,7 @@ import votebox.middle.IncorrectTypeException;
 import votebox.middle.Properties;
 import votebox.middle.writein.WriteInCandidateGUI;
 
+import javax.swing.*;
 import java.awt.*;
 
 
@@ -56,10 +57,58 @@ public final class WriteInCardElement extends SelectableCardElement{
             System.out.println("WRONG PROPERTY TYPE! Expected: String");
         }
 
+        final String fWriteInType = writeInType;
+
         //System.out.println("Starting a GUI for a " + writeInType + " write-in candidate (" + getUniqueID() + ")!");
 
-        WriteInCandidateGUI writeInGUI = new WriteInCandidateGUI(680, 384, getUniqueID(), writeInType, true);
+        SwingWorker worker = new SwingWorker<Void, Void>() {
+            @Override
+            public Void doInBackground() {
+                WriteInCandidateGUI writeInGUI = new WriteInCandidateGUI(680, 384, getUniqueID(), fWriteInType, false);
+                writeInGUI.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+                writeInGUI.start();
+                //while(!writeInGUI.isDone());
+                return null;
+            }
+
+            /*@Override
+            public void done() {
+                try {
+                    get();
+                }
+                catch (InterruptedException ignore) {}
+                catch (java.util.concurrent.ExecutionException e) {}
+            }*/
+        };
+
+        worker.execute();
+
+        /*try
+        {
+            EventQueue.invokeAndWait(new Runnable() {
+                public void run() {
+                    try {
+                        WriteInCandidateGUI writeInGUI = new WriteInCandidateGUI(680, 384, getUniqueID(), fWriteInType, true);
+                        writeInGUI.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+                        writeInGUI.start();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+        catch (InterruptedException e)
+        {
+            System.out.println("Interrupted Exception occurred!");
+            e.printStackTrace();
+        }
+        catch (InvocationTargetException e)
+        {
+            System.out.println("InvocationTarget Exception occurred!");
+            e.printStackTrace();
+        }*/
+        /*WriteInCandidateGUI writeInGUI = new WriteInCandidateGUI(680, 384, getUniqueID(), writeInType, true);
         writeInGUI.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
-        writeInGUI.start();
+        writeInGUI.start();*/
     }
 }
