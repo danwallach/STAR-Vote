@@ -392,6 +392,13 @@ public class CandidatesModule extends AModule {
                     "Delete row", JOptionPane.YES_NO_OPTION );
                 if (answer == JOptionPane.YES_OPTION) {
                     int idx = candidatesTable.getSelectedRow();
+                    /* Write-in Check: If the candidate to be deleted is a write-in, then re-enable the Add Write-In button. */
+                    String candidateNameToBeDeleted = (String) tableModel.getValueAt(idx, 0);
+                    if (isWriteInCandidate(candidateNameToBeDeleted))
+                    {
+                        addWriteInCandidateButton.setEnabled(true);
+                    }
+                    /* End Write-In Check. */
                     if (tableModel.getRowCount() > 1) {
                         int newIdx;
                         if (idx == tableModel.getRowCount() - 1)
@@ -685,6 +692,53 @@ public class CandidatesModule extends AModule {
                 addWriteInCandidateButton.setToolTipText("Add Write-in");
                 candidatesToolbar.add( addWriteInCandidateButton );
             }
+        }
+
+        /**
+         * Given a candidateName, it returns whether or not the candidate is a Write-In Candidate or not.
+         * @param candidateName the name of the candidate
+         * @return whether or not this candidate is a Write-In Candidate
+         */
+        public Boolean isWriteInCandidate (String candidateName)
+        {
+            /* Create a mapping of language name to Write-in Candidate name. */
+            /* This is used to identify names of write-in candidates. */
+            HashMap<String, String> writeInNames = new HashMap<String, String>();
+            writeInNames.put("English", "Write-In Candidate");
+            writeInNames.put("Español", "Escribe el nombre de su selección");
+            writeInNames.put("Français", "Écrivez le nom de votre sélection");
+            writeInNames.put("Deutsch", "Schreiben Sie die Namen Ihrer Auswahl");
+            writeInNames.put("Italiano", "Scrivi il nome della tua selezione");
+            writeInNames.put("Русский", "Напишите имя вашего выбора");
+            writeInNames.put("中文", "撰写您的选择的名称");
+            writeInNames.put("日本語", "あなたの選択の名前を書く");
+            writeInNames.put("한국말", "선택의 이름을 작성");
+            writeInNames.put("العربية", "كتابة اسم من اختيارك");
+
+            Boolean isWriteIn = false;
+            /* Check if the ToggleButton is a write-in candidate, regardless of language. */
+            for (Language language : Language.getAllLanguages())
+            {
+                Boolean isValidLanguage = false;
+                /* Make sure that this language is a valid language for which write-in candidates are enabled. */
+                for (String languageName : writeInNames.keySet())
+                {
+                    if (language.getName().equals(languageName))
+                    {
+                        isValidLanguage = true;
+                        break;
+                    }
+                }
+
+                /* If the language is valid, check the name of the candidate for equality with the default write-in name. */
+                if (isValidLanguage && candidateName.equals(writeInNames.get(language.getName())))
+                {
+                    isWriteIn = true;
+                    break;
+                }
+            }
+
+            return isWriteIn;
         }
 
     }
