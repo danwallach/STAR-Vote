@@ -262,7 +262,7 @@ public class View extends JFrame {
             }
         } );
 
-        setDefaultCloseOperation( WindowConstants.EXIT_ON_CLOSE );
+        setDefaultCloseOperation( WindowConstants.DO_NOTHING_ON_CLOSE );
         setSize( 1000, 800 );
         setLayout( new GridBagLayout() );
         GridBagConstraints c = new GridBagConstraints();
@@ -456,6 +456,9 @@ public class View extends JFrame {
         }
         else if (answer == JOptionPane.NO_OPTION) {
             System.exit( 0 );
+        }
+        else if (answer == JOptionPane.CANCEL_OPTION) {
+            /* Do nothing in this case. Specifically, do not exit.*/
         }
     }
 
