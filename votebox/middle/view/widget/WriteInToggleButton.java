@@ -19,9 +19,9 @@ public class WriteInToggleButton extends ToggleButton {
     /**
      * This is the public constructor for ToggleButton. It invokes super.
      *
-     * @param group      This is the group to which this ToggleButton will belong.
-     * @param uid        Universal identifier of this ToggleButton.
-     * @param properties Properties associated with this ToggleButon.
+     * @param group      This is the group to which this WriteInToggleButton will belong.
+     * @param uid        Universal identifier of this WriteInToggleButton.
+     * @param properties Properties associated with this WriteInToggleButton.
      */
     public WriteInToggleButton(ToggleButtonGroup group, String uid, Properties properties, IView view) {
         super(group, uid, properties);

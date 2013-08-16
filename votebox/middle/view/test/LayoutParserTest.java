@@ -105,7 +105,7 @@ public class LayoutParserTest extends TestCase {
 		MyGlobalVars vars = new MyGlobalVars();
 		vars.setLayoutFile(PATH + "test0");
 		vars.setLayoutSchema(SCHEMA);
-		Layout layout = new LayoutParser().getLayout( vars, 0, "en" );
+		Layout layout = new LayoutParser().getLayout( vars, 0, "en", null );
 
 		assertEquals(new ArrayList<RenderPage>(), layout.getPages());
 		assertEquals(0, layout.getProperties().size());
@@ -120,7 +120,7 @@ public class LayoutParserTest extends TestCase {
 		MyGlobalVars vars = new MyGlobalVars();
 		vars.setLayoutFile(PATH + "test1");
 		vars.setLayoutSchema(SCHEMA);
-		Layout layout = new LayoutParser().getLayout(vars, 0, "en");
+		Layout layout = new LayoutParser().getLayout(vars, 0, "en", null);
 
 		assertEquals(new ArrayList<RenderPage>(), layout.getPages());
 
@@ -141,7 +141,7 @@ public class LayoutParserTest extends TestCase {
 		MyGlobalVars vars = new MyGlobalVars();
 		vars.setLayoutFile(PATH + "test2");
 		vars.setLayoutSchema(SCHEMA);
-		Layout layout = new LayoutParser().getLayout(vars, 0, "en");
+		Layout layout = new LayoutParser().getLayout(vars, 0, "en", null);
 
 		assertEquals(1, layout.getPages().size());
 		assertEquals(0, layout.getPages().get(0).getChildren().size());
@@ -157,7 +157,7 @@ public class LayoutParserTest extends TestCase {
 		MyGlobalVars vars = new MyGlobalVars();
 		vars.setLayoutFile(PATH + "test3");
 		vars.setLayoutSchema(SCHEMA);
-		Layout layout = new LayoutParser().getLayout(vars, 0, "en");
+		Layout layout = new LayoutParser().getLayout(vars, 0, "en", null);
 
 		assertEquals(1, layout.getPages().size());
 		assertEquals(2, layout.getPages().get(0).getChildren().size());
@@ -183,7 +183,7 @@ public class LayoutParserTest extends TestCase {
 		MyGlobalVars vars = new MyGlobalVars();
 		vars.setLayoutFile(PATH + "test4");
 		vars.setLayoutSchema(SCHEMA);
-		Layout layout = new LayoutParser().getLayout(vars, 0, "en");
+		Layout layout = new LayoutParser().getLayout(vars, 0, "en", null);
 
 		assertEquals(2, layout.getPages().size());
 		assertEquals(2, layout.getPages().get(0).getChildren().size());
@@ -217,7 +217,7 @@ public class LayoutParserTest extends TestCase {
 		MyGlobalVars vars = new MyGlobalVars();
 		vars.setLayoutFile(PATH + "test5");
 		vars.setLayoutSchema(SCHEMA);
-		Layout layout = new LayoutParser().getLayout(vars, 0, "en");
+		Layout layout = new LayoutParser().getLayout(vars, 0, "en", null);
 
 		assertEquals(1, layout.getPages().size());
 		assertEquals(2, layout.getPages().get(0).getChildren().size());
@@ -248,7 +248,7 @@ public class LayoutParserTest extends TestCase {
 		MyGlobalVars vars = new MyGlobalVars();
 		vars.setLayoutFile(PATH + "test6");
 		vars.setLayoutSchema(SCHEMA);
-		Layout layout = new LayoutParser().getLayout(vars, 0, "en");
+		Layout layout = new LayoutParser().getLayout(vars, 0, "en", null);
 
 		assertEquals(1, layout.getPages().size());
 		assertEquals(2, layout.getPages().get(0).getChildren().size());
@@ -285,7 +285,7 @@ public class LayoutParserTest extends TestCase {
 		MyGlobalVars vars = new MyGlobalVars();
 		vars.setLayoutFile(PATH + "test7");
 		vars.setLayoutSchema(SCHEMA);
-		Layout layout = new LayoutParser().getLayout(vars, 0, "en");
+		Layout layout = new LayoutParser().getLayout(vars, 0, "en", null);
 
 		assertEquals(1, layout.getPages().size());
 		assertEquals(6, layout.getPages().get(0).getChildren().size());
@@ -372,7 +372,7 @@ public class LayoutParserTest extends TestCase {
 		MyGlobalVars vars = new MyGlobalVars();
 		vars.setLayoutFile(PATH + "test8");
 		vars.setLayoutSchema(SCHEMA);
-		Layout layout = new LayoutParser().getLayout(vars, 0, "en");
+		Layout layout = new LayoutParser().getLayout(vars, 0, "en", null);
 
 		assertEquals(2, layout.getPages().size());
 		assertEquals(4, layout.getPages().get(0).getChildren().size());
@@ -412,7 +412,7 @@ public class LayoutParserTest extends TestCase {
 		MyGlobalVars vars = new MyGlobalVars();
 		vars.setLayoutFile(PATH + "test9");
 		vars.setLayoutSchema(SCHEMA);
-		Layout layout = new LayoutParser().getLayout(vars, 0, "en");
+		Layout layout = new LayoutParser().getLayout(vars, 0, "en", null);
 		
 		assertEquals(4, layout.getPages().get(0).getChildren().size());
 		assertEquals(5, layout.getPages().get(1).getChildren().size());

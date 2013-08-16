@@ -189,7 +189,7 @@ public class Card {
     }
 
     /**
-     * @param value sets the new CardStragegy for this Card.
+     * @param value sets the new CardStrategy for this Card.
      */
     void setStrategy(ACardStrategy value) {
         _strategy = value;
@@ -244,7 +244,7 @@ public class Card {
             return getUniqueID();
         
 
-                return getSelectedElementNormal();
+        return getSelectedElementNormal();
 
     }
     

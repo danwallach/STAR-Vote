@@ -296,7 +296,7 @@ public class LayoutParser {
                 parseProperties( child, properties );
             else if (child.getNodeName().equals( "ListProperty" ))
                 parseListProperties( child, properties );
-            else if (child.getNodeName().equals( "WriteIn" )) {
+            else if (child.getNodeName().equals( "WriteInToggleButton" )) {
                 WriteInToggleButton button = (WriteInToggleButton) parseDrawable( child,
                         group, view );
                 verticals.add(button.getY());

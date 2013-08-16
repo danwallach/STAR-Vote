@@ -232,7 +232,7 @@ public class ToggleButton extends ALayoutComponent {
         }
         if (isWriteIn)
         {
-            Element writeInToggleButtonElt = doc.createElement("WriteIn");
+            Element writeInToggleButtonElt = doc.createElement("WriteInToggleButton");
             addCommonAttributes(doc, writeInToggleButtonElt);
             return writeInToggleButtonElt;
         }
