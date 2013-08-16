@@ -216,6 +216,8 @@ public class BallotParser {
         ArrayList<SelectableCardElement> elements = new ArrayList<SelectableCardElement>();
         Properties properties = new Properties();
 
+        boolean hasWritein = false;
+
         for (int lcv = 0; lcv < children.getLength(); lcv++) {
             Node child = children.item( lcv );
 
@@ -223,55 +225,43 @@ public class BallotParser {
             {
                 parseProperties( child, properties );
             }
-            else
+            else if (child.getNodeName().equals( "ListProperty" ))
             {
-                if (child.getNodeName().equals( "ListProperty" ))
-                {
-                    parseListProperties( child, properties );
-                }
-                else
-                {
-                    if (child.getNodeName().equals( "CardElement" )
-                        || child.getNodeName().equals( "SelectableCardElement" ))
-                    {
-                        elements.add( parseElement( child ) );
-                    }
-                    else
-                    {
-                        if (child.getNodeName().equals("ListElement"))
-                        {
-                            elements.add( parseElement( child ) );
-                        }
-                        else
-                        {
-                            if (child.getNodeName().equals("WriteInCardElement"))
-                            {
-                                elements.add( parseWriteInElement( child ) );
-                            }
-                            else
-                            {
-                                if (child.getNodeName().equals( "#text" ))
-                                ; // Do Nothing
-                                else
-                                    throw new BallotParserException(
-                                            "I dont recognize "
-                                                    + child.getNodeName()
-                                                    + " as being a Property, CardElement, or SelectableCardElement",
-                                            null );
-                            }
-                        }
-                    }
-                }
+                parseListProperties( child, properties );
             }
+            else if (child.getNodeName().equals( "CardElement" )
+                || child.getNodeName().equals( "SelectableCardElement" ))
+            {
+                elements.add( parseElement( child ) );
+            }
+            else if (child.getNodeName().equals("ListElement"))
+            {
+                elements.add( parseElement( child ) );
+            }
+            else if (child.getNodeName().equals("WriteInCardElement"))
+            {
+                hasWritein = true;
+                elements.add( parseWriteInElement( child ) );
+            }
+            else  if (child.getNodeName().equals( "#text" ))
+                ; // Do Nothing
+            else
+                throw new BallotParserException(
+                        "I don't recognize "
+                                + child.getNodeName()
+                                + " as being a Property, CardElement, or SelectableCardElement",
+                        null );
+
         }
 
         //Shuffle the elements of the card to hopefully reorder them
-//        Collections.shuffle(elements);
+        //Collections.shuffle(elements);
 
         String uniqueID = node.getAttributes().getNamedItem( "uid" )
                 .getNodeValue();
 
-        return new Card( uniqueID, properties, elements );
+
+        return new Card( uniqueID, properties, elements, hasWritein );
     }
 
     /**
@@ -305,7 +295,7 @@ public class BallotParser {
             else if (child.getNodeName().equals( "#text" ))
                 ; // Do nothing
             else
-                throw new BallotParserException( "I dont recgonize "
+                throw new BallotParserException( "I don't recognize "
                         + child.getNodeName() + " as a property.", null );
         }
 
@@ -360,7 +350,7 @@ public class BallotParser {
             else if (child.getNodeName().equals( "#text" ))
                 ; // Do nothing
             else
-                throw new BallotParserException( "I dont recgonize "
+                throw new BallotParserException( "I don't recognize "
                         + child.getNodeName() + " as a property.", null );
         }
 

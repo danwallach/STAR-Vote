@@ -64,7 +64,7 @@ public final class WriteInCardElement extends SelectableCardElement{
         SwingWorker worker = new SwingWorker<Void, Void>() {
             @Override
             public Void doInBackground() {
-                WriteInCandidateGUI writeInGUI = new WriteInCandidateGUI(680, 384, getUniqueID(), fWriteInType, false);
+                WriteInCandidateGUI writeInGUI = new WriteInCandidateGUI(680, 384, getUniqueID(), fWriteInType, false, getParentCard());
                 writeInGUI.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
                 writeInGUI.start();
                 //while(!writeInGUI.isDone());

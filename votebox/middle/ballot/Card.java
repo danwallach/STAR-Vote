@@ -65,6 +65,16 @@ public class Card {
     private Ballot _parent;
 
     /**
+     * This denotes whether this card has a write-in or not
+     */
+    private boolean _hasWriteIn;
+
+    /**
+     * The value of the write in, if it exists
+     */
+    private String writeInValue;
+
+    /**
      * This is the card's strategy. It determines when to allow selections. The
      * default strategy is RadioButton.
      */
@@ -77,16 +87,20 @@ public class Card {
 
     /**
      * Creates a new card.
-     * 
+     *
      * @param uniqueid - the UID of the Card
      * @param properties - the Properties associated with the card
      * @param elements - the Elements contained within the card
+     * @param hasWriteIn
      */
     public Card(String uniqueid, Properties properties,
-            ArrayList<SelectableCardElement> elements) {
+                ArrayList<SelectableCardElement> elements, boolean hasWriteIn) {
         _properties = properties;
         _uniqueID = uniqueid;
         _elements = elements;
+        _hasWriteIn = hasWriteIn;
+
+        writeInValue = "null";
 
         // Set each element's parent card to this instance.
         for (SelectableCardElement ce : _elements)
@@ -304,6 +318,8 @@ public class Card {
     public List<ASExpression> getCastBallot() {
         ArrayList<ASExpression> lst = new ArrayList<ASExpression>();
 
+
+
         //A flag to determine if NO SELECTION was...er...selected.
         boolean selected = false;
         for (SelectableCardElement sce : _elements) {
@@ -313,20 +329,29 @@ public class Card {
                 //val = StringExpression.makeString(BigInteger.ONE.toByteArray());
             	val = StringExpression.makeString(BigInteger.ONE.toString());
             }
-            else
+            else {
                 //val = StringExpression.makeString(BigInteger.ZERO.toByteArray());
             	val = StringExpression.makeString(BigInteger.ZERO.toString());
+            }
             lst.add(new ListExpression(StringExpression.makeString(sce
                     .getUniqueID()), val));
         }
 
-        /*
-            This code allows for a "No Selection" element to be added to the string representation of the ballot
-            This is so the tallier can include (and count) races where no one was selected
-            We do this by including the UID of the no selection candidate, which will always be the lowest number
-            UID for the race. Hence we take out the first candidate and subtract one from the UID to derive the
-            No selection UID
-        */
+        //If there is a write-in candidate, the last element here will be the write-in field, which needs to
+        //be updated with the value that was written in, if any, or the default value if not.
+        if(_hasWriteIn){
+            ASExpression last = lst.get(lst.size() - 1);
+            ASExpression written = StringExpression.make(last.toString() + ":" +  writeInValue); //the colon delimits
+            lst.set(lst.size()-1 , written);
+        }
+
+        /**
+         *  This code allows for a "No Selection" element to be added to the string representation of the ballot
+         *  This is so the tallier can include (and count) races where no one was selected
+         *  We do this by including the UID of the no selection candidate, which will always be the lowest number
+         *  UID for the race. Hence we take out the first candidate and subtract one from the UID to derive the
+         *  No selection UID
+         **/
         String noSelectionLabel = _elements.get(0).getUniqueID();
         noSelectionLabel = noSelectionLabel.substring(0,1) + (Integer.parseInt(noSelectionLabel.substring(1)) - 1);
 
@@ -334,5 +359,18 @@ public class Card {
                 StringExpression.makeString((selected?BigInteger.ZERO:BigInteger.ONE).toString())));
 
         return lst;
+    }
+
+    /**
+     * This method allows us to update the card's write-in value by passing in new values.
+     *
+     * @param text - the value that was written in for the candidate's name
+     * @param secondary - the value that was written in for the VP. If it is null, ignore it
+     */
+    public void setWriteInValue(String text, String secondary) {
+        writeInValue = text;
+        if(secondary != null)
+            writeInValue += "^" + secondary;   //Note that the carat here is a delimiter
+
     }
 }

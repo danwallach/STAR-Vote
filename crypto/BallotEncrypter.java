@@ -45,6 +45,7 @@ import auditorium.Key;
 
 import sexpression.*;
 import crypto.interop.AdderKeyManipulator;
+import sexpression.stream.InvalidVerbatimStreamException;
 import votebox.middle.IBallotVars;
 import votebox.middle.ballot.*;
 
@@ -63,7 +64,7 @@ public class BallotEncrypter {
     /**
      * Takes an unencrypted ballot and encrypts it, while also generating a set of NIZKs to prove it is well formed.
      * 
-     * @param ballot - Unencrypted ballot of the form ((race-id counter) ...) counter = {0, 1}
+     * @param ballot - Unencrypted ballot of the form ((race-id counter) ...) counter = {0, 1} with possible write-in field appended
      * @param raceGroups - a list of of groups of race-ids that are considered "together" in a well formed ballot.
      * @param pubKey - the Adder PublicKey to use to encrypt the ballot and generate the NIZKs
      * @return a ListExpression in the form (((vote [vote]) (vote-ids ([id1], [id2], ...)) (proof [proof]) (public-key [key])) ...)
@@ -104,13 +105,23 @@ public class BallotEncrypter {
      */
     @SuppressWarnings("unchecked")
         public ListExpression encryptSublistWithProof(ListExpression ballot, PublicKey pubKey){
+        //TODO does this ever get called on more than one race at a time?
         List<AdderInteger> value = new ArrayList<AdderInteger>();
         List<ASExpression> valueIds = new ArrayList<ASExpression>();
+        List<String> writeIns = new ArrayList<String>();
+        List<BigInteger> secureWriteIns = new ArrayList<BigInteger>();
 
         for(int i = 0; i < ballot.size(); i++){
                 ListExpression choice = (ListExpression)ballot.get(i);
-    		value.add(new AdderInteger(choice.get(1).toString()));
-                valueIds.add(choice.get(0));
+            String selection = choice.get(1).toString();
+            if(selection.contains(":")){
+                String[] write = selection.split(":");
+                selection = write[0];
+                writeIns.add(write[1]);
+
+            }
+    		value.add(new AdderInteger(selection));
+            valueIds.add(choice.get(0));
         }//for
 
         PublicKey finalPubKey = AdderKeyManipulator.generateFinalPublicKey(pubKey);
@@ -127,10 +138,25 @@ public class BallotEncrypter {
 		
 		VoteProof proof = new VoteProof();
 		proof.compute(vote, finalPubKey, value, 0, 1);
-    	
+
+        //Now encrypt the write-ins and stick them back with the now encrypted votes
+        for(int i = 0 ; i < writeIns.size(); i++){
+            byte [] temp = StringExpression.make(writeIns.get(i)).toVerbatim();
+            secureWriteIns.add(new BigInteger(temp));
+
+        }
+
+        ASExpression outASE = vote.toASE();
+
+        for(int i =0; i < secureWriteIns.size(); i++){
+            if(secureWriteIns.get(i) != new BigInteger(StringExpression.EMPTY.toVerbatim())){
+                outASE = StringExpression.make(outASE.toString() + finalPubKey.encrypt(new AdderInteger(secureWriteIns.get(i))).toASE().toString());
+            }
+        }
+
 		ListExpression vList = new ListExpression(StringExpression.makeString("vote"),
 				//StringExpression.makeString(vote.toString()));
-				vote.toASE());
+				outASE);
 		ListExpression idList = new ListExpression(StringExpression.makeString("vote-ids"),
 				new ListExpression(valueIds));
 		ListExpression pList = new ListExpression(StringExpression.makeString("proof"),

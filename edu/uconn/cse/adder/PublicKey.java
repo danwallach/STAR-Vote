@@ -129,7 +129,7 @@ public class PublicKey {
      *
      * @return the encrypted vote
      */
-    private ElgamalCiphertext encrypt(AdderInteger m) {
+    public ElgamalCiphertext encrypt(AdderInteger m) {
         AdderInteger r = AdderInteger.random(q);
         AdderInteger bigG = g.pow(r);
         AdderInteger bigH = h.pow(r).multiply(f.pow(m));

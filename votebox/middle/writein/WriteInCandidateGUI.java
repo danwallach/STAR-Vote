@@ -2,6 +2,7 @@ package votebox.middle.writein;
 
 import printer.PrintImageUtils;
 import votebox.VoteBox;
+import votebox.middle.ballot.Card;
 import votebox.middle.ballot.WriteInCardElement;
 
 import java.awt.BorderLayout;
@@ -70,6 +71,7 @@ public class WriteInCandidateGUI extends JDialog {
     private JPanel secondaryCandidateNamePanel;
 
     private Boolean DONE;
+    private Card parent;
 
     /**
      * Start displaying the GUI.
@@ -84,6 +86,7 @@ public class WriteInCandidateGUI extends JDialog {
      */
     public void stop ()
     {
+        parent.setWriteInValue(primaryCandidateNameTextField.getText(), CANDIDATE_TYPE.equals("Presidential") ? secondaryCandidateNameTextField.getText() : "");
         setVisible(false);
         DONE = true;
         dispose();
@@ -92,18 +95,18 @@ public class WriteInCandidateGUI extends JDialog {
     /**
      * Launch the application.
      */
-    public static void main(String[] args) {
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    WriteInCandidateGUI frame = new WriteInCandidateGUI(680, 384, "Z22", "Regular", true);
-                    frame.setVisible(true);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
+//    public static void main(String[] args) {
+//        EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                try {
+//                    WriteInCandidateGUI frame = new WriteInCandidateGUI(680, 384, "Z22", "Regular", true);
+//                    frame.setVisible(true);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
+//    }
 
     /**
      * Create the GUI and build its GUI Elements.
@@ -113,11 +116,13 @@ public class WriteInCandidateGUI extends JDialog {
      * @param guiType the Type of GUI to start (Regular or Presidential)
      * @param useKeyListeners whether or not to use KeyListeners
      */
-    public WriteInCandidateGUI(int cX, int cY, String uid, String guiType, Boolean useKeyListeners)
+    public WriteInCandidateGUI(int cX, int cY, String uid, String guiType, Boolean useKeyListeners, Card parent)
     {
         System.out.println("Event Dispatch: " + SwingUtilities.isEventDispatchThread());
 
         DONE = false;
+
+        this.parent = parent;
 
         // Set the UID.
         CANDIDATE_UID = uid;

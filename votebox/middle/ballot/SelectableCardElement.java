@@ -109,11 +109,11 @@ public class SelectableCardElement {
 					//We can't nicely pass exceptions while using Observer
 					//  aren't checked exceptions nifty?
 					//  anyway, just report and go one our way
-					System.out.println("Error encounted in deselect handler: "+e.getMessage());
+					System.out.println("Error encountered in deselect handler: "+e.getMessage());
 					e.printStackTrace(System.err);
 				} catch (DeselectionException e) {
 					//Likewise
-					System.out.println("Error encounted in deselect handler: "+e.getMessage());
+					System.out.println("Error encountered in deselect handler: "+e.getMessage());
 					e.printStackTrace(System.err);
 				}
 			}
