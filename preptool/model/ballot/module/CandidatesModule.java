@@ -61,7 +61,6 @@ import org.w3c.dom.NodeList;
 import preptool.model.Party;
 import preptool.model.ballot.CardElement;
 import preptool.model.language.Language;
-import preptool.model.language.LocalizedString;
 import preptool.view.AModuleView;
 import preptool.view.IMovableTableModel;
 import preptool.view.View;
@@ -164,6 +163,8 @@ public class CandidatesModule extends AModule {
                 return data.get( row ).getColumn( language, column );
             }
 
+            /* This method is never used. */
+            @SuppressWarnings("unused")
             public void insertRow(int row) {
                 data.add( row, new CardElement( columns ) );
                 fireTableRowsInserted( row, row );
@@ -244,10 +245,11 @@ public class CandidatesModule extends AModule {
                 }
                 Party party = (Party) value;
 
-                if (party != null)
+                /* The condition below is always true... */
+                //if (party != null)
                     setText( party.getName( language ) + " " );
-                else
-                    setText( " " );
+                /*else
+                    setText( " " );*/
 
                 return this;
             }
@@ -267,10 +269,11 @@ public class CandidatesModule extends AModule {
                 }
                 Party party = (Party) value;
 
-                if (party != null)
+                /* The condition below is always true... */
+                //if (party != null)
                     setText( party.getName( language ) + " " );
-                else
-                    setText( " " );
+                /*else
+                    setText( " " );*/
 
                 return this;
             }
@@ -348,7 +351,8 @@ public class CandidatesModule extends AModule {
         /**
          * Constructs a new ModuleView with the given main view
          *
-         * @param view
+         * @param view the main view
+         * @param enableWriteIn whether or not write-in candidates should be enabled for this view
          */
         protected ModuleView(View view, boolean enableWriteIn) {
             this.view = view;
@@ -497,8 +501,8 @@ public class CandidatesModule extends AModule {
             final JComboBox dropDown = new JComboBox();
             dropDown.setRenderer( new PartyRenderer() );
             dropDown.addItem( Party.NO_PARTY );
-            for (int i = 0; i < allParties.size(); i++) {
-                dropDown.addItem( allParties.get( i ) );
+            for (Party party : allParties) {
+                dropDown.addItem( party );
             }
             dropDown.addItem( "Edit..." );
             dropDown.addActionListener( new ActionListener() {
@@ -569,8 +573,8 @@ public class CandidatesModule extends AModule {
             tableCopyAllFromItem = new JMenuItem();
             tableCopyAllFromItem.addActionListener( new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    for (int idx = 0; idx < data.size(); idx++)
-                        data.get( idx ).copyFromPrimary( language,
+                    for (CardElement cardElement : data)
+                        cardElement.copyFromPrimary( language,
                             primaryLanguage );
                     languageSelected( language );
                 }
@@ -701,7 +705,7 @@ public class CandidatesModule extends AModule {
                 for (int currentIndex = 0; currentIndex < tableModel.getRowCount(); currentIndex++)
                 {
                     /* Write-in Check: If the candidate to be deleted is a write-in, then re-enable the Add Write-In button. */
-                    String candidateName = (String) tableModel.getSelectionName(Language.getLanguageForName("English"), currentIndex);
+                    String candidateName = tableModel.getSelectionName(Language.getLanguageForName("English"), currentIndex);
                     if (isWriteInCandidate(candidateName))
                     {
                         addWriteInCandidateButton.setEnabled(false);
