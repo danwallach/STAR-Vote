@@ -132,7 +132,7 @@ public class Election {
             for (int k = 0; k <= numVotes; k++) {
                 j = new AdderInteger(k, q);
 
-                //System.out.println("DOES " + f.pow(j) + " equal " + target + "?");
+                System.out.println("DOES " + f.pow(j) + " equal " + target + "?");
 
                 if (f.pow(j).equals(target)) {
 //                    System.out.println("GOT RESULT!!!");

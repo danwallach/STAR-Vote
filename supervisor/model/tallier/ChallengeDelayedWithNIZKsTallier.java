@@ -35,6 +35,8 @@ public class ChallengeDelayedWithNIZKsTallier implements ITallier {
 	private PrivateKey _finalPrivateKey;
 	
 	private Map<String, Election> _results = new HashMap<String, Election>();
+
+    private List<String> writeIns;
 	
 	private Map<ASExpression, byte[]> _pendingVotes = new HashMap<ASExpression, byte[]>();
 	
@@ -49,6 +51,7 @@ public class ChallengeDelayedWithNIZKsTallier implements ITallier {
 		_privateKey = privKey;
 //		_finalPublicKey = AdderKeyManipulator.generateFinalPublicKey(_publicKey);
 //		_finalPrivateKey = AdderKeyManipulator.generateFinalPrivateKey(_publicKey, _privateKey);
+        writeIns = new ArrayList<String>();
 	}
 
 	public void challenged(ASExpression nonce) {
@@ -82,7 +85,17 @@ public class ChallengeDelayedWithNIZKsTallier implements ITallier {
 
             for(int i = 0; i < ballot.size(); i++){
 				ListExpression raceGroup = (ListExpression)ballot.get(i);
-				ListExpression voteE = (ListExpression)raceGroup.get(0);
+
+                //Split off any writeIns, if they're present, and store them, encrypted, in a list to be dealt with later
+				ListExpression wholeVote = (ListExpression)raceGroup.get(0);
+                String[] voteParts = wholeVote.toString().split("`");
+                ListExpression voteE = new ListExpression(voteParts[0]);
+
+                //If there is a write in keep track of it
+                if(voteParts.length > 1)
+                    writeIns.add(voteParts[1]);
+
+
 				ListExpression voteIdsE = (ListExpression)raceGroup.get(1);
 				ListExpression proofE = (ListExpression)raceGroup.get(2);
 				ListExpression publicKeyE = (ListExpression)raceGroup.get(3);
@@ -200,13 +213,4 @@ public class ChallengeDelayedWithNIZKsTallier implements ITallier {
 	}
 
 
-    public ASExpression getBallotByNonce(ASExpression nonce) {
-        try{
-            return ASExpression.makeVerbatim(_pendingVotes.get(nonce));
-        } catch(InvalidVerbatimStreamException e){
-            System.err.println(e.getMessage());
-            return null;
-        }
-
-    }
 }

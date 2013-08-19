@@ -150,7 +150,7 @@ public class BallotEncrypter {
 
         for(int i =0; i < secureWriteIns.size(); i++){
             if(secureWriteIns.get(i) != new BigInteger(StringExpression.EMPTY.toVerbatim())){
-                outASE = StringExpression.make(outASE.toString() + finalPubKey.encrypt(new AdderInteger(secureWriteIns.get(i))).toASE().toString());
+                outASE = StringExpression.make(outASE.toString() + "`" + finalPubKey.encrypt(new AdderInteger(secureWriteIns.get(i))).toASE().toString());
             }
         }
 
@@ -193,11 +193,11 @@ public class BallotEncrypter {
                     publicKey, new BigInteger(count
                             .getBytes()));*/
 
-            String writeIn = "";
-            if(count.size() > 1){
-                writeIn = count.toString().substring(1);
-                count = StringExpression.makeString(count.toString().substring(0, 1));
-            }
+//            String writeIn = "";
+//            if(count.size() > 1){
+//                writeIn = count.toString().substring(1);
+//                count = StringExpression.makeString(count.toString().substring(0, 1));
+//            }
             
             Pair<BigInteger> cipher = ElGamalCrypto.SINGLETON.encrypt(publicKey, new BigInteger(count.toString()));
             /*ASExpression cipherase = new ListExpression(StringExpression
