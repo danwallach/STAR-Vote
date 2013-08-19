@@ -98,6 +98,11 @@ public class CandidatesModule extends AModule {
 
             private static final long serialVersionUID = 1L;
 
+            public String getSelectionName(Language language, int rowIndex)
+            {
+                return data.get(rowIndex).getName(language, 0);
+            }
+
             public void addRow() {
                 data.add( new CardElement( columns ) );
                 fireTableRowsInserted( data.size(), data.size() );
@@ -671,7 +676,7 @@ public class CandidatesModule extends AModule {
 
             if (enableWriteIn)
             {
-                // Add the option to write-in a candidate, if the card is not a Race Card.
+                // Add the option to write-in a candidate, if the card is not a Party Card.
                 try {
                     icon = new ImageIcon( ClassLoader.getSystemClassLoader()
                             .getResource( "images/list-add-write-in.png" ) );
@@ -691,6 +696,18 @@ public class CandidatesModule extends AModule {
                 } );
                 addWriteInCandidateButton.setToolTipText("Add Write-in");
                 candidatesToolbar.add( addWriteInCandidateButton );
+
+                /* If there is a write-in candidate already in the race, then disable the button. */
+                for (int currentIndex = 0; currentIndex < tableModel.getRowCount(); currentIndex++)
+                {
+                    /* Write-in Check: If the candidate to be deleted is a write-in, then re-enable the Add Write-In button. */
+                    String candidateName = (String) tableModel.getSelectionName(Language.getLanguageForName("English"), currentIndex);
+                    if (isWriteInCandidate(candidateName))
+                    {
+                        addWriteInCandidateButton.setEnabled(false);
+                    }
+                    /* End Write-In Check. */
+                }
             }
         }
 
