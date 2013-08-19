@@ -337,12 +337,18 @@ public class Card {
                     .getUniqueID()), val));
         }
 
+        System.err.println(">>>" + _hasWriteIn);
         //If there is a write-in candidate, the last element here will be the write-in field, which needs to
         //be updated with the value that was written in, if any, or the default value if not.
         if(_hasWriteIn){
-            ASExpression last = lst.get(lst.size() - 1);
-            ASExpression written = StringExpression.make(last.toString() + ":" +  writeInValue); //the colon delimits
+            System.err.println(writeInValue);
+            ListExpression last = (ListExpression) lst.get(lst.size() - 1);
+            ASExpression first = last.get(0);
+            ASExpression data = last.get(1);
+            String modData = data.toString() + writeInValue;
+            ASExpression written = new ListExpression(first, StringExpression.make(modData)); //the colon delimits
             lst.set(lst.size()-1 , written);
+            System.out.println(written);
         }
 
         /**
@@ -369,7 +375,7 @@ public class Card {
      */
     public void setWriteInValue(String text, String secondary) {
         writeInValue = text;
-        if(secondary != null)
+        if(!secondary.equals(""))
             writeInValue += "^" + secondary;   //Note that the carat here is a delimiter
 
     }

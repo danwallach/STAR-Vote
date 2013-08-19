@@ -112,10 +112,10 @@ public class BallotEncrypter {
         List<BigInteger> secureWriteIns = new ArrayList<BigInteger>();
 
         for(int i = 0; i < ballot.size(); i++){
-                ListExpression choice = (ListExpression)ballot.get(i);
+            ListExpression choice = (ListExpression)ballot.get(i);
             String selection = choice.get(1).toString();
-            if(selection.contains(":")){
-                String[] write = selection.split(":");
+            if(selection.length() > 1){
+                String[] write = {selection.substring(0,1), selection.substring(1)};
                 selection = write[0];
                 writeIns.add(write[1]);
 
@@ -192,6 +192,12 @@ public class BallotEncrypter {
             /*Pair<BigInteger> cipher = ElGamalCrypto.SINGLETON.encrypt(
                     publicKey, new BigInteger(count
                             .getBytes()));*/
+
+            String writeIn = "";
+            if(count.size() > 1){
+                writeIn = count.toString().substring(1);
+                count = StringExpression.makeString(count.toString().substring(0, 1));
+            }
             
             Pair<BigInteger> cipher = ElGamalCrypto.SINGLETON.encrypt(publicKey, new BigInteger(count.toString()));
             /*ASExpression cipherase = new ListExpression(StringExpression

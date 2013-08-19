@@ -216,10 +216,12 @@ public class BallotParser {
         ArrayList<SelectableCardElement> elements = new ArrayList<SelectableCardElement>();
         Properties properties = new Properties();
 
-        boolean hasWritein = false;
+        boolean hasWriteIn = false;
 
         for (int lcv = 0; lcv < children.getLength(); lcv++) {
+
             Node child = children.item( lcv );
+            System.out.println(child.getNodeName());
 
             if (child.getNodeName().equals( "Property" ))
             {
@@ -240,7 +242,7 @@ public class BallotParser {
             }
             else if (child.getNodeName().equals("WriteInCardElement"))
             {
-                hasWritein = true;
+                hasWriteIn = true;
                 elements.add( parseWriteInElement( child ) );
             }
             else  if (child.getNodeName().equals( "#text" ))
@@ -260,8 +262,8 @@ public class BallotParser {
         String uniqueID = node.getAttributes().getNamedItem( "uid" )
                 .getNodeValue();
 
-
-        return new Card( uniqueID, properties, elements, hasWritein );
+        System.err.println(hasWriteIn);
+        return new Card( uniqueID, properties, elements, hasWriteIn );
     }
 
     /**

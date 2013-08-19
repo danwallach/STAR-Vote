@@ -274,12 +274,14 @@ public class VoteBox{
                 }
 
                 try {
+                    System.err.println(">" + ballot);
                     if (!isProvisional) {
                         if (!_constants.getEnableNIZKs()) {
                             auditorium.announce(new CommitBallotEvent(mySerial,
                                     StringExpression.makeString(nonce),
                                     BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey(mySerial + "-public")), StringExpression.makeString(bid), StringExpression.makeString(precinct)));
                         } else {
+
                             ASExpression encBallot = BallotEncrypter.SINGLETON.encryptWithProof(ballot, (List<List<String>>) arg[1],
                                     (PublicKey) _constants.getKeyStore().loadAdderKey("public"));
 

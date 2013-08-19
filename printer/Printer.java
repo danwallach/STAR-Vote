@@ -403,7 +403,8 @@ public class Printer{
 
     public void printedReceipt(String bID){
 
-        final String bid = bID.substring(0, 10);
+        //TODO is this supposed to be a hash?
+        final String bid = bID;
         Printable printedReceipt = new Printable(){
 
             public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {

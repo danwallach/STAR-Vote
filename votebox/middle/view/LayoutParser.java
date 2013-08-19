@@ -393,7 +393,7 @@ public class LayoutParser {
             drawable = new Button( uniqueID, properties );
         }
         //TODO XML this
-        else if (node.getNodeName().equals("WriteIn")){
+        else if (node.getNodeName().equals("WriteInToggleButton")){
             drawable = new WriteInToggleButton(group, uniqueID,  properties, view);
         }
         else {
