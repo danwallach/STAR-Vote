@@ -2,6 +2,7 @@ package votebox.middle.view.widget;
 
 import votebox.middle.Properties;
 import votebox.middle.view.IView;
+import votebox.middle.writein.WriteInCandidateSimpleGUI;
 
 /**
  * @author Matt Bernhard
@@ -31,8 +32,16 @@ public class WriteInToggleButton extends ToggleButton {
 
 
     public void select(){
-        //launch GUI
+        /* Launch GUI. */
+        // TODO How do we get the type of the race?
+        WriteInCandidateSimpleGUI writeInGUI = new WriteInCandidateSimpleGUI(680, 384, getUniqueID(), "Regular", view, this);
+        writeInGUI.start();
         super.select();
+    }
+
+    public void guiStopped(String primaryCandidateName, String secondaryCandidateName)
+    {
+        //TODO Use the names for something (rendering and creating events for the Supervisor).
     }
 
 }
