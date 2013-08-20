@@ -1007,8 +1007,8 @@ public class RenderingUtils {
         // All the characters that are used in English names.
         String ALL_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ -'";
         // The size of the images to be created.
-        int CHARACTER_IMAGE_WIDTH = 14;
-        int CHARACTER_IMAGE_HEIGHT = 14;
+        int CHARACTER_IMAGE_WIDTH = 28;
+        int CHARACTER_IMAGE_HEIGHT = 28;
 
         // Set the font for the character.
         Font font = new Font("Monospaced", Font.PLAIN, fontsize);
@@ -1029,7 +1029,7 @@ public class RenderingUtils {
             // Set the font for the character.
             g.setFont(font);
             // Draw the character on the image's canvas.
-            g.drawString(currentCharacter, 1, CHARACTER_IMAGE_HEIGHT);
+            g.drawString(currentCharacter, 5, CHARACTER_IMAGE_HEIGHT - 5);
             // Create a new file, to write the image to a file.
             // All the file names start with 'W_'.
             // All the file names contain the character name, ending in the extension '.png'.

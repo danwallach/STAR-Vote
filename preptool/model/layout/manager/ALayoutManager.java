@@ -663,7 +663,7 @@ public abstract class
 		}
 
         /* Write the letters to their respective files. */
-        RenderingUtils.writeLettersToFile(location, FONT_SIZE_SELECTED_IMAGES);
+        RenderingUtils.writeLettersToFile(location, FONT_SIZE_SELECTED_IMAGES + 10);
     }
 
 

@@ -98,7 +98,7 @@ public class LocalizedString {
 		elt.setAttribute("name", name);
 		for (Language lang: map.keySet()) {
 			Element stringElt = doc.createElement("String");
-            System.out.println(lang);
+            //System.out.println(lang);
             stringElt.setAttribute("language", lang.getName());
 			stringElt.setAttribute("text", map.get(lang));
 			elt.appendChild(stringElt);
