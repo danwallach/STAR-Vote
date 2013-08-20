@@ -150,7 +150,7 @@ public class BallotEncrypter {
 
         for(int i =0; i < secureWriteIns.size(); i++){
             if(secureWriteIns.get(i) != new BigInteger(StringExpression.EMPTY.toVerbatim())){
-                outASE = StringExpression.make(outASE.toString() + "`" + finalPubKey.encrypt(new AdderInteger(secureWriteIns.get(i))).toASE().toString());
+                //outASE = StringExpression.make(outASE.toString() + "`" + finalPubKey.encrypt(new AdderInteger(secureWriteIns.get(i))).toASE().toString());
             }
         }
 

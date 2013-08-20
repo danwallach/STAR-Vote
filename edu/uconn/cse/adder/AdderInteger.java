@@ -1,5 +1,6 @@
 package edu.uconn.cse.adder;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import sexpression.ASExpression;
@@ -486,6 +487,21 @@ public class AdderInteger implements Comparable/*<AdderInteger>*/ {
      */
     public AdderInteger pow(int exponent) {
         return pow(new AdderInteger(exponent));
+    }
+
+    /**
+     * Returns an AdderInteger whose value is
+     * <tt>(log<sub>base</sub>(this))</tt>
+     *
+     * @param base  the base of the logarithm to be calculated
+     *
+     * @return result
+     */
+    public AdderInteger log(AdderInteger base){
+
+//       double radix =
+//        return new AdderInteger((int)Math.round(result));
+        return base;
     }
 
     /**

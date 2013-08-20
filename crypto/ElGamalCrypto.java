@@ -116,6 +116,7 @@ public class ElGamalCrypto {
                     "Plaintext cannot be larger than modulus");
 
         BigInteger rnd = _modulusCls.getRandomValue();
+        System.out.println("Random: " + rnd);
         BigInteger c1 = _gen.modPow(rnd, _mod);
         BigInteger c2 = _member.modPow(plainText, _mod).multiply(
                 key.getKey().modPow(rnd, _mod)).mod(_mod);
@@ -155,8 +156,9 @@ public class ElGamalCrypto {
     }
 
     private BigInteger lookup(BigInteger i) {
-        if (_map.containsKey(i))
+        if (_map.containsKey(i)){
             return _map.get(i);
+        }
         else
             for (int lcv = TABLE_SIZE; true; lcv++) {
                 BigInteger blcv = new BigInteger(Integer.toString(lcv));
