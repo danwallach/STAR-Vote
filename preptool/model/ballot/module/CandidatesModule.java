@@ -349,6 +349,11 @@ public class CandidatesModule extends AModule {
         private Language primaryLanguage;
 
         /**
+         * Default Preptool language, to be used when the other 2 language variables are not instantiated.
+         */
+        private Language defaultLanguage = Language.getLanguageForName("English");
+
+        /**
          * Constructs a new ModuleView with the given main view
          *
          * @param view the main view
@@ -705,7 +710,7 @@ public class CandidatesModule extends AModule {
                 for (int currentIndex = 0; currentIndex < tableModel.getRowCount(); currentIndex++)
                 {
                     /* Write-in Check: If the candidate to be deleted is a write-in, then re-enable the Add Write-In button. */
-                    String candidateName = tableModel.getSelectionName(Language.getLanguageForName("English"), currentIndex);
+                    String candidateName = tableModel.getSelectionName(defaultLanguage, currentIndex);
                     if (isWriteInCandidate(candidateName))
                     {
                         addWriteInCandidateButton.setEnabled(false);
