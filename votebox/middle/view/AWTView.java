@@ -91,7 +91,7 @@ public class AWTView extends AView {
 	/**
 	 * Finds the complement of the scaling factor.
 	 * 
-	 * This is abstract out incase we ever need other-than-linear scaling.
+	 * This is abstract out in case we ever need other-than-linear scaling.
 	 * 
 	 * @param scale - scaling factor
 	 * @return the complement of the scaling factor
