@@ -61,23 +61,6 @@ public class
     }
 
     /**
-     * Returns the full decryption of an ElgamalCiphertext
-     * @param cipher the encrypted AdderInteger
-     *
-     * @return plaintext the decryption
-     */
-    public AdderInteger decrypt(ElgamalCiphertext cipher){
-        AdderInteger plaintext = cipher.getH();
-
-        //calculate the shared secret
-        AdderInteger s = cipher.getG().pow(x);
-
-        plaintext = plaintext.divide(s);
-
-        return plaintext.log(f);
-    }
-
-    /**
      * Returns the final private key given a list of polynomials.
      * @param polyList the polynomial list
      *
