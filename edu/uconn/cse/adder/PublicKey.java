@@ -129,18 +129,33 @@ public class PublicKey {
      *
      * @return the encrypted vote
      */
-    public ElgamalCiphertext encrypt(AdderInteger m) {
+    private ElgamalCiphertext encrypt(AdderInteger m) {
         AdderInteger r = AdderInteger.random(q);
         AdderInteger bigG = g.pow(r);
         AdderInteger bigH = h.pow(r).multiply(f.pow(m));
-
-        System.out.println(f.pow(m));
 
         ElgamalCiphertext ciphertext = new ElgamalCiphertext(bigG, bigH, r, p);
 
         return ciphertext;
     }
 
+    /**
+     * Encryps data that is passed in without homomorphic tally functionality.
+     * This is used for things that don't need to be mapped into G.
+     *
+     * @param m the message
+     * @return a ciphertext for the message
+     */
+    public ElgamalCiphertext encryptNoHomo(AdderInteger m){
+
+        AdderInteger r = AdderInteger.random(q);
+        AdderInteger bigG = g.pow(r);
+        AdderInteger bigH = h.pow(r).multiply(m);
+
+        ElgamalCiphertext ciphertext = new ElgamalCiphertext(bigG, bigH, r, p);
+
+        return ciphertext;
+    }
     /**
      * Encrypts the given choice given the base.
      *

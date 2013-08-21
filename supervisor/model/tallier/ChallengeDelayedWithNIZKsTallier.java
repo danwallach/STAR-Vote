@@ -2,20 +2,12 @@ package supervisor.model.tallier;
 
 import java.io.ByteArrayInputStream;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import auditorium.Bugout;
 
 import com.sun.nio.sctp.InvalidStreamException;
-import edu.uconn.cse.adder.AdderInteger;
-import edu.uconn.cse.adder.Election;
-import edu.uconn.cse.adder.PrivateKey;
-import edu.uconn.cse.adder.PublicKey;
-import edu.uconn.cse.adder.Vote;
-import edu.uconn.cse.adder.VoteProof;
+import edu.uconn.cse.adder.*;
 
 import sexpression.ASExpression;
 import sexpression.ListExpression;
@@ -80,8 +72,12 @@ public class ChallengeDelayedWithNIZKsTallier implements ITallier {
 			ASExpression sexp = in.read();
 			//Check that the ballot is well-formed
 			ListExpression ballot = (ListExpression)sexp;
-//            System.out.println(">>>> Tallying this ballot: " + ballot.toString());
 
+            //Pop the key "vote" off the end of each ballot
+            ASExpression writeInKey = ballot.get(ballot.size() - 1);
+            ballot = new ListExpression(Arrays.copyOfRange(ballot.getArray(), 0, ballot.getArray().length - 2));
+
+            byte[] key = parseKey(writeInKey);
 
             for(int i = 0; i < ballot.size(); i++){
 				ListExpression raceGroup = (ListExpression)ballot.get(i);
@@ -141,7 +137,16 @@ public class ChallengeDelayedWithNIZKsTallier implements ITallier {
 		}
     }
 
-	@SuppressWarnings("unchecked")
+    private byte[] parseKey(ASExpression writeInKey) {
+        ElgamalCiphertext keyCipher = ElgamalCiphertext.fromASE(writeInKey);
+
+        byte[] key = _privateKey.decrypt(keyCipher).bigintValue().toByteArray();
+
+        return key;
+
+    }
+
+    @SuppressWarnings("unchecked")
 	public Map<String, BigInteger> getReport() {
 		_finalPrivateKey = AdderKeyManipulator.generateFinalPrivateKey(_publicKey, _privateKey);
 		Map<String, BigInteger> report = new HashMap<String, BigInteger>();

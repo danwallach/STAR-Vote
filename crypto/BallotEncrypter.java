@@ -26,11 +26,9 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
 import java.math.BigInteger;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.*;
 
 import edu.uconn.cse.adder.AdderInteger;
 import edu.uconn.cse.adder.Election;
@@ -48,6 +46,12 @@ import crypto.interop.AdderKeyManipulator;
 import sexpression.stream.InvalidVerbatimStreamException;
 import votebox.middle.IBallotVars;
 import votebox.middle.ballot.*;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.SecretKeySpec;
 
 public class BallotEncrypter {
 
@@ -73,6 +77,23 @@ public class BallotEncrypter {
         _adderRandom = new ArrayList<List<AdderInteger>>();
         List<ASExpression> subBallots = new ArrayList<ASExpression>();
 
+
+        //Randomly generate a key for write-in encryption, will be sent over the wire, encrypted
+        byte[] writeInKey = new byte[16];
+
+        for (int i = 0; i < 16; i++)
+            writeInKey[i] = (byte) (Math.random() * 16);
+
+
+        List<AdderInteger> keyParts = new ArrayList<AdderInteger>();
+
+        //In order to fool Adder into encrypting our key properly, we break it into parts
+        //Which represent "votes" that will be encrypted using existing ElGamal
+        for(int i = 0; i < 8; i++){
+            keyParts.add(new AdderInteger(new BigInteger(Arrays.copyOfRange(writeInKey, i*8, i*8 + 8))));
+        }
+
+
         Map<String, ListExpression> ballotMap = new HashMap<String, ListExpression>();
         for(int i = 0; i < ballot.size(); i++){
                 ListExpression vote = (ListExpression)ballot.get(i);
@@ -86,10 +107,12 @@ public class BallotEncrypter {
                         races.add(ballotMap.get(raceId));
 
                 ListExpression subBallot = new ListExpression(races);
-                subBallots.add(encryptSublistWithProof(subBallot, pubKey));
+                subBallots.add(encryptSublistWithProof(subBallot, pubKey, writeInKey));
         }
 
+        subBallots.add(pubKey.encryptNoHomo(new AdderInteger(new BigInteger(writeInKey))).toASE());
         _recentBallot = new ListExpression(subBallots);
+
 
         return _recentBallot;
     }
@@ -104,25 +127,32 @@ public class BallotEncrypter {
      * @return An ListExpression of the form ((vote [vote]) (vote-ids ([id1], [id2], ...)) (proof [proof]) (public-key [key]))
      */
     @SuppressWarnings("unchecked")
-        public ListExpression encryptSublistWithProof(ListExpression ballot, PublicKey pubKey){
+    public ListExpression encryptSublistWithProof(ListExpression ballot, PublicKey pubKey, byte[] writeInKey){
         //TODO does this ever get called on more than one race at a time?
         List<AdderInteger> value = new ArrayList<AdderInteger>();
         List<ASExpression> valueIds = new ArrayList<ASExpression>();
         List<String> writeIns = new ArrayList<String>();
-        List<BigInteger> secureWriteIns = new ArrayList<BigInteger>();
+        List<ASExpression> secureWriteIns;
 
         for(int i = 0; i < ballot.size(); i++){
             ListExpression choice = (ListExpression)ballot.get(i);
             String selection = choice.get(1).toString();
+
+            //Split off the write-in fields
             if(selection.length() > 1){
                 String[] write = {selection.substring(0,1), selection.substring(1)};
                 selection = write[0];
                 writeIns.add(write[1]);
 
             }
+
     		value.add(new AdderInteger(selection));
             valueIds.add(choice.get(0));
         }//for
+
+        System.out.println(writeIns);
+
+        secureWriteIns = encryptWriteIns(writeIns, writeInKey);
 
         PublicKey finalPubKey = AdderKeyManipulator.generateFinalPublicKey(pubKey);
 
@@ -139,20 +169,17 @@ public class BallotEncrypter {
 		VoteProof proof = new VoteProof();
 		proof.compute(vote, finalPubKey, value, 0, 1);
 
-        //Now encrypt the write-ins and stick them back with the now encrypted votes
-        for(int i = 0 ; i < writeIns.size(); i++){
-            byte [] temp = StringExpression.make(writeIns.get(i)).toVerbatim();
-            secureWriteIns.add(new BigInteger(temp));
-
-        }
-
         ASExpression outASE = vote.toASE();
+        System.out.println(outASE);
 
-        for(int i =0; i < secureWriteIns.size(); i++){
-            if(secureWriteIns.get(i) != new BigInteger(StringExpression.EMPTY.toVerbatim())){
-                //outASE = StringExpression.make(outASE.toString() + "`" + finalPubKey.encrypt(new AdderInteger(secureWriteIns.get(i))).toASE().toString());
-            }
+        //Now stick the encrypted write-ins back into the votes
+        for(ASExpression written : secureWriteIns){
+            outASE = StringExpression.make(outASE.toString() + written);
         }
+
+
+
+
 
 		ListExpression vList = new ListExpression(StringExpression.makeString("vote"),
 				//StringExpression.makeString(vote.toString()));
@@ -170,7 +197,37 @@ public class BallotEncrypter {
 		
 		return ret;
     }
-    
+
+    /**
+     * A method which encrypts write ins using the AES scheme
+     *
+     * @param writeIns the written-in values for candidate names
+     * @param key  the key to use for AES encryption, will be encrypted and sent with encrypted ballot
+     * @return result  a List of ASExpressions representing the encrypted bytes of each write-in
+     */
+    private List<ASExpression> encryptWriteIns(List<String> writeIns, byte[] key) {
+        List<ASExpression> encrypted = new ArrayList<ASExpression>();
+        try{
+
+
+            Cipher c = Cipher.getInstance("AES");
+            SecretKeySpec keySpec = new SecretKeySpec(key, "AES");
+
+            c.init(Cipher.ENCRYPT_MODE, keySpec);
+
+            for(String w : writeIns){
+                byte [] enc = c.doFinal(w.getBytes());
+                encrypted.add(ASExpression.makeVerbatim(enc));
+            }
+
+
+
+        } catch (Exception e){
+            throw new RuntimeException(e);
+        }
+        return encrypted;
+    }
+
     /**
      * Take an unencrypted ballot form and make it encrypted.
      * 
