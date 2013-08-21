@@ -134,6 +134,8 @@ public class PublicKey {
         AdderInteger bigG = g.pow(r);
         AdderInteger bigH = h.pow(r).multiply(f.pow(m));
 
+        System.out.println(f.pow(m));
+
         ElgamalCiphertext ciphertext = new ElgamalCiphertext(bigG, bigH, r, p);
 
         return ciphertext;

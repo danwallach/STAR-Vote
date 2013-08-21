@@ -1,5 +1,6 @@
 package edu.uconn.cse.adder;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import sexpression.ASExpression;
@@ -487,6 +488,7 @@ public class AdderInteger implements Comparable/*<AdderInteger>*/ {
     public AdderInteger pow(int exponent) {
         return pow(new AdderInteger(exponent));
     }
+
 
     /**
      * Compares this AdderInteger with the specified AdderInteger. This method
