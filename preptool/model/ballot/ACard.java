@@ -67,8 +67,6 @@ public abstract class ACard {
             card = new PropositionCard();
         else if (elt.getAttribute("type").equals("Party"))
             card = new PartyCard();
-        else if(elt.getAttribute("type").equals("Write-In"))
-            card = new WriteInCard();
         else
             throw new BallotOpenException("Unknown card type: "
                     + elt.getAttribute("type"));
