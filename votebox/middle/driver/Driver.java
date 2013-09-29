@@ -223,6 +223,13 @@ public class Driver {
     }
 
     /**
+     * @return the ballot this driver is working with
+     */
+    public Ballot getBallot(){
+        return _ballot;
+    }
+
+    /**
      * Prints a statement that the ballot has been accepted by the voter on a VVPAT.
      * 
      * @param constants - parameters to use for printing

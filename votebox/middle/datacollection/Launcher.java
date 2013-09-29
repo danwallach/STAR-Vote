@@ -22,12 +22,7 @@
 
 package votebox.middle.datacollection;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.Arrays;
 import java.util.Observable;
 import java.util.Observer;
@@ -35,9 +30,15 @@ import java.util.Observer;
 import auditorium.IAuditoriumParams;
 import auditorium.IKeyStore;
 
+import printer.Printer;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
+import votebox.middle.IBallotVars;
+import votebox.middle.ballot.Ballot;
+import votebox.middle.ballot.BallotParser;
+import votebox.middle.ballot.BallotParserException;
 import votebox.middle.driver.Driver;
+import votebox.middle.driver.GlobalVarsReader;
 import votebox.middle.view.AWTViewFactory;
 
 /**
@@ -59,6 +60,10 @@ public class Launcher {
      */
     private Driver _voteBox = null;
 
+    private Printer printer = null;
+
+    private static File ballotDir;
+
     /**
      * Launch the votebox software after doing some brief sanity checking. These
      * checks won't catch everything but they will catch enough problems caused
@@ -75,18 +80,44 @@ public class Launcher {
 
 		// Unzip the ballot to a temporary directory
 		File baldir;
-		try {
-			baldir = new File(System.getProperty("user.dir") + "/tmp/ballots/ballot");
-            System.out.println(baldir.getAbsolutePath());
-            baldir.delete();
-			baldir.mkdirs();
-            System.out.println(baldir.getAbsolutePath());
-            Driver.unzip(ballotLocation, baldir.getAbsolutePath());
-			Driver.deleteRecursivelyOnExit(baldir.getAbsolutePath());
-		} catch (IOException e) {
-			e.printStackTrace();
-			return;
-		}
+//		try {
+            //Current working directory
+            File path = new File(System.getProperty("user.dir"));
+            path = new File(path, "tmp");
+            path = new File(path, "ballots");
+            path = new File(path, "ballot"/* + protectedCount*/);
+            path.mkdirs();
+            File _currentBallotFile = null;
+
+            try {
+                _currentBallotFile = new File(path, "ballot.zip");
+
+                IBallotVars vars = new GlobalVarsReader(path.getAbsolutePath()).parse();
+                Ballot _ballot = new BallotParser().getBallot(vars);
+
+                FileOutputStream fout = new FileOutputStream(_currentBallotFile);
+                byte[] ballot = _ballot.toASExpression().toVerbatim();
+                fout.write(ballot);
+
+                Driver.unzip(new File(path, "ballot.zip").getAbsolutePath(), new File(path, "data").getAbsolutePath());
+                Driver.deleteRecursivelyOnExit(path.getAbsolutePath());
+
+            } catch (IOException e1) {
+                throw new RuntimeException(e1);
+            } catch (BallotParserException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+            baldir = new File(System.getProperty("user.dir") + "/tmp/ballots/ballot");
+//            System.out.println(baldir.getAbsolutePath());
+//            baldir.delete();
+//			baldir.mkdirs();
+//            System.out.println(baldir.getAbsolutePath());
+//            Driver.unzip(ballotLocation, baldir.getAbsolutePath());
+//			Driver.deleteRecursivelyOnExit(baldir.getAbsolutePath());
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//			return;
+//		}
 
 		// Check that ballot location is legit.
 		// Check that it's a directory.
@@ -144,8 +175,10 @@ public class Launcher {
 		_voteBox = new Driver(baldir.getAbsolutePath(), new AWTViewFactory(
 				debug, false), true);
 		final Driver vbcopy = _voteBox;
-        
-		_view.setRunning(true);
+
+        ballotDir = baldir;
+
+        _view.setRunning(true);
 		new Thread(new Runnable() {
 
 			public void run() {
@@ -225,6 +258,8 @@ public class Launcher {
 		        // Register for the cast ballot event, and "review page encountered" event
 				vbcopy.run(new Observer(){
 					ListExpression _lastSeenBallot = null;
+
+
 					
 					public void update(Observable o, Object arg){
 						//System.out.println("Preparing to print");
@@ -237,7 +272,10 @@ public class Launcher {
 						
 						ListExpression ballot = (ListExpression)obj[1];
 						
-						boolean reject = !ballot.toString().equals(""+_lastSeenBallot); 
+						boolean reject = !ballot.toString().equals(""+_lastSeenBallot);
+
+                        printer = new Printer(new File(ballotDir.getAbsolutePath(), "ballot.zip"), _voteBox.getBallotAdapter().getRaceGroups());
+                        printer.printCommittedBallot(ballot, "9999999999");
 						
 						try{
 							if(reject){
