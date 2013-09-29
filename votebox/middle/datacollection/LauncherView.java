@@ -459,7 +459,7 @@ public class LauncherView extends JFrame {
 	}
 
 	/**
-	 * Call this method to dispaly a message to the user.
+	 * Call this method to display a message to the user.
 	 * 
 	 * @param title This is the title of the message.
 	 * @param message This is the message body.

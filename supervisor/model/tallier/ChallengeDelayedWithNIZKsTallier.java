@@ -6,14 +6,12 @@ import java.util.*;
 
 import auditorium.Bugout;
 
-import com.sun.nio.sctp.InvalidStreamException;
 import edu.uconn.cse.adder.*;
 
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.stream.ASEInputStreamReader;
 import crypto.interop.AdderKeyManipulator;
-import sexpression.stream.InvalidVerbatimStreamException;
 
 /**
  * Tallier for elections with both NIZKs and the challenge-commit model enabled.
