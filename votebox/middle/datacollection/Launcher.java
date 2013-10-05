@@ -80,44 +80,16 @@ public class Launcher {
 
 		// Unzip the ballot to a temporary directory
 		File baldir;
-//		try {
-            //Current working directory
-            File path = new File(System.getProperty("user.dir"));
-            path = new File(path, "tmp");
-            path = new File(path, "ballots");
-            path = new File(path, "ballot"/* + protectedCount*/);
-            path.mkdirs();
-            File _currentBallotFile = null;
-
-            try {
-                _currentBallotFile = new File(path, "ballot.zip");
-
-                IBallotVars vars = new GlobalVarsReader(path.getAbsolutePath()).parse();
-                Ballot _ballot = new BallotParser().getBallot(vars);
-
-                FileOutputStream fout = new FileOutputStream(_currentBallotFile);
-                byte[] ballot = _ballot.toASExpression().toVerbatim();
-                fout.write(ballot);
-
-                Driver.unzip(new File(path, "ballot.zip").getAbsolutePath(), new File(path, "data").getAbsolutePath());
-                Driver.deleteRecursivelyOnExit(path.getAbsolutePath());
-
-            } catch (IOException e1) {
-                throw new RuntimeException(e1);
-            } catch (BallotParserException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            }
-            baldir = new File(System.getProperty("user.dir") + "/tmp/ballots/ballot");
-//            System.out.println(baldir.getAbsolutePath());
-//            baldir.delete();
-//			baldir.mkdirs();
-//            System.out.println(baldir.getAbsolutePath());
-//            Driver.unzip(ballotLocation, baldir.getAbsolutePath());
-//			Driver.deleteRecursivelyOnExit(baldir.getAbsolutePath());
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//			return;
-//		}
+		try {
+            baldir = File.createTempFile("ballot", "");
+            baldir.delete();
+            baldir.mkdirs();
+            Driver.unzip(ballotLocation, baldir.getAbsolutePath());
+            Driver.deleteRecursivelyOnExit(baldir.getAbsolutePath());
+		} catch (IOException e) {
+			e.printStackTrace();
+			return;
+		}
 
 		// Check that ballot location is legit.
 		// Check that it's a directory.
