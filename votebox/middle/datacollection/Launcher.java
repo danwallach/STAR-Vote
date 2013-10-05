@@ -79,11 +79,13 @@ public class Launcher {
 			final int vvpatHeight, final int printableWidth, final int printableHeight){
 
 		// Unzip the ballot to a temporary directory
-		File baldir;
+		File baldir = null;
 		try {
             baldir = File.createTempFile("ballot", "");
             baldir.delete();
             baldir.mkdirs();
+
+
             Driver.unzip(ballotLocation, baldir.getAbsolutePath());
             Driver.deleteRecursivelyOnExit(baldir.getAbsolutePath());
 		} catch (IOException e) {
@@ -91,7 +93,7 @@ public class Launcher {
 			return;
 		}
 
-		// Check that ballot location is legit.
+        // Check that ballot location is legit.
 		// Check that it's a directory.
 		File logdir = new File(logDir);
 		File logfile = new File(logdir, logFilename);

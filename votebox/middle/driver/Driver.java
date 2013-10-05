@@ -502,7 +502,23 @@ public class Driver {
 		}
 
 		zipFile.close();
-	}
+
+        //TODO make this work so the printer has a zip file to get images from....
+//        try{
+//            IBallotVars vars = new GlobalVarsReader(src).parse();
+//            Ballot _ballot = new BallotParser().getBallot(vars);
+//
+//
+//            FileOutputStream fout = new FileOutputStream(new File(System.getProperty("user.dir") + "/tmp/ballots/ballot/"));
+//            byte[] ballot = _ballot.toASExpression().toVerbatim();
+//            fout.write(ballot);
+//
+//            fout.close();
+//        } catch (BallotParserException e) {
+//            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+//        }
+
+    }
 	
 	public static void deleteRecursivelyOnExit(String dir) {
 		Stack<File> dirStack = new Stack<File>();
