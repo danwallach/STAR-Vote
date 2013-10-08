@@ -71,7 +71,7 @@ public class Printer{
 
     public static int DPI_SCALE;
 
-    public Printer(File ballotFile,List<List<String>> races, String confFilePath) {
+    public Printer(File ballotFile, List<List<String>> races, String confFilePath) {
         _constants = new AuditoriumParams(confFilePath);
         _printerConstants = new AuditoriumParams("printer.conf");
         _currentBallotFile =  ballotFile;

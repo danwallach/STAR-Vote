@@ -23,6 +23,9 @@
 package votebox.middle.datacollection;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.Observable;
 import java.util.Observer;
@@ -64,6 +67,8 @@ public class Launcher {
 
     private static File ballotDir;
 
+    private static File tempDir;
+
     /**
      * Launch the votebox software after doing some brief sanity checking. These
      * checks won't catch everything but they will catch enough problems caused
@@ -85,9 +90,12 @@ public class Launcher {
             baldir.delete();
             baldir.mkdirs();
 
+            ballotDir = new File(ballotLocation);
 
             Driver.unzip(ballotLocation, baldir.getAbsolutePath());
+            Driver.unzip(ballotLocation, ballotLocation);
             Driver.deleteRecursivelyOnExit(baldir.getAbsolutePath());
+
 		} catch (IOException e) {
 			e.printStackTrace();
 			return;
@@ -150,7 +158,7 @@ public class Launcher {
 				debug, false), true);
 		final Driver vbcopy = _voteBox;
 
-        ballotDir = baldir;
+        tempDir = baldir;
 
         _view.setRunning(true);
 		new Thread(new Runnable() {
@@ -248,7 +256,8 @@ public class Launcher {
 						
 						boolean reject = !ballot.toString().equals(""+_lastSeenBallot);
 
-                        printer = new Printer(new File(ballotDir.getAbsolutePath(), "ballot.zip"), _voteBox.getBallotAdapter().getRaceGroups());
+                        System.out.println(ballotDir);
+                        printer = new Printer(ballotDir, _voteBox.getBallotAdapter().getRaceGroups());
                         printer.printCommittedBallot(ballot, "9999999999");
 						
 						try{
