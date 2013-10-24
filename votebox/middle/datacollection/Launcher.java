@@ -92,6 +92,7 @@ public class Launcher {
         try {
             baldir = new File(ballotLocation.substring(0, ballotLocation.lastIndexOf(".")));
             dest = new File(System.getProperty("user.dir") + "/ballots/ballot");
+            dest.delete();
             baldir.delete();
             baldir.mkdirs();
             Driver.unzip(ballotLocation, baldir.getAbsolutePath());
@@ -408,7 +409,7 @@ public class Launcher {
 
             in.close();
             out.close();
-            System.out.println("File copied from " + src + " to " + dest);
+//            System.out.println("File copied from " + src + " to " + dest);
         }
     }
 
