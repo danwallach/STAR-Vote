@@ -99,7 +99,7 @@ public class Launcher {
             return;
         }
         System.out.println(baldir.getAbsolutePath());
-        ballotDir = new File(ballotLocation);
+        ballotDir = new File(baldir.getAbsolutePath() + ".zip");
 
         // Check that ballot location is legit.
 		// Check that it's a directory.
@@ -268,20 +268,20 @@ public class Launcher {
 //                            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 //                        }
 
-                        printer = new Printer(ballotDir, _voteBox.getBallotAdapter().getRaceGroups());
+                        printer = new Printer(ballotDir, _voteBox.getBallotAdapter().getRaceGroups(), true);
                         printer.printCommittedBallot(ballot, "9999999999");
-
-						try{
-							if(reject){
-								if(_lastSeenBallot != null)
-									Driver.printBallotRejected(constants, new File(ballotLocation));
-
-								Driver.printCommittedBallot(constants, ballot, new File(ballotLocation));
-                            }
-						}catch(Exception e){}
-						finally{
-							_lastSeenBallot = ballot;
-						}
+//
+//						try{
+//							if(reject){
+//								if(_lastSeenBallot != null)
+//									Driver.printBallotRejected(constants, new File(ballotLocation));
+//
+//								Driver.printCommittedBallot(constants, ballot, new File(ballotLocation));
+//                            }
+//						}catch(Exception e){}
+//						finally{
+//							_lastSeenBallot = ballot;
+//						}
 					}
 				},
 

@@ -66,21 +66,31 @@ public class Printer{
     private final AuditoriumParams _printerConstants;
     protected File _currentBallotFile;
     private List<List<String>> _races;
+    private boolean test;
 
     public static int counter = 0;
 
     public static int DPI_SCALE;
 
-    public Printer(File ballotFile, List<List<String>> races, String confFilePath) {
+    public Printer(File ballotFile, List<List<String>> races, String confFilePath){
+        this(ballotFile, races, confFilePath, false);
+    }
+
+    public Printer(File ballotFile, List<List<String>> races, String confFilePath, boolean test) {
         _constants = new AuditoriumParams(confFilePath);
         _printerConstants = new AuditoriumParams("printer.conf");
         _currentBallotFile =  ballotFile;
         _races = races;
+        this.test = test;
         DPI_SCALE = _constants.getPrinterDefaultDpi()/_constants.getJavaDefaultDpi();
     }
 
     public Printer(File ballotFile,List<List<String>> races) {
         this(ballotFile, races, "vb.conf");
+    }
+
+    public Printer(File ballotFile,List<List<String>> races, boolean test){
+        this(ballotFile, races, "vb.conf", test);
     }
 
     public Printer(){
@@ -146,14 +156,17 @@ public class Printer{
         // This is where the HTML Printing occurs.
 
         String fileChar = System.getProperty("file.separator");
-        String cleanFilePath = _currentBallotFile.getAbsolutePath().substring(0, _currentBallotFile.getAbsolutePath().lastIndexOf(fileChar) + 1);
+        String cleanFilePath = _currentBallotFile.getAbsolutePath().substring(0, _currentBallotFile.getAbsolutePath().lastIndexOf(".")) + fileChar;
+
+        if(!test)
+            cleanFilePath = _currentBallotFile.getAbsolutePath().substring(0, _currentBallotFile.getAbsolutePath().lastIndexOf(fileChar) + 1);
         System.out.println(cleanFilePath);
         // Print to an HTML file. Parameters to be used:
         String htmlFileName = cleanFilePath + "PrintableBallot.html";
         Boolean useTwoColumns = true;
         Boolean printerFriendly = true;
 
-        String pathToVVPATFolder = cleanFilePath + "data" + fileChar + "media" + fileChar + "vvpat" + fileChar;
+        String pathToVVPATFolder = cleanFilePath +  "media" + fileChar + "vvpat" + fileChar;
         String barcodeFileNameNoExtension = pathToVVPATFolder + "Barcode";
         String lineSeparatorFileName = pathToVVPATFolder + "LineSeparator.png";
 
@@ -221,6 +234,7 @@ public class Printer{
             convertHTMLtoPDFCommandLine = reader.readLine();
             printPDFCommandLine = reader.readLine();
             reader.close();
+            System.out.println(convertHTMLtoPDFCommandLine);
         }
         catch (IOException e)
         {
