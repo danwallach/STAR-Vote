@@ -99,7 +99,6 @@ public class Printer{
         System.out.println("Current Ballot: " + _currentBallotFile.getAbsolutePath());
 		final Map<String, Image> choiceToImage = BallotImageHelper.loadImagesForVVPAT(_currentBallotFile);
         final Map<String, Image> raceTitles = BallotImageHelper.loadBallotTitles(_currentBallotFile);
-;
 
         final String fbid = bid;
 
@@ -141,8 +140,6 @@ public class Printer{
 
 		final int fTotalSize = totalSize;
         final ArrayList<RaceTitlePair> fActualRaceNamePairs = actualRaceNameImagePairs;
-
-
 
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////

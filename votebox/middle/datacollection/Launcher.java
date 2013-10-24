@@ -29,6 +29,9 @@ import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipOutputStream;
 
 import auditorium.IAuditoriumParams;
 import auditorium.IKeyStore;
@@ -84,22 +87,19 @@ public class Launcher {
 			final int vvpatHeight, final int printableWidth, final int printableHeight){
 
 		// Unzip the ballot to a temporary directory
-		File baldir = null;
-		try {
-            baldir = File.createTempFile("ballot", "");
+        File baldir;
+        try {
+            baldir = new File(ballotLocation.substring(0, ballotLocation.lastIndexOf(".")));
             baldir.delete();
             baldir.mkdirs();
-
-            ballotDir = new File(ballotLocation);
-
             Driver.unzip(ballotLocation, baldir.getAbsolutePath());
-            Driver.unzip(ballotLocation, ballotLocation);
-            Driver.deleteRecursivelyOnExit(baldir.getAbsolutePath());
-
-		} catch (IOException e) {
-			e.printStackTrace();
-			return;
-		}
+            //Driver.deleteRecursivelyOnExit(baldir.getAbsolutePath());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+        System.out.println(baldir.getAbsolutePath());
+        ballotDir = new File(ballotLocation);
 
         // Check that ballot location is legit.
 		// Check that it's a directory.
@@ -255,18 +255,29 @@ public class Launcher {
 						ListExpression ballot = (ListExpression)obj[1];
 						
 						boolean reject = !ballot.toString().equals(""+_lastSeenBallot);
+//
+//                        System.out.println(ballotDir);
+//                        try{
+//                            ZipOutputStream zOut = new ZipOutputStream(new FileOutputStream(new File(System.getProperty("user.dir") + "/" + ballotDir.getName() + ".zip")));
+//                            zOut.putNextEntry(new ZipEntry(ballotDir.getAbsolutePath()));
+//                            zOut.closeEntry();
+//                            zOut.close();
+//                        } catch(FileNotFoundException e){
+//                            System.err.println(e.getMessage());
+//                        } catch (IOException e) {
+//                            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+//                        }
 
-                        System.out.println(ballotDir);
                         printer = new Printer(ballotDir, _voteBox.getBallotAdapter().getRaceGroups());
                         printer.printCommittedBallot(ballot, "9999999999");
-						
+
 						try{
 							if(reject){
 								if(_lastSeenBallot != null)
 									Driver.printBallotRejected(constants, new File(ballotLocation));
 
 								Driver.printCommittedBallot(constants, ballot, new File(ballotLocation));
-							}
+                            }
 						}catch(Exception e){}
 						finally{
 							_lastSeenBallot = ballot;

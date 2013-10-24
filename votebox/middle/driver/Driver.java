@@ -22,8 +22,8 @@
 
 package votebox.middle.driver;
 
-import java.awt.Graphics;
-import java.awt.Image;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
 import java.awt.print.Paper;
 import java.awt.print.Printable;
@@ -49,6 +49,7 @@ import javax.print.attribute.standard.PrinterName;
 
 import auditorium.IAuditoriumParams;
 
+import printer.PrintImageUtils;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import tap.BallotImageHelper;
@@ -294,7 +295,7 @@ public class Driver {
 		final Map<String, Image> choiceToImage = BallotImageHelper.loadImagesForVVPAT(currentBallotFile);
 		
 		if(choiceToImage == null){
-			//System.out.println("\tPrinting aborted, no VVPAT images");
+			System.out.println("\tPrinting aborted, no VVPAT images");
 			return;
 		}
 		
@@ -362,14 +363,15 @@ public class Driver {
 				totalSize = 0;
 				while(totalSize < pageFormat.getImageableHeight() && choiceIndex < choices.size()){
 					//System.out.println("\t\tRendering choice: "+choiceIndex+" - "+choices.get(choiceIndex));
-					Image img = choiceToImage.get(choices.get(choiceIndex));
-					
+					BufferedImage img = (BufferedImage)choiceToImage.get(choices.get(choiceIndex));
+//                    img = PrintImageUtils.getScaledInstance(img, 400, 40, RenderingHints.VALUE_INTERPOLATION_BILINEAR, false);
+
 					if(img.getHeight(null) + totalSize > pageFormat.getImageableHeight())
 						break;
 					
 					printedChoices.add(choices.get(choiceIndex));
 					
-					//System.out.println("\t\t"+img);
+					System.out.println("\t\t>>"+img);
 					
 					int x = (int)pageFormat.getImageableX();
 					int y = (int)pageFormat.getImageableY() + totalSize;
@@ -378,6 +380,10 @@ public class Driver {
 							x,
 							y,
 							null);
+
+//                    graphics.setColor(Color.BLACK);
+//                    graphics.setFont(new Font("OCR A Extended", Font.PLAIN, 12));
+//                    graphics.drawString(choices.get(choiceIndex), x, y);
 					
 					totalSize += img.getHeight(null);
 					choiceIndex++;
@@ -454,55 +460,54 @@ public class Driver {
 		};
 		t.start();
 	}
-    
-	public static void unzip(String src, String dest) throws IOException {
-		if(!(new File(dest)).exists()){
-			(new File(dest)).mkdirs();
-		}//if
-		
-		ZipFile zipFile = new ZipFile(src);
-		Enumeration<? extends ZipEntry> entries = zipFile.entries();
-		byte[] buf = new byte[1024];
-		int len;
 
-		//Make all the directories first
-		while(entries.hasMoreElements()){
-			ZipEntry entry = entries.nextElement();
-			
-			if (entry.isDirectory()) {
-				//Create the directory using the proper seperator for this platform
-				File newDir = new File(dest, entry.getName().replace('/', File.separatorChar));
-				newDir.mkdirs();
-			}
-		}
-		
-		entries = zipFile.entries();
-		
-		//Now copy all the data files
-		while (entries.hasMoreElements()) {
-			ZipEntry entry = entries.nextElement();
+    public static void unzip(String src, String dest) throws IOException {
+        if(!(new File(dest)).exists()){
+            (new File(dest)).mkdirs();
+        }//if
 
-			if (entry.isDirectory()) {
-				continue;
-			} else {
-				InputStream in = zipFile.getInputStream(entry);
-				
-				//Create the file path, using the proper seperator char
-				File outFile = new File(dest, entry.getName().replace('/', File.separatorChar));
-				
-				OutputStream out = new BufferedOutputStream(
-						new FileOutputStream(outFile));
-				while((len = in.read(buf)) >= 0)
-				      out.write(buf, 0, len);
-				in.close();
-				
-				out.flush();
-				out.close();
-			}
-		}
+        ZipFile zipFile = new ZipFile(src);
+        Enumeration<? extends ZipEntry> entries = zipFile.entries();
+        byte[] buf = new byte[1024];
+        int len;
 
-		zipFile.close();
+        //Make all the directories first
+        while(entries.hasMoreElements()){
+            ZipEntry entry = (ZipEntry)entries.nextElement();
 
+            if (entry.isDirectory()) {
+                //Create the directory using the proper seperator for this platform
+                File newDir = new File(dest, entry.getName().replace('/', File.separatorChar));
+                newDir.mkdirs();
+            }
+        }
+
+        entries = zipFile.entries();
+
+        //Now copy all the data files
+        while (entries.hasMoreElements()) {
+            ZipEntry entry = (ZipEntry) entries.nextElement();
+
+            if (entry.isDirectory()) {
+                continue;
+            } else {
+                InputStream in = zipFile.getInputStream(entry);
+
+                //Create the file path, using the proper seperator char
+                File outFile = new File(dest, entry.getName().replace('/', File.separatorChar));
+
+                OutputStream out = new BufferedOutputStream(
+                        new FileOutputStream(outFile));
+                while((len = in.read(buf)) >= 0)
+                    out.write(buf, 0, len);
+                in.close();
+
+                out.flush();
+                out.close();
+            }
+        }
+
+        zipFile.close();
     }
 	
 	public static void deleteRecursivelyOnExit(String dir) {
