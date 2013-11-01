@@ -68,7 +68,7 @@ public class Launcher {
 
     private Printer printer = null;
 
-    private static File ballotDir;
+    private static File dest;
 
     private static File tempDir;
 
@@ -88,7 +88,6 @@ public class Launcher {
 
 		// Unzip the ballot to a temporary directory
         File baldir;
-        File dest;
         try {
             baldir = new File(ballotLocation.substring(0, ballotLocation.lastIndexOf(".")));
             dest = new File(System.getProperty("user.dir") + "/tmp/ballots/ballot");
@@ -99,7 +98,9 @@ public class Launcher {
             Driver.unzip(ballotLocation, baldir.getAbsolutePath());
 
             copyFolder(baldir, dest);
+            copyFolder(new File(ballotLocation), new File(dest.getAbsolutePath() + ".zip"));
             Driver.deleteRecursivelyOnExit(baldir.getAbsolutePath());
+            Driver.deleteRecursivelyOnExit(dest.getAbsolutePath());
         } catch (IOException e) {
             e.printStackTrace();
             return;
@@ -107,9 +108,8 @@ public class Launcher {
         System.out.println(baldir.getAbsolutePath());
 
         //Create a generic, zipped version of the ballot for future reference.
-        ballotDir = new File(baldir.getAbsolutePath() + ".zip");
-        AppZip zip = new AppZip(dest);
-        zip.zipIt(dest.getAbsolutePath() + ".zip");
+//        AppZip zip = new AppZip(dest);
+//        zip.zipIt(dest.getAbsolutePath() + ".zip");
 
         // Check that ballot location is legit.
 		// Check that it's a directory.
@@ -263,7 +263,7 @@ public class Launcher {
 							return;
 						
 						ListExpression ballot = (ListExpression)obj[1];
-                        printer = new Printer(ballotDir, _voteBox.getBallotAdapter().getRaceGroups(), true);
+                        printer = new Printer(new File(dest.getAbsolutePath() + ".zip"), _voteBox.getBallotAdapter().getRaceGroups(), true);
 
 
                         if(ballot != _lastSeenBallot)

@@ -41,7 +41,7 @@ import printer.PrintImageUtils;
  * A set of static functions useful for rendering different types of layout
  * components. These methods are independent of implementation as they take many
  * customization parameters.
- * @author cshaw, ttorous
+ * @author cshaw, ttorous, mbernhard, mberichet
  */
 public class RenderingUtils {
 
@@ -53,7 +53,7 @@ public class RenderingUtils {
 
     /**
      * Scaling factor for high dpi printed images
-     * Choose this value based on a 360 dpi printer and the fact that java's default is 72 dpi and 360/72 is a whole number
+     * Choose this value based on a 300 dpi printer and the fact that java's default is 72 dpi
      */
     public static final int DPI_SCALE_FACTOR = Math.round(1.0f*300/72);
 

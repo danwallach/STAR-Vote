@@ -1202,6 +1202,7 @@ public class VoteBox{
         BufferedImage focusedWriteInToggleButton = RenderingUtils.renderToggleButton(names[0], type.equals("Presidential") ? names[1] : "", "", 20, 600, false, false, true);
         BufferedImage selectedWriteInToggleButton = RenderingUtils.renderToggleButton(names[0], type.equals("Presidential") ? names[1] : "", "", 20, 600, false, true, false);
         BufferedImage focusedSelectedWriteInToggleButton = RenderingUtils.renderToggleButton(names[0], type.equals("Presidential") ? names[1] : "", "", 20, 600, false, true, true);
+        BufferedImage printable = RenderingUtils.renderPrintButton(uid, names[0], type.equals("Presidential") ? names[1] : "", "", 20, 600, false, true);
 
         // Save the images to files, overwriting the previous write-in candidate images for this UID.
         String fileSeparator = System.getProperty("file.separator");
@@ -1216,6 +1217,8 @@ public class VoteBox{
                 ImageIO.write(focusedWriteInToggleButton, "png", new File(filePath + uid + "_focused_1_" + language.getShortName() + ".png"));
                 ImageIO.write(selectedWriteInToggleButton, "png", new File(filePath + uid + "_selected_1_" + language.getShortName() + ".png"));
                 ImageIO.write(focusedSelectedWriteInToggleButton, "png", new File(filePath + uid + "_focusedSelected_1_" + language.getShortName() + ".png"));
+                ImageIO.write(printable, "png", new File(filePath + fileSeparator + "vvpat" + fileSeparator + uid + "_printable_" + language.getShortName() + ".png"));
+                System.out.println("Images written!");
             }
             catch (IOException e)
             {

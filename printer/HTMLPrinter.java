@@ -204,6 +204,8 @@ public class HTMLPrinter {
             {
                 // Load in the image.
                 writer.write("<img src = \"" + pathToBallotVVPATFolder + imageName + "\" alt = \"Image did not load properly\" width = \"" + TWO_COLUMNS_COLUMN_SIZE + "\">\n");
+
+                System.out.println(">>>>>? " + pathToBallotVVPATFolder + imageName);
                 // Leave an empty line after selection images.
                 if (isSelectionImage)
                 {

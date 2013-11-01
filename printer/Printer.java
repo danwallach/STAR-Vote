@@ -46,6 +46,7 @@ import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.PrintQuality;
 import javax.print.attribute.standard.PrinterName;
 
+import com.princexml.Prince;
 import preptool.model.layout.manager.RenderingUtils;
 import sexpression.*;
 import tap.BallotImageHelper;
@@ -289,8 +290,11 @@ public class Printer{
                 // Attempt to convert HTML to PDF.
                 try
                 {
-                    pb = new ProcessBuilder("bash", "-c", convertHTMLtoPDFCommandLine);
-                    pb.start();
+//                    pb = new ProcessBuilder("bash", "-c", convertHTMLtoPDFCommandLine);
+                    Prince prince = new Prince("/usr/local/bin/prince");
+                    System.out.println("Location: " + System.getProperty("user.dir") + "/ballot_printout.pdf");
+                    prince.convert(htmlFileName, System.getProperty("user.dir") + "/ballot_printout.pdf");
+//                    pb.start();
                 }
                 catch (IOException e)
                 {
@@ -303,16 +307,16 @@ public class Printer{
                 while (System.currentTimeMillis() - start < 1000);
 
                 // Attempt to print PDF.
-                try
-                {
-                    pb = new ProcessBuilder("bash", "-c", printPDFCommandLine);
-                    pb.start();
-                }
-                catch (IOException e)
-                {
-                    System.err.println("Printing PDF failed.");
-                    e.printStackTrace();
-                }
+//                try
+//                {
+//                    pb = new ProcessBuilder("bash", "-c", printPDFCommandLine);
+//                    pb.start();
+//                }
+//                catch (IOException e)
+//                {
+//                    System.err.println("Printing PDF failed.");
+//                    e.printStackTrace();
+//                }
             }
         }
 
