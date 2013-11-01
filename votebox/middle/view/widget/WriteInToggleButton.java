@@ -36,12 +36,14 @@ public class WriteInToggleButton extends ToggleButton {
         // TODO How do we get the type of the race?
         WriteInCandidateSimpleGUI writeInGUI = new WriteInCandidateSimpleGUI(680, 384, getUniqueID(), "Regular", view, this);
         writeInGUI.start();
+        System.out.println("Now selecting the toggle button");
         super.select();
     }
 
     public void guiStopped(String primaryCandidateName, String secondaryCandidateName)
     {
         //TODO Use the names for something (rendering and creating events for the Supervisor).
+        super.select();
     }
 
 }

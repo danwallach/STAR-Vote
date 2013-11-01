@@ -221,7 +221,7 @@ public class BallotParser {
         for (int lcv = 0; lcv < children.getLength(); lcv++) {
 
             Node child = children.item( lcv );
-            System.out.println(child.getNodeName());
+            //System.out.println(child.getNodeName());
 
             if (child.getNodeName().equals( "Property" ))
             {

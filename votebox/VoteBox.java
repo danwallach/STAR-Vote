@@ -1206,7 +1206,7 @@ public class VoteBox{
         // Save the images to files, overwriting the previous write-in candidate images for this UID.
         String fileSeparator = System.getProperty("file.separator");
         System.out.println("Static ballot file path: " + staticCurrentBallotFile.getAbsolutePath());
-        String filePath = staticCurrentBallotFile.getAbsolutePath().substring(0, staticCurrentBallotFile.getAbsolutePath().lastIndexOf(fileSeparator) + 1)  + fileSeparator + "media" + fileSeparator;
+        String filePath = staticCurrentBallotFile.getAbsolutePath().substring(0, staticCurrentBallotFile.getAbsolutePath().lastIndexOf(fileSeparator))  + fileSeparator + "media" + fileSeparator;
         System.out.println("Images being saved to " + filePath);
         for (Language language : Language.getAllLanguages())
         {

@@ -258,7 +258,7 @@ public final class Ballot {
     /**
      * Returns the UID of the selected element in the card identified by UID.
      * 
-     * @param UID - UID of card to interogate
+     * @param UID - UID of card to interrogate
      * @return the UID of that card's selected element, if any
      * @throws NonCardException - if UID does not map to a Card
      * @throws UnknownUIDException - if UID does not exist

@@ -134,7 +134,6 @@ public class ToggleButton extends FocusableLabel {
      */
     public void select() {
 
-
         _state.select( this );
     }
 

@@ -112,7 +112,6 @@ public class Printer{
 
         final String fbid = bid;
 
-        //System.out.println()
 //        System.out.println("Number of races " + (choiceToImage).size());
 //        for(String i : choiceToImage.keySet()){
 //            System.out.println("Image title: " + i);
@@ -129,8 +128,10 @@ public class Printer{
         for(int i = 0; i < correctedBallot.size(); i++)
         {
             ChoicePair currentItem = correctedBallot.get(i);
-            if (currentItem.getStatus() == 1)
+            if (currentItem.getStatus() == 1){
+                System.out.println(currentItem.getLabel());
                 choices.add(currentItem.getLabel());
+            }
         }
         /* Build an ArrayList of Race Titles. */
         ArrayList<RaceTitlePair> raceTitlePairs = new ArrayList<RaceTitlePair>();
@@ -199,6 +200,7 @@ public class Printer{
             {
                 String titleName = fActualRaceNamePairs.get(counter).getLabel();
                 String selectionName = choices.get(counter);
+                System.out.println("Selection: " + selectionName);
                 currentColumn.add(titleName + "_printable_en.png");
                 currentColumn.add(selectionName + "_printable_en.png");
                 counter++;
@@ -381,6 +383,7 @@ public class Printer{
                     ListExpression currentChoice = (ListExpression)rawBallot.get(choiceIdx);
                     if (currentChoice.get(0).toString().equals(currentLabel))
                     {
+                        System.out.println(">>>>>>>>>>>" + currentChoice.get(1).toString());
                         if (currentChoice.get(1).toString().equals("1"))
                         {
                             // THIS option was selected.
@@ -392,6 +395,18 @@ public class Printer{
                         {
                             updatedBallot.add(new ChoicePair(currentLabel,new Integer(0)));
                             break;
+                        }
+                        else //We have a write in...
+                        {
+                            if(currentChoice.get(1).toString().charAt(0) == '1'){
+                                // THIS option was selected.
+                                existingSelectedOption = true;
+                                updatedBallot.add(new ChoicePair(currentLabel,new Integer(1)));
+                                break;
+                            }else{
+                                updatedBallot.add(new ChoicePair(currentLabel,new Integer(0)));
+                                break;
+                            }
                         }
                     }
                 }

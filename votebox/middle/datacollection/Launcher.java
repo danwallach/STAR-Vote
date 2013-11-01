@@ -91,13 +91,15 @@ public class Launcher {
         File dest;
         try {
             baldir = new File(ballotLocation.substring(0, ballotLocation.lastIndexOf(".")));
-            dest = new File(System.getProperty("user.dir") + "/ballots/ballot");
+            dest = new File(System.getProperty("user.dir") + "/tmp/ballots/ballot");
             dest.delete();
             baldir.delete();
             baldir.mkdirs();
+
             Driver.unzip(ballotLocation, baldir.getAbsolutePath());
-            //Driver.deleteRecursivelyOnExit(baldir.getAbsolutePath());
+
             copyFolder(baldir, dest);
+            Driver.deleteRecursivelyOnExit(baldir.getAbsolutePath());
         } catch (IOException e) {
             e.printStackTrace();
             return;
@@ -261,49 +263,26 @@ public class Launcher {
 							return;
 						
 						ListExpression ballot = (ListExpression)obj[1];
-						
-						boolean reject = !ballot.toString().equals(""+_lastSeenBallot);
-//
-//                        System.out.println(ballotDir);
-//                        try{
-//                            ZipOutputStream zOut = new ZipOutputStream(new FileOutputStream(new File(System.getProperty("user.dir") + "/" + ballotDir.getName() + ".zip")));
-//                            zOut.putNextEntry(new ZipEntry(ballotDir.getAbsolutePath()));
-//                            zOut.closeEntry();
-//                            zOut.close();
-//                        } catch(FileNotFoundException e){
-//                            System.err.println(e.getMessage());
-//                        } catch (IOException e) {
-//                            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-//                        }
-
                         printer = new Printer(ballotDir, _voteBox.getBallotAdapter().getRaceGroups(), true);
-                        printer.printCommittedBallot(ballot, "9999999999");
-//
-//						try{
-//							if(reject){
-//								if(_lastSeenBallot != null)
-//									Driver.printBallotRejected(constants, new File(ballotLocation));
-//
-//								Driver.printCommittedBallot(constants, ballot, new File(ballotLocation));
-//                            }
-//						}catch(Exception e){}
-//						finally{
-//							_lastSeenBallot = ballot;
-//						}
+
+
+                        if(ballot != _lastSeenBallot)
+                            printer.printCommittedBallot(ballot, "9999999999");
+
+                        _lastSeenBallot = ballot;
+
 					}
 				},
 
 				new Observer() {
 					public void update(Observable o, Object arg) {
 
-						//#ifdef EVIL
-						// EVIL
-						ASExpression ballot = (ASExpression)((Object[])arg)[0];
-						System.out.println("Preparing to dump ballot:\n\t"+ballot);
-						DataLogger.DumpBallot( ballot );
-						//#endif
-						
-						Driver.printBallotAccepted(constants, new File(ballotLocation));
+//						Driver.printBallotAccepted(constants, new File(ballotLocation));
+                        Object[] obj = (Object[])arg;
+                        ListExpression ballot = (ListExpression)obj[1];
+
+//                        printer = new Printer(ballotDir, _voteBox.getBallotAdapter().getRaceGroups(), true);
+//                        printer.printCommittedBallot(ballot, "9999999999");
 
 						vbcopy.getView().nextPage();
 					}
