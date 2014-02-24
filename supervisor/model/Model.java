@@ -1153,7 +1153,7 @@ public class Model {
 
 
                     String precinct = BallotStore.getPrecinctByBID(e.getBID());
-                    talliers.get(precinct).confirmed(nonce);
+                        talliers.get(precinct).confirmed(nonce);
 
                     // used to be in voteBox registerForCommit listener.
                     if(auditoriumParams.getCastBallotEncryptionEnabled()){

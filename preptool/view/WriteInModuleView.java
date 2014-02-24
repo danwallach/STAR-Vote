@@ -1,4 +1,6 @@
-package votebox.middle.writein;
+package preptool.view;
+
+import preptool.model.language.Language;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -21,11 +23,13 @@ import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 
 /**
- * @author Mircea C. Berechet
+ * Adapted this to fit in with AModuleView, so that it can be seamlessly integrated into the currently existing GUI
+ *
+ * @author Mircea C. Berechet, matt
  * @version 0.0.1
  * Added to STAR-Vote: 8/21/13
  */
-public class WriteInCardGUI extends JFrame{
+public class WriteInModuleView extends AModuleView{
     /* The width of the drawable/viewable space on the screen. */
     private static final int GUI_WIDTH = 1600;//1366;
     /* The height of the drawable/viewable space on the screen. */
@@ -120,7 +124,6 @@ public class WriteInCardGUI extends JFrame{
     public void stop ()
     {
         setVisible(false);
-        dispose();
     }
 
     /**
@@ -130,7 +133,7 @@ public class WriteInCardGUI extends JFrame{
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    WriteInCardGUI frame = new WriteInCardGUI(680, 384);
+                    WriteInModuleView frame = new WriteInModuleView(680, 384);
                     frame.start();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -141,13 +144,11 @@ public class WriteInCardGUI extends JFrame{
 
     /**
      * Create the GUI and build its GUI Elements.
+     *
      * @param ulX the x-coordinate of the center of the GUI
      * @param ulY the y-coordinate of the center of the GUI
      */
-    public WriteInCardGUI(int ulX, int ulY) {
-        // Set Frame properties.
-        setTitle("On-Screen Keyboard");
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    public WriteInModuleView(int ulX, int ulY) {
         setBounds(ulX - GUI_WIDTH / 2, ulY - GUI_HEIGHT / 2, GUI_WIDTH, GUI_HEIGHT);
 
         // Build GUI Elements.
@@ -159,12 +160,10 @@ public class WriteInCardGUI extends JFrame{
         /**
          * CONTENT PANE
          */
-        JPanel contentPane = new JPanel();
-        contentPane.setPreferredSize(new Dimension(GUI_WIDTH, GUI_HEIGHT));
-        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-        contentPane.setLayout(new BorderLayout(0, 0));
-        contentPane.setBackground(CONTENT_PANE_COLOR);
-        setContentPane(contentPane);
+        this.setPreferredSize(new Dimension(GUI_WIDTH, GUI_HEIGHT));
+        this.setBorder(new EmptyBorder(5, 5, 5, 5));
+        this.setLayout(new BorderLayout(0, 0));
+        this.setBackground(CONTENT_PANE_COLOR);
 
         /**
          * NAME PANEL
@@ -178,7 +177,7 @@ public class WriteInCardGUI extends JFrame{
         JPanel namePanel = new JPanel();
         namePanel.setPreferredSize(new Dimension(NAME_PANEL_WIDTH, NAME_PANEL_HEIGHT));
         namePanel.setBackground(NAME_PANEL_COLOR);
-        contentPane.add(namePanel, BorderLayout.NORTH);
+        this.add(namePanel, BorderLayout.NORTH);
 
 		/* Element separator. */
 
@@ -219,7 +218,7 @@ public class WriteInCardGUI extends JFrame{
         JPanel keyboardPanel = new JPanel();
         keyboardPanel.setPreferredSize(new Dimension(KEYBOARD_PANEL_WIDTH, KEYBOARD_PANEL_HEIGHT));
         keyboardPanel.setBackground(KEYBOARD_PANEL_COLOR);
-        contentPane.add(keyboardPanel, BorderLayout.SOUTH);
+        this.add(keyboardPanel, BorderLayout.SOUTH);
         keyboardPanel.setLayout(null);
 
         /* Buttons on the keyboard. */
@@ -687,5 +686,23 @@ public class WriteInCardGUI extends JFrame{
         secondaryTextFieldSelected = true;
         primaryCandidateNameTextField.setBackground(Color.WHITE);
         secondaryCandidateNameTextField.setBackground(SELECTED_GREEN);
+    }
+
+    /**
+     * This will simply be an English keyboard for now, no need for translation information
+     */
+    @Override
+    public void languageSelected(Language lang) {
+        //NO-OP
+    }
+
+    @Override
+    public boolean needsTranslation(Language lang) {
+        return false;
+    }
+
+    @Override
+    public void updatePrimaryLanguage(Language lang) {
+        //NO-OP
     }
 }
