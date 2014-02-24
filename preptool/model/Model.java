@@ -96,7 +96,7 @@ public class Model {
 
         cardFactories = new ICardFactory[] {
                 PartyCard.FACTORY, RaceCard.FACTORY, PresidentialRaceCard.FACTORY,
-                PropositionCard.FACTORY
+                PropositionCard.FACTORY, WriteInCard.FACTORY
         };
     }
 
