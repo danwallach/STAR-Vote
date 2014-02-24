@@ -3,6 +3,7 @@ package votebox.middle.ballot;
 import votebox.middle.IncorrectTypeException;
 import votebox.middle.Properties;
 import votebox.middle.writein.WriteInCandidateGUI;
+import votebox.middle.writein.WriteInCardGUI;
 
 import javax.swing.*;
 import java.awt.*;
@@ -64,10 +65,13 @@ public final class WriteInCardElement extends SelectableCardElement{
         SwingWorker worker = new SwingWorker<Void, Void>() {
             @Override
             public Void doInBackground() {
-                WriteInCandidateGUI writeInGUI = new WriteInCandidateGUI(680, 384, getUniqueID(), fWriteInType, false, getParentCard());
-                writeInGUI.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
-                writeInGUI.start();
+//                WriteInCandidateGUI writeInGUI = new WriteInCandidateGUI(680, 384, getUniqueID(), fWriteInType, false, getParentCard());
+//                writeInGUI.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+//                writeInGUI.start();
                 //while(!writeInGUI.isDone());
+
+                WriteInCardGUI writeInCardGUI = new WriteInCardGUI(680, 384, getUniqueID(), fWriteInType, getParentCard());
+                writeInCardGUI.start();
                 return null;
             }
 
