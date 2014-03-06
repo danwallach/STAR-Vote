@@ -39,15 +39,12 @@ import java.util.*;
 import java.util.List;
 
 import javax.imageio.ImageIO;
-import javax.print.attribute.HashPrintJobAttributeSet;
 import javax.print.attribute.HashPrintRequestAttributeSet;
-import javax.print.attribute.PrintRequestAttribute;
 import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.PrintQuality;
 import javax.print.attribute.standard.PrinterName;
 
 import com.princexml.Prince;
-import preptool.model.layout.manager.RenderingUtils;
 import sexpression.*;
 import tap.BallotImageHelper;
 import votebox.AuditoriumParams;

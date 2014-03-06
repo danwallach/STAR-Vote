@@ -22,6 +22,8 @@
 
 package votebox.middle.view;
 
+import java.awt.*;
+
 /**
  * 
  * The IView is an interface that allows for the drawing of a Drawable element
@@ -101,4 +103,18 @@ public interface IView {
      * A method that will return whether or not items are focusable
      */
     boolean focusEnabled();
+
+    /**
+     * Gets the frame for use by the write-in GUI
+     *
+     * @return the frame
+     */
+    public Frame getFrame();
+
+    /**
+     * Gets the Frame's background so it can be redrawn
+     *
+     * @return the IDrawable background
+     */
+    public IDrawable getBackground();
 }

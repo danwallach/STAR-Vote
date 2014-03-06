@@ -2,7 +2,6 @@ package preptool.model.ballot.module;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import preptool.model.XMLTools;
 import preptool.model.language.Language;
 import preptool.view.AModuleView;
 import preptool.view.View;

@@ -2,9 +2,6 @@ package votebox.events;
 
 import sexpression.*;
 
-import java.math.BigInteger;
-import java.util.HashMap;
-
 /**
  * An event which signals that a scanned ballot was rejected, i.e. not recognized by the supervisor
  *

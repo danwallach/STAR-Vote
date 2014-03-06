@@ -35,12 +35,8 @@ import votebox.middle.ballot.Ballot;
 import votebox.middle.ballot.BallotParser;
 import votebox.middle.ballot.Card;
 import votebox.middle.ballot.SelectableCardElement;
-import votebox.middle.driver.DeselectionException;
-import votebox.middle.driver.Driver;
-import votebox.middle.driver.GlobalVarsReader;
-import votebox.middle.driver.IAdapter;
-import votebox.middle.driver.SelectionException;
-import votebox.middle.driver.UnknownUIDException;
+import votebox.middle.driver.*;
+import votebox.middle.view.IView;
 
 
 public class NIZKsPerformanceTest {
@@ -109,7 +105,7 @@ public class NIZKsPerformanceTest {
 
 		BallotParser parser = new BallotParser();
 		_ballot = parser.getBallot(new GlobalVarsReader(_folderPath.getAbsolutePath()).parse());
-		_ballot.setViewAdapter(new IAdapter(){
+		_ballot.setViewAdapter(new IViewAdapter(){
 			public boolean deselect(String uid, boolean playSound) throws UnknownUIDException, DeselectionException {
 				return true;
 			}
@@ -121,8 +117,11 @@ public class NIZKsPerformanceTest {
 			public boolean select(String uid) throws UnknownUIDException, SelectionException {
 				return true;
 			}
-			
-		});
+
+            public IView getView() {
+                return null;
+            }
+        });
 	}
 
 	@AfterClass

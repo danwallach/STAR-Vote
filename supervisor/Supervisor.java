@@ -22,8 +22,6 @@
 
 package supervisor;
 
-import javax.swing.JOptionPane;
-
 import supervisor.model.Model;
 import supervisor.view.View;
 import auditorium.Bugout;

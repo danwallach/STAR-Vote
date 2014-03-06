@@ -2,8 +2,6 @@ package votebox.events;
 
 import sexpression.*;
 
-import java.util.HashMap;
-
 /**
  * This event confirms that a Supervisor has cast a ballot that a scanner has announced
  *

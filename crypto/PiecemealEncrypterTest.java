@@ -17,16 +17,12 @@ import votebox.middle.ballot.Ballot;
 import votebox.middle.ballot.BallotParser;
 import votebox.middle.ballot.Card;
 import votebox.middle.ballot.SelectableCardElement;
-import votebox.middle.driver.DeselectionException;
-import votebox.middle.driver.Driver;
-import votebox.middle.driver.GlobalVarsReader;
-import votebox.middle.driver.IAdapter;
-import votebox.middle.driver.SelectionException;
-import votebox.middle.driver.UnknownUIDException;
+import votebox.middle.driver.*;
 import auditorium.Key;
 import auditorium.SimpleKeyStore;
 import edu.uconn.cse.adder.AdderInteger;
 import edu.uconn.cse.adder.PublicKey;
+import votebox.middle.view.IView;
 
 public class PiecemealEncrypterTest {
 	class Pair{
@@ -87,7 +83,7 @@ public class PiecemealEncrypterTest {
 
 		BallotParser parser = new BallotParser();
 		_ballot = parser.getBallot(new GlobalVarsReader(_folderPath.getAbsolutePath()).parse());
-		_ballot.setViewAdapter(new IAdapter(){
+		_ballot.setViewAdapter(new IViewAdapter(){
 			public boolean deselect(String uid, boolean playSound) throws UnknownUIDException, DeselectionException {
 				return true;
 			}
@@ -100,7 +96,11 @@ public class PiecemealEncrypterTest {
 				return true;
 			}
 
-		});
+            @Override
+            public IView getView() {
+                return null;
+            }
+        });
 	}
 
 	@AfterClass

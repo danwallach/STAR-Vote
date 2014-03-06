@@ -49,7 +49,6 @@ import javax.print.attribute.standard.PrinterName;
 
 import auditorium.IAuditoriumParams;
 
-import printer.PrintImageUtils;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import tap.BallotImageHelper;
@@ -62,6 +61,8 @@ import votebox.middle.ballot.CardException;
 import votebox.middle.ballot.IBallotLookupAdapter;
 import votebox.middle.ballot.NonCardException;
 
+import votebox.middle.view.AWTView;
+import votebox.middle.view.IView;
 import votebox.middle.view.IViewFactory;
 import votebox.middle.view.ViewManager;
 
@@ -79,7 +80,7 @@ public class Driver {
 	
 	private boolean _encryptionEnabled;
 
-	private IAdapter _viewAdapter = new IAdapter() {
+	private IViewAdapter _viewAdapter = new IViewAdapter() {
 
 		public boolean deselect(String uid, boolean playSound) throws UnknownUIDException,
 				DeselectionException {
@@ -90,7 +91,11 @@ public class Driver {
 			return _view.getCurrentLayout().getProperties();
 		}
 
-		public boolean select(String uid) throws UnknownUIDException,
+        public IView getView() {
+            return _view.getView();
+        }
+
+        public boolean select(String uid) throws UnknownUIDException,
 				SelectionException {
 			return _view.select(uid);
 		}

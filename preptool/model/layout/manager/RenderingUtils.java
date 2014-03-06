@@ -22,8 +22,6 @@
 
 package preptool.model.layout.manager;
 
-import printer.PrintImageUtils;
-
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.font.FontRenderContext;

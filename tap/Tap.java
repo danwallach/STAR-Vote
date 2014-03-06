@@ -24,31 +24,20 @@ package tap;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
-import auditorium.AuditoriumCryptoException;
 import auditorium.IAuditoriumParams;
-import auditorium.Key;
 import auditorium.NetworkException;
 
-import crypto.interop.AdderKeyManipulator;
-import de.roderick.weberknecht.*;
 import edu.uconn.cse.adder.PrivateKey;
 import edu.uconn.cse.adder.PublicKey;
-import sexpression.ASExpression;
 import sexpression.stream.ASEWriter;
-import supervisor.model.BallotStore;
 import votebox.AuditoriumParams;
 import votebox.events.*;
 
-import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;

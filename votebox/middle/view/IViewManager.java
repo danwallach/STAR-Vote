@@ -22,7 +22,6 @@
 
 package votebox.middle.view;
 
-import votebox.middle.IncorrectTypeException;
 import votebox.middle.ballot.IBallotLookupAdapter;
 
 /**

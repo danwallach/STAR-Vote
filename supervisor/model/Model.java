@@ -39,7 +39,6 @@ import sexpression.ASExpression;
 import sexpression.NoMatch;
 import sexpression.StringExpression;
 import sexpression.stream.Base64;
-import sexpression.stream.InvalidVerbatimStreamException;
 import supervisor.model.tallier.ChallengeDelayedTallier;
 import supervisor.model.tallier.ChallengeDelayedWithNIZKsTallier;
 import supervisor.model.tallier.ITallier;

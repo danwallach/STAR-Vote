@@ -3,10 +3,8 @@ package votebox.middle.writein;
 import printer.PrintImageUtils;
 import votebox.VoteBox;
 import votebox.middle.ballot.Card;
-import votebox.middle.ballot.WriteInCardElement;
 
 import java.awt.BorderLayout;
-import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import javax.imageio.ImageIO;

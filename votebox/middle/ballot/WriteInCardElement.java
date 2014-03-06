@@ -2,11 +2,10 @@ package votebox.middle.ballot;
 
 import votebox.middle.IncorrectTypeException;
 import votebox.middle.Properties;
-import votebox.middle.writein.WriteInCandidateGUI;
+import votebox.middle.view.AView;
 import votebox.middle.writein.WriteInCardGUI;
 
 import javax.swing.*;
-import java.awt.*;
 
 
 /**
@@ -37,7 +36,7 @@ public final class WriteInCardElement extends SelectableCardElement{
      *             This method throws if the strategy runs into a problem.
      */
     public boolean select() throws CardStrategyException {
-        startWriteInCandidateGUI();
+
         return getParentCard().select(this);
     }
 
@@ -45,8 +44,9 @@ public final class WriteInCardElement extends SelectableCardElement{
      * This method starts a WriteInCandidateGUI that prompts a voter to type in the
      * name of his preferred Write-In Candidate. It reads the type of write-in from
      * this CardElement's properties and opens an appropriate GUI (regular or presidential).
+     * @param view
      */
-    public void startWriteInCandidateGUI()
+    public void startWriteInCandidateGUI(AView view)
     {
         String writeInType = "Regular";
         try

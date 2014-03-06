@@ -1,7 +1,5 @@
 package votebox.events;
 
-import java.math.BigInteger;
-
 import edu.uconn.cse.adder.PublicKey;
 
 import sexpression.*;

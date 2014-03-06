@@ -22,7 +22,6 @@
 
 package votebox.middle.view.widget;
 
-import votebox.middle.view.IFocusable;
 import votebox.middle.view.IViewImage;
 
 /**

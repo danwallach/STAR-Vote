@@ -1,6 +1,5 @@
 package edu.uconn.cse.adder;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import sexpression.ASExpression;

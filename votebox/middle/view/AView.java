@@ -147,4 +147,7 @@ public abstract class AView implements IView, Runnable{
     	}
     }
 
+    public IDrawable getBakground(){
+        return _background;
+    }
 }

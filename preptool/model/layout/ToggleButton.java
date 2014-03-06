@@ -25,7 +25,6 @@ package preptool.model.layout;
 import java.awt.Dimension;
 import java.util.HashMap;
 
-import javazoom.jl.player.Player;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import preptool.model.language.Language;

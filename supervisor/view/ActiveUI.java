@@ -24,19 +24,11 @@ package supervisor.view;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.image.BufferedImage;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.io.IOException;
 import java.math.BigInteger;
 import java.text.DateFormat;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.*;
-import java.util.List;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
@@ -46,7 +38,6 @@ import printer.Printer;
 import supervisor.model.AMachine;
 import supervisor.model.Model;
 import supervisor.model.TapMachine;
-import votebox.AuditoriumParams;
 
 /**
  * The view that is shown on a supervisor that is active - consists of

@@ -24,16 +24,12 @@ package votebox.middle.view.widget;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
-import java.util.Date;
-import java.util.Observable;
-import java.util.Observer;
 
 import javazoom.jl.player.Player;
 import votebox.middle.Event;
 import votebox.middle.IBallotVars;
 import votebox.middle.Properties;
 import votebox.middle.ballot.IBallotLookupAdapter;
-import votebox.middle.datacollection.DataLogger;
 import votebox.middle.driver.IAdapter;
 import votebox.middle.driver.UnknownUIDException;
 import votebox.middle.view.BallotBoxViewException;

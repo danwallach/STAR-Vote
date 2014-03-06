@@ -23,28 +23,16 @@
 package votebox.middle.datacollection;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipOutputStream;
 
 import auditorium.IAuditoriumParams;
 import auditorium.IKeyStore;
 
 import printer.Printer;
-import sexpression.ASExpression;
 import sexpression.ListExpression;
-import votebox.middle.IBallotVars;
-import votebox.middle.ballot.Ballot;
-import votebox.middle.ballot.BallotParser;
-import votebox.middle.ballot.BallotParserException;
 import votebox.middle.driver.Driver;
-import votebox.middle.driver.GlobalVarsReader;
 import votebox.middle.view.AWTViewFactory;
 
 /**

@@ -22,8 +22,6 @@
 
 package preptool.model.layout;
 
-import java.awt.image.BufferedImage;
-
 /**
  * A visitor interface over the ALayoutComponent composite.
  * @param <P> the parameter type

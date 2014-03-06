@@ -44,7 +44,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.print.PrinterJob;
 import java.io.File;
-import java.util.Observable;
 
 import javax.swing.JCheckBox;
 

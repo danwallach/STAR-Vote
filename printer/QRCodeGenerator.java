@@ -1,7 +1,6 @@
 package printer;
 
 
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
@@ -15,8 +14,6 @@ import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.*;
-
-import javax.swing.*;
 
 
 /**

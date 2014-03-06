@@ -25,7 +25,6 @@ package sexpression.stream.test;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
-import sexpression.ASExpression;
 import sexpression.stream.ASEInputStreamReader;
 import sexpression.stream.InvalidVerbatimStreamException;
 

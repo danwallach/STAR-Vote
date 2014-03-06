@@ -1,8 +1,8 @@
 package votebox.middle.writein;
 
-import printer.PrintImageUtils;
 import votebox.VoteBox;
 import votebox.middle.ballot.Card;
+import votebox.middle.ballot.CardException;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -144,6 +144,8 @@ public class WriteInCardGUI extends JFrame{
     public void start ()
     {
         setVisible(true);
+        parent.getParent().getViewAdapter().getView().invalidate(parent.getParent().getViewAdapter().getView().getBackground());
+
     }
 
     /**
@@ -197,9 +199,8 @@ public class WriteInCardGUI extends JFrame{
         /**
          * CONTENT PANE
          */
-        JPanel contentPane = new JPanel();
+        Frame contentPane = parent.getParent().getViewAdapter().getView().getFrame();
         contentPane.setPreferredSize(new Dimension(GUI_WIDTH, GUI_HEIGHT));
-        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         contentPane.setLayout(new BorderLayout(0, 0));
         contentPane.setBackground(CONTENT_PANE_COLOR);
         setContentPane(contentPane);

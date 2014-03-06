@@ -29,10 +29,7 @@ import java.util.List;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import votebox.middle.Properties;
-import votebox.middle.driver.DeselectionException;
-import votebox.middle.driver.IAdapter;
-import votebox.middle.driver.SelectionException;
-import votebox.middle.driver.UnknownUIDException;
+import votebox.middle.driver.*;
 
 /**
  * 
@@ -61,7 +58,7 @@ public final class Ballot {
     private Properties _properties;
     
     private HashMap<String, SelectableCardElement> _elements;
-    private IAdapter _adapter = null;
+    private IViewAdapter _adapter = null;
 
     /**
      * This field holds how many selections have been made in the ballot.
@@ -123,7 +120,7 @@ public final class Ballot {
     /**
      * @return this ballot's view adapter
      */
-    public IAdapter getViewAdapter() {
+    public IViewAdapter getViewAdapter() {
         return _adapter;
     }
 
@@ -131,7 +128,7 @@ public final class Ballot {
      * Sets this ballot's view adapter
      * @param value - new IAdapter to use
      */
-    public void setViewAdapter(IAdapter value) {
+    public void setViewAdapter(IViewAdapter value) {
         _adapter = value;
     }
 

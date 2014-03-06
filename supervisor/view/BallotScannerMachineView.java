@@ -2,15 +2,12 @@ package supervisor.view;
 
 import supervisor.model.BallotScannerMachine;
 import supervisor.model.Model;
-import supervisor.model.VoteBoxBooth;
-import votebox.events.StartScannerEvent;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.net.URL;
 import java.util.Observable;
 import java.util.Observer;

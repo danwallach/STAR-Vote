@@ -360,4 +360,18 @@ public class AWTView extends AView {
     public boolean focusEnabled(){
         return focusEnabled;
     }
+
+    /**
+     * Gets the frame for use by the write-in GUI
+     *
+     * @return the frame
+     */
+    public Frame getFrame(){
+        return _frame;
+    }
+
+    @Override
+    public IDrawable getBackground() {
+        return _background;
+    }
 }

@@ -23,6 +23,9 @@
 package votebox.middle.driver;
 
 import votebox.middle.Properties;
+import votebox.middle.view.AView;
+import votebox.middle.view.AWTView;
+import votebox.middle.view.IView;
 
 /**
  * This interface defines a general adapter that the
@@ -65,4 +68,5 @@ public interface IAdapter {
 	 * @return This method returns properties.
 	 */
 	public Properties getProperties();
+
 }

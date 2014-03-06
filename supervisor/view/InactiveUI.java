@@ -32,7 +32,6 @@ import java.awt.Insets;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Date;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -40,9 +39,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import preptool.model.layout.manager.Spacer;
 import supervisor.model.*;
-import votebox.events.PollMachinesEvent;
 
 /**
  * The view that is shown on an inactive supervisor - only shows the number of

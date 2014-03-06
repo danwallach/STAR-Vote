@@ -26,8 +26,6 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
 import java.math.BigInteger;
 import java.net.URL;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 import edu.uconn.cse.adder.AdderInteger;
@@ -43,14 +41,10 @@ import auditorium.Key;
 
 import sexpression.*;
 import crypto.interop.AdderKeyManipulator;
-import sexpression.stream.InvalidVerbatimStreamException;
 import votebox.middle.IBallotVars;
 import votebox.middle.ballot.*;
 
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 
 public class BallotEncrypter {
