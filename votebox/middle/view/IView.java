@@ -84,6 +84,8 @@ public interface IView {
      */
     void clearDisplay();
 
+    boolean isWindowed();
+
     /**
      * This method initializes and launches the view, putting the view into its
      * event loop. Before the loop starts, and after the initialization, a given

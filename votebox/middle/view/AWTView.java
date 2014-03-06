@@ -69,7 +69,11 @@ public class AWTView extends AView {
     //not including the mouse
     private boolean focusEnabled = false;
 
-	public AWTView(boolean windowed, boolean allowScaling, int baseWidth, int baseHeight){
+    public boolean isWindowed() {
+        return _windowed;
+    }
+
+    public AWTView(boolean windowed, boolean allowScaling, int baseWidth, int baseHeight){
 		super();
 		_windowed = windowed;
 		if (windowed){

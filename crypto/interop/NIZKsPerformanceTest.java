@@ -121,6 +121,9 @@ public class NIZKsPerformanceTest {
             public IView getView() {
                 return null;
             }
+
+            public void setView(IView view) {
+            }
         });
 	}
 

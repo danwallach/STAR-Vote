@@ -3,9 +3,12 @@ package votebox.middle.ballot;
 import votebox.middle.IncorrectTypeException;
 import votebox.middle.Properties;
 import votebox.middle.view.AView;
+import votebox.middle.view.AWTView;
+import votebox.middle.view.IView;
 import votebox.middle.writein.WriteInCardGUI;
 
 import javax.swing.*;
+import java.awt.*;
 
 
 /**
@@ -62,18 +65,23 @@ public final class WriteInCardElement extends SelectableCardElement{
 
         //System.out.println("Starting a GUI for a " + writeInType + " write-in candidate (" + getUniqueID() + ")!");
 
-        SwingWorker worker = new SwingWorker<Void, Void>() {
-            @Override
-            public Void doInBackground() {
+//        SwingWorker worker = new SwingWorker<Void, Void>() {
+//            @Override
+//            public Void doInBackground() {
 //                WriteInCandidateGUI writeInGUI = new WriteInCandidateGUI(680, 384, getUniqueID(), fWriteInType, false, getParentCard());
 //                writeInGUI.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 //                writeInGUI.start();
                 //while(!writeInGUI.isDone());
 
                 WriteInCardGUI writeInCardGUI = new WriteInCardGUI(680, 384, getUniqueID(), fWriteInType, getParentCard());
-                writeInCardGUI.start();
-                return null;
-            }
+                IView oldView = getParentCard().getParent().getViewAdapter().getView();
+
+                AWTView tempView = new AWTView(oldView.isWindowed(), true);
+
+                getParentCard().getParent().getViewAdapter().setView(tempView);
+                getParentCard().getParent().getViewAdapter().getView().getFrame().repaint();
+//                return null;
+//            }
 
             /*@Override
             public void done() {
@@ -85,7 +93,7 @@ public final class WriteInCardElement extends SelectableCardElement{
             }*/
         };
 
-        worker.execute();
+//        worker.execute();
 
         /*try
         {
@@ -114,5 +122,5 @@ public final class WriteInCardElement extends SelectableCardElement{
         /*WriteInCandidateGUI writeInGUI = new WriteInCandidateGUI(680, 384, getUniqueID(), writeInType, true);
         writeInGUI.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
         writeInGUI.start();*/
-    }
+//    }
 }

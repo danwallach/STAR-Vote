@@ -13,8 +13,12 @@ public interface IViewAdapter extends IAdapter {
     /**
      * @return the IView object for use by the write-in application
      */
-   public IView getView();
+    public IView getView();
 
+    /**
+     * Sets the view
+     */
+    public void setView(IView view);
 
 
 }

@@ -47,7 +47,7 @@ import votebox.middle.view.widget.ToggleButton;
 public class ViewManager implements IViewManager {
 
     private final IViewFactory _factory;
-    private final IView _view;
+    private IView _view;
     private final IAdapter _ballotAdapter;
     private final IBallotLookupAdapter _ballotLookupAdapter;
     private final IBallotVars _variables;
@@ -932,5 +932,9 @@ public class ViewManager implements IViewManager {
 	 */
     public IBallotLookupAdapter getBallotLookupAdapter() {
     	return _ballotLookupAdapter;
+    }
+
+    public void setView(IView view) {
+        _view = view;
     }
 }

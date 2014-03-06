@@ -96,9 +96,11 @@ public class PiecemealEncrypterTest {
 				return true;
 			}
 
-            @Override
             public IView getView() {
                 return null;
+            }
+
+            public void setView(IView view) {
             }
         });
 	}

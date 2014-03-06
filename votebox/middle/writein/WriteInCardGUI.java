@@ -29,7 +29,7 @@ import javax.swing.border.EmptyBorder;
  * @version 0.0.1
  * Added to STAR-Vote: 8/21/13
  */
-public class WriteInCardGUI extends JFrame{
+public class WriteInCardGUI extends Panel{
     public static final String SLASH = System.getProperty("file.separator");
     //Current working directory
     File path = new File(System.getProperty("user.dir"));
@@ -143,8 +143,9 @@ public class WriteInCardGUI extends JFrame{
      */
     public void start ()
     {
+        parent.getParent().getViewAdapter().getView().getFrame().add(this);
         setVisible(true);
-        parent.getParent().getViewAdapter().getView().invalidate(parent.getParent().getViewAdapter().getView().getBackground());
+        parent.getParent().getViewAdapter().getView().getFrame().repaint();
 
     }
 
@@ -156,7 +157,6 @@ public class WriteInCardGUI extends JFrame{
         parent.setWriteInValue(primaryCandidateNameTextField.getText(), CANDIDATE_TYPE.equals("Presidential") ? secondaryCandidateNameTextField.getText() : "");
         setVisible(false);
         DONE = true;
-        dispose();
     }
 
     /**
@@ -181,9 +181,6 @@ public class WriteInCardGUI extends JFrame{
      * @param ulY the y-coordinate of the center of the GUI
      */
     public WriteInCardGUI(int ulX, int ulY, String uid, String guiType, Card parent) {
-        // Set Frame properties.
-        setTitle("On-Screen Keyboard");
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setBounds(ulX - GUI_WIDTH / 2, ulY - GUI_HEIGHT / 2, GUI_WIDTH, GUI_HEIGHT);
 
         this.CANDIDATE_UID = uid;
@@ -196,14 +193,10 @@ public class WriteInCardGUI extends JFrame{
 
     private void buildGUIElements()
     {
-        /**
-         * CONTENT PANE
-         */
         Frame contentPane = parent.getParent().getViewAdapter().getView().getFrame();
         contentPane.setPreferredSize(new Dimension(GUI_WIDTH, GUI_HEIGHT));
         contentPane.setLayout(new BorderLayout(0, 0));
         contentPane.setBackground(CONTENT_PANE_COLOR);
-        setContentPane(contentPane);
 
         /**
          * NAME PANEL

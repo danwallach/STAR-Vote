@@ -95,6 +95,11 @@ public class Driver {
             return _view.getView();
         }
 
+        @Override
+        public void setView(IView view) {
+            _view.setView(view);
+        }
+
         public boolean select(String uid) throws UnknownUIDException,
 				SelectionException {
 			return _view.select(uid);
