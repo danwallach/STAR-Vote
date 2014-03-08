@@ -54,7 +54,7 @@ public class WriteInCandidateSimpleGUI {
      */
     public void stop ()
     {
-        parent.guiStopped("Name1", CANDIDATE_TYPE.equals("Presidential") ? "Name2" : "");
+//        parent.guiStopped("Name1", CANDIDATE_TYPE.equals("Presidential") ? "Name2" : "");
         mainPanel.setVisible(false);
         mainPanel.setEnabled(false);
 

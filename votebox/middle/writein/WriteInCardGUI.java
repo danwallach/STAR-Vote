@@ -151,8 +151,8 @@ public class WriteInCardGUI extends Panel{
         while(!ready);
         setVisible(true);
 
+        selectPrimaryTextField();
         parent.getParent().getViewAdapter().getView().getFrame().add(this);
-//        parent.getParent().getViewAdapter().getView().getFrame().repaint();
         parent.getParent().getViewAdapter().getView().getFrame().pack();
         parent.getParent().getViewAdapter().getView().getFrame().setVisible(true);
 
@@ -164,6 +164,7 @@ public class WriteInCardGUI extends Panel{
      */
     public void stop ()
     {
+        System.out.println(">>>>" + primaryCandidateNameTextField.getText());
         parent.setWriteInValue(primaryCandidateNameTextField.getText(), CANDIDATE_TYPE.equals("Presidential") ? secondaryCandidateNameTextField.getText() : "");
         setVisible(false);
         DONE = true;
@@ -248,12 +249,14 @@ public class WriteInCardGUI extends Panel{
 		/* Secondary candidate name text field and clear button. */
         secondaryCandidateNameTextField = new JTextField();
         secondaryCandidateNameTextField.setFont(CANDIDATE_NAME_FONT);
-        namePanel.add(secondaryCandidateNameTextField);
+        if(CANDIDATE_TYPE.equals("PRESIDENTIAL"))
+            namePanel.add(secondaryCandidateNameTextField);
         secondaryCandidateNameTextField.setColumns(NAMES_TEXT_FIELD_COLUMNS);
 
         JButton secondaryCandidateClearButton = new JButton("CLEAR");
         secondaryCandidateClearButton.setPreferredSize(new Dimension(NAMES_CLEAR_BUTTON_WIDTH, NAMES_CLEAR_BUTTON_HEIGHT));
-        namePanel.add(secondaryCandidateClearButton);
+        if(CANDIDATE_TYPE.equals("PRESIDENTIAL"))
+            namePanel.add(secondaryCandidateClearButton);
 
 
         /**

@@ -377,5 +377,6 @@ public class Card {
         if(!secondary.equals(""))
             writeInValue += "^" + secondary;   //Note that the carat here is a delimiter
 
+
     }
 }
