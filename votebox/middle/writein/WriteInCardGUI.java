@@ -3,6 +3,8 @@ package votebox.middle.writein;
 import votebox.VoteBox;
 import votebox.middle.ballot.Card;
 import votebox.middle.ballot.CardException;
+import votebox.middle.view.AWTView;
+import votebox.middle.view.IView;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -135,6 +137,9 @@ public class WriteInCardGUI extends Panel{
     /* The type of the write-in candidate. */
     private String CANDIDATE_TYPE;
 
+    //this denotes whether the frame is done being constructed or not
+    private boolean ready = false;
+
 
 
 
@@ -143,9 +148,14 @@ public class WriteInCardGUI extends Panel{
      */
     public void start ()
     {
-        parent.getParent().getViewAdapter().getView().getFrame().add(this);
+        while(!ready);
         setVisible(true);
-        parent.getParent().getViewAdapter().getView().getFrame().repaint();
+
+        parent.getParent().getViewAdapter().getView().getFrame().add(this);
+//        parent.getParent().getViewAdapter().getView().getFrame().repaint();
+        parent.getParent().getViewAdapter().getView().getFrame().pack();
+        parent.getParent().getViewAdapter().getView().getFrame().setVisible(true);
+
 
     }
 
@@ -193,10 +203,11 @@ public class WriteInCardGUI extends Panel{
 
     private void buildGUIElements()
     {
-        Frame contentPane = parent.getParent().getViewAdapter().getView().getFrame();
-        contentPane.setPreferredSize(new Dimension(GUI_WIDTH, GUI_HEIGHT));
-        contentPane.setLayout(new BorderLayout(0, 0));
-        contentPane.setBackground(CONTENT_PANE_COLOR);
+        invalidate();
+        setPreferredSize(new Dimension(GUI_WIDTH, GUI_HEIGHT));
+        setLayout(new BorderLayout(0, 0));
+        setBackground(CONTENT_PANE_COLOR);
+
 
         /**
          * NAME PANEL
@@ -210,7 +221,7 @@ public class WriteInCardGUI extends Panel{
         namePanel = new JPanel();
         namePanel.setPreferredSize(new Dimension(NAME_PANEL_WIDTH, NAME_PANEL_HEIGHT));
         namePanel.setBackground(NAME_PANEL_COLOR);
-        contentPane.add(namePanel, BorderLayout.NORTH);
+        add(namePanel, BorderLayout.NORTH);
 
 		/* Element separator. */
 
@@ -251,7 +262,7 @@ public class WriteInCardGUI extends Panel{
         JPanel keyboardPanel = new JPanel();
         keyboardPanel.setPreferredSize(new Dimension(KEYBOARD_PANEL_WIDTH, KEYBOARD_PANEL_HEIGHT));
         keyboardPanel.setBackground(KEYBOARD_PANEL_COLOR);
-        contentPane.add(keyboardPanel, BorderLayout.SOUTH);
+        add(keyboardPanel, BorderLayout.SOUTH);
         keyboardPanel.setLayout(null);
 
         /* Buttons on the keyboard. */
@@ -619,6 +630,8 @@ public class WriteInCardGUI extends Panel{
             }
         });
 
+        System.out.println("Done building the GUI!");
+        ready = true;
 
     }
 

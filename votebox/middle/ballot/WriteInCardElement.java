@@ -39,7 +39,7 @@ public final class WriteInCardElement extends SelectableCardElement{
      *             This method throws if the strategy runs into a problem.
      */
     public boolean select() throws CardStrategyException {
-
+        startWriteInCandidateGUI();
         return getParentCard().select(this);
     }
 
@@ -47,9 +47,8 @@ public final class WriteInCardElement extends SelectableCardElement{
      * This method starts a WriteInCandidateGUI that prompts a voter to type in the
      * name of his preferred Write-In Candidate. It reads the type of write-in from
      * this CardElement's properties and opens an appropriate GUI (regular or presidential).
-     * @param view
      */
-    public void startWriteInCandidateGUI(AView view)
+    public void startWriteInCandidateGUI()
     {
         String writeInType = "Regular";
         try
@@ -65,23 +64,18 @@ public final class WriteInCardElement extends SelectableCardElement{
 
         //System.out.println("Starting a GUI for a " + writeInType + " write-in candidate (" + getUniqueID() + ")!");
 
-//        SwingWorker worker = new SwingWorker<Void, Void>() {
-//            @Override
-//            public Void doInBackground() {
+        SwingWorker worker = new SwingWorker<Void, Void>() {
+            @Override
+            public Void doInBackground() {
 //                WriteInCandidateGUI writeInGUI = new WriteInCandidateGUI(680, 384, getUniqueID(), fWriteInType, false, getParentCard());
 //                writeInGUI.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 //                writeInGUI.start();
                 //while(!writeInGUI.isDone());
 
                 WriteInCardGUI writeInCardGUI = new WriteInCardGUI(680, 384, getUniqueID(), fWriteInType, getParentCard());
-                IView oldView = getParentCard().getParent().getViewAdapter().getView();
-
-                AWTView tempView = new AWTView(oldView.isWindowed(), true);
-
-                getParentCard().getParent().getViewAdapter().setView(tempView);
-                getParentCard().getParent().getViewAdapter().getView().getFrame().repaint();
-//                return null;
-//            }
+                writeInCardGUI.start();
+                return null;
+            }
 
             /*@Override
             public void done() {
@@ -93,7 +87,7 @@ public final class WriteInCardElement extends SelectableCardElement{
             }*/
         };
 
-//        worker.execute();
+        worker.execute();
 
         /*try
         {
@@ -122,5 +116,5 @@ public final class WriteInCardElement extends SelectableCardElement{
         /*WriteInCandidateGUI writeInGUI = new WriteInCandidateGUI(680, 384, getUniqueID(), writeInType, true);
         writeInGUI.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
         writeInGUI.start();*/
-//    }
+    }
 }
