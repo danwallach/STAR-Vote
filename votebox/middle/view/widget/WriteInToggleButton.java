@@ -33,7 +33,6 @@ public class WriteInToggleButton extends ToggleButton {
 
     public void select(){
         super.select();
-        view.invalidate(this);
     }
 
 
