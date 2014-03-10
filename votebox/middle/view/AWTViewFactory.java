@@ -49,10 +49,10 @@ public class AWTViewFactory implements IViewFactory {
     }
 
     /**
-     * @see votebox.middle.view.IViewFactory#makeImage(java.lang.String)
+     * @see IViewFactory#makeImage(String, boolean)
      */
-    public IViewImage makeImage(String path) {
-        return new AWTImage( path );
+    public IViewImage makeImage(String path, boolean isVolatile) {
+        return new AWTImage( path, isVolatile);
     }
 
     /**

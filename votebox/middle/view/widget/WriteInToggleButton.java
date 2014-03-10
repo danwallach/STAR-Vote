@@ -2,6 +2,7 @@ package votebox.middle.view.widget;
 
 import votebox.middle.Properties;
 import votebox.middle.view.IView;
+import votebox.middle.view.IViewImage;
 import votebox.middle.writein.WriteInCandidateSimpleGUI;
 
 /**
@@ -30,6 +31,47 @@ public class WriteInToggleButton extends ToggleButton {
         this.view = view;
     }
 
+
+    /**
+     * This is the getter for _selectedImage
+     *
+     * @return _selectedImage
+     */
+    public IViewImage getSelectedImage() {
+        //if (_selectedImage == null) {
+        System.out.println("> ToggleButton is attempting to open image with UID: " + getUniqueID() + " by passing: " + _vars.getBallotPath() + " | " + getUniqueID() +  "_selected | " + _viewManager.getSize() + " | " + _viewManager.getLanguage());
+        _selectedImage = _factory.makeImage( imagePath( _vars,
+                getUniqueID() + "_selected", _viewManager.getSize(),
+                _viewManager.getLanguage() ), true);
+        //}
+        return _selectedImage;
+    }
+
+    /**
+     * This is the getter for _focusedSelectedImage
+     *
+     * @return _focusedSelectedImage
+     */
+    public IViewImage getFocusedSelectedImage() {
+        //if (_focusedSelectedImage == null) {
+        _focusedSelectedImage = _factory.makeImage( imagePath( _vars,
+                getUniqueID() + "_focusedSelected", _viewManager.getSize(),
+                _viewManager.getLanguage() ), false);
+        //}
+        return _focusedSelectedImage;
+    }
+
+    /**
+     * @see FocusableLabel#getReviewImage()
+     */
+    @Override
+    public IViewImage getReviewImage() {
+//        if (_reviewImage == null) {
+        //System.out.println("> ToggleButton is attempting to open image with UID: " + getUniqueID() + " by passing: " + _vars.getBallotPath() + " | " + getUniqueID() + "_review" + " | " + _viewManager.getSize() + " | " + _viewManager.getLanguage());
+        _reviewImage = _factory.makeImage( imageToggleButtonPath( _vars, getUniqueID() + "_review", _viewManager.getLanguage() ), false);
+//        }
+        return _reviewImage;
+    }
 
     public void select(){
         super.select();

@@ -42,10 +42,12 @@ public interface IViewFactory {
      * Construct an image object that can be drawn in views that are constructed
      * with this factory.
      * 
+     *
      * @param path
      *            Load the image's bytes from this path
+     * @param isVolatile
      * @return This method returns an image object which can be used in views
      *         that are constructed with this factory.
      */
-    public IViewImage makeImage(String path);
+    public IViewImage makeImage(String path, boolean isVolatile);
 }

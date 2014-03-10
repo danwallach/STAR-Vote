@@ -129,11 +129,11 @@ public class FocusableLabel implements IFocusable {
      * @see votebox.middle.view.IDrawable#getImage()
      */
     public IViewImage getReviewImage() {
-        if (_reviewImage == null) {
+//        if (_reviewImage == null) {
             _reviewImage = _factory.makeImage( imagePath( _vars, _uniqueID
                     + "_review", _viewManager.getSize(), _viewManager
-                    .getLanguage() ) );
-        }
+                    .getLanguage() ), false);
+//        }
         return _reviewImage;
     }
 
@@ -141,11 +141,11 @@ public class FocusableLabel implements IFocusable {
      * Returns the focused review image of the label
      */
     public IViewImage getFocusedReviewImage(){
-        if(_focusedReviewImage == null){
+//        if(_focusedReviewImage == null){
             _focusedReviewImage = _factory.makeImage( imagePath( _vars, _uniqueID
                     + "_review_focused", _viewManager.getSize(), _viewManager
-                    .getLanguage() ) );
-        }
+                    .getLanguage() ), false);
+//        }
 
         return _focusedReviewImage;
 
@@ -370,11 +370,11 @@ public class FocusableLabel implements IFocusable {
      * @return _defaultImage
      */
     public IViewImage getDefaultImage() {
-        if (_defaultImage == null) {
+//        if (_defaultImage == null) {
             _defaultImage = _factory.makeImage( imagePath( _vars,
                     getUniqueID(), _viewManager.getSize(), _viewManager
-                    .getLanguage() ) );
-        }
+                    .getLanguage() ), false);
+//        }
         return _defaultImage;
     }
 
@@ -387,11 +387,11 @@ public class FocusableLabel implements IFocusable {
      */
     public IViewImage getFocusedImage() {
         System.out.println("Getting a focused image for a label!");
-        if (_focusedImage == null) {
+//        if (_focusedImage == null) {
             _focusedImage = _factory.makeImage( imagePath( _vars, getUniqueID()
                     + "_focused", _viewManager.getSize(), _viewManager
-                    .getLanguage() ) );
-        }
+                    .getLanguage() ), false);
+//        }
         return _focusedImage;
     }
 

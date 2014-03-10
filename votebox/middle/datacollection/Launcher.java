@@ -152,7 +152,7 @@ public class Launcher {
 		save(ballotLocation, logDir, logFilename);
 		_voteBox = null;
 		System.gc();
-		_voteBox = new Driver(baldir.getAbsolutePath(), new AWTViewFactory(
+		_voteBox = new Driver(System.getProperty("user.dir") + "/tmp/ballots/ballot", new AWTViewFactory(
 				debug, false), true);
 		final Driver vbcopy = _voteBox;
 

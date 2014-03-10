@@ -92,11 +92,11 @@ public class Label implements IDrawable {
             if (_uniqueID.equals( "reviewtitle" )) {
                 _image = _factory.makeImage( imagePath( _vars, _uniqueID
                         + Integer.toString( _ballot.numSelections() ),
-                        _viewManager.getSize(), _viewManager.getLanguage() ) );
+                        _viewManager.getSize(), _viewManager.getLanguage() ), false);
             }
             else{
                 _image = _factory.makeImage( imagePath( _vars, _uniqueID,
-                        _viewManager.getSize(), _viewManager.getLanguage() ) );
+                        _viewManager.getSize(), _viewManager.getLanguage() ), false);
             }
         }
 
@@ -110,7 +110,7 @@ public class Label implements IDrawable {
         if (_reviewImage == null) {
             _reviewImage = _factory.makeImage( imagePath( _vars, _uniqueID
                     + "_review", _viewManager.getSize(), _viewManager
-                    .getLanguage() ) );
+                    .getLanguage() ), false);
         }
         return _reviewImage;
     }
@@ -122,7 +122,7 @@ public class Label implements IDrawable {
         if(_focusedReviewImage == null){
             _focusedReviewImage = _factory.makeImage( imagePath( _vars, _uniqueID
                     + "_review_focused", _viewManager.getSize(), _viewManager
-                    .getLanguage() ) );
+                    .getLanguage() ), false);
         }
 
         return _focusedReviewImage;

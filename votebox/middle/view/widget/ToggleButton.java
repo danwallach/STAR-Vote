@@ -63,11 +63,11 @@ public class ToggleButton extends FocusableLabel {
 
     private ToggleButtonGroup _group;
 
-    private IViewImage _defaultImage;
-    private IViewImage _selectedImage;
-    private IViewImage _focusedImage;
-    private IViewImage _focusedSelectedImage;
-    private IViewImage _reviewImage;
+    protected IViewImage _defaultImage;
+    protected IViewImage _selectedImage;
+    protected IViewImage _focusedImage;
+    protected IViewImage _focusedSelectedImage;
+    protected IViewImage _reviewImage;
 
     private Thread soundThread;
 
@@ -270,10 +270,10 @@ public class ToggleButton extends FocusableLabel {
      */
     @Override
     public IViewImage getReviewImage() {
-        if (_reviewImage == null) {
+//        if (_reviewImage == null) {
             //System.out.println("> ToggleButton is attempting to open image with UID: " + getUniqueID() + " by passing: " + _vars.getBallotPath() + " | " + getUniqueID() + "_review" + " | " + _viewManager.getSize() + " | " + _viewManager.getLanguage());
-            _reviewImage = _factory.makeImage( imageToggleButtonPath( _vars, getUniqueID() + "_review", _viewManager.getLanguage() ));
-        }
+            _reviewImage = _factory.makeImage( imageToggleButtonPath( _vars, getUniqueID() + "_review", _viewManager.getLanguage() ), false);
+//        }
         return _reviewImage;
     }
 
@@ -305,7 +305,7 @@ public class ToggleButton extends FocusableLabel {
         //if (_defaultImage == null) {
             _defaultImage = _factory.makeImage( imagePath( _vars,
                 getUniqueID(), _viewManager.getSize(), _viewManager
-                        .getLanguage() ) );
+                        .getLanguage() ), false);
         //}
         return _defaultImage;
     }
@@ -317,9 +317,10 @@ public class ToggleButton extends FocusableLabel {
      */
     public IViewImage getSelectedImage() {
         //if (_selectedImage == null) {
+        System.out.println("> ToggleButton is attempting to open image with UID: " + getUniqueID() + " by passing: " + _vars.getBallotPath() + " | " + getUniqueID() +  " | " + _viewManager.getSize() + " | " + _viewManager.getLanguage());
             _selectedImage = _factory.makeImage( imagePath( _vars,
                 getUniqueID() + "_selected", _viewManager.getSize(),
-                _viewManager.getLanguage() ) );
+                _viewManager.getLanguage() ), false);
         //}
         return _selectedImage;
     }
@@ -333,7 +334,7 @@ public class ToggleButton extends FocusableLabel {
         //if (_focusedImage == null) {
             _focusedImage = _factory.makeImage( imagePath( _vars, getUniqueID()
                     + "_focused", _viewManager.getSize(), _viewManager
-                    .getLanguage() ) );
+                    .getLanguage() ), false);
         //}
         return _focusedImage;
     }
@@ -347,7 +348,7 @@ public class ToggleButton extends FocusableLabel {
         //if (_focusedSelectedImage == null) {
             _focusedSelectedImage = _factory.makeImage( imagePath( _vars,
                 getUniqueID() + "_focusedSelected", _viewManager.getSize(),
-                _viewManager.getLanguage() ) );
+                _viewManager.getLanguage() ), false);
         //}
         return _focusedSelectedImage;
     }

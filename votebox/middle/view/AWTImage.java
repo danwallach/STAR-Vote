@@ -39,26 +39,31 @@ public class AWTImage implements IViewImage {
 
     private final String _filename;
     private SoftReference<BufferedImage> _bufferedImage;
+    private boolean _isVolatile;
 
     /**
      * Construct a new AWT Image.
-     * 
+     *
      * @param filename
      *            Construct an image that loads its bytes from this path.
+     * @param isVolatile
      */
-    public AWTImage(String filename) {
+    public AWTImage(String filename, boolean isVolatile) {
         _bufferedImage = new SoftReference<BufferedImage>( null );
         _filename = filename;
+        _isVolatile = isVolatile;
     }
 
     /**
      * @see votebox.middle.view.IViewImage#getImage()
      */
     public BufferedImage getImage() {
-        if (_bufferedImage.get() == null)
+        if (_isVolatile || _bufferedImage.get() == null)
             try {
                 _bufferedImage = new SoftReference<BufferedImage>( ImageIO
                         .read( new File( _filename ) ) );
+
+                System.out.println("Reading new image " + _filename);
 
             }
             catch (IOException e) {

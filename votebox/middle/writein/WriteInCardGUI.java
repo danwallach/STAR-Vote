@@ -177,8 +177,10 @@ public class WriteInCardGUI extends Panel{
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    WriteInCardGUI frame = new WriteInCardGUI(680, 384, "U0", "Presidential", null);
-                    frame.start();
+                    JFrame frame = new JFrame();
+                    WriteInCardGUI panel = new WriteInCardGUI(680, 384, "U0", "Presidential", null);
+                    frame.add(panel);
+                    panel.start();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -547,7 +547,7 @@ public class Button extends FocusableLabel {
             //System.out.println("> Button is attempting to open image with UID: " + getUniqueID() + " by passing: " + _vars.getBallotPath() + " | " + getUniqueID() + "_review_" + " | " + _viewManager.getSize() + " | " + _viewManager.getLanguage());
             _reviewImage = _factory.makeImage( imagePath( _vars, getUniqueID()
                     + "_review_", _viewManager.getSize(), _viewManager
-                    .getLanguage() ) );
+                    .getLanguage() ), false);
         }
         return _reviewImage;
     }
@@ -602,10 +602,10 @@ public class Button extends FocusableLabel {
 
             if (getUniqueID().contains("B"))
             {
-                _defaultImage = _factory.makeImage(imageToggleButtonPath(_vars, getUniqueID() + "_review", _viewManager.getLanguage()));
+                _defaultImage = _factory.makeImage(imageToggleButtonPath(_vars, getUniqueID() + "_review", _viewManager.getLanguage()), false);
             }
             else{
-                _defaultImage = _factory.makeImage( imagePath( _vars, getUniqueID(), _viewManager.getSize(), _viewManager.getLanguage() ));
+                _defaultImage = _factory.makeImage( imagePath( _vars, getUniqueID(), _viewManager.getSize(), _viewManager.getLanguage() ), false);
             }
 
         }
@@ -621,7 +621,7 @@ public class Button extends FocusableLabel {
 //        if(getUniqueID().equals("B1"))
 //            throw new RuntimeException("SDFASDFASDFASDFASdf");
         if (_focusedImage == null) {
-            _focusedImage = _factory.makeImage(imagePath(_vars, getUniqueID() + "_focused", _viewManager.getSize(),_viewManager.getLanguage()));
+            _focusedImage = _factory.makeImage(imagePath(_vars, getUniqueID() + "_focused", _viewManager.getSize(),_viewManager.getLanguage()), false);
         }
         return _focusedImage;
     }
