@@ -22,6 +22,7 @@
 
 package votebox;
 
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -31,6 +32,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.*;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -1200,6 +1202,10 @@ public class VoteBox{
         BufferedImage focusedSelectedWriteInToggleButton = RenderingUtils.renderToggleButton(names[0], type.equals("Presidential") ? names[1] : "", "", 20, 600, false, true, true);
         BufferedImage printable = RenderingUtils.renderPrintButton(uid, names[0], type.equals("Presidential") ? names[1] : "", "", 20, 600, false, true);
 
+        //TODO Change the hardcoded font sizes?
+        BufferedImage reviewButton = RenderingUtils.renderButton(names[0] + (type.equals("Presidential") ? "\n" + names[1] : ""), 12, false, true, 330, Color.WHITE, false);
+        BufferedImage focusedReviewButton = RenderingUtils.renderButton(names[0] + (type.equals("Presidential") ? "\n" + names[1] : ""), 12, false, true, 330, Color.WHITE, true);
+
         // Save the images to files, overwriting the previous write-in candidate images for this UID.
         String fileSeparator = System.getProperty("file.separator");
         System.out.println("Static ballot file path: " + staticCurrentBallotFile.getAbsolutePath());
@@ -1213,6 +1219,8 @@ public class VoteBox{
                 ImageIO.write(focusedWriteInToggleButton, "png", new File(filePath + uid + "_focused_1_" + language.getShortName() + ".png"));
                 ImageIO.write(selectedWriteInToggleButton, "png", new File(filePath + uid + "_selected_1_" + language.getShortName() + ".png"));
                 ImageIO.write(focusedSelectedWriteInToggleButton, "png", new File(filePath + uid + "_focusedSelected_1_" + language.getShortName() + ".png"));
+                ImageIO.write(reviewButton, "png", new File(filePath + fileSeparator + "vvpat" + fileSeparator+ uid + "_review_" + language.getShortName() + ".png"));
+                ImageIO.write(focusedReviewButton, "png", new File(filePath + fileSeparator + "vvpat" + fileSeparator + uid + "_review_focused_" + language.getShortName() + ".png"));
                 ImageIO.write(printable, "png", new File(filePath + fileSeparator + "vvpat" + fileSeparator + uid + "_printable_" + language.getShortName() + ".png"));
                 System.out.println("Images written!");
             }
@@ -1223,12 +1231,6 @@ public class VoteBox{
             }
         }
 
-        // Invalidate the view to force a repaint.
-
-
-        // Create a ReviewButton and a PrintButton.
-        //ReviewButton review = new ReviewButton(tb.getUID() + "_review", tb.getBothLines(), "GoToPage", getSizeVisitor());
-        //PrintButton pb = new PrintButton(tb.getUID() + "_printable", tb.getText(), getSizeVisitor());
     }
 
     /**

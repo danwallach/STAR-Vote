@@ -627,7 +627,7 @@ public class PsychLayoutManager extends ALayoutManager {
         }
 
         /**
-         * Renders a
+         * Renders a label
          */
         public BufferedImage forLabel(Label l, Boolean... param) {
             int size = 1;

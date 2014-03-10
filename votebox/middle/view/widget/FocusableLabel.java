@@ -273,7 +273,7 @@ public class FocusableLabel implements IFocusable {
     }
 
     /**
-     * Construct the full path to an image given several paramters.
+     * Construct the full path to an image given several parameters.
      * It loads an image to represent the selected options (except No Selection)
      * for the review page.
      *
