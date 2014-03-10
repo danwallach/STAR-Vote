@@ -62,9 +62,13 @@ public final class WriteInCardElement extends SelectableCardElement{
 
         final String fWriteInType = writeInType;
 
+        Frame parentFrame = getParentCard().getParent().getViewAdapter().getView().getFrame();
+        final int centerX = parentFrame.getX() + parentFrame.getWidth()/2;
+        final int centerY = parentFrame.getY() + parentFrame.getHeight()/2;
+
         SwingWorker worker = new SwingWorker<Void, Void>() {
             public Void doInBackground() {
-                WriteInCardGUI writeInCardGUI = new WriteInCardGUI(680, 384, getUniqueID(), fWriteInType, getParentCard());
+                WriteInCardGUI writeInCardGUI = new WriteInCardGUI(centerX, centerY, getUniqueID(), fWriteInType, getParentCard());
                 writeInCardGUI.start();
                 return null;
             }
