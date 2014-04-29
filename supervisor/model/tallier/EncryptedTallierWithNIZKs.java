@@ -47,6 +47,7 @@ public class EncryptedTallierWithNIZKs implements ITallier {
 		//_finalPublicKey = AdderKeyManipulator.generateFinalPublicKey(_publicKey);
 		//_finalPrivateKey = AdderKeyManipulator.generateFinalPrivateKey(_publicKey, _privateKey);
 	}
+
 	
 	public void challenged(ASExpression nonce) {
 		throw new RuntimeException("EncryptedTallierWithNIZKs.challenged NOT IMPLEMENTED");

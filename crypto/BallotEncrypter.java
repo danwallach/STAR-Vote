@@ -84,7 +84,7 @@ public class BallotEncrypter {
         //In order to fool Adder into encrypting our key properly, we break it into parts
         //Which represent "votes" that will be encrypted using existing ElGamal
         for(int i = 0; i < 8; i++){
-            keyParts.add(new AdderInteger(new BigInteger(Arrays.copyOfRange(writeInKey, i*8, i*8 + 8))));
+            keyParts.add(new AdderInteger(new BigInteger(Arrays.copyOfRange(writeInKey, i*8, i*8 + 7))));
         }
 
 
