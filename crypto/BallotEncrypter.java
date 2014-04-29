@@ -83,8 +83,8 @@ public class BallotEncrypter {
 
         //In order to fool Adder into encrypting our key properly, we break it into parts
         //Which represent "votes" that will be encrypted using existing ElGamal
-        for(int i = 0; i < 8; i++){
-            keyParts.add(new AdderInteger(new BigInteger(Arrays.copyOfRange(writeInKey, i*8, i*8 + 7))));
+        for(int i = 0; i < 16; i++){
+            keyParts.add(new AdderInteger(new BigInteger(Arrays.copyOfRange(writeInKey, i, i + 1))));
         }
 
 
@@ -121,7 +121,7 @@ public class BallotEncrypter {
      * @return An ListExpression of the form ((vote [vote]) (vote-ids ([id1], [id2], ...)) (proof [proof]) (public-key [key]))
      */
     @SuppressWarnings("unchecked")
-    public ListExpression encryptSublistWithProof(ListExpression ballot, PublicKey pubKey, byte[] writeInKey){
+    private ListExpression encryptSublistWithProof(ListExpression ballot, PublicKey pubKey, byte[] writeInKey){
         //TODO does this ever get called on more than one race at a time?
         List<AdderInteger> value = new ArrayList<AdderInteger>();
         List<ASExpression> valueIds = new ArrayList<ASExpression>();
@@ -202,16 +202,18 @@ public class BallotEncrypter {
     private List<ASExpression> encryptWriteIns(List<String> writeIns, byte[] key) {
         List<ASExpression> encrypted = new ArrayList<ASExpression>();
         try{
-
-
             Cipher c = Cipher.getInstance("AES");
             SecretKeySpec keySpec = new SecretKeySpec(key, "AES");
 
             c.init(Cipher.ENCRYPT_MODE, keySpec);
 
             for(String w : writeIns){
+                System.out.println("Write in value: " + w);
                 byte [] enc = c.doFinal(w.getBytes());
-                encrypted.add(ASExpression.makeVerbatim(enc));
+
+
+                System.out.println("encrypting: " + ASExpression.make(Arrays.toString(enc)));
+                encrypted.add(ASExpression.make(Arrays.toString(enc)));
             }
 
 
@@ -536,7 +538,7 @@ public class BallotEncrypter {
      * @param args
      */
     public static void main(String[] args) throws Exception {
-        BallotParser parser = new BallotParser();
+        /*BallotParser parser = new BallotParser();
         Ballot b = parser.getBallot(new IBallotVars() {
 
             public String getBallotFile() {
@@ -563,18 +565,50 @@ public class BallotEncrypter {
         });
 
         ThreadMXBean t = ManagementFactory.getThreadMXBean();
-        
+
         ListExpression b_count = b.getCastBallot();
-        
+
         ListExpression b_count_crypt = SINGLETON.encrypt(b_count, STATICKEY.SINGLETON.PUBLIC_KEY);
         ListExpression rVals = SINGLETON.getRecentRandom();
         long start = t.getCurrentThreadCpuTime();
-        
+
         @SuppressWarnings("unused")
 		ListExpression b_count_crypt_decrypt = SINGLETON.decrypt(b_count_crypt, rVals, STATICKEY.SINGLETON.PUBLIC_KEY);
         long end = t.getCurrentThreadCpuTime();
-        
+
         System.err.println(end-start);
+        */
+
+        BallotEncrypter be = new BallotEncrypter();
+
+
+
+        //Randomly generate a key for write-in encryption, will be sent over the wire, encrypted
+        byte[] writeInKey = new byte[16];
+
+        for (int i = 0; i < 16; i++)
+            writeInKey[i] = (byte) (Math.random() * 16);
+
+
+        System.out.println("The write in key is: " + Arrays.toString(writeInKey));
+        List<AdderInteger> keyParts = new ArrayList<AdderInteger>();
+
+        //In order to fool Adder into encrypting our key properly, we break it into parts
+        //Which represent "votes" that will be encrypted using existing ElGamal
+        for(int i = 0; i < 16; i++){
+            keyParts.add(new AdderInteger(new BigInteger(Arrays.copyOfRange(writeInKey, i, i + 1))));
+            System.out.print(keyParts.get(i) + " ");
+        }
+
+        String[] ins = {"null", "John Q. Adams"};
+        List<String> write = Arrays.asList(ins);
+
+        List<ASExpression> res = be.encryptWriteIns(write, writeInKey);
+
+
+
+
+
         
         /*
         File f = new File("out");
@@ -584,4 +618,6 @@ public class BallotEncrypter {
         fo.close();
         */
     }
+
+
 }
