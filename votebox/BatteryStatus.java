@@ -84,10 +84,10 @@ public class BatteryStatus {
                 while((s = out.readLine()) != null)
                 {
                     //TODO Figure out what actually happens when the batch file returns something that isn't an integer...
-                    if(s.contains("error"))
+                    //if(s.contains("error"))
                         return 100;
-                    else
-                        return Integer.parseInt(s); //format the acpi output to truncate
+                    //else
+                      //  return Integer.parseInt(s); //format the acpi output to truncate
 
                 }
 
@@ -109,10 +109,10 @@ public class BatteryStatus {
                     String s = "";
                     //This should be at most one line
                     while((s = out.readLine()) != null){
-                        if(s.contains("power_supply"))
+                      //  if(s.contains("power_supply"))
                             return 100;
-                        else
-                            return Integer.parseInt(s.substring(s.indexOf("%")- 2, s.indexOf("%"))); //format the acpi output to truncate
+                        //else
+                           // return Integer.parseInt(s.substring(s.indexOf("%")- 2, s.indexOf("%"))); //format the acpi output to truncate
 
                     }
 

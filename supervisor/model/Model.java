@@ -831,17 +831,20 @@ public class Model {
              */
             public void ballotScanner(BallotScannerEvent e) {
                 AMachine m = getMachineForSerial(e.getSerial());
-                if (m != null && !(m instanceof BallotScannerMachine))
-                    throw new IllegalStateException(
-                            "Machine "
-                                    + e.getSerial()
-                                    + " is not a ballotScanner, but broadcast ballotScanner message");
+
                 if (m == null) {
                     m = new BallotScannerMachine(e.getSerial());
                     System.out.println("Ballot Scanner Added: " + m);
                     machines.add(m);
                     machinesChangedObs.notifyObservers();
                 }
+
+                if (m != null && !(m instanceof BallotScannerMachine))
+                    throw new IllegalStateException(
+                            "Machine "
+                                    + e.getSerial()
+                                    + " is not a ballotScanner, but broadcast ballotScanner message");
+
                 BallotScannerMachine bsm = (BallotScannerMachine) m;
                 if(e.getStatus().equals("active")) {
                     bsm.setStatus(BallotScannerMachine.ACTIVE);
@@ -1252,7 +1255,6 @@ public class Model {
              * Handler for StartScannerEvent. Activates scanner if present.
              */
             public void scannerStart(StartScannerEvent e) {
-                // NO-OP
                 for (AMachine machine:machines)
                 {
                     if (machine instanceof BallotScannerMachine)
