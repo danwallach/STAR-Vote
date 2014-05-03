@@ -71,6 +71,8 @@ public class ChallengeDelayedWithNIZKsTallier implements ITallier {
 			//Check that the ballot is well-formed
 			ListExpression ballot = (ListExpression)sexp;
 
+            System.out.println("SExpression okay!");
+
             //Pop the key "vote" off the end of each ballot
             ASExpression writeInKey = ballot.get(ballot.size() - 1);
             ballot = new ListExpression(Arrays.copyOfRange(ballot.getArray(), 0, ballot.getArray().length - 2));
@@ -81,15 +83,15 @@ public class ChallengeDelayedWithNIZKsTallier implements ITallier {
 				ListExpression raceGroup = (ListExpression)ballot.get(i);
 
                 //Split off any writeIns, if they're present, and store them, encrypted, in a list to be dealt with later
-				ListExpression wholeVote = (ListExpression)raceGroup.get(0);
-                String[] voteParts = wholeVote.toString().split("`");
-                ListExpression voteE = new ListExpression(voteParts[0]);
+//				ListExpression wholeVote = (ListExpression)raceGroup.get(0);
+//                String[] voteParts = wholeVote.toString().split("`");
+//                ListExpression voteE = new ListExpression(voteParts[0]);
 
                 //If there is a write in keep track of it
-                if(voteParts.length > 1)
-                    writeIns.add(voteParts[1]);
+//                if(voteParts.length > 1)
+//                    writeIns.add(voteParts[1]);
 
-
+                ListExpression voteE = (ListExpression)raceGroup.get(0);
 				ListExpression voteIdsE = (ListExpression)raceGroup.get(1);
 				ListExpression proofE = (ListExpression)raceGroup.get(2);
 				ListExpression publicKeyE = (ListExpression)raceGroup.get(3);
@@ -130,7 +132,8 @@ public class ChallengeDelayedWithNIZKsTallier implements ITallier {
 				_results.put(subElectionId, election);
 			}//for
 		}catch(Exception e){
-			Bugout.err("Malformed ballot received <"+e.getMessage()+">");
+            e.printStackTrace();
+            Bugout.err("Malformed ballot received <"+e.getMessage()+">");
 			Bugout.err("Rejected ballot:\n"+new String(ballotBytes));
 		}
     }

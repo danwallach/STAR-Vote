@@ -131,13 +131,16 @@ public class BallotStore {
         List<ASExpression> decryptedBallots = new ArrayList<ASExpression>();
         List<ASExpression> ballotIDs = new ArrayList<ASExpression>();
         List<ASExpression> precincts = new ArrayList<ASExpression>();
+
         for (String ballotID : unconfirmedBallots.keySet()) {
             tallier.recordVotes(unconfirmedBallots.get(ballotID).toVerbatim(), StringExpression.make(ballotID));
             Map<String, BigInteger> ballotMap = tallier.getReport();
             ArrayList<ASExpression> decryptedVotes = new ArrayList<ASExpression>();
+
             for (Map.Entry<String, BigInteger> entry : ballotMap.entrySet()) {
                 decryptedVotes.add(new ListExpression(ListExpression.make(entry.getKey()), ListExpression.make(entry.getValue().toString())));
             }
+
             hashes.add(unconfirmedBallots.get(ballotID));
             decryptedBallots.add(new ListExpression(decryptedVotes));
             ballotIDs.add(ListExpression.make(ballotID));

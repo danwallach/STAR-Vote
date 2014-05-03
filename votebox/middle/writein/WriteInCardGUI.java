@@ -153,7 +153,7 @@ public class WriteInCardGUI extends Panel{
 
         selectPrimaryTextField();
         parent.getParent().getViewAdapter().getView().getFrame().add(this);
-        parent.getParent().getViewAdapter().getView().getFrame().pack();
+        //parent.getParent().getViewAdapter().getView().getFrame().pack();
         parent.getParent().getViewAdapter().getView().getFrame().setVisible(true);
 
 

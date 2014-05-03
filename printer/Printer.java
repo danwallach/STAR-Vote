@@ -165,7 +165,7 @@ public class Printer{
         Boolean useTwoColumns = true;
         Boolean printerFriendly = true;
 
-        String pathToVVPATFolder = cleanFilePath +  "media" + fileChar + "vvpat" + fileChar;
+        String pathToVVPATFolder = cleanFilePath +  "data" + fileChar + "media" + fileChar + "vvpat" + fileChar;
         String barcodeFileNameNoExtension = pathToVVPATFolder + "Barcode";
         String lineSeparatorFileName = pathToVVPATFolder + "LineSeparator.png";
 
@@ -206,6 +206,7 @@ public class Printer{
             columnsToPrint.add(currentColumn);
         }
 
+        System.out.println("HTML file: " + htmlFileName);
         // Generate the HTML file with the properties set above.
         HTMLPrinter.generateHTMLFile(htmlFileName, useTwoColumns, printerFriendly, pathToVVPATFolder, _constants, fbid, barcodeFileNameNoExtension, lineSeparatorFileName, columnsToPrint);
 

@@ -133,20 +133,20 @@ public class BallotEncrypter {
             String selection = choice.get(1).toString();
 
             //Split off the write-in fields
-            if(selection.length() > 1){
-                String[] write = {selection.substring(0,1), selection.substring(1)};
-                selection = write[0];
-                writeIns.add(write[1]);
-
-            }
+//            if(selection.length() > 1){
+//                String[] write = {selection.substring(0,1), selection.substring(1)};
+//                selection = write[0];
+//                writeIns.add(write[1]);
+//
+//            }
 
     		value.add(new AdderInteger(selection));
             valueIds.add(choice.get(0));
         }//for
 
-        System.out.println(writeIns);
+//        System.out.println(writeIns);
 
-        secureWriteIns = encryptWriteIns(writeIns, writeInKey);
+//        secureWriteIns = encryptWriteIns(writeIns, writeInKey);
 
         PublicKey finalPubKey = AdderKeyManipulator.generateFinalPublicKey(pubKey);
 
@@ -167,9 +167,9 @@ public class BallotEncrypter {
         System.out.println(outASE);
 
         //Now stick the encrypted write-ins back into the votes
-        for(ASExpression written : secureWriteIns){
-            outASE = StringExpression.make(outASE.toString() + written);
-        }
+//        for(ASExpression written : secureWriteIns){
+//            outASE = StringExpression.make(outASE.toString() + written);
+//        }
 
 
 

@@ -140,7 +140,7 @@ public class PublicKey {
     }
 
     /**
-     * Encryps data that is passed in without homomorphic tally functionality.
+     * Encrypts data that is passed in without homomorphic tally functionality.
      * This is used for things that don't need to be mapped into G.
      *
      * @param m the message

@@ -407,7 +407,7 @@ public class CandidatesModule extends AModule {
                 if (answer == JOptionPane.YES_OPTION) {
                     int idx = candidatesTable.getSelectedRow();
                     /* Write-in Check: If the candidate to be deleted is a write-in, then re-enable the Add Write-In button. */
-                    String candidateNameToBeDeleted = (String) tableModel.getValueAt(idx, 0);
+                    String candidateNameToBeDeleted = tableModel.getValueAt(idx, 0).toString();
                     if (isWriteInCandidate(candidateNameToBeDeleted))
                     {
                         addWriteInCandidateButton.setEnabled(true);

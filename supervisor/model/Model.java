@@ -638,16 +638,16 @@ public class Model {
              * stores the votes in the tallier.
              */
             public void castCommittedBallot(CastCommittedBallotEvent e) {
-            	AMachine m = getMachineForSerial(e.getSerial());
-                if (m != null && m instanceof BallotScannerMachine) {
-                    auditorium.announce(new BallotCountedEvent(mySerial, e
-                            .getSerial(), ((StringExpression) e.getNonce())
-                            .getBytes(), "", ""));
-
-
-                    String precinct = BallotStore.getPrecinctByBID(e.getBID().toString());
-                    talliers.get(precinct).confirmed(e.getNonce());
-                }
+//            	AMachine m = getMachineForSerial(e.getSerial());
+//                if (m != null && m instanceof BallotScannerMachine) {
+//                    auditorium.announce(new BallotCountedEvent(mySerial, e
+//                            .getSerial(), ((StringExpression) e.getNonce())
+//                            .getBytes(), "", ""));
+//
+//
+//                    String precinct = BallotStore.getPrecinctByBID(e.getBID().toString());
+//                    talliers.get(precinct).confirmed(e.getNonce());
+//                }
             }
 
             /**
@@ -1160,15 +1160,18 @@ public class Model {
                     // used to be in voteBox registerForCommit listener.
                     if(auditoriumParams.getCastBallotEncryptionEnabled()){
                         if(auditoriumParams.getEnableNIZKs()){
+                            System.out.println("announcing an EncryptedCastBallotWithNIZKsEvent");
                             auditorium.announce(new EncryptedCastBallotWithNIZKsEvent(serial, nonce, ballot, StringExpression.makeString(e.getBID())));
                         } else{
+                            System.out.println("announcing an EncryptedCastBallotEvent");
                             auditorium.announce(new EncryptedCastBallotEvent(serial, nonce, ballot, StringExpression.makeString(e.getBID())));
                         }
                     }
-                    else
+                    else{
+                        System.out.println("Announcing a CastCommittedBallotEvent");
                         auditorium.announce(new CastCommittedBallotEvent(serial, nonce, StringExpression.makeString(e.getBID())));
                     // that should trigger my own castBallot listener.
-
+                    }
 
                     System.out.println("Sending scan confirmation!");
                     System.out.println("BID: " + bid);
