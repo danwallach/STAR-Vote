@@ -74,10 +74,10 @@ public class ChallengeDelayedWithNIZKsTallier implements ITallier {
             System.out.println("SExpression okay!");
 
             //Pop the key "vote" off the end of each ballot
-            ASExpression writeInKey = ballot.get(ballot.size() - 1);
-            ballot = new ListExpression(Arrays.copyOfRange(ballot.getArray(), 0, ballot.getArray().length - 2));
+            //ASExpression writeInKey = ballot.get(ballot.size() - 1);
+            //ballot = new ListExpression(Arrays.copyOfRange(ballot.getArray(), 0, ballot.getArray().length - 2));
 
-            byte[] key = parseKey(writeInKey);
+            //byte[] key = parseKey(writeInKey);
 
             for(int i = 0; i < ballot.size(); i++){
 				ListExpression raceGroup = (ListExpression)ballot.get(i);
@@ -151,7 +151,9 @@ public class ChallengeDelayedWithNIZKsTallier implements ITallier {
 	public Map<String, BigInteger> getReport() {
 		_finalPrivateKey = AdderKeyManipulator.generateFinalPrivateKey(_publicKey, _privateKey);
 		Map<String, BigInteger> report = new HashMap<String, BigInteger>();
-		
+
+        System.out.println("Keyset: "+_results.keySet());
+
 		for(String group : _results.keySet()){
 			//System.out.println("Decrypting election-id \""+group+"\"");
 			
@@ -170,7 +172,8 @@ public class ChallengeDelayedWithNIZKsTallier implements ITallier {
 
 			List<AdderInteger> results = election.getFinalSum(partialSums, coeffs, cipherSum, _finalPublicKey);
 			String[] ids = group.split(",");
-			
+
+            System.out.println("Current group information: " + Arrays.toString(ids));
 			for(int i = 0; i < ids.length; i++)
 				report.put(ids[i], results.get(i).bigintValue());
 		}//for
