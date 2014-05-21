@@ -1,0 +1,65 @@
+@(ballots: List[ChallengedBallot], confirmForm: Form[ChallengedBallot], message: String)
+
+@import helper._
+@import java.text.DecimalFormat
+
+@main("Challenge Ballot") {
+
+    <center>
+        <h1>STAR-Vote Ballot Challenge</h1>
+    </center>
+
+    @if(message != null)  {
+        <center>
+            <div style="color:#FF0000;">
+                <p>
+                    @message
+                </p>
+            </div>
+        </center>
+    }
+
+    <p>
+        This page allows you to verify that your ballot was properly handled if you chose to challenge it.
+        If your ballot was placed in the ballot box and consequently cast then you may go to the confirm ballots page to confirm that it was tallied.
+        Otherwise, by either scanning the QR code on your receipt or entering the ballot ID printed below the QR code on the receipt into the form below,
+        you can review the ballot and confirm its integrity.
+    </p>
+    <p>
+        Challenge your ballot by entering its BID in the space below.
+    </p>
+
+    <center>
+        Enter your BID:
+        <input id="challengeidfield" type="text"/>
+        <input id="challengeidbutton" type="submit" value="Confirm" onClick="handleForm();"/>
+    </center>
+
+    <h2 style="text-align: center">Total Ballots Challenged: @ballots.size()</h2>
+        @if(ballots.size()>0){
+            <center>
+                <h3> Ballot IDs </h3>
+                <table id="challengetable" class="table-striped" border="1">
+                    <tr>
+                        @for(i <- 0 until ballots.size()) {
+                            @if(i%6 ==0){
+                                </tr><tr>
+                            }
+                            @defining(ballots.get(i).ballotid) { bid =>
+                                <td></b><a href="/challenge/submit?ballotid=@(bid)" style="color:#0000FF"> <b>@bid</b></a></td>
+                            }
+                        }
+                    </tr>
+                </table>
+            </center>
+        }
+
+<div id="wrapper"></div>
+
+    <script>
+        function handleForm(){
+            document.location.href = "/challenge/submit?ballotid=" + document.getElementById("challengeidfield").value;
+        }
+    </script>
+
+}

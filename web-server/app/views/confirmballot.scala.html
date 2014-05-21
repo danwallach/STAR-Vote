@@ -1,0 +1,58 @@
+@(ballots: List[CastBallot], confirmForm: Form[CastBallot], message: String)
+
+@import helper.twitterBootstrap._
+
+@main("Cast Ballot") {
+
+    <center><h1>STAR-Vote Ballot Confirmation</h1></center>
+
+    @if(message != null)  {
+        <center>
+            <div style="color:#FF0000;">
+                <p>
+                    @message
+                </p>
+            </div>
+        </center>
+    }
+
+    <p>
+        Here, you may confirm that your ballot was tallied after you inserted your printed paper ballot into the ballot box.
+        If you did not cast your ballot by doing so, then you may verify it on the challenge page.
+        To confirm that your ballot was tallied you may either scan the QR code on your ballot receipt,
+        or alternatively enter the ballot ID number on the receipt into the form below.
+    </p>
+    <p>
+        Confirm your ballot by entering its BID in the space below.
+    </p>
+
+    <center>
+        Enter your BID:
+        <input id="confirmidfield" type="text"/>
+        <input id="confirmidbutton" type="submit" value="Confirm" onClick="handleForm();"/>
+    </center>
+
+    <h2 style="text-align: center">Total Ballots Cast: @ballots.size()</h2>
+
+    <!--
+        <table id="confirmtable" class="table table-striped">
+            <tr>
+                <th>hash</th>
+            </tr>
+            @for(i <- 0 until ballots.size()) {
+                @defining(ballots.get(i)) { ballot =>
+                    <tr>
+                        <td>@ballot.ballotid</td>
+                        <td>@ballot.hash</td>
+                    </tr>
+                }
+            }
+        </table>
+    -->
+
+    <script>
+        function handleForm(){
+            document.location.href = "/confirm/submit?ballotid=" + document.getElementById("confirmidfield").value;
+        }
+    </script>
+}
