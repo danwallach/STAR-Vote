@@ -1,0 +1,68 @@
+#mainHtml{
+    background-color:#000C57
+}
+#header{
+    background-color:#DCE1FC;
+    width:750px;
+}
+#content
+{
+    margin: 0 auto;
+    background-color:#DCE1FC;
+    align:center;
+    width:750px;
+}
+#inner
+{
+    margin: 0 auto;
+    background-color:#DCE1FC;align:center;width:80%;
+}
+#NBar
+{
+    width:750px;
+}
+
+html, body{
+    width:100%;
+    font-family:"Arial";
+}
+
+.vSpace {
+    height:50px;
+    background-color:#DCE1FC;
+}
+
+#navBar
+{
+    list-style-type:none;
+    margin:0;
+    padding:0;
+    display:inline;
+}
+#navBar
+li{
+float:left;width:25%;
+}
+#navBar
+a:link,a:visited
+{
+    display:block;
+    font-weight:bold;
+    color:#FFFFFF;
+    background-color:#5A37DB;
+    text-align:center;
+    padding:4px;
+    text-decoration:none;
+    text-transform:uppercase;
+}
+#navBar
+a:hover,a:active
+{
+    background-color:#1E008C;
+}
+
+#ballotrender
+{
+    top_margin:30px;
+    border:1px;
+}

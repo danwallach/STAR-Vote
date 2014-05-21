@@ -1,0 +1,22 @@
+@(message: String)
+
+@main("Administrator Login") {
+    <h1>Administrative Page</h1>
+    <p>
+        Clicking The button below will clear ballots and ballot ids stored on the Web Server, This action can not be undone.
+    </p>
+    @if(message != null){
+        <center>
+            <div style="color:#008800;">
+                <p>
+                    @message
+                </p>
+            </div>
+        </center>
+    }
+    <center>
+        <form action="/admin/cleardata" method="POST">
+            <input type="submit" value="Clear Data">
+        </form>
+    </center>
+}
