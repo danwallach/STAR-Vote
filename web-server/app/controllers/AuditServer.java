@@ -68,7 +68,8 @@ public class AuditServer extends Controller {
     }
 
     public static Result test(){
-        return ok(imgTest.render());
+        //return ok(imgTest.render());
+        return null;
     }
 
     /**
