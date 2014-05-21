@@ -4,7 +4,7 @@ import play.Project._
 
 object ApplicationBuild extends Build {
 
-  val appName         = "Web-Server"
+  val appName         = "web-server"
   val appVersion      = "1.0-SNAPSHOT"
 
   val appDependencies = Seq(
