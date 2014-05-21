@@ -20,10 +20,10 @@ import play.api.data.Field
 import play.mvc.Http.Context.Implicit._
 import views.html._
 /**/
-object confirmballot extends BaseScalaTemplate[play.api.templates.Html,Format[play.api.templates.Html]](play.api.templates.HtmlFormat) with play.api.templates.Template3[List[CastBallot],Form[CastBallot],String,play.api.templates.Html] {
+object confirmballot extends BaseScalaTemplate[play.api.templates.HtmlFormat.Appendable,Format[play.api.templates.HtmlFormat.Appendable]](play.api.templates.HtmlFormat) with play.api.templates.Template3[List[CastBallot],Form[CastBallot],String,play.api.templates.HtmlFormat.Appendable] {
 
     /**/
-    def apply/*1.2*/(ballots: List[CastBallot], confirmForm: Form[CastBallot], message: String):play.api.templates.Html = {
+    def apply/*1.2*/(ballots: List[CastBallot], confirmForm: Form[CastBallot], message: String):play.api.templates.HtmlFormat.Appendable = {
         _display_ {import helper.twitterBootstrap._
 
 
@@ -86,19 +86,19 @@ Seq[Any](format.raw/*1.77*/("""
 """)))})))}
     }
     
-    def render(ballots:List[CastBallot],confirmForm:Form[CastBallot],message:String): play.api.templates.Html = apply(ballots,confirmForm,message)
+    def render(ballots:List[CastBallot],confirmForm:Form[CastBallot],message:String): play.api.templates.HtmlFormat.Appendable = apply(ballots,confirmForm,message)
     
-    def f:((List[CastBallot],Form[CastBallot],String) => play.api.templates.Html) = (ballots,confirmForm,message) => apply(ballots,confirmForm,message)
+    def f:((List[CastBallot],Form[CastBallot],String) => play.api.templates.HtmlFormat.Appendable) = (ballots,confirmForm,message) => apply(ballots,confirmForm,message)
     
     def ref: this.type = this
 
 }
                 /*
                     -- GENERATED --
-                    DATE: Wed May 21 12:38:19 CDT 2014
-                    SOURCE: /Users/matt/Workspace/STAR-Vote/web-server/app/views/confirmballot.scala.html
-                    HASH: e65d1aa6010e7882e20b1573ffa85eb4793792fb
-                    MATRIX: 765->1|950->76|978->112|1014->114|1041->133|1080->135|1182->203|1209->222|1249->225|1385->325|1414->332|1509->396|2315->1166|2331->1173|2360->1180|2552->1336|2600->1368|2640->1370|2694->1388|2727->1412|2777->1424|2868->1479|2883->1485|2914->1494|2985->1529|3000->1535|3027->1540|3108->1589|3154->1603|3251->1672|3280->1673|3432->1798|3461->1799
+                    DATE: Wed May 21 16:19:19 CDT 2014
+                    SOURCE: /home/mdb12/STAR-Vote/web-server/app/views/confirmballot.scala.html
+                    HASH: 1b9e51ccc4081803dba31d3d6dfe792d007be671
+                    MATRIX: 816->1|1018->76|1046->112|1082->114|1109->133|1148->135|1250->203|1277->222|1317->225|1453->325|1482->332|1577->396|2383->1166|2399->1173|2428->1180|2620->1336|2668->1368|2708->1370|2762->1388|2795->1412|2845->1424|2936->1479|2951->1485|2982->1494|3053->1529|3068->1535|3095->1540|3176->1589|3222->1603|3319->1672|3348->1673|3500->1798|3529->1799
                     LINES: 26->1|30->1|32->4|33->5|33->5|33->5|37->9|37->9|37->9|41->13|41->13|45->17|63->35|63->35|63->35|70->42|70->42|70->42|71->43|71->43|71->43|73->45|73->45|73->45|74->46|74->46|74->46|76->48|77->49|82->54|82->54|84->56|84->56
                     -- GENERATED --
                 */

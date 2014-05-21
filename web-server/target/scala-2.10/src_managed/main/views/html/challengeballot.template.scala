@@ -20,10 +20,10 @@ import play.api.data.Field
 import play.mvc.Http.Context.Implicit._
 import views.html._
 /**/
-object challengeballot extends BaseScalaTemplate[play.api.templates.Html,Format[play.api.templates.Html]](play.api.templates.HtmlFormat) with play.api.templates.Template3[List[ChallengedBallot],Form[ChallengedBallot],String,play.api.templates.Html] {
+object challengeballot extends BaseScalaTemplate[play.api.templates.HtmlFormat.Appendable,Format[play.api.templates.HtmlFormat.Appendable]](play.api.templates.HtmlFormat) with play.api.templates.Template3[List[ChallengedBallot],Form[ChallengedBallot],String,play.api.templates.HtmlFormat.Appendable] {
 
     /**/
-    def apply/*1.2*/(ballots: List[ChallengedBallot], confirmForm: Form[ChallengedBallot], message: String):play.api.templates.Html = {
+    def apply/*1.2*/(ballots: List[ChallengedBallot], confirmForm: Form[ChallengedBallot], message: String):play.api.templates.HtmlFormat.Appendable = {
         _display_ {import helper._
 
 import java.text.DecimalFormat
@@ -94,19 +94,19 @@ Seq[Any](format.raw/*1.89*/("""
 """)))})))}
     }
     
-    def render(ballots:List[ChallengedBallot],confirmForm:Form[ChallengedBallot],message:String): play.api.templates.Html = apply(ballots,confirmForm,message)
+    def render(ballots:List[ChallengedBallot],confirmForm:Form[ChallengedBallot],message:String): play.api.templates.HtmlFormat.Appendable = apply(ballots,confirmForm,message)
     
-    def f:((List[ChallengedBallot],Form[ChallengedBallot],String) => play.api.templates.Html) = (ballots,confirmForm,message) => apply(ballots,confirmForm,message)
+    def f:((List[ChallengedBallot],Form[ChallengedBallot],String) => play.api.templates.HtmlFormat.Appendable) = (ballots,confirmForm,message) => apply(ballots,confirmForm,message)
     
     def ref: this.type = this
 
 }
                 /*
                     -- GENERATED --
-                    DATE: Wed May 21 12:38:19 CDT 2014
-                    SOURCE: /Users/matt/Workspace/STAR-Vote/web-server/app/views/challengeballot.scala.html
-                    HASH: 02fceb25f62c6c34e469001921eb8e81349c07b2
-                    MATRIX: 779->1|991->88|1019->139|1055->141|1087->165|1126->167|1240->246|1268->265|1309->268|1445->368|1474->375|1569->439|2443->1277|2459->1284|2488->1291|2539->1306|2568->1326|2607->1327|2830->1514|2878->1546|2918->1548|2984->1578|3004->1589|3043->1590|3147->1662|3213->1692|3255->1725|3302->1734|3416->1812|3443->1817|3509->1846|3535->1849|3610->1892|3668->1918|3783->2001|3881->2071|3910->2072|4066->2201|4095->2202
+                    DATE: Wed May 21 16:19:19 CDT 2014
+                    SOURCE: /home/mdb12/STAR-Vote/web-server/app/views/challengeballot.scala.html
+                    HASH: 1d34b8c29827e6f4fb98c8dff884975ee0ee9dfd
+                    MATRIX: 830->1|1059->88|1087->139|1123->141|1155->165|1194->167|1308->246|1336->265|1377->268|1513->368|1542->375|1637->439|2511->1277|2527->1284|2556->1291|2607->1306|2636->1326|2675->1327|2898->1514|2946->1546|2986->1548|3052->1578|3072->1589|3111->1590|3215->1662|3281->1692|3323->1725|3370->1734|3484->1812|3511->1817|3577->1846|3603->1849|3678->1892|3736->1918|3851->2001|3949->2071|3978->2072|4134->2201|4163->2202
                     LINES: 26->1|32->1|34->5|35->6|35->6|35->6|41->12|41->12|41->12|45->16|45->16|49->20|67->38|67->38|67->38|68->39|68->39|68->39|73->44|73->44|73->44|74->45|74->45|74->45|76->47|77->48|77->48|77->48|78->49|78->49|78->49|78->49|79->50|80->51|84->55|89->60|89->60|91->62|91->62
                     -- GENERATED --
                 */

@@ -6,8 +6,8 @@
 		module="web-server_2.10"
 		revision="1.0-SNAPSHOT"
 		conf="optional"
-		confs="compile, runtime, test, provided, optional, compile-internal, runtime-internal, test-internal, plugin, sources, docs, pom"
-		date="20140521123758"/>
+		confs="compile, runtime, test, provided, optional, compile-internal, runtime-internal, test-internal, plugin, sources, docs, pom, scala-tool"
+		date="20140521161859"/>
 	<dependencies>
 	</dependencies>
 </ivy-report>

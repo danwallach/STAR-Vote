@@ -20,10 +20,10 @@ import play.api.data.Field
 import play.mvc.Http.Context.Implicit._
 import views.html._
 /**/
-object ballotnotfound extends BaseScalaTemplate[play.api.templates.Html,Format[play.api.templates.Html]](play.api.templates.HtmlFormat) with play.api.templates.Template1[String,play.api.templates.Html] {
+object ballotnotfound extends BaseScalaTemplate[play.api.templates.HtmlFormat.Appendable,Format[play.api.templates.HtmlFormat.Appendable]](play.api.templates.HtmlFormat) with play.api.templates.Template1[String,play.api.templates.HtmlFormat.Appendable] {
 
     /**/
-    def apply/*1.2*/(ballotid: String):play.api.templates.Html = {
+    def apply/*1.2*/(ballotid: String):play.api.templates.HtmlFormat.Appendable = {
         _display_ {
 
 Seq[Any](format.raw/*1.20*/("""
@@ -44,19 +44,19 @@ Seq[Any](format.raw/*1.20*/("""
 """)))})))}
     }
     
-    def render(ballotid:String): play.api.templates.Html = apply(ballotid)
+    def render(ballotid:String): play.api.templates.HtmlFormat.Appendable = apply(ballotid)
     
-    def f:((String) => play.api.templates.Html) = (ballotid) => apply(ballotid)
+    def f:((String) => play.api.templates.HtmlFormat.Appendable) = (ballotid) => apply(ballotid)
     
     def ref: this.type = this
 
 }
                 /*
                     -- GENERATED --
-                    DATE: Wed May 21 12:38:19 CDT 2014
-                    SOURCE: /Users/matt/Workspace/STAR-Vote/web-server/app/views/ballotnotfound.scala.html
-                    HASH: c7930f0f704d5274602d8db884243658dc814fa2
-                    MATRIX: 732->1|827->19|864->22|896->46|935->48
+                    DATE: Wed May 21 16:19:19 CDT 2014
+                    SOURCE: /home/mdb12/STAR-Vote/web-server/app/views/ballotnotfound.scala.html
+                    HASH: 2227274cb17eea44528bb0b16e71200b5f3c6d01
+                    MATRIX: 783->1|895->19|932->22|964->46|1003->48
                     LINES: 26->1|29->1|31->3|31->3|31->3
                     -- GENERATED --
                 */

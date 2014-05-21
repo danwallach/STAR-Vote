@@ -20,10 +20,10 @@ import play.api.data.Field
 import play.mvc.Http.Context.Implicit._
 import views.html._
 /**/
-object challengedballotfound extends BaseScalaTemplate[play.api.templates.Html,Format[play.api.templates.Html]](play.api.templates.HtmlFormat) with play.api.templates.Template2[ChallengedBallot,String,play.api.templates.Html] {
+object challengedballotfound extends BaseScalaTemplate[play.api.templates.HtmlFormat.Appendable,Format[play.api.templates.HtmlFormat.Appendable]](play.api.templates.HtmlFormat) with play.api.templates.Template2[ChallengedBallot,String,play.api.templates.HtmlFormat.Appendable] {
 
     /**/
-    def apply/*1.2*/(ballot: ChallengedBallot)(ballotid: String):play.api.templates.Html = {
+    def apply/*1.2*/(ballot: ChallengedBallot)(ballotid: String):play.api.templates.HtmlFormat.Appendable = {
         _display_ {import helper.twitterBootstrap._
 
 
@@ -63,19 +63,19 @@ Seq[Any](format.raw/*1.46*/("""
 """))}
     }
     
-    def render(ballot:ChallengedBallot,ballotid:String): play.api.templates.Html = apply(ballot)(ballotid)
+    def render(ballot:ChallengedBallot,ballotid:String): play.api.templates.HtmlFormat.Appendable = apply(ballot)(ballotid)
     
-    def f:((ChallengedBallot) => (String) => play.api.templates.Html) = (ballot) => (ballotid) => apply(ballot)(ballotid)
+    def f:((ChallengedBallot) => (String) => play.api.templates.HtmlFormat.Appendable) = (ballot) => (ballotid) => apply(ballot)(ballotid)
     
     def ref: this.type = this
 
 }
                 /*
                     -- GENERATED --
-                    DATE: Wed May 21 12:38:19 CDT 2014
-                    SOURCE: /Users/matt/Workspace/STAR-Vote/web-server/app/views/challengedballotfound.scala.html
-                    HASH: 0a124b3bcdc4dfcd9f20b762bd5f8eafc8b6d3d4
-                    MATRIX: 756->1|910->45|938->81|978->87|1012->113|1051->115|1226->255|1255->263|1972->952|2001->953|2264->1188|2293->1189|2387->1247|2417->1255|2481->1288
+                    DATE: Wed May 21 16:19:19 CDT 2014
+                    SOURCE: /home/mdb12/STAR-Vote/web-server/app/views/challengedballotfound.scala.html
+                    HASH: 89451e880f3f8c622a3381835d9b3d2a3686df4c
+                    MATRIX: 807->1|978->45|1006->81|1046->87|1080->113|1119->115|1294->255|1323->263|2040->952|2069->953|2332->1188|2361->1189|2455->1247|2485->1255|2549->1288
                     LINES: 26->1|30->1|32->4|33->5|33->5|33->5|37->9|37->9|51->23|51->23|58->30|58->30|59->31|59->31|62->34
                     -- GENERATED --
                 */

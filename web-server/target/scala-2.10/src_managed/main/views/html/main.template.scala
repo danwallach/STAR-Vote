@@ -20,10 +20,10 @@ import play.api.data.Field
 import play.mvc.Http.Context.Implicit._
 import views.html._
 /**/
-object main extends BaseScalaTemplate[play.api.templates.Html,Format[play.api.templates.Html]](play.api.templates.HtmlFormat) with play.api.templates.Template2[String,Html,play.api.templates.Html] {
+object main extends BaseScalaTemplate[play.api.templates.HtmlFormat.Appendable,Format[play.api.templates.HtmlFormat.Appendable]](play.api.templates.HtmlFormat) with play.api.templates.Template2[String,Html,play.api.templates.HtmlFormat.Appendable] {
 
     /**/
-    def apply/*1.2*/(title: String)(content: Html):play.api.templates.Html = {
+    def apply/*1.2*/(title: String)(content: Html):play.api.templates.HtmlFormat.Appendable = {
         _display_ {
 
 Seq[Any](format.raw/*1.32*/("""
@@ -64,19 +64,19 @@ Seq[Any](format.raw/*1.32*/("""
 </html>"""))}
     }
     
-    def render(title:String,content:Html): play.api.templates.Html = apply(title)(content)
+    def render(title:String,content:Html): play.api.templates.HtmlFormat.Appendable = apply(title)(content)
     
-    def f:((String) => (Html) => play.api.templates.Html) = (title) => (content) => apply(title)(content)
+    def f:((String) => (Html) => play.api.templates.HtmlFormat.Appendable) = (title) => (content) => apply(title)(content)
     
     def ref: this.type = this
 
 }
                 /*
                     -- GENERATED --
-                    DATE: Wed May 21 12:38:19 CDT 2014
-                    SOURCE: /Users/matt/Workspace/STAR-Vote/web-server/app/views/main.scala.html
-                    HASH: 19ae5e3911da808b1994365d4638fbd4c6db589b
-                    MATRIX: 727->1|834->31|930->92|956->97|1068->174|1082->180|1144->220|1250->291|1264->297|1320->331|1424->399|1439->405|1505->448|1598->505|1613->511|1667->543|2454->1294|2483->1301
+                    DATE: Wed May 21 16:19:19 CDT 2014
+                    SOURCE: /home/mdb12/STAR-Vote/web-server/app/views/main.scala.html
+                    HASH: ed8b5228c7e97ec7c26fabb7251762b5e82df564
+                    MATRIX: 778->1|902->31|998->92|1024->97|1136->174|1150->180|1212->220|1318->291|1332->297|1388->331|1492->399|1507->405|1573->448|1666->505|1681->511|1735->543|2522->1294|2551->1301
                     LINES: 26->1|29->1|35->7|35->7|36->8|36->8|36->8|37->9|37->9|37->9|38->10|38->10|38->10|39->11|39->11|39->11|59->31|59->31
                     -- GENERATED --
                 */

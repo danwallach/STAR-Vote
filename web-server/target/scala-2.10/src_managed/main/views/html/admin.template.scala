@@ -20,10 +20,10 @@ import play.api.data.Field
 import play.mvc.Http.Context.Implicit._
 import views.html._
 /**/
-object admin extends BaseScalaTemplate[play.api.templates.Html,Format[play.api.templates.Html]](play.api.templates.HtmlFormat) with play.api.templates.Template1[String,play.api.templates.Html] {
+object admin extends BaseScalaTemplate[play.api.templates.HtmlFormat.Appendable,Format[play.api.templates.HtmlFormat.Appendable]](play.api.templates.HtmlFormat) with play.api.templates.Template1[String,play.api.templates.HtmlFormat.Appendable] {
 
     /**/
-    def apply/*1.2*/(message: String):play.api.templates.Html = {
+    def apply/*1.2*/(message: String):play.api.templates.HtmlFormat.Appendable = {
         _display_ {
 
 Seq[Any](format.raw/*1.19*/("""
@@ -51,19 +51,19 @@ Seq[Any](format.raw/*1.19*/("""
 """))}
     }
     
-    def render(message:String): play.api.templates.Html = apply(message)
+    def render(message:String): play.api.templates.HtmlFormat.Appendable = apply(message)
     
-    def f:((String) => play.api.templates.Html) = (message) => apply(message)
+    def f:((String) => play.api.templates.HtmlFormat.Appendable) = (message) => apply(message)
     
     def ref: this.type = this
 
 }
                 /*
                     -- GENERATED --
-                    DATE: Wed May 21 12:38:19 CDT 2014
-                    SOURCE: /Users/matt/Workspace/STAR-Vote/web-server/app/views/admin.scala.html
-                    HASH: 41547043c17f854edea0a8e20639d05567e672dc
-                    MATRIX: 723->1|817->18|854->21|889->48|928->50|1143->231|1170->250|1208->251|1344->351|1373->358|1468->422|1652->575
+                    DATE: Wed May 21 16:19:19 CDT 2014
+                    SOURCE: /home/mdb12/STAR-Vote/web-server/app/views/admin.scala.html
+                    HASH: 95dc322941a3b54124f4e35968b55bbb5158c055
+                    MATRIX: 774->1|885->18|922->21|957->48|996->50|1211->231|1238->250|1276->251|1412->351|1441->358|1536->422|1720->575
                     LINES: 26->1|29->1|31->3|31->3|31->3|36->8|36->8|36->8|40->12|40->12|44->16|50->22
                     -- GENERATED --
                 */

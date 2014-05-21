@@ -1,6 +1,6 @@
-// @SOURCE:/Users/matt/Workspace/STAR-Vote/web-server/conf/routes
-// @HASH:c1151115a5dee8d07c6d5e0884c1e5c25cf3b9a9
-// @DATE:Wed May 21 12:38:17 CDT 2014
+// @SOURCE:/home/mdb12/STAR-Vote/web-server/conf/routes
+// @HASH:732bbe8e4c64d59f907c3fc9acb7cd88507a1ed8
+// @DATE:Wed May 21 16:19:17 CDT 2014
 
 
 import play.core._
@@ -17,7 +17,7 @@ object Routes extends Router.Routes {
 private var _prefix = "/"
 
 def setPrefix(prefix: String) {
-  _prefix = prefix  
+  _prefix = prefix
   List[(String,Routes)]().foreach {
     case (p, router) => router.setPrefix(prefix + (if(prefix.endsWith("/")) "" else "/") + p)
   }
@@ -25,7 +25,7 @@ def setPrefix(prefix: String) {
 
 def prefix = _prefix
 
-lazy val defaultPrefix = { if(Routes.prefix.endsWith("/")) "" else "/" } 
+lazy val defaultPrefix = { if(Routes.prefix.endsWith("/")) "" else "/" }
 
 
 // @LINE:6
@@ -87,9 +87,9 @@ def documentation = List(("""GET""", prefix,"""controllers.AuditServer.index()""
   case r @ (_,_,_) => s :+ r.asInstanceOf[(String,String,String)]
   case l => s ++ l.asInstanceOf[List[(String,String,String)]] 
 }}
-       
-    
-def routes:PartialFunction[RequestHeader,Handler] = {        
+      
+
+def routes:PartialFunction[RequestHeader,Handler] = {
 
 // @LINE:6
 case controllers_AuditServer_index0(params) => {
@@ -203,6 +203,6 @@ case controllers_Assets_at13(params) => {
 }
         
 }
-    
+
 }
-        
+     

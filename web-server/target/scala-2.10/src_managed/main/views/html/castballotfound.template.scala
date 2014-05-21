@@ -20,10 +20,10 @@ import play.api.data.Field
 import play.mvc.Http.Context.Implicit._
 import views.html._
 /**/
-object castballotfound extends BaseScalaTemplate[play.api.templates.Html,Format[play.api.templates.Html]](play.api.templates.HtmlFormat) with play.api.templates.Template2[CastBallot,String,play.api.templates.Html] {
+object castballotfound extends BaseScalaTemplate[play.api.templates.HtmlFormat.Appendable,Format[play.api.templates.HtmlFormat.Appendable]](play.api.templates.HtmlFormat) with play.api.templates.Template2[CastBallot,String,play.api.templates.HtmlFormat.Appendable] {
 
     /**/
-    def apply/*1.2*/(ballot: CastBallot)(ballotid: String):play.api.templates.Html = {
+    def apply/*1.2*/(ballot: CastBallot)(ballotid: String):play.api.templates.HtmlFormat.Appendable = {
         _display_ {import helper.twitterBootstrap._
 
 
@@ -43,19 +43,19 @@ Seq[Any](format.raw/*1.40*/("""
 """)))})))}
     }
     
-    def render(ballot:CastBallot,ballotid:String): play.api.templates.Html = apply(ballot)(ballotid)
+    def render(ballot:CastBallot,ballotid:String): play.api.templates.HtmlFormat.Appendable = apply(ballot)(ballotid)
     
-    def f:((CastBallot) => (String) => play.api.templates.Html) = (ballot) => (ballotid) => apply(ballot)(ballotid)
+    def f:((CastBallot) => (String) => play.api.templates.HtmlFormat.Appendable) = (ballot) => (ballotid) => apply(ballot)(ballotid)
     
     def ref: this.type = this
 
 }
                 /*
                     -- GENERATED --
-                    DATE: Wed May 21 12:38:19 CDT 2014
-                    SOURCE: /Users/matt/Workspace/STAR-Vote/web-server/app/views/castballotfound.scala.html
-                    HASH: 741e680652aa2ed07a4bd2cbded568003234ffb6
-                    MATRIX: 744->1|892->39|920->75|957->78|994->107|1033->109|1199->239|1229->247
+                    DATE: Wed May 21 16:19:19 CDT 2014
+                    SOURCE: /home/mdb12/STAR-Vote/web-server/app/views/castballotfound.scala.html
+                    HASH: 21194f11754f146b7822efda96f658f8d6379e16
+                    MATRIX: 795->1|960->39|988->75|1025->78|1062->107|1101->109|1267->239|1297->247
                     LINES: 26->1|30->1|32->4|34->6|34->6|34->6|38->10|38->10
                     -- GENERATED --
                 */

@@ -20,10 +20,10 @@ import play.api.data.Field
 import play.mvc.Http.Context.Implicit._
 import views.html._
 /**/
-object aboutUs extends BaseScalaTemplate[play.api.templates.Html,Format[play.api.templates.Html]](play.api.templates.HtmlFormat) with play.api.templates.Template0[play.api.templates.Html] {
+object aboutUs extends BaseScalaTemplate[play.api.templates.HtmlFormat.Appendable,Format[play.api.templates.HtmlFormat.Appendable]](play.api.templates.HtmlFormat) with play.api.templates.Template0[play.api.templates.HtmlFormat.Appendable] {
 
     /**/
-    def apply():play.api.templates.Html = {
+    def apply():play.api.templates.HtmlFormat.Appendable = {
         _display_ {
 
 Seq[Any](_display_(Seq[Any](/*1.2*/main("About Us")/*1.18*/ {_display_(Seq[Any](format.raw/*1.20*/("""
@@ -58,19 +58,19 @@ Seq[Any](_display_(Seq[Any](/*1.2*/main("About Us")/*1.18*/ {_display_(Seq[Any](
 """)))})))}
     }
     
-    def render(): play.api.templates.Html = apply()
+    def render(): play.api.templates.HtmlFormat.Appendable = apply()
     
-    def f:(() => play.api.templates.Html) = () => apply()
+    def f:(() => play.api.templates.HtmlFormat.Appendable) = () => apply()
     
     def ref: this.type = this
 
 }
                 /*
                     -- GENERATED --
-                    DATE: Wed May 21 12:38:19 CDT 2014
-                    SOURCE: /Users/matt/Workspace/STAR-Vote/web-server/app/views/aboutUs.scala.html
-                    HASH: 2e590e814062aff14e65abe2ad11bce9500cf3fa
-                    MATRIX: 798->1|822->17|861->19
+                    DATE: Wed May 21 16:19:19 CDT 2014
+                    SOURCE: /home/mdb12/STAR-Vote/web-server/app/views/aboutUs.scala.html
+                    HASH: d1cf4f032c61e179562af59a208f3b10e4ee0e51
+                    MATRIX: 866->1|890->17|929->19
                     LINES: 29->1|29->1|29->1
                     -- GENERATED --
                 */

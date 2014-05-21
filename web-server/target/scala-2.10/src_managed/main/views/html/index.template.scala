@@ -20,10 +20,10 @@ import play.api.data.Field
 import play.mvc.Http.Context.Implicit._
 import views.html._
 /**/
-object index extends BaseScalaTemplate[play.api.templates.Html,Format[play.api.templates.Html]](play.api.templates.HtmlFormat) with play.api.templates.Template0[play.api.templates.Html] {
+object index extends BaseScalaTemplate[play.api.templates.HtmlFormat.Appendable,Format[play.api.templates.HtmlFormat.Appendable]](play.api.templates.HtmlFormat) with play.api.templates.Template0[play.api.templates.HtmlFormat.Appendable] {
 
     /**/
-    def apply():play.api.templates.Html = {
+    def apply():play.api.templates.HtmlFormat.Appendable = {
         _display_ {import helper.twitterBootstrap._
 
 
@@ -54,19 +54,19 @@ Seq[Any](format.raw/*2.1*/("""
 """))}
     }
     
-    def render(): play.api.templates.Html = apply()
+    def render(): play.api.templates.HtmlFormat.Appendable = apply()
     
-    def f:(() => play.api.templates.Html) = () => apply()
+    def f:(() => play.api.templates.HtmlFormat.Appendable) = () => apply()
     
     def ref: this.type = this
 
 }
                 /*
                     -- GENERATED --
-                    DATE: Wed May 21 12:38:19 CDT 2014
-                    SOURCE: /Users/matt/Workspace/STAR-Vote/web-server/app/views/index.scala.html
-                    HASH: ec7e2baefc409a23a896d152b232c4e486830d00
-                    MATRIX: 820->34|857->37|895->67|934->69|2513->1617
+                    DATE: Wed May 21 16:19:19 CDT 2014
+                    SOURCE: /home/mdb12/STAR-Vote/web-server/app/views/index.scala.html
+                    HASH: cb6610c47acaf23307aeb47a4c82d7aefe60bd0d
+                    MATRIX: 888->34|925->37|963->67|1002->69|2581->1617
                     LINES: 30->2|32->4|32->4|32->4|53->25
                     -- GENERATED --
                 */
