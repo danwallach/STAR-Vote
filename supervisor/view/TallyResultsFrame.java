@@ -69,6 +69,8 @@ public class TallyResultsFrame extends JFrame{
 
          AuditoriumParams params = new AuditoriumParams("supervisor.conf");
 
+         System.out.println("Tally Results Frame: " + results);
+
          if(candidateImgMap == null || params.getUseSimpleTallyView())
              resultsField = createBasicTable(results);
          else{
@@ -146,6 +148,7 @@ public class TallyResultsFrame extends JFrame{
         for(Image titleImg : titleToRaces.keySet()){
             DefaultMutableTreeNode title = new DefaultMutableTreeNode(titleImg, true);
             Map<String, BigInteger> subResults = new HashMap<String, BigInteger>();
+
             for(String raceId : titleToRaces.get(titleImg))
                 subResults.put(raceId, results.get(raceId));
 
@@ -153,7 +156,7 @@ public class TallyResultsFrame extends JFrame{
 
             root.add(title);
             title.add(res);
-
+            System.out.println("Fancy tree table: " + subResults);
             modelToView.put(subResults, createFancyTable(subResults, candidateImgMap));
         }//for
 
@@ -247,7 +250,6 @@ public class TallyResultsFrame extends JFrame{
      */
     private JTable createFancyTable(final Map<String, BigInteger> results, final Map<String, Image> raceImgMap) {
         JTable fancyTable = new JTable();
-
         String max = "";
         String second = "";
         int sum = 0;

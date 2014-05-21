@@ -393,6 +393,7 @@ public class ActiveUI extends JPanel {
             Map<String, Map<String, BigInteger>> tally = model.closePolls();
 
             for(String precinct : tally.keySet()){
+                System.out.println("Left Button pressed: " + tally.get(precinct));
                 TallyResultsFrame tallyDlg = new TallyResultsFrame(this, tally.get(precinct), precinctsToBallots.get(precinct));
             }
 

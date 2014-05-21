@@ -1,5 +1,5 @@
 <component name="ArtifactManager">
-  <artifact type="jar" name="Tap">
+  <artifact type="jar" build-on-make="true" name="Tap">
     <output-path>$PROJECT_DIR$/out/artifacts/Tap</output-path>
     <root id="archive" name="STAR-Vote.jar">
       <element id="module-output" name="STAR-Vote" />

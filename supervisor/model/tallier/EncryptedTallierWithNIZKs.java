@@ -126,6 +126,7 @@ public class EncryptedTallierWithNIZKs implements ITallier {
 				//Vote vote = Vote.fromString(voteE.get(1).toString());
 				Vote vote = Vote.fromASE(voteE.get(1));
 				List<String> voteIds = new ArrayList<String>();
+
 				for(int j = 0; j < voteIdsE.get(1).size(); j++)
 					voteIds.add(((ListExpression)voteIdsE.get(1)).get(j).toString());
 				
