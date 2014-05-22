@@ -24,7 +24,7 @@ public class BallotScanner{
     private final int mySerial;
     private boolean connected;
     private Timer statusTimer;
-    private boolean activated;
+    private boolean isActivated;
     private ObservableEvent activatedObs;
     private BallotScannerUI frame;
 
@@ -33,61 +33,58 @@ public class BallotScanner{
     private int protectedCount;
     private int publicCount;
     private int battery = 100;
-    private Event<Integer> labelChangedEvent;
+    private Event<Integer> stores;
 
 
-    // stores the last found result obtained from a successful code scan
+    /** slabelChangedEvent the last found result obtained from a successful code scan **/
     private String lastFoundBID = "";
 
-//    private IWebcam webcam;
-//    private Code128Decoder decoder;
-
-    // keeps the path to the "ballot scanned" mp3
-//    private String bsMp3Path = "sound/ballotscanned.mp3"; //move to the .conf file
-
-    // keeps the mp3Player
-//    private Player mp3Player;
-
-    // how long a result is stored in memory before it is cleared
+    /** how long a result is stored in memory before it is cleared **/
     private boolean receivedResponse;
 
 
     /**
+     * This is an empty constructor that sets the serial number to -1.
      * Equivalent to new BallotScanner(-1).
+     *
+     * This is used by default when no serial number is provided.
      */
     public BallotScanner() {
         this(-1);
     }
 
     /**
-     * Constructs a new instance of a persistent ballot scanner.  This
-     * implementation runs in the background, on an auditorium network.
+     * Constructs a new instance of a @BallotScanner.  This
+     * implementation runs in the background on an auditorium network.
      *
-     * @param serial the serial number of the votebox
+     * @param serial the serial number to be assigned to the @BallotScanner
+     *               input from the command line.
      */
     public BallotScanner(int serial) {
+
+        /* Reads in the configuration file for the BallotScanner */
         _constants = new AuditoriumParams("bs.conf");
 
-//        if (_constants.useScanConfirmationSound()) {
-//            bsMp3Path = _constants.getConfirmationSoundPath();
-//        }
-
-
-
+        /* TODO revise code */
+        /* Check validity of serial before assigning */
         if (serial != -1)
             mySerial = serial;
-        else
+        else 
+        /* Try to get a new serial */
             mySerial = _constants.getDefaultSerialNumber();
 
+        /* If there's still an invalid serial, throw a runtime exception(?) */    
         if (mySerial == -1)
             throw new RuntimeException("usage: BallotScanner <machineID>");
 
+        /* Initialisations to set up network communication */
         numConnections = 0;
-
         activatedObs = new ObservableEvent();
-
+        
+        /* Allows BallotScanner to change label on AssignLabelEvent */
         labelChangedEvent = new Event<Integer>();
 
+        /* Sets up the heartbeat */
         statusTimer = new Timer(300000, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (isConnected()) {
@@ -96,62 +93,58 @@ public class BallotScanner{
             }
         });
 
-        //webcam = new FrameGrabberWebcam();
-
-        //webcam.startCapture();
-
-        //decoder = new Code128Decoder();
-
-        //Set up the JFrame confirmation screen
+        /* Set up the BallotScanner UI */
         frame = new BallotScannerUI(_constants.getElectionName());
     }
 
     /**
+     * TODO
      * Register to be notified when this BallotScanner's active status changes
      *
      * @param obs the observer
+     *
+     * public void registerForActivated(Observer obs) {
+     *    activatedObs.addObserver(obs);
+     *  }
      */
-    public void registerForActivated(Observer obs) {
-        activatedObs.addObserver(obs);
-    }
 
     /**
      * Returns this booth's status as a VoteBoxEvent, used for periodic
-     * broadcasts
+     * broadcasts (heartbeat).
      *
-     * @return the status
+     * @return the status of the @BallotScanner
      */
     public BallotScannerEvent getStatus() {
+
         BallotScannerEvent event;
-        // choosing to not require bs to be activated (for now)
-        if (isActivated()) {
-            event = new BallotScannerEvent(mySerial, label, "active", battery, protectedCount, publicCount);
-        }
-        else {
-            event = new BallotScannerEvent(mySerial, label, "inactive", battery, protectedCount, publicCount);
-        }
+        String status = (isActivated()) ? "active" : "inactive";
+
+        event = new BallotScannerEvent(mySerial, label, status, battery, protectedCount, publicCount);
         return event;
     }
 
     /**
-     * @return whether this BallotScanner is active
+     * @return whether this @BallotScanner is (in)active
      */
     public boolean isActivated() {
-        return activated;
+        return isActivated;
     }
 
     /**
-     * Sets this BallotScanner's active status
+     * Sets the BallotScanner state to active/inactive dependent on @isActivated;
+     * broadcasts new status
      *
-     * @param activated the activated to set
+     * @param isActivated the isActivated to set
      */
-    public void setActivated(boolean activated) {
-        this.activated = activated;
+    public void setActivated(boolean isActivated) {
+
+        /* Set the status and broadcast new status to the network */
+        this.isActivated = isActivated;
         activatedObs.notifyObservers();
-        if(activated)
-            frame.updateFrame(BallotScannerUI.TO_PROMPT_STATE);
-        else
-            frame.updateFrame(BallotScannerUI.TO_INACTIVE_STATE);
+
+        /* Update UI to reflect change */
+        int state = isActivated ? BallotScannerUI.TO_PROMPT_STATE : BallotScannerUI.TO_INACTIVE_STATE;
+        frame.updateFrame(state);
     }
 
     /**
@@ -161,87 +154,85 @@ public class BallotScanner{
         return connected;
     }
 
-    public void beginScanning(){
+    /**
+     * Continuously checks for input from barcode scanner and broadcasts BallotScannedEvent
+     * when a valid BID is input.
+     */
+    private void beginScanning(){
+
+        /* Create a new Thread to continuously check for input */
         new Thread(new Runnable() {
             public void run() {
 
+                /* Setting up for barcode scanning */
                 Scanner scanner = new Scanner(System.in);
-                long lastFoundTime = 0;
+                long lastFoundTime = 0; // amount of time since last BID scanned
 
                 while(true){
-
-                    //BinaryBitmap bitmap = webcam.getBitmap();
+                    /* Check for new input from barcode scanner */
                     try{
                         lastFoundBID = scanner.nextInt()+"";
-                    } catch (InputMismatchException e){
-                        lastFoundBID = "-1";
-                    }
+                    } catch (InputMismatchException e){ lastFoundBID = "-1"; }
 
-                    if(frame.state.getStateName().equals(PromptState.SINGLETON.getStateName()) && receivedResponse){
+                    /* TODO add a getter for frame.state, maybe verifyState() method */
 
-                        //decoder = new Code128Decoder();
+                    String frameStateName   = frame.state.getStateName();
+                    String promptStateName  = PromptState.SINGLETON.getStateName();
 
-                        long start = System.currentTimeMillis();
+                    if(frameStateName.equals(promptStateName) && receivedResponse){
 
-                        //lastFoundBID = decoder.decode(bitmap);
+                        /* Set current time */
+                        long curTime = System.currentTimeMillis();
 
-                        if(start - lastFoundTime > 5000){
+                        /* If greater than 5 seconds have passed since the Supervisor responded to
+                         * the last scanned valid BID, set flag and broadcast that a ballot was scanned
+                         * along with the BID and wait for a response.
+                         * 
+                         * Waiting for 5 seconds to allow UI thread to display accept/reject and catch up.
+                         */
+                        if(curTime - lastFoundTime > 5000){
                             if(lastFoundBID != null){
+
+                                /* Broadcast the BallotScannedEvent and change status to false 
+                                  (awaiting response) */
+                                auditorium.announce(new BallotScannedEvent(mySerial, lastFoundBID));
                                 receivedResponse = false;
 
-                                auditorium.announce(new BallotScannedEvent(mySerial, lastFoundBID));
-
-                                //This is sort of redundant now that our scanners beep
-                                // play confirmation sound
-                               /* new Thread() {
-                                    public void run() {
-
-                                        // prepare the mp3Player
-                                        try {
-                                            FileInputStream fileInputStream = new FileInputStream(bsMp3Path);
-                                            BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
-                                            mp3Player = new Player(bufferedInputStream);
-                                            mp3Player.play();
-                                        } catch (Exception e) {
-                                            mp3Player = null;
-                                            System.out.println("Problem playing audio: " + bsMp3Path);
-                                            System.out.println(e);
-                                        }
-
-                                    }
-                                }.start();*/
-
+                                /* Update time since last BID scanned */
                                 lastFoundTime = System.currentTimeMillis();
+
                             }
                         }
-                    }
-            }
-        }}).start();
 
+                    }
+                }
+            }
+        }).start();
 
     }
 
-
-
     /**
-     * Main method which right now just goes into an infinite while loop, constantly scanning
+     * Starting point for @BallotScanner. Sets up Listeners, starts Timers, starts thread for scanning
+     * and connects the @BallotScanner to the network.
      */
     public void start() {
 
+        /* Creates a VoteBoxAuditoriumConnector which will be used to connect to Auditorium */
         try {
-            auditorium = new VoteBoxAuditoriumConnector(mySerial,
-                    _constants, BallotScanAcceptedEvent.getMatcher(),
+            auditorium = new VoteBoxAuditoriumConnector(mySerial, _constants, 
+                    BallotScanAcceptedEvent.getMatcher(),
                     BallotScanRejectedEvent.getMatcher(),
                     StartScannerEvent.getMatcher(),
                     PollMachinesEvent.getMatcher()
             );
         } catch (NetworkException e1) {
-            //NetworkException represents a recoverable error
-            //  so just note it and continue
+            /* NetworkException represents a recoverable error
+               so just note it and continue */
             System.err.println("Recoverable error occurred: " + e1.getMessage());
             e1.printStackTrace(System.err);
         }
 
+        /* Connects the BallotScanner to auditorium. BallotScanner announces its status to the network */
         try {
             auditorium.connect();
             auditorium.announce(getStatus());
@@ -250,177 +241,133 @@ public class BallotScanner{
         }
 
         auditorium.addListener(new VoteBoxEventListener() {
-            public void ballotCounted(BallotCountedEvent e) {
-            }
 
-
-            public void castCommittedBallot(CastCommittedBallotEvent event) {
-            }
-
-            public void commitBallot(CommitBallotEvent e) {
-            }
-
-            public void activated(ActivatedEvent e) {
-            }
+            public void ballotCounted(BallotCountedEvent e) {}
+            public void castCommittedBallot(CastCommittedBallotEvent event) {}
+            public void commitBallot(CommitBallotEvent e) {}
+            public void activated(ActivatedEvent e) {}
+            public void authorizedToCast(AuthorizedToCastEvent e) {}
+            public void ballotReceived(BallotReceivedEvent e) {}
+            public void overrideCancel(OverrideCancelEvent e) {}
+            public void overrideCancelConfirm(OverrideCancelConfirmEvent e) {}
+            public void overrideCancelDeny(OverrideCancelDenyEvent e) {}
+            public void overrideCast(OverrideCastEvent e) {}
+            public void overrideCastConfirm(OverrideCastConfirmEvent e) {}
+            public void overrideCastDeny(OverrideCastDenyEvent e) {}
+            public void pollsClosed(PollsClosedEvent e) {}
+            public void pollsOpen(PollsOpenEvent e) {}
+            public void pollsOpenQ(PollsOpenQEvent e) {}
+            public void supervisor(SupervisorEvent e) {}
+            public void ballotScanner(BallotScannerEvent e) {}
+            public void votebox(VoteBoxEvent e) {}
+            public void ballotScanned(BallotScannedEvent e) {}
+            public void spoilBallot(SpoilBallotEvent spoilBallotEvent) {}
+            public void announceProvisionalBallot(ProvisionalBallotEvent provisionalBallotEvent) {}
+            public void provisionalAuthorizedToCast(ProvisionalAuthorizeEvent provisionalAuthorizeEvent) {}
+            public void provisionalCommitBallot(ProvisionalCommitEvent provisionalCommitEvent) {}
+            public void authorizedToCastWithNIZKS(AuthorizedToCastWithNIZKsEvent e) {}
+            public void tapMachine(TapMachineEvent tapMachineEvent) {}
+            public void ballotPrinting(BallotPrintingEvent ballotPrintingEvent) {}
+            public void pinEntered(PINEnteredEvent event) {}
+            public void invalidPin(InvalidPinEvent event) {}
+            public void pollStatus(PollStatusEvent pollStatusEvent) {}
+            public void ballotPrintSuccess(BallotPrintSuccessEvent e) {}
+            public void ballotPrintFail(BallotPrintFailEvent ballotPrintFailEvent) {}
+            public void uploadCastBallots(CastBallotUploadEvent castBallotUploadEvent) {}
+            public void uploadChallengedBallots(ChallengedBallotUploadEvent challengedBallotUploadEvent) {}
+            public void lastPollsOpen(LastPollsOpenEvent e) {}
 
             public void assignLabel(AssignLabelEvent e) {
-                if (e.getNode() == mySerial){
+                if (e.getNode() == mySerial)
                     label = e.getLabel();
-                }//if
 
                 labelChangedEvent.notify(label);
             }
 
-            public void authorizedToCast(AuthorizedToCastEvent e) {
-            }
-
-            public void ballotReceived(BallotReceivedEvent e) {
-            }
-
-            /**
-             * Increment the number of connections
-             */
+            /** Increment the number of connections when other machines join the network */
             public void joined(JoinEvent e) {
-                ++numConnections;
+                numConnections++;
                 connected = true;
-
             }
 
-            public void lastPollsOpen(LastPollsOpenEvent e) {
-            }
-
-            /**
-             * Decrement the number of connections
-             */
+            /** Decrement the number of connections when other machines leave the network */
             public void left(LeaveEvent e) {
-                --numConnections;
+                numConnections--;
                 if (numConnections == 0) connected = false;
             }
 
-            public void overrideCancel(OverrideCancelEvent e) {
-            }
-
-            public void overrideCancelConfirm(OverrideCancelConfirmEvent e) {
-            }
-
-            public void overrideCancelDeny(OverrideCancelDenyEvent e) {
-            }
-
-            public void overrideCast(OverrideCastEvent e) {
-            }
-
-            public void overrideCastConfirm(OverrideCastConfirmEvent e) {
-            }
-
-            public void overrideCastDeny(OverrideCastDenyEvent e) {
-            }
-
-            public void pollsClosed(PollsClosedEvent e) {
-            }
-
-            public void pollsOpen(PollsOpenEvent e) {
-            }
-
-            public void pollsOpenQ(PollsOpenQEvent e) {
-            }
-
-            public void supervisor(SupervisorEvent e) {
-            }
-
-            public void ballotScanner(BallotScannerEvent e) {
-            }
-
-            public void votebox(VoteBoxEvent e) {
-            }
-
-            public void ballotScanned(BallotScannedEvent e) {
-            }
-
-            public void pinEntered(PINEnteredEvent event) {
-            }
-
-            public void invalidPin(InvalidPinEvent event) {
-            }
-
-            public void pollStatus(PollStatusEvent pollStatusEvent) {
-            }
-
-            public void ballotPrintSuccess(BallotPrintSuccessEvent e) {
-            }
-
-            public void ballotPrintFail(BallotPrintFailEvent ballotPrintFailEvent) {}
-
-            public void uploadCastBallots(CastBallotUploadEvent castBallotUploadEvent) {}
-
-            public void uploadChallengedBallots(ChallengedBallotUploadEvent challengedBallotUploadEvent) {}
-
+            /** Responds to polling by announcing status */
             public void pollMachines(PollMachinesEvent pollMachinesEvent) {
                 auditorium.announce(getStatus());
             }
-
-            public void spoilBallot(SpoilBallotEvent spoilBallotEvent) {
-            }
-
-            public void announceProvisionalBallot(ProvisionalBallotEvent provisionalBallotEvent) {
-            }
-
-            public void provisionalAuthorizedToCast(ProvisionalAuthorizeEvent provisionalAuthorizeEvent) {
-            }
-
-            public void provisionalCommitBallot(ProvisionalCommitEvent provisionalCommitEvent) {
-            }
-
-            public void authorizedToCastWithNIZKS(AuthorizedToCastWithNIZKsEvent e) {
-            }
-
-            public void tapMachine(TapMachineEvent tapMachineEvent) {
-            }
-
+            
+            /** 
+             * Responds to Supervisor announcing an accepted ballot by updating the GUI 
+             * and setting @receivedResponse to true 
+             */
             public void ballotAccepted(BallotScanAcceptedEvent event){
 
                 System.out.println("Accepted event: Event BID: " + event.getBID());
                 System.out.println("Accepted event: Last BID: " + lastFoundBID);
 
-                //If this event corresponds with our last scanned ballot, display a confirmation message
+                /* If this event corresponds with our last scanned ballot, display a confirmation message. */
                 if(lastFoundBID.equals(event.getBID())){
+                    
+                    /* Changes to reflect that the Supervisor responded to the BallotScannedEvent */
                     receivedResponse = true;
-                    //frame.displayBallotAcceptedScreen(lastFoundBID);
+
+                    /* Changes UI to accepting state */
                     frame.updateFrame(BallotScannerUI.TO_ACCEPT_STATE);
+
+                    /* Waits 5 seconds */
                     long start = System.currentTimeMillis();
                     while(System.currentTimeMillis() - start < 5000);
-                    //frame.displayPromptScreen();
+
+                    /* Changes UI back to prompt for a new BID to scan */
                     frame.updateFrame(BallotScannerUI.TO_PROMPT_STATE);
 
                 }
 
             }
 
+            /** 
+             * Responds to Supervisor announcing a rejected ballot by updating the GUI 
+             * and setting @receivedResponse to true 
+             */
             public void ballotRejected(BallotScanRejectedEvent event){
                 System.out.println("Rejected event: Event BID: " + event.getBID());
                 System.out.println("Rejected event: Last BID: " + lastFoundBID);
 
-                //If our ballot was rejected, display a message
+                /* If this event corresponds with our last scanned ballot, display a rejection message. */
                 if(lastFoundBID.equals(event.getBID())){
+                    
+                    /* Changes to reflect that the Supervisor responded to the BallotScannedEvent */
                     receivedResponse = true;
-                    //frame.displayBallotRejectedScreen();
+
+                    /* Changes UI to rejecting state */
                     frame.updateFrame(BallotScannerUI.TO_REJECT_STATE);
+
+                    /* Waits 5 seconds */
                     long start = System.currentTimeMillis();
                     while(System.currentTimeMillis() - start < 5000);
-                    //frame.displayPromptScreen();
+
+                    /* Changes UI back to prompt for a new BID to scan */
                     frame.updateFrame(BallotScannerUI.TO_PROMPT_STATE);
+
                 }
             }
 
-
-            public void ballotPrinting(BallotPrintingEvent ballotPrintingEvent) {}
-
+            /** 
+             * Changes the activated state to true when Supervisor announces a StartScanner Event
+             */
             public void scannerStart(StartScannerEvent startScannerEvent) {
                setActivated(true);
             }
 
 
         });
-
+    
+        /* Starts the heartbeat timer and begins scanning */
         statusTimer.start();
         receivedResponse = true;
         beginScanning();
@@ -433,14 +380,13 @@ public class BallotScanner{
      * @param args - arguments to be passed to the main method, from the command line
      */
     public static void main(String[] args) {
+        
         BallotScanner bs;
         if (args.length == 1)
             bs = new BallotScanner(Integer.parseInt(args[0]));
         else
-            //Tell VoteBox to refer to its config file for the serial number
+            /* Tell VoteBox to refer to its config file for the serial number */
             bs = new BallotScanner();
-
-//        while(!bs.activated);
 
         bs.start();
     }
