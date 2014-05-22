@@ -33,7 +33,7 @@ public class BallotScanner{
     private int protectedCount;
     private int publicCount;
     private int battery = 100;
-    private Event<Integer> stores;
+    private Event<Integer> labelChangedEvent;
 
 
     /** slabelChangedEvent the last found result obtained from a successful code scan **/
