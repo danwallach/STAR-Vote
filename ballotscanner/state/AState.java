@@ -19,13 +19,13 @@ public abstract class AState implements IState {
 
     String stateName;
     String stateMessage;
+    String[] messages;
 
 
-    protected AState(String image, String name, String message, String error){
+    protected AState(String image, String name, String message, String error, String... messages){
         try
         {
-            BufferedImage si = ImageIO.read(ElectionInfoPanel.getFile(image));
-            this.stateImage = si;
+            this.stateImage = ImageIO.read(ElectionInfoPanel.getFile(image));
         }
         catch (IOException e)
         {
@@ -34,6 +34,7 @@ public abstract class AState implements IState {
         }
         this.stateName = name;
         this.stateMessage = message;
+        this.messages = messages;
     }
 
     /**
@@ -76,19 +77,16 @@ public abstract class AState implements IState {
         if(updateMode == BallotScannerUI.TO_ACCEPT_STATE)
         {
             context.state = AcceptState.SINGLETON;
-            AcceptState.SINGLETON.resetStateStartTime();
             return;
         }
         if(updateMode == BallotScannerUI.TO_REJECT_STATE)
         {
             context.state = RejectState.SINGLETON;
-            RejectState.SINGLETON.resetStateStartTime();
             return;
         }
         if(updateMode == BallotScannerUI.TO_PROMPT_STATE)
         {
             context.state = PromptState.SINGLETON;
-            return;
         }
     }
 
@@ -97,11 +95,13 @@ public abstract class AState implements IState {
      * @param context the @BallotScannerUI that is in this state
      * @param params Any necessary parameters to allow this state to display itself
      */
-    public void displayScreen(BallotScannerUI context, Object... params){
+    public void displayScreen(BallotScannerUI context, String... params){
         context.userInfoPanel.clearMessages();
 
-        for(Object message : params){
-            context.userInfoPanel.addMessage(message.toString());
+        System.out.println("The length of messages is: "  + messages.length);
+
+        for(String message : messages){
+            context.userInfoPanel.addMessage(message);
         }
         context.updateFrameComponents();
     }

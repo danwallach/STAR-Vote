@@ -1,11 +1,6 @@
 package ballotscanner.state;
 
 import ballotscanner.BallotScannerUI;
-import ballotscanner.ElectionInfoPanel;
-
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 
 /**
  * @author Matt Bernhard, Mircea Berechet
@@ -15,8 +10,6 @@ import java.io.IOException;
  */
 public class AcceptState extends AState {
 
-    private long stateStartTime = 0;
-    private final long stateActiveDelay = 5000;
 
     public static final AcceptState SINGLETON = new AcceptState("images/accept_ballot.png",
                                                                 "Accept State",
@@ -30,24 +23,14 @@ public class AcceptState extends AState {
      * @param message the message this state will display
      */
     private AcceptState(String image, String name, String message, String error){
-        super(image, name, message, error);
+        super(image, name, message, error, "Your Vote Will be Counted", "Thank You for Voting!");
     }
 
     /**
-     * Reset the start time to now so that the state times out @stateActiveDelay seconds from now
+     * @see AState#displayScreen(ballotscanner.BallotScannerUI, String...)
      */
-    public void resetStateStartTime()
-    {
-        stateStartTime = System.currentTimeMillis();
-    }
-
-    /**
-     * @see ballotscanner.state.AState#displayScreen(ballotscanner.BallotScannerUI, Object...)
-     */
-    public void displayScreen(BallotScannerUI context, Object... params) {
-        super.displayScreen(context,
-                            "Your Vote Will be Counted",
-                            "Thank You for Voting!");
+    public void displayScreen(BallotScannerUI context, String... params) {
+        super.displayScreen(context);
 
     }
 

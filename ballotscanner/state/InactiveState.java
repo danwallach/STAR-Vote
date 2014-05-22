@@ -1,11 +1,6 @@
 package ballotscanner.state;
 
 import ballotscanner.BallotScannerUI;
-import ballotscanner.ElectionInfoPanel;
-
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 
 /**
  * @author Matt Bernhard, Mircea Berechet
@@ -29,16 +24,14 @@ public class InactiveState extends AState {
      * @param message the message this state will display
      */
     private InactiveState(String image, String name, String message, String error){
-       super(image, name, message, error);
+       super(image, name, message, error, "This is a Ballot Scanning Console.", "Console Currently Not Ready For Use.");
     }
 
     /**
-     * @see ballotscanner.state.AState#displayScreen(ballotscanner.BallotScannerUI, Object...)
+     * @see ballotscanner.state.AState#displayScreen(ballotscanner.BallotScannerUI, String...)
      */
-    public void displayScreen(BallotScannerUI context, Object... params) {
-        super.displayScreen(context,
-                            "This is a Ballot Scanning Console.",
-                            "Console Currently Not Ready For Use.");
+    public void displayScreen(BallotScannerUI context, String... params) {
+        super.displayScreen(context);
     }
 
 }
