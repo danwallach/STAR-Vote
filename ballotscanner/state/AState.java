@@ -100,8 +100,8 @@ public abstract class AState implements IState {
     public void displayScreen(BallotScannerUI context, Object... params){
         context.userInfoPanel.clearMessages();
 
-        for(String message : (String[])params){
-            context.userInfoPanel.addMessage(message);
+        for(Object message : params){
+            context.userInfoPanel.addMessage(message.toString());
         }
         context.updateFrameComponents();
     }
