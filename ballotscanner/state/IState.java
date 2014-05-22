@@ -8,28 +8,22 @@ import java.awt.image.BufferedImage;
  * @author Matt Bernhard, Mircea Berechet
  * 6/18/13
  *
- * An interface outlining the various states of a scanner UI
+ * An interface outlining the various states of the @BallotScannerUI
  */
 public interface IState {
 
     /**
-     * Gets the image for this state
-     *
-     * @return - an image representing this state
+     * @return an image representing this state
      */
     public BufferedImage getStateImage();
 
     /**
-     * Gives the name of the state
-     *
-     * @return
+     * @return  the name of the state
      */
     public String getStateName();
 
     /**
-     * Gives the state's message
-     *
-     * @return
+     * @return  the state's message
      */
     public String getStateMessage();
 

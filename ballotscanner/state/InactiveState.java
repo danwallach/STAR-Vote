@@ -11,11 +11,13 @@ import java.io.IOException;
  * @author Matt Bernhard, Mircea Berechet
  * 6/18/13
  *
- * A state which prompts user that scanner is inactive.
+ * A state which indicates that the @BAllotScanner is inactive and should not be used to scan ballots.
  */
 public class InactiveState extends AState {
 
+    /** Singleton pattern */
     public static final InactiveState SINGLETON = new InactiveState("images/inactive.png", "Inactive State", "Scanner is inactive");
+
     /**
      * Constructor for an inactive state.
      * @param image

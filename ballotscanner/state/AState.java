@@ -17,47 +17,43 @@ public abstract class AState implements IState {
     String stateName;
     String stateMessage;
 
-    /**
-     * Gets the image for this state
-     *
-     * @return - an image representing this state
-     */
-    public BufferedImage getStateImage(){
 
+    /**
+     * @return an image representing this state
+     */
+    public BufferedImage getStateImage() {
         return stateImage;
     }
 
     /**
-     * Gives the name of the state
-     *
-     * @return
+     * @return the name of the state
      */
-    public String getStateName(){
-
+    public String getStateName() {
         return stateName;
     }
 
     /**
-     * Gives the state's message
-     *
-     * @return
+     * @return the state's message
      */
-    public String getStateMessage(){
-
+    public String getStateMessage() {
         return stateMessage;
     }
 
     /**
-     * Adds messages and updates the frame.
-     * @param context
-     * @param params
+     * Adds messages to and updates the frame.
+     * @param context the @BallotScannerUI that is in this state
+     * @param params Any necessary parameters to allow this state to display itself
      */
     public abstract void displayScreen(BallotScannerUI context, Object... params);
 
+
+
     /**
-     * Updates the state, if needed.
-     * @param context
-     * @param updateMode
+     * Updates the state, changing to the state specified.
+     *
+     * @param context the context in which this state exists
+     * @param updateMode the way this state should update, will be either InactiveState,
+     *                   AcceptState, PromptState, or RejectState.
      */
     public abstract void updateState(BallotScannerUI context, int updateMode);
 
