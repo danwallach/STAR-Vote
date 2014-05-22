@@ -238,10 +238,6 @@ public class VoteBox{
         voting = true;
         currentDriver.run();
 
-
-
-        	
-
         //Listen for commit ui events.  When received, send out an encrypted vote.
         currentDriver.getView().registerForCommit(new Observer() {
 
@@ -397,7 +393,8 @@ public class VoteBox{
                             voting = false;
                             override = false;
                             broadcastStatus();
-                            inactiveUI.setVisible(true);
+
+                            System.out.println("Override cancel confirm triggered!");
                             promptForPin("Enter Voting Authentication PIN");
                             
                             //printBallotSpoiled();
@@ -435,14 +432,14 @@ public class VoteBox{
                         && currentDriver != null) {
                     ++publicCount;
                     ++protectedCount;
-                    ListExpression arg = (ListExpression) argTemp;
+                    Object[] arg = (Object[]) argTemp;
                     //Object [] arg = (Object []) (((ListExpression) argTemp).toVerbatim());
 
                     // arg1 should be the cast ballot structure, check
-                    if (Ballot.BALLOT_PATTERN.match((ASExpression) arg) == NoMatch.SINGLETON)
+                    if (Ballot.BALLOT_PATTERN.match((ASExpression) arg[1]) == NoMatch.SINGLETON)
                         throw new RuntimeException(
                                 "Incorrectly expected a cast-ballot");
-                    ListExpression ballot = (ListExpression) arg;
+                    ListExpression ballot = (ListExpression) arg[1];
 
                     committedBallot = true;
 
@@ -459,11 +456,14 @@ public class VoteBox{
                                     StringExpression.makeString(nonce),
                                     BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey(mySerial + "-public")), StringExpression.makeString(bid), StringExpression.makeString(precinct)));
                         } else{
+                            ASExpression encBallot = BallotEncrypter.SINGLETON.encryptWithProof(ballot, (List<List<String>>) arg[1],
+                                    (PublicKey) _constants.getKeyStore().loadAdderKey("public"));
+
+
                             auditorium.announce(new CommitBallotEvent(mySerial,
                                     StringExpression.makeString(nonce),
-                                    BallotEncrypter.SINGLETON.encryptWithProof(ballot, (List<List<String>>) arg.get(1), (PublicKey) _constants.getKeyStore().loadAdderKey("public")),
-                                    StringExpression.makeString(bid), StringExpression.makeString(precinct))
-                            );
+                                    encBallot,
+                                    StringExpression.makeString(bid), StringExpression.makeString(precinct)));
                         }
                     }
                     catch (AuditoriumCryptoException e) {
@@ -611,6 +611,7 @@ public class VoteBox{
                     		currentDriver = null;
                     		inactiveUI.setVisible(true);
                     		killVBTimer = null;
+                            System.out.println("Ballot counted heard! Throwing up a new prompt!");
                             promptForPin("Enter Voting Authentication PIN");
                     	};
                     });
@@ -717,7 +718,7 @@ public class VoteBox{
 
             /**
              * Handler for the ballot-received message. Show the next page on
-             * the VB runtime (the thank you screen), and start a timer that
+             * the VB runtime (the ballot is being printed screen), and start a timer that
              * kills the runtime after a set amount of time (5 seconds), and
              * then shows the inactive screen. Also responds with its status.
              */
@@ -754,6 +755,7 @@ public class VoteBox{
                             currentDriver = null;
                             inactiveUI.setVisible(true);
                             killVBTimer = null;
+                            System.out.println("Killing the active UI and throwing up the PIN prompt");
                             promptForPin("Enter Voting Authentication PIN");
                         }
                     });
@@ -871,6 +873,7 @@ public class VoteBox{
              */
             public void pollsOpen(PollsOpenEvent e) {
                 if(!voting){
+                    System.out.println("Polls opened heard! Throwing up a PIN");
                     promptForPin("Enter Authorization PIN");
                 }
             }
@@ -921,6 +924,7 @@ public class VoteBox{
              * Handles InvalidPinEvent and reprompts for PIN
              */
             public void invalidPin(InvalidPinEvent e) {
+                System.out.println("Invalid PIN heard. Starting the prompt again!");
                 if(e.getNode() == mySerial)
                     promptForPin("Invalid PIN: Enter Valid PIN");
             }
@@ -1098,48 +1102,7 @@ public class VoteBox{
             System.out.println("Still prompting for PIN!");
             return;
         }
-        /*//if(!superOnline) return;
-        promptingForPin = true;
-        JTextField limitedField = new JTextField(new PlainDocument() {
-            private int limit=4;
-            public void insertString(int offs, String str, AttributeSet attr) throws BadLocationException {
-                if(str == null)
-                    return;
-                if((getLength() + str.length()) <= this.limit) {
-                    super.insertString(offs, str, attr);
-                }
-            }
-        }, "", 5);
 
-        Object[] msg = {
-                message, limitedField
-        };
-        int pinResult = JOptionPane.showConfirmDialog(
-                (JFrame)inactiveUI,
-                msg,
-                "Authorization Required",
-                JOptionPane.OK_CANCEL_OPTION,
-                JOptionPane.PLAIN_MESSAGE);
-
-        while(pinResult != JOptionPane.OK_OPTION) {
-            pinResult = JOptionPane.showConfirmDialog(
-                    (JFrame)inactiveUI,
-                    msg,
-                    "Authorization Required",
-                    JOptionPane.OK_CANCEL_OPTION,
-                    JOptionPane.PLAIN_MESSAGE);
-        }
-
-
-        try{
-            String pin = limitedField.getText();
-            validatePin(pin);
-        }catch(NumberFormatException nfe){
-            promptingForPin = false;
-            promptForPin("Invalid PIN: Enter 4-digit PIN");
-        }*/
-
-        // Create a new GUI to prompt for PIN.
         final PINAuthorizationGUI pinGUI = new PINAuthorizationGUI(_constants.getScreenCenterX(), _constants.getScreenCenterY());
         // Set the GUI's label to our message.
         pinGUI.setLabelText(message);
