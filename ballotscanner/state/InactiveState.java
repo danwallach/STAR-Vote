@@ -16,61 +16,29 @@ import java.io.IOException;
 public class InactiveState extends AState {
 
     /** Singleton pattern */
-    public static final InactiveState SINGLETON = new InactiveState("images/inactive.png", "Inactive State", "Scanner is inactive");
+    public static final InactiveState SINGLETON = new InactiveState("images/inactive.png",
+                                                                    "Inactive State",
+                                                                    "Scanner is inactive",
+                                                                    "BallotScannerUI: Could not locate inactive image");
 
     /**
      * Constructor for an inactive state.
-     * @param image
-     * @param name
-     * @param message
+     *
+     * @param image The image that this state will display
+     * @param name the explicit name for this state
+     * @param message the message this state will display
      */
-    private InactiveState(String image, String name, String message){
-        try
-        {
-            BufferedImage si = ImageIO.read(ElectionInfoPanel.getFile(image));
-            this.stateImage = si;
-        }
-        catch (IOException e)
-        {
-            System.err.println("BallotScannerUI: Could not locate inactive image");
-            this.stateImage = null;
-        }
-        this.stateName = name;
-        this.stateMessage = message;
+    private InactiveState(String image, String name, String message, String error){
+       super(image, name, message, error);
     }
 
+    /**
+     * @see ballotscanner.state.AState#displayScreen(ballotscanner.BallotScannerUI, Object...)
+     */
     public void displayScreen(BallotScannerUI context, Object... params) {
-        context.userInfoPanel.clearMessages();
-        context.userInfoPanel.addMessage("This is a Ballot Scanning Console.");
-        context.userInfoPanel.addMessage("Console Currently Not Ready For Use.");
-        //context.responseImage = stateImage;
-        context.updateFrameComponents();
-    }
-
-    public void updateState(BallotScannerUI context, int updateMode)
-    {
-        if(updateMode == -1)
-        {
-            context.state = InactiveState.SINGLETON;
-            return;
-        }
-        if(updateMode == 1)
-        {
-            context.state = AcceptState.SINGLETON;
-            AcceptState.SINGLETON.resetStateStartTime();
-            return;
-        }
-        if(updateMode == 2)
-        {
-            context.state = RejectState.SINGLETON;
-            RejectState.SINGLETON.resetStateStartTime();
-            return;
-        }
-        if(updateMode == 3)
-        {
-            context.state = PromptState.SINGLETON;
-            return;
-        }
+        super.displayScreen(context,
+                            "This is a Ballot Scanning Console.",
+                            "Console Currently Not Ready For Use.");
     }
 
 }

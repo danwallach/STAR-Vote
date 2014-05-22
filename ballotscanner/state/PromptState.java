@@ -15,61 +15,30 @@ import java.io.IOException;
  */
 public class PromptState extends AState {
 
-    public static final PromptState SINGLETON = new PromptState("images/waiting_ballot.png", "Prompt State", "Place Ballot Under Scanner to Cast Ballot");
+    public static final PromptState SINGLETON = new PromptState("images/waiting_ballot.png",
+                                                                "Prompt State",
+                                                                "Place Ballot Under Scanner to Cast Ballot",
+                                                                "BallotScannerUI: Could not locate waiting image");
     /**
      * Constructor for a prompt state.
-     * @param image
-     * @param name
-     * @param message
+     *
+     * @param image The image that this state will display
+     * @param name the explicit name for this state
+     * @param message the message this state will display
      */
-    private PromptState(String image, String name, String message){
-        try
-        {
-            BufferedImage si = ImageIO.read(ElectionInfoPanel.getFile(image));
-            this.stateImage = si;
-        }
-        catch (IOException e)
-        {
-            System.err.println("BallotScannerUI: Could not locate waiting image");
-            this.stateImage = null;
-        }
-        this.stateName = name;
-        this.stateMessage = message;
+    private PromptState(String image, String name, String message, String error){
+        super(image, name, message, error);
     }
 
-
+    /**
+     * @see ballotscanner.state.AState#displayScreen(ballotscanner.BallotScannerUI, Object...)
+     */
     public void displayScreen(BallotScannerUI context, Object... params) {
-        context.userInfoPanel.clearMessages();
-        context.userInfoPanel.addMessage("This is a Ballot Scanning Console.");
-        context.userInfoPanel.addMessage("Place Ballot Under Scanner to Cast Ballot.");
-//        context.responseImage = stateImage;
-        context.updateFrameComponents();
+        super.displayScreen(context,
+                            "This is a Ballot Scanning Console.",
+                            "Place Ballot Under Scanner to Cast Ballot.");
     }
 
-    public void updateState(BallotScannerUI context, int updateMode)
-    {
-        if(updateMode == -1)
-        {
-            context.state = InactiveState.SINGLETON;
-            return;
-        }
-        if(updateMode == 1)
-        {
-            context.state = AcceptState.SINGLETON;
-            AcceptState.SINGLETON.resetStateStartTime();
-            return;
-        }
-        if(updateMode == 2)
-        {
-            context.state = RejectState.SINGLETON;
-            RejectState.SINGLETON.resetStateStartTime();
-            return;
-        }
-        if(updateMode == 3)
-        {
-            context.state = PromptState.SINGLETON;
-            return;
-        }
-    }
+
 
 }

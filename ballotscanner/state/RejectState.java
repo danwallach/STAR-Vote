@@ -18,26 +18,17 @@ public class RejectState extends AState {
     private long stateStartTime = 0;
     private final long stateActiveDelay = 5000;
 
-    public static final RejectState SINGLETON = new RejectState("images/reject_ballot.png", "Reject State", "Your ballot has been rejected and will not be counted.");
+    public static final RejectState SINGLETON = new RejectState("images/reject_ballot.png",
+                                                                "Reject State",
+                                                                "Your ballot has been rejected and will not be counted.",
+                                                                "BallotScannerUI: Could not locate reject image");
     /**
      * Constructor for a reject state.
-     * @param image
-     * @param name
-     * @param message
+     *
+     * @see ballotscanner.state.AState#AState(String, String, String, String)
      */
-    private RejectState(String image, String name, String message){
-        try
-        {
-            BufferedImage si = ImageIO.read(ElectionInfoPanel.getFile(image));
-            this.stateImage = si;
-        }
-        catch (IOException e)
-        {
-            System.err.println("BallotScannerUI: Could not locate reject image");
-            this.stateImage = null;
-        }
-        this.stateName = name;
-        this.stateMessage = message;
+    private RejectState(String image, String name, String message, String error){
+        super(image, name, message, error);
     }
 
     public void resetStateStartTime()
@@ -45,44 +36,16 @@ public class RejectState extends AState {
         stateStartTime = System.currentTimeMillis();
     }
 
+    /**
+     * @see ballotscanner.state.AState#displayScreen(ballotscanner.BallotScannerUI, Object...)
+     */
     public void displayScreen(BallotScannerUI context, Object... params) {
-        context.userInfoPanel.clearMessages();
-        context.userInfoPanel.addMessage("Ballot has been rejected");
-        context.userInfoPanel.addMessage("Hold Ballot Still Under the Scanner");
-        context.userInfoPanel.addMessage("If This Problem Persists, Contact an Election Official");
-//        context.responseImage = stateImage;
-        context.updateFrameComponents();
+        super.displayScreen(context,
+                            "Ballot has been rejected",
+                            "Hold Ballot Still Under the Scanner",
+                            "If This Problem Persists, Contact an Election Official");
+
     }
 
-    public void updateState(BallotScannerUI context, int updateMode)
-    {
-        if (System.currentTimeMillis() - stateStartTime > stateActiveDelay)
-        {
-            context.state = PromptState.SINGLETON;
-            return;
-        }
-        if(updateMode == -1)
-        {
-            context.state = InactiveState.SINGLETON;
-            return;
-        }
-        if(updateMode == 1)
-        {
-            context.state = AcceptState.SINGLETON;
-            AcceptState.SINGLETON.resetStateStartTime();
-            return;
-        }
-        if(updateMode == 2)
-        {
-            context.state = RejectState.SINGLETON;
-            RejectState.SINGLETON.resetStateStartTime();
-            return;
-        }
-        if(updateMode == 3)
-        {
-            context.state = PromptState.SINGLETON;
-            return;
-        }
-    }
 
 }
