@@ -35,41 +35,81 @@ import supervisor.Supervisor;
 /**
  * A decorator for a JLabel that uses a standardized font, and turns on
  * antialiasing.
+ *
  * @author cshaw
  */
 @SuppressWarnings("serial")
 public class MyJLabel extends JLabel {
 
+    /**
+     * Default constructor, just sets up the standardized font
+     */
     public MyJLabel() {
         super();
         setFont(new Font(Supervisor.FONTNAME, Font.PLAIN, 12));
     }
 
-    public MyJLabel(Icon arg0, int arg1) {
-        super(arg0, arg1);
+    /**
+     * Creates a new MyJLabel with a specified icon and horizontal alignment
+     *
+     * @param icon the icon the label displays
+     * @param horizontalAlignment how the elements of the label should be horizontally aligned
+     */
+    @SuppressWarnings("unused")
+    public MyJLabel(Icon icon, int horizontalAlignment) {
+        super(icon, horizontalAlignment);
         setFont(new Font(Supervisor.FONTNAME, Font.PLAIN, 12));
     }
 
-    public MyJLabel(Icon arg0) {
-        super(arg0);
+    /**
+     * Creates a new MyJLabel with a specified icon
+     *
+     * @param icon the icon the label displays
+     */
+    @SuppressWarnings("unused")
+    public MyJLabel(Icon icon) {
+        super(icon);
         setFont(new Font(Supervisor.FONTNAME, Font.PLAIN, 12));
     }
 
-    public MyJLabel(String arg0, Icon arg1, int arg2) {
-        super(arg0, arg1, arg2);
+    /**
+     * Creates a new MyJLabel with a specified icon, text, and horizontal alignment
+     *
+     * @param text the text the label displays
+     * @param icon the icon the label displays
+     * @param horizontalAlignment how the elements of the label should be horizontally aligned
+     */
+    @SuppressWarnings("unused")
+    public MyJLabel(String text, Icon icon, int horizontalAlignment) {
+        super(text, icon, horizontalAlignment);
         setFont(new Font(Supervisor.FONTNAME, Font.PLAIN, 12));
     }
 
-    public MyJLabel(String arg0, int arg1) {
-        super(arg0, arg1);
+    /**
+     * Creates a new MyJLabel with a specified text and horizontal alignment
+     *
+     * @param text the text the label displays
+     * @param horizontalAlignment how the elements of the label should be horizontally aligned
+     */
+    @SuppressWarnings("unused")
+    public MyJLabel(String text, int horizontalAlignment) {
+        super(text, horizontalAlignment);
         setFont(new Font(Supervisor.FONTNAME, Font.PLAIN, 12));
     }
 
-    public MyJLabel(String arg0) {
-        super(arg0);
+    /**
+     * Creates a new MyJLabel with a specified text
+     *
+     * @param text the text the label displays
+     */
+    public MyJLabel(String text) {
+        super(text);
         setFont(new Font(Supervisor.FONTNAME, Font.PLAIN, 12));
     }
 
+    /**
+     * Overridden paint method that turns on antialiasing
+     */
     public void paint(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,

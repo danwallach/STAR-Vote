@@ -36,35 +36,66 @@ import supervisor.Supervisor;
 /**
  * A decorator for a JButton that uses a standardized font, and turns on
  * antialiasing.
+ *
  * @author cshaw
  */
 @SuppressWarnings("serial")
 public class MyJButton extends JButton {
 
+    /**
+     * Default constructor, only sets the font
+     */
     public MyJButton() {
         setFont(new Font(Supervisor.FONTNAME, Font.PLAIN, 12));
     }
 
-    public MyJButton(Icon arg0) {
-        super(arg0);
+    /**
+     * Creates a new MyJButton with a given Icon.
+     *
+     * @param icon icon for the button to display
+     */
+    @SuppressWarnings("unused")
+    public MyJButton(Icon icon) {
+        super(icon);
         setFont(new Font(Supervisor.FONTNAME, Font.PLAIN, 12));
     }
 
-    public MyJButton(String arg0) {
-        super(arg0);
+    /**
+     * Creates a new MyJButton with a given text
+     *
+     * @param text text for the button to display
+     */
+    public MyJButton(String text) {
+        super(text);
         setFont(new Font(Supervisor.FONTNAME, Font.PLAIN, 12));
     }
 
-    public MyJButton(Action arg0) {
-        super(arg0);
+    /**
+     * Creates a new MyJButton with a given default action
+     *
+     * @param action the action this button performs when clicked.
+     */
+    @SuppressWarnings("unused")
+    public MyJButton(Action action) {
+        super(action);
         setFont(new Font(Supervisor.FONTNAME, Font.PLAIN, 12));
     }
 
-    public MyJButton(String arg0, Icon arg1) {
-        super(arg0, arg1);
+    /**
+     * Creates a new MyJButton with given text and icon
+     *
+     * @param text text for the button to display
+     * @param icon icon for the button to display
+     */
+    @SuppressWarnings("unused")
+    public MyJButton(String text, Icon icon) {
+        super(text, icon);
         setFont(new Font(Supervisor.FONTNAME, Font.PLAIN, 12));
     }
-    
+
+    /**
+     * Overridden paint method that turns on antialiasing
+     */
     public void paint(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
