@@ -21,46 +21,46 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 /**
- * Created with IntelliJ IDEA.
- * User: mrdouglass95
- * Date: 7/31/13
- * To change this template use File | Settings | File Templates.
+ * This class is the graphical user interface that displays the results of the election to officials as soon
+ * as the polls are closed, or as soon as the final results have been tallied. The graphical interface is a JTree
+ * containing JTables in its nodes. For each race in an election, the candidateIDs, candidate names, votes received
+ * and percentage of total votes received are displayed to the election officials. Additionally, the winning candidate's
+ * frame is colored green.
  *
- * This Class is the graphical user interface that displays the results of the election to officials as soon as the polls
- * are closed, or as soon as the final results have been tallied. It takes in the String absolute path to the ballot being
- * used and a Map<String, BigInteger> representing the results of an election. This graphical interface is a JTree
- * containing JTables in it's nodes. For each Race in an election, the candidateIDs, Candidate names, Votes Recieved and
- * percentage of total votes received are displayed to the election officials.
- *
+ * TODO The below comment is kind of silly. Maybe develop a unit test for this?
  * This interface can be tested independently by modifying the main method and running the class as stand-alone. A ballot
  * is needed, as well as a custom mapping between all RaceID strings (The "B..." numbers) and a BigInteger representing
  * votes received by that RaceID.
  *
+ * @author mrdouglass95
  */
-
 public class TallyResultsFrame extends JFrame{
 
     /**
-     * Only Constructor for TallyResultsFrame. Automatically handles setting size and visibility.
+     * Constructor for TallyResultsFrame. Automatically handles setting size and visibility.
      *
      * @param parent panel used in determining initial position of frame
      * @param results represents a mapping from RaceIDs to the number of votes received by that ID
      * @param ballot  absolute path of .zip ballot file being used
      */
      public TallyResultsFrame(JPanel parent, Map<String, BigInteger> results, String ballot){
+         /* Rely on the super to name the window */
          super("Election Results Window");
 
+         /* Position and set the layout */
          setLocationRelativeTo(parent);
          setLayout(new GridBagLayout());
          setAlwaysOnTop(true);
          GridBagConstraints c = new GridBagConstraints();
 
+         /* Create and add an Election Results label */
          JLabel title = new MyJLabel("Election Results:");
          c.gridx = 0;
          c.gridy = 0;
          c.anchor = GridBagConstraints.LINE_START;
          c.insets = new Insets(10, 10, 0, 10);
          add(title, c);
+
 
          JComponent resultsField = null;
          java.util.List<String> languages = BallotImageHelper.getLanguages(ballot);
