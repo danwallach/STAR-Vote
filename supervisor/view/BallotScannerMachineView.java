@@ -14,7 +14,7 @@ import java.util.Observer;
  * This class is the machine tile view of the Ballot Scanner when it is on the network. It is updated when the Scanner
  * comes online and when it leaves.
  *
- * @author Mircea C. Berechet, mrdouglass95
+ * @author Mircea C. Berechet, mrdouglass95, Matt Bernhard
  */
 
 public class BallotScannerMachineView extends AMachineView{
