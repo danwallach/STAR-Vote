@@ -40,8 +40,9 @@ import supervisor.model.Model;
 
 /**
  * A dialog that is shown when the poll worker attempts to override an
- * authorization. The dialog asks if the user wants to cancel the ballot, cast
+ * authorization. The dialog asks if the user wants to cancel the ballot, commit
  * the ballot, or not override anything.
+ *
  * @author cshaw
  */
 @SuppressWarnings("serial")
@@ -49,20 +50,25 @@ public class OverrideDialog extends JDialog {
 
     /**
      * Constructs a new OverrideDialog.
-     * @param parent the parent
-     * @param model the model
+     *
+     * @param parent the parent JPanel (the Supervisor's view)
+     * @param model the model for the Supervisor
      * @param node the serial number of the machine to override
      * @param label the label of the machine to override
      */
     public OverrideDialog(final JPanel parent, final Model model,
             final int node, int label, boolean isProvisionalVoting) {
+        /* Set up the necessary data for superclass constructor */
         super((JFrame) null, "Override", true);
+
+        /* Set the size, position, and layout */
         setSize(500, 150);
         setLocationRelativeTo(parent);
         setLayout(new GridBagLayout());
         setAlwaysOnTop(true);
         GridBagConstraints c = new GridBagConstraints();
 
+        /* Label with information about the machine being overridden */
         JLabel lbl1 = new MyJLabel("You are attempting to override booth #"
                 + label + ".");
         c.gridx = 0;
@@ -72,6 +78,7 @@ public class OverrideDialog extends JDialog {
         c.gridwidth = 3;
         add(lbl1, c);
 
+        /* Label with instructions for the override */
         JLabel lbl2 = new MyJLabel(
                 "Please designate whether you would like to cancel, or cast, this ballot.");
         c.gridx = 0;
@@ -80,12 +87,16 @@ public class OverrideDialog extends JDialog {
         c.insets = new Insets(5, 10, 0, 10);
         add(lbl2, c);
 
+        /* A button that will result in the cancellation of the voting sessino on the target machine */
         JButton cancelButton = new MyJButton("Cancel Ballot");
         cancelButton.setFont(cancelButton.getFont().deriveFont(Font.BOLD));
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                /* On button click, hide this dialog and tell the model to cancel the given voting session */
                 setVisible(false);
                 model.overrideCancel(node);
+
+                /* Show a new dialog informing the necessary actions to take to complete the cancellation */
                 JOptionPane
                         .showMessageDialog(
                                 parent,
@@ -93,6 +104,8 @@ public class OverrideDialog extends JDialog {
                                 "Message Sent", JOptionPane.INFORMATION_MESSAGE);
             }
         });
+
+        /* Add the cancel button */
         c.gridy = 2;
         c.gridwidth = 1;
         c.weightx = 1;
@@ -103,12 +116,18 @@ public class OverrideDialog extends JDialog {
         c.insets = new Insets(10, 10, 10, 10);
         add(cancelButton, c);
 
-        JButton castButton = new MyJButton("Cast Ballot");
-        castButton.setFont(castButton.getFont().deriveFont(Font.BOLD));
-        castButton.addActionListener(new ActionListener() {
+        /* Button to override the voting sessino and commit the ballot at whatever state it was in */
+        JButton commitButton = new MyJButton("Commit Ballot");
+        commitButton.setFont(commitButton.getFont().deriveFont(Font.BOLD));
+        commitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                /* First hide this frame on clicking this button */
                 setVisible(false);
-                model.overrideCast(node);
+
+                /* Tell the model to performe the override operation */
+                model.overrideCommit(node);
+
+                /* Show a new dialog with instructions on completing the override process */
                 JOptionPane
                         .showMessageDialog(
                                 parent,
@@ -116,15 +135,22 @@ public class OverrideDialog extends JDialog {
                                 "Message Sent", JOptionPane.INFORMATION_MESSAGE);
             }
         });
+
+        /* Add the buttn */
         c.gridx = 1;
         c.insets = new Insets(10, 0, 10, 10);
-        add(castButton, c);
-        // If this is a provisional session, then do not allow casts!
+        add(commitButton, c);
+
+        /*
+         * If this is a provisional session, then do not allow casts!
+         * TODO Is this correct? This will only commit the ballot, not cast it...
+         */
         if (isProvisionalVoting)
         {
-            castButton.setEnabled(false);
+            commitButton.setEnabled(false);
         }
 
+        /* This button exits the override prompt without doing anything */
         JButton doNothingButton = new MyJButton("Do Not Override");
         doNothingButton
                 .setFont(doNothingButton.getFont().deriveFont(Font.BOLD));
@@ -133,6 +159,8 @@ public class OverrideDialog extends JDialog {
                 setVisible(false);
             }
         });
+
+        /* Add the button */
         c.gridx = 2;
         add(doNothingButton, c);
     }
