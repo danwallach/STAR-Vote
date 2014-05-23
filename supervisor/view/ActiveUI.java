@@ -41,75 +41,100 @@ import supervisor.model.TapMachine;
 
 /**
  * The view that is shown on a supervisor that is active - consists of
- * information about the election, and a grid of all of the machines on the
- * network.
+ * information about the election, options for controlling the election,
+ * and a grid of all of the machines on the network as well as controls
+ * for those machines.
+ *
  * @author cshaw
  */
 @SuppressWarnings("serial")
 public class ActiveUI extends JPanel {
 
+    /** The Supervisor model, for reference */
     private Model model;
 
+    /** This allows us to build machine views and put them on the active UI. Uses Factory pattern */
     private MachineViewGenerator viewGen;
 
-    private JPanel leftPanel;
+    /** Panel which contains election info and general controls, like opening the polls */
+    private JPanel electionInfoPanel;
 
+    /** Label for the current time */
     private JLabel timeLbl;
 
+    /**
+     * Denotes whether the polls are opened.
+     *
+     * TODO Is this necessary, since the Open/Close polls button exists?
+     */
     private JLabel pollsOpenLbl;
 
-    private JLabel tapConnectedLabel;
+    /** Allows for the opening and closing of the polls */
+    private JButton pollsControlButton;
 
-    private JButton leftButton;
-
+    /** Launch a file chooser to select a ballot */
     private JButton ballotButton;
 
+    /** Issues a PIN so that a voting booth can be authorized to vote and request a ballot */
     private JButton pinButton;
 
+    /**
+     * Allows a ballot to be scanned a removed from the list of committed ballots in the
+     * event that a voter explicitly wishes to challenge their vote, or in the case of
+     * provisional voting.
+     *
+     * TODO Verify that the provisional process is kosher
+     */
     private JButton spoilButton;
 
-    private JPanel mainPanel;
+    /** String for displaying the ID of the ballot to be spoiled */
+    private static String spoiledBallotID;
 
+    /** Contains a view of all the machines connected on the network */
+    private JPanel machineViewPanel;
+
+    /** Will allow ballots to be found in the Supervisor machine's file system */
     private JFileChooser ballotLocChooser;
 
-    private HashMap<String, String> precinctsToBallots;
+    /** Keeps track of which ballot styles go with which precincts */
+    private HashMap<String, String> precinctsToBallots = new HashMap<String, String>();
 
-    private static String ballotID;
-
+    /** Displays the connection status of Tap, the data diode */
     private TapView tapView;
 
-    private static boolean scanned = false;
-
-//    private static final Scanner scanner = new Scanner(System.in);
-
-
-
     /**
-     * Constructs a new ActiveUI
-     * @param m the supervisor's model
+     * Constructs a new ActiveUI, initializing the election info panel and
+     * machine panel and adding them to this panel.
+     *
+     * @param m the supervisor's model, as per MVC
      */
     public ActiveUI(Model m) {
         model = m;
+
+        /* Initizalize the machine view factory */
         viewGen = new MachineViewGenerator();
+
+        /* we are using GridBagLayout for fine-tuned control over which elements get placed where */
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
-        precinctsToBallots = new HashMap<String, String>();
-
-        initializeLeftPanel();
+        /* Initialize the election info panel and place it in the correct location on the panel */
+        initializeElectionInfoPanel();
         c.gridx = 0;
         c.gridy = 0;
         c.weightx = 0;
         c.weighty = 1;
         c.fill = GridBagConstraints.BOTH;
-        add(leftPanel, c);
+        add(electionInfoPanel, c);
 
-        initializeMainPanel();
+        /* Initizalize the machine view panel and put it in the right place on the panel */
+        initializeMachineViewPanel();
         c.gridx = 1;
         c.weightx = 1;
         c.fill = GridBagConstraints.BOTH;
-        add(mainPanel, c);
+        add(machineViewPanel, c);
 
+        /* Instructs the dispatcher to update the machine views whenever one of the views changes */
         model.registerForMachinesChanged(new Observer() {
             public void update(Observable o, Object arg) {
                 updateAllMachineViews();
@@ -118,7 +143,7 @@ public class ActiveUI extends JPanel {
     }
 
     /**
-     * Turns on antialiasing
+     * Override of the JPanel paint method that turns on antialiasing
      */
     public void paint(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
@@ -134,7 +159,10 @@ public class ActiveUI extends JPanel {
      * necessary), and then updates each machine's view
      */
     public void updateAllMachineViews() {
-        mainPanel.removeAll();
+        /* First remove all of the machines */
+        machineViewPanel.removeAll();
+
+        /* Create a new panel to add back to the machine view panel */
         JPanel innerPanel = new JPanel();
         innerPanel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
@@ -142,43 +170,53 @@ public class ActiveUI extends JPanel {
         c.weighty = 1;
         c.insets = new Insets(6, 6, 6, 6);
         c.anchor = GridBagConstraints.FIRST_LINE_START;
+
+        /* Look through all the machines and add their views to the panel */
         int i = 0;
         for (AMachine m : model.getMachines()) {
+            /* Tap is a special case, since its machine status is only either connected or not */
             if(m instanceof TapMachine){
                 tapView.setMachine((TapMachine)m);
                 continue;
             }
+
+            /* Evenly space the views, then generate machine m's view using the factory */
             c.gridx = i % 4;
             c.gridy = i / 4;
             innerPanel.add(viewGen.generateView(model, this, m), c);
             ++i;
         }
 
-        System.out.println("Updating Tap's View");
-
+        /* Update the Tap status view on the info panel */
         tapView.updateView();
 
+        /* Add back the machines panel after having reconstructed it */
         c.gridx = 0;
         c.gridy = 0;
-        mainPanel.add(innerPanel, c);
+        machineViewPanel.add(innerPanel, c);
         validate();
         repaint();
     }
 
     /**
-     * Initializes all GUI components pertaining to the panel's left panel component, including Tap ribbon,
-     * ballot selection button, pin generating button, and open/close polls button.
+     * Initializes all GUI components pertaining to the panel's election information panel component,
+     * including Tap ribbon, ballot selection button, pin generating button, spoil ballot button,
+     * and open/close polls button.
      */
-    private void initializeLeftPanel() {
-        leftPanel = new JPanel();
-        leftPanel.setLayout(new GridBagLayout());
+    private void initializeElectionInfoPanel() {
+        /* create a new info panel, using GridBagLayout */
+        electionInfoPanel = new JPanel();
+        electionInfoPanel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
+        /* This panel will contain all of the info labels */
         JPanel leftLabelPanel = new JPanel();
         leftLabelPanel.setLayout(new GridBagLayout());
         leftLabelPanel.add(new MyJLabel(model.getParams().getElectionName()), c);
         Date d = new Date();
         c.gridy = 1;
+
+        /* Add the current date to the panel */
         leftLabelPanel.add(new MyJLabel(DateFormat.getDateInstance(
                 DateFormat.LONG).format(d)), c);
         c.gridy = 2;
@@ -186,6 +224,7 @@ public class ActiveUI extends JPanel {
                 .format(d));
         leftLabelPanel.add(timeLbl, c);
 
+        /* This updates the date and time by the second */
         new Timer(1000, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 timeLbl.setText(DateFormat.getTimeInstance(DateFormat.LONG)
@@ -193,6 +232,7 @@ public class ActiveUI extends JPanel {
             }
         }).start();
 
+        /* Add the poll status label */
         c.gridy = 3;
         c.weighty = .2;
         c.anchor = GridBagConstraints.PAGE_END;
@@ -206,14 +246,16 @@ public class ActiveUI extends JPanel {
         c.weighty = 0;
         c.ipady = 20;
         c.insets = new Insets(20, 20, 80, 20);
-        leftPanel.add(leftLabelPanel, c);
+        electionInfoPanel.add(leftLabelPanel, c);
 
+        /* Set up the tap status ribbon and add it to the panel */
         tapView = new TapView(null);
         c.ipady = 20;
         c.gridy = 1;
         c.insets = new Insets(20,20,20,20);
-        leftPanel.add(tapView, c);
+        electionInfoPanel.add(tapView, c);
 
+        /* Instantiate the file chooser, using the current working directory as the root path */
         ballotLocChooser = new JFileChooser(System.getProperty("user.dir"));
         ballotLocChooser.setFileFilter(new FileFilter() {
             @Override
@@ -229,6 +271,10 @@ public class ActiveUI extends JPanel {
             }
         });
 
+        /*
+         * Add the Select Ballot button so that it launches the file chooser, and updates the ballots
+         * selection panel for voting booth authorization, and maps the precinct to ballot style.
+         */
         ballotButton = new MyJButton("Select Ballot");
         ballotButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -247,10 +293,16 @@ public class ActiveUI extends JPanel {
         c.gridy = 2;
         c.fill = GridBagConstraints.HORIZONTAL;
         c.insets = new Insets(20, 20, 20, 20);
-        leftPanel.add(ballotButton, c);
+        electionInfoPanel.add(ballotButton, c);
 
+        /* We need a final reference to this (ActiveUI) panel, so that it can be used in an anonymous inner class */
         final JPanel fthis = this;
 
+        /* Set up and add the PIN generation button. This will print out a PIN and
+         * allow a voting booth to be authorized to vote.
+         *
+         * TODO change the name of this button?
+         */
         pinButton = new MyJButton("Generate Pin");
         pinButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -279,17 +331,15 @@ public class ActiveUI extends JPanel {
         });
         c.ipady = 50;
         c.gridy = 3;
-        leftPanel.add(pinButton, c);
+        electionInfoPanel.add(pinButton, c);
 
         spoilButton = new MyJButton("Spoil Ballot");
         spoilButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
 
-                String bid = "-1";
-
-                final JFrame frame = new JFrame ("Spoil a ballot");
+                final JFrame frame = new JFrame("Spoil a ballot");
                 frame.setPreferredSize(new Dimension(400, 200));
-                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
                 frame.setBounds(100, 100, 368, 153);
                 JPanel contentPane = new JPanel();
                 contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -312,18 +362,14 @@ public class ActiveUI extends JPanel {
                 final JButton btnSubmitId = new JButton("Submit ID");
                 btnSubmitId.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent arg0) {
-                        ballotID = txtrTypeABallot.getText().split("\n")[0];
+                        spoiledBallotID = txtrTypeABallot.getText().split("\n")[0];
                         frame.setVisible(false);
-                        scanned = true;
-                        boolean spoiled = model.spoilBallot(ballotID);
-                        if(spoiled)
-                        {
-                            JOptionPane.showMessageDialog(fthis, "Ballot " + ballotID + " has been spoiled.");
+                        boolean spoiled = model.spoilBallot(spoiledBallotID);
+                        if (spoiled) {
+                            JOptionPane.showMessageDialog(fthis, "Ballot " + spoiledBallotID + " has been spoiled.");
                             frame.dispose();
-                        }
-                        else
-                        {
-                            JOptionPane.showMessageDialog(fthis, ballotID + " is not a valid ballot ID. No ballot was spoiled.");
+                        } else {
+                            JOptionPane.showMessageDialog(fthis, spoiledBallotID + " is not a valid ballot ID. No ballot was spoiled.");
                             frame.dispose();
                         }
                     }
@@ -347,10 +393,10 @@ public class ActiveUI extends JPanel {
 
         c.ipady = 50;
         c.gridy = 4;
-        leftPanel.add(spoilButton, c);
+        electionInfoPanel.add(spoilButton, c);
 
-        leftButton = new MyJButton("Open Polls Now");
-        leftButton.addActionListener(new ActionListener() {
+        pollsControlButton = new MyJButton("Open Polls Now");
+        pollsControlButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 leftButtonPressed();
             }
@@ -359,17 +405,17 @@ public class ActiveUI extends JPanel {
             public void update(Observable o, Object arg) {
                 if (model.isPollsOpen()) {
                     pollsOpenLbl.setText("Polls currently open");
-                    leftButton.setText("Close Polls Now");
+                    pollsControlButton.setText("Close Polls Now");
                 } else {
                     pollsOpenLbl.setText("Polls currently closed");
-                    leftButton.setText("Open Polls Now");
+                    pollsControlButton.setText("Open Polls Now");
                 }
                 updateAllMachineViews();
             }
         });
         c.ipady = 100;
         c.gridy = 5;
-        leftPanel.add(leftButton, c);
+        electionInfoPanel.add(pollsControlButton, c);
 
 
     }
@@ -377,11 +423,11 @@ public class ActiveUI extends JPanel {
     /**
      * Initializes and updates the main center panel where the machine views are displayed.
      */
-    private void initializeMainPanel() {
-        mainPanel = new JPanel();
-        mainPanel.setBorder(BorderFactory.createMatteBorder(0, 5, 0, 0,
+    private void initializeMachineViewPanel() {
+        machineViewPanel = new JPanel();
+        machineViewPanel.setBorder(BorderFactory.createMatteBorder(0, 5, 0, 0,
                 Color.BLACK));
-        mainPanel.setLayout(new GridBagLayout());
+        machineViewPanel.setLayout(new GridBagLayout());
         updateAllMachineViews();
     }
 
@@ -393,8 +439,7 @@ public class ActiveUI extends JPanel {
             Map<String, Map<String, BigInteger>> tally = model.closePolls();
 
             for(String precinct : tally.keySet()){
-                System.out.println("Left Button pressed: " + tally.get(precinct));
-                TallyResultsFrame tallyDlg = new TallyResultsFrame(this, tally.get(precinct), precinctsToBallots.get(precinct));
+                new TallyResultsFrame(this, tally.get(precinct), precinctsToBallots.get(precinct));
             }
 
         } else
