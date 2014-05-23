@@ -280,11 +280,25 @@ public class ActiveUI extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 int answer = ballotLocChooser.showOpenDialog(ActiveUI.this);
                 if (answer == JFileChooser.APPROVE_OPTION) {
+                    /* Extract the relevant ballot information */
                     File selected = ballotLocChooser.getSelectedFile();
                     String ballot = selected.getName();
+
+                    /* By convention, the precint identifier is the last 3 characters of the zip file's name,
+                     * not incliding the .zip file extension.
+                     *
+                     * E.g., the precinct for ballot_003.zip would be "003", while the precinct
+                     * for ballot.zip would be "lot" (which would be pretty silly
+                     *
+                     * Note that we also assume the ballot names are at least 3 characters long
+                     *
+                     * TODO handle the error case when the selected name is a valid file but not the correct length?
+                     */
                     String precinct = ballot.substring(ballot.length()-7, ballot.length()-4);
                     System.out.println(precinct);
                     precinctsToBallots.put(precinct, selected.getAbsolutePath());
+
+                    /* Add the ballot to the model */
                     model.addBallot(ballotLocChooser.getSelectedFile());
                 }
             }
@@ -298,7 +312,8 @@ public class ActiveUI extends JPanel {
         /* We need a final reference to this (ActiveUI) panel, so that it can be used in an anonymous inner class */
         final JPanel fthis = this;
 
-        /* Set up and add the PIN generation button. This will print out a PIN and
+        /*
+         * Set up and add the PIN generation button. This will print out a PIN and
          * allow a voting booth to be authorized to vote.
          *
          * TODO change the name of this button?
@@ -306,37 +321,60 @@ public class ActiveUI extends JPanel {
         pinButton = new MyJButton("Generate Pin");
         pinButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                /* If a ballot has been selected, allow PIN generation */
                 if (model.getSelections().length > 0) {
+
+                    /* This dialog allows for the selection of a ballot
+                     * style and ballot type (i.e. provisional or not)
+                     */
                     String precinct = "" + JOptionPane.showInputDialog(fthis, "Please choose a precinct", " Pin Generator",
                             JOptionPane.QUESTION_MESSAGE, null, model.getSelections(), model.getInitialSelection());
 
                     String pin;
 
+                    /* If a selection was made, process it */
                     if(!precinct.equals("null")){
+                        /* If the selection was for a provisional ballot, generate the appropriate authorization PIN */
                         if(precinct.contains("provisional"))
                             pin  = model.generateProvisionalPin(precinct);
+                        /* Otherwise generate a normal PIN */
                         else
                             pin = model.generatePin(precinct);
 
+                        /* Print the PIN to a printer connected to the Sueprvisor machine, if there is one */
                         Printer printer = new Printer();
-
                         printer.printPin(pin);
+
+                        /* Show a dialog containing the PIN */
                         JOptionPane.showMessageDialog(fthis, "Your pin is: " + pin);
                     }
 
-                } else {
+                }
+                /* If a ballot has not be selected already, do not allow PIN generation */
+                else {
                     JOptionPane.showMessageDialog(fthis, "Please select at least one ballot before generating a pin");
                 }
             }
         });
+
+        /* Add the PIN generation button to the panel */
         c.ipady = 50;
         c.gridy = 3;
         electionInfoPanel.add(pinButton, c);
 
+        /*
+         * Set up the spoil ballot button, which will launch a dialog for BID input (to be done by keyboard
+         * or barcode scanner, and then call the appropriate model method to spoil the corresponding ballot
+         */
         spoilButton = new MyJButton("Spoil Ballot");
         spoilButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
 
+                /*
+                 * We rolled our own dialog, to ensure that the dialog was modal and
+                 * didn't lock up the rest of our GUI. The behavior is analogous to that of
+                 * a JDialog, but with guaranteed modality.
+                 */
                 final JFrame frame = new JFrame("Spoil a ballot");
                 frame.setPreferredSize(new Dimension(400, 200));
                 frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -351,6 +389,7 @@ public class ActiveUI extends JPanel {
                 contentPane.add(panel, BorderLayout.CENTER);
                 panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
+                /* Add a text field so thata BID can be typed (or scanned) in */
                 final JTextArea txtrTypeABallot = new JTextArea();
                 txtrTypeABallot.setRows(1);
                 txtrTypeABallot.setPreferredSize(new Dimension(200, 30));
@@ -358,13 +397,20 @@ public class ActiveUI extends JPanel {
                 txtrTypeABallot.setLineWrap(true);
                 panel.add(txtrTypeABallot);
 
-
+                /*
+                 * Add a button to submit the BID for spoiling. This will pass the input BID to the
+                 * model so that it can be checked for and removed from the list of committed ballots.
+                 * If the ballot is there, the @Supervisor.model.Model#spoilBallot(String) method will
+                 * return true if the ballot is successfully spoiled, or false if the ballot is not found.
+                 */
                 final JButton btnSubmitId = new JButton("Submit ID");
                 btnSubmitId.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent arg0) {
                         spoiledBallotID = txtrTypeABallot.getText().split("\n")[0];
                         frame.setVisible(false);
                         boolean spoiled = model.spoilBallot(spoiledBallotID);
+
+                        /* Show a dialog indicating the result of the spoil attempt */
                         if (spoiled) {
                             JOptionPane.showMessageDialog(fthis, "Ballot " + spoiledBallotID + " has been spoiled.");
                             frame.dispose();
@@ -375,8 +421,10 @@ public class ActiveUI extends JPanel {
                     }
                 });
 
+                /* Add the button to the panel */
                 panel.add(btnSubmitId);
 
+                /* This will be a label containing instructions for enetering the BID to spoil */
                 JPanel panel_1 = new JPanel();
                 panel_1.setPreferredSize(new Dimension(300, 50));
                 contentPane.add(panel_1, BorderLayout.NORTH);
@@ -391,16 +439,23 @@ public class ActiveUI extends JPanel {
             }
         });
 
+        /* Add the spoil button to the panel */
         c.ipady = 50;
         c.gridy = 4;
         electionInfoPanel.add(spoilButton, c);
 
+        /*
+         * Set up the polls open/close button, which calls a method that informs
+         * the model to change the state of the polls accordingly.
+         */
         pollsControlButton = new MyJButton("Open Polls Now");
         pollsControlButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                leftButtonPressed();
+                pollControlButtonPressed();
             }
         });
+
+        /* Enable the text of the poll control button to change dynamically depending on the state of the polls */
         model.registerForPollsOpen(new Observer() {
             public void update(Observable o, Object arg) {
                 if (model.isPollsOpen()) {
@@ -413,6 +468,8 @@ public class ActiveUI extends JPanel {
                 updateAllMachineViews();
             }
         });
+
+        /* Add the poll control button to the panel */
         c.ipady = 100;
         c.gridy = 5;
         electionInfoPanel.add(pollsControlButton, c);
@@ -428,22 +485,32 @@ public class ActiveUI extends JPanel {
         machineViewPanel.setBorder(BorderFactory.createMatteBorder(0, 5, 0, 0,
                 Color.BLACK));
         machineViewPanel.setLayout(new GridBagLayout());
+
+        /* Update the machine views so they get added to the panel */
         updateAllMachineViews();
     }
 
     /**
      * Called when the left button is pressed; toggles the polls open status
      */
-    private void leftButtonPressed() {
+    private void pollControlButtonPressed() {
+
+        /* If the polls are open, pressing the button will close the polls */
         if (model.isPollsOpen()) {
+            /* Closing the polls will return a map of election results by precinct */
             Map<String, Map<String, BigInteger>> tally = model.closePolls();
 
+            /*
+             * Using the results, throw up the results precinct by precinct.
+             * @see supervisor.view.TallyResultsFrame
+             */
             for(String precinct : tally.keySet()){
                 new TallyResultsFrame(this, tally.get(precinct), precinctsToBallots.get(precinct));
             }
 
-        } else
-            model.openPolls();
+        }
+        /* If the polls are not open, open them */
+        else model.openPolls();
     }
 
 }
