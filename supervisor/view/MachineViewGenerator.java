@@ -78,7 +78,7 @@ public class MachineViewGenerator {
             if ((m instanceof BallotScannerMachine) && !(mv instanceof BallotScannerMachineView))
             {
                 views.remove(m);
-                mv = new BallotScannerMachineView(model, view, (BallotScannerMachine) m);
+                mv = new BallotScannerMachineView(model, (BallotScannerMachine) m);
                 views.put(m, mv);
             }
 
@@ -91,7 +91,7 @@ public class MachineViewGenerator {
             } else if (m instanceof VoteBoxBooth) {
                 mv = new VoteBoxBoothView(model, view, (VoteBoxBooth) m);
             } else if (m instanceof BallotScannerMachine){
-                mv = new BallotScannerMachineView(model, view, (BallotScannerMachine)m);
+                mv = new BallotScannerMachineView(model, (BallotScannerMachine)m);
             }
             views.put(m, mv);
             return mv;
