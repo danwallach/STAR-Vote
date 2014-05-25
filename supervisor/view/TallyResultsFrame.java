@@ -61,36 +61,50 @@ public class TallyResultsFrame extends JFrame{
          c.insets = new Insets(10, 10, 0, 10);
          add(title, c);
 
+         /*
+          * This will be the graphical component that displays the results. Until we know how the
+          * Tally display is configured we can't really say anymore about it.
+          */
+         JComponent resultsField;
 
-         JComponent resultsField = null;
+         /* Here is where we read in various data from the ballot: the language,
+          * pre-rendered images for the candidates, and the images for the race titles.
+          */
          java.util.List<String> languages = BallotImageHelper.getLanguages(ballot);
          Map<String, Image> candidateImgMap = loadBallotRaces(ballot, languages);
          Map<String, Image> titleImgMap = BallotImageHelper.loadBallotTitles(ballot);
 
+         /* Now we read in the configuration for the results display */
          AuditoriumParams params = new AuditoriumParams("supervisor.conf");
 
-         System.out.println("Tally Results Frame: " + results);
-
+         /* If there are no provided images for the results, use the simply version of the tally view. */
          if(candidateImgMap == null || params.getUseSimpleTallyView())
              resultsField = createBasicTable(results);
          else{
+             /* Otherwise, if there aren't images for the race titles, use a FancyTable */
              if(titleImgMap == null || params.getUseTableTallyView())
                  resultsField = createFancyTable(results, candidateImgMap);
+             /*
+              * If there are race title images, create a tree table that can expand and collapse races based on the
+              * race title images
+              */
              else
                  resultsField = createFancyTreeTable(results, candidateImgMap, titleImgMap);
-         }//if
+         }
 
+         /* Now that we know what kind of table we're going to display, set its font */
          resultsField.setFont(new Font("Monospace", Font.PLAIN, 12));
-         // resultsField.setBackground(new Color(140,180,255));
+
+         /* Now put the results table in a JScrollPane, using GridBagLayout, and add the pane to the frame */
          c.gridy = 1;
          c.weightx = 1;
          c.weighty = 1;
          c.fill = GridBagConstraints.BOTH;
          JScrollPane pane = new JScrollPane(resultsField);
          pane.getVerticalScrollBar().setUnitIncrement(8);
-         // pane.setBackground(new Color(48,149,242));
          add(pane, c);
 
+         /* Add a button that will allow the user to close the dialog */
          JButton okButton = new MyJButton("OK");
          okButton.setFont(okButton.getFont().deriveFont(Font.BOLD));
          okButton.addActionListener(new ActionListener() {
@@ -106,72 +120,94 @@ public class TallyResultsFrame extends JFrame{
          c.insets = new Insets(10, 10, 10, 10);
          add(okButton, c);
 
+         /* Set the size and then display the frame */
          setSize((int)Math.max(400, getPreferredSize().getWidth()), 400);
          setVisible(true);
-
-         System.out.println("Results: "+results);
      }
 
     /**
      * Creates a fancy JTree with an invisible root node, where each child of root
-     * is an image of the title for that race and each child of the title is a JTree with no header
-     * of votes and candidate image columns.
+     * is an image of the title for that race and each child of the title is a JTree
+     * of votes and candidate image columns with no header.
      *
-     * @param results - map of each race id to a total total
-     * @param candidateImgMap - map of each race id to a candidate image name
-     * @param titleImgMap - map of each race id to a title label
+     * @param results map of each race id to a total total votes for that race
+     * @param candidateImgMap map of each race id to a candidate name image
+     * @param titleImgMap map of each race id to a title label image
      * @return a JTree displaying all this data as described above
      */
     private JTree createFancyTreeTable(Map<String, BigInteger> results, Map<String, Image> candidateImgMap, Map<String, Image> titleImgMap) {
+
+        /* The underlying structure of the sub-sub-JTrees, a map of maps of results to JTables */
         final Map<Map<String, BigInteger>, JTable> modelToView = new HashMap<Map<String, BigInteger>, JTable>();
 
-        //invisible root node of tree
-        DefaultMutableTreeNode root = new DefaultMutableTreeNode("root", true);
-
+        /* The structure of the sub-JTree, a map of images to a list of names of title headers */
         final Map<Image, java.util.List<String>> titleToRaces = new HashMap<Image, java.util.List<String>>();
 
-        System.out.println(titleImgMap);
+        /* invisible root node of tree */
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode("root", true);
 
+        /*
+         * Populate the titleToRaces map by looking through the map of titles
+         * to images and mapping the title to raceIDs
+         */
         for(Image title : titleImgMap.values()){
+            /*First build an array of all the raceids that are race titles */
             java.util.List<String> raceIds = new ArrayList<String>();
             for(String raceId : titleImgMap.keySet()){
                 if(titleImgMap.get(raceId) == title)
                     raceIds.add(raceId);
-            }//for
+            }
 
+            /* Now that we've found all the raceIDs corresponding to this title, add it to our map */
             titleToRaces.put(title, raceIds);
-        }//for
+        }
 
-        System.out.println(titleToRaces);
-
-        //Building the tree model
+        /*
+         * Building the tree model by using the found title images as root
+         * nodes to trees with candidate name  image nodes
+         */
         for(Image titleImg : titleToRaces.keySet()){
+            /* Create a new tree node for each title image */
             DefaultMutableTreeNode title = new DefaultMutableTreeNode(titleImg, true);
             Map<String, BigInteger> subResults = new HashMap<String, BigInteger>();
 
+            /* Get all of the results for that title image's corresponding race */
             for(String raceId : titleToRaces.get(titleImg))
                 subResults.put(raceId, results.get(raceId));
 
+            /* Create a tree which will hold candidate images and results and add it to the race title root */
             DefaultMutableTreeNode res = new DefaultMutableTreeNode(subResults, false);
 
             root.add(title);
             title.add(res);
-            System.out.println("Fancy tree table: " + subResults);
+
+            /* not put this new subtree in the overall results tree table */
             modelToView.put(subResults, createFancyTable(subResults, candidateImgMap));
-        }//for
+        }
 
-        TreeModel model = new DefaultTreeModel(root){
+        /* Our model will be an anonymously defined inner class overriding the DefaultTreeModel class */
+        @SuppressWarnings("CanBeFinal") TreeModel model = new DefaultTreeModel(root){
 
+            /* An array of children */
             DefaultMutableTreeNode[] rootChildren = new DefaultMutableTreeNode[getChildCount(getRoot())];
 
+            /* TODO Holy crap this is java style I've never seen before...it should probably be fixed...or understood... */
+
             {
+                /* Populate the array of children */
                 for(int i=0; i<rootChildren.length; i++){
                     rootChildren[i] = (DefaultMutableTreeNode)super.getChild(getRoot(), i);
                 }
 
+                /* If the tree contains children, override its comparison function */
                 if(rootChildren.length > 1){
                     Arrays.sort(rootChildren, new Comparator<DefaultMutableTreeNode>() {
 
+                        /*
+                         * The new comparison method will compare the two lowest raceID's so that lower raceID's will get
+                         * put into lower number nodes so they get displayed at the top of the tree model. This
+                         * enforces consistency between the race orders across the preptool, voting session, and here.
+                         */
                         public int compare(DefaultMutableTreeNode o1, DefaultMutableTreeNode o2){
                             return minRaceId((ArrayList<String>)titleToRaces.get(o1.getUserObject()))
                                  - minRaceId((ArrayList<String>)titleToRaces.get(o2.getUserObject()));
@@ -180,89 +216,143 @@ public class TallyResultsFrame extends JFrame{
                 }
             }
 
+            /**
+             * Returns the child node at the specified index into the specified parent node's list of children.
+             *
+             * @param parent the parent node
+             * @param index the index into the parent's list of children
+             *
+             * @return the child at position i of the parent
+             */
             @Override
             public Object getChild(Object parent, int index){
+                /* If the parent is a root, just look at its list of children */
                 if(((DefaultMutableTreeNode)parent).isRoot()){
                     return rootChildren[index];
-                } else {
+                }
+                /* Otherwise call recursively until a root node is found */
+                else {
                     return super.getChild(parent, index);
                 }
             }
         };
 
+        /* Create a new tree */
         JTree tree = new JTree(model);
         tree.setEditable(false);
         tree.setRootVisible(false);
+
+        /* Override the way the tree will display itself*/
         tree.setCellRenderer(new TreeCellRenderer(){
+            /**
+             * This method will render a given cell based on the various properties provided.
+             *
+             * @param tree the tree containing the cell
+             * @param cell the cell to be rendered
+             * @param sel whether or not the cell is selected
+             * @param expanded whether or not the cell is expanded
+             * @param leaf whether or not the cell is a leaf
+             * @param row the number of the row that contains this cell
+             * @param hasFocus whether or not this cell is focused
+             * @return a renderer for the desired component
+             */
             public Component getTreeCellRendererComponent(JTree tree,
-                                                          Object value,
+                                                          Object cell,
                                                           boolean sel,
                                                           boolean expanded,
                                                           boolean leaf,
                                                           int row,
                                                           boolean hasFocus){
 
-                if(!(value instanceof DefaultMutableTreeNode))
-                    throw new RuntimeException("Expected DefaultMutableTreeNode, found "+value);
+                /* We're expecting this to be a tree node */
+                if(!(cell instanceof DefaultMutableTreeNode))
+                    throw new RuntimeException("Expected DefaultMutableTreeNode, found "+cell);
 
-                DefaultMutableTreeNode node = (DefaultMutableTreeNode)value;
+                /* Now cast the cell to a node, since we know it is one */
+                DefaultMutableTreeNode node = (DefaultMutableTreeNode)cell;
 
-                value = node.getUserObject();
+                /* Get the user specified data out of the node */
+                cell = node.getUserObject();
 
-                if(value != null && value instanceof Map){
-                    JTable table = modelToView.get(value);
+                /* If the data is a non-null map, it must be a sub-tree */
+                if(cell != null && cell instanceof Map){
+                    /* Since we have a sub-tree, pull out its table information */
+                    JTable table = modelToView.get(cell);
                     table.setMinimumSize(table.getPreferredSize());
 
+                    /* Create a pane for this tree and return it */
                     JScrollPane pane = new JScrollPane(table);
                     pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
                     pane.setPreferredSize(table.getPreferredSize());
                     return pane;
-                }//if
+                }
 
-                if(value != null && value instanceof Image){
-                    Image img = (Image)value;
+                /* If the data is an image, then add it as a JLabel */
+                if(cell != null && cell instanceof Image){
+                    /* Pull out the image, put it on a JLabel, and return it to "render" it */
+                    Image img = (Image)cell;
 
                     JLabel label = new JLabel(new ImageIcon(img));
 
                     label.setMinimumSize(new Dimension(img.getWidth(null), img.getHeight(null)));
 
                     return label;
-                }//if
+                }
 
+                /* If neither a map or an image is found, something has gone wrong */
+                /* TODO throw an error here instead? */
                 return null;
-            }//getTreeCellRendererComponent
+            }
         });
 
+        /* Make sure all of the rows are rendered expanded so all of the results can be viewed initially */
         for(int i = 0; i < tree.getRowCount(); i++)
             tree.expandRow(i);
 
         return tree;
-    }//createFancyTreeTable
+    }
 
     /**
      * Creates a table with the columns "votes" & "candidates".
      * Votes holds the number of votes a candidate received.
      * Candidates holds an image representing the candidate that was extracted from the raceImgMap.
      *
-     * @param results - A map of race-ids to vote totals
-     * @param raceImgMap - A map of race-ids to images
+     * @param results A map of race-ids to vote totals
+     * @param raceImgMap A map of race-ids to images
      * @return A fancy new JTable.
      */
     private JTable createFancyTable(final Map<String, BigInteger> results, final Map<String, Image> raceImgMap) {
+        /* First we instantiate an empty table, and some other useful bookkeeping variables */
         JTable fancyTable = new JTable();
+
+        /* The candidate with the most votes */
         String max = "";
+
+        /* The candidate with the second most votes */
         String second = "";
+
+        /* The total number of votes cast */
         int sum = 0;
+
+        /* Look through the results and fill in relevant data */
         for(String race: results.keySet()){
+            /* Keep track of the total number of votes */
             sum += results.get(race).intValue();
+
+            /* This is mostly debugging info, I think. TODO Remove it */
             if(race.equals("B" + minRaceId(new ArrayList<String>(results.keySet())))){
                 System.out.println(new ArrayList<String>(results.keySet()));
                 System.out.println(race);
                 continue;
             }
+
+            /* If we haven't set up the maximum, do so now */
             if(max.equals("")){
                 max = race;
-            }else if(results.get(race).intValue() > results.get(max).intValue()){
+            }
+
+            /*If we have, make sure that we haven't found a candidate with more votes */
+            else if(results.get(race).intValue() > results.get(max).intValue()){
                 second = max;
                 max = race;
             } else if(second.equals("") || results.get(race).intValue() > results.get(second).intValue()){
@@ -270,23 +360,34 @@ public class TallyResultsFrame extends JFrame{
             }
         }
 
+        /* Now we build the table model with the data computed above */
         final int totalVotes = sum;
 
+        /* Grab the image for the winner */
         final Image winnerImg = raceImgMap.get(max);
 
-        final double marginOfVictory = (results.get(max).intValue() - results.get(second).intValue())/(double)totalVotes;
-
+        /* This is so we can show totals as percentages */
         final DecimalFormat percentFormat = new DecimalFormat("0.000%");
 
+        /* The overridden DefaultTableModel */
         fancyTable.setModel(new DefaultTableModel(){
+            /* An array of the entries */
             Map.Entry[] entries = null;
 
+            /* TODO Again, more wacky java... */
+
             {
-                entries = results.entrySet().toArray(new Map.Entry[0]);
+                /* Find all of the entries in the result set, i.e. every candidate */
+                Set<Map.Entry<String, BigInteger>> var = results.entrySet();
+                entries = var.toArray(new Map.Entry[var.size()]);
+
+                /* If there are more than one entries, sort the list */
                 if(entries.length > 1){
                     Arrays.sort(entries, new Comparator<Map.Entry>(){
 
                         public int compare(Map.Entry arg0, Map.Entry arg1) {
+
+                            /* Push any null entries to the back of the list */
                             if(arg0.getValue() == null && arg1.getValue() == null)
                                 return 0;
 
@@ -296,16 +397,29 @@ public class TallyResultsFrame extends JFrame{
                             if(arg1.getValue() == null)
                                 return 1;
 
+                            /* Otherwise the candidate with more votes get put at the front */
                             return ((BigInteger)arg1.getValue()).compareTo((BigInteger)arg0.getValue());
                         }
 
                     });
-                }//if
+                }
             }
 
+            /** This table will have 4 columns */
             public int getColumnCount(){ return 4; }
+
+            /**
+             * @return the number of rows, i.e. the number of candidates
+             */
             public int getRowCount(){ return results.keySet().size(); }
 
+            /**
+             * Retrieves a value from the table
+             *
+             * @param row specifies which candidate to get data from
+             * @param col specifies if the entry is a String, image, integer number, or percentage
+             * @return the requested value at (row, col) in the table
+             */
             @Override
             public Object getValueAt(int row, int col){
 
@@ -318,27 +432,46 @@ public class TallyResultsFrame extends JFrame{
                     case 3: return percentFormat.format(((BigInteger)entries[row].getValue()).intValue()/(double)totalVotes);
                     default: throw new RuntimeException(col + " >= 4 column value requested.");
                 }
-            }//getValueAt
+            }
 
+            /**
+             * No cells are editable.
+             *
+             * @see javax.swing.table.DefaultTableModel#isCellEditable(int, int)
+             */
             @Override
             public boolean isCellEditable(int row, int col){
                 return false;
             }
         });
 
+        /* Set override the rendering for the 2nd column, i.e. the candidate images, in the table */
         TableColumn column = fancyTable.getColumnModel().getColumn(1);
 
         column.setCellRenderer(new DefaultTableCellRenderer(){
+
+            /**
+             * Allow the values in this column (Images) to be overwritten
+             *
+             * @param value the new image to use
+             *
+             * @see javax.swing.table.DefaultTableCellRenderer#setValue(Object)
+             */
             @Override
             public void setValue(Object value){
                 if(value instanceof Image){
                     setIcon(new ImageIcon((Image)value));
                     return;
-                }//if
+                }
 
                 super.setValue(value);
-            }//setValue
+            }
 
+            /**
+             * Set the backgrounds of winner's cells to green
+             *
+             * @see javax.swing.table.DefaultTableCellRenderer#getTableCellRendererComponent(javax.swing.JTable, Object, boolean, boolean, int, int)
+             */
             @Override
             public Component getTableCellRendererComponent(JTable table,
                                                       Object value,
@@ -346,19 +479,28 @@ public class TallyResultsFrame extends JFrame{
                                                       boolean hasFocus,
                                                       int row,
                                                       int column) {
+
+                /* Hopefully the value is a non-null Image */
                 if(value != null && value instanceof Image){
+
+                    /* Add the image to a JLabel */
                     Image img = (Image)value;
 
                     JLabel label = new JLabel(new ImageIcon(img));
 
                     label.setMinimumSize(new Dimension(img.getWidth(null), img.getHeight(null)));
 
+                    /* Add the label to a JPanel, which will be returned */
                     JPanel panel = new JPanel();
                     panel.setLayout(new GridBagLayout());
                     panel.add(label);
+
+                    /* If the image is the image for the winning candidate, paint the background of the panel green */
                     if(img == winnerImg) panel.setBackground(new Color(120,200,120)); else panel.setBackground(Color.white);
+
                     return panel;
                 }else{
+                    /* If this isn't an image, something has gone wrong. TODO Throw an error? */
                     return null;
                 }
 
@@ -366,27 +508,36 @@ public class TallyResultsFrame extends JFrame{
         });
 
 
-        fancyTable.setRowHeight(getTallestImage(raceImgMap));
-        column.setWidth(getWidestImage(raceImgMap));
-        column.setMinWidth(getWidestImage(raceImgMap));
+        /* Set various size and proportions for the table based on the image sizes */
+        fancyTable.setRowHeight(getTallestImageHeight(raceImgMap));
+        column.setWidth(getWidestImageWidth(raceImgMap));
+        column.setMinWidth(getWidestImageWidth(raceImgMap));
 
+        /* The second column will be of candidate images, so title it accordingly */
         column.setHeaderValue("Candidate");
+
+        /* The first column will be the ID of the candidate as generated in the preptool (for instance, B1) */
         fancyTable.getColumnModel().getColumn(0).setHeaderValue("Candidate ID");
         fancyTable.getColumnModel().getColumn(0).setWidth(100);
         fancyTable.getColumnModel().getColumn(0).setCellRenderer(new DefaultTableCellRenderer(){
             {setHorizontalAlignment(JLabel.CENTER);}
         });
+
+        /* The third column will be the raw number of votes that candidate received */
         fancyTable.getColumnModel().getColumn(2).setHeaderValue("Votes Received");
         fancyTable.getColumnModel().getColumn(2).setWidth(175);
         fancyTable.getColumnModel().getColumn(2).setCellRenderer(new DefaultTableCellRenderer(){
             {setHorizontalAlignment(JLabel.CENTER);}
         });
+
+        /* The fourth column will be a percentage the total votes (in this race) that candidate received */
         fancyTable.getColumnModel().getColumn(3).setHeaderValue("Percentage");
         fancyTable.getColumnModel().getColumn(3).setWidth(100);
         fancyTable.getColumnModel().getColumn(3).setCellRenderer(new DefaultTableCellRenderer(){
             {setHorizontalAlignment(JLabel.CENTER);}
         });
 
+        /* Set the sizes and fonts, and return the constructed table */
         fancyTable.setPreferredSize(new Dimension(fancyTable.getColumnModel().getColumn(1).getWidth() + 375,
                                                   fancyTable.getRowHeight()*fancyTable.getRowCount() + 20));
         fancyTable.setFont(new Font("Courier New", Font.BOLD, 20));
@@ -394,188 +545,109 @@ public class TallyResultsFrame extends JFrame{
         return fancyTable;
     }
 
-    //decided against this code because it clutters the UI. This converts the children of the root node of the tree into
-    // single row columns with the race title, winner of the race, and margin of victory
-    /*private JTable createTitleTable(Map<String, BigInteger> results, java.util.List<String> races, Map<String, Image> raceImgMap, final Image titleImg){
-        JTable titleTable = new JTable();
-
-        String max = races.get(0);
-        String second = races.get(1);
-        int totalVotes = 0;
-        for(String race: races){
-            if(results.get(race).intValue() > results.get(max).intValue()){
-                second = max;
-                max = race;
-            } else if(results.get(race).intValue() > results.get(second).intValue()){
-                second = race;
-            }
-            totalVotes += results.get(race).intValue();
-        }
-
-        final Image winnerImg = raceImgMap.get(max);
-
-        final double marginOfVictory = (results.get(max).intValue() - results.get(second).intValue())/(double)totalVotes;
-
-        titleTable.setModel( new DefaultTableModel(){
-
-            public int getColumnCount(){return 3;}
-            public int getRowCount(){return 1;}
-            public boolean isCellEditable(int row, int col){return false;}
-            public Object getValueAt(int row, int col){
-                if(row != 0) throw new IndexOutOfBoundsException("This header table only has 1 row");
-                switch(col){
-                    case 0: return titleImg;
-                    case 1: return winnerImg;
-                    case 2: return "Margin of Victory: " + marginOfVictory;
-                    default: throw new IndexOutOfBoundsException("Column index <col> out of bounds");
-                }
-            }
-        });
-
-        TableCellRenderer cellRenderer = new DefaultTableCellRenderer(){
-            @Override
-            public void setValue(Object value) {
-                if (value instanceof Image) {
-                    setIcon(new ImageIcon((Image) value));
-                    return;
-                }//if
-
-                super.setValue(value);
-            }//setValue
-
-            @Override
-            public Component getTableCellRendererComponent(JTable table,
-                                                           Object value,
-                                                           boolean isSelected,
-                                                           boolean hasFocus,
-                                                           int row,
-                                                           int column){
-                if (value != null && value instanceof Image) {
-                    Image img = (Image) value;
-
-                    JLabel label = new JLabel(new ImageIcon(img));
-
-                    label.setMinimumSize(new Dimension(img.getWidth(null), img.getHeight(null)));
-
-                    JPanel panel = new JPanel();
-                    panel.setLayout(new GridBagLayout());
-                    panel.add(label);
-                    if (column == 1) panel.setBackground(new Color(150, 250, 150));
-                    else panel.setBackground(Color.lightGray);
-                    return panel;
-                } else {
-                    return null;
-                }
-
-            }
-        };
-
-        titleTable.getColumnModel().getColumn(0).setCellRenderer(cellRenderer);
-        titleTable.getColumnModel().getColumn(1).setCellRenderer(cellRenderer);
-
-        titleTable.setRowHeight(titleImg.getHeight(null));
-
-        titleTable.getColumnModel().getColumn(0).setHeaderValue("Race Title");
-        titleTable.getColumnModel().getColumn(0).setWidth(titleImg.getWidth(null));
-
-        titleTable.getColumnModel().getColumn(1).setHeaderValue("Race Winner");
-        titleTable.getColumnModel().getColumn(1).setWidth(winnerImg.getWidth(null));
-
-        titleTable.setPreferredSize(new Dimension(titleTable.getColumnModel().getColumn(0).getWidth() +
-                                                  titleTable.getColumnModel().getColumn(1).getWidth() +
-                                                  300,
-                                                  titleTable.getRowHeight() + 20));
-
-        titleTable.setFont(new Font("Courier New", Font.PLAIN, 14));
-
-        return titleTable;
-    }*/
 
     /**
-     * @param images - a Map of images
+     * @param images a Map of images
      * @return the width of the widest image in images.
      */
-    private int getWidestImage(Map<String, Image> images){
+    private int getWidestImageWidth(Map<String, Image> images){
         int widest = -1;
 
+        /* Look through all the images to find the widest one */
         for(Image img : images.values()){
             if(img.getWidth(null) > widest)
                 widest = img.getWidth(null);
-        }//for
+        }
 
         return widest;
-    }//getTallestImage
+    }
 
     /**
-     * @param images - a Map of images
+     * @param images a Map of images
      * @return the height of the tallest image in images.
      */
-    private int getTallestImage(Map<String, Image> images){
+    private int getTallestImageHeight(Map<String, Image> images){
         int tallest = -1;
 
+        /* Look through all the images to find the tallest one */
         for(Image img : images.values()){
             if(img.getHeight(null) > tallest)
                 tallest = img.getHeight(null);
-        }//for
+        }
 
         return tallest;
-    }//getTallestImage
+    }
 
     /**
-     * Taking in a ballot location, tries to load all relevant images into a map of race-ids to Images.
+     * Taking in a ballot location, load all relevant images into a map of race-ids to Images.
      *
-     * @param ballot - The ballot file to read
-     * @param languages - The list of languages on the ballot
+     * @param ballot The ballot file to read
+     * @param languages The list of languages on the ballot
      * @return a map of race-ids to images, or null if an error was encountered.
      */
     private Map<String, Image> loadBallotRaces(String ballot, java.util.List<String> languages) {
         try {
+            /* Since the ballot is a zip file, we will treat it accordingly */
             Map<String, Image> racesToImageMap = new HashMap<String, Image>();
 
             ZipFile file = new ZipFile(ballot);
 
             Enumeration<? extends ZipEntry> entries = file.entries();
 
+            /* This is pretty standard .zip unzipping. */
             while(entries.hasMoreElements()){
                 ZipEntry entry = entries.nextElement();
+
+                /* If these are the droids we are looking for, add them to our map of images */
                 if(isRaceImage(entry.getName(), languages)){
                     racesToImageMap.put(getRace(entry.getName()), ImageIO.read(file.getInputStream(entry)));
-                }//if
-            }//while
+                }
+            }
 
             return racesToImageMap;
         } catch (IOException e) {
+            /* TODO Better erroring... */
             e.printStackTrace();
             return null;
         }
     }
 
     /**
-     * @param entryName - the Zip entry to consider
-     * @param langs - the list of languages to pull the results from
-     * @return true if entryName is in the form "media_B*_selected_*.png", ie if it is a "race image"
+     * Determines if a given file is in fact a race image, i.e. one that is used in a voting session to represent a
+     * candidate or a race name.
+     *
+     * @param entryName the Zip entry to consider
+     * @param langs the list of languages to pull the results from
+     * @return true if entryName is in the form "media_B*_selected_*.png", false otherwise
      */
     private boolean isRaceImage(String entryName, java.util.List<String> langs){
+        /* The beginning of the file name should always be this */
+        /* TODO This falls into the file path problems we've been having... */
         if(!entryName.startsWith("media/vvpat/B"))
             return false;
 
+        /* If the file isn't a .png, we have no business with it */
         if(!entryName.endsWith(".png"))
             return false;
 
-        if(entryName.indexOf("_selected_") == -1)
+        /* We only want images that have been "selected". They have green check marks! */
+        if(!entryName.contains("_selected_"))
             return false;
+
+        /* If there is a language specified... */
         if (langs != null)
-            if(entryName.indexOf(langs.get(0)) == -1) //grab the first listed language for now
+            /* ...blatantly ignore it and just take the first name in any language */
+            if(!entryName.contains(langs.get(0)))
                 return false;
 
         return true;
-    }//isRaceImage
+    }
 
     /**
      * Extracts a race-id from a zip entry of a race image.
      *
-     * @param name - the entry of the race image.
-     * @return A string in the form B*, that is a valid race id
+     * @param name the entry of the race image.
+     * @return A string in the form B* (e.g. "B4"), that is a valid race id
      */
     private String getRace(String name) {
         int start = name.indexOf('B');
@@ -588,38 +660,60 @@ public class TallyResultsFrame extends JFrame{
      * Creates a basic table for displaying vote totals.
      * Takes for form "race id" "votes"
      *
-     * @param results - A map of race ids to vote totals.
+     * @param results A map of race ids to vote totals.
      * @return A basic JTable to display
      */
     private JTable createBasicTable(final Map<String, BigInteger> results) {
+        /* Override DefaultTableModel as needed */
         TableModel model = new DefaultTableModel(){
+
+            /**
+             * We will only have 2 columns
+             *
+             * @see javax.swing.table.DefaultTableModel#getColumnCount()
+             */
             public int getColumnCount(){ return 2; }
+
+            /**
+             * @see javax.swing.table.DefaultTableModel#getRowCount()
+             */
             public int getRowCount(){ return results.keySet().size(); }
+
+            /**
+             * Our columns will be the candidate images and the number of votes received
+             *
+             * @see javax.swing.table.DefaultTableModel#getColumnName(int)
+             */
             public String getColumnName(int column){
                 switch(column){
                     case 0: return "Candidate";
                     case 1: return "Votes";
                     default: throw new RuntimeException(column +" >= 2 column name requested.");
                 }
-            }//getColumnName
+            }
 
+            /**
+             * @see javax.swing.table.DefaultTableModel#getValueAt(int, int)
+             */
             public Object getValueAt(int row, int col){
-                Map.Entry entry = results.entrySet().toArray(new Map.Entry[0])[row];
+                Set<Map.Entry<String, BigInteger>> var = results.entrySet();
+                Map.Entry entry = var.toArray(new Map.Entry[var.size()])[row];
 
                 switch(col){
                     case 0: return entry.getKey();
                     case 1: return entry.getValue();
-                    default: throw new RuntimeException(col + " >= 2 column value requested.");
+                    default: throw new RuntimeException("Column " + col + "is an invalid column request.");
                 }
-            }//getValueAt
+            }
         };
 
+        /* return the newly constructed table */
         return new JTable(model);
     }
 
     /**
      * Determines the raceID with the minimum value number appended to "B"
-     * example min(["B1", "B2", "B3"]) = 1
+     * e.g. minRaceID({"B1", "B2", "B3"}) = 1
      *
      * @param s List of RaceIDs of form "B" + some int
      * @return integer value of least appended integer
@@ -627,14 +721,19 @@ public class TallyResultsFrame extends JFrame{
 
     private int minRaceId(ArrayList<String> s){
         try{
+            /* First grab the first number and set it as minimum. Note that we have to convert it to an integer */
             int min = Integer.parseInt(s.get(0).substring(1));
+
+            /* Standard "find the minimum" algorithm */
             for(int i=1; i<s.size(); i++){
                 if(Integer.parseInt(s.get(i).substring(1)) < min){
                     min = Integer.parseInt(s.get(i).substring(1));
                 }
             }
+
             return min;
         }catch(NumberFormatException ex){
+            /* TODO Should this throw a RuntimeException? */
             System.out.println("Cannot Order Races");
             return 0;
         }
@@ -643,9 +742,10 @@ public class TallyResultsFrame extends JFrame{
     /**
      * Use for testing interface as stand alone.
      *
+     * TODO Maybe put this in a unit test suite
+     *
      * @param args command line args
      */
-
     public static void main(String[] args){
         Map<String, BigInteger> resMap = new TreeMap<String, BigInteger>();
         resMap.put("B1", new BigInteger("1"));
@@ -663,6 +763,6 @@ public class TallyResultsFrame extends JFrame{
         resMap.put("B13", new BigInteger("13"));
         resMap.put("B14", new BigInteger("14"));
         TallyResultsFrame frame1 = new TallyResultsFrame(new JPanel(), resMap, "/home/mrdouglass95/Dropbox/Votebox/futurama_es006.zip");
-        frame1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame1.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
 }
