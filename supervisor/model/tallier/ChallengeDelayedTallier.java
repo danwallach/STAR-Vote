@@ -25,31 +25,42 @@ package supervisor.model.tallier;
 import java.util.HashMap;
 import java.util.Map;
 
-import auditorium.Bugout;
 import auditorium.Key;
 
 import sexpression.ASExpression;
 
 /**
- * Tallier implementation that caches ballots until a second message (affirming the voter is NOT challenging)
- * is received.  At which point the cached ballot is added to the tally.
+ * Encrypted tallier implementation that caches ballots (i.e. commits them) until a second message
+ * affirming the voter is NOT challenging (in this case indicated by scanning the ballot)
+ * is received, at which point the cached ballot is added to the tally.
  * 
  * @author Montrose
- *
  */
 public class ChallengeDelayedTallier extends EncryptedTallier {
-	//Mapping of nonce values to pending ballots
+	/** Mapping of nonce values to pending ballots */
 	private Map<ASExpression, byte[]> _nonceToBallot = new HashMap<ASExpression, byte[]>();
-	
+
+    /** @see supervisor.model.tallier.EncryptedTallier#EncryptedTallier(auditorium.Key) */
 	public ChallengeDelayedTallier(Key privateKey){
 		super(privateKey);
 	}
-	
+
+    /**
+     * Instead of adding the incoming vote to the sum right when the vote is recorded,
+     * we simply stash it in a separate map until we know that the vote is to be cast,
+     * i.e. the voter scans it and drops it in the ballot box.
+     *
+     * @see supervisor.model.tallier.EncryptedTallier#recordVotes(byte[], sexpression.ASExpression)
+     */
 	@Override
 	public void recordVotes(byte[] message, ASExpression nonce){
 		_nonceToBallot.put(nonce,message);
-	}//recordVotes
-	
+	}
+
+    /**
+     * Record the vote and add it to the sum. For details on this process,
+     * @see supervisor.model.tallier.EncryptedTallier#recordVotes(byte[], sexpression.ASExpression)
+     */
 	public void confirmed(ASExpression nonce){
 		byte[] vote = _nonceToBallot.remove(nonce);
 		
@@ -57,17 +68,10 @@ public class ChallengeDelayedTallier extends EncryptedTallier {
 			throw new RuntimeException("Attempted to confirm an unknown vote, nonce = "
 				+ nonce
 				+ " -- perhaps the ballot is not designed to use the challenge model?");
-		}//if
-		//Delegate actually tallying to the EncryptedTallier class
+		}
+
+		/* Delegate actually tallying to the EncryptedTallier class */
 		super.recordVotes(vote, null);
-	}//confirmed
-	
-	public void challenged(ASExpression nonce){
-		
-		//This could be innocuous (supervisor going online and offline)
-		//Or it could be a sign of malicious tampering, so we'll report it.
-		if(_nonceToBallot.remove(nonce) == null){
-			Bugout.err("Detected a challenge on an UNKNOWN vote, nonce  = "+nonce);
-		}//if
-	}//challenge
+	}
+
 }
