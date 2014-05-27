@@ -34,12 +34,13 @@ import votebox.AuditoriumParams;
  */
 public class Supervisor {
 
+    /** This font will be used for rendering text on screen */
     public static final String FONTNAME = "Sans";
 
     /**
      * Runs the supervisor. If an argument is given, it will be the serial
-     * number, otherwise, a random number between 1 and 9 is chosen.
-     * @param args
+     * number, otherwise, it gets set to -1 by default which will force
+     * the constructor to look for a pre-specified serial.
      */
     public static void main(String[] args) {
 		int i = 0;
@@ -56,13 +57,18 @@ public class Supervisor {
             new Supervisor(-1);
     }
 
+    /** Model for the MVC */
     private Model model;
 
+    /** View for the MVC */
     private View view;
 
     /**
-     * Constructs (and starts) a new instance of a supervisor
-     * @param serial
+     * Constructs (and starts) a new instance of a supervisor. If an invalid
+     * serial is provided, will attempt to find one in the configuration file
+     * before bugging out.
+     *
+     * @param serial the serial number used in the Auditorium logs
      */
     private Supervisor(int serial) {
     	if(serial != -1)
@@ -73,13 +79,6 @@ public class Supervisor {
         view = new View(model);
         view.setVisible(true);
 
-     /*   String keyword = "";
-        while (keyword == null || keyword.equals(""))
-            keyword = JOptionPane.showInputDialog(view,
-                    "Please enter today's election keyword:", "Keyword",
-                    JOptionPane.QUESTION_MESSAGE);
-        model.setKeyword(keyword);
-*/
         view.display();
         model.start();
     }

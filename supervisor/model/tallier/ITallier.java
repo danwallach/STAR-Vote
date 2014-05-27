@@ -40,7 +40,6 @@ public interface ITallier {
 	/**
 	 * Gets the report of the total tally
 	 * 
-	 * 
 	 * @return the report as a map of Candidate to votes received.
 	 */
 	public Map<String, BigInteger> getReport();
@@ -49,8 +48,8 @@ public interface ITallier {
 	 * Records the votes from the given ballot, as an S-Expression in byte array
 	 * format
 	 * 
-	 * @param ballot - Verbatim version of the ballot to total
-	 * @param nonce - Nonce of this voting transaction
+	 * @param ballot Verbatim version of the ballot to total
+	 * @param nonce Nonce of this voting transaction
 	 */
 	public void recordVotes(byte[] ballot, ASExpression nonce);
 	
@@ -58,16 +57,9 @@ public interface ITallier {
 	 * Called to indicate that the voting transaction indicated by the nonce is complete, and should be counted
 	 * in the final tally.
 	 * 
-	 * @param nonce - Nonce of this voting transaction
+	 * @param nonce Nonce of this voting transaction
 	 */
 	public void confirmed(ASExpression nonce);
-	
-	/**
-	 * Called to indicate that a voting transaction is being challenged.
-	 * This should result in the destruction of the ballot in the tallier.
-	 * 
-	 * @param nonce - Nonce of this voting transaction
-	 */
-	public void challenged(ASExpression nonce);
+
 
 }

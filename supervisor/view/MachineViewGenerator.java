@@ -37,10 +37,12 @@ import supervisor.model.*;
  * This way, when the update all machines operation throws away a view and then
  * attempts to recreate it, the MVG simply calls update on the existing view,
  * and then returns it.
+ *
  * @author cshaw
  */
 public class MachineViewGenerator {
 
+    /** A mapping of machines to their views */
     private HashMap<AMachine, AMachineView> views;
 
     /**
@@ -54,15 +56,23 @@ public class MachineViewGenerator {
      * Generates a view for a machine. If the view was already created
      * previously, it is simply returned. Otherwise, it is created and stored
      * for the next time the same view is requested.
+     *
      * @param model the model
      * @param view the active UI
      * @param m the machine
      * @return the machine's view
      */
     public AMachineView generateView(Model model, ActiveUI view, AMachine m) {
+        /* First check if the machine already has a view */
         AMachineView mv = views.get(m);
         if (mv != null) {
+            /* If the machine has a view already, update it */
             mv.updateView();
+
+            /*
+             * If the machine is a different kind of machine than its view represents, throw away the old view and
+             * create a new appropriate view
+             */
             if ((m instanceof SupervisorMachine) && !(mv instanceof SupervisorMachineView))
             {
                 views.remove(m);
@@ -78,12 +88,13 @@ public class MachineViewGenerator {
             if ((m instanceof BallotScannerMachine) && !(mv instanceof BallotScannerMachineView))
             {
                 views.remove(m);
-                mv = new BallotScannerMachineView(model, view, (BallotScannerMachine) m);
+                mv = new BallotScannerMachineView(model, (BallotScannerMachine) m);
                 views.put(m, mv);
             }
 
             return mv;
         }
+        /* If the machine doesn't already have a view, create one based on the machine type */
         else
         {
             if (m instanceof SupervisorMachine) {
@@ -91,7 +102,7 @@ public class MachineViewGenerator {
             } else if (m instanceof VoteBoxBooth) {
                 mv = new VoteBoxBoothView(model, view, (VoteBoxBooth) m);
             } else if (m instanceof BallotScannerMachine){
-                mv = new BallotScannerMachineView(model, view, (BallotScannerMachine)m);
+                mv = new BallotScannerMachineView(model, (BallotScannerMachine)m);
             }
             views.put(m, mv);
             return mv;

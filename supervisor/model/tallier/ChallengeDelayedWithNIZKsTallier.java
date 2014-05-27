@@ -1,7 +1,6 @@
 package supervisor.model.tallier;
 
 import java.io.ByteArrayInputStream;
-import java.math.BigInteger;
 import java.util.*;
 
 import auditorium.Bugout;
@@ -15,42 +14,34 @@ import crypto.interop.AdderKeyManipulator;
 
 /**
  * Tallier for elections with both NIZKs and the challenge-commit model enabled.
- * @author Montrose
  *
+ * @author Montrose
  */
-public class ChallengeDelayedWithNIZKsTallier implements ITallier {
-	private PublicKey _publicKey;
-	private PrivateKey _privateKey;
+public class ChallengeDelayedWithNIZKsTallier extends EncryptedTallierWithNIZKs {
 	private PublicKey _finalPublicKey;
-	private PrivateKey _finalPrivateKey;
-	
-	private Map<String, Election> _results = new HashMap<String, Election>();
 
     private List<String> writeIns;
-	
+
 	private Map<ASExpression, byte[]> _pendingVotes = new HashMap<ASExpression, byte[]>();
-	
-	/**
-	 * Constructor.
-	 * 
-	 * @param pubKey - the Adder PublicKey used to encrypt votes
-	 * @param privKey - the Adder PrivateKey used to decrypt totals.
-	 */
-	public ChallengeDelayedWithNIZKsTallier(PublicKey pubKey, PrivateKey privKey){
-		_publicKey = pubKey;
-		_privateKey = privKey;
-//		_finalPublicKey = AdderKeyManipulator.generateFinalPublicKey(_publicKey);
-//		_finalPrivateKey = AdderKeyManipulator.generateFinalPrivateKey(_publicKey, _privateKey);
-        writeIns = new ArrayList<String>();
-	}
 
-	public void challenged(ASExpression nonce) {
-//		System.out.println("ChallengeDelayedWithNIZKsTallier.challenged("+nonce+")");
-		_pendingVotes.remove(nonce);
-	}
+    /**
+     * Constructor.
+     *
+     * @param pub  - The PublicKey used to encrypt votes to be tallied.
+     * @param priv - The PrivateKey to be used to decrypt the totals.
+     */
+    public ChallengeDelayedWithNIZKsTallier(PublicKey pub, PrivateKey priv) {
+        super(pub, priv);
+    }
 
+    /**
+     * Analogous to
+     * @see supervisor.model.tallier.EncryptedTallierWithNIZKs#recordVotes(byte[], sexpression.ASExpression)
+     *
+     * Performs the same operations, just not when the vote is first recorded. This will happen
+     * when a ballot is dropped into the ballot box.
+     */
 	public void confirmed(ASExpression nonce) {
-//		System.out.println("ChallengeDelayedWithNIZKsTallier.confirmed("+nonce+")");
 		byte[] ballotBytes = _pendingVotes.remove(nonce);
 		
 		if(_finalPublicKey == null)
@@ -59,7 +50,6 @@ public class ChallengeDelayedWithNIZKsTallier implements ITallier {
 			PublicKey copy = AdderKeyManipulator.generateFinalPublicKey(_publicKey);
 			
 			if(!_finalPublicKey.equals(copy))
-				//throw new RuntimeException("Final public key changed!\n"+_finalPublicKey+"\n\n"+copy);
 				Bugout.err("Final public key changed!\n"+_finalPublicKey+"\n\n"+copy);
 		}
 
@@ -68,28 +58,32 @@ public class ChallengeDelayedWithNIZKsTallier implements ITallier {
 		
 		try {
 			ASExpression sexp = in.read();
-			//Check that the ballot is well-formed
+			/* Check that the ballot is well-formed */
 			ListExpression ballot = (ListExpression)sexp;
 
             System.out.println("SExpression okay!");
 
-            //Pop the key "vote" off the end of each ballot
-            //ASExpression writeInKey = ballot.get(ballot.size() - 1);
-            //ballot = new ListExpression(Arrays.copyOfRange(ballot.getArray(), 0, ballot.getArray().length - 2));
-
-            //byte[] key = parseKey(writeInKey);
+            /* TODO This is writein code that doesn't really work */
+            /* Pop the key "vote" off the end of each ballot
+             * ASExpression writeInKey = ballot.get(ballot.size() - 1);
+             * ballot = new ListExpression(Arrays.copyOfRange(ballot.getArray(), 0, ballot.getArray().length - 2));
+             *
+             * byte[] key = parseKey(writeInKey);
+             */
 
             for(int i = 0; i < ballot.size(); i++){
 				ListExpression raceGroup = (ListExpression)ballot.get(i);
 
-                //Split off any writeIns, if they're present, and store them, encrypted, in a list to be dealt with later
-//				ListExpression wholeVote = (ListExpression)raceGroup.get(0);
-//                String[] voteParts = wholeVote.toString().split("`");
-//                ListExpression voteE = new ListExpression(voteParts[0]);
+                /* TODO Split off any writeIns, if they're present, and store them, encrypted, in a list to be dealt with later
+				ListExpression wholeVote = (ListExpression)raceGroup.get(0);
+                String[] voteParts = wholeVote.toString().split("`");
+                ListExpression voteE = new ListExpression(voteParts[0]);
 
-                //If there is a write in keep track of it
-//                if(voteParts.length > 1)
-//                    writeIns.add(voteParts[1]);
+                If there is a write in keep track of it
+                if(voteParts.length > 1)
+                    writeIns.add(voteParts[1]);
+
+                */
 
                 ListExpression voteE = (ListExpression)raceGroup.get(0);
 				ListExpression voteIdsE = (ListExpression)raceGroup.get(1);
@@ -138,6 +132,7 @@ public class ChallengeDelayedWithNIZKsTallier implements ITallier {
 		}
     }
 
+    /* TODO More write-in code
     private byte[] parseKey(ASExpression writeInKey) {
         ElgamalCiphertext keyCipher = ElgamalCiphertext.fromASE(writeInKey);
 
@@ -146,80 +141,18 @@ public class ChallengeDelayedWithNIZKsTallier implements ITallier {
         return key;
 
     }
+    */
 
-    @SuppressWarnings("unchecked")
-	public Map<String, BigInteger> getReport() {
-		_finalPrivateKey = AdderKeyManipulator.generateFinalPrivateKey(_publicKey, _privateKey);
-		Map<String, BigInteger> report = new HashMap<String, BigInteger>();
-
-        System.out.println("Keyset: "+_results.keySet());
-
-		for(String group : _results.keySet()){
-			//System.out.println("Decrypting election-id \""+group+"\"");
-			
-			Election election = _results.get(group);
-
-            Vote cipherSum = election.sumVotes();
-
-			List<AdderInteger> partialSum = _finalPrivateKey.partialDecrypt(cipherSum);
-			AdderInteger coeff = new AdderInteger(0);
-
-			List<List<AdderInteger>> partialSums = new ArrayList<List<AdderInteger>>();
-			partialSums.add(partialSum);
-
-			List<AdderInteger> coeffs = new ArrayList<AdderInteger>();
-			coeffs.add(coeff);
-
-			List<AdderInteger> results = election.getFinalSum(partialSums, coeffs, cipherSum, _finalPublicKey);
-			String[] ids = group.split(",");
-
-            System.out.println("Current group information: " + Arrays.toString(ids));
-			for(int i = 0; i < ids.length; i++)
-				report.put(ids[i], results.get(i).bigintValue());
-		}//for
-		
-		return report;
-	}
-
+    /**
+     * Put new votes in a list until they get confirmed, i.e. cast.
+     *
+     * @see supervisor.model.tallier.ITallier#recordVotes(byte[], sexpression.ASExpression)
+     *
+     * @param ballot the ballot to confirm
+     * @param nonce the nonce associated with that ballot, to avoid bogus confirms
+     */
 	public void recordVotes(byte[] ballot, ASExpression nonce) {
 		_pendingVotes.put(nonce, ballot);
 	}
-
-	/**
-	 * Using nizks imposes structure on our race format we haven't had before.
-	 * This method is
-	 * @param voteIds
-	 * @return
-	 */
-	private String makeId(List<String> voteIds){
-		String str = voteIds.get(0);
-		for(int i = 1; i < voteIds.size(); i++)
-			str+=","+voteIds.get(i);
-		
-		return str;
-	}
-	
-	/**
-	 * Confirms that the vote, voteIds, proof, and publicKey fields pulled out of a ballot are well-formed.
-	 * 
-	 * @param vote
-	 * @param voteIds
-	 * @param proof
-	 * @param publicKey
-	 */
-	private void confirmValid(ListExpression vote, ListExpression voteIds, ListExpression proof, ListExpression publicKey){
-		if(!vote.get(0).toString().equals("vote"))
-			throw new RuntimeException("Missing \"vote\"");
-		
-		if(!voteIds.get(0).toString().equals("vote-ids"))
-			throw new RuntimeException("Missing \"vote-ids\"");
-		
-		if(!proof.get(0).toString().equals("proof"))
-			throw new RuntimeException("Missing \"proof\"");
-		
-		if(!publicKey.get(0).toString().equals("public-key"))
-			throw new RuntimeException("Missing \"public-key\"");
-	}
-
 
 }

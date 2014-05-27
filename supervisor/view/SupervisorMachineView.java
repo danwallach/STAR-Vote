@@ -38,32 +38,39 @@ import javax.swing.border.BevelBorder;
 import supervisor.model.SupervisorMachine;
 
 /**
- * The view for a supervisor on the network.
+ * The view for another supervisor on the network.
+ *
+ * NOTE: no supervisor will have a machine representation of itself,
+ *
  * @author cshaw
  */
 @SuppressWarnings("serial")
 public class SupervisorMachineView extends AMachineView {
 
+    /** The mini-model for the supervisor */
     private SupervisorMachine machine;
 
-    private JLabel supervisorLabel;
-
-    private JLabel serialLabel;
-
+    /** Label for the machine's status */
     private JLabel statusLabel;
 
+    /** Label indicating that this is the Supervisor currently in control */
+    /* TODO This should not be necessary, as multiple Supervisors should be able to be active and functional */
     private JLabel currentLabel;
 
     /**
-     * Constructs a new SupervisorMachineView
+     * Constructs a new SupervisorMachineView by instantiating graphical components and adding observers
+     *
      * @param mach the supervisor machine model
      */
     public SupervisorMachineView(SupervisorMachine mach) {
         machine = mach;
+
+        /* Set up the view's layout */
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
-        supervisorLabel = new MyJLabel("Supervisor");
+        /* Create and add a Supervisor label, using the standardized font */
+        JLabel supervisorLabel = new MyJLabel("Supervisor");
         supervisorLabel.setFont(supervisorLabel.getFont().deriveFont(Font.BOLD,
                 16f));
         c.gridy = 0;
@@ -71,36 +78,42 @@ public class SupervisorMachineView extends AMachineView {
         c.anchor = GridBagConstraints.PAGE_END;
         add(supervisorLabel, c);
 
-        serialLabel = new MyJLabel("#" + mach.getSerial());
+        /* Create and add a serial number label, using the machine's serial */
+        JLabel serialLabel = new MyJLabel("#" + mach.getSerial());
         c.gridy = 1;
         c.weighty = 0;
         c.insets = new Insets(0, 0, 10, 0);
         add(serialLabel, c);
 
+        /* Create and add the status label */
         statusLabel = new MyJLabel();
         statusLabel.setFont(statusLabel.getFont().deriveFont(Font.BOLD, 14f));
         c.gridy = 2;
         c.insets = new Insets(0, 0, 0, 0);
         add(statusLabel, c);
 
+        /* Create and add the current label TODO Get rid of this? */
         currentLabel = new MyJLabel();
         c.gridy = 3;
         c.weighty = 1;
         c.anchor = GridBagConstraints.PAGE_START;
         add(currentLabel, c);
 
+        /* Add a border around the panel for aesthetics */
         setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
         setSize(180, 160);
         setMinimumSize(new Dimension(180, 175));
         setPreferredSize(new Dimension(180, 175));
         setMaximumSize(new Dimension(180, 175));
 
+        /* Add an observer that will update this view when the state of the mini-model (mach) changes */
         machine.addObserver(new Observer() {
             public void update(Observable o, Object arg) {
                 updateView();
             }
         });
 
+        /* Update the view and populate the labels, etc. */
         updateView();
     }
 
@@ -109,6 +122,7 @@ public class SupervisorMachineView extends AMachineView {
      * view accordingly. Also called whenever the observer is notified.
      */
     public void updateView() {
+        /* If the machine is online, set its color to AWT cyan and set its activity label */
         if (machine.isOnline()) {
             updateBackground(Color.CYAN);
             if (machine.getStatus() == SupervisorMachine.ACTIVE)
@@ -119,16 +133,22 @@ public class SupervisorMachineView extends AMachineView {
             updateBackground(Color.LIGHT_GRAY);
             statusLabel.setText("Offline");
         }
+
+        /* If this is the Supervisor in charge, set the label accordingly */
+        /* TODO Get rid of this? */
         if (machine.isCurrentMachine())
             currentLabel.setText("(Current Machine)");
         else
             currentLabel.setText("");
+
+        /* Refresh all the graphics */
         revalidate();
         repaint();
     }
 
     /**
-     * Updates the background to a given color
+     * Updates the background to a given color to reflect the current status
+     *
      * @param c the color
      */
     private void updateBackground(Color c) {

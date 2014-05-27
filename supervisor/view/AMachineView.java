@@ -26,6 +26,7 @@ import javax.swing.JPanel;
 
 /**
  * Abstract panel for a machine view, that contains an update method
+ *
  * @author cshaw
  */
 public abstract class AMachineView extends JPanel {

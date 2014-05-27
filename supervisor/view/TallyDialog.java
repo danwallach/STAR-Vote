@@ -70,6 +70,7 @@ import votebox.AuditoriumParams;
  * A dialog that goes along with {@link supervisor.model.tallier.Tallier}.  It is shown
  * whenever the supervisor closes the polls, and the report from the Tallier is
  * displayed in the dialog.
+ *
  * @author cshaw
  * @deprecated replaced with TallyResultsFrame
  */
@@ -249,7 +250,8 @@ public class TallyDialog extends JDialog {
 			Map.Entry[] entries = null;
 			
 			{
-				entries = results.entrySet().toArray(new Map.Entry[0]);
+                java.util.Set<Map.Entry<String, BigInteger>> var = results.entrySet();
+                entries = var.toArray(new Map.Entry[var.size()]);
 				if(entries.length > 1){
 					Arrays.sort(entries, new Comparator<Map.Entry>(){
 
@@ -389,10 +391,10 @@ public class TallyDialog extends JDialog {
 		if(!entryName.endsWith(".png"))
 			return false;
 		
-		if(entryName.indexOf("_selected_") == -1)
+		if(!entryName.contains("_selected_"))
 			return false;
 		if (langs != null)
-			if(entryName.indexOf(langs.get(0)) == -1) //grab the first listed language for now
+			if(!entryName.contains(langs.get(0))) //grab the first listed language for now
 				return false;
 
 		return true;
@@ -431,7 +433,8 @@ public class TallyDialog extends JDialog {
 			}//getColumnName
 			
 			public Object getValueAt(int row, int col){
-				Map.Entry entry = results.entrySet().toArray(new Map.Entry[0])[row];
+                java.util.Set<Map.Entry<String, BigInteger>> var = results.entrySet();
+                Map.Entry entry = var.toArray(new Map.Entry[var.size()])[row];
 				
 				switch(col){
 					case 0: return entry.getKey();

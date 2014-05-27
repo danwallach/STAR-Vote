@@ -25,7 +25,7 @@ package supervisor.view;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.swing.JFrame;
+import javax.swing.*;
 
 import supervisor.model.Model;
 
@@ -37,35 +37,50 @@ import supervisor.model.Model;
 @SuppressWarnings("serial")
 public class View extends JFrame {
 
+    /** A reference to the inactive UI, to show when the Supervisor is inactive */
     InactiveUI inactiveUI;
 
+    /** A reference to the active UI to show when the Supervisor is active */
     ActiveUI activeUI;
 
+    /* TODO Make these more configurable? */
+    /** A default width for the view */
     public static final int WINDOW_WIDTH = 1600;
+
+    /** A default height for the view */
     public static final int WINDOW_HEIGHT = 900;
 
     /**
      * Constructs a new View
-     * @param model the model
+     *
+     * @param model the Supervisor model
      */
     public View(final Model model) {
+        /* Set the window label */
         super("Supervisor Console");
 
+        /* Set the size and close operations */
         setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        // setUndecorated(true);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
+        /* Instantiate the UI's */
         activeUI = new ActiveUI(model);
         inactiveUI = new InactiveUI(model);
 
+        /* Register the view to update depending on the state of the machine, e.g. active or inactive */
         model.registerForActivated(new Observer() {
             public void update(Observable o, Object arg) {
+                /* If the model is active, set the pane to the active UI */
                 if (model.isActivated())
                     setContentPane(activeUI);
+
+                /* Otherwise dispose of the active UI and switch to the inactive pane */
                 else {
                     activeUI.setVisible(false);
                     setContentPane(inactiveUI);
                 }
+
+                /* revalidate and repaint to render everything */
                 validate();
                 repaint();
             }

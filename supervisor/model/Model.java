@@ -442,7 +442,7 @@ public class Model {
      * @param node
      *            the serial number of the booth
      */
-    public void overrideCast(int node) {
+    public void overrideCommit(int node) {
         byte[] nonce = ((VoteBoxBooth) getMachineForSerial(node)).getNonce();
         auditorium.announce(new OverrideCastEvent(mySerial, node, nonce));
     }

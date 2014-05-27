@@ -850,7 +850,7 @@ public class VoteBox{
                     } catch (IncorrectTypeException e1) {
                         //We don't want to bail once VoteBox is up and running,
                         //  so report and continue in this case
-                        System.out.println("Incorrect type received in overrideCast event: "+e1.getMessage());
+                        System.out.println("Incorrect type received in overrideCommit event: "+e1.getMessage());
                         e1.printStackTrace(System.err);
                     }
                 }
