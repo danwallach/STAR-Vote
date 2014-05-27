@@ -137,7 +137,7 @@ public class BallotScannerMachineView extends AMachineView{
         button = new MyJButton();
         button.setLayout(new GridBagLayout());
 
-        button.setVisible(model.isPollsOpen());
+        button.setVisible(model.arePollsOpen());
         buttonPanel = new JPanel();
         buttonPanel.setLayout(new BorderLayout());
         buttonPanel.add(button, BorderLayout.CENTER);

@@ -458,7 +458,7 @@ public class ActiveUI extends JPanel {
         /* Enable the text of the poll control button to change dynamically depending on the state of the polls */
         model.registerForPollsOpen(new Observer() {
             public void update(Observable o, Object arg) {
-                if (model.isPollsOpen()) {
+                if (model.arePollsOpen()) {
                     pollsOpenLbl.setText("Polls currently open");
                     pollsControlButton.setText("Close Polls Now");
                 } else {
@@ -496,7 +496,7 @@ public class ActiveUI extends JPanel {
     private void pollControlButtonPressed() {
 
         /* If the polls are open, pressing the button will close the polls */
-        if (model.isPollsOpen()) {
+        if (model.arePollsOpen()) {
             /* Closing the polls will return a map of election results by precinct */
             Map<String, Map<String, BigInteger>> tally = model.closePolls();
 

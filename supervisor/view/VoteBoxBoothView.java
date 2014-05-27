@@ -188,7 +188,7 @@ public class VoteBoxBoothView extends AMachineView {
                 overrideButtonPressed();
             }
         });
-        overrideButton.setVisible(model.isPollsOpen());
+        overrideButton.setVisible(model.arePollsOpen());
         buttonPanel = new JPanel();
         buttonPanel.setLayout(new BorderLayout());
         buttonPanel.add(overrideButton, BorderLayout.CENTER);
