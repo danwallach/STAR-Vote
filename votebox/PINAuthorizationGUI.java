@@ -16,9 +16,7 @@ import javax.swing.text.PlainDocument;
  */
 public class PINAuthorizationGUI extends JDialog {
 
-    /*
-	 * CLASS CONSTANTS
-	 */
+    /* CLASS CONSTANTS */
     /* The width of the drawable/viewable space on the screen. */
     private static final int GUI_WIDTH = 300;
     /* The height of the drawable/viewable space on the screen. */
@@ -61,16 +59,14 @@ public class PINAuthorizationGUI extends JDialog {
     /**
      * Start displaying the GUI.
      */
-    public void start ()
-    {
+    public void start (){
         setVisible(true);
     }
 
     /**
      * Stop displaying the GUI.
      */
-    public void stop ()
-    {
+    public void stop (){
         setVisible(false);
         dispose();
     }
@@ -80,20 +76,26 @@ public class PINAuthorizationGUI extends JDialog {
      * @param cX the x-coordinate of the center of the GUI
      * @param cY the y-coordinate of the center of the GUI
      */
-    public PINAuthorizationGUI(int cX, int cY) {
+    public PINAuthorizationGUI(int cX, int cY){
 
         setTitle("Authorization Required");
         setPreferredSize(new Dimension(GUI_WIDTH, GUI_HEIGHT));
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        setBounds(cX - (GUI_WIDTH + SIDE_BARS_WIDTH) / 2, cY - (GUI_HEIGHT + TITLE_BAR_HEIGHT) / 2, GUI_WIDTH + SIDE_BARS_WIDTH, GUI_HEIGHT + TITLE_BAR_HEIGHT);
+
+        /* Set the boundaries based on the screen and GUI constants */
+        setBounds(cX - (GUI_WIDTH + SIDE_BARS_WIDTH) / 2,
+                  cY - (GUI_HEIGHT + TITLE_BAR_HEIGHT) / 2,
+                  GUI_WIDTH + SIDE_BARS_WIDTH,
+                  GUI_HEIGHT + TITLE_BAR_HEIGHT);
+
         buildGUIElements();
     }
 
     /**
      * Builds the GUI Elements for this UI.
      */
-    private void buildGUIElements()
-    {
+    private void buildGUIElements(){
+
         /* Content Pane */
         JPanel contentPane = new JPanel();
         contentPane.setPreferredSize(new Dimension(GUI_WIDTH, GUI_HEIGHT));
@@ -122,6 +124,7 @@ public class PINAuthorizationGUI extends JDialog {
                 }
             }
         }, "", 10);
+
         pinTextField.setBounds(TEXTFIELD_ULX, TEXTFIELD_ULY, TEXTFIELD_WIDTH, TEXTFIELD_HEIGHT);
         mainPanel.add(pinTextField);
         pinTextField.setColumns(10);
@@ -139,24 +142,31 @@ public class PINAuthorizationGUI extends JDialog {
     /**
      * Set the text of the Label.
      */
-    public void setLabelText (String text)
-    {
+    public void setLabelText (String text){
         enterAuthorizationPinLabel.setText(text);
     }
 
     /**
-     * Get the currently typed pin.
+     * Gets the currently typed PIN
+     * @return the input PIN
      */
-    public String getPin ()
-    {
+    public String getPin (){
         return pinTextField.getText();
     }
 
     /**
-     * Get the upper-left corner x-coordinate for a button.
+     *
+     * @param buttonCount the number of buttons
+     * @param buttonIndex the index of the button to get
+     *
+     * Gets the upper-left corner x-coordinate for a button.
+     *
+     * @return the upper-left corner x-coordinate of the particular button
      */
-    public int getButtonULX (int buttonCount, int buttonIndex)
-    {
+    public int getButtonULX (int buttonCount, int buttonIndex){
+
+        /* TODO, pretty sure this can be simplified with ternary or if-else */
+        /* Note: normally would need breaks in switch-case, but return statements pre-empt that */
         switch (buttonCount)
         {
             case 1:
