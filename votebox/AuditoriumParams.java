@@ -78,67 +78,67 @@ public class AuditoriumParams implements IAuditoriumParams,
     public static final int VIEW_RESTART_TIMEOUT = 5000;
 
 
-    //Default for default serial number, -1 indicates that it MUST be specified explicitly somehow
+    /* Default for default serial number, -1 indicates that it MUST be specified explicitly somehow */
     public static final int DEFAULT_SERIAL_NUMBER = -1;
 
-    //Default report address, used exclusively by tap.  if "", must be specified explicitly somehow.
+    /* Default report address, used exclusively by tap.  if "", must be specified explicitly somehow. */
     public static final String DEFAULT_REPORT_ADDRESS = "";
 
-    //Default server port, used by web server and tap.  If -1, must be specified explicitly somehow.
+    /* Default server port, used by web server and tap.  If -1, must be specified explicitly somehow. */
     public static final int DEFAULT_PORT = 9700;
 
-    //Default http port, used by web server.
+    /* Default http port, used by web server. */
     public static final int DEFAULT_HTTP_PORT = 8080;
 
-    //Default ballot file.  If "", must be specified explicitly somehow.
+    /* Default ballot file.  If "", must be specified explicitly somehow. */
     public static final String DEFAULT_BALLOT_FILE = System.getProperty("user.dir") + "/tmp/ballot";
 
-    //Default printer for VVPAT. If "", do not use VVPAT.
+    /* Default printer for VVPAT. If "", do not use VVPAT. */
     public static final String PRINTER_FOR_VVPAT = "";
 
-    //Default page size for VVPAT.  Based off of Star TPS800 model printer.
+    /* Default page size for VVPAT.  Based off of Star TPS800 model printer. */
     public static final int PAPER_WIDTH_FOR_VVPAT = 249;
     public static final int PAPER_HEIGHT_FOR_VVPAT = 322;
 
-    //Default imageable area for VVPAT.  Based off of Star TPS800 model printer.
+    /* Default imageable area for VVPAT.  Based off of Star TPS800 model printer. */
     public static final int PRINTABLE_WIDTH_FOR_VVPAT = 239;
     public static final int PRINTABLE_HEIGHT_FOR_VVPAT = 311;
 
-    //Configurable margins, may not be needed?
+    /* Configurable margins, may not be needed? */
     public static final int PRINTABLE_VERTICAL_MARGIN  = 25;
     public static final int PRINTABLE_HORIZONTAL_MARGIN  = 25;
 
-    //Configurable DPI
+    /* Configurable DPI */
     public static final int PRINTER_DEFAULT_DPI = 300;
     public static final int JAVA_DEFAULT_DPI = 72;
 
-    //By default, we don't enable NIZKs.
+    /* By default, we don't enable NIZKs. */
     public static final boolean ENABLE_NIZKS = true;
 
-    //By default, we don't enable Piecemeal Encryption
+    /* By default, we don't enable Piecemeal Encryption */
     public static final boolean USE_PIECEMEAL_ENCRYPTION = false;
 
-    //By default, we use the "fanciest" tally view possible
+    /* By default, we use the "fanciest" tally view possible */
     public static final boolean USE_SIMPLE_TALLY_VIEW = false;
     public static final boolean USE_TABLE_TALLY_VIEW = false;
 
-    //AWT view is windowed by default (as it may break if fullscreen
+    /* AWT view is windowed by default (as it may break if fullscreen */
     public static final boolean DEFAULT_USE_WINDOWED_VIEW = false;
 
     public static final boolean DEFAULT_ALLOW_UI_SCALING = true;
 
     public static final String ELECTION_NAME = "Rice University General Election";
 
-    //Setting which determines whether ballots will be printed using two columns
+    /* Setting which determines whether ballots will be printed using two columns */
     public static final boolean PRINT_USE_TWO_COLUMNS = true;
 
-    //Settings for the ballotScanner
+    /* Settings for the ballotScanner */
     public static final boolean USE_SCAN_CONFIRMATION_SOUND = false;
     public static final String SCAN_CONFIRMATION_SOUND_PATH = "sound/test.mp3";
 
     private final HashMap<String, String> _config;
 
-    //Settings for printing
+    /* Settings for printing */
     public static final String PRINT_COMMANDS_FILE_FILENAME = "CommandsFile.txt";
     public static final String PRINT_COMMANDS_FILE_PARAMETER_SEPARATOR = "!!!";
 
@@ -146,7 +146,7 @@ public class AuditoriumParams implements IAuditoriumParams,
 
     public static final boolean DEFAULT_SHUFFLE_CANDIDATE_ORDER = false;
 
-    //Position of the center of the screen (used for GUIs)
+    /* Position of the center of the screen (used for GUIs) */
     public static final int DEFAULT_SCREEN_CENTER_X = 680;
     public static final int DEFAULT_SCREEN_CENTER_Y = 384;
 
