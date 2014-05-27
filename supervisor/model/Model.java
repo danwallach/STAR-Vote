@@ -1405,14 +1405,14 @@ public class Model {
      *  @return array of precincts
      */
     public String[] getSelections(){
-        return BallotStore.getSelections();
+        return BallotStore.getPrecincts();
     }
 
     /**
      * @return first precinct in the ballot manager's precinct list
      */
     public String getInitialSelection(){
-        return BallotStore.getInitialSelection();
+        return BallotStore.getInitialPrecinct();
     }
 
     /**

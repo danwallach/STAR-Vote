@@ -1,9 +1,8 @@
 package supervisor.model;
 
-import supervisor.model.AMachine;
 
 /**
- * Concrete class for a BallotScanner Machine
+ * Concrete Machine representation for a BallotScanner's mini-model
  */
 public class BallotScannerMachine extends AMachine {
 
@@ -22,12 +21,14 @@ public class BallotScannerMachine extends AMachine {
      */
     private int battery;
 
+    /* TODO do we need these? */
     private int protectedCount;
 
     private int publicCount;
 
     /**
      * Constructs a new supervisor machine
+     *
      * @param serial the serial number of the ballotScanner
      */
     public BallotScannerMachine(int serial) {
@@ -57,6 +58,7 @@ public class BallotScannerMachine extends AMachine {
 
     /**
      * Sets the battery level
+     *
      * @param battery the battery to set
      */
     public void setBattery(int battery) {
@@ -67,6 +69,7 @@ public class BallotScannerMachine extends AMachine {
 
     /**
      * Sets the machine's protected count
+     *
      * @param protectedCount the protectedCount to set
      */
     public void setProtectedCount(int protectedCount) {
@@ -76,6 +79,7 @@ public class BallotScannerMachine extends AMachine {
 
     /**
      * Sets the machine's public count
+     *
      * @param publicCount the publicCount to set
      */
     public void setPublicCount(int publicCount) {

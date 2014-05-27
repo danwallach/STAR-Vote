@@ -26,32 +26,50 @@ import java.util.Observer;
 
 /**
  * Abstract notion of a machine on the VoteBox network.
+ * This is a mini-model in the machine MVC, which will be contained entirely within the
+ * larger Supervisor MVC.
+ *
  * @author cshaw
  */
 public abstract class AMachine implements Comparable {
 
+    /** The serial number that this machine uses in its network communications */
     private int serial;
 
+    /** A status field, can be set to ACTIVE, INACTIVE, and other machine-dependent status codes */
     private int status;
 
+    /** The Supervisor's label for this machine, which is displayed in the GUIs on both machines */
     private int label;
 
+    /** Whether this machine is connected to and sending messages across the network */
     private boolean online;
 
+    /** An observer that will allow the mini-MVC to update its state and reflect the changes on the mini-vew */
     protected ObservableEvent obs;
 
     /**
      * Constructs a new machine with the given serial number
-     * @param serial
+     *
+     * @param serial the serial number the machine uses to communicate on the network
      */
     public AMachine(int serial) {
         this.serial = serial;
+
+        /*
+         * If a machine is being constructed, it must have sent a "Joined"
+         * message across the network and therefore must be connected
+         */
         online = true;
+
+        /* Initialize our event dispatcher */
         obs = new ObservableEvent();
     }
 
     /**
-     * Adds an observer that will be notified when this machine is changed
+     * Adds an observer that will be notified when this machine is changed.
+     * This enables an event-driven update model.
+     *
      * @param o the observer
      * @see java.util.Observable#addObserver(java.util.Observer)
      */
@@ -61,6 +79,10 @@ public abstract class AMachine implements Comparable {
 
     /**
      * Compares this machine to another machine, by their serial numbers.
+     * If the serials are the same, this returns 0. If this machine's number is
+     * greater than the other one, the return value will be greater than zero. If
+     * the other machine's serial is greater, this will return a value less than zero.
+     *
      * @see java.lang.Comparable#compareTo(Object)
      */
     public int compareTo(Object o) {
@@ -91,14 +113,16 @@ public abstract class AMachine implements Comparable {
 
     /**
      * @return whether this machine is online (that is, if there exists a direct
-     *         link between this machine and the current machine)
+     *         link between this machine and the current machine, managed by the Supervisor)
      */
     public boolean isOnline() {
         return online;
     }
 
     /**
-     * Sets this machine's label
+     * Sets this machine's label, and
+     * update the state of the machine to reflect the change.
+     *
      * @param label the label to set
      */
     public void setLabel(int label) {
@@ -107,7 +131,9 @@ public abstract class AMachine implements Comparable {
     }
 
     /**
-     * Sets whether this machine is online
+     * Sets whether this machine is online, and
+     * update the state of the machine to reflect the change.
+     *
      * @param online the online to set
      */
     public void setOnline(boolean online) {
@@ -116,16 +142,9 @@ public abstract class AMachine implements Comparable {
     }
 
     /**
-     * Sets this machine's serial number
-     * @param serial the serial to set
-     */
-    public void setSerial(int serial) {
-        this.serial = serial;
-        obs.notifyObservers();
-    }
-
-    /**
-     * Sets this machine's status
+     * Sets this machine's status, and
+     * update the state of the machine to reflect the change.
+     *
      * @param status the status to set
      */
     public void setStatus(int status) {
