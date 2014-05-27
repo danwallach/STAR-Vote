@@ -28,33 +28,27 @@ package supervisor.model;
  */
 public class VoteBoxBooth extends AMachine {
 
-    /**
-     * Represents a VoteBox that is currently in use
-     */
+    /** Represents a VoteBox that is currently in use */
     public static final int IN_USE = 1;
 
-    /**
-     * Represents a VoteBox that is ready to be authorized
-     */
+    /** Represents a VoteBox that is ready to be authorized */
     public static final int READY = 2;
 
-    /**
-     * Represents a VoteBox whose battery is low
-     */
-    @Deprecated
-    public static final int BATTERY_LOW = 3;
+    /** Represents a VoteBox whose battery is low */
+    /* TODO Bring this back? */
+    /* public static final int BATTERY_LOW = 3; */
 
-    /**
-     * Represents a VoteBox that is in use and is in the process of a provisional voting session
-     */
+    /** Represents a VoteBox that is in use and is in the process of a provisional voting session  */
     public static final int PROVISIONAL = 4;
 
+    /** The batter level of this machine */
     private int battery;
 
     private int protectedCount;
 
     private int publicCount;
 
+    /** The nonce for the machine's current voting session */
     private byte[] currentNonce;
 
     /**
