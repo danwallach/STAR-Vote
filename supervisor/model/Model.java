@@ -294,10 +294,10 @@ public class Model {
     /**
      * Authorizes a VoteBox booth to vote with a specific ballot style
      * 
-     * @param node the serial number of the booth
+     * @param otherSerial the serial number of the booth
      * @throws IOException if the ballot cannot be serialized correctly
      */
-    public void authorize(int node) throws IOException {
+    public void authorize(int otherSerial) throws IOException {
         /* Build a nonce to associate with this ballot and voting session */
         byte[] nonce = new byte[256];
         for (int i = 0; i < 256; i++)
@@ -310,7 +310,7 @@ public class Model {
         String precinct = BallotStore.getPrecinctByBallot(ballotLocation);
 
         /* Create a hash chain record of this ballot and voting session */
-        String ballotHash = BallotStore.createBallotHash(node);
+        String ballotHash = BallotStore.createBallotHash(otherSerial);
 
         /* Map the ballot's hash and its precinct in the ballot store */
         BallotStore.mapPrecinct(ballotHash, precinct);
@@ -332,11 +332,11 @@ public class Model {
          * configuration file. This is a parameter of the election, but will typically always be NIZK enablesd.
          */
         if(!this.auditoriumParams.getEnableNIZKs()){
-            auditorium.announce(new AuthorizedToCastEvent(mySerial, node, ASENonce,
+            auditorium.announce(new AuthorizedToCastEvent(mySerial, otherSerial, ASENonce,
                     precinct, ballot));
         }else{
             /* For NIZKs to work, we have to establish the public key before the voting can start */
-            auditorium.announce(new AuthorizedToCastWithNIZKsEvent(mySerial, node,
+            auditorium.announce(new AuthorizedToCastWithNIZKsEvent(mySerial, otherSerial,
                     ASENonce, precinct, ballot,
                     AdderKeyManipulator.generateFinalPublicKey((PublicKey)auditoriumParams.getKeyStore().loadAdderKey("public"))));
         }
@@ -641,7 +641,6 @@ public class Model {
         auditorium.addListener(new VoteBoxEventListener() {
 
             /* These are all no-ops that are necessary for the anonymous inner class */
-        	public void ballotCounted(BallotCountedEvent e){}
             public void ballotReceived(BallotReceivedEvent e) {}
             public void overrideCancel(OverrideCancelEvent e) {}
             public void overrideCancelConfirm(OverrideCancelConfirmEvent e) {}
@@ -725,7 +724,7 @@ public class Model {
              * that machine.
              */
             public void authorizedToCast(AuthorizedToCastEvent e) {
-                AMachine m = getMachineForSerial(e.getNode());
+                AMachine m = getMachineForSerial(e.getOtherSerial());
 
                 /* Set the local copy of the votebox to have the corresponding nonce value of the voting session */
                 if (m != null && m instanceof VoteBoxBooth) {

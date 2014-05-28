@@ -587,7 +587,7 @@ public class VoteBox{
                     ActivatedEvent.getMatcher(), AssignLabelEvent.getMatcher(),
                     AuthorizedToCastEvent.getMatcher(), BallotReceivedEvent.getMatcher(),
                     OverrideCancelEvent.getMatcher(), OverrideCastEvent.getMatcher(),
-                    PollsOpenQEvent.getMatcher(), BallotCountedEvent.getMatcher(),
+                    PollsOpenQEvent.getMatcher(),
                     AuthorizedToCastWithNIZKsEvent.getMatcher(), PINEnteredEvent.getMatcher(),
                     InvalidPinEvent.getMatcher(), PollsOpenEvent.getMatcher(),
                     PollStatusEvent.getMatcher(), BallotPrintingEvent.getMatcher(),
@@ -601,35 +601,7 @@ public class VoteBox{
         }
 
         auditorium.addListener(new VoteBoxEventListener() {
-			public void ballotCounted(BallotCountedEvent e){
-        		if (e.getNode() == mySerial
-                        && Arrays.equals(e.getNonce(), nonce)) {
-                    if (!finishedVoting)
-                        throw new RuntimeException(
-                                "Someone said the ballot was counted, but this machine hasn't finished voting yet");
-        		
 
-                    currentDriver.getView().nextPage();
-                    nonce = null;
-                    voting = false;
-                    finishedVoting = false;
-                    committedBallot = false;
-                    broadcastStatus();
-                    killVBTimer = new Timer(_constants.getViewRestartTimeout(), new ActionListener() {
-                    	public void actionPerformed(ActionEvent arg0) {
-                    		currentDriver.kill();
-                    		currentDriver = null;
-                    		inactiveUI.setVisible(true);
-                    		killVBTimer = null;
-                            System.out.println("Ballot counted heard! Throwing up a new prompt!");
-                            promptForPin("Enter Voting Authentication PIN");
-                    	};
-                    });
-                    killVBTimer.setRepeats(false);
-                    killVBTimer.start();
-        		}//if
-        	}
-        	
             /**
              * Handler for the activated message. Look to see if this VoteBox's
              * status exists (and is correct), and if not, broadcast its status
@@ -675,7 +647,7 @@ public class VoteBox{
              * the VoteBox runtime. Also announce the new status.
              */
             public void authorizedToCast(AuthorizedToCastEvent e) {
-                if (e.getNode() == mySerial) {
+                if (e.getOtherSerial() == mySerial) {
                     isProvisional = false;
 
                     if (voting || currentDriver != null && killVBTimer == null)

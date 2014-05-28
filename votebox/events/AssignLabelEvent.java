@@ -81,7 +81,12 @@ public class AssignLabelEvent extends AAnnounceEvent {
         }
     };
 
-
+    /**
+     * @return a MatcherRule for parsing this event type.
+     */
+    public static MatcherRule getMatcher(){
+        return MATCHER;
+    }
     
     /**
      * Constructs a new AssignLabelEvent.
@@ -94,14 +99,6 @@ public class AssignLabelEvent extends AAnnounceEvent {
         this.serial = serial;
         this.otherSerial = node;
         this.label = label;
-    }
-
-
-    /**
-     * @return a MatcherRule for parsing this event type.
-     */
-    public static MatcherRule getMatcher(){
-        return MATCHER;
     }
 
     /**

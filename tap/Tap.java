@@ -139,9 +139,6 @@ public class Tap {
         }//catch
 
         _auditorium.addListener(new VoteBoxEventListener(){
-            public void ballotCounted(BallotCountedEvent e){
-                //NO-OP
-            }
 
             public void ballotAccepted(BallotScanAcceptedEvent e){
                 //BallotStore.castCommittedBallot(e.getBID().toString());

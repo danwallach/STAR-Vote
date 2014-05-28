@@ -241,7 +241,6 @@ public class BallotScanner{
 
         auditorium.addListener(new VoteBoxEventListener() {
 
-            public void ballotCounted(BallotCountedEvent e) {}
             public void castCommittedBallot(CastCommittedBallotEvent event) {}
             public void commitBallot(CommitBallotEvent e) {}
             public void activated(ActivatedEvent e) {}

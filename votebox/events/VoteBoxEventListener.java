@@ -193,14 +193,6 @@ public interface VoteBoxEventListener {
      *            the event
      */
     public void ballotScanner(BallotScannerEvent e);
-    
-    /**
-     * Fired when the ballot counted message is received
-     * 
-     * @param e
-     * 			  the event
-     */
-    public void ballotCounted(BallotCountedEvent e);
 
     /**
      * Fired when a ballot gets scanned

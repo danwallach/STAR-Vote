@@ -150,7 +150,7 @@ public class VoteBoxEventsTest extends TestCase {
         AuthorizedToCastEvent event2 = (AuthorizedToCastEvent) matcher.match(
                 50, sexp);
         assertEquals(event.getSerial(), event2.getSerial());
-        assertEquals(event.getNode(), event2.getNode());
+        assertEquals(event.getOtherSerial(), event2.getOtherSerial());
         assertTrue(Arrays.equals(event.getNonce().toVerbatim(), event2.getNonce().toVerbatim()));
         assertTrue(Arrays.equals(event.getBallot(), event2.getBallot()));
     }

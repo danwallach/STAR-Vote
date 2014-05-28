@@ -174,11 +174,6 @@ public class VoteBoxEventNotifier implements VoteBoxEventListener {
             l.commitBallot(e);
     }
 
-	public void ballotCounted(BallotCountedEvent e) {
-		for(VoteBoxEventListener l : listeners)
-			l.ballotCounted(e);
-	}
-
     public void ballotScanned(BallotScannedEvent e) {
         for (VoteBoxEventListener l : listeners)
             l.ballotScanned(e);
