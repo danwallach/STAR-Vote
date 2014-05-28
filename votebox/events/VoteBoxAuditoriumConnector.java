@@ -100,16 +100,6 @@ public class VoteBoxAuditoriumConnector {
     }
 
     /**
-     * Removes a listener from the list of VoteBox event listeners.
-     * 
-     * @param l
-     *            the listener
-     */
-    public void removeListener(VoteBoxEventListener l) {
-        notifier.removeListener( l );
-    }
-
-    /**
      * Attempts to connect to an auditorium by running discover once.
      * 
      * @throws NetworkException
@@ -165,13 +155,6 @@ public class VoteBoxAuditoriumConnector {
             timer.setRepeats( false );
             timer.start();
         }
-    }
-
-    /**
-     * Disconnects from the auditorum network.
-     */
-    public void disconnect() {
-        auditorium.disconnect();
     }
 
     /**

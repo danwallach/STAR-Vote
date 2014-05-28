@@ -165,7 +165,7 @@ public class Tap {
             public void overrideCancelConfirm(OverrideCancelConfirmEvent e) {}
             public void overrideCancelDeny(OverrideCancelDenyEvent e) {}
             public void overrideCast(OverrideCastEvent e) {}
-            public void overrideCastConfirm(OverrideCastConfirmEvent e) {}
+            public void overrideCastConfirm(OverrideCommitConfirmEvent e) {}
             public void overrideCastDeny(OverrideCastDenyEvent e) {}
             public void pollsOpen(PollsOpenEvent e) {}
             public void pollsOpenQ(PollsOpenQEvent e) {}
@@ -186,7 +186,7 @@ public class Tap {
             public void announceProvisionalBallot(ProvisionalBallotEvent provisionalBallotEvent) {}
             public void provisionalAuthorizedToCast(ProvisionalAuthorizeEvent provisionalAuthorizeEvent) {}
             public void provisionalCommitBallot(ProvisionalCommitEvent provisionalCommitEvent) {}
-            public void authorizedToCastWithNIZKS(AuthorizedToCastWithNIZKsEvent e) {}
+
             public void tapMachine(TapMachineEvent tapMachineEvent) {}
 
             public void pollMachines(PollMachinesEvent pollMachinesEvent){

@@ -58,7 +58,7 @@ public class PollsOpenQEvent extends AAnnounceEvent {
             }
 
             return null;
-        };
+        }
     };
 
     /**

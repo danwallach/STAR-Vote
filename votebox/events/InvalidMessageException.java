@@ -25,28 +25,4 @@ package votebox.events;
 public class InvalidMessageException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
-    public InvalidMessageException() {}
-
-    /**
-     * @param msg - message for this Exception
-     */
-    public InvalidMessageException(String msg) {
-        super( msg );
-    }
-
-    /**
-     * @param cause - cause of this Exception
-     */
-    public InvalidMessageException(Throwable cause) {
-        super( cause );
-    }
-
-    /**
-     * @param msg - message for this Exception
-     * @param cause - cause of this Exception
-     */
-    public InvalidMessageException(String msg, Throwable cause) {
-        super( msg, cause );
-    }
-
 }

@@ -22,15 +22,13 @@
 
 package votebox.events;
 
-import java.math.BigInteger;
-
 import sexpression.*;
 
 /**
  * Event that represents the ballot-received message:<br>
  * 
  * <pre>
- * (ballot-received node-id nonce)
+ * (ballot-received targetSerial-id nonce)
  * </pre>
  * 
  * See <a href="https://sys.cs.rice.edu/votebox/trac/wiki/VotingMessages">
@@ -39,17 +37,9 @@ import sexpression.*;
  * 
  * @author cshaw
  */
-public class BallotReceivedEvent extends AAnnounceEvent {
+public class BallotReceivedEvent extends ABallotEvent {
 
-    private int serial;
-
-    private int node;
-
-    private byte[] nonce;
-
-    protected String bid;
-
-    protected String precinct;
+    private int targetSerial;
 
     /**
      * The matcher for the BallotReceivedEvent.
@@ -63,25 +53,23 @@ public class BallotReceivedEvent extends AAnnounceEvent {
 
             ASExpression res = pattern.match( sexp );
             if (res != NoMatch.SINGLETON) {
-                System.out.println("Matching a BallotReceivedEvent!");
 
                 int node = Integer.parseInt( ((ListExpression) res).get( 0 )
                         .toString() );
-                /*byte[] nonce = ((StringExpression) ((ListExpression) res)
-                        .get( 1 )).getBytesCopy();*/
-                byte[] nonce = new BigInteger(((ListExpression) res)
-                        .get( 1 ).toString()).toByteArray();
+
+                ASExpression nonce = ((ListExpression) res).get(1);
 
                 String bid = ((ListExpression) res).get(2).toString();
+
                 String precinct = ((ListExpression) res).get(3).toString();
+
                 return new BallotReceivedEvent( serial, node, nonce, bid, precinct);
             }
             return null;
-        };
+        }
     };
 
     /**
-     * 
      * @return a MatcherRule for parsing this event type.
      */
     public static MatcherRule getMatcher(){
@@ -90,71 +78,36 @@ public class BallotReceivedEvent extends AAnnounceEvent {
     
     /**
      * Constructs a new BallotReceivedEvent.
-     * 
-     * @param serial
-     *            the serial number of the sender
-     * @param node
-     *            the node id
-     * @param nonce
-     *            the nonce
+     *
+     * @param serial the serial number of the sender
+     * @param targetSerial the serial of the original ballot sender
+     * @param nonce a nonce for the voting session
      */
-    public BallotReceivedEvent(int serial, int node, byte[] nonce, String bid, String precinct) {
-        this.serial = serial;
-        this.node = node;
-        this.nonce = nonce;
-        this.bid = bid;
-        if(precinct == null) System.out.println("null precinct");
-        this.precinct = precinct;
+    public BallotReceivedEvent(int serial, int targetSerial, ASExpression nonce, String bid, String precinct) {
+        super(serial, nonce, bid, precinct);
+        this.targetSerial = targetSerial;
     }
 
     /**
-     * @return the node
+     * @return the targetSerial
      */
-    public int getNode() {
-        return node;
+    public int getTargetSerial() {
+        return targetSerial;
     }
 
-    /**
-     * @return the nonce
-     */
-    public byte[] getNonce() {
-        return nonce;
-    }
-
-    public int getSerial() {
-        return serial;
-    }
-
-    /**
-     * @return ballot ID of received ballot
-     */
-    public String getBID(){
-        return bid;
-    }
-
-    /**
-     * @return precinct of received ballot
-     */
-    public String getPrecinct(){
-        return precinct;
-    }
-
+    /** @see votebox.events.IAnnounceEvent#fire(VoteBoxEventListener) */
     public void fire(VoteBoxEventListener l) {
         l.ballotReceived( this );
     }
 
+    /** @see IAnnounceEvent#toSExp() */
     public ASExpression toSExp() {
-        /*return new ListExpression( StringExpression
-                .makeString( "ballot-received" ), StringExpression
-                .makeString( Integer.toString( node ) ), StringExpression
-                .makeString( nonce ) );*/
-    	
-    	return new ListExpression( StringExpression
-                .makeString( "ballot-received" ), StringExpression
-                .makeString( Integer.toString( node ) ), StringExpression
-                .makeString( new BigInteger(nonce).toString() ), StringExpression
-                .makeString(bid), StringExpression
-                .makeString(precinct));
+
+    	return new ListExpression( StringExpression.makeString("ballot-received"),
+                StringExpression.makeString(Integer.toString(targetSerial)),
+                getNonce(),
+                StringExpression.makeString(getBID()),
+                StringExpression.makeString(getPrecinct()));
 
     }
 

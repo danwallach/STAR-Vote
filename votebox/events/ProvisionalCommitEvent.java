@@ -30,7 +30,7 @@ public class ProvisionalCommitEvent extends AAnnounceEvent {
                         .get("ballot"), result.get("bid"));
 
             return null;
-        };
+        }
     };
 
     /**
@@ -53,13 +53,6 @@ public class ProvisionalCommitEvent extends AAnnounceEvent {
      */
     public ASExpression getNonce(){
         return _nonce;
-    }
-
-    /**
-     * @return An S-Expression of the ballot
-     */
-    public ASExpression getBallot(){
-        return _ballot;
     }
 
     /**

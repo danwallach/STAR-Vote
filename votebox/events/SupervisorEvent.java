@@ -39,8 +39,6 @@ import sexpression.*;
  */
 public class SupervisorEvent extends AAnnounceEvent {
 
-    private int serial;
-
     private long timestamp;
 
     private String status;
@@ -63,7 +61,7 @@ public class SupervisorEvent extends AAnnounceEvent {
             }
 
             return null;
-        };
+        }
     };
 
     /**
@@ -85,14 +83,11 @@ public class SupervisorEvent extends AAnnounceEvent {
      *            the supervisor's status
      */
     public SupervisorEvent(int serial, long timestamp, String status) {
-        this.serial = serial;
+        super(serial);
         this.timestamp = timestamp;
         this.status = status;
     }
 
-    public int getSerial() {
-        return serial;
-    }
 
     /**
      * @return the status, either "active" or "inactive"

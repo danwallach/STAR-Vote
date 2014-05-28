@@ -22,15 +22,13 @@
 
 package votebox.events;
 
-import java.math.BigInteger;
-
 import sexpression.*;
 
 /**
- * Event that represents the override-cast-deny message:<br>
+ * Event that represents the override-commit-deny message:<br>
  * 
  * <pre>
- * (override-cast-deny nonce)
+ * (override-commit-deny nonce)
  * </pre>
  * 
  * See <a href="https://sys.cs.rice.edu/votebox/trac/wiki/VotingMessages">
@@ -39,31 +37,27 @@ import sexpression.*;
  * 
  * @author cshaw
  */
-public class OverrideCastDenyEvent extends AAnnounceEvent {
+public class OverrideCastDenyEvent extends ABallotEvent {
 
-    private int serial;
-
-    private byte[] nonce;
 
     /**
      * Matcher for the OverrideCastDenyEvent
      */
     private static MatcherRule MATCHER = new MatcherRule() {
         private ASExpression pattern = new ListExpression( StringExpression
-                .makeString( "override-cast-deny" ), StringWildcard.SINGLETON );
+                .makeString( "override-commit-deny" ), StringWildcard.SINGLETON );
 
         public IAnnounceEvent match(int serial, ASExpression sexp) {
             ASExpression res = pattern.match( sexp );
             if (res != NoMatch.SINGLETON) {
                 /*byte[] nonce = ((StringExpression) ((ListExpression) res)
                         .get( 0 )).getBytesCopy();*/
-            	byte[] nonce = new BigInteger(((ListExpression) res)
-                        .get( 0 ).toString()).toByteArray();
+            	ASExpression nonce = ((ListExpression) res).get(0);
                 return new OverrideCastDenyEvent( serial, nonce );
             }
 
             return null;
-        };
+        }
     };
 
     /**
@@ -82,20 +76,8 @@ public class OverrideCastDenyEvent extends AAnnounceEvent {
      * @param nonce
      *            the nonce
      */
-    public OverrideCastDenyEvent(int serial, byte[] nonce) {
-        this.serial = serial;
-        this.nonce = nonce;
-    }
-
-    /**
-     * @return the nonce
-     */
-    public byte[] getNonce() {
-        return nonce;
-    }
-
-    public int getSerial() {
-        return serial;
+    public OverrideCastDenyEvent(int serial, ASExpression nonce) {
+        super(serial, nonce);
     }
 
     public void fire(VoteBoxEventListener l) {
@@ -104,11 +86,10 @@ public class OverrideCastDenyEvent extends AAnnounceEvent {
 
     public ASExpression toSExp() {
         /*return new ListExpression( StringExpression
-                .makeString( "override-cast-deny" ), StringExpression
+                .makeString( "override-commit-deny" ), StringExpression
                 .makeString( nonce ) );*/
     	return new ListExpression( StringExpression
-                .makeString( "override-cast-deny" ), StringExpression
-                .makeString( new BigInteger(nonce).toString() ) );
+                .makeString( "override-commit-deny" ), getNonce());
     }
 
 }

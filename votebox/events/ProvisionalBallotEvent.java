@@ -2,21 +2,15 @@ package votebox.events;
 
 import sexpression.ASExpression;
 import sexpression.ListExpression;
-import sexpression.NamedNoMatch;
 import sexpression.StringExpression;
-
-import java.util.HashMap;
 
 /**
  * An event which represents that printing did not occur successfully
  *
  * @author Matt Bernhard
  */
-public class ProvisionalBallotEvent extends AAnnounceEvent{
-
-    private int _serial;
-    private ASExpression _nonce;
-    private ASExpression _bid;
+@SuppressWarnings("unused")
+public class ProvisionalBallotEvent extends ABallotEvent{
 
     /**
      * Matcher for the ProvisionalBallotEvent
@@ -26,20 +20,13 @@ public class ProvisionalBallotEvent extends AAnnounceEvent{
                 .make("(provisional-ballot %nonce:#string %bid:#string)");
 
         public IAnnounceEvent match(int serial, ASExpression sexp) {
-            HashMap<String, ASExpression> result = pattern.namedMatch(sexp);
-            if (result != NamedNoMatch.SINGLETON)
-                return new ProvisionalBallotEvent(serial, result.get("nonce"), result.get("bid"));
 
-            return null;
+            ListExpression list = (ListExpression) sexp;
+
+            return new ProvisionalBallotEvent(serial, list.get(0), list.get(1).toString());
+
         }
     };
-
-    /**
-     * @return a MatcherRule for parsing this event type.
-     */
-    public static MatcherRule getMatcher() {
-        return MATCHER;
-    }//getMatcher
 
     /**
      * Constructs a new ProvisionalBallotEvent
@@ -48,25 +35,8 @@ public class ProvisionalBallotEvent extends AAnnounceEvent{
      * @param nonce  the nonce
      * @param bid identifies the ballot that is cast
      */
-    public ProvisionalBallotEvent(int serial, ASExpression nonce, ASExpression bid) {
-        _serial = serial;
-        _nonce = nonce;
-        _bid = bid;
-    }
-
-    /**
-     * @return the nonce
-     */
-    public ASExpression getNonce() {
-        return _nonce;
-    }
-
-    public int getSerial() {
-        return _serial;
-    }
-
-    public ASExpression getBID(){
-        return _bid;
+    public ProvisionalBallotEvent(int serial, ASExpression nonce, String bid) {
+        super(serial, bid, nonce);
     }
 
     /**
@@ -81,6 +51,6 @@ public class ProvisionalBallotEvent extends AAnnounceEvent{
      */
     public ASExpression toSExp() {
         return new ListExpression(StringExpression.makeString("provisional-ballot"),
-                _nonce, _bid);
+                getNonce(), StringExpression.make(getBID()));
     }
 }

@@ -42,9 +42,6 @@ public class AuthorizedToCastEvent extends ABallotEvent {
     /** Serial number of the machine being authorized */
     private int targetSerial;
 
-    /** The precinct (i.e. ballot style) for the authorized session */
-    protected String precinct;
-
 
     /**
      * The matcher for the AuthorizedToCastEvent.
@@ -112,13 +109,6 @@ public class AuthorizedToCastEvent extends ABallotEvent {
         return targetSerial;
     }
 
-
-    /**
-     * @return the ballot style
-     */
-    public String getPrecinct(){
-        return precinct;
-    }
 
     /**
      * @see votebox.events.IAnnounceEvent#fire(VoteBoxEventListener)

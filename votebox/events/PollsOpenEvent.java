@@ -63,7 +63,7 @@ public class PollsOpenEvent extends AAnnounceEvent {
             }
 
             return null;
-        };
+        }
     };
 
     /**

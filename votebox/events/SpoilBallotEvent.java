@@ -12,11 +12,8 @@ import java.util.HashMap;
  *
  * @author Matt Bernhard
  */
-public class SpoilBallotEvent extends AAnnounceEvent {
-
-    private int _serial;
-    private String _bid;
-    private ASExpression _nonce;
+@SuppressWarnings("unused")
+public class SpoilBallotEvent extends ABallotEvent {
 
     /**
      * Matcher for the SpoilBallotEvent
@@ -37,41 +34,14 @@ public class SpoilBallotEvent extends AAnnounceEvent {
     };
 
     /**
-     * @return a MatcherRule for parsing this event type.
-     */
-    public static MatcherRule getMatcher() {
-        return MATCHER;
-    }//getMatcher
-
-    /**
      * Constructs a new SpoilBallotEvent
      *
      * @param serial the serial number of the sender
      * @param bid the ballot to be spoiled
      * @param nonce  the nonce of the ballot
      */
-    public SpoilBallotEvent(int serial,String bid, ASExpression nonce) {
-        _serial = serial;
-        _bid = bid;
-        _nonce = nonce;
-    }
-
-    /**
-     * @return the ballot
-     */
-    public String getBID() {
-        return _bid;
-    }
-
-    /**
-     * @return the nonce
-     */
-    public ASExpression getNonce() {
-        return _nonce;
-    }
-
-    public int getSerial() {
-        return _serial;
+    public SpoilBallotEvent(int serial, String bid, ASExpression nonce) {
+        super(serial, bid, nonce);
     }
 
     /**
@@ -86,6 +56,6 @@ public class SpoilBallotEvent extends AAnnounceEvent {
      */
     public ASExpression toSExp() {
         return new ListExpression(StringExpression.makeString("spoil-ballot"),
-                StringExpression.make(_bid), _nonce);
+                StringExpression.make(getBID()), getNonce());
     }
 }

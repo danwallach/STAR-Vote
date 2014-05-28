@@ -59,7 +59,7 @@ public class PollsClosedEvent extends AAnnounceEvent {
             }
 
             return null;
-        };
+        }
     };
 
     /**

@@ -5,67 +5,51 @@ import sexpression.*;
 /**
  * Event class for when a ballot is scanned
  */
-public class BallotScannedEvent extends AAnnounceEvent {
+public class BallotScannedEvent extends ABallotEvent {
 
-  private int serial;
+    /**
+     * Matcher for the ballotscanned message
+     */
+    private static MatcherRule MATCHER = new MatcherRule() {
+        private ASExpression pattern = new ListExpression(StringExpression
+                .makeString("ballot-scanned"), StringWildcard.SINGLETON);
 
-  private String BID;
+        public IAnnounceEvent match(int serial, ASExpression sexp) {
+            ASExpression res = pattern.match(sexp);
+            if (res != NoMatch.SINGLETON) {
+                String bid = ((ListExpression) res).get(0).toString();
+                return new BallotScannedEvent(serial, bid);
+            }
 
-  /**
-   * Matcher for the ballotscanned message
-   */
-  private static MatcherRule MATCHER = new MatcherRule() {
-    private ASExpression pattern = new ListExpression( StringExpression
-        .makeString( "ballot-scanned" ), StringWildcard.SINGLETON);
+            return null;
+        }
+    };
 
-    public IAnnounceEvent match(int serial, ASExpression sexp) {
-      ASExpression res = pattern.match( sexp );
-      if (res != NoMatch.SINGLETON) {
-        String BID = ((ListExpression) res).get( 0 ).toString();
-        return new BallotScannedEvent( serial, BID );
-      }
-
-      return null;
+    /**
+     * @return a MatcherRule for parsing this event type.
+     */
+    public static MatcherRule getMatcher() {
+        return MATCHER;
     }
-  };
-
-  /**
-   *
-   * @return a MatcherRule for parsing this event type.
-   */
-  public static MatcherRule getMatcher(){
-    return MATCHER;
-  }
-
-  public int getSerial() {
-    return serial;
-  }
-
-  /**
-   * @return the ballot ID of accepted ballot
-   */
-  public String getBID() {
-    return BID;
-  }
 
     /**
      * Constructor of ballot
      *
-     * @param serial
-     * @param BID
+     * @see votebox.events.ABallotEvent#ABallotEvent(int, String)
      */
-  public BallotScannedEvent(int serial, String BID) {
-    this.serial = serial;
-    this.BID = BID;
-  }
+    public BallotScannedEvent(int serial, String bid) {
+        super(serial, bid);
+    }
 
-  public void fire(VoteBoxEventListener l) {
-    l.ballotScanned(this);
-  }
+    /** @see votebox.events.IAnnounceEvent#fire(VoteBoxEventListener) */
+    public void fire(VoteBoxEventListener l) {
+        l.ballotScanned(this);
+    }
 
-  public ASExpression toSExp() {
-    return new ListExpression( StringExpression.makeString("ballot-scanned"),
-        StringExpression.makeString( BID ) );
-  }
+    /** @see votebox.events.IAnnounceEvent#toSExp() */
+    public ASExpression toSExp() {
+        return new ListExpression(StringExpression.makeString("ballot-scanned"),
+                StringExpression.makeString(getBID()));
+    }
 
 }

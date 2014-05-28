@@ -40,13 +40,6 @@ public class InvalidPinEvent extends AAnnounceEvent{
         return serial;
     }
 
-    /**
-     * @return nonce associated with this pin request
-     */
-    public byte[] getNonce() {
-        return nonce;
-    }
-
     public int getNode(){
         return node;
     }

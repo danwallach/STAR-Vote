@@ -30,24 +30,7 @@ import junit.framework.TestCase;
 import sexpression.ASExpression;
 import sexpression.StringExpression;
 import sexpression.stream.InvalidVerbatimStreamException;
-import votebox.events.ActivatedEvent;
-import votebox.events.AssignLabelEvent;
-import votebox.events.AuthorizedToCastEvent;
-import votebox.events.BallotReceivedEvent;
-import votebox.events.CastCommittedBallotEvent;
-import votebox.events.LastPollsOpenEvent;
-import votebox.events.OverrideCancelConfirmEvent;
-import votebox.events.OverrideCancelDenyEvent;
-import votebox.events.OverrideCancelEvent;
-import votebox.events.OverrideCastConfirmEvent;
-import votebox.events.OverrideCastDenyEvent;
-import votebox.events.OverrideCastEvent;
-import votebox.events.PollsClosedEvent;
-import votebox.events.PollsOpenEvent;
-import votebox.events.StatusEvent;
-import votebox.events.SupervisorEvent;
-import votebox.events.VoteBoxEvent;
-import votebox.events.VoteBoxEventMatcher;
+import votebox.events.*;
 
 public class VoteBoxEventsTest extends TestCase {
 
@@ -60,18 +43,22 @@ public class VoteBoxEventsTest extends TestCase {
                 BallotReceivedEvent.getMatcher(), CastCommittedBallotEvent.getMatcher(),
                 LastPollsOpenEvent.getMatcher(), OverrideCancelConfirmEvent.getMatcher(),
                 OverrideCancelDenyEvent.getMatcher(), OverrideCancelEvent.getMatcher(),
-                OverrideCastConfirmEvent.getMatcher(),
+                OverrideCommitConfirmEvent.getMatcher(),
                 OverrideCastDenyEvent.getMatcher(), OverrideCastEvent.getMatcher(),
                 PollsClosedEvent.getMatcher(), PollsOpenEvent.getMatcher(),
                 SupervisorEvent.getMatcher(), VoteBoxEvent.getMatcher());
     }
 
-    public byte[] getBlob() {
+    public ASExpression getBlob() {
         int n = (int) (Math.random() * 100);
         byte[] array = new byte[n];
         for (int i = 0; i < n; i++)
             array[i] = (byte) (Math.random() * 256);
-        return array;
+        try {
+            return ASExpression.makeVerbatim(array);
+        } catch (InvalidVerbatimStreamException e) {
+            throw new RuntimeException("Couldn't generate a random nonce!");
+        }
     }
 
     public void testPollsOpen() {
@@ -132,13 +119,9 @@ public class VoteBoxEventsTest extends TestCase {
     }
 
     public void testAuthorizedToCast() {
-        ASExpression nonce = null;
-        try{
-            nonce = ASExpression.makeVerbatim(getBlob());
-        } catch (InvalidVerbatimStreamException e) {
-            throw new RuntimeException(e);
-        }
-        byte[] ballot = getBlob();
+        ASExpression nonce = getBlob();
+
+        byte[] ballot = getBlob().toVerbatim();
         AuthorizedToCastEvent event = new AuthorizedToCastEvent(50, 65, nonce,
                 "007", ballot);
         ASExpression sexp = event.toSExp();
@@ -170,102 +153,102 @@ public class VoteBoxEventsTest extends TestCase {
     }*/
 
     public void testBallotReceived() {
-        byte[] nonce = getBlob();
+        ASExpression nonce= getBlob();
         BallotReceivedEvent event = new BallotReceivedEvent(50, 65, nonce, "123", "123");
         ASExpression sexp = event.toSExp();
         assertEquals("(ballot-received 65 "
-                + (new BigInteger(nonce)).toString() + ")", sexp.toString());
+                + nonce.toString() + ")", sexp.toString());
 
         BallotReceivedEvent event2 = (BallotReceivedEvent) matcher.match(50,
                 sexp);
         assertEquals(event.getSerial(), event2.getSerial());
-        assertEquals(event.getNode(), event2.getNode());
-        assertTrue(Arrays.equals(event.getNonce(), event2.getNonce()));
+        assertEquals(event.getTargetSerial(), event2.getTargetSerial());
+        assertTrue(Arrays.equals(event.getNonce().toVerbatim(), event2.getNonce().toVerbatim()));
     }
 
     public void testOverrideCancel() {
-        byte[] nonce = getBlob();
+        ASExpression nonce= getBlob();
         OverrideCancelEvent event = new OverrideCancelEvent(50, 65, nonce);
         ASExpression sexp = event.toSExp();
         assertEquals("(override-cancel 65 "
-                + (new BigInteger(nonce)).toString() + ")", sexp.toString());
+                + nonce.toString() + ")", sexp.toString());
 
         OverrideCancelEvent event2 = (OverrideCancelEvent) matcher.match(50,
                 sexp);
         assertEquals(event.getSerial(), event2.getSerial());
-        assertEquals(event.getNode(), event2.getNode());
-        assertTrue(Arrays.equals(event.getNonce(), event2.getNonce()));
+        assertEquals(event.getTargetSerial(), event2.getTargetSerial());
+        assertTrue(Arrays.equals(event.getNonce().toVerbatim(), event2.getNonce().toVerbatim()));
     }
 
     public void testOverrideCast() {
-        byte[] nonce = getBlob();
+        ASExpression nonce= getBlob();
         OverrideCastEvent event = new OverrideCastEvent(50, 65, nonce);
         ASExpression sexp = event.toSExp();
         assertEquals("(override-cast 65 "
-                + (new BigInteger(nonce)).toString() + ")", sexp.toString());
+                + nonce.toString() + ")", sexp.toString());
 
         OverrideCastEvent event2 = (OverrideCastEvent) matcher.match(50, sexp);
         assertEquals(event.getSerial(), event2.getSerial());
-        assertEquals(event.getNode(), event2.getNode());
-        assertTrue(Arrays.equals(event.getNonce(), event2.getNonce()));
+        assertEquals(event.getTargetSerial(), event2.getTargetSerial());
+        assertTrue(Arrays.equals(event.getNonce().toVerbatim(), event2.getNonce().toVerbatim()));
     }
 
     public void testOverrideCancelConfirm() {
-        byte[] nonce = getBlob();
+        ASExpression nonce= getBlob();
         OverrideCancelConfirmEvent event = new OverrideCancelConfirmEvent(50,
                 nonce);
         ASExpression sexp = event.toSExp();
         assertEquals("(override-cancel-confirm "
-                + (new BigInteger(nonce)).toString() + ")", sexp.toString());
+                + nonce.toString() + ")", sexp.toString());
 
         OverrideCancelConfirmEvent event2 = (OverrideCancelConfirmEvent) matcher
                 .match(50, sexp);
         assertEquals(event.getSerial(), event2.getSerial());
-        assertTrue(Arrays.equals(event.getNonce(), event2.getNonce()));
+        assertTrue(Arrays.equals(event.getNonce().toVerbatim(), event2.getNonce().toVerbatim()));
     }
 
     public void testOverrideCancelDeny() {
-        byte[] nonce = getBlob();
+        ASExpression nonce= getBlob();
         OverrideCancelDenyEvent event = new OverrideCancelDenyEvent(50, nonce);
         ASExpression sexp = event.toSExp();
         assertEquals("(override-cancel-deny "
-                + (new BigInteger(nonce)).toString() + ")", sexp.toString());
+                + nonce.toString() + ")", sexp.toString());
 
         OverrideCancelDenyEvent event2 = (OverrideCancelDenyEvent) matcher
                 .match(50, sexp);
         assertEquals(event.getSerial(), event2.getSerial());
-        assertTrue(Arrays.equals(event.getNonce(), event2.getNonce()));
+        assertTrue(Arrays.equals(event.getNonce().toVerbatim(), event2.getNonce().toVerbatim()));
     }
 
     public void testOverrideCastConfirm() {
-        byte[] nonce = getBlob();
-        byte[] ballot = getBlob();
-        OverrideCastConfirmEvent event = new OverrideCastConfirmEvent(50,
+        ASExpression nonce= getBlob();
+        byte[] ballot = getBlob().toVerbatim();
+        OverrideCommitConfirmEvent event = new OverrideCommitConfirmEvent(50,
                 nonce, ballot);
         ASExpression sexp = event.toSExp();
         assertEquals("(override-cast-confirm "
-                + (new BigInteger(nonce)).toString() + " "
+                + nonce.toString() + " "
                 + StringExpression.makeString(ballot).toString() + ")", sexp
                 .toString());
 
-        OverrideCastConfirmEvent event2 = (OverrideCastConfirmEvent) matcher
+        OverrideCommitConfirmEvent event2 = (OverrideCommitConfirmEvent) matcher
                 .match(50, sexp);
         assertEquals(event.getSerial(), event2.getSerial());
-        assertTrue(Arrays.equals(event.getNonce(), event2.getNonce()));
+        assertTrue(Arrays.equals(event.getNonce().toVerbatim(), event2.getNonce().toVerbatim()));
         assertTrue(Arrays.equals(event.getBallot(), event2.getBallot()));
     }
 
     public void testOverrideCastDeny() {
-        byte[] nonce = getBlob();
+        ASExpression nonce= getBlob();
         OverrideCastDenyEvent event = new OverrideCastDenyEvent(50, nonce);
         ASExpression sexp = event.toSExp();
         assertEquals("(override-cast-deny "
-                + (new BigInteger(nonce)).toString() + ")", sexp.toString());
+                + nonce.toString() + ")", sexp.toString());
 
         OverrideCastDenyEvent event2 = (OverrideCastDenyEvent) matcher.match(
                 50, sexp);
         assertEquals(event.getSerial(), event2.getSerial());
-        assertTrue(Arrays.equals(event.getNonce(), event2.getNonce()));
+        assertTrue(Arrays.equals(event.getNonce().toVerbatim(), event2.getNonce().toVerbatim()));
     }
 
     public void testLastPollsOpen() {

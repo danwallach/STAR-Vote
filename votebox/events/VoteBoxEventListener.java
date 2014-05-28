@@ -135,7 +135,7 @@ public interface VoteBoxEventListener {
      * @param e
      *            the event
      */
-    public void overrideCastConfirm(OverrideCastConfirmEvent e);
+    public void overrideCastConfirm(OverrideCommitConfirmEvent e);
 
     /**
      * Fired when the override-cast-deny message is received
@@ -275,11 +275,6 @@ public interface VoteBoxEventListener {
      * Announces the end of a provisional voting session on the booth-end
      */
     public void provisionalCommitBallot(ProvisionalCommitEvent provisionalCommitEvent);
-
-    /**
-     * Authorizes a booth to cast votes on the network using Non-Interactive, Zero-Knowledge proofs
-     */
-    public void authorizedToCastWithNIZKS(AuthorizedToCastWithNIZKsEvent e);
 
     /**
      * Initialization event of a Tap Machine

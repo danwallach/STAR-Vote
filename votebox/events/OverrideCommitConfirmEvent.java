@@ -22,15 +22,13 @@
 
 package votebox.events;
 
-import java.math.BigInteger;
-
 import sexpression.*;
 
 /**
- * Event that represents the override-cast-confirm message:<br>
+ * Event that represents the override-commit-confirm message:<br>
  * 
  * <pre>
- * (override-cast-confirm nonce encrypted-ballot)
+ * (override-commit-confirm nonce encrypted-ballot)
  * </pre>
  * 
  * See <a href="https://sys.cs.rice.edu/votebox/trac/wiki/VotingMessages">
@@ -39,36 +37,28 @@ import sexpression.*;
  * 
  * @author cshaw
  */
-public class OverrideCastConfirmEvent extends AAnnounceEvent {
+public class OverrideCommitConfirmEvent extends ABallotEvent {
 
-    private int serial;
-
-    private byte[] nonce;
-
-    private byte[] ballot;
 
     /**
-     * Matcher for the OverrideCastConfirmEvent.
+     * Matcher for the OverrideCommitConfirmEvent.
      */
     private static MatcherRule MATCHER = new MatcherRule() {
         private ASExpression pattern = new ListExpression( StringExpression
-                .makeString( "override-cast-confirm" ),
+                .makeString( "override-commit-confirm" ),
                 StringWildcard.SINGLETON, StringWildcard.SINGLETON );
 
         public IAnnounceEvent match(int serial, ASExpression sexp) {
             ASExpression res = pattern.match( sexp );
             if (res != NoMatch.SINGLETON) {
-                /*byte[] nonce = ((StringExpression) ((ListExpression) res)
-                        .get( 0 )).getBytesCopy();*/
-            	byte[] nonce = new BigInteger(((ListExpression) res)
-                        .get( 0 ).toString()).toByteArray();
+            	ASExpression nonce = ((ListExpression) res).get( 0 );
                 byte[] ballot = ((StringExpression) ((ListExpression) res)
                         .get( 1 )).getBytesCopy();
-                return new OverrideCastConfirmEvent( serial, nonce, ballot );
+                return new OverrideCommitConfirmEvent( serial, nonce, ballot );
             }
 
             return null;
-        };
+        }
     };
 
     /**
@@ -80,7 +70,7 @@ public class OverrideCastConfirmEvent extends AAnnounceEvent {
     }//getMatcher
     
     /**
-     * Constructs a new OverrideCastConfirmEvent
+     * Constructs a new OverrideCommitConfirmEvent
      * 
      * @param serial
      *            the serial number of the sender
@@ -89,28 +79,8 @@ public class OverrideCastConfirmEvent extends AAnnounceEvent {
      * @param ballot
      *            the encrypted ballot
      */
-    public OverrideCastConfirmEvent(int serial, byte[] nonce, byte[] ballot) {
-        this.serial = serial;
-        this.nonce = nonce;
-        this.ballot = ballot;
-    }
-
-    /**
-     * @return the encrypted ballot
-     */
-    public byte[] getBallot() {
-        return ballot;
-    }
-
-    /**
-     * @return the nonce
-     */
-    public byte[] getNonce() {
-        return nonce;
-    }
-
-    public int getSerial() {
-        return serial;
+    public OverrideCommitConfirmEvent(int serial, ASExpression nonce, byte[] ballot) {
+        super(serial, ballot, nonce);
     }
 
     public void fire(VoteBoxEventListener l) {
@@ -118,12 +88,10 @@ public class OverrideCastConfirmEvent extends AAnnounceEvent {
     }
 
     public ASExpression toSExp() {
-        /*return new ListExpression( StringExpression
-                .makeString( "override-cast-confirm" ), StringExpression
-                .makeString( nonce ), StringExpression.makeString( ballot ) );*/
     	return new ListExpression( StringExpression
-                .makeString( "override-cast-confirm" ), StringExpression
-                .makeString( new BigInteger(nonce).toString() ), StringExpression.makeString( ballot ) );
+                .makeString( "override-commit-confirm" ),
+                getNonce(),
+                StringExpression.makeString(getBallot()));
     }
 
 }

@@ -25,6 +25,7 @@ package votebox.events;
 import java.util.HashMap;
 
 import sexpression.*;
+import sexpression.stream.InvalidVerbatimStreamException;
 
 /**
  * This event represents what gets sent out on the network when the machine
@@ -35,14 +36,7 @@ import sexpression.*;
  * @author kyle
  * 
  */
-public class CommitBallotEvent extends AAnnounceEvent {
-
-    private final int _serial;
-    private final ASExpression _nonce;
-    private final ASExpression _ballot;
-    private final ASExpression _bid;
-    private final ASExpression _precinct;
-
+public class CommitBallotEvent extends ABallotEvent {
 
     private static MatcherRule MATCHER = new MatcherRule() {
         private ASExpression pattern = ASExpression
@@ -50,18 +44,23 @@ public class CommitBallotEvent extends AAnnounceEvent {
 
         public IAnnounceEvent match(int serial, ASExpression sexp) {
             HashMap<String, ASExpression> result = pattern.namedMatch(sexp);
-/*            System.out.println("Keys in mapping:");
-            for (String i: result.keySet())
-            {
-                System.out.println(i + ":" + result.get(i).toString());
-            }
-            System.out.println("End of list of keys.");*/
+            ListExpression lsexp = (ListExpression) sexp;
+
+            ASExpression nonce = lsexp.get(0);
+
+            byte[] ballot = ((StringExpression) lsexp.get( 1 )).getBytesCopy();
+
+            String bid = lsexp.get( 2 ).toString();
+
+            String precinct = lsexp.get( 3 ).toString();
+
+
+
             if (result != NamedNoMatch.SINGLETON)
-                return new CommitBallotEvent(serial, result.get("nonce"), result
-                        .get("ballot"), result.get("bid"), result.get("precinct") );
+                return new CommitBallotEvent(serial, nonce, ballot, bid, precinct );
 
             return null;
-        };
+        }
     };
     
     /**
@@ -72,30 +71,9 @@ public class CommitBallotEvent extends AAnnounceEvent {
     	return MATCHER;
     }//getMatcher
     
-    public CommitBallotEvent(int serial, ASExpression nonce, ASExpression ballot, ASExpression bid, ASExpression precinct) {
-        _serial = serial;
-        _nonce = nonce;
-        _ballot = ballot;
-        _bid = bid;
-        _precinct = precinct;
+    public CommitBallotEvent(int serial, ASExpression nonce, byte[] ballot, String bid, String precinct) {
+        super(serial, nonce, ballot, bid, precinct);
     }
-
-    public ASExpression getNonce(){
-    	return _nonce;
-    }
-    
-    public ASExpression getBallot(){
-    	return _ballot;
-    }
-
-    public ASExpression getBID(){
-        return _bid;
-    }
-
-    public ASExpression getPrecinct(){
-        return _precinct;
-    }
-
 
     /**
      * @see votebox.events.IAnnounceEvent#fire(votebox.events.VoteBoxEventListener)
@@ -104,19 +82,20 @@ public class CommitBallotEvent extends AAnnounceEvent {
         l.commitBallot(this);
     }
 
-    /**
-     * @see votebox.events.IAnnounceEvent#getSerial()
-     */
-    public int getSerial() {
-        return _serial;
-    }
 
     /**
      * @see votebox.events.IAnnounceEvent#toSExp()
      */
     public ASExpression toSExp() {
-        return new ListExpression(StringExpression.make("commit-ballot"),
-                _nonce, _ballot, _bid, _precinct);
+        try {
+            return new ListExpression(StringExpression.make("commit-ballot"),
+                    getNonce(),
+                    StringExpression.makeVerbatim(getBallot()),
+                    StringExpression.make(getBID()),
+                    StringExpression.make(getPrecinct()));
+        } catch (InvalidVerbatimStreamException e) {
+            throw new RuntimeException("Couldn't serialize the ballot!");
+        }
     }
 
 }

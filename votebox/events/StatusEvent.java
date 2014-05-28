@@ -69,7 +69,7 @@ public class StatusEvent extends AAnnounceEvent {
             }
 
             return null;
-        };
+        }
     };
     
     /**

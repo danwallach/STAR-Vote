@@ -22,8 +22,6 @@
 
 package votebox.events;
 
-import java.math.BigInteger;
-
 import sexpression.*;
 
 /**
@@ -39,11 +37,7 @@ import sexpression.*;
  * 
  * @author cshaw
  */
-public class OverrideCancelDenyEvent extends AAnnounceEvent {
-
-    private int serial;
-
-    private byte[] nonce;
+public class OverrideCancelDenyEvent extends ABallotEvent {
 
     /**
      * Matcher for the OverrideCancelDenyEvent
@@ -57,13 +51,12 @@ public class OverrideCancelDenyEvent extends AAnnounceEvent {
             if (res != NoMatch.SINGLETON) {
                 /*byte[] nonce = ((StringExpression) ((ListExpression) res)
                         .get( 0 )).getBytesCopy();*/
-            	byte[] nonce = new BigInteger(((ListExpression) res)
-                        .get( 0 ).toString()).toByteArray();
+            	ASExpression nonce =((ListExpression) res).get(0);
                 return new OverrideCancelDenyEvent( serial, nonce );
             }
 
             return null;
-        };
+        }
     };
 
     /**
@@ -82,20 +75,8 @@ public class OverrideCancelDenyEvent extends AAnnounceEvent {
      * @param nonce
      *            the nonce
      */
-    public OverrideCancelDenyEvent(int serial, byte[] nonce) {
-        this.serial = serial;
-        this.nonce = nonce;
-    }
-
-    /**
-     * @return the nonce
-     */
-    public byte[] getNonce() {
-        return nonce;
-    }
-
-    public int getSerial() {
-        return serial;
+    public OverrideCancelDenyEvent(int serial, ASExpression nonce) {
+        super(serial, nonce);
     }
 
     public void fire(VoteBoxEventListener l) {
@@ -103,12 +84,8 @@ public class OverrideCancelDenyEvent extends AAnnounceEvent {
     }
 
     public ASExpression toSExp() {
-        /*return new ListExpression( StringExpression
-                .makeString( "override-cancel-deny" ), StringExpression
-                .makeString( nonce ) );*/
     	return new ListExpression( StringExpression
-                .makeString( "override-cancel-deny" ), StringExpression
-                .makeString( new BigInteger(nonce).toString() ) );
+                .makeString( "override-cancel-deny" ), getNonce());
     }
 
 }

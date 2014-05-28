@@ -26,7 +26,7 @@ public class EncryptedCastBallotWithNIZKsEvent extends EncryptedCastBallotEvent 
                         .get("ballot"), result.get("bid"));
 
             return null;
-        };
+        }
     };
 
     /**

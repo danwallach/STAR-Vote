@@ -22,8 +22,6 @@
 
 package votebox.events;
 
-import java.math.BigInteger;
-
 import sexpression.*;
 
 /**
@@ -39,11 +37,8 @@ import sexpression.*;
  * 
  * @author cshaw
  */
-public class OverrideCancelConfirmEvent extends AAnnounceEvent {
+public class OverrideCancelConfirmEvent extends ABallotEvent {
 
-    private int serial;
-
-    private byte[] nonce;
 
     /**
      * Matcher for the OverrideCancelConfirmEvent
@@ -58,13 +53,12 @@ public class OverrideCancelConfirmEvent extends AAnnounceEvent {
             if (res != NoMatch.SINGLETON) {
                 /*byte[] nonce = ((StringExpression) ((ListExpression) res)
                         .get( 0 )).getBytesCopy();*/
-            	byte[] nonce = new BigInteger(((ListExpression) res)
-                        .get( 0 ).toString()).toByteArray();
+            	ASExpression nonce = ((ListExpression) res).get(0);
                 return new OverrideCancelConfirmEvent( serial, nonce );
             }
 
             return null;
-        };
+        }
     };
 
     /**
@@ -83,33 +77,18 @@ public class OverrideCancelConfirmEvent extends AAnnounceEvent {
      * @param nonce
      *            the nonce
      */
-    public OverrideCancelConfirmEvent(int serial, byte[] nonce) {
-        this.serial = serial;
-        this.nonce = nonce;
+    public OverrideCancelConfirmEvent(int serial, ASExpression nonce) {
+        super(serial, nonce);
     }
 
-    /**
-     * @return the nonce
-     */
-    public byte[] getNonce() {
-        return nonce;
-    }
-
-    public int getSerial() {
-        return serial;
-    }
 
     public void fire(VoteBoxEventListener l) {
         l.overrideCancelConfirm( this );
     }
 
     public ASExpression toSExp() {
-        /*return new ListExpression( StringExpression
-                .makeString( "override-cancel-confirm" ), StringExpression
-                .makeString( nonce ) );*/
     	return new ListExpression( StringExpression
-                .makeString( "override-cancel-confirm" ), StringExpression
-                .makeString( new BigInteger(nonce).toString() ) );
+                .makeString( "override-cancel-confirm" ), getNonce());
     }
 
 }

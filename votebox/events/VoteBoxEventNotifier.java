@@ -114,7 +114,7 @@ public class VoteBoxEventNotifier implements VoteBoxEventListener {
             l.overrideCast(e);
     }
 
-    public void overrideCastConfirm(OverrideCastConfirmEvent e) {
+    public void overrideCastConfirm(OverrideCommitConfirmEvent e) {
         for (VoteBoxEventListener l : listeners)
             l.overrideCastConfirm(e);
     }
@@ -150,6 +150,7 @@ public class VoteBoxEventNotifier implements VoteBoxEventListener {
      * @param l
      *            the listener
      */
+    @SuppressWarnings("unused")
     public void removeListener(VoteBoxEventListener l) {
         listeners.remove(l);
     }
@@ -252,11 +253,6 @@ public class VoteBoxEventNotifier implements VoteBoxEventListener {
     public void provisionalCommitBallot(ProvisionalCommitEvent e) {
         for(VoteBoxEventListener l : listeners)
             l.provisionalCommitBallot(e);
-    }
-
-    public void authorizedToCastWithNIZKS(AuthorizedToCastWithNIZKsEvent e) {
-        for (VoteBoxEventListener l : listeners)
-            l.authorizedToCastWithNIZKS(e);
     }
 
     public void tapMachine(TapMachineEvent e) {

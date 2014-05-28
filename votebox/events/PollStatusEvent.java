@@ -74,13 +74,6 @@ public class PollStatusEvent extends AAnnounceEvent{
         return pollsOpen;
     }
 
-    /**
-     * @return the node
-     */
-    public int getNode() {
-        return node;
-    }
-
     public int getSerial() {
         return serial;
     }

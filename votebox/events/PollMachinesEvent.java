@@ -63,7 +63,7 @@ public class PollMachinesEvent extends AAnnounceEvent {
             }
 
             return null;
-        };
+        }
     };
 
     /**
@@ -90,22 +90,8 @@ public class PollMachinesEvent extends AAnnounceEvent {
         this.keyword = keyword;
     }
 
-    /**
-     * @return the keyword
-     */
-    public String getKeyword() {
-        return keyword;
-    }
-
     public int getSerial() {
         return serial;
-    }
-
-    /**
-     * @return the timestamp
-     */
-    public long getTimestamp() {
-        return timestamp;
     }
 
     public void fire(VoteBoxEventListener l) {

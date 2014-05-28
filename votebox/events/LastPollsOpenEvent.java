@@ -66,11 +66,10 @@ public class LastPollsOpenEvent extends AAnnounceEvent {
             }
 
             return null;
-        };
+        }
     };
 
     /**
-     * 
      * @return a MatcherRule for parsing this event type.
      */
     public static MatcherRule getMatcher(){
@@ -86,8 +85,7 @@ public class LastPollsOpenEvent extends AAnnounceEvent {
      *            a PollsOpenEvent representing the last polls-open message seen
      */
     public LastPollsOpenEvent(int serial, PollsOpenEvent pollsOpenMsg) {
-        super();
-        this.serial = serial;
+        super(serial);
         this.pollsOpenMsg = pollsOpenMsg;
     }
 

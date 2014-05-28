@@ -250,7 +250,7 @@ public class BallotScanner{
             public void overrideCancelConfirm(OverrideCancelConfirmEvent e) {}
             public void overrideCancelDeny(OverrideCancelDenyEvent e) {}
             public void overrideCast(OverrideCastEvent e) {}
-            public void overrideCastConfirm(OverrideCastConfirmEvent e) {}
+            public void overrideCastConfirm(OverrideCommitConfirmEvent e) {}
             public void overrideCastDeny(OverrideCastDenyEvent e) {}
             public void pollsClosed(PollsClosedEvent e) {}
             public void pollsOpen(PollsOpenEvent e) {}
@@ -263,7 +263,7 @@ public class BallotScanner{
             public void announceProvisionalBallot(ProvisionalBallotEvent provisionalBallotEvent) {}
             public void provisionalAuthorizedToCast(ProvisionalAuthorizeEvent provisionalAuthorizeEvent) {}
             public void provisionalCommitBallot(ProvisionalCommitEvent provisionalCommitEvent) {}
-            public void authorizedToCastWithNIZKS(AuthorizedToCastWithNIZKsEvent e) {}
+
             public void tapMachine(TapMachineEvent tapMachineEvent) {}
             public void ballotPrinting(BallotPrintingEvent ballotPrintingEvent) {}
             public void pinEntered(PINEnteredEvent event) {}

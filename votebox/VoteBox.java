@@ -88,7 +88,7 @@ public class VoteBox{
     private int protectedCount;
     private int publicCount;
     private int numConnections;
-    private byte[] nonce;
+    private ASExpression nonce;
     private int pageBeforeOverride;
     private Timer killVBTimer;
     private Timer statusTimer;
@@ -263,7 +263,7 @@ public class VoteBox{
                         /* Check if NIZKs are enabled and choose announcement format */
                         if (!_constants.getEnableNIZKs()) {
 
-                            auditorium.announce(new CommitBallotEvent(mySerial, StringExpression.makeString(nonce),
+                            auditorium.announce(new CommitBallotEvent(mySerial, nonce,
                                     BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey(mySerial + "-public")),
                                     StringExpression.makeString(bid), StringExpression.makeString(precinct)));
                         }
@@ -273,7 +273,7 @@ public class VoteBox{
                             ASExpression encBallot = BallotEncrypter.SINGLETON.encryptWithProof(ballot, (List<List<String>>) arg[1],
                                     (PublicKey) _constants.getKeyStore().loadAdderKey("public"));
 
-                            auditorium.announce(new CommitBallotEvent(mySerial, StringExpression.makeString(nonce),
+                            auditorium.announce(new CommitBallotEvent(mySerial, nonce,
                                     encBallot, StringExpression.makeString(bid), StringExpression.makeString(precinct)));
                         }
 
@@ -281,7 +281,7 @@ public class VoteBox{
 
                     else {
 
-                        auditorium.announce(new ProvisionalCommitEvent(mySerial, StringExpression.makeString(nonce),
+                        auditorium.announce(new ProvisionalCommitEvent(mySerial, nonce,
                                 BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey(mySerial + "-public")),
                                 StringExpression.makeString(bid)));
                     }
@@ -342,7 +342,7 @@ public class VoteBox{
                 publicCount++;
                 protectedCount++;
 
-                auditorium.announce(new CastCommittedBallotEvent(mySerial, StringExpression.makeString(nonce), StringExpression.makeString(bid)));
+                auditorium.announce(new CastCommittedBallotEvent(mySerial, nonce, StringExpression.makeString(bid)));
 
                 /* Clears for randomness */
                 BallotEncrypter.SINGLETON.clear();
@@ -457,13 +457,13 @@ public class VoteBox{
                     committedBallot = true;
 
                     /* Announce the event to auditorium */
-                    auditorium.announce(new OverrideCastConfirmEvent(mySerial, nonce, ballot.toVerbatim()));
+                    auditorium.announce(new OverrideCommitConfirmEvent(mySerial, nonce, ballot.toVerbatim()));
 
                     try {
                         /* Check to see if NIZKs are enabled or not and format event accordingly*/
                         if (!_constants.getEnableNIZKs()) {
 
-                            auditorium.announce(new CommitBallotEvent(mySerial, StringExpression.makeString(nonce),
+                            auditorium.announce(new CommitBallotEvent(mySerial, nonce,
                                     BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey(mySerial + "-public")),
                                     StringExpression.makeString(bid), StringExpression.makeString(precinct)));
 
@@ -474,7 +474,7 @@ public class VoteBox{
 
 
                             auditorium.announce(new CommitBallotEvent(mySerial,
-                                    StringExpression.makeString(nonce),
+                                    nonce,
                                     encBallot,
                                     StringExpression.makeString(bid), StringExpression.makeString(precinct)));
 
@@ -568,13 +568,13 @@ public class VoteBox{
                         throw new RuntimeException("Found a vote with no race?");
 
                     /* Create a new shortcode and votepair from the raceId */
-                    ListExpression code =  new ListExpression(raceId, ASExpression.make(bid), ASExpression.makeVerbatim(nonce));
+                    ListExpression code =  new ListExpression(raceId, ASExpression.make(bid), nonce);
                     ASExpression shortCode = ASExpression.makeVerbatim(code.getSHA256());
 
                     VotePair pair = new VotePair(shortCode, choice);
 
                     /* Pair this ballot's nonce with each of its short codes and votes */
-                    plaintextAuditCommits.put(ASExpression.makeVerbatim(nonce), pair);
+                    plaintextAuditCommits.put(nonce, pair);
                 }
             }
 
@@ -620,7 +620,7 @@ public class VoteBox{
             public void overrideCancelConfirm(OverrideCancelConfirmEvent e) {}
             public void overrideCancelDeny(OverrideCancelDenyEvent e) {}
             public void lastPollsOpen(LastPollsOpenEvent e) {}
-            public void overrideCastConfirm(OverrideCastConfirmEvent e) {}
+            public void overrideCastConfirm(OverrideCommitConfirmEvent e) {}
             public void overrideCastDeny(OverrideCastDenyEvent e) {}
             public void pollsClosed(PollsClosedEvent e) {}
             public void supervisor(SupervisorEvent e) {}
@@ -634,7 +634,7 @@ public class VoteBox{
             public void spoilBallot(SpoilBallotEvent spoilBallotEvent) {}
             public void announceProvisionalBallot(ProvisionalBallotEvent e) {}
             public void provisionalCommitBallot(ProvisionalCommitEvent provisionalCommitEvent) {}
-            public void authorizedToCastWithNIZKS(AuthorizedToCastWithNIZKsEvent e) {}
+
             public void tapMachine(TapMachineEvent tapMachineEvent) {}
             public void ballotScanned(BallotScannedEvent e) {}
             public void ballotScanner(BallotScannerEvent e) {}
@@ -723,7 +723,7 @@ public class VoteBox{
                         currentDriver = null;
                     }
 
-                    nonce = e.getNonce().toVerbatim();
+                    nonce = e.getNonce();
 
                     /* Current working directory TODO path construction */
                     File path   = new File(System.getProperty("user.dir"));
@@ -771,47 +771,54 @@ public class VoteBox{
              * @see votebox.events.BallotReceivedEvent
              */
             public void ballotReceived(BallotReceivedEvent e) {
+                if (e.getTargetSerial() == mySerial
+                        && Arrays.equals(e.getNonce().toVerbatim(), nonce.toVerbatim())) {
 
-                if (e.getNode() == mySerial && Arrays.equals(e.getNonce(), nonce)) {
+                    if (e.getTargetSerial() == mySerial && Arrays.equals(e.getNonce().toVerbatim(), nonce.toVerbatim())) {
 
-                    if (!committedBallot) /* TODO runtime exception */
-                        throw new RuntimeException("Someone said the ballot was received, but this machine hasn't committed it yet. Maybe the supervisor is not configured properly?");
+                        if (!committedBallot) /* TODO runtime exception */
+                            throw new RuntimeException("Someone said the ballot was received, but this machine hasn't committed it yet. Maybe the supervisor is not configured properly?");
 
-                    if (isProvisional) {
+                        if (isProvisional) {
 
-                        try{
+                            try {
                             /* Show provisional success page */
-                            currentDriver.getView().drawPage(currentDriver.getView().getCurrentLayout().getProperties().getInteger(Properties.PROVISIONAL_SUCCESS_PAGE), false);
-                        } catch (IncorrectTypeException e1) { e1.printStackTrace(); }
+                                currentDriver.getView().drawPage(currentDriver.getView().getCurrentLayout().getProperties().getInteger(Properties.PROVISIONAL_SUCCESS_PAGE), false);
+                            } catch (IncorrectTypeException e1) {
+                                e1.printStackTrace();
+                            }
 
-                    } else { currentDriver.getView().nextPage(); } /* Show printing page */
+                        } else {
+                            currentDriver.getView().nextPage();
+                        } /* Show printing page */
 
-                    BallotEncrypter.SINGLETON.clear();
-                    nonce = null;
-                    voting = false;
-                    finishedVoting = false;
-                    committedBallot = false;
-                    broadcastStatus();
+                        BallotEncrypter.SINGLETON.clear();
+                        nonce = null;
+                        voting = false;
+                        finishedVoting = false;
+                        committedBallot = false;
+                        broadcastStatus();
 
                     /* Create a timer to kill the runtime after 5 seconds */
-                    killVBTimer = new Timer(_constants.getViewRestartTimeout(), new ActionListener() {
-                        public void actionPerformed(ActionEvent arg0) {
+                        killVBTimer = new Timer(_constants.getViewRestartTimeout(), new ActionListener() {
+                            public void actionPerformed(ActionEvent arg0) {
 
-                            currentDriver.kill();
-                            currentDriver = null;
+                                currentDriver.kill();
+                                currentDriver = null;
 
                             /* Show inactive screen */
-                            inactiveUI.setVisible(true);
+                                inactiveUI.setVisible(true);
 
-                            killVBTimer = null;
+                                killVBTimer = null;
 
                             /* Prompt for PIN for next voting session */
-                            promptForPin("Enter Voting Authentication PIN");
-                        }
-                    });
+                                promptForPin("Enter Voting Authentication PIN");
+                            }
+                        });
 
-                    killVBTimer.setRepeats(false);
-                    killVBTimer.start();
+                        killVBTimer.setRepeats(false);
+                        killVBTimer.start();
+                    }
                 }
             }
 
@@ -846,11 +853,10 @@ public class VoteBox{
              * @see votebox.events.OverrideCancelEvent
              */
             public void overrideCancel(OverrideCancelEvent e) {
-
-                if (mySerial == e.getNode() && Arrays.equals(e.getNonce(), nonce)) {
-
+                if (mySerial == e.getTargetSerial()
+                        && Arrays.equals(e.getNonce().toVerbatim(), nonce.toVerbatim())) {
                     try {
-
+                        
                         /* Make sure voting is in progress */
                         if (voting && !finishedVoting && currentDriver != null) {
 
@@ -879,9 +885,8 @@ public class VoteBox{
              * @see votebox.events.OverrideCastEvent
              */
             public void overrideCast(OverrideCastEvent e) {
-
                 /* See if this is the target of the event */
-                if(e.getNode() == mySerial){
+                if(e.getTargetSerial() == mySerial){
 
                     try {
 
@@ -966,8 +971,7 @@ public class VoteBox{
              * @see votebox.events.BallotPrintSuccessEvent
              */
             public void ballotPrintSuccess(BallotPrintSuccessEvent e){
-
-                if (e.getBID() == bid && Arrays.equals(e.getNonce(), nonce)) {
+                if (e.getBID() == bid && Arrays.equals(e.getNonce().toVerbatim(), nonce.toVerbatim())) {
 
                     /* This should never happen... */
                     if (!finishedVoting)
@@ -999,7 +1003,7 @@ public class VoteBox{
              */
             public void provisionalAuthorizedToCast(ProvisionalAuthorizeEvent e) {
 
-                if (e.getNode() == mySerial) {
+                if (e.getTargetSerial() == mySerial) {
 
                     isProvisional = true;
 
@@ -1155,7 +1159,7 @@ public class VoteBox{
                 ImageIO.write(focusedSelectedWriteInToggleButton,   "png",  new File(filePath + uid             + "_focusedSelected_1_" + language.getShortName()                                               + ".png"));
                 ImageIO.write(reviewButton,                         "png",  new File(filePath + fileSeparator   + "vvpat"               + fileSeparator + uid + "_review_"          + language.getShortName()   + ".png"));
                 ImageIO.write(focusedReviewButton,                  "png",  new File(filePath + fileSeparator   + "vvpat"               + fileSeparator + uid + "_review_focused_"  + language.getShortName()   + ".png"));
-                ImageIO.write(printable,                            "png",  new File(filePath + fileSeparator   + "vvpat"               + fileSeparator + uid + "_printable_"       + language.getShortName()   + ".png"));
+                ImageIO.write(printable, "png", new File(filePath + fileSeparator + "vvpat" + fileSeparator + uid + "_printable_" + language.getShortName() + ".png"));
             }
             catch (IOException e)
             {

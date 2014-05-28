@@ -37,16 +37,31 @@ public class BallotScannerEvent extends AAnnounceEvent {
 
 
     };
-    private int serial;
+
+    /** The sending machine's status that it announces */
     private String status;
+
+    /** The battery status of the sending machine */
     private int battery;
+
     private int protectedCount;
     private int publicCount;
+
+    /** The label for this machine */
     private int label;
 
+    /**
+     * Constructor for the event
+     *
+     * @param label
+     * @param status
+     * @param battery
+     * @param protectedCount
+     * @param publicCount
+     */
     public BallotScannerEvent(int serial, int label, String status, int battery,
                               int protectedCount, int publicCount) {
-        this.serial = serial;
+        super(serial);
         this.label = label;
         this.status = status;
         this.battery = battery;
@@ -67,10 +82,6 @@ public class BallotScannerEvent extends AAnnounceEvent {
     public static MatcherRule getMatcher() {
         return MATCHER;
     }//getMatcher
-
-    public int getSerial() {
-        return serial;
-    }
 
     /**
      * @return the status, either "active" or "inactive"

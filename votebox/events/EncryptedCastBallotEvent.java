@@ -55,7 +55,7 @@ public class EncryptedCastBallotEvent extends CastCommittedBallotEvent{
                         .get("ballot"), result.get("bid"));
 
             return null;
-        };
+        }
     };
 
     /**

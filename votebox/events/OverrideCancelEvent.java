@@ -22,15 +22,13 @@
 
 package votebox.events;
 
-import java.math.BigInteger;
-
 import sexpression.*;
 
 /**
  * Event that represents the override-cancel message:<br>
  * 
  * <pre>
- * (override-cancel node-id nonce)
+ * (override-cancel targetSerial-id nonce)
  * </pre>
  * 
  * See <a href="https://sys.cs.rice.edu/votebox/trac/wiki/VotingMessages">
@@ -39,13 +37,9 @@ import sexpression.*;
  * 
  * @author cshaw
  */
-public class OverrideCancelEvent extends AAnnounceEvent {
+public class OverrideCancelEvent extends ABallotEvent {
 
-    private int serial;
-
-    private int node;
-
-    private byte[] nonce;
+    private int targetSerial;
 
     /**
      * Matcher for the OverrideCancelEvent.
@@ -62,13 +56,12 @@ public class OverrideCancelEvent extends AAnnounceEvent {
                         .toString() );
                 /*byte[] nonce = ((StringExpression) ((ListExpression) res)
                         .get( 1 )).getBytesCopy();*/
-                byte[] nonce = new BigInteger(((ListExpression) res)
-                        .get( 1 ).toString()).toByteArray();
+                ASExpression nonce = ((ListExpression) res).get( 1 );
                 return new OverrideCancelEvent( serial, node, nonce );
             }
 
             return null;
-        };
+        }
     };
     
     /**
@@ -87,31 +80,20 @@ public class OverrideCancelEvent extends AAnnounceEvent {
      * @param nonce
      *            the nonce
      * @param node
-     *            node identifying the target to Override
+     *            targetSerial identifying the target to Override
      */
-    public OverrideCancelEvent(int serial, int node, byte[] nonce) {
-        this.serial = serial;
-        this.node = node;
-        this.nonce = nonce;
+    public OverrideCancelEvent(int serial, int node, ASExpression nonce) {
+        super(serial, nonce);
+        this.targetSerial = node;
     }
 
     /**
-     * @return the node
+     * @return the targetSerial
      */
-    public int getNode() {
-        return node;
+    public int getTargetSerial() {
+        return targetSerial;
     }
 
-    /**
-     * @return the nonce
-     */
-    public byte[] getNonce() {
-        return nonce;
-    }
-
-    public int getSerial() {
-        return serial;
-    }
 
     public void fire(VoteBoxEventListener l) {
         l.overrideCancel( this );
@@ -120,12 +102,11 @@ public class OverrideCancelEvent extends AAnnounceEvent {
     public ASExpression toSExp() {
         /*return new ListExpression( StringExpression
                 .makeString( "override-cancel" ), StringExpression
-                .makeString( Integer.toString( node ) ), StringExpression
+                .makeString( Integer.toString( targetSerial ) ), StringExpression
                 .makeString( nonce ) );*/
     	return new ListExpression( StringExpression
                 .makeString( "override-cancel" ), StringExpression
-                .makeString( Integer.toString( node ) ), StringExpression
-                .makeString( new BigInteger(nonce).toString() ) );
+                .makeString( Integer.toString(targetSerial) ), getNonce());
     }
 
 }

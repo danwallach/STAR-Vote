@@ -22,15 +22,13 @@
 
 package votebox.events;
 
-import java.math.BigInteger;
-
 import sexpression.*;
 
 /**
  * Event that represents the override-cast message:<br>
  * 
  * <pre>
- * (override-cast node-id nonce)
+ * (override-cast targetSerial-id nonce)
  * </pre>
  * 
  * See <a href="https://sys.cs.rice.edu/votebox/trac/wiki/VotingMessages">
@@ -39,13 +37,9 @@ import sexpression.*;
  * 
  * @author cshaw
  */
-public class OverrideCastEvent extends AAnnounceEvent {
+public class OverrideCastEvent extends ABallotEvent {
 
-    private int serial;
-
-    private int node;
-
-    private byte[] nonce;
+    private int targetSerial;
 
     /**
      * Matcher for the OverrideCastEvent.
@@ -60,15 +54,12 @@ public class OverrideCastEvent extends AAnnounceEvent {
             if (res != NoMatch.SINGLETON) {
                 int node = Integer.parseInt( ((ListExpression) res).get( 0 )
                         .toString() );
-                /*byte[] nonce = ((StringExpression) ((ListExpression) res)
-                        .get( 1 )).getBytesCopy();*/
-                byte[] nonce = new BigInteger(((ListExpression) res)
-                        .get( 1 ).toString()).toByteArray();
+                ASExpression nonce = ((ListExpression) res).get(1);
                 return new OverrideCastEvent( serial, node, nonce );
             }
 
             return null;
-        };
+        }
     };
 
     /**
@@ -85,47 +76,31 @@ public class OverrideCastEvent extends AAnnounceEvent {
      * @param serial
      *            the serial number of the sender
      * @param node
-     *            the node id
+     *            the targetSerial id
      * @param nonce
      *            the nonce
      */
-    public OverrideCastEvent(int serial, int node, byte[] nonce) {
-        this.serial = serial;
-        this.node = node;
-        this.nonce = nonce;
+    public OverrideCastEvent(int serial, int node, ASExpression nonce) {
+        super(serial, nonce);
+        this.targetSerial = node;
     }
 
     /**
-     * @return the node
+     * @return the targetSerial
      */
-    public int getNode() {
-        return node;
+    public int getTargetSerial() {
+        return targetSerial;
     }
 
-    /**
-     * @return the nonce
-     */
-    public byte[] getNonce() {
-        return nonce;
-    }
-
-    public int getSerial() {
-        return serial;
-    }
 
     public void fire(VoteBoxEventListener l) {
         l.overrideCast( this );
     }
 
     public ASExpression toSExp() {
-        /*return new ListExpression( StringExpression
-                .makeString( "override-cast" ), StringExpression
-                .makeString( Integer.toString( node ) ), StringExpression
-                .makeString( nonce ) );*/
     	return new ListExpression( StringExpression
                 .makeString( "override-cast" ), StringExpression
-                .makeString( Integer.toString( node ) ), StringExpression
-                .makeString( new BigInteger(nonce).toString() ) );
+                .makeString( Integer.toString(targetSerial) ), getNonce());
     }
 
 }

@@ -622,7 +622,7 @@ public class Model {
                     auditoriumParams, ActivatedEvent.getMatcher(),
                     AssignLabelEvent.getMatcher(), AuthorizedToCastEvent.getMatcher(),
                     CastCommittedBallotEvent.getMatcher(), LastPollsOpenEvent.getMatcher(),
-                    OverrideCastConfirmEvent.getMatcher(), PollsClosedEvent.getMatcher(),
+                    OverrideCommitConfirmEvent.getMatcher(), PollsClosedEvent.getMatcher(),
                     PollsOpenEvent.getMatcher(), PollsOpenQEvent.getMatcher(),
                     SupervisorEvent.getMatcher(), VoteBoxEvent.getMatcher(),
                     EncryptedCastBallotEvent.getMatcher(), CommitBallotEvent.getMatcher(),
@@ -647,7 +647,7 @@ public class Model {
             public void overrideCancelDeny(OverrideCancelDenyEvent e) {}
             public void overrideCast(OverrideCastEvent e) {}
             public void overrideCastDeny(OverrideCastDenyEvent e) {}
-            public void authorizedToCastWithNIZKS(AuthorizedToCastWithNIZKsEvent e) {}
+
             public void invalidPin(InvalidPinEvent e) {}
             public void ballotAccepted(BallotScanAcceptedEvent e){}
             public void ballotRejected(BallotScanRejectedEvent e){}
@@ -812,7 +812,7 @@ public class Model {
              * Handler for the override-cast-confirm event. Similar to
              * cast-ballot, but no received reply is sent.
              */
-            public void overrideCastConfirm(OverrideCastConfirmEvent e) {
+            public void overrideCastConfirm(OverrideCommitConfirmEvent e) {
                 //AMachine m = getMachineForSerial(e.getSerial());
                 //if (m != null && m instanceof BallotScannerMachine) {
                     //TODO Make this work with ballot hashes
@@ -1327,7 +1327,7 @@ public class Model {
              * that machine's voting session.
              */
             public void provisionalAuthorizedToCast(ProvisionalAuthorizeEvent e) {
-                AMachine m = getMachineForSerial(e.getNode());
+                AMachine m = getMachineForSerial(e.getTargetSerial());
                 if (m != null && m instanceof VoteBoxBooth) {
                     ((VoteBoxBooth) m).setNonce(e.getNonce());
                 }

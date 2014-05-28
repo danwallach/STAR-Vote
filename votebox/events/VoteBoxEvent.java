@@ -39,8 +39,6 @@ import sexpression.*;
  */
 public class VoteBoxEvent extends AAnnounceEvent {
 
-    private int serial;
-
     private int label;
 
     private String status;
@@ -77,7 +75,7 @@ public class VoteBoxEvent extends AAnnounceEvent {
             }
 
             return null;
-        };
+        }
     };
 
     /**
@@ -106,7 +104,8 @@ public class VoteBoxEvent extends AAnnounceEvent {
      */
     public VoteBoxEvent(int serial, int label, String status, int battery,
             int protectedCount, int publicCount) {
-        this.serial = serial;
+        super(serial);
+
         this.label = label;
         this.status = status;
         this.battery = battery;
@@ -140,10 +139,6 @@ public class VoteBoxEvent extends AAnnounceEvent {
      */
     public int getPublicCount() {
         return publicCount;
-    }
-
-    public int getSerial() {
-        return serial;
     }
 
     /**

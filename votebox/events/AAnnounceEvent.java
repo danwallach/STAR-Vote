@@ -8,7 +8,7 @@ package votebox.events;
 public abstract class AAnnounceEvent implements IAnnounceEvent {
 
     /** The serial number of the machine incurring this event */
-    protected int serial;
+    private int serial;
 
     public AAnnounceEvent(int serial){
         this.serial = serial;
