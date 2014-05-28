@@ -436,36 +436,39 @@ public class VoteBox{
             /**
              * Increment counters, and send the ballot in the confirm message.
              * Also kill VoteBox and show the inactive UI
+             *
+             * @see java.util.Observer#update(java.util.Observable, Object)
              */
             public void update(Observable o, Object argTemp) {
-                if (voting && override && !finishedVoting
-                        && currentDriver != null) {
-                    ++publicCount;
-                    ++protectedCount;
-                    Object[] arg = (Object[]) argTemp;
-                    //Object [] arg = (Object []) (((ListExpression) argTemp).toVerbatim());
 
-                    // arg1 should be the cast ballot structure, check
+                /* Check to see if voting is still in progress after the override commit selection */
+                if (voting && override && !finishedVoting && currentDriver != null) {
+
+                    publicCount++;
+                    protectedCount++;
+                    Object[] arg = (Object[]) argTemp;
+
+                    /* arg1 should be the cast ballot structure, check  TODO */
                     if (Ballot.BALLOT_PATTERN.match((ASExpression) arg[1]) == NoMatch.SINGLETON)
-                        throw new RuntimeException(
-                                "Incorrectly expected a cast-ballot");
+                        throw new RuntimeException("Incorrectly expected a cast-ballot");
+
                     ListExpression ballot = (ListExpression) arg[1];
 
                     committedBallot = true;
 
-                    auditorium.announce(new OverrideCastConfirmEvent(mySerial,
-                            nonce, ballot.toVerbatim()));
+                    /* Announce the event to auditorium */
+                    auditorium.announce(new OverrideCastConfirmEvent(mySerial, nonce, ballot.toVerbatim()));
 
+                    try {
+                        /* Check to see if NIZKs are enabled or not and format event accordingly*/
+                        if (!_constants.getEnableNIZKs()) {
 
+                            auditorium.announce(new CommitBallotEvent(mySerial, StringExpression.makeString(nonce),
+                                    BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey(mySerial + "-public")),
+                                    StringExpression.makeString(bid), StringExpression.makeString(precinct)));
 
+                        } else {
 
-                    try
-                    {
-                        if(!_constants.getEnableNIZKs()){
-                            auditorium.announce(new CommitBallotEvent(mySerial,
-                                    StringExpression.makeString(nonce),
-                                    BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey(mySerial + "-public")), StringExpression.makeString(bid), StringExpression.makeString(precinct)));
-                        } else{
                             ASExpression encBallot = BallotEncrypter.SINGLETON.encryptWithProof(ballot, (List<List<String>>) arg[1],
                                     (PublicKey) _constants.getKeyStore().loadAdderKey("public"));
 
@@ -474,34 +477,41 @@ public class VoteBox{
                                     StringExpression.makeString(nonce),
                                     encBallot,
                                     StringExpression.makeString(bid), StringExpression.makeString(precinct)));
+
                         }
-                    }
-                    catch (AuditoriumCryptoException e) {
-                        Bugout.err("Crypto error trying to commit ballot: "+e.getMessage());
+                    } catch (AuditoriumCryptoException e) {
+                        Bugout.err("Crypto error trying to commit ballot: " + e.getMessage());
                         e.printStackTrace();
                     }
 
+                    /* Broadcast new status */
                     broadcastStatus();
 
-
+                    /* Announce a new printing event and print */
                     List<List<String>> races = currentDriver.getBallotAdapter().getRaceGroups();
-                    auditorium.announce(new BallotPrintingEvent(mySerial, bid,
-                            nonce));
+                    auditorium.announce(new BallotPrintingEvent(mySerial, bid, nonce));
                     printer = new Printer(_currentBallotFile, races);
+
+                    /* Check for success */
                     boolean success = printer.printCommittedBallot(ballot, bid);
                     printer.printedReceipt(bid);
 
-                    //By this time, the voter is done voting
-                    //Wait before returning to inactive
+                    /* By this time, the voter is done voting. Wait before returning to inactive. */
                     long start = System.currentTimeMillis();
-                    while(System.currentTimeMillis() - start < 5000);
+
+                    while (System.currentTimeMillis() - start < 5000) ;
+
                     finishedVoting = true;
 
-                    if(success)
+                    /* Announce successful print event or throw an error */
+                    if (success)
                         auditorium.announce(new BallotPrintSuccessEvent(mySerial, bid, nonce));
-                } else
-                    throw new RuntimeException(
-                            "Received an override-cast-confirm event at the incorrect time");
+
+                }
+
+                else { /* TODO runtime error */
+                    throw new RuntimeException("Received an override-cast-confirm event at the incorrect time");
+                }
             }
         });
         
@@ -509,17 +519,21 @@ public class VoteBox{
             /**
              * Announce the deny message, and return to the page the voter was
              * previously on
+             *
+             * @see java.util.Observer#update(java.util.Observable, Object)
              */
             public void update(Observable o, Object arg) {
-                if (voting && override && !finishedVoting
-                        && currentDriver != null) {
-                    auditorium.announce(new OverrideCastDenyEvent(mySerial,
-                            nonce));
+                if (voting && override && !finishedVoting && currentDriver != null) {
+
+                    auditorium.announce(new OverrideCastDenyEvent(mySerial, nonce));
                     override = false;
                     currentDriver.getView().drawPage(pageBeforeOverride, false);
-                } else
-                    throw new RuntimeException(
-                            "Received an override-cast-deny event at the incorrect time");
+
+                }
+
+                else {
+                    throw new RuntimeException("Received an override-cast-deny event at the incorrect time");
+                }
             }
         });
     }
@@ -534,41 +548,37 @@ public class VoteBox{
      *
      */
     private void shortCodes(ListExpression ballot, List<List<String>> raceGroups) {
-        try{
-            for(int i = 0; i < ballot.size(); i++){
-                ListExpression choice = (ListExpression)ballot.get(i);
-                System.err.println("The choice ListExpression is:\n" + choice);
-                //If this is who the vote selected in this race, make a short code
-                System.err.println("Attempting to convert " + choice.get(1) + " to AdderInteger.");
+        try {
+
+            for (ASExpression x : ballot) {
+
+                ListExpression choice = (ListExpression) x;
+
+                /* If this is who the vote selected in this race, make a short code */
                 if(AdderInteger.fromASE(choice.get(1)) == AdderInteger.ONE){
 
                     ASExpression raceId = null;
 
-                    for(List<String> race : raceGroups){
+                    /* Find the race to which the choice belongs */
+                    for(List<String> race : raceGroups)
                         if(race.contains(choice.get(0)))
                             raceId = ASExpression.make(race.get(0));
-                    }
 
                     if(raceId == null)
                         throw new RuntimeException("Found a vote with no race?");
 
-
+                    /* Create a new shortcode and votepair from the raceId */
                     ListExpression code =  new ListExpression(raceId, ASExpression.make(bid), ASExpression.makeVerbatim(nonce));
                     ASExpression shortCode = ASExpression.makeVerbatim(code.getSHA256());
 
                     VotePair pair = new VotePair(shortCode, choice);
 
-                    //Pair this ballot's nonce with each of its short codes and votes
+                    /* Pair this ballot's nonce with each of its short codes and votes */
                     plaintextAuditCommits.put(ASExpression.makeVerbatim(nonce), pair);
-
-
                 }
-            }//for
+            }
 
-        } catch (InvalidVerbatimStreamException e) {
-            throw new RuntimeException("Malformed nonce!", e);
-        }
-
+        } catch (InvalidVerbatimStreamException e) { throw new RuntimeException("Malformed nonce!", e); }
     }
 
 
@@ -582,29 +592,60 @@ public class VoteBox{
         inactiveUI.setVisible(true);
 
         try {
-            auditorium = new VoteBoxAuditoriumConnector(mySerial,
-            		_constants,
+
+            auditorium = new VoteBoxAuditoriumConnector(mySerial, _constants,
                     ActivatedEvent.getMatcher(), AssignLabelEvent.getMatcher(),
                     AuthorizedToCastEvent.getMatcher(), BallotReceivedEvent.getMatcher(),
                     OverrideCancelEvent.getMatcher(), OverrideCastEvent.getMatcher(),
-                    PollsOpenQEvent.getMatcher(),
-                    AuthorizedToCastWithNIZKsEvent.getMatcher(), PINEnteredEvent.getMatcher(),
-                    InvalidPinEvent.getMatcher(), PollsOpenEvent.getMatcher(),
-                    PollStatusEvent.getMatcher(), BallotPrintingEvent.getMatcher(),
-                    BallotPrintSuccessEvent.getMatcher(), BallotPrintFailEvent.getMatcher(),
-                    PollMachinesEvent.getMatcher(), ProvisionalAuthorizeEvent.getMatcher());
+                    PollsOpenQEvent.getMatcher(), AuthorizedToCastWithNIZKsEvent.getMatcher(),
+                    PINEnteredEvent.getMatcher(), InvalidPinEvent.getMatcher(),
+                    PollsOpenEvent.getMatcher(), PollStatusEvent.getMatcher(),
+                    BallotPrintingEvent.getMatcher(), BallotPrintSuccessEvent.getMatcher(),
+                    BallotPrintFailEvent.getMatcher(), PollMachinesEvent.getMatcher(),
+                    ProvisionalAuthorizeEvent.getMatcher());
+
         } catch (NetworkException e1) {
-        	//NetworkException represents a recoverable error
-        	//  so just note it and continue
+
+        	/* NetworkException represents a recoverable error so just note it and continue */
             System.out.println("Recoverable error occurred: "+e1.getMessage());
             e1.printStackTrace(System.err);
+
         }
 
         auditorium.addListener(new VoteBoxEventListener() {
 
+            /* These are all NO-OPs because we don't respond to these */
+            public void ballotPrinting(BallotPrintingEvent ballotPrintingEvent) {}
+            public void castCommittedBallot(CastCommittedBallotEvent e) {}
+            public void overrideCancelConfirm(OverrideCancelConfirmEvent e) {}
+            public void overrideCancelDeny(OverrideCancelDenyEvent e) {}
+            public void lastPollsOpen(LastPollsOpenEvent e) {}
+            public void overrideCastConfirm(OverrideCastConfirmEvent e) {}
+            public void overrideCastDeny(OverrideCastDenyEvent e) {}
+            public void pollsClosed(PollsClosedEvent e) {}
+            public void supervisor(SupervisorEvent e) {}
+            public void votebox(VoteBoxEvent e) {}
+            public void commitBallot(CommitBallotEvent e) {}
+            public void pinEntered(PINEnteredEvent e) {}
+            public void ballotPrintFail(BallotPrintFailEvent e){}
+            public void uploadCastBallots(CastBallotUploadEvent castBallotUploadEvent) {}
+            public void uploadChallengedBallots(ChallengedBallotUploadEvent challengedBallotUploadEvent) {}
+            public void scannerStart(StartScannerEvent startScannerEvent) {}
+            public void spoilBallot(SpoilBallotEvent spoilBallotEvent) {}
+            public void announceProvisionalBallot(ProvisionalBallotEvent e) {}
+            public void provisionalCommitBallot(ProvisionalCommitEvent provisionalCommitEvent) {}
+            public void authorizedToCastWithNIZKS(AuthorizedToCastWithNIZKsEvent e) {}
+            public void tapMachine(TapMachineEvent tapMachineEvent) {}
+            public void ballotScanned(BallotScannedEvent e) {}
+            public void ballotScanner(BallotScannerEvent e) {}
+            public void ballotAccepted(BallotScanAcceptedEvent e){}
+            public void ballotRejected(BallotScanRejectedEvent e){}
+
             /**
              * Handler for the activated message. Look to see if this VoteBox's
              * status exists (and is correct), and if not, broadcast its status
+             *
+             * @param e the ActivatedEvent that triggered the method 
              */
             public void activated(ActivatedEvent e) {
                 boolean found = false;
@@ -747,9 +788,7 @@ public class VoteBox{
                 }
             }
 
-            public void castCommittedBallot(CastCommittedBallotEvent e) {
-                // NO-OP
-            }
+  
                 
 
             /**
@@ -762,9 +801,7 @@ public class VoteBox{
                     superOnline = true;
             }
 
-            public void lastPollsOpen(LastPollsOpenEvent e) {
-                // NO-OP
-            }
+           
 
             /**
              * Decrement the number of connections
@@ -803,13 +840,6 @@ public class VoteBox{
                 }
             }
 
-            public void overrideCancelConfirm(OverrideCancelConfirmEvent e) {
-                // NO-OP
-            }
-
-            public void overrideCancelDeny(OverrideCancelDenyEvent e) {
-                // NO-OP
-            }
 
             /**
              * Handler for the override-cast message. If it is referring to this
@@ -838,17 +868,6 @@ public class VoteBox{
                 }
             }
 
-            public void overrideCastConfirm(OverrideCastConfirmEvent e) {
-                // NO-OP
-            }
-
-            public void overrideCastDeny(OverrideCastDenyEvent e) {
-                // NO-OP
-            }
-
-            public void pollsClosed(PollsClosedEvent e) {
-                // NO-OP
-            }
 
             /**
              * Handler for Polls Open. If not voting, booth prompts for pin
@@ -884,23 +903,7 @@ public class VoteBox{
                 }
             }
 
-            public void supervisor(SupervisorEvent e) {
-                // NO-OP
-            }
 
-            public void votebox(VoteBoxEvent e) {
-                // NO-OP
-            }
-
-            public void commitBallot(CommitBallotEvent e) {
-                // NO-OP
-
-            }
-
-
-            public void pinEntered(PINEnteredEvent e) {
-                // NO-OP
-            }
 
             /**
              * Handles InvalidPinEvent and reprompts for PIN
@@ -921,9 +924,7 @@ public class VoteBox{
                 }
             }
 
-            public void ballotPrinting(BallotPrintingEvent ballotPrintingEvent) {
-                // NO-OP
-            }
+    
 
             /**
              * This indicates that the ballot was successfully printed and the voting session can safely end
@@ -944,18 +945,7 @@ public class VoteBox{
 
             }
 
-            public void ballotPrintFail(BallotPrintFailEvent e){
-                // Should implement something to indicate the print failed
-            }
-
-            public void uploadCastBallots(CastBallotUploadEvent castBallotUploadEvent) {}
-
-
-            public void uploadChallengedBallots(ChallengedBallotUploadEvent challengedBallotUploadEvent) {}
-
-            public void scannerStart(StartScannerEvent startScannerEvent) {
-                // NO-OP
-            }
+ 
 
             /**
              * Used as an intermittent poll on the status of this booth through auditorium
@@ -969,12 +959,6 @@ public class VoteBox{
                 }
             }
 
-            public void spoilBallot(SpoilBallotEvent spoilBallotEvent) {
-                // NO-OP
-            }
-
-            public void announceProvisionalBallot(ProvisionalBallotEvent e) {
-            }
 
             /**
              * Handler for ProvisionalAuthorizeEvent from supervisor. Generates ballot file path and stores ballot
@@ -1029,35 +1013,6 @@ public class VoteBox{
                     }
                 }
 
-            }
-
-            public void provisionalCommitBallot(ProvisionalCommitEvent provisionalCommitEvent) {
-                // NO-OP
-            }
-
-            public void authorizedToCastWithNIZKS(AuthorizedToCastWithNIZKsEvent e) {
-                // NO-OP
-            }
-
-            public void tapMachine(TapMachineEvent tapMachineEvent) {
-                // NO-OP
-            }
-
-
-            public void ballotScanned(BallotScannedEvent e) {
-                // NO-OP
-            }
-
-            public void ballotScanner(BallotScannerEvent e) {
-                // NO-OP
-            }
-
-            public void ballotAccepted(BallotScanAcceptedEvent e){
-                // NO-OP
-            }
-
-            public void ballotRejected(BallotScanRejectedEvent e){
-                // NO-OP
             }
 
         });
