@@ -645,26 +645,35 @@ public class VoteBox{
              * Handler for the activated message. Look to see if this VoteBox's
              * status exists (and is correct), and if not, broadcast its status
              *
-             * @param e the ActivatedEvent that triggered the method 
+             * @see votebox.events.ActivatedEvent
              */
             public void activated(ActivatedEvent e) {
+
                 boolean found = false;
+
                 for (StatusEvent ae : e.getStatuses()) {
+
+                     /* TODO NODE */
                     if (ae.getNode() == mySerial) {
+
                         VoteBoxEvent ve = (VoteBoxEvent) ae.getStatus();
                         VoteBoxEvent status = getStatus();
-                        if (!ve.getStatus().equals(status.getStatus())
-                                || ve.getBattery() != status.getBattery()
-                                || ve.getLabel() != status.getLabel()
-                                || ve.getProtectedCount() != status
-                                        .getProtectedCount()
-                                || ve.getPublicCount() != status
-                                        .getPublicCount())
-                            broadcastStatus();
+
+                        /* Checking to make sure the status is correct */
+                        boolean checkStatus = !ve.getStatus().equals(status.getStatus()) || ve.getBattery() != status.getBattery() ||
+                                               ve.getLabel() != status.getLabel() || ve.getProtectedCount() != status.getProtectedCount() ||
+                                               ve.getPublicCount() != status.getPublicCount();
+
+                        /* Broadcast the status if any of these are not correct */
+                        if (checkStatus) broadcastStatus();
+
                         found = true;
                     }
                 }
+
+                /* If the StatusEvent was not found in the list of statuses, broadcast */
                 if (!found) broadcastStatus();
+
                 superSerial = e.getSerial();
                 superOnline = true;
             }
@@ -672,13 +681,16 @@ public class VoteBox{
             /**
              * Handler for the assign-label message. If it is referring to this
              * booth, set the label.
+             *
+             * @see votebox.events.AssignLabelEvent
              */
             public void assignLabel(AssignLabelEvent e) {
-                if (e.getTargetSerial() == mySerial){
+
+                /* See if this message is directed towards this machine and, if so, change the label */
+                if (e.getTargetSerial() == mySerial)
                 	label = e.getLabel();
-                	System.out.println("\tNew Label: "+label);
-                }//if
-                
+
+                /* Notify that the label was changed */
                 labelChangedEvent.notify(label);
             }
 
@@ -686,85 +698,93 @@ public class VoteBox{
              * Handler for the authorized-to-cast message. If it is for this
              * booth, and it is not already voting, unzip the ballot and fire
              * the VoteBox runtime. Also announce the new status.
+             *
+             * @see votebox.events.AuthorizedToCastEvent
              */
             public void authorizedToCast(AuthorizedToCastEvent e) {
+
+                /* See if this is directed towards this machine */
                 if (e.getTargetSerial() == mySerial) {
                     isProvisional = false;
 
+                    /* Make sure not already voting TODO runtime exception */
                     if (voting || currentDriver != null && killVBTimer == null)
-                        throw new RuntimeException(
-                                "VoteBox was authorized-to-cast, but was already voting");
+                        throw new RuntimeException( "VoteBox was authorized-to-cast, but was already voting");
 
-                    // If last VB runtime is on thank you screen and counting
-                    // down to when it disappears, kill it prematurely without
-                    // showing inactive UI
+                    /* If last VB runtime is on thank you screen and counting down to when it disappears, kill it prematurely without showing inactive UI */
                     if (killVBTimer != null && currentDriver != null) {
+
+                        /* Kill the runtime */
                         killVBTimer.stop();
                         killVBTimer = null;
+
+                        /* Kill voting session */
                         currentDriver.kill();
                         currentDriver = null;
                     }
 
                     nonce = e.getNonce().toVerbatim();
 
-                    //Current working directory
-                    File path = new File(System.getProperty("user.dir"));
-                    path = new File(path, "tmp");
-                    path = new File(path, "ballots");
-                    path = new File(path, "ballot"/* + protectedCount*/);
+                    /* Current working directory TODO path construction */
+                    File path   = new File(System.getProperty("user.dir"));
+                    path        = new File(path, "tmp");
+                    path        = new File(path, "ballots");
+                    path        = new File(path, "ballot"/* + protectedCount*/);
                     path.mkdirs();
 
                     bid = String.valueOf(rand.nextInt(Integer.MAX_VALUE));
                     precinct = e.getPrecinct();
                     
                     try {
+                        /* Set ballot file */
                     	_currentBallotFile = new File(path, "ballot.zip");
                         staticCurrentBallotFile = _currentBallotFile;
 
+                        /* Write the ballot to file output */
                         FileOutputStream fout = new FileOutputStream(_currentBallotFile);
                         byte[] ballot = e.getBallot();
                         fout.write(ballot);
-                        
+
+                        /* Takes ballot file, unzips, and unloads them into a directory to create temp directory */
                         Driver.unzip(new File(path, "ballot.zip").getAbsolutePath(), new File(path, "data").getAbsolutePath());
+
+                        /* Sets up to delete temp directory */
                         Driver.deleteRecursivelyOnExit(path.getAbsolutePath());
 
+                        /* Starts a new voting session */
                         run(new File(path, "data").getAbsolutePath());
+
+                        /* Broadcast current status */
                         broadcastStatus();
-                    } catch (IOException e1) {
-                        throw new RuntimeException(e1);
-                    }
+
+                    } catch (IOException e1) { throw new RuntimeException(e1); } /* TODO runtime exception */
 
                 }
             }
-
-
 
             /**
              * Handler for the ballot-received message. Show the next page on
              * the VB runtime (the ballot is being printed screen), and start a timer that
              * kills the runtime after a set amount of time (5 seconds), and
              * then shows the inactive screen. Also responds with its status.
+             *
+             * @see votebox.events.BallotReceivedEvent
              */
             public void ballotReceived(BallotReceivedEvent e) {
-                if (e.getNode() == mySerial
-                        && Arrays.equals(e.getNonce(), nonce)) {
 
-                    if (!committedBallot )
-                        throw new RuntimeException(
-                                "Someone said the ballot was received, but this machine hasn't committed it yet. Maybe the supervisor is not configured properly?");
+                if (e.getNode() == mySerial && Arrays.equals(e.getNonce(), nonce)) {
 
+                    if (!committedBallot) /* TODO runtime exception */
+                        throw new RuntimeException("Someone said the ballot was received, but this machine hasn't committed it yet. Maybe the supervisor is not configured properly?");
 
-                    if(isProvisional)  {
+                    if (isProvisional) {
+
                         try{
-                            currentDriver.getView().drawPage(currentDriver.getView().getCurrentLayout().getProperties().getInteger(
-                                Properties.PROVISIONAL_SUCCESS_PAGE), false);
-                        } catch (IncorrectTypeException e1) {
-                            e1.printStackTrace();
-                        }
-                    } else{
-                        currentDriver.getView().nextPage();
-                    }
+                            /* Show provisional success page */
+                            currentDriver.getView().drawPage(currentDriver.getView().getCurrentLayout().getProperties().getInteger(Properties.PROVISIONAL_SUCCESS_PAGE), false);
+                        } catch (IncorrectTypeException e1) { e1.printStackTrace(); }
 
+                    } else { currentDriver.getView().nextPage(); } /* Show printing page */
 
                     BallotEncrypter.SINGLETON.clear();
                     nonce = null;
@@ -772,47 +792,49 @@ public class VoteBox{
                     finishedVoting = false;
                     committedBallot = false;
                     broadcastStatus();
+
+                    /* Create a timer to kill the runtime after 5 seconds */
                     killVBTimer = new Timer(_constants.getViewRestartTimeout(), new ActionListener() {
                         public void actionPerformed(ActionEvent arg0) {
+
                             currentDriver.kill();
                             currentDriver = null;
+
+                            /* Show inactive screen */
                             inactiveUI.setVisible(true);
+
                             killVBTimer = null;
-                            System.out.println("Killing the active UI and throwing up the PIN prompt");
+
+                            /* Prompt for PIN for next voting session */
                             promptForPin("Enter Voting Authentication PIN");
                         }
                     });
+
                     killVBTimer.setRepeats(false);
                     killVBTimer.start();
-
                 }
             }
 
-  
-                
-
             /**
-             * Increment the number of connections
+             * Increment the number of connections when a machine joins the network
+             * @see votebox.events.JoinEvent
              */
             public void joined(JoinEvent e) {
-                ++numConnections;
+                numConnections++;
                 connected = true;
-                if(e.getSerial()==superSerial)
-                    superOnline = true;
+                if(e.getSerial()==superSerial) superOnline = true;
             }
 
            
 
             /**
-             * Decrement the number of connections
+             * Decrement the number of connections when a machine leaves the network
+             * @see votebox.events.LeaveEvent
              */
             public void left(LeaveEvent e) {
-                --numConnections;
+                numConnections--;
                 if (numConnections == 0) connected = false;
-
-                if(e.getSerial()==superSerial){
-                    superOnline = false;
-                }
+                if(e.getSerial()==superSerial) superOnline = false;
             }
 
             /**
@@ -820,23 +842,30 @@ public class VoteBox{
              * this booth, and it is in a state that it can be overridden, send
              * the runtime to the proper override page and record the page the
              * user was previously on.
+             *
+             * @see votebox.events.OverrideCancelEvent
              */
             public void overrideCancel(OverrideCancelEvent e) {
-                if (mySerial == e.getNode()
-                        && Arrays.equals(e.getNonce(), nonce)) {
+
+                if (mySerial == e.getNode() && Arrays.equals(e.getNonce(), nonce)) {
+
                     try {
+
+                        /* Make sure voting is in progress */
                         if (voting && !finishedVoting && currentDriver != null) {
+
+                            /* Save the last page the voter was on before the override */
                             int page = currentDriver.getView().overrideCancel();
+
+                            /* Go back if override is no good */
                             if (!override) {
                                 pageBeforeOverride = page;
                                 override = true;
                             }
-                        } else
-                            throw new RuntimeException(
-                                    "Received an override-cancel message when the user wasn't voting");
-                    } catch (IncorrectTypeException e1) {
-                        Bugout.err("Incorrect type in overrideCancel handler");
-                    }
+                                 /* TODO runtime exception */
+                        } else { throw new RuntimeException("Received an override-cancel message when the user wasn't voting"); }
+
+                    } catch (IncorrectTypeException e1) { Bugout.err("Incorrect type in overrideCancel handler"); }
                 }
             }
 
@@ -846,22 +875,32 @@ public class VoteBox{
              * booth, and it is in a state that it can be overridden, send the
              * runtime to the proper override page and record the page the user
              * was previously on.
+             *
+             * @see votebox.events.OverrideCastEvent
              */
             public void overrideCast(OverrideCastEvent e) {
+
+                /* See if this is the target of the event */
                 if(e.getNode() == mySerial){
+
                     try {
+
+                        /* Make sure voting is in progress */
                         if (voting && !finishedVoting && currentDriver != null) {
+
+                            /* Saves the last page the voter was on */
                             int page = currentDriver.getView().overrideCast();
+
+                            /* Go back if override is no good */
                             if (!override) {
                                 pageBeforeOverride = page;
                                 override = true;
                             }
-                        } else
-                            throw new RuntimeException(
-                                    "Received an override-cast message when the user wasn't voting");
+                                  /* TODO runtime exception */
+                        }  else { throw new RuntimeException("Received an override-cast message when the user wasn't voting"); }
+
                     } catch (IncorrectTypeException e1) {
-                        //We don't want to bail once VoteBox is up and running,
-                        //  so report and continue in this case
+                        /* We don't want to bail once VoteBox is up and running, so report and continue in this case */
                         System.out.println("Incorrect type received in overrideCommit event: "+e1.getMessage());
                         e1.printStackTrace(System.err);
                     }
@@ -871,97 +910,92 @@ public class VoteBox{
 
             /**
              * Handler for Polls Open. If not voting, booth prompts for pin
+             * @see votebox.events.PollsOpenEvent
              */
             public void pollsOpen(PollsOpenEvent e) {
-                if(!voting){
-                    System.out.println("Polls opened heard! Throwing up a PIN");
+                if(!voting)
                     promptForPin("Enter Authorization PIN");
-                }
             }
 
             /**
              * Handler for the polls-open? event. Searches the machine's log,
              * and replies with a last-polls-open message if an appropriate
              * polls-open message is found.
-             */
+             *
+             * @see votebox.events.PollsOpenQEvent
+             */ /* TODO: Search the log and extract an appropriate polls open message */
             public void pollsOpenQ(PollsOpenQEvent e) {
+
                 if (e.getSerial() != mySerial) {
-                    // TODO: Search the log and extract an appropriate
-                    // polls-open message
 
                     ASExpression res = null;
+                    /* TODO wtf */
                     if (res != null && res != NoMatch.SINGLETON) {
-                        VoteBoxEventMatcher matcher = new VoteBoxEventMatcher(
-                                PollsOpenEvent.getMatcher());
-                        PollsOpenEvent event = (PollsOpenEvent) matcher.match(
-                                0, res);
-                        if (event != null
-                                && event.getKeyword().equals(e.getKeyword()))
-                            auditorium.announce(new LastPollsOpenEvent(
-                                    mySerial, event));
+
+                        VoteBoxEventMatcher matcher = new VoteBoxEventMatcher(PollsOpenEvent.getMatcher());
+                        PollsOpenEvent event = (PollsOpenEvent) matcher.match(0, res);
+
+                        if (event != null && event.getKeyword().equals(e.getKeyword()))
+                            auditorium.announce(new LastPollsOpenEvent(mySerial, event));
                     }
                 }
             }
 
-
-
             /**
              * Handles InvalidPinEvent and reprompts for PIN
+             * @see votebox.events.InvalidPinEvent
              */
             public void invalidPin(InvalidPinEvent e) {
-                System.out.println("Invalid PIN heard. Starting the prompt again!");
                 if(e.getNode() == mySerial)
                     promptForPin("Invalid PIN: Enter Valid PIN");
             }
 
             /**
-             * received by VoteBox booth when it joins the network after a polls open event. PIN prompt is executed.
+             * Received by VoteBox booth when it joins the network after a polls open event. PIN prompt is executed.
+             * @see votebox.events.PollStatusEvent
              */
             public void pollStatus(PollStatusEvent pollStatusEvent) {
-                System.out.println("Received Poll Status event and the polls are " + (pollStatusEvent.getPollStatus() == 1 ? "open":"closed"));
-                if(!voting && pollStatusEvent.getPollStatus() == 1){
+                if(!voting && pollStatusEvent.getPollStatus() == 1)
                     promptForPin("Enter Authorization PIN");
-                }
             }
 
     
 
             /**
              * This indicates that the ballot was successfully printed and the voting session can safely end
+             * @see votebox.events.BallotPrintSuccessEvent
              */
             public void ballotPrintSuccess(BallotPrintSuccessEvent e){
-                if (e.getBID() == bid
-                        && Arrays.equals(e.getNonce(), nonce)) {
 
-                    //This should never happen...
+                if (e.getBID() == bid && Arrays.equals(e.getNonce(), nonce)) {
+
+                    /* This should never happen... */
                     if (!finishedVoting)
-                        throw new RuntimeException(
-                                "Someone said the ballot was printed, but this machine hasn't finished voting yet");
-
+                        throw new RuntimeException("Someone said the ballot was printed, but this machine hasn't finished voting yet");
 
                     broadcastStatus();
 
-                }//if
-
+                }
             }
 
  
 
             /**
              * Used as an intermittent poll on the status of this booth through auditorium
+             * @see votebox.events.PollMachinesEvent
              */
             public void pollMachines(PollMachinesEvent pollMachinesEvent) {
+
                 broadcastStatus();
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                }
+
+                try { Thread.sleep(100); }
+                catch (InterruptedException e) { e.printStackTrace(); }
             }
 
 
             /**
              * Handler for ProvisionalAuthorizeEvent from supervisor. Generates ballot file path and stores ballot
+             * @see votebox.events.ProvisionalAuthorizeEvent
              */
             public void provisionalAuthorizedToCast(ProvisionalAuthorizeEvent e) {
 
@@ -969,27 +1003,28 @@ public class VoteBox{
 
                     isProvisional = true;
 
+                    /* Check if already voting */
                     if (voting || currentDriver != null && killVBTimer == null)
-                        throw new RuntimeException(
-                                "VoteBox was authorized-to-cast, but was already voting");
+                        throw new RuntimeException("VoteBox was authorized-to-cast, but was already voting");
 
-                    // If last VB runtime is on thank you screen and counting
-                    // down to when it disappears, kill it prematurely without
-                    // showing inactive UI
+                    /* If last VB runtime is on thank you screen and counting  down to when it disappears, kill it prematurely without  showing inactive UI */
                     if (killVBTimer != null && currentDriver != null) {
+
                         killVBTimer.stop();
                         killVBTimer = null;
+
                         currentDriver.kill();
                         currentDriver = null;
                     }
 
                     nonce = e.getNonce();
 
-                    //Current working directory
-                    File path = new File(System.getProperty("user.dir"));
-                    path = new File(path, "tmp");
-                    path = new File(path, "ballots");
-                    path = new File(path, "ballot"/* + protectedCount*/);
+                    /* Current working directory */
+                    /* TODO path fixing */
+                    File path   = new File(System.getProperty("user.dir"));
+                    path        = new File(path, "tmp");
+                    path        = new File(path, "ballots");
+                    path        = new File(path, "ballot"/* + protectedCount*/);
                     path.mkdirs();
 
                     bid = String.valueOf(rand.nextInt(Integer.MAX_VALUE));
@@ -1008,9 +1043,7 @@ public class VoteBox{
 
                         run(new File(path, "data").getAbsolutePath());
                         broadcastStatus();
-                    } catch (IOException e1) {
-                        throw new RuntimeException(e1);
-                    }
+                    } catch (IOException e1) { throw new RuntimeException(e1); }
                 }
 
             }
@@ -1020,10 +1053,8 @@ public class VoteBox{
         try {
             auditorium.connect();
             auditorium.announce(getStatus());
-        }
-        catch (NetworkException e1) {
-            throw new RuntimeException(e1);
-        }
+        } /* TODO runtime exception */
+        catch (NetworkException e1) { throw new RuntimeException(e1); }
 
         statusTimer.start();
     }
@@ -1035,22 +1066,25 @@ public class VoteBox{
      * @param message message displayed as the header of the PIN prompt e.g. "Please Enter Your PIN"
      */
     public void promptForPin(String message) {
-        if(promptingForPin){
-            System.out.println("Still prompting for PIN!");
+
+        /* Avoid prompting for PIN when already prompting */
+        if(promptingForPin)
             return;
-        }
 
         final PINAuthorizationGUI pinGUI = new PINAuthorizationGUI(_constants.getScreenCenterX(), _constants.getScreenCenterY());
-        // Set the GUI's label to our message.
+
+        /* Set the GUI's label to our message. */
         pinGUI.setLabelText(message);
-        // Add a listener for the OK button so that when it gets clicked, it validates the pin.
+
+        /* Add a listener for the OK button so that when it gets clicked, it validates the pin. */
         pinGUI.okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 validatePin(pinGUI.getPin());
                 pinGUI.stop();
             }
         });
-        // Add a listener for the pin text field so that when the Enter key gets pressed, it validates the pin.
+
+        /* Add a listener for the pin text field so that when the Enter key gets pressed, it validates the PIN. */
         pinGUI.pinTextField.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent arg0) {
@@ -1061,6 +1095,7 @@ public class VoteBox{
                 }
             }
         });
+
         pinGUI.start();
 
         promptingForPin = false;
@@ -1069,12 +1104,17 @@ public class VoteBox{
     /**
      * Generates a new PINEnteredEvent and sends over the network for validation by supervisor.
      * @param pin 4-digit, decimal PIN to be validated
-     */
+     */ /* TODO check nonce */
     public void validatePin(String pin) {
+
         byte[] pinNonce = new byte[256];
+
+        /* Generate a nonce for the PIN */
         for (int i = 0; i < 256; i++)
             pinNonce[i] = (byte) (Math.random() * 256);
+
         this.pinNonce = pinNonce;
+
         auditorium.announce(new PINEnteredEvent(mySerial, pin, pinNonce));
     }
 
@@ -1090,40 +1130,32 @@ public class VoteBox{
      */
     public static void renderWriteInImages(String uid, String type, String... names)
     {
-        System.out.println("Got name(s) for a " + type + " candidate with uid " + uid + ".\nName of Candidate: " + names[0]);
-        if (type.equals("Presidential"))
-        {
-            System.out.println("Name of Vice-Candidate: " + names[1]);
-        }
+        /* Render the images for the candidate names. */
+        BufferedImage writeInToggleButton                   = RenderingUtils.renderToggleButton(names[0], type.equals("Presidential") ? names[1] : "", "", 20, 600, false, false, false);
+        BufferedImage focusedWriteInToggleButton            = RenderingUtils.renderToggleButton(names[0], type.equals("Presidential") ? names[1] : "", "", 20, 600, false, false, true);
+        BufferedImage selectedWriteInToggleButton           = RenderingUtils.renderToggleButton(names[0], type.equals("Presidential") ? names[1] : "", "", 20, 600, false, true, false);
+        BufferedImage focusedSelectedWriteInToggleButton    = RenderingUtils.renderToggleButton(names[0], type.equals("Presidential") ? names[1] : "", "", 20, 600, false, true, true);
+        BufferedImage printable                             = RenderingUtils.renderPrintButton(uid, names[0], type.equals("Presidential") ? names[1] : "", "", 20, 600, false, true);
 
-        // Render the images for the candidate names.
-        BufferedImage writeInToggleButton = RenderingUtils.renderToggleButton(names[0], type.equals("Presidential") ? names[1] : "", "", 20, 600, false, false, false);
-        BufferedImage focusedWriteInToggleButton = RenderingUtils.renderToggleButton(names[0], type.equals("Presidential") ? names[1] : "", "", 20, 600, false, false, true);
-        BufferedImage selectedWriteInToggleButton = RenderingUtils.renderToggleButton(names[0], type.equals("Presidential") ? names[1] : "", "", 20, 600, false, true, false);
-        BufferedImage focusedSelectedWriteInToggleButton = RenderingUtils.renderToggleButton(names[0], type.equals("Presidential") ? names[1] : "", "", 20, 600, false, true, true);
-        BufferedImage printable = RenderingUtils.renderPrintButton(uid, names[0], type.equals("Presidential") ? names[1] : "", "", 20, 600, false, true);
+        /* TODO Change the hardcoded font sizes? */
+        BufferedImage reviewButton                          = RenderingUtils.renderButton(names[0] + (type.equals("Presidential") ? "\n" + names[1] : ""), 12, false, true, 330, Color.WHITE, false);
+        BufferedImage focusedReviewButton                   = RenderingUtils.renderButton(names[0] + (type.equals("Presidential") ? "\n" + names[1] : ""), 12, false, true, 330, Color.WHITE, true);
 
-        //TODO Change the hardcoded font sizes?
-        BufferedImage reviewButton = RenderingUtils.renderButton(names[0] + (type.equals("Presidential") ? "\n" + names[1] : ""), 12, false, true, 330, Color.WHITE, false);
-        BufferedImage focusedReviewButton = RenderingUtils.renderButton(names[0] + (type.equals("Presidential") ? "\n" + names[1] : ""), 12, false, true, 330, Color.WHITE, true);
+        /* Save the images to files, overwriting the previous write-in candidate images for this UID. */
+        String fileSeparator    = System.getProperty("file.separator");
+        String filePath         = staticCurrentBallotFile.getAbsolutePath().substring(0, staticCurrentBallotFile.getAbsolutePath().lastIndexOf(fileSeparator))  + fileSeparator + "media" + fileSeparator;
 
-        // Save the images to files, overwriting the previous write-in candidate images for this UID.
-        String fileSeparator = System.getProperty("file.separator");
-        System.out.println("Static ballot file path: " + staticCurrentBallotFile.getAbsolutePath());
-        String filePath = staticCurrentBallotFile.getAbsolutePath().substring(0, staticCurrentBallotFile.getAbsolutePath().lastIndexOf(fileSeparator))  + fileSeparator + "media" + fileSeparator;
-        System.out.println("Images being saved to " + filePath);
         for (Language language : Language.getAllLanguages())
         {
             try
             {
-                ImageIO.write(writeInToggleButton, "png", new File(filePath + uid + "_1_" + language.getShortName() + ".png"));
-                ImageIO.write(focusedWriteInToggleButton, "png", new File(filePath + uid + "_focused_1_" + language.getShortName() + ".png"));
-                ImageIO.write(selectedWriteInToggleButton, "png", new File(filePath + uid + "_selected_1_" + language.getShortName() + ".png"));
-                ImageIO.write(focusedSelectedWriteInToggleButton, "png", new File(filePath + uid + "_focusedSelected_1_" + language.getShortName() + ".png"));
-                ImageIO.write(reviewButton, "png", new File(filePath + fileSeparator + "vvpat" + fileSeparator+ uid + "_review_" + language.getShortName() + ".png"));
-                ImageIO.write(focusedReviewButton, "png", new File(filePath + fileSeparator + "vvpat" + fileSeparator + uid + "_review_focused_" + language.getShortName() + ".png"));
-                ImageIO.write(printable, "png", new File(filePath + fileSeparator + "vvpat" + fileSeparator + uid + "_printable_" + language.getShortName() + ".png"));
-                System.out.println("Images written!");
+                ImageIO.write(writeInToggleButton,                  "png",  new File(filePath + uid             + "_1_"                 + language.getShortName()                                               + ".png"));
+                ImageIO.write(focusedWriteInToggleButton,           "png",  new File(filePath + uid             + "_focused_1_"         + language.getShortName()                                               + ".png"));
+                ImageIO.write(selectedWriteInToggleButton,          "png",  new File(filePath + uid             + "_selected_1_"        + language.getShortName()                                               + ".png"));
+                ImageIO.write(focusedSelectedWriteInToggleButton,   "png",  new File(filePath + uid             + "_focusedSelected_1_" + language.getShortName()                                               + ".png"));
+                ImageIO.write(reviewButton,                         "png",  new File(filePath + fileSeparator   + "vvpat"               + fileSeparator + uid + "_review_"          + language.getShortName()   + ".png"));
+                ImageIO.write(focusedReviewButton,                  "png",  new File(filePath + fileSeparator   + "vvpat"               + fileSeparator + uid + "_review_focused_"  + language.getShortName()   + ".png"));
+                ImageIO.write(printable,                            "png",  new File(filePath + fileSeparator   + "vvpat"               + fileSeparator + uid + "_printable_"       + language.getShortName()   + ".png"));
             }
             catch (IOException e)
             {
@@ -1142,6 +1174,7 @@ public class VoteBox{
      public File getCurrentBallotFile(){
          return _currentBallotFile;
      }
+
     /**
      * Main entry point into the program. If an argument is given, it will be
      * the serial number, otherwise VoteBox will load a serial from its config file.
@@ -1151,8 +1184,7 @@ public class VoteBox{
     public static void main(String[] args) {
         if (args.length == 1)
             new VoteBox(Integer.parseInt(args[0])).start();
-        else
-        	//Tell VoteBox to refer to its config file for the serial number
+        else /* Tell VoteBox to refer to its config file for the serial number */
             new VoteBox().start();
     }
 }
