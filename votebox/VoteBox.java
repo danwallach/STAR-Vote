@@ -674,7 +674,7 @@ public class VoteBox{
              * booth, set the label.
              */
             public void assignLabel(AssignLabelEvent e) {
-                if (e.getTargetSerial() == mySerial){
+                if (e.getOtherSerial() == mySerial){
                 	label = e.getLabel();
                 	System.out.println("\tNew Label: "+label);
                 }//if
@@ -688,7 +688,7 @@ public class VoteBox{
              * the VoteBox runtime. Also announce the new status.
              */
             public void authorizedToCast(AuthorizedToCastEvent e) {
-                if (e.getTargetSerial() == mySerial) {
+                if (e.getOtherSerial() == mySerial) {
                     isProvisional = false;
 
                     if (voting || currentDriver != null && killVBTimer == null)
