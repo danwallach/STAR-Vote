@@ -108,7 +108,7 @@ public class ActivatedEvent extends AAnnounceEvent {
      * @param statuses the list of known statuses
      */
     public ActivatedEvent(int serial, List<StatusEvent> statuses) {
-        this.serial = serial;
+        super(serial);
         this.statuses = statuses;
     }
 

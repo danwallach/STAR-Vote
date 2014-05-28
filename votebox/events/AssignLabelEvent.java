@@ -40,7 +40,7 @@ import sexpression.*;
 public class AssignLabelEvent extends AAnnounceEvent {
 
     /** The serial of the machine that is being labeled */
-    private int otherSerial;
+    private int targetSerial;
 
     /** The new label for the other machine */
     private int label;
@@ -96,8 +96,8 @@ public class AssignLabelEvent extends AAnnounceEvent {
      * @param label the new label
      */
     public AssignLabelEvent(int serial, int node, int label) {
-        this.serial = serial;
-        this.otherSerial = node;
+        super(serial);
+        this.targetSerial = node;
         this.label = label;
     }
 
@@ -111,8 +111,8 @@ public class AssignLabelEvent extends AAnnounceEvent {
     /**
      * @return the node
      */
-    public int getOtherSerial(){
-        return otherSerial;
+    public int getTargetSerial(){
+        return targetSerial;
     }
 
     /**
@@ -128,7 +128,7 @@ public class AssignLabelEvent extends AAnnounceEvent {
     public ASExpression toSExp(){
         return new ListExpression(
                 StringExpression.makeString( "assign-label" ), StringExpression
-                        .makeString( Integer.toString(otherSerial) ),
+                        .makeString( Integer.toString(targetSerial) ),
                 StringExpression.makeString( Integer.toString( label ) ) );
     }
 

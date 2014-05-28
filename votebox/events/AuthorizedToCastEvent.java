@@ -28,7 +28,7 @@ import sexpression.*;
  * Event that represents the authorized-to-cast message:<br>
  * 
  * <pre>
- * (authorized-to-cast otherSerial-id nonce ballot)
+ * (authorized-to-cast targetSerial-id nonce ballot)
  * </pre>
  * 
  * See <a href="https://sys.cs.rice.edu/votebox/trac/wiki/VotingMessages">
@@ -37,25 +37,20 @@ import sexpression.*;
  * 
  * @author cshaw
  */
-public class AuthorizedToCastEvent extends AAnnounceEvent {
+public class AuthorizedToCastEvent extends ABallotEvent {
 
     /** Serial number of the machine being authorized */
-    private int otherSerial;
-
-    /** A nonce associated with the authorized session */
-    private ASExpression nonce;
+    private int targetSerial;
 
     /** The precinct (i.e. ballot style) for the authorized session */
     protected String precinct;
 
-    /** The serialized ballot that the authorized machine will used to vote on */
-    private byte[] ballot;
 
     /**
      * The matcher for the AuthorizedToCastEvent.
      */
     private static MatcherRule MATCHER = new MatcherRule() {
-        /* This message will be of the form (authorized-to-cast otherSerial nonce precinct ballot)*/
+        /* This message will be of the form (authorized-to-cast targetSerial nonce precinct ballot)*/
         private ASExpression pattern = new ListExpression( StringExpression
                 .makeString( "authorized-to-cast" ), StringWildcard.SINGLETON,
                 StringWildcard.SINGLETON, StringWildcard.SINGLETON, StringWildcard.SINGLETON );
@@ -85,7 +80,7 @@ public class AuthorizedToCastEvent extends AAnnounceEvent {
                 return new AuthorizedToCastEvent( serial, otherSerial, nonce,  precinct, ballot );
             }
             return null;
-        };
+        }
     };
 
     /**
@@ -99,38 +94,24 @@ public class AuthorizedToCastEvent extends AAnnounceEvent {
      * Constructs a new AuthorizedToCastEvent.
      *
      * @param serial the serial number of the sender
-     * @param otherSerial the otherSerial id
+     * @param targetSerial the targetSerial id
      * @param nonce the nonce (or authorization code), an array of bytes
      * @param ballot the ballot data
      */
-    public AuthorizedToCastEvent(int serial, int otherSerial, ASExpression nonce, String precinct, byte[] ballot) {
-        this.serial = serial;
-        this.otherSerial = otherSerial;
-        this.nonce = nonce;
-        this.precinct = precinct;
-        this.ballot = ballot;
+    public AuthorizedToCastEvent(int serial, int targetSerial, ASExpression nonce, String precinct, byte[] ballot) {
+        super(serial, ballot, nonce, precinct);
+
+        this.targetSerial = targetSerial;
     }
 
-    /**
-     * @return the ballot
-     */
-    public byte[] getBallot() {
-        return ballot;
-    }
 
     /**
-     * @return the otherSerial
+     * @return the serial number for the machine being authorized
      */
-    public int getOtherSerial() {
-        return otherSerial;
+    public int getTargetSerial() {
+        return targetSerial;
     }
 
-    /**
-     * @return the nonce, or authorization code
-     */
-    public ASExpression getNonce() {
-        return nonce;
-    }
 
     /**
      * @return the ballot style
@@ -152,8 +133,8 @@ public class AuthorizedToCastEvent extends AAnnounceEvent {
     public ASExpression toSExp() {
     	return new ListExpression( StringExpression
                 .makeString( "authorized-to-cast" ), StringExpression
-                .makeString( Integer.toString(otherSerial) ), nonce, StringExpression
-                .makeString( precinct), StringExpression.makeString( ballot ));
+                .makeString( Integer.toString(targetSerial) ), getNonce(), StringExpression
+                .makeString( precinct), StringExpression.makeString( getBallot() ));
     }
     
 }

@@ -276,7 +276,7 @@ public class BallotScanner{
             public void lastPollsOpen(LastPollsOpenEvent e) {}
 
             public void assignLabel(AssignLabelEvent e) {
-                if (e.getOtherSerial() == mySerial)
+                if (e.getTargetSerial() == mySerial)
                     label = e.getLabel();
 
                 labelChangedEvent.notify(label);

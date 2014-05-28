@@ -2,18 +2,10 @@ package votebox.events;
 
 import sexpression.*;
 
-import java.math.BigInteger;
-
 /**
  * An event to signify that a ballot print has been successful
  */
-public class BallotPrintSuccessEvent extends AAnnounceEvent{
-
-        private int serial;
-
-        private String bID;
-
-        private byte[] nonce;
+public class BallotPrintSuccessEvent extends ABallotEvent{
 
         /**
          * Matcher for the pinEntered message
@@ -25,26 +17,15 @@ public class BallotPrintSuccessEvent extends AAnnounceEvent{
             public IAnnounceEvent match(int serial, ASExpression sexp) {
                 ASExpression res = pattern.match( sexp );
                 if (res != NoMatch.SINGLETON) {
-                    String bID = ((ListExpression) res).get(0).toString();
-                    byte[] nonce = new BigInteger(((ListExpression) res)
-                            .get( 1 ).toString()).toByteArray();
-                    return new BallotPrintSuccessEvent( serial, bID, nonce );
+                    String bid = ((ListExpression) res).get(0).toString();
+                    ASExpression nonce = ((ListExpression) res).get( 1 );
+                    return new BallotPrintSuccessEvent( serial, bid, nonce );
                 }
 
                 return null;
             }
         };
 
-        public int getSerial() {
-            return serial;
-        }
-
-        /**
-         * @return nonce of printed ballot
-         */
-        public byte[] getNonce() {
-            return nonce;
-        }
 
         /**
          *
@@ -54,27 +35,24 @@ public class BallotPrintSuccessEvent extends AAnnounceEvent{
             return MATCHER;
         }
 
+
         /**
-         * @return ballot ID of associated ballot
+         * @see votebox.events.ABallotEvent#ABallotEvent(int, String, sexpression.ASExpression)
          */
-        public String getBID() {
-            return bID;
+        public BallotPrintSuccessEvent(int serial, String bid, ASExpression nonce) {
+            super(serial, bid, nonce);
         }
 
-        public BallotPrintSuccessEvent(int serial, String bID, byte[] nonce) {
-            this.serial = serial;
-            this.bID = bID;
-            this.nonce = nonce;
-        }
-
+        /** @see votebox.events.IAnnounceEvent#fire(VoteBoxEventListener) */
         public void fire(VoteBoxEventListener l) {
             l.ballotPrintSuccess(this);
         }
 
+        /** @see votebox.events.IAnnounceEvent#toSExp() */
         public ASExpression toSExp() {
             return new ListExpression( StringExpression.makeString("ballot-print-success"),
-                    StringExpression.makeString( bID ),
-                    StringExpression.makeString( new BigInteger(nonce).toString()));
+                    StringExpression.makeString( getBID() ),
+                    getNonce());
         }
 
-    }
+}
