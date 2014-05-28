@@ -6,7 +6,7 @@ import sexpression.*;
  * @author Matt Bernhard
  * 6/19/13
  */
-public class StartScannerEvent implements IAnnounceEvent{
+public class StartScannerEvent extends AAnnounceEvent{
 
     /**
      * Matcher for the ballotScanner message

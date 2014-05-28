@@ -7,7 +7,7 @@ import sexpression.*;
  *
  * @author Matt Bernhard
  */
-public class BallotScanRejectedEvent implements IAnnounceEvent {
+public class BallotScanRejectedEvent extends AAnnounceEvent {
 
     private String _bid;
 

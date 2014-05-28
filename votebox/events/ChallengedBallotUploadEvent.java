@@ -16,7 +16,7 @@ import java.util.Iterator;
  * @author Nelson Chen
  *         Date: 12/4/12
  */
-public class ChallengedBallotUploadEvent implements IAnnounceEvent {
+public class ChallengedBallotUploadEvent extends AAnnounceEvent {
     private int serial;
     private ASExpression challengedBallots;
 

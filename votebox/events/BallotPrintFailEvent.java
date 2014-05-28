@@ -10,7 +10,7 @@ import java.math.BigInteger;
  *
  * An event which represents that printing did not occur successfully
  */
-public class BallotPrintFailEvent implements IAnnounceEvent {
+public class BallotPrintFailEvent extends AAnnounceEvent {
 
     private int serial;
 

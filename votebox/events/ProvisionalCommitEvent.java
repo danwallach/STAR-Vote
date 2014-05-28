@@ -13,7 +13,7 @@ import java.util.HashMap;
  *
  * @author Matt Bernhard
  */
-public class ProvisionalCommitEvent implements IAnnounceEvent {
+public class ProvisionalCommitEvent extends AAnnounceEvent {
     private final int _serial;
     private final ASExpression _nonce;
     private final ASExpression _ballot;

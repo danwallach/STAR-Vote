@@ -7,7 +7,7 @@ import sexpression.*;
  *
  * @author Matt Bernhard
  */
-public class BallotScanAcceptedEvent implements IAnnounceEvent{
+public class BallotScanAcceptedEvent extends AAnnounceEvent{
 
     private String _bid;
     private int serial;

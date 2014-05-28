@@ -12,7 +12,7 @@ import java.util.HashMap;
  *
  * @author Matt Bernhard
  */
-public class SpoilBallotEvent implements IAnnounceEvent {
+public class SpoilBallotEvent extends AAnnounceEvent {
 
     private int _serial;
     private String _bid;

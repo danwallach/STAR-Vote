@@ -14,7 +14,7 @@ import sexpression.*;
  * An event that holds information about the polls, mainly whether or not the polls are currently open. Used to
  * notify VoteBox booths that join the network late the the polls are open and that they should prompt for a user PIN
  */
-public class PollStatusEvent implements IAnnounceEvent{
+public class PollStatusEvent extends AAnnounceEvent{
 
     private int serial;
 

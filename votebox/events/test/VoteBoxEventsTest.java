@@ -127,7 +127,7 @@ public class VoteBoxEventsTest extends TestCase {
 
         AssignLabelEvent event2 = (AssignLabelEvent) matcher.match(50, sexp);
         assertEquals(event.getSerial(), event2.getSerial());
-        assertEquals(event.getNode(), event2.getNode());
+        assertEquals(event.getOtherSerial(), event2.getOtherSerial());
         assertEquals(event.getLabel(), event2.getLabel());
     }
 

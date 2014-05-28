@@ -17,7 +17,7 @@ import java.util.Iterator;
  *         Date: 12/4/12
  *
  */
-public class CastBallotUploadEvent implements IAnnounceEvent {
+public class CastBallotUploadEvent extends AAnnounceEvent {
     private int serial;
     private ASExpression _nonces;
 

@@ -37,7 +37,7 @@ import sexpression.*;
  * 
  * @author cshaw
  */
-public class AuthorizedToCastEvent implements IAnnounceEvent {
+public class AuthorizedToCastEvent extends AAnnounceEvent {
 
     private int serial;
 

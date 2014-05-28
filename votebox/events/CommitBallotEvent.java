@@ -35,7 +35,7 @@ import sexpression.*;
  * @author kyle
  * 
  */
-public class CommitBallotEvent implements IAnnounceEvent {
+public class CommitBallotEvent extends AAnnounceEvent {
 
     private final int _serial;
     private final ASExpression _nonce;

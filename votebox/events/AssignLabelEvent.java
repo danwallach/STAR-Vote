@@ -37,57 +37,71 @@ import sexpression.*;
  * 
  * @author cshaw
  */
-public class AssignLabelEvent implements IAnnounceEvent {
+public class AssignLabelEvent extends AAnnounceEvent {
 
-    private int serial;
+    /** The serial of the machine that is being labeled */
+    private int otherSerial;
 
-    private int node;
-
+    /** The new label for the other machine */
     private int label;
 
     /**
      * Matcher for the AssignLabelEvent.
      */
     private static MatcherRule MATCHER = new MatcherRule() {
+        /*
+         * The pattern for this message is "assign-label" followed by
+         * the serial for the machine to be labelled and the new label
+         * i.e. (assignlabel otherSerial newLabel)
+         */
         private ASExpression pattern = new ListExpression( StringExpression
                 .makeString( "assign-label" ), StringWildcard.SINGLETON,
                 StringWildcard.SINGLETON );
 
+        /** @see votebox.events.MatcherRule#match(int, sexpression.ASExpression) */
         public IAnnounceEvent match(int serial, ASExpression sexp) {
+            /* Attempt to match the expression */
             ASExpression res = pattern.match( sexp );
             if (res != NoMatch.SINGLETON) {
-                int node = Integer.parseInt( ((ListExpression) res).get( 0 )
+
+                /* The first field is the serial number of the other machine */
+                int otherSerial = Integer.parseInt( ((ListExpression) res).get( 0 )
                         .toString() );
+
+                /* The second field is the new label for the aforementioned machine */
                 int label = Integer.parseInt( ((ListExpression) res).get( 1 )
                         .toString() );
-                return new AssignLabelEvent( serial, node, label );
+
+                /* On matching the message, return a new event object */
+                return new AssignLabelEvent( serial, otherSerial, label );
             }
+
+            /* If the pattern wasn't matched, return nothing */
             return null;
         }
     };
 
-    /**
-     * 
-     * @return a MatcherRule for parsing this event type.
-     */
-    public static MatcherRule getMatcher(){
-    	return MATCHER;
-    }//getMatcher
+
     
     /**
      * Constructs a new AssignLabelEvent.
      * 
-     * @param serial
-     *            the serial number of the sender
-     * @param node
-     *            the node id
-     * @param label
-     *            the new label
+     * @param serial the serial number of the sender
+     * @param node the node id
+     * @param label the new label
      */
     public AssignLabelEvent(int serial, int node, int label) {
         this.serial = serial;
-        this.node = node;
+        this.otherSerial = node;
         this.label = label;
+    }
+
+
+    /**
+     * @return a MatcherRule for parsing this event type.
+     */
+    public static MatcherRule getMatcher(){
+        return MATCHER;
     }
 
     /**
@@ -100,22 +114,24 @@ public class AssignLabelEvent implements IAnnounceEvent {
     /**
      * @return the node
      */
-    public int getNode(){
-        return node;
+    public int getOtherSerial(){
+        return otherSerial;
     }
 
-    public int getSerial(){
-        return serial;
-    }
-
+    /**
+     * @see votebox.events.IAnnounceEvent#fire(VoteBoxEventListener)
+     */
     public void fire(VoteBoxEventListener l){
         l.assignLabel( this );
     }
 
+    /**
+     * @see IAnnounceEvent#toSExp()
+     */
     public ASExpression toSExp(){
         return new ListExpression(
                 StringExpression.makeString( "assign-label" ), StringExpression
-                        .makeString( Integer.toString( node ) ),
+                        .makeString( Integer.toString(otherSerial) ),
                 StringExpression.makeString( Integer.toString( label ) ) );
     }
 

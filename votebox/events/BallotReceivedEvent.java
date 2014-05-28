@@ -39,7 +39,7 @@ import sexpression.*;
  * 
  * @author cshaw
  */
-public class BallotReceivedEvent implements IAnnounceEvent {
+public class BallotReceivedEvent extends AAnnounceEvent {
 
     private int serial;
 

@@ -11,7 +11,6 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.InputMismatchException;
-import java.util.Observer;
 import java.util.Scanner;
 
 public class BallotScanner{
@@ -278,7 +277,7 @@ public class BallotScanner{
             public void lastPollsOpen(LastPollsOpenEvent e) {}
 
             public void assignLabel(AssignLabelEvent e) {
-                if (e.getNode() == mySerial)
+                if (e.getOtherSerial() == mySerial)
                     label = e.getLabel();
 
                 labelChangedEvent.notify(label);

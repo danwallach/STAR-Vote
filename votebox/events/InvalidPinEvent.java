@@ -7,7 +7,7 @@ import java.math.BigInteger;
 /**
  * Event that says that a pin validation request was invalid
  */
-public class InvalidPinEvent implements IAnnounceEvent{
+public class InvalidPinEvent extends AAnnounceEvent{
 
     private int serial;
 

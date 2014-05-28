@@ -7,7 +7,7 @@ import sexpression.*;
  * @version 0.0.1
  *          Date: 7/29/13
  */
-public class TapMachineEvent implements IAnnounceEvent {
+public class TapMachineEvent extends AAnnounceEvent {
 
     /**
      * Matcher for the ballotScanner message
