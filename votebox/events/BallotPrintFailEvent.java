@@ -43,7 +43,7 @@ public class BallotPrintFailEvent extends ABallotEvent {
      * @see votebox.events.ABallotEvent
      */
     public BallotPrintFailEvent(int serial, String bid, ASExpression nonce) {
-        super(bid, nonce);
+        super(serial, bid, nonce);
         this.serial = serial;
     }
 

@@ -10,6 +10,10 @@ public abstract class AAnnounceEvent implements IAnnounceEvent {
     /** The serial number of the machine incurring this event */
     protected int serial;
 
+    public AAnnounceEvent(int serial){
+        this.serial = serial;
+    }
+
     /**
      * @return the serial number of the sender of this message
      */

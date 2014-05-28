@@ -96,7 +96,7 @@ public class AssignLabelEvent extends AAnnounceEvent {
      * @param label the new label
      */
     public AssignLabelEvent(int serial, int node, int label) {
-        this.serial = serial;
+        super(serial);
         this.targetSerial = node;
         this.label = label;
     }

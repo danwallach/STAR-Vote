@@ -2,19 +2,11 @@ package votebox.events;
 
 import sexpression.*;
 
-import java.math.BigInteger;
-
 /**
  * @author Matt Bernhard
  * 6/17/13
  */
-public class BallotPrintingEvent extends AAnnounceEvent {
-
-    private int serial;
-
-    private String bID;
-
-    private byte[] nonce;
+public class BallotPrintingEvent extends ABallotEvent {
 
     /**
      * Matcher for the pinEntered message
@@ -27,8 +19,7 @@ public class BallotPrintingEvent extends AAnnounceEvent {
             ASExpression res = pattern.match( sexp );
             if (res != NoMatch.SINGLETON) {
                 String bID = ((ListExpression) res).get(0).toString();
-                byte[] nonce = new BigInteger(((ListExpression) res)
-                        .get( 1 ).toString()).toByteArray();
+                ASExpression nonce = ((ListExpression) res).get( 1 );
                 return new BallotPrintingEvent( serial, bID, nonce );
             }
 
@@ -36,13 +27,6 @@ public class BallotPrintingEvent extends AAnnounceEvent {
         }
     };
 
-    public int getSerial() {
-        return serial;
-    }
-
-    public byte[] getNonce() {
-        return nonce;
-    }
 
     /**
      *
@@ -52,14 +36,9 @@ public class BallotPrintingEvent extends AAnnounceEvent {
         return MATCHER;
     }
 
-    public String getBID() {
-        return bID;
-    }
 
-    public BallotPrintingEvent(int serial, String bID, byte[] nonce) {
-        this.serial = serial;
-        this.bID = bID;
-        this.nonce = nonce;
+    public BallotPrintingEvent(int serial, String bid, ASExpression nonce) {
+        super(serial, bid, nonce);
     }
 
     public void fire(VoteBoxEventListener l) {
@@ -68,7 +47,7 @@ public class BallotPrintingEvent extends AAnnounceEvent {
 
     public ASExpression toSExp() {
         return new ListExpression( StringExpression.makeString("ballot-printing"),
-                StringExpression.makeString( bID ),
-                StringExpression.makeString( new BigInteger(nonce).toString()));
+                StringExpression.makeString( getBID() ),
+                getNonce());
     }
 }

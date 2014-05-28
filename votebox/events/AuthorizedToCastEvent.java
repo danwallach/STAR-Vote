@@ -94,16 +94,14 @@ public class AuthorizedToCastEvent extends ABallotEvent {
      * Constructs a new AuthorizedToCastEvent.
      *
      * @param serial the serial number of the sender
-     * @param otherSerial the targetSerial id
+     * @param targetSerial the targetSerial id
      * @param nonce the nonce (or authorization code), an array of bytes
      * @param ballot the ballot data
      */
-    public AuthorizedToCastEvent(int serial, int otherSerial, ASExpression nonce, String precinct, byte[] ballot) {
-        super(ballot, nonce);
+    public AuthorizedToCastEvent(int serial, int targetSerial, ASExpression nonce, String precinct, byte[] ballot) {
+        super(serial, ballot, nonce, precinct);
 
-        this.serial = serial;
-        this.targetSerial = otherSerial;
-        this.precinct = precinct;
+        this.targetSerial = targetSerial;
     }
 
 

@@ -19,17 +19,28 @@ public abstract class ABallotEvent extends AAnnounceEvent{
     private ASExpression nonce;
 
     /** The ballot ID */
-    private String bID;
+    private String bid;
+
+    /** The ballot style (i.e. precinct) */
+    private String precinct;
 
 
-    public ABallotEvent(byte[] ballot, ASExpression nonce) {
+    public ABallotEvent(int serial, byte[] ballot, ASExpression nonce) {
+        super(serial);
         this.ballot = ballot;
         this.nonce = nonce;
     }
 
-    public ABallotEvent(String bID, ASExpression nonce){
-        this.bID = bID;
+    public ABallotEvent(int serial, String bID, ASExpression nonce){
+        super(serial);
+        this.bid = bID;
         this.nonce = nonce;
+    }
+
+    public ABallotEvent(int serial, byte[] ballot, ASExpression nonce, String precinct){
+        this(serial, ballot, nonce);
+
+        this.precinct = precinct;
     }
 
     /**
@@ -47,9 +58,10 @@ public abstract class ABallotEvent extends AAnnounceEvent{
     }
 
     /** @return the ballot ID */
-    public String getBID() {
-        return bID;
-    }
+    public String getBID() { return bid; }
+
+    /** Return the precinct (and therefore ballot style */
+    public String getPrecinct() { return precinct; }
 
 
 }
