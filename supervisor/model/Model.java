@@ -705,7 +705,7 @@ public class Model {
              */
             public void assignLabel(AssignLabelEvent e) {
                 /* Find the mini-model of the machine */
-                AMachine m = getMachineForSerial(e.getOtherSerial());
+                AMachine m = getMachineForSerial(e.getTargetSerial());
                 if (m != null) {
                     /* If we find the machine, set its label to the label specified */
                     m.setLabel(e.getLabel());
@@ -724,7 +724,7 @@ public class Model {
              * that machine.
              */
             public void authorizedToCast(AuthorizedToCastEvent e) {
-                AMachine m = getMachineForSerial(e.getOtherSerial());
+                AMachine m = getMachineForSerial(e.getTargetSerial());
 
                 /* Set the local copy of the votebox to have the corresponding nonce value of the voting session */
                 if (m != null && m instanceof VoteBoxBooth) {

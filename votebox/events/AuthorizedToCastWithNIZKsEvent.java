@@ -9,7 +9,7 @@ import crypto.interop.AdderKeyManipulator;
 //TODO: in the record, as it changes from run to run).  Alongside the ballot seems as good a place as any other.
 
 /**
- * Event to authorize a VoteBox booth to cast using NZIKS (Non-interactive, zero-knowledge proofs)
+ * Event to authorize a VoteBox booth to cast using NIZKs (Non-interactive, zero-knowledge proofs)
  * 
  * @author Montrose
  *
@@ -19,6 +19,7 @@ public class AuthorizedToCastWithNIZKsEvent extends AuthorizedToCastEvent {
      * The matcher for the AuthorizedToCastEvent.
      */
     private static MatcherRule MATCHER = new MatcherRule() {
+        /* These have the same format as AuthorizedToCast, except they also include a public key */
         private ASExpression pattern = new ListExpression( StringExpression
                 .makeString( "authorized-to-cast-with-nizks" ), StringWildcard.SINGLETON,
                 StringWildcard.SINGLETON, StringWildcard.SINGLETON, StringWildcard.SINGLETON, Wildcard.SINGLETON );
@@ -26,55 +27,67 @@ public class AuthorizedToCastWithNIZKsEvent extends AuthorizedToCastEvent {
         public IAnnounceEvent match(int serial, ASExpression sexp) {
             ASExpression res = pattern.match( sexp );
             if (res != NoMatch.SINGLETON) {
-                int node = Integer.parseInt( ((ListExpression) res).get( 0 )
+
+                /* This is the serial of the machine being authorized */
+                int otherSerial = Integer.parseInt( ((ListExpression) res).get( 0 )
                         .toString() );
+
+                /* This is the session nonce */
                 ASExpression nonce = ((ListExpression) res)
                         .get( 1 );
 
+                /* This is the ballot data */
                 byte[] ballot = ((StringExpression) ((ListExpression) res)
                         .get( 2 )).getBytesCopy();
+
+                /* This is the ballot style, per precinct */
                 String precinct = ((ListExpression) res).get( 3 )
                         .toString();
+
+                /* This is the public key with which all votes are encrypted so they can be verified by NIZKs */
                 PublicKey finalPubKey = PublicKey.fromASE(((ListExpression) res).get(4));
-                
-                return new AuthorizedToCastWithNIZKsEvent( serial, node, nonce, precinct, ballot,  finalPubKey );
+
+                /* De-serialize and return an object representation of the aforementioned data */
+                return new AuthorizedToCastWithNIZKsEvent(serial, otherSerial, nonce, precinct, ballot, finalPubKey);
             }
             return null;
-        };
+        }
     };
 
     /**
-     * 
      * @return a MatcherRule for parsing this event type.
      */
     public static MatcherRule getMatcher(){
     	return MATCHER;
-    }//getMatcher
-    
+    }
+
+    /** The public key to use for encryption and NIZKs */
     private PublicKey _finalPubKey;
-    
+
+    /**
+     * @see votebox.events.AuthorizedToCastEvent#AuthorizedToCastEvent(int, int, sexpression.ASExpression, String, byte[])
+     * @param finalPubKey the public key that will be used to encrypt ballots
+     */
     public AuthorizedToCastWithNIZKsEvent(int serial, int node, ASExpression nonce, String precinct, byte[] ballot,  PublicKey finalPubKey){
     	super(serial, node, nonce, precinct, ballot);
     	
     	_finalPubKey = finalPubKey;
     	
-    	//This is a global value, on both the VoteBox and Supervisor side.
+    	/* This is a global value, on both the VoteBox and Supervisor side. */
     	AdderKeyManipulator.setCachedKey(finalPubKey);
     }
-    
+
+    /**
+     * @see IAnnounceEvent#toSExp()
+     */
     public ASExpression toSExp() {
-        /*return new ListExpression( StringExpression
-                .makeString( "authorized-to-cast" ), StringExpression
-                .makeString( Integer.toString( node ) ), StringExpression
-                .makeString( nonce ), StringExpression.makeString( ballot ) );*/
+
     	return new ListExpression( 
     			StringExpression.makeString( "authorized-to-cast-with-nizks" ), 
-                StringExpression.makeString( Integer.toString( getOtherSerial() ) ),
+                StringExpression.makeString( Integer.toString( getTargetSerial() ) ),
                 getNonce(),
                 StringExpression.makeString( getBallot() ),
-                StringExpression.makeString( precinct),
-
-                //StringExpression.makeString(_finalPubKey.toString()));
+                StringExpression.makeString( getPrecinct() ),
                 _finalPubKey.toASE());
     }
 }
