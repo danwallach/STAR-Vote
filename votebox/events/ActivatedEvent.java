@@ -40,10 +40,8 @@ import sexpression.*;
  * 
  * @author cshaw
  */
-public class ActivatedEvent implements IAnnounceEvent {
+public class ActivatedEvent extends AAnnounceEvent {
 
-    /** The serial number of the machine incurring this event */
-    private int serial;
 
     /** The statuses of all the machines connected to the incurring machine when it is activate */
     private List<StatusEvent> statuses;
@@ -112,13 +110,6 @@ public class ActivatedEvent implements IAnnounceEvent {
     public ActivatedEvent(int serial, List<StatusEvent> statuses) {
         this.serial = serial;
         this.statuses = statuses;
-    }
-
-    /**
-     * @see IAnnounceEvent#getSerial()
-     */
-    public int getSerial() {
-        return serial;
     }
 
     /**
