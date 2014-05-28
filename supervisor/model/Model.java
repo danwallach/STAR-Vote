@@ -706,7 +706,7 @@ public class Model {
              */
             public void assignLabel(AssignLabelEvent e) {
                 /* Find the mini-model of the machine */
-                AMachine m = getMachineForSerial(e.getNode());
+                AMachine m = getMachineForSerial(e.getOtherSerial());
                 if (m != null) {
                     /* If we find the machine, set its label to the label specified */
                     m.setLabel(e.getLabel());

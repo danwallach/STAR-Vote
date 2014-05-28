@@ -7,7 +7,7 @@ import java.math.BigInteger;
 /**
  * An event to signify that a ballot print has been successful
  */
-public class BallotPrintSuccessEvent implements IAnnounceEvent{
+public class BallotPrintSuccessEvent extends AAnnounceEvent{
 
         private int serial;
 

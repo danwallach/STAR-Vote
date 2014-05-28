@@ -7,7 +7,7 @@ import java.math.BigInteger;
 /**
  * Event class for when a pin is entered on a VoteBox. Entered Pin is included in event
  */
-public class PINEnteredEvent implements IAnnounceEvent {
+public class PINEnteredEvent extends AAnnounceEvent {
 
     private int serial;
 

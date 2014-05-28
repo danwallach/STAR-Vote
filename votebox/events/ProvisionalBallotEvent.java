@@ -12,7 +12,7 @@ import java.util.HashMap;
  *
  * @author Matt Bernhard
  */
-public class ProvisionalBallotEvent implements IAnnounceEvent{
+public class ProvisionalBallotEvent extends AAnnounceEvent{
 
     private int _serial;
     private ASExpression _nonce;

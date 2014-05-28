@@ -8,7 +8,7 @@ import java.math.BigInteger;
  * @author Matt Bernhard
  * 6/17/13
  */
-public class BallotPrintingEvent implements IAnnounceEvent {
+public class BallotPrintingEvent extends AAnnounceEvent {
 
     private int serial;
 

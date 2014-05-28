@@ -37,7 +37,7 @@ import sexpression.*;
  * 
  * @author cshaw
  */
-public class PollsOpenQEvent implements IAnnounceEvent {
+public class PollsOpenQEvent extends AAnnounceEvent {
 
     private int serial;
 

@@ -661,7 +661,7 @@ public class VoteBox{
              * booth, set the label.
              */
             public void assignLabel(AssignLabelEvent e) {
-                if (e.getNode() == mySerial){
+                if (e.getOtherSerial() == mySerial){
                 	label = e.getLabel();
                 	System.out.println("\tNew Label: "+label);
                 }//if

@@ -5,7 +5,7 @@ import sexpression.*;
 /**
  * Event class for when a ballot is scanned
  */
-public class BallotScannedEvent implements IAnnounceEvent {
+public class BallotScannedEvent extends AAnnounceEvent {
 
   private int serial;
 

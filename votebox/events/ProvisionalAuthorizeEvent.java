@@ -10,7 +10,7 @@ import java.math.BigInteger;
  *
  * @author Matt Bernhard
  */
-public class ProvisionalAuthorizeEvent implements IAnnounceEvent {
+public class ProvisionalAuthorizeEvent extends AAnnounceEvent {
 
     private int serial;
 

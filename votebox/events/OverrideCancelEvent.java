@@ -39,7 +39,7 @@ import sexpression.*;
  * 
  * @author cshaw
  */
-public class OverrideCancelEvent implements IAnnounceEvent {
+public class OverrideCancelEvent extends AAnnounceEvent {
 
     private int serial;
 

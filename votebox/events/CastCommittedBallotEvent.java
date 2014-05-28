@@ -39,7 +39,7 @@ import sexpression.*;
  *
  * @author cshaw
  */
-public class CastCommittedBallotEvent implements IAnnounceEvent {
+public class CastCommittedBallotEvent extends AAnnounceEvent {
 
     private int _serial;
     private ASExpression _nonce;
