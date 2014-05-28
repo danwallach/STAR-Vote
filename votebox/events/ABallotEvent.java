@@ -37,10 +37,16 @@ public abstract class ABallotEvent extends AAnnounceEvent{
         this.nonce = nonce;
     }
 
-    public ABallotEvent(int serial, byte[] ballot, ASExpression nonce, String precinct){
+    public ABallotEvent(int serial, ASExpression nonce, byte[] ballot, String precinct){
         this(serial, ballot, nonce);
 
         this.precinct = precinct;
+    }
+
+    public ABallotEvent(int serial, ASExpression nonce, String bid, byte[] ballot){
+        this(serial, ballot, nonce);
+
+        this.bid = bid;
     }
 
     public ABallotEvent(int serial, ASExpression nonce, String bid, String precinct){

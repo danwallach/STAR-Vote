@@ -53,11 +53,11 @@ public class BallotScannerEvent extends AAnnounceEvent {
     /**
      * Constructor for the event
      *
-     * @param label
-     * @param status
-     * @param battery
-     * @param protectedCount
-     * @param publicCount
+     * @param label this machine's label
+     * @param status the machine's status
+     * @param battery the machine's batter level
+     * @param protectedCount the machine's protected count
+     * @param publicCount the machine's public count
      */
     public BallotScannerEvent(int serial, int label, String status, int battery,
                               int protectedCount, int publicCount) {
@@ -111,10 +111,12 @@ public class BallotScannerEvent extends AAnnounceEvent {
         return publicCount;
     }
 
+    /** @see votebox.events.IAnnounceEvent#fire(VoteBoxEventListener) */
     public void fire(VoteBoxEventListener l) {
         l.ballotScanner(this);
     }
 
+    /** @see votebox.events.IAnnounceEvent#toSExp() */
     public ASExpression toSExp() {
         return new ListExpression(
 

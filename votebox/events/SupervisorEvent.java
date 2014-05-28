@@ -39,6 +39,7 @@ import sexpression.*;
  */
 public class SupervisorEvent extends AAnnounceEvent {
 
+    /** The time at which this event was sent out */
     private long timestamp;
 
     private String status;
@@ -107,6 +108,8 @@ public class SupervisorEvent extends AAnnounceEvent {
         l.supervisor( this );
     }
 
+    /** @see votebox.events.IAnnounceEvent#fire(VoteBoxEventListener) */
+    /** @see votebox.events.IAnnounceEvent#toSExp() */
     public ASExpression toSExp() {
         return new ListExpression( StringExpression.makeString( "supervisor" ),
                 StringExpression.makeString( Long.toString( timestamp ) ),

@@ -109,7 +109,7 @@ public class VoteBoxEventNotifier implements VoteBoxEventListener {
             l.overrideCancelDeny(e);
     }
 
-    public void overrideCast(OverrideCastEvent e) {
+    public void overrideCast(OverrideCommitEvent e) {
         for (VoteBoxEventListener l : listeners)
             l.overrideCast(e);
     }

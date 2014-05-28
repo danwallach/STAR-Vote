@@ -24,11 +24,10 @@ public class StartScannerEvent extends AAnnounceEvent{
         }
     };
 
-    private int serial;
 
 
     public StartScannerEvent(int serial) {
-        this.serial = serial;
+        super(serial);
     }
 
     /**
@@ -38,14 +37,12 @@ public class StartScannerEvent extends AAnnounceEvent{
         return MATCHER;
     }//getMatcher
 
-    public int getSerial() {
-        return serial;
-    }
-
+    /** @see votebox.events.IAnnounceEvent#fire(VoteBoxEventListener) */
     public void fire(VoteBoxEventListener l) {
         l.scannerStart(this);
     }
 
+    /** @see votebox.events.IAnnounceEvent#toSExp() */
     public ASExpression toSExp() {
         return new ListExpression(StringExpression.makeString("start-scanner"));
     }

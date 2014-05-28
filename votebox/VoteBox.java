@@ -596,7 +596,7 @@ public class VoteBox{
             auditorium = new VoteBoxAuditoriumConnector(mySerial, _constants,
                     ActivatedEvent.getMatcher(), AssignLabelEvent.getMatcher(),
                     AuthorizedToCastEvent.getMatcher(), BallotReceivedEvent.getMatcher(),
-                    OverrideCancelEvent.getMatcher(), OverrideCastEvent.getMatcher(),
+                    OverrideCancelEvent.getMatcher(), OverrideCommitEvent.getMatcher(),
                     PollsOpenQEvent.getMatcher(), AuthorizedToCastWithNIZKsEvent.getMatcher(),
                     PINEnteredEvent.getMatcher(), InvalidPinEvent.getMatcher(),
                     PollsOpenEvent.getMatcher(), PollStatusEvent.getMatcher(),
@@ -654,7 +654,7 @@ public class VoteBox{
                 for (StatusEvent ae : e.getStatuses()) {
 
                      /* TODO NODE */
-                    if (ae.getNode() == mySerial) {
+                    if (ae.getTargetSerial() == mySerial) {
 
                         VoteBoxEvent ve = (VoteBoxEvent) ae.getStatus();
                         VoteBoxEvent status = getStatus();
@@ -882,9 +882,9 @@ public class VoteBox{
              * runtime to the proper override page and record the page the user
              * was previously on.
              *
-             * @see votebox.events.OverrideCastEvent
+             * @see votebox.events.OverrideCommitEvent
              */
-            public void overrideCast(OverrideCastEvent e) {
+            public void overrideCast(OverrideCommitEvent e) {
                 /* See if this is the target of the event */
                 if(e.getTargetSerial() == mySerial){
 
@@ -951,7 +951,7 @@ public class VoteBox{
              * @see votebox.events.InvalidPinEvent
              */
             public void invalidPin(InvalidPinEvent e) {
-                if(e.getNode() == mySerial)
+                if(e.getTargetSerial() == mySerial)
                     promptForPin("Invalid PIN: Enter Valid PIN");
             }
 

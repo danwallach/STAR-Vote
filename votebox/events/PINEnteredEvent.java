@@ -9,12 +9,8 @@ import java.math.BigInteger;
  */
 public class PINEnteredEvent extends AAnnounceEvent {
 
-    private int serial;
-
+    /** The PIN that was entered */
     private String pin;
-
-    private byte[] nonce;
-
 
     /**
      * Matcher for the pinEntered message
@@ -27,32 +23,30 @@ public class PINEnteredEvent extends AAnnounceEvent {
             ASExpression res = pattern.match( sexp );
             if (res != NoMatch.SINGLETON) {
                 String pin =((ListExpression) res).get(0).toString();
-                byte[] nonce = new BigInteger(((ListExpression) res)
-                        .get( 1 ).toString()).toByteArray();
-                return new PINEnteredEvent( serial, pin, nonce );
+
+                return new PINEnteredEvent( serial, pin );
             }
 
             return null;
         }
     };
 
-    public int getSerial() {
-        return serial;
-    }
-
     /**
-     * @return the nonce
-     */
-    public byte[] getNonce() {
-        return nonce;
-    }
-
-    /**
-     *
      * @return a MatcherRule for parsing this event type.
      */
     public static MatcherRule getMatcher(){
         return MATCHER;
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param serial the sender's serial number
+     * @param pin the PIN that was entered
+     */
+    public PINEnteredEvent(int serial, String pin) {
+        super(serial);
+        this.pin = pin;
     }
 
     /**
@@ -62,20 +56,15 @@ public class PINEnteredEvent extends AAnnounceEvent {
         return pin;
     }
 
-    public PINEnteredEvent(int serial, String pin, byte[] nonce) {
-        this.serial = serial;
-        this.pin = pin;
-        this.nonce = nonce;
-    }
-
+    /** @see votebox.events.IAnnounceEvent#fire(VoteBoxEventListener) */
     public void fire(VoteBoxEventListener l) {
         l.pinEntered(this);
     }
 
+    /** @see votebox.events.IAnnounceEvent#toSExp() */
     public ASExpression toSExp() {
         return new ListExpression( StringExpression.makeString("pin-entered"),
-                StringExpression.makeString( pin) ,
-                StringExpression.makeString( new BigInteger(nonce).toString()));
+                StringExpression.makeString( pin));
     }
 
 }

@@ -127,7 +127,7 @@ public interface VoteBoxEventListener {
      * @param e
      *            the event
      */
-    public void overrideCast(OverrideCastEvent e);
+    public void overrideCast(OverrideCommitEvent e);
 
     /**
      * Fired when the override-cast-confirm message is received

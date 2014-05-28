@@ -39,6 +39,7 @@ import sexpression.*;
  */
 public class OverrideCancelEvent extends ABallotEvent {
 
+    /** The serial of the machine being overridden */
     private int targetSerial;
 
     /**
@@ -75,12 +76,9 @@ public class OverrideCancelEvent extends ABallotEvent {
     /**
      * Constructs a new OverrideCancelEvent
      * 
-     * @param serial
-     *            the serial number of the sender
-     * @param nonce
-     *            the nonce
-     * @param node
-     *            targetSerial identifying the target to Override
+     * @param serial the serial number of the sender
+     * @param nonce the nonce
+     * @param node targetSerial identifying the target to Override
      */
     public OverrideCancelEvent(int serial, int node, ASExpression nonce) {
         super(serial, nonce);
@@ -94,16 +92,13 @@ public class OverrideCancelEvent extends ABallotEvent {
         return targetSerial;
     }
 
-
+    /** @see votebox.events.IAnnounceEvent#fire(VoteBoxEventListener) */
     public void fire(VoteBoxEventListener l) {
         l.overrideCancel( this );
     }
 
+    /** @see votebox.events.IAnnounceEvent#toSExp() */
     public ASExpression toSExp() {
-        /*return new ListExpression( StringExpression
-                .makeString( "override-cancel" ), StringExpression
-                .makeString( Integer.toString( targetSerial ) ), StringExpression
-                .makeString( nonce ) );*/
     	return new ListExpression( StringExpression
                 .makeString( "override-cancel" ), StringExpression
                 .makeString( Integer.toString(targetSerial) ), getNonce());

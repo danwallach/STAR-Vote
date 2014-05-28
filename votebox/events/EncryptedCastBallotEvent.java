@@ -39,8 +39,6 @@ import sexpression.StringExpression;
  */
 public class EncryptedCastBallotEvent extends CastCommittedBallotEvent{
 
-    ASExpression _ballot;
-
     /**
      * Matcher for the EncryptedCastBallotEvent
      */
@@ -49,21 +47,18 @@ public class EncryptedCastBallotEvent extends CastCommittedBallotEvent{
                 .make("(encrypted-cast-ballot %nonce:#string %ballot:#any %bid:#any)");
 
         public IAnnounceEvent match(int serial, ASExpression sexp) {
-            HashMap<String, ASExpression> result = pattern.namedMatch(sexp);
-            if (result != NamedNoMatch.SINGLETON)
-                return new EncryptedCastBallotEvent(serial, result.get("nonce"), result
-                        .get("ballot"), result.get("bid"));
+            ListExpression lsexp = (ListExpression) sexp;
 
-            return null;
+            ASExpression nonce = lsexp.get(0);
+
+            byte[] ballot = ((StringExpression) lsexp.get(1)).getBytesCopy();
+
+            String bid = lsexp.get( 2 ).toString();
+
+            return new EncryptedCastBallotEvent(serial, nonce, ballot, bid);
         }
     };
 
-    /**
-     * @return the ballot
-     */
-    public ASExpression getBallot() {
-        return _ballot;
-    }
 
     /**
      *
@@ -74,16 +69,13 @@ public class EncryptedCastBallotEvent extends CastCommittedBallotEvent{
     }//getMatcher
 
     /**
-     * @param serial
-     *            the serial number of the sender
-     * @param nonce
-     *            the nonce
-     * @param ballot
-     *            the encrypted ballot, as an array of bytes
+     * @param serial the serial number of the sender
+     * @param nonce the nonce
+     * @param ballot the encrypted ballot, as an array of bytes
      */
-    public EncryptedCastBallotEvent(int serial, ASExpression nonce, ASExpression ballot, ASExpression bid) {
-        super(serial, nonce, bid);
-        _ballot = ballot;
+    public EncryptedCastBallotEvent(int serial, ASExpression nonce, byte[] ballot, String bid) {
+        super(serial, nonce, ballot, bid);
+
     }
 
     /**
@@ -91,6 +83,8 @@ public class EncryptedCastBallotEvent extends CastCommittedBallotEvent{
      */
     public ASExpression toSExp() {
         return new ListExpression(StringExpression.makeString("encrypted-cast-ballot"),
-                getNonce(), getBallot(), getBID());
+                getNonce(),
+                StringExpression.makeString(getBallot()),
+                StringExpression.makeString(getBID()));
     }
 }

@@ -28,7 +28,7 @@ import sexpression.*;
  * Event that represents the status message:<br>
  * 
  * <pre>
- * (status node-id (supervisor|votebox))
+ * (status targetSerial-id (supervisor|votebox))
  * </pre>
  * 
  * See <a href="https://sys.cs.rice.edu/votebox/trac/wiki/VotingMessages">
@@ -39,10 +39,10 @@ import sexpression.*;
  */
 public class StatusEvent extends AAnnounceEvent {
 
-    private int serial;
+    /** The serial of the machine this is the status of */
+    private int targetSerial;
 
-    private int node;
-
+    /** The status event */
     private IAnnounceEvent status;
 
     /**
@@ -73,7 +73,6 @@ public class StatusEvent extends AAnnounceEvent {
     };
     
     /**
-     * 
      * @return a MatcherRule for parsing this event type.
      */
     public static MatcherRule getMatcher(){
@@ -81,30 +80,23 @@ public class StatusEvent extends AAnnounceEvent {
     }//getMatcher
 
     /**
-     * Constructs a new StatusEvent with given serial number, node, and status
+     * Constructs a new StatusEvent with given serial number, targetSerial, and status
      * 
-     * @param serial
-     *            the serial number
-     * @param node
-     *            the node
-     * @param status
-     *            the status
+     * @param serial the serial number
+     * @param node the targetSerial
+     * @param status the status
      */
     public StatusEvent(int serial, int node, IAnnounceEvent status) {
-        this.serial = serial;
-        this.node = node;
+        super(serial);
+        this.targetSerial = node;
         this.status = status;
     }
 
     /**
-     * @return the node
+     * @return the targetSerial
      */
-    public int getNode() {
-        return node;
-    }
-
-    public int getSerial() {
-        return serial;
+    public int getTargetSerial() {
+        return targetSerial;
     }
 
     /**
@@ -114,13 +106,15 @@ public class StatusEvent extends AAnnounceEvent {
         return status;
     }
 
+    /** @see votebox.events.IAnnounceEvent#fire(VoteBoxEventListener) */
     public void fire(VoteBoxEventListener l) {
         throw new UnsupportedOperationException();
     }
 
+    /** @see votebox.events.IAnnounceEvent#toSExp() */
     public ASExpression toSExp() {
         return new ListExpression( StringExpression.makeString( "status" ),
-                StringExpression.makeString( Integer.toString( node ) ), status
+                StringExpression.makeString( Integer.toString(targetSerial) ), status
                         .toSExp() );
     }
 

@@ -9,11 +9,8 @@ import java.math.BigInteger;
  */
 public class InvalidPinEvent extends AAnnounceEvent{
 
-    private int serial;
 
-    private byte[] nonce;
-
-    private int node;
+    private int targetSerial;
 
     /**
      * Matcher for the pinEntered message
@@ -25,47 +22,44 @@ public class InvalidPinEvent extends AAnnounceEvent{
         public IAnnounceEvent match(int serial, ASExpression sexp) {
             ASExpression res = pattern.match( sexp );
             if (res != NoMatch.SINGLETON) {
-                byte[] nonce = new BigInteger(((ListExpression) res)
-                        .get( 1 ).toString()).toByteArray();
-                int node = Integer.parseInt(((ListExpression) res).get(0).toString());
+                int targetSerial = Integer.parseInt(((ListExpression) res).get(0).toString());
 
-                return new InvalidPinEvent( serial, node, nonce );
+                return new InvalidPinEvent( serial, targetSerial);
             }
 
             return null;
         }
     };
 
-    public int getSerial() {
-        return serial;
-    }
 
-    public int getNode(){
-        return node;
-    }
 
     /**
-     *
      * @return a MatcherRule for parsing this event type.
      */
     public static MatcherRule getMatcher(){
         return MATCHER;
     }
 
-    public InvalidPinEvent(int serial, int node,  byte[] nonce) {
-        this.serial = serial;
-        this.nonce = nonce;
-        this.node = node;
+    public InvalidPinEvent(int serial, int node) {
+        super(serial);
+        this.targetSerial = node;
     }
 
+    /**
+     * @return the serial of the machine who entered an invalid PIN
+     */
+    public int getTargetSerial(){
+        return targetSerial;
+    }
+    /** @see votebox.events.IAnnounceEvent#fire(VoteBoxEventListener) */
     public void fire(VoteBoxEventListener l) {
         l.invalidPin(this);
     }
 
+    /** @see votebox.events.IAnnounceEvent#toSExp() */
     public ASExpression toSExp() {
         return new ListExpression( StringExpression.makeString("invalid-pin"),
-                StringExpression.make("" + node),
-                StringExpression.makeString( new BigInteger(nonce).toString()));
+                StringExpression.make("" + targetSerial));
     }
 
 }

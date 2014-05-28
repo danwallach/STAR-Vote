@@ -39,11 +39,7 @@ import sexpression.*;
  *
  * @author cshaw
  */
-public class CastCommittedBallotEvent extends AAnnounceEvent {
-
-    private int _serial;
-    private ASExpression _nonce;
-    private ASExpression _bid;
+public class CastCommittedBallotEvent extends ABallotEvent {
 
     /**
      * Matcher for the CastCommittedBallotEvent
@@ -54,12 +50,20 @@ public class CastCommittedBallotEvent extends AAnnounceEvent {
 
         public IAnnounceEvent match(int serial, ASExpression sexp) {
             HashMap<String, ASExpression> result = pattern.namedMatch(sexp);
-            if (result != NamedNoMatch.SINGLETON)
-                return new CastCommittedBallotEvent(serial, result.get("nonce"), result.get("bid"));
+            ListExpression res = (ListExpression)sexp;
 
-            return null;
+            ASExpression nonce = res.get(0);
+
+            String bid = res.get(1).toString();
+
+            return new CastCommittedBallotEvent(serial, nonce, bid);
+
         }
     };
+
+    public CastCommittedBallotEvent(int serial, ASExpression nonce, byte[] ballot, String bid) {
+        super(serial, nonce, bid, ballot);
+    }
 
     /**
      * @return a MatcherRule for parsing this event type.
@@ -75,28 +79,8 @@ public class CastCommittedBallotEvent extends AAnnounceEvent {
      * @param nonce  the nonce
      * @param bid identifies the ballot that is cast
      */
-    public CastCommittedBallotEvent(int serial, ASExpression nonce, ASExpression bid) {
-        _serial = serial;
-        _nonce = nonce;
-        _bid = bid;
-    }
-
-    /**
-     * @return the nonce
-     */
-    public ASExpression getNonce() {
-        return _nonce;
-    }
-
-    public int getSerial() {
-        return _serial;
-    }
-
-    /**
-     * @return the ballot Id of cast ballot
-     */
-    public ASExpression getBID(){
-        return _bid;
+    public CastCommittedBallotEvent(int serial, ASExpression nonce, String bid) {
+        super(serial, bid, nonce);
     }
 
     /**
@@ -111,6 +95,7 @@ public class CastCommittedBallotEvent extends AAnnounceEvent {
      */
     public ASExpression toSExp() {
         return new ListExpression(StringExpression.makeString("cast-ballot"),
-                _nonce, _bid);
+                getNonce(),
+                StringExpression.makeString(getBID()));
     }
 }

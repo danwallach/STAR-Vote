@@ -23,12 +23,13 @@ public class SpoilBallotEvent extends ABallotEvent {
                 .make("(spoil-ballot %bid:#string %nonce:#any)");
 
         public IAnnounceEvent match(int serial, ASExpression sexp) {
-            HashMap<String, ASExpression> result = pattern.namedMatch(sexp);
-            if (result != NamedNoMatch.SINGLETON)
-                return new CastCommittedBallotEvent(serial, result.get("bid"), result
-                        .get("nonce"));
+            ListExpression list = (ListExpression)sexp;
 
-            return null;
+            String bid = list.get(0).toString();
+
+            ASExpression nonce = list.get(1);
+
+            return new SpoilBallotEvent(serial, bid, nonce);
         }
 
     };

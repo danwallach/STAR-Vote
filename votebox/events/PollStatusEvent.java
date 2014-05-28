@@ -2,24 +2,18 @@ package votebox.events;
 
 import sexpression.*;
 
-/*
- * Created with IntelliJ IDEA.
- * User: martinnikol
- * Date: 6/10/13
- * Time: 4:15 PM
- * To change this template use File | Settings | File Templates.
- */
-
 /**
  * An event that holds information about the polls, mainly whether or not the polls are currently open. Used to
  * notify VoteBox booths that join the network late the the polls are open and that they should prompt for a user PIN
+ *
+ * @author Martin Nikoltchev
  */
 public class PollStatusEvent extends AAnnounceEvent{
 
-    private int serial;
+    /** The serial of the machine this message is directed at */
+    private int targetSerial;
 
-    private int node;
-
+    /** Whether or not the polls are open */
     private int pollsOpen;
 
     /**
@@ -54,16 +48,13 @@ public class PollStatusEvent extends AAnnounceEvent{
     /**
      * Constructs a new AssignLabelEvent.
      *
-     * @param serial
-     *            the serial number of the sender
-     * @param node
-     *            the node id
-     * @param pollsOpen
-     *            the new label
+     * @param serial the serial number of the sender
+     * @param node the targetSerial id
+     * @param pollsOpen the new label
      */
     public PollStatusEvent(int serial, int node, int pollsOpen) {
-        this.serial = serial;
-        this.node = node;
+        super(serial);
+        this.targetSerial = node;
         this.pollsOpen = pollsOpen;
     }
 
@@ -74,18 +65,16 @@ public class PollStatusEvent extends AAnnounceEvent{
         return pollsOpen;
     }
 
-    public int getSerial() {
-        return serial;
-    }
-
+    /** @see votebox.events.IAnnounceEvent#fire(VoteBoxEventListener) */
     public void fire(VoteBoxEventListener l) {
         l.pollStatus( this );
     }
 
+    /** @see votebox.events.IAnnounceEvent#toSExp() */
     public ASExpression toSExp() {
         return new ListExpression(
                 StringExpression.makeString( "poll-status" ), StringExpression
-                .makeString( Integer.toString( node ) ),
+                .makeString( Integer.toString(targetSerial) ),
                 StringExpression.makeString( Integer.toString( pollsOpen ) ) );
     }
 }

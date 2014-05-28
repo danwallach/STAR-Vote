@@ -43,12 +43,11 @@ public class CommitBallotEvent extends ABallotEvent {
                 .make("(commit-ballot %nonce:#string %ballot:#any %bid:#string %precinct:#string)");
 
         public IAnnounceEvent match(int serial, ASExpression sexp) {
-            HashMap<String, ASExpression> result = pattern.namedMatch(sexp);
             ListExpression lsexp = (ListExpression) sexp;
 
             ASExpression nonce = lsexp.get(0);
 
-            byte[] ballot = ((StringExpression) lsexp.get( 1 )).getBytesCopy();
+            byte[] ballot = ((StringExpression) lsexp.get(1)).getBytesCopy();
 
             String bid = lsexp.get( 2 ).toString();
 
@@ -56,10 +55,9 @@ public class CommitBallotEvent extends ABallotEvent {
 
 
 
-            if (result != NamedNoMatch.SINGLETON)
-                return new CommitBallotEvent(serial, nonce, ballot, bid, precinct );
 
-            return null;
+            return new CommitBallotEvent(serial, nonce, ballot, bid, precinct );
+
         }
     };
     
@@ -70,7 +68,12 @@ public class CommitBallotEvent extends ABallotEvent {
     public static MatcherRule getMatcher(){
     	return MATCHER;
     }//getMatcher
-    
+
+    /**
+     * Constructor.
+     *
+     * @see votebox.events.ABallotEvent#ABallotEvent(int, sexpression.ASExpression, byte[], String, String)
+     */
     public CommitBallotEvent(int serial, ASExpression nonce, byte[] ballot, String bid, String precinct) {
         super(serial, nonce, ballot, bid, precinct);
     }

@@ -17,7 +17,7 @@ import java.util.Iterator;
  *         Date: 12/4/12
  */
 public class ChallengedBallotUploadEvent extends AAnnounceEvent {
-    private int serial;
+
     private ASExpression challengedBallots;
 
 
@@ -44,7 +44,7 @@ public class ChallengedBallotUploadEvent extends AAnnounceEvent {
 
 
     public ChallengedBallotUploadEvent(int serial, ASExpression challengedBallots) {
-        this.serial = serial;
+        super(serial);
         this.challengedBallots = challengedBallots;
     }
 
@@ -72,17 +72,16 @@ public class ChallengedBallotUploadEvent extends AAnnounceEvent {
         return dumpList;
     }
 
+    /** @see votebox.events.IAnnounceEvent#fire(VoteBoxEventListener) */
+    public void fire(VoteBoxEventListener l) {
+        l.uploadChallengedBallots(this);
+    }
 
+    /** @see votebox.events.IAnnounceEvent#toSExp() */
     public ASExpression toSExp() {
         return new ListExpression(StringExpression.makeString("chall-ballot-upload"),
                 challengedBallots);
     }
 
-    public void fire(VoteBoxEventListener l) {
-        l.uploadChallengedBallots(this);
-    }
 
-    public int getSerial() {
-        return this.serial;
-    }
 }

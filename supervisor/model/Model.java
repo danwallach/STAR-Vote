@@ -522,7 +522,7 @@ public class Model {
         byte[] nonce = ((VoteBoxBooth) getMachineForSerial(node)).getNonce();
 
         /* Announce the event to the network, effectively telling the machine that is is being overridden */
-        auditorium.announce(new OverrideCastEvent(mySerial, node, nonce));
+        auditorium.announce(new OverrideCommitEvent(mySerial, node, nonce));
     }
 
     /**
@@ -645,7 +645,7 @@ public class Model {
             public void overrideCancel(OverrideCancelEvent e) {}
             public void overrideCancelConfirm(OverrideCancelConfirmEvent e) {}
             public void overrideCancelDeny(OverrideCancelDenyEvent e) {}
-            public void overrideCast(OverrideCastEvent e) {}
+            public void overrideCast(OverrideCommitEvent e) {}
             public void overrideCastDeny(OverrideCastDenyEvent e) {}
 
             public void invalidPin(InvalidPinEvent e) {}
@@ -688,7 +688,7 @@ public class Model {
                     setActivated(false);
                     boolean found = false;
                     for (StatusEvent ae : e.getStatuses()) {
-                        if (ae.getNode() == mySerial) {
+                        if (ae.getTargetSerial() == mySerial) {
                             SupervisorEvent se = (SupervisorEvent) ae
                                     .getStatus();
                             if (!se.getStatus().equals("inactive"))
@@ -1291,7 +1291,7 @@ public class Model {
 
                     /* If there isn't, announce that a bad PIN was entered */
                     else
-                        auditorium.announce(new InvalidPinEvent(mySerial, e.getSerial(), e.getNonce()));
+                        auditorium.announce(new InvalidPinEvent(mySerial, e.getSerial()));
                 }
 
                 /* TODO provide error handling if the polls aren't open? */

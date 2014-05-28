@@ -51,8 +51,6 @@ public class OverrideCancelConfirmEvent extends ABallotEvent {
         public IAnnounceEvent match(int serial, ASExpression sexp) {
             ASExpression res = pattern.match( sexp );
             if (res != NoMatch.SINGLETON) {
-                /*byte[] nonce = ((StringExpression) ((ListExpression) res)
-                        .get( 0 )).getBytesCopy();*/
             	ASExpression nonce = ((ListExpression) res).get(0);
                 return new OverrideCancelConfirmEvent( serial, nonce );
             }
@@ -72,20 +70,19 @@ public class OverrideCancelConfirmEvent extends ABallotEvent {
     /**
      * Constructs a new OverrideCancelConfirmEvent
      * 
-     * @param serial
-     *            the serial number of the sender
-     * @param nonce
-     *            the nonce
+     * @param serial the serial number of the sender
+     * @param nonce the nonce
      */
     public OverrideCancelConfirmEvent(int serial, ASExpression nonce) {
         super(serial, nonce);
     }
 
-
+    /** @see votebox.events.IAnnounceEvent#fire(VoteBoxEventListener) */
     public void fire(VoteBoxEventListener l) {
         l.overrideCancelConfirm( this );
     }
 
+    /** @see votebox.events.IAnnounceEvent#toSExp() */
     public ASExpression toSExp() {
     	return new ListExpression( StringExpression
                 .makeString( "override-cancel-confirm" ), getNonce());

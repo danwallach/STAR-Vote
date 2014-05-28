@@ -44,7 +44,6 @@ public class BallotPrintFailEvent extends ABallotEvent {
      */
     public BallotPrintFailEvent(int serial, String bid, ASExpression nonce) {
         super(serial, bid, nonce);
-        this.serial = serial;
     }
 
     /** @see votebox.events.IAnnounceEvent#fire(VoteBoxEventListener) */

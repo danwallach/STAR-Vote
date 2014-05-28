@@ -39,8 +39,7 @@ import sexpression.*;
  */
 public class PollsOpenEvent extends AAnnounceEvent {
 
-    private int serial;
-
+    /** The time when the polls opened */
     private long timestamp;
 
     private String keyword;
@@ -77,15 +76,12 @@ public class PollsOpenEvent extends AAnnounceEvent {
     /**
      * Constructs a new PollsOpenEvent
      * 
-     * @param serial
-     *            the serial number
-     * @param timestamp
-     *            the local timestamp
-     * @param keyword
-     *            the keyword
+     * @param serial the serial number
+     * @param timestamp the local timestamp
+     * @param keyword the keyword
      */
     public PollsOpenEvent(int serial, long timestamp, String keyword) {
-        this.serial = serial;
+        super(serial);
         this.timestamp = timestamp;
         this.keyword = keyword;
     }
@@ -97,10 +93,6 @@ public class PollsOpenEvent extends AAnnounceEvent {
         return keyword;
     }
 
-    public int getSerial() {
-        return serial;
-    }
-
     /**
      * @return the timestamp
      */
@@ -108,10 +100,12 @@ public class PollsOpenEvent extends AAnnounceEvent {
         return timestamp;
     }
 
+    /** @see votebox.events.IAnnounceEvent#fire(VoteBoxEventListener) */
     public void fire(VoteBoxEventListener l) {
         l.pollsOpen( this );
     }
 
+    /** @see votebox.events.IAnnounceEvent#toSExp() */
     public ASExpression toSExp() {
         return new ListExpression( StringExpression.makeString( "polls-open" ),
                 StringExpression.makeString( Long.toString( timestamp ) ),

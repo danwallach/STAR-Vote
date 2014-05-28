@@ -10,6 +10,7 @@ import sexpression.*;
  */
 public class ProvisionalAuthorizeEvent extends ABallotEvent {
 
+    /** The serial for the machine being provisionally authorized */
     private int targetSerial;
 
     /**
@@ -27,7 +28,7 @@ public class ProvisionalAuthorizeEvent extends ABallotEvent {
                 int node = Integer.parseInt( ((ListExpression) res).get( 0 )
                         .toString() );
 
-                ASExpression nonce = ((ListExpression) res).get( 1 );
+                ASExpression nonce = ((ListExpression) res).get(1);
 
                 byte[] ballot = ((StringExpression) ((ListExpression) res)
                         .get( 2 )).getBytesCopy();
@@ -49,19 +50,15 @@ public class ProvisionalAuthorizeEvent extends ABallotEvent {
     /**
      * Constructs a new ProvisionalAuthorizeEvent.
      *
-     * @param serial
-     *            the serial number of the sender
-     * @param node
-     *            the targetSerial id
-     * @param nonce
-     *            the nonce (or authorization code), an array of bytes
-     * @param ballot
-     *            the ballot in zip format, stored as an array of bytes
+     * @param serial the serial number of the sender
+     * @param targetSerial the target's serial
+     * @param nonce  the nonce (or authorization code), an array of bytes
+     * @param ballot the ballot in zip format, stored as an array of bytes
      */
-    public ProvisionalAuthorizeEvent(int serial, int node, ASExpression nonce,
+    public ProvisionalAuthorizeEvent(int serial, int targetSerial, ASExpression nonce,
                                  byte[] ballot) {
         super(serial, ballot, nonce);
-        this.targetSerial = node;
+        this.targetSerial = targetSerial;
     }
 
     /**
@@ -71,11 +68,12 @@ public class ProvisionalAuthorizeEvent extends ABallotEvent {
         return targetSerial;
     }
 
-
+    /** @see votebox.events.IAnnounceEvent#fire(VoteBoxEventListener) */
     public void fire(VoteBoxEventListener l) {
         l.provisionalAuthorizedToCast( this );
     }
 
+    /** @see votebox.events.IAnnounceEvent#toSExp() */
     public ASExpression toSExp() {
         return new ListExpression( StringExpression
                 .makeString( "provisional-authorized-to-cast" ), StringExpression

@@ -70,19 +70,19 @@ public class OverrideCancelDenyEvent extends ABallotEvent {
     /**
      * Constructs a new OverrideCancelDenyEvent
      * 
-     * @param serial
-     *            the serial number of the sender
-     * @param nonce
-     *            the nonce
+     * @param serial the serial number of the sender
+     * @param nonce the nonce
      */
     public OverrideCancelDenyEvent(int serial, ASExpression nonce) {
         super(serial, nonce);
     }
 
+    /** @see votebox.events.IAnnounceEvent#fire(VoteBoxEventListener) */
     public void fire(VoteBoxEventListener l) {
         l.overrideCancelDeny( this );
     }
 
+    /** @see votebox.events.IAnnounceEvent#toSExp() */
     public ASExpression toSExp() {
     	return new ListExpression( StringExpression
                 .makeString( "override-cancel-deny" ), getNonce());

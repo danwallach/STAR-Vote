@@ -44,7 +44,7 @@ public class BallotScanAcceptedEvent extends AAnnounceEvent{
      *          The rejected ballot's id
      */
     public BallotScanAcceptedEvent(int serial, String bid) {
-        this.serial = serial;
+        super(serial);
         _bid = bid;
     }
 
@@ -62,16 +62,8 @@ public class BallotScanAcceptedEvent extends AAnnounceEvent{
         l.ballotAccepted( this );
     }
 
-    public int getSerial(){
-        return serial;
-    }
-
+    /** @see votebox.events.IAnnounceEvent#toSExp() */
     public ASExpression toSExp() {
-        /*return new ListExpression( StringExpression
-                .makeString( "ballot-received" ), StringExpression
-                .makeString( Integer.toString( node ) ), StringExpression
-                .makeString( nonce ) );*/
-
         return new ListExpression( StringExpression
                 .makeString( "ballot-accepted" ),
                 StringExpression.makeString(_bid) );
