@@ -97,26 +97,19 @@ public class VoteBox{
     private JOptionPane pinPane;
     private String precinct;
 
-    /**
-     * Will keep the short code - nonce pairings to send over when the polls close
-     */
+    /** Will keep the short code - nonce pairings to send over when the polls close */
     private HashMap<ASExpression, VotePair> plaintextAuditCommits;
 
     private  Printer printer;
-
     private Random rand;
-
     private byte[] pinNonce;
-
     private File _currentBallotFile;
 
-    /**
-     * A forced default value only used by the launcher
-     */
+    /** A forced default value only used by the launcher */
     private static File staticCurrentBallotFile = new File(System.getProperty("user.dir") + "/tmp/ballots/ballot/ballot.zip");
 
     /**
-     * Equivalent to new VoteBox(-1).
+     * Default constructor: Equivalent to new VoteBox(-1) which sets a default serial of -1
      */
     public VoteBox(){
     	this(-1);
@@ -129,46 +122,47 @@ public class VoteBox{
      * For a standalone implementation, see
      * {@link votebox.middle.datacollection.Launcher}.
      * 
-     * @param serial
-     *            the serial number of the votebox
+     * @param serial the serial number of the votebox
      */
     public VoteBox(int serial) {
+
         rand = new Random(System.currentTimeMillis());
         _constants = new AuditoriumParams("vb.conf");
-        
-        if(serial != -1)
-        	mySerial = serial;
-        else
-        	mySerial = _constants.getDefaultSerialNumber();
-        
-        
+
+        /* If serial is not a good value, set mySerial to the default */
+        mySerial = (serial != -1) ? serial : _constants.getDefaultSerialNumber();
+
+        /* If mySerial ends up with a bad number anyway, throw an error */
         if(mySerial == -1)
         	throw new RuntimeException("usage: VoteBox <machineID>");
         
         numConnections = 0;
         labelChangedEvent = new Event<Integer>();
+
+        /* Announce to auditorium the status */
         statusTimer = new Timer(300000, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if (connected) {
+                if (connected)
                     auditorium.announce(getStatus());
-                }
             }
         });
 
-
+        /* Run fullscreen on OSX only */
         if (_constants.getViewImplementation().equals("AWT")) {
-            // run fullscreen on OSX only
-            _factory = new AWTViewFactory(_constants.getUseWindowedView(), _constants.getAllowUIScaling());
-        }else
-            throw new RuntimeException(
-                    "Unknown view implementation defined in configuration");
 
+            _factory = new AWTViewFactory(_constants.getUseWindowedView(), _constants.getAllowUIScaling());
+        }
+        else {
+            throw new RuntimeException("Unknown view implementation defined in configuration");
+        }
+
+        /* Make sure no PIN prompt pops up */
         promptingForPin = false;
 
+        /* Destroys any previous commits */
         plaintextAuditCommits = new HashMap<ASExpression, VotePair>();
 
-        System.out.println(">>>>>>>>>>>>>>>>>" + _constants.getBallotFile());
-
+        /* Loads default ballot file */
         staticCurrentBallotFile = new File(_constants.getBallotFile());
     }
 
@@ -191,25 +185,20 @@ public class VoteBox{
     }
 
     /**
-     * Returns this booth's status as a VoteBoxEvent, used for periodic
-     * broadcasts
+     * Returns this booth's status as a VoteBoxEvent, used for periodic broadcasts
      * 
-     * @return the status
+     * @return the status as a @VoteBoxEvent
      */
     public VoteBoxEvent getStatus() {
-        VoteBoxEvent event;
 
         int battery = BatteryStatus.read(_constants.getOS());
 
-        if (voting && isProvisional)
-            event = new VoteBoxEvent(mySerial, label, "provisional-in-use", battery,
-                    protectedCount, publicCount);
-        else if(voting)
-            event = new VoteBoxEvent(mySerial, label, "in-use", battery,
-                    protectedCount, publicCount);
-        else
-            event = new VoteBoxEvent(mySerial, label, "ready", battery,
-                    protectedCount, publicCount);
+        /* Create the status */
+        String status = voting ? ( isProvisional ? "provisional-in-use" : "in-use" ) : "ready";
+
+        /* Create the event corresponding to the status */
+        VoteBoxEvent event = new VoteBoxEvent(mySerial, label, status, battery, protectedCount, publicCount);
+
         return event;
     }
 
@@ -217,8 +206,7 @@ public class VoteBox{
      * Allows the VoteBox inactive UI (what is shown when a user isn't voting)
      * to register for a label changed event, and update itself accordingly
      * 
-     * @param obs
-     *            the observer
+     * @param obs the observer
      */
     public void registerForLabelChanged(Observer obs) {
         labelChangedEvent.addObserver(obs);
@@ -229,50 +217,50 @@ public class VoteBox{
      * know about (such as cast ballot, so we can send the message over
      * auditorium)
      * 
-     * @param location
-     *            the location on disk of the ballot
+     * @param location the location on disk of the ballot
      */
     public void run(String location) {
+
         inactiveUI.setVisible(false);
         currentDriver = new Driver(location, _factory, _constants.getCastBallotEncryptionEnabled());
         voting = true;
         currentDriver.run();
 
-        //Listen for commit ui events.  When received, send out an encrypted vote.
+        /* Listen for commit UI events.  When received, send out an encrypted vote. */
         currentDriver.getView().registerForCommit(new Observer() {
 
+            /**
+             * Handles the updating procedure after a ballot gets committed
+             * @param o the @Observable to be updated
+             * @param argTemp an optional array of parameters to the update method
+             */
             @SuppressWarnings("unchecked")
             public void update(Observable o, Object argTemp) {
+
                 if (!connected)
-                    throw new RuntimeException(
-                            "Attempted to cast ballot when not connected to any machines");
+                    throw new RuntimeException("Attempted to cast ballot when not connected to any machines");
+
                 if (!voting || currentDriver == null)
-                    throw new RuntimeException(
-                            "VoteBox attempted to cast ballot, but was not currently voting");
+                    throw new RuntimeException("VoteBox attempted to cast ballot, but was not currently voting");
+
                 if (finishedVoting)
-                    throw new RuntimeException(
-                            "This machine has already finished voting, but attempted to vote again");
+                    throw new RuntimeException("This machine has already finished voting, but attempted to vote again");
 
                 committedBallot = true;
 
                 Object[] arg = (Object[]) argTemp;
 
-                // arg1 should be the cast ballot structure, check
+                /* arg0 should be the cast ballot structure, check. TODO Fix handling */
                 if (Ballot.BALLOT_PATTERN.match((ASExpression) arg[0]) == NoMatch.SINGLETON)
-                    throw new RuntimeException(
-                            "Incorrectly expected a cast-ballot");
-                ListExpression ballot = (ListExpression) arg[0];
+                    throw new RuntimeException("Incorrectly expected a cast-ballot");
 
-                for (Object i : arg) {
-                    System.out.println(i);
-                }
+                ListExpression ballot = (ListExpression) arg[0];
 
                 try {
                     System.err.println(">" + ballot);
                     if (!isProvisional) {
                         if (!_constants.getEnableNIZKs()) {
-                            auditorium.announce(new CommitBallotEvent(mySerial,
-                                    StringExpression.makeString(nonce),
+                            auditorium.announce(new CommitBallotEvent(mySerial, StringExpression.makeString(nonce),
                                     BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey(mySerial + "-public")), StringExpression.makeString(bid), StringExpression.makeString(precinct)));
                         } else {
 
@@ -288,8 +276,7 @@ public class VoteBox{
                                     StringExpression.makeString(bid), StringExpression.makeString(precinct)));
                         }
                     } else {
-                        auditorium.announce(new ProvisionalCommitEvent(mySerial,
-                                StringExpression.makeString(nonce),
+                        auditorium.announce(new ProvisionalCommitEvent(mySerial, StringExpression.makeString(nonce),
                                 BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey(mySerial + "-public")), StringExpression.makeString(bid)));
                     }
 
@@ -1092,7 +1079,7 @@ public class VoteBox{
     }
 
     /**
-     * Initializes a GUI dialog through which the user enters their assigned pin. Returns with no action if
+     * Initializes a GUI dialog through which the user enters their assigned PIN. Returns with no action if
      * already prompting for PIN.
      *
      * @param message message displayed as the header of the PIN prompt e.g. "Please Enter Your PIN"
