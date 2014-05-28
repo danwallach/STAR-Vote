@@ -2,6 +2,7 @@ package votebox.events;
 
 import sexpression.ASExpression;
 import sexpression.ListExpression;
+import sexpression.NoMatch;
 import sexpression.StringExpression;
 
 /**
@@ -17,15 +18,22 @@ public class EncryptedCastBallotWithNIZKsEvent extends EncryptedCastBallotEvent 
                 .make("(encrypted-cast-ballot-with-nizks %nonce:#string %ballot:#any %bid:#any)");
 
         public IAnnounceEvent match(int serial, ASExpression sexp) {
-            ListExpression lsexp = (ListExpression) sexp;
 
-            ASExpression nonce = lsexp.get(0);
+            ASExpression res = pattern.match(sexp);
+            if (res != NoMatch.SINGLETON) {
 
-            byte[] ballot = ((StringExpression) lsexp.get(1)).getBytesCopy();
+                ListExpression lsexp = (ListExpression) sexp;
 
-            String bid = lsexp.get( 2 ).toString();
+                ASExpression nonce = lsexp.get(0);
 
-            return new EncryptedCastBallotWithNIZKsEvent(serial, nonce, ballot, bid);
+                byte[] ballot = ((StringExpression) lsexp.get(1)).getBytesCopy();
+
+                String bid = lsexp.get(2).toString();
+
+                return new EncryptedCastBallotWithNIZKsEvent(serial, nonce, ballot, bid);
+            }
+
+            return null;
         }
     };
 

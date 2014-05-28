@@ -2,11 +2,8 @@ package votebox.events;
 
 import sexpression.ASExpression;
 import sexpression.ListExpression;
-import sexpression.NamedNoMatch;
+import sexpression.NoMatch;
 import sexpression.StringExpression;
-import votebox.events.IAnnounceEvent;
-
-import java.util.HashMap;
 
 /**
  * An event which allows for unique handling of provisionally committed ballots
@@ -20,15 +17,22 @@ public class ProvisionalCommitEvent extends ABallotEvent {
                 .make("(provisional-commit-ballot %nonce:#string %ballot:#any %bid:#string)");
 
         public IAnnounceEvent match(int serial, ASExpression sexp) {
-            ListExpression result = (ListExpression) sexp;
 
-            ASExpression nonce = result.get( 0 );
+            ASExpression res = pattern.match(sexp);
 
-            byte[] ballot = ((StringExpression) result.get( 1 )).getBytesCopy();
+            if (res != NoMatch.SINGLETON) {
+                ListExpression result = (ListExpression) sexp;
 
-            String bid = result.get( 2 ).toString();
+                ASExpression nonce = result.get(0);
 
-            return new ProvisionalCommitEvent(serial, nonce, ballot, bid);
+                byte[] ballot = ((StringExpression) result.get(1)).getBytesCopy();
+
+                String bid = result.get(2).toString();
+
+                return new ProvisionalCommitEvent(serial, nonce, ballot, bid);
+            }
+
+            return null;
         }
     };
 

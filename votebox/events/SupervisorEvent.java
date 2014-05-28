@@ -42,6 +42,7 @@ public class SupervisorEvent extends AAnnounceEvent {
     /** The time at which this event was sent out */
     private long timestamp;
 
+    /** The status of the supervisor */
     private String status;
 
     /**
@@ -76,12 +77,9 @@ public class SupervisorEvent extends AAnnounceEvent {
     /**
      * Constructs a new SupervisorEvent
      * 
-     * @param serial
-     *            the serial number of the sender
-     * @param timestamp
-     *            the local timestamp
-     * @param status
-     *            the supervisor's status
+     * @param serial  the serial number of the sender
+     * @param timestamp the local timestamp
+     * @param status the supervisor's status
      */
     public SupervisorEvent(int serial, long timestamp, String status) {
         super(serial);
@@ -104,11 +102,11 @@ public class SupervisorEvent extends AAnnounceEvent {
         return timestamp;
     }
 
+    /** @see votebox.events.IAnnounceEvent#fire(VoteBoxEventListener) */
     public void fire(VoteBoxEventListener l) {
         l.supervisor( this );
     }
 
-    /** @see votebox.events.IAnnounceEvent#fire(VoteBoxEventListener) */
     /** @see votebox.events.IAnnounceEvent#toSExp() */
     public ASExpression toSExp() {
         return new ListExpression( StringExpression.makeString( "supervisor" ),

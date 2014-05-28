@@ -22,8 +22,6 @@
 
 package votebox.events;
 
-import java.util.HashMap;
-
 import sexpression.*;
 import sexpression.stream.InvalidVerbatimStreamException;
 
@@ -43,20 +41,27 @@ public class CommitBallotEvent extends ABallotEvent {
                 .make("(commit-ballot %nonce:#string %ballot:#any %bid:#string %precinct:#string)");
 
         public IAnnounceEvent match(int serial, ASExpression sexp) {
-            ListExpression lsexp = (ListExpression) sexp;
 
-            ASExpression nonce = lsexp.get(0);
-
-            byte[] ballot = ((StringExpression) lsexp.get(1)).getBytesCopy();
-
-            String bid = lsexp.get( 2 ).toString();
-
-            String precinct = lsexp.get( 3 ).toString();
+            ASExpression res = pattern.match( sexp );
+            if (res != NoMatch.SINGLETON) {
 
 
+                ListExpression lsexp = (ListExpression) sexp;
+
+                ASExpression nonce = lsexp.get(0);
+
+                byte[] ballot = ((StringExpression) lsexp.get(1)).getBytesCopy();
+
+                String bid = lsexp.get(2).toString();
+
+                String precinct = lsexp.get(3).toString();
 
 
-            return new CommitBallotEvent(serial, nonce, ballot, bid, precinct );
+                return new CommitBallotEvent(serial, nonce, ballot, bid, precinct);
+
+            }
+
+            return null;
 
         }
     };

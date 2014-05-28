@@ -2,10 +2,7 @@ package votebox.events;
 
 import sexpression.ASExpression;
 import sexpression.ListExpression;
-import sexpression.NamedNoMatch;
 import sexpression.StringExpression;
-
-import java.util.HashMap;
 
 /**
  * This is an event that gets fired when the supervisor spoils a voter's ballot

@@ -22,12 +22,7 @@
 
 package votebox.events;
 
-import java.util.HashMap;
-
-import sexpression.ASExpression;
-import sexpression.ListExpression;
-import sexpression.NamedNoMatch;
-import sexpression.StringExpression;
+import sexpression.*;
 
 /**
  * An event resulting from the receipt of a encrypted-cast-ballot event.<BR>
@@ -47,15 +42,21 @@ public class EncryptedCastBallotEvent extends CastCommittedBallotEvent{
                 .make("(encrypted-cast-ballot %nonce:#string %ballot:#any %bid:#any)");
 
         public IAnnounceEvent match(int serial, ASExpression sexp) {
-            ListExpression lsexp = (ListExpression) sexp;
 
-            ASExpression nonce = lsexp.get(0);
+            ASExpression res = pattern.match(sexp);
+            if (res != NoMatch.SINGLETON) {
 
-            byte[] ballot = ((StringExpression) lsexp.get(1)).getBytesCopy();
+                ListExpression lsexp = (ListExpression) sexp;
 
-            String bid = lsexp.get( 2 ).toString();
+                ASExpression nonce = lsexp.get(0);
 
-            return new EncryptedCastBallotEvent(serial, nonce, ballot, bid);
+                byte[] ballot = ((StringExpression) lsexp.get(1)).getBytesCopy();
+
+                String bid = lsexp.get(2).toString();
+
+                return new EncryptedCastBallotEvent(serial, nonce, ballot, bid);
+            }
+            return null;
         }
     };
 

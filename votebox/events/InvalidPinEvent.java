@@ -2,8 +2,6 @@ package votebox.events;
 
 import sexpression.*;
 
-import java.math.BigInteger;
-
 /**
  * Event that says that a pin validation request was invalid
  */

@@ -31,7 +31,7 @@ import java.util.ArrayList;
  * order they were registered).
  * 
  * @author cshaw
- */
+ */ /* TODO Most of these comments should be inherited */
 public class VoteBoxEventNotifier implements VoteBoxEventListener {
 
     ArrayList<VoteBoxEventListener> listeners;

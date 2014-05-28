@@ -2,8 +2,6 @@ package votebox.events;
 
 import sexpression.*;
 
-import java.math.BigInteger;
-
 /**
  * Event class for when a pin is entered on a VoteBox. Entered Pin is included in event
  */

@@ -10,7 +10,6 @@ import sexpression.*;
 public class BallotScanAcceptedEvent extends AAnnounceEvent{
 
     private String _bid;
-    private int serial;
 
     /**
      * The matcher for the BallotReceivedEvent.

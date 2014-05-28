@@ -22,8 +22,6 @@
 
 package votebox.events;
 
-import java.util.HashMap;
-
 import sexpression.*;
 
 /**
@@ -49,14 +47,19 @@ public class CastCommittedBallotEvent extends ABallotEvent {
                 .make("(cast-ballot %nonce:#string %bid:#string)");
 
         public IAnnounceEvent match(int serial, ASExpression sexp) {
-            HashMap<String, ASExpression> result = pattern.namedMatch(sexp);
-            ListExpression res = (ListExpression)sexp;
+            ASExpression res = pattern.match(sexp);
 
-            ASExpression nonce = res.get(0);
+            if(res != NoMatch.SINGLETON) {
+                ListExpression list = (ListExpression) sexp;
 
-            String bid = res.get(1).toString();
+                ASExpression nonce = list.get(0);
 
-            return new CastCommittedBallotEvent(serial, nonce, bid);
+                String bid = list.get(1).toString();
+
+                return new CastCommittedBallotEvent(serial, nonce, bid);
+            }
+
+            return null;
 
         }
     };

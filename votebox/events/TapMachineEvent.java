@@ -3,9 +3,8 @@ package votebox.events;
 import sexpression.*;
 
 /**
+ * An event by which Tap announces its status
  * @author Matt Bernhard
- * @version 0.0.1
- *          Date: 7/29/13
  */
 public class TapMachineEvent extends AAnnounceEvent {
 
@@ -28,10 +27,8 @@ public class TapMachineEvent extends AAnnounceEvent {
 
     };
 
-    private int serial;
-
     public TapMachineEvent(int serial){
-        this.serial = serial;
+        super(serial);
     }
 
     /**
@@ -41,14 +38,12 @@ public class TapMachineEvent extends AAnnounceEvent {
         return MATCHER;
     }//getMatcher
 
-    public int getSerial() {
-        return serial;
-    }
-
+    /** @see votebox.events.IAnnounceEvent#fire(VoteBoxEventListener) */
     public void fire(VoteBoxEventListener l) {
         l.tapMachine(this);
     }
 
+    /** @see votebox.events.IAnnounceEvent#toSExp() */
     public ASExpression toSExp() {
         return new ListExpression(
                 StringExpression.makeString("tapmachine")
