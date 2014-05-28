@@ -69,7 +69,6 @@ import printer.*;
  */
 public class VoteBox{
 
-    /* private members comment test */
     private final AuditoriumParams _constants;
     private final IViewFactory _factory;
     private VoteBoxAuditoriumConnector auditorium;
