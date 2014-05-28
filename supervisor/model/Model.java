@@ -22,19 +22,13 @@
 
 package supervisor.model;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.*;
-import java.math.BigInteger;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-
-import javax.swing.*;
-import javax.swing.Timer;
-
+import auditorium.AuditoriumCryptoException;
+import auditorium.IAuditoriumParams;
+import auditorium.Key;
+import auditorium.NetworkException;
+import crypto.interop.AdderKeyManipulator;
 import edu.uconn.cse.adder.PrivateKey;
 import edu.uconn.cse.adder.PublicKey;
-
 import sexpression.ASExpression;
 import sexpression.NoMatch;
 import sexpression.StringExpression;
@@ -42,12 +36,16 @@ import sexpression.stream.Base64;
 import supervisor.model.tallier.ChallengeDelayedTallier;
 import supervisor.model.tallier.ChallengeDelayedWithNIZKsTallier;
 import supervisor.model.tallier.ITallier;
-import crypto.interop.AdderKeyManipulator;
 import votebox.events.*;
-import auditorium.AuditoriumCryptoException;
-import auditorium.Key;
-import auditorium.NetworkException;
-import auditorium.IAuditoriumParams;
+
+import javax.swing.*;
+import javax.swing.Timer;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.*;
+import java.math.BigInteger;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * The main model of the Supervisor in the model-view-controller. Contains the status of the machines, and of
@@ -345,10 +343,10 @@ public class Model {
     /**
      * Authorizes a VoteBox booth for a provisional voting session
      *
-     * @param node the serial number of the booth being provisionally authorized
+     * @param targetSerial the serial number of the booth being provisionally authorized
      * @throws IOException if the ballot cannot be serialized correctly
      */
-    private void provisionalAuthorize(int node) throws IOException{
+    private void provisionalAuthorize(int targetSerial) throws IOException{
         /* Generate a nonce for this ballot */
         byte[] nonce = new byte[256];
         for (int i = 0; i < 256; i++)
@@ -365,7 +363,7 @@ public class Model {
             throw new RuntimeException("Error in serializing ballot!");
 
         /* Send out a provisional authorize event */
-        auditorium.announce(new ProvisionalAuthorizeEvent(mySerial, node, nonce, ballot));
+        auditorium.announce(new ProvisionalAuthorizeEvent(mySerial, targetSerial, StringExpression.makeString(nonce), ballot));
     }
 
     /**
@@ -502,27 +500,27 @@ public class Model {
     /**
      * Sends an override-cancel request to a VoteBox booth
      * 
-     * @param node the serial number of the booth
+     * @param targetSerial the serial number of the booth
      */
-    public void overrideCancel(int node) {
+    public void overrideCancel(int targetSerial) {
         /* Get the nonce for the voting session at that machine */
-        byte[] nonce = ((VoteBoxBooth) getMachineForSerial(node)).getNonce();
+        ASExpression nonce = StringExpression.makeString(((VoteBoxBooth) getMachineForSerial(targetSerial)).getNonce());
 
         /* Announce the event to the network, effectively telling the machine that is is being overridden */
-        auditorium.announce(new OverrideCancelEvent(mySerial, node, nonce));
+        auditorium.announce(new OverrideCancelEvent(mySerial, targetSerial, nonce));
     }
 
     /**
      * Sends an override-commit request to a VoteBox booth
      * 
-     * @param node the serial number of the booth
+     * @param targetSerial the serial number of the booth
      */
-    public void overrideCommit(int node) {
+    public void overrideCommit(int targetSerial) {
         /* Get the nonce for the booth to override */
-        byte[] nonce = ((VoteBoxBooth) getMachineForSerial(node)).getNonce();
+        ASExpression nonce = StringExpression.makeString(((VoteBoxBooth) getMachineForSerial(targetSerial)).getNonce());
 
         /* Announce the event to the network, effectively telling the machine that is is being overridden */
-        auditorium.announce(new OverrideCommitEvent(mySerial, node, nonce));
+        auditorium.announce(new OverrideCommitEvent(mySerial, targetSerial, nonce));
     }
 
     /**
@@ -1124,19 +1122,18 @@ public class Model {
                     booth.setProtectedCount(booth.getProtectedCount() + 1);
 
                     /* Put the committed ballot in the ballot store, in all the proper places */
-                    BallotStore.addBallot(e.getBID().toString(), e.getBallot());
+                    BallotStore.addBallot(e.getBID().toString(), StringExpression.makeString(e.getBallot()));
                     BallotStore.mapPrecinct(e.getBID().toString(), e.getPrecinct().toString());
                     BallotStore.setPrecinctByBID(e.getBID().toString(), e.getPrecinct().toString());
                     BallotStore.testMapPrint();
 
                     /* Announce that the ballot was recieved, so it's logged */
                     auditorium.announce(new BallotReceivedEvent(mySerial, e.getSerial(),
-                            ((StringExpression) e.getNonce())
-                            .getBytes(), e.getBID().toString(), e.getPrecinct().toString()));
+                            e.getNonce(), e.getBID().toString(), e.getPrecinct().toString()));
 
                     /* Add the vote to the tallier and list of committed BID's */
                     String precinct = BallotStore.getPrecinctByBID(e.getBID().toString());
-                    talliers.get(precinct).recordVotes(e.getBallot().toVerbatim(), e.getNonce());
+                    talliers.get(precinct).recordVotes(e.getBallot(), e.getNonce());
                     String bid = e.getBID().toString();
                     committedBids.put(bid, e.getNonce());
 
@@ -1162,8 +1159,8 @@ public class Model {
 
                     /* Announce that the provisional ballot was recieved */
                     auditorium.announce(new BallotReceivedEvent(mySerial, e
-                            .getSerial(), ((StringExpression) e.getNonce())
-                            .getBytes(), e.getBID().toString(), BallotStore.getPrecinctByBallot(e.getBID().toString())));
+                            .getSerial(), e.getNonce(), e.getBID().toString(),
+                            BallotStore.getPrecinctByBallot(e.getBID().toString())));
                 }
             }
 
@@ -1231,17 +1228,17 @@ public class Model {
                         if(auditoriumParams.getEnableNIZKs()){
                             /* Announce that the ballot is being cast, encrypted with NIZKs */
                             System.out.println("announcing an EncryptedCastBallotWithNIZKsEvent");
-                            auditorium.announce(new EncryptedCastBallotWithNIZKsEvent(serial, nonce, ballot, StringExpression.makeString(e.getBID())));
+                            auditorium.announce(new EncryptedCastBallotWithNIZKsEvent(serial, nonce, ballot.toVerbatim(),e.getBID()));
                         } else{
                             /* Announce that the ballot is being cast, encrypted */
                             System.out.println("announcing an EncryptedCastBallotEvent");
-                            auditorium.announce(new EncryptedCastBallotEvent(serial, nonce, ballot, StringExpression.makeString(e.getBID())));
+                            auditorium.announce(new EncryptedCastBallotEvent(serial, nonce, ballot.toVerbatim(), e.getBID()));
                         }
                     }
                     else{
                         /* Announce that the ballot is being cast */
                         System.out.println("Announcing a CastCommittedBallotEvent");
-                        auditorium.announce(new CastCommittedBallotEvent(serial, nonce, StringExpression.makeString(e.getBID())));
+                        auditorium.announce(new CastCommittedBallotEvent(serial, nonce, e.getBID()));
                     // that should trigger my own castBallot listener.
                     }
 
@@ -1329,7 +1326,7 @@ public class Model {
             public void provisionalAuthorizedToCast(ProvisionalAuthorizeEvent e) {
                 AMachine m = getMachineForSerial(e.getTargetSerial());
                 if (m != null && m instanceof VoteBoxBooth) {
-                    ((VoteBoxBooth) m).setNonce(e.getNonce());
+                    ((VoteBoxBooth) m).setNonce(e.getNonce().toVerbatim());
                 }
             }
         });

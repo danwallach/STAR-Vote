@@ -22,6 +22,31 @@
 
 package votebox;
 
+import auditorium.AuditoriumCryptoException;
+import auditorium.Bugout;
+import auditorium.Event;
+import auditorium.NetworkException;
+import crypto.BallotEncrypter;
+import crypto.PiecemealBallotEncrypter;
+import edu.uconn.cse.adder.AdderInteger;
+import edu.uconn.cse.adder.PublicKey;
+import preptool.model.language.Language;
+import preptool.model.layout.manager.RenderingUtils;
+import printer.Printer;
+import sexpression.ASExpression;
+import sexpression.ListExpression;
+import sexpression.NoMatch;
+import sexpression.stream.InvalidVerbatimStreamException;
+import votebox.events.*;
+import votebox.middle.IncorrectTypeException;
+import votebox.middle.Properties;
+import votebox.middle.ballot.Ballot;
+import votebox.middle.driver.Driver;
+import votebox.middle.view.AWTViewFactory;
+import votebox.middle.view.IViewFactory;
+
+import javax.imageio.ImageIO;
+import javax.swing.Timer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -33,29 +58,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.*;
 import java.util.List;
-
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import javax.swing.Timer;
-
-import crypto.BallotEncrypter;
-import crypto.PiecemealBallotEncrypter;
-import edu.uconn.cse.adder.AdderInteger;
-import edu.uconn.cse.adder.PublicKey;
-
-import preptool.model.language.Language;
-import preptool.model.layout.manager.RenderingUtils;
-import sexpression.*;
-import sexpression.stream.InvalidVerbatimStreamException;
-import votebox.events.*;
-import votebox.middle.*;
-import votebox.middle.Properties;
-import votebox.middle.ballot.Ballot;
-import votebox.middle.driver.*;
-import votebox.middle.view.*;
-import auditorium.*;
-import auditorium.Event;
-import printer.*;
 
 /**
  * This is the top level votebox main class. This class organizes and connects
@@ -94,7 +96,6 @@ public class VoteBox{
     private Timer statusTimer;
     boolean superOnline;
     private int superSerial;
-    private JOptionPane pinPane;
     private String precinct;
 
     /** Will keep the short code - nonce pairings to send over when the polls close */
@@ -102,7 +103,6 @@ public class VoteBox{
 
     private  Printer printer;
     private Random rand;
-    private byte[] pinNonce;
     private File _currentBallotFile;
 
     /** A forced default value only used by the launcher */
@@ -197,9 +197,7 @@ public class VoteBox{
         String status = voting ? ( isProvisional ? "provisional-in-use" : "in-use" ) : "ready";
 
         /* Create the event corresponding to the status */
-        VoteBoxEvent event = new VoteBoxEvent(mySerial, label, status, battery, protectedCount, publicCount);
-
-        return event;
+        return new VoteBoxEvent(mySerial, label, status, battery, protectedCount, publicCount);
     }
 
     /**
@@ -263,9 +261,11 @@ public class VoteBox{
                         /* Check if NIZKs are enabled and choose announcement format */
                         if (!_constants.getEnableNIZKs()) {
 
+                            ASExpression encBallot =  BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey(mySerial + "-public"));
+
                             auditorium.announce(new CommitBallotEvent(mySerial, nonce,
-                                    BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey(mySerial + "-public")),
-                                    StringExpression.makeString(bid), StringExpression.makeString(precinct)));
+                                    encBallot.toVerbatim(),
+                                    bid, precinct));
                         }
 
                         else {
@@ -274,7 +274,7 @@ public class VoteBox{
                                     (PublicKey) _constants.getKeyStore().loadAdderKey("public"));
 
                             auditorium.announce(new CommitBallotEvent(mySerial, nonce,
-                                    encBallot, StringExpression.makeString(bid), StringExpression.makeString(precinct)));
+                                    encBallot.toVerbatim(), bid, precinct));
                         }
 
                     }
@@ -282,8 +282,8 @@ public class VoteBox{
                     else {
 
                         auditorium.announce(new ProvisionalCommitEvent(mySerial, nonce,
-                                BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey(mySerial + "-public")),
-                                StringExpression.makeString(bid)));
+                                BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey(mySerial + "-public")).toVerbatim(),
+                                bid));
                     }
 
                     /* Announce ballot printing and print */
@@ -342,7 +342,7 @@ public class VoteBox{
                 publicCount++;
                 protectedCount++;
 
-                auditorium.announce(new CastCommittedBallotEvent(mySerial, nonce, StringExpression.makeString(bid)));
+                auditorium.announce(new CastCommittedBallotEvent(mySerial, nonce, bid));
 
                 /* Clears for randomness */
                 BallotEncrypter.SINGLETON.clear();
@@ -464,8 +464,8 @@ public class VoteBox{
                         if (!_constants.getEnableNIZKs()) {
 
                             auditorium.announce(new CommitBallotEvent(mySerial, nonce,
-                                    BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey(mySerial + "-public")),
-                                    StringExpression.makeString(bid), StringExpression.makeString(precinct)));
+                                    BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey(mySerial + "-public")).toVerbatim(),
+                                    bid, precinct));
 
                         } else {
 
@@ -475,8 +475,9 @@ public class VoteBox{
 
                             auditorium.announce(new CommitBallotEvent(mySerial,
                                     nonce,
-                                    encBallot,
-                                    StringExpression.makeString(bid), StringExpression.makeString(precinct)));
+                                    encBallot.toVerbatim(),
+                                    bid,
+                                    precinct));
 
                         }
                     } catch (AuditoriumCryptoException e) {
@@ -1108,18 +1109,9 @@ public class VoteBox{
     /**
      * Generates a new PINEnteredEvent and sends over the network for validation by supervisor.
      * @param pin 4-digit, decimal PIN to be validated
-     */ /* TODO check nonce */
+     */
     public void validatePin(String pin) {
-
-        byte[] pinNonce = new byte[256];
-
-        /* Generate a nonce for the PIN */
-        for (int i = 0; i < 256; i++)
-            pinNonce[i] = (byte) (Math.random() * 256);
-
-        this.pinNonce = pinNonce;
-
-        auditorium.announce(new PINEnteredEvent(mySerial, pin, pinNonce));
+        auditorium.announce(new PINEnteredEvent(mySerial, pin));
     }
 
     /**
