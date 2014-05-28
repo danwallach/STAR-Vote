@@ -42,14 +42,17 @@ import sexpression.*;
  */
 public class ActivatedEvent implements IAnnounceEvent {
 
+    /** The serial number of the machine incurring this event */
     private int serial;
 
+    /** The statuses of all the machines connected to the incurring machine when it is activate */
     private List<StatusEvent> statuses;
 
     /**
      * Matcher for the ActivatedEvent.
      */
     private static MatcherRule MATCHER = new MatcherRule() {
+        /* The pattern for this message is the string "activating" followed by optional StatusEvent messages */
         private ASExpression pattern = new ListExpression( StringExpression
                 .makeString( "activated" ), new ListWildcard( new ListWildcard(
                 Wildcard.SINGLETON ) ) );
@@ -57,22 +60,38 @@ public class ActivatedEvent implements IAnnounceEvent {
         private VoteBoxEventMatcher statusMatcher = new VoteBoxEventMatcher(
                 StatusEvent.getMatcher() );
 
+        /**
+         * @see votebox.events.MatcherRule#match(int, sexpression.ASExpression)
+         */
         public IAnnounceEvent match(int serial, ASExpression sexp) {
-            ASExpression res = pattern.match( sexp );
+            /* Attempt to match the incoming S-Expression with this event's patter */
+            ASExpression res = pattern.match(sexp);
+
+            /* If the pattern matched, return a new event with the necessary fields filled in */
             if (res != NoMatch.SINGLETON) {
+
+                /* We will build a list of the connected machine's statuses */
                 ArrayList<StatusEvent> statuses = new ArrayList<StatusEvent>();
-                for (ASExpression s : (ListExpression) ((ListExpression) res)
-                        .get( 0 )) {
-                    StatusEvent status = (StatusEvent) statusMatcher.match( 0,
-                        s );
+
+                /* each subexpression after "activated" should represent StatusEvents */
+                for (ASExpression s : (ListExpression) ((ListExpression) res).get( 0 )) {
+                    StatusEvent status = (StatusEvent) statusMatcher.match( 0, s);
+
+                    /* If there is something after this message that isn't a StatusEvent, we have a malformed message */
                     if (status == null)
                         return null;
+
+                    /* Add the newly build status to our list of statuses */
                     statuses.add( status );
                 }
+
+                /* Now that we've matched the message, return an Event representation of it */
                 return new ActivatedEvent( serial, statuses );
             }
+
+            /* If we failed to match, return nothing */
             return null;
-        };
+        }
     };
     
     /**
@@ -81,22 +100,23 @@ public class ActivatedEvent implements IAnnounceEvent {
      */
     public static MatcherRule getMatcher(){
     	return MATCHER;
-    }//getMatcher
+    }
 
     /**
      * Constructs a new ActivatedEvent with given serial number and list of
      * known statuses
      * 
-     * @param serial
-     *            the serial number
-     * @param statuses
-     *            the list of known statuses
+     * @param serial the serial number
+     * @param statuses the list of known statuses
      */
     public ActivatedEvent(int serial, List<StatusEvent> statuses) {
         this.serial = serial;
         this.statuses = statuses;
     }
 
+    /**
+     * @see IAnnounceEvent#getSerial()
+     */
     public int getSerial() {
         return serial;
     }
@@ -108,14 +128,23 @@ public class ActivatedEvent implements IAnnounceEvent {
         return statuses;
     }
 
+    /**
+     * @see votebox.events.IAnnounceEvent#fire(VoteBoxEventListener)
+     */
     public void fire(VoteBoxEventListener l) {
         l.activated( this );
     }
 
+    /**
+     * @see IAnnounceEvent#toSExp()
+     */
     public ASExpression toSExp() {
+        /* Build a list of statuses from this event */
         ArrayList<ASExpression> statusList = new ArrayList<ASExpression>();
         for (IAnnounceEvent s : statuses)
             statusList.add( s.toSExp() );
+
+        /* Convert everything to S-Expressions and then return it */
         return new ListExpression( StringExpression.makeString( "activated" ),
                 new ListExpression( statusList ) );
     }

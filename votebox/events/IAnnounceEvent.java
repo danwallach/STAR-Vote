@@ -38,7 +38,7 @@ public interface IAnnounceEvent {
     public int getSerial();
     
     /**
-     * Converts this event to an sexpression.
+     * Converts this event to an sexpression so it can be serialized over the network.
      * @return the sexp
      */
     public ASExpression toSExp();
