@@ -89,7 +89,7 @@ public class GraphViz {
     /**
      * Where is your dot program located? It will be called externally.
      */
-    private static String DOT = "/usr/bin/dot";
+    private static String DOT = "/usr/local/bin/dot";
 
     /**
      * The source of the graph written in dot language.

@@ -261,7 +261,7 @@ public class VoteBox{
                         /* Check if NIZKs are enabled and choose announcement format */
                         if (!_constants.getEnableNIZKs()) {
 
-                            ASExpression encBallot =  BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey(mySerial + "-public"));
+                            ASExpression encBallot =  BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey(mySerial + ""));
 
                             auditorium.announce(new CommitBallotEvent(mySerial, nonce,
                                     encBallot.toVerbatim(),
@@ -282,7 +282,7 @@ public class VoteBox{
                     else {
 
                         auditorium.announce(new ProvisionalCommitEvent(mySerial, nonce,
-                                BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey(mySerial + "-public")).toVerbatim(),
+                                BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey(mySerial + "")).toVerbatim(),
                                 bid));
                     }
 
@@ -464,7 +464,7 @@ public class VoteBox{
                         if (!_constants.getEnableNIZKs()) {
 
                             auditorium.announce(new CommitBallotEvent(mySerial, nonce,
-                                    BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey(mySerial + "-public")).toVerbatim(),
+                                    BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey(mySerial + "")).toVerbatim(),
                                     bid, precinct));
 
                         } else {
