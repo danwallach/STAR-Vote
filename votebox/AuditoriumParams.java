@@ -22,17 +22,12 @@
 
 package votebox;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-
+import auditorium.IAuditoriumParams;
 import votebox.middle.IVoteboxConstants;
 
-import auditorium.IAuditoriumParams;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * This class reads constants from a configuration file specified by client software. It reads in configuration
@@ -299,6 +294,7 @@ public class AuditoriumParams implements IAuditoriumParams,
         String kd = KEYS_DIRECTORY;
         if (_config.containsKey( "KEYS_DIRECTORY" ))
             kd =_config.get( "KEYS_DIRECTORY" );
+
         return new auditorium.SimpleKeyStore(kd);
     }
 

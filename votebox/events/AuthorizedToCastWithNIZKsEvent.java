@@ -62,7 +62,9 @@ public class AuthorizedToCastWithNIZKsEvent extends AuthorizedToCastEvent {
     }
 
     /** The public key to use for encryption and NIZKs */
-    private PublicKey _finalPubKey;
+    private PublicKey finalPubKey;
+
+
 
     /**
      * @see votebox.events.AuthorizedToCastEvent#AuthorizedToCastEvent(int, int, sexpression.ASExpression, String, byte[])
@@ -71,10 +73,15 @@ public class AuthorizedToCastWithNIZKsEvent extends AuthorizedToCastEvent {
     public AuthorizedToCastWithNIZKsEvent(int serial, int node, ASExpression nonce, String precinct, byte[] ballot,  PublicKey finalPubKey){
     	super(serial, node, nonce, precinct, ballot);
     	
-    	_finalPubKey = finalPubKey;
+    	this.finalPubKey = finalPubKey;
     	
     	/* This is a global value, on both the VoteBox and Supervisor side. */
     	AdderKeyManipulator.setCachedKey(finalPubKey);
+    }
+
+    /** @return the public key used to encrypt ballots sent with this authorization method */
+    public PublicKey getFinalPubKey() {
+        return finalPubKey;
     }
 
     /**
@@ -88,6 +95,6 @@ public class AuthorizedToCastWithNIZKsEvent extends AuthorizedToCastEvent {
                 getNonce(),
                 StringExpression.makeString( getBallot() ),
                 StringExpression.makeString( getPrecinct() ),
-                _finalPubKey.toASE());
+                finalPubKey.toASE());
     }
 }
