@@ -81,119 +81,89 @@ public class BallotParser {
      * translate a ballot xml file to a dom tree (as an intermediate
      * representation), then, primarily, to a ballot object.
      * 
-     * @param vars
-     *            The ballot parser will use this global parameters
-     *            encapsulation to find where the ballot xml is stored.
-     * @return This method returns the Ballot object which represents our dom
-     *         tree.
-     * @throws Exception
-     *             This method throws an exception if the ballot parser
-     *             encountered any problems translating the tree.
+     * @param vars          The ballot parser will use this global parameters
+     *                      encapsulation to find where the ballot xml is stored.
+     * @return              This method returns the Ballot object which represents our dom tree.
+     *
+     * @throws votebox.middle.ballot.BallotParserException
+     * if the ballot parser encountered any problems translating the tree.
      */
     public Ballot getBallot(IBallotVars vars) throws BallotParserException {
-        // init fields
+
         _elements = new HashMap<String, SelectableCardElement>();
 
-        // document = new Document(); // sometimes patterns suck
+        /* Crete a new document */
         Document document;
-        try {
-            document = DocumentBuilderFactory.newInstance()
-                    .newDocumentBuilder().newDocument();
-        }
-        catch (ParserConfigurationException e) {
-            throw new BallotParserException(
-                    "Internal Error, Could not get a new 'Document'.", e );
-        }
+        try { document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument(); }
+        catch (ParserConfigurationException e)  { throw new BallotParserException("Internal Error, Could not get a new 'Document'.", e); }
 
-        // parse the ballot xml -> dom tree
-        try {
-            TransformerFactory.newInstance().newTransformer().transform(
-                new StreamSource( new File( vars.getBallotFile() ) ),
-                new DOMResult( document ) );
-        }
-        catch (TransformerConfigurationException e) {
-            throw new BallotParserException(
-                    "InternalError. Could not configure the 'transformer' correctly.",
-                    e );
-        }
-        catch (TransformerException e) {
-            throw new BallotParserException(
-                    "Could not parse the ballot's XML file. This is most likely because your ballot XML is malformed.",
-                    e );
-        }
+        /* Parse the ballot xml -> dom tree */
+        try { TransformerFactory.newInstance().newTransformer().transform(new StreamSource(new File(vars.getBallotFile())), new DOMResult(document)); }
+        catch (TransformerConfigurationException e) { throw new BallotParserException("InternalError. Could not configure the 'transformer' correctly.", e); }
+        catch (TransformerException e) { throw new BallotParserException("Could not parse the ballot's XML file. This is most likely because your ballot XML is malformed.", e); }
 
-        // validate the dom tree against our ballot schema.
-        try {
-            SchemaFactory.newInstance( XMLConstants.W3C_XML_SCHEMA_NS_URI )
-                    .newSchema( vars.getBallotSchema() ).newValidator()
-                    .validate( new DOMSource( document ) );
-        }
-        catch (SAXException e) {
-            throw new BallotParserException(
-                    "Could not validate the ballot XML against the schema.", e );
-        }
-        catch (IOException e) {
-            throw new BallotParserException(
-                    "Internal Error, Could not load the schema against which the ballot's XML should be validated.",
-                    e );
-        }
+        /* Validate the dom tree against our ballot schema. */
+        try { SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI).newSchema(vars.getBallotSchema()) .newValidator().validate(new DOMSource(document)); }
+        catch (SAXException e)  { throw new BallotParserException("Could not validate the ballot XML against the schema.", e); }
+        catch (IOException e)   { throw new BallotParserException("Internal Error, Could not load the schema against which the ballot's XML should be validated.", e); }
 
-        // translate dom tree -> Ballot
-        return parseBallot( document.getElementsByTagName( "Ballot" ).item( 0 ) );
+        /* Translate dom tree -> Ballot */
+        return parseBallot( document.getElementsByTagName("Ballot").item(0));
     }
 
     /**
      * This method interprets a given dom node as being of the ballot type. This
      * method will convert the given dom node to a Ballot object
      * 
-     * @param node
-     *            This is the dom node that represents the ballot.
-     * @return This method returns the ballot object that is represented by the
-     *         given dom node.
-     * @throws Exception
-     *             This method throws an exception if the ballot parser
-     *             encountered any problems translating the tree.
+     * @param node          This is the dom node that represents the ballot.
+     * @return              This method returns the ballot object that is represented by the
+     *                      given dom node.
+     *
+     * @throws votebox.middle.ballot.BallotParserException
+     * if the ballot parser encountered any problems translating the tree.
      */
     private Ballot parseBallot(Node node) throws BallotParserException {
+
         NodeList children = node.getChildNodes();
         ArrayList<Card> cards = new ArrayList<Card>();
         Properties properties = new Properties();
 
-        // Children can either be properties or pages
+        /* Children can either be properties or pages */
         for (int lcv = 0; lcv < children.getLength(); lcv++) {
-            Node child = children.item( lcv );
 
-            if (child.getNodeName().equals( "Property" ))
-                parseProperties( child, properties );
-            else if (child.getNodeName().equals( "ListProperty" ))
-                parseListProperties( child, properties );
-            else if (child.getNodeName().equals( "Card" ))
-                cards.add( parseCard( child ) );
-            else if (child.getNodeName().equals( "#text" ))
-                ;// Do nothing
-            else
-                throw new BallotParserException(
-                        "I don't recognize " + child.getNodeName()
-                                + " as being a Property or Page.", null );
+            Node child = children.item(lcv);
+            String childName = child.getNodeName();
+
+            switch (childName) {
+
+                case "Property":        parseProperties(child, properties);
+                                        break;
+
+                case "ListProperty":    parseListProperties(child, properties);
+                                        break;
+
+                case "Card":            cards.add(parseCard(child));
+                                        break;
+
+                case "#text":           /* Do nothing */ break;
+
+                default:                throw new BallotParserException("I don't recognize " + child.getNodeName()
+                                        + " as being a Property or Page.", null);
+            }
         }
 
         List<List<String>> raceGroups = new ArrayList<List<String>>();
+
         for(Card card : cards){
-        	Properties cardProps = card.getProperties();
-        	if(cardProps.contains(Properties.RACE_GROUP)){
 
-        		try{
-                    List<String> r = cardProps.getStringList(Properties.RACE_GROUP);
+            Properties cardProps = card.getProperties();
 
-                    //Randomly permute the candidates (i.e. ballot rotation)
-//                    Collections.shuffle(r);
+            if(cardProps.contains(Properties.RACE_GROUP)){
 
-        			raceGroups.add(r);
+        		try { List<String> r = cardProps.getStringList(Properties.RACE_GROUP); raceGroups.add(r); }
+                catch(Exception e){ throw new BallotParserException(e.getMessage(), null); }
 
-        		}catch(Exception e){
-        			throw new BallotParserException(e.getMessage(), null);
-        		}
-        	}//if
+        	}
         }
         
         return new Ballot(cards, properties, _elements, raceGroups);
@@ -203,15 +173,15 @@ public class BallotParser {
      * This method is a helper method to parseBallot. It is called when a "Card"
      * node is encountered in the dom tree.
      * 
-     * @param node
-     *            This is the dom node that is a card node.
-     * @return This method returns the card that is represented by the given dom
-     *         node.
-     * @throws Exception
-     *             This method throws an exception if the ballot parser
-     *             encountered any problems translating the tree.
+     * @param node  This is the dom node that is a card node.
+     * @return      This method returns the card that is represented by the given dom
+     *              node.
+     *
+     * @throws votebox.middle.ballot.BallotParserException
+     * if the ballot parser encountered any problems translating the tree.
      */
     private Card parseCard(Node node) throws BallotParserException {
+
         NodeList children = node.getChildNodes();
         ArrayList<SelectableCardElement> elements = new ArrayList<SelectableCardElement>();
         Properties properties = new Properties();
@@ -220,49 +190,35 @@ public class BallotParser {
 
         for (int lcv = 0; lcv < children.getLength(); lcv++) {
 
-            Node child = children.item( lcv );
-            //System.out.println(child.getNodeName());
+            Node child = children.item(lcv);
+            String childName = child.getNodeName();
 
-            if (child.getNodeName().equals( "Property" ))
-            {
-                parseProperties( child, properties );
+            switch (childName) {
+
+                case "Property":                parseProperties(child, properties);
+                                                break;
+
+                case "ListProperty":            parseListProperties(child, properties);
+                                                break;
+
+
+                case "WriteInCardElement":      hasWriteIn = true;
+                case "ListElement":
+                case "SelectableCardElement":
+                case "CardElement":             elements.add(parseElement(child));
+                                                break;
+
+
+                case "#text":                   /* Do nothing */ break;
+
+                default:                        throw new BallotParserException( "I don't recognize " + child.getNodeName() +
+                                                " as being a Property, CardElement, or SelectableCardElement", null );
             }
-            else if (child.getNodeName().equals( "ListProperty" ))
-            {
-                parseListProperties( child, properties );
-            }
-            else if (child.getNodeName().equals( "CardElement" )
-                || child.getNodeName().equals( "SelectableCardElement" ))
-            {
-                elements.add( parseElement( child ) );
-            }
-            else if (child.getNodeName().equals("ListElement"))
-            {
-                elements.add( parseElement( child ) );
-            }
-            else if (child.getNodeName().equals("WriteInCardElement"))
-            {
-                hasWriteIn = true;
-                elements.add( parseWriteInElement( child ) );
-            }
-            else  if (child.getNodeName().equals( "#text" ))
-                ; // Do Nothing
-            else
-                throw new BallotParserException(
-                        "I don't recognize "
-                                + child.getNodeName()
-                                + " as being a Property, CardElement, or SelectableCardElement",
-                        null );
 
         }
 
-        //Shuffle the elements of the card to hopefully reorder them
-        //Collections.shuffle(elements);
+        String uniqueID = node.getAttributes().getNamedItem("uid").getNodeValue();
 
-        String uniqueID = node.getAttributes().getNamedItem( "uid" )
-                .getNodeValue();
-
-        System.err.println(hasWriteIn);
         return new Card( uniqueID, properties, elements, hasWriteIn );
     }
 
@@ -270,54 +226,57 @@ public class BallotParser {
      * This method is a helper method to parseCard. It is called when a
      * SelectableCardElement or CardElement is encountered in the dom tree.
      * 
-     * @param node
-     *            This is the dom node which represents the element
-     * @return This method returns the new element which represents the given
-     *         dom node.
-     * @throws Exception
-     *             This method throws an exception if the ballot parser
-     *             encountered any problems translating the tree.
+     * @param node          This is the dom node which represents the element
+     * @return              This method returns the new element which represents the given
+     *                      dom node.
+     *
+     * @throws votebox.middle.ballot.BallotParserException
+     * if the ballot parser encountered any problems translating the tree.
      */
-    private SelectableCardElement parseElement(Node node)
-            throws BallotParserException {
+    private SelectableCardElement parseElement(Node node) throws BallotParserException {
+
         NamedNodeMap nodeAttributes = node.getAttributes();
         NodeList children = node.getChildNodes();
 
         String uniqueID = nodeAttributes.getNamedItem( "uid" ).getNodeValue();
 
-        // Parse all the properties.
+        /* Parse all the properties. */
         Properties properties = new Properties();
         for (int lcv = 0; lcv < children.getLength(); lcv++) {
+
             Node child = children.item( lcv );
+            String childName = child.getNodeName();
 
-            if (child.getNodeName().equals( "Property" ))
-                parseProperties( child, properties );
-            else if (child.getNodeName().equals( "ListProperty" ))
-                parseListProperties( child, properties );
-            else if (child.getNodeName().equals( "#text" ))
-                ; // Do nothing
-            else
-                throw new BallotParserException( "I don't recognize "
-                        + child.getNodeName() + " as a property.", null );
+            switch (childName) {
+
+                case "Property":        parseProperties(child, properties);
+                                        break;
+
+                case "ListProperty":    parseListProperties(child, properties);
+                                        break;
+
+                case "#text":           /* Do nothing */ break;
+
+                default:                throw new BallotParserException("I don't recognize " + child.getNodeName()
+                                        + " as a property.", null);
+            }
         }
 
-        // Create the new card element.
-        SelectableCardElement element = null;
-        if (node.getNodeName().equals( "CardElement" )) {
-            throw new BallotParserException(
-                    "The use of CardElements has been disallowed. Please do not include non-selectable elements in the ballot, but only in the layout",
-                    null );
-        }
-        else {
+        /* Create the new card element. */
+        SelectableCardElement element;
+
+        if (node.getNodeName().equals( "CardElement" ))
+            throw new BallotParserException( "The use of CardElements has been disallowed. Please do not include non-selectable elements in " +
+                                             "the ballot, but only in the layout", null );
+        else
             element = new SelectableCardElement( uniqueID, properties );
-        }
 
-        // Make sure there are no duplicates
+        /* Make sure there are no duplicates */
         if (_elements.containsKey( uniqueID ))
-            throw new BallotParserException( "The unique ID " + uniqueID
-                    + " was declared more than once in the ballot's XML", null );
+            throw new BallotParserException( "The unique ID " + uniqueID  + " was declared more than once in the ballot's XML", null );
 
         _elements.put( uniqueID, element );
+
         return element;
     }
 
@@ -325,44 +284,49 @@ public class BallotParser {
      * This method is a helper method to parseCard. It is called when a
      * WriteInCardElement is encountered in the dom tree.
      *
-     * @param node
-     *            This is the dom node which represents the element
-     * @return This method returns the new element which represents the given
-     *         dom node.
-     * @throws Exception
-     *             This method throws an exception if the ballot parser
-     *             encountered any problems translating the tree.
+     * @param node  This is the dom node which represents the element
+     * @return      This method returns the new element which represents the given
+     *              dom node.
+     *
+     * @throws votebox.middle.ballot.BallotParserException
+     * if the ballot parser encountered any problems translating the tree.
      */
-    private WriteInCardElement parseWriteInElement(Node node)
-            throws BallotParserException {
+    private WriteInCardElement parseWriteInElement(Node node) throws BallotParserException {
+
         NamedNodeMap nodeAttributes = node.getAttributes();
         NodeList children = node.getChildNodes();
 
         String uniqueID = nodeAttributes.getNamedItem( "uid" ).getNodeValue();
 
-        // Parse all the properties.
+        /* Parse all the properties. */
         Properties properties = new Properties();
-        for (int lcv = 0; lcv < children.getLength(); lcv++) {
-            Node child = children.item( lcv );
 
-            if (child.getNodeName().equals( "Property" ))
-                parseProperties( child, properties );
-            else if (child.getNodeName().equals( "ListProperty" ))
-                parseListProperties( child, properties );
-            else if (child.getNodeName().equals( "#text" ))
-                ; // Do nothing
-            else
-                throw new BallotParserException( "I don't recognize "
-                        + child.getNodeName() + " as a property.", null );
+        for (int lcv = 0; lcv < children.getLength(); lcv++) {
+
+            Node child = children.item( lcv );
+            String childName = child.getNodeName();
+
+            switch (childName) {
+
+                case "Property":        parseProperties(child, properties);
+                                        break;
+
+                case "ListProperty":    parseListProperties(child, properties);
+                                        break;
+
+                case "#text":           /* Do nothing */ break;
+
+                default:                throw new BallotParserException("I don't recognize " + child.getNodeName()
+                                        + " as a property.", null);
+            }
         }
 
-        // Create the new card element.
+        /* Create the new card element. */
         WriteInCardElement element = new WriteInCardElement( uniqueID, properties );
 
-        // Make sure there are no duplicates.
+        /* Make sure there are no duplicates. */
         if (_elements.containsKey( uniqueID ))
-            throw new BallotParserException( "The unique ID " + uniqueID
-                    + " was declared more than once in the ballot's XML", null );
+            throw new BallotParserException("The unique ID " + uniqueID + " was declared more than once in the ballot's XML", null);
 
         _elements.put( uniqueID, element );
         return element;
@@ -374,33 +338,28 @@ public class BallotParser {
      * method will add an entry representative of the given dom node to a given
      * Properties object
      * 
-     * @param node
-     *            This is the dom node which represents a property
-     * @param properties
-     *            This is the Properties object to which the given property
-     *            should be added.
-     * @throws Exception
-     *             This method throws an exception if the property has been
-     *             defined with an incorrect type.
+     * @param node          This is the dom node which represents a property
+     * @param properties    This is the Properties object to which the given property
+     *                      should be added.
+     *
+     * @throws votebox.middle.ballot.BallotParserException
+     * if the property has been defined with an incorrect type.
      */
-    private void parseProperties(Node node, Properties properties)
-            throws BallotParserException {
+    private void parseProperties(Node node, Properties properties) throws BallotParserException {
+
         NamedNodeMap nodeAttributes = node.getAttributes();
         String key = nodeAttributes.getNamedItem( "name" ).getNodeValue();
         String value = nodeAttributes.getNamedItem( "value" ).getNodeValue();
         String type = nodeAttributes.getNamedItem( "type" ).getNodeValue();
-        try {
-            properties.add( key, value, type );
-        }
+
+        try { properties.add( key, value, type ); }
         catch (UnknownTypeException e) {
-            throw new BallotParserException( "While parsing the property "
-                    + key + " of type " + type + " and value " + value
-                    + ", the parser encountered an error: " + e.getMessage(), e );
+            throw new BallotParserException( "While parsing the property " + key + " of type " + type + " and value "
+                                             + value + ", the parser encountered an error: " + e.getMessage(), e );
         }
         catch (UnknownFormatException e) {
-            throw new BallotParserException( "While parsing the property "
-                    + key + " of type " + type + " and value " + value
-                    + ", the parser encountered an error: " + e.getMessage(), e );
+            throw new BallotParserException( "While parsing the property " + key + " of type " + type + " and value "
+                                             + value + ", the parser encountered an error: " + e.getMessage(), e );
         }
     }
 
@@ -408,44 +367,37 @@ public class BallotParser {
      * Given an XML node whose type is "ListProperty", add all its children to
      * the given Properties instance.
      * 
-     * @param node
-     *            This is the list property node.
-     * @param properties
-     *            Add the children of the given node to this properties
-     *            instance.
-     * @throws BallotParserException
-     *             If the XML is not formatted correctly, this method will
-     *             throw.
+     * @param node          This is the list property node.
+     * @param properties    Add the children of the given node to this properties
+     *                      instance.
+     *
+     * @throws votebox.middle.ballot.BallotParserException if the XML is not formatted correctly
      */
-    private void parseListProperties(Node node, Properties properties)
-            throws BallotParserException {
+    private void parseListProperties(Node node, Properties properties) throws BallotParserException {
+
         NamedNodeMap nodeAttributes = node.getAttributes();
         String key = nodeAttributes.getNamedItem( "name" ).getNodeValue();
         String type = nodeAttributes.getNamedItem( "type" ).getNodeValue();
 
         NodeList children = node.getChildNodes();
         ArrayList<String> elts = new ArrayList<String>();
+
         for (int lcv = 0; lcv < children.getLength(); lcv++) {
+
             Node child = children.item( lcv );
-            if (child.getNodeName().equals( "ListElement" )) {
-                elts.add( child.getAttributes().getNamedItem( "value" )
-                        .getNodeValue() );
-            }
+
+            if (child.getNodeName().equals( "ListElement" ))
+                elts.add(child.getAttributes().getNamedItem("value").getNodeValue() );
         }
-        try {
-            properties.add( key, elts, type );
-        }
+
+        try { properties.add( key, elts, type ); }
         catch (UnknownTypeException e) {
-            throw new BallotParserException( "While parsing the property "
-                    + key + " of type " + type + " and value " + elts
-                    + ", the parser encountered an error: " + e.getMessage(), e );
+            throw new BallotParserException( "While parsing the property " + key + " of type " + type + " and value "
+                                             + elts  + ", the parser encountered an error: " + e.getMessage(), e );
         }
-        //TODO Is this necessary?
         catch (UnknownFormatException e) {
-            System.out.println(key);
-            throw new BallotParserException( "While parsing the property "
-                    + key + " of type " + type + " and value " + elts
-                    + ", the parser encountered an error: " + e.getMessage(), e );
+            throw new BallotParserException( "While parsing the property " + key + " of type " + type + " and value "
+                                             + elts + ", the parser encountered an error: " + e.getMessage(), e );
         }
     }
 }
