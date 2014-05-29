@@ -190,6 +190,8 @@ public class VoteBoxEventsTest extends TestCase {
 
         ASExpression sexp = event.toSExp();
 
+        assertEquals("(ballot-print-fail 123456789 " + nonce +")", sexp.toString());
+
         BallotPrintFailEvent event2 = (BallotPrintFailEvent)matcher.match(0, sexp);
 
         checkBallotEvent(event, event2);
@@ -202,6 +204,8 @@ public class VoteBoxEventsTest extends TestCase {
 
         ASExpression sexp = event.toSExp();
 
+        assertEquals("(ballot-printing 123456789 " + nonce +")", sexp.toString());
+
         BallotPrintingEvent event2 = (BallotPrintingEvent)matcher.match(0, sexp);
 
         checkBallotEvent(event, event2);
@@ -213,6 +217,8 @@ public class VoteBoxEventsTest extends TestCase {
         BallotPrintSuccessEvent event = new BallotPrintSuccessEvent(0, "123456789", nonce);
 
         ASExpression sexp = event.toSExp();
+
+        assertEquals("(ballot-print-success 123456789 " + nonce + ")", sexp.toString());
 
         BallotPrintSuccessEvent event2 = (BallotPrintSuccessEvent)matcher.match(0, sexp);
 
@@ -237,6 +243,8 @@ public class VoteBoxEventsTest extends TestCase {
 
         ASExpression sexp = event.toSExp();
 
+        assertEquals("(ballot-accepted 123456789)", sexp.toString());
+
         BallotScanAcceptedEvent event2 = (BallotScanAcceptedEvent)matcher.match(0, sexp);
 
         assertEquals(event.getSerial(), event2.getSerial());
@@ -247,6 +255,8 @@ public class VoteBoxEventsTest extends TestCase {
         BallotScannedEvent event = new BallotScannedEvent(0, "123456789");
 
         ASExpression sexp = event.toSExp();
+
+        assertEquals("(ballot-scanned 123456789)", sexp.toString());
 
         BallotScannedEvent event2 = (BallotScannedEvent)matcher.match(0, sexp);
 
@@ -271,6 +281,8 @@ public class VoteBoxEventsTest extends TestCase {
         BallotScanRejectedEvent event = new BallotScanRejectedEvent(0, "123456789");
 
         ASExpression sexp = event.toSExp();
+
+        assertEquals("(ballot-rejected 123456789)", sexp.toString());
 
         BallotScanRejectedEvent event2 = (BallotScanRejectedEvent)matcher.match(0, sexp);
 
@@ -306,6 +318,8 @@ public class VoteBoxEventsTest extends TestCase {
         CastCommittedBallotEvent event = new CastCommittedBallotEvent(0, nonce, "123456789");
 
         ASExpression sexp = event.toSExp();
+
+        assertEquals("(cast-ballot " + nonce + " 123456789)", sexp.toString());
 
         CastCommittedBallotEvent event2 = (CastCommittedBallotEvent)matcher.match(0, sexp);
 
@@ -374,7 +388,12 @@ public class VoteBoxEventsTest extends TestCase {
     public void testInvalidPIN() {
         InvalidPinEvent event = new InvalidPinEvent(0, 1);
 
-        InvalidPinEvent event2 = (InvalidPinEvent) matcher.match(0, event.toSExp());
+        ASExpression sexp = event.toSExp();
+
+        assertEquals("(invalid-pin 1)", sexp.toString());
+
+        InvalidPinEvent event2 = (InvalidPinEvent) matcher.match(0, sexp);
+
 
         assertEquals(event.getSerial(), event2.getSerial());
         assertEquals(event.getTargetSerial(), event2.getTargetSerial());
@@ -485,7 +504,11 @@ public class VoteBoxEventsTest extends TestCase {
     public void testPINEntered() {
         PINEnteredEvent event = new PINEnteredEvent(0, "12345");
 
-        PINEnteredEvent event2 = (PINEnteredEvent) matcher.match(0, event.toSExp());
+        ASExpression sexp = event.toSExp();
+
+        PINEnteredEvent event2 = (PINEnteredEvent) matcher.match(0, sexp);
+
+        assertEquals("(pin-entered 12345)", sexp.toString());
 
         assertEquals(event.getSerial(), event2.getSerial());
         assertEquals(event.getPin(), event2.getPin());
@@ -657,6 +680,18 @@ public class VoteBoxEventsTest extends TestCase {
         assertEquals(event.getSerial(), event2.getSerial());
         assertEquals(event.getTimestamp(), event2.getTimestamp());
         assertEquals(event.getStatus(), event2.getStatus());
+    }
+
+    public void testTapMachine(){
+        TapMachineEvent event = new TapMachineEvent(0);
+
+        ASExpression sexp = event.toSExp();
+
+        assertEquals("(tap-machine)", sexp.toString());
+
+        TapMachineEvent event2 = (TapMachineEvent)matcher.match(0, sexp);
+
+        assertEquals(event.getSerial(), event2.getSerial());
     }
 
     public void testVoteBox() {
