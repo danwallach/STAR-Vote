@@ -1,8 +1,6 @@
 package votebox.events;
 
-import sexpression.ASExpression;
-import sexpression.ListExpression;
-import sexpression.StringExpression;
+import sexpression.*;
 
 /**
  * This is an event that gets fired when the supervisor spoils a voter's ballot
@@ -16,17 +14,23 @@ public class SpoilBallotEvent extends ABallotEvent {
      * Matcher for the SpoilBallotEvent
      */
     private static MatcherRule MATCHER = new MatcherRule() {
-        private ASExpression pattern = ASExpression
-                .make("(spoil-ballot %bid:#string %nonce:#any)");
+        private ASExpression pattern = new ListExpression(StringExpression.makeString("spoil-ballot"),
+                StringWildcard.SINGLETON, StringWildcard.SINGLETON);
 
         public IAnnounceEvent match(int serial, ASExpression sexp) {
-            ListExpression list = (ListExpression)sexp;
+            ASExpression res = pattern.match(sexp);
 
-            String bid = list.get(0).toString();
+            if(res != NoMatch.SINGLETON) {
+                ListExpression list = (ListExpression) sexp;
 
-            ASExpression nonce = list.get(1);
+                String bid = list.get(1).toString();
 
-            return new SpoilBallotEvent(serial, bid, nonce);
+                ASExpression nonce = list.get(2);
+
+                return new SpoilBallotEvent(serial, bid, nonce);
+            }
+
+            return null;
         }
 
     };
@@ -40,6 +44,11 @@ public class SpoilBallotEvent extends ABallotEvent {
      */
     public SpoilBallotEvent(int serial, String bid, ASExpression nonce) {
         super(serial, bid, nonce);
+    }
+
+    /** @return the matcher rule */
+    public static MatcherRule getMatcher() {
+        return MATCHER;
     }
 
     /**

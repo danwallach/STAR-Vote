@@ -1,9 +1,6 @@
 package votebox.events;
 
-import sexpression.ASExpression;
-import sexpression.ListExpression;
-import sexpression.NoMatch;
-import sexpression.StringExpression;
+import sexpression.*;
 
 /**
  * An event which allows for unique handling of provisionally committed ballots
@@ -13,8 +10,8 @@ import sexpression.StringExpression;
 public class ProvisionalCommitEvent extends ABallotEvent {
 
     private static MatcherRule MATCHER = new MatcherRule() {
-        private ASExpression pattern = ASExpression
-                .make("(provisional-commit-ballot %nonce:#string %ballot:#any %bid:#string)");
+        private ASExpression pattern = new ListExpression(StringExpression.makeString("commit-provisional-ballot"),
+                StringWildcard.SINGLETON, Wildcard.SINGLETON, StringWildcard.SINGLETON);
 
         public IAnnounceEvent match(int serial, ASExpression sexp) {
 
@@ -23,11 +20,11 @@ public class ProvisionalCommitEvent extends ABallotEvent {
             if (res != NoMatch.SINGLETON) {
                 ListExpression result = (ListExpression) sexp;
 
-                ASExpression nonce = result.get(0);
+                ASExpression nonce = result.get(1);
 
-                byte[] ballot = ((StringExpression) result.get(1)).getBytesCopy();
+                byte[] ballot = ((StringExpression) result.get(2)).getBytesCopy();
 
-                String bid = result.get(2).toString();
+                String bid = result.get(3).toString();
 
                 return new ProvisionalCommitEvent(serial, nonce, ballot, bid);
             }
@@ -52,7 +49,7 @@ public class ProvisionalCommitEvent extends ABallotEvent {
      * @param bid the ID of the provisional ballot
      */
     public ProvisionalCommitEvent(int serial, ASExpression nonce, byte[] ballot, String bid) {
-        super(serial, nonce, ballot, bid);
+        super(serial, nonce, bid, ballot);
     }
 
     /**
@@ -66,7 +63,7 @@ public class ProvisionalCommitEvent extends ABallotEvent {
      * @see votebox.events.IAnnounceEvent#toSExp()
      */
     public ASExpression toSExp() {
-        return new ListExpression(StringExpression.make("provisional-commit-ballot"),
+        return new ListExpression(StringExpression.makeString("commit-provisional-ballot"),
                 getNonce(),
                 StringExpression.makeString(getBallot()),
                 StringExpression.make(getBID()));

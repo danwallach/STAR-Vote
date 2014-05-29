@@ -72,8 +72,8 @@ public class AuthorizedToCastWithNIZKsEvent extends AuthorizedToCastEvent {
      */
     public AuthorizedToCastWithNIZKsEvent(int serial, int node, ASExpression nonce, String precinct, byte[] ballot,  PublicKey finalPubKey){
     	super(serial, node, nonce, precinct, ballot);
-    	
-    	this.finalPubKey = finalPubKey;
+
+        this.finalPubKey = finalPubKey;
     	
     	/* This is a global value, on both the VoteBox and Supervisor side. */
     	AdderKeyManipulator.setCachedKey(finalPubKey);

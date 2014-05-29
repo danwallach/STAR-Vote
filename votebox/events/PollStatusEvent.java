@@ -65,6 +65,11 @@ public class PollStatusEvent extends AAnnounceEvent{
         return pollsOpen;
     }
 
+    /** @return the target machine's serial */
+    public int getTargetSerial() {
+        return targetSerial;
+    }
+
     /** @see votebox.events.IAnnounceEvent#fire(VoteBoxEventListener) */
     public void fire(VoteBoxEventListener l) {
         l.pollStatus( this );

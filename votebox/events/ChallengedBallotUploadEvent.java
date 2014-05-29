@@ -52,12 +52,12 @@ public class ChallengedBallotUploadEvent extends AAnnounceEvent {
      * Packages ballot encryptions as well as the plaintext, precincts, and ballot ids of ballots into an array of
      * List Expressions
      *
-     * @return A list of Strings representing list expressiong of ballot IDs, precincts, encryptedBallots, and
+     * @return A list of Strings representing list expressing of ballot IDs, precincts, encryptedBallots, and
      *         decryptedBallots
-     */
+     */ /* TODO Rather than cram all the ballots in 1 ASE, put each one as an ASE in a ListExpression */
     public ArrayList<String> getDumpList() {
         ListExpression ballotList = (ListExpression) challengedBallots;
-        ArrayList<String> dumpList = new ArrayList<String>();
+        ArrayList<String> dumpList = new ArrayList<>();
 
         Iterator<ASExpression> iterator = ballotList.iterator();
         ASExpression[] ballotIDs = ((ListExpression) iterator.next()).getArray();

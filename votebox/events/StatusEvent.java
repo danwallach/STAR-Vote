@@ -83,12 +83,12 @@ public class StatusEvent extends AAnnounceEvent {
      * Constructs a new StatusEvent with given serial number, targetSerial, and status
      * 
      * @param serial the serial number
-     * @param node the targetSerial
+     * @param targetSerial the targetSerial
      * @param status the status
      */
-    public StatusEvent(int serial, int node, IAnnounceEvent status) {
+    public StatusEvent(int serial, int targetSerial, IAnnounceEvent status) {
         super(serial);
-        this.targetSerial = node;
+        this.targetSerial = targetSerial;
         this.status = status;
     }
 
