@@ -2,9 +2,6 @@ package votebox.middle.ballot;
 
 import votebox.middle.IncorrectTypeException;
 import votebox.middle.Properties;
-import votebox.middle.view.AView;
-import votebox.middle.view.AWTView;
-import votebox.middle.view.IView;
 import votebox.middle.writein.WriteInCardGUI;
 
 import javax.swing.*;
@@ -35,8 +32,7 @@ public final class WriteInCardElement extends SelectableCardElement{
      * method starts a GUI that prompts a voter to type in his preferred candidate's
      * name.
      *
-     * @throws CardStrategyException
-     *             This method throws if the strategy runs into a problem.
+     * @throws CardStrategyException if the strategy runs into a problem.
      */
     public boolean select() throws CardStrategyException {
         startWriteInCandidateGUI();
@@ -51,21 +47,18 @@ public final class WriteInCardElement extends SelectableCardElement{
     public void startWriteInCandidateGUI()
     {
         String writeInType = "Regular";
-        try
-        {
-            writeInType = getProperties().getString(Properties.WRITE_IN_TYPE);
-        }
-        catch (IncorrectTypeException e)
-        {
-            System.out.println("WRONG PROPERTY TYPE! Expected: String");
-        }
+
+        try { writeInType = getProperties().getString(Properties.WRITE_IN_TYPE); }
+        catch (IncorrectTypeException e) { System.out.println("WRONG PROPERTY TYPE! Expected: String"); }
 
         final String fWriteInType = writeInType;
 
+        /* Create the frame */
         Frame parentFrame = getParentCard().getParent().getViewAdapter().getView().getFrame();
         final int centerX = parentFrame.getX() + parentFrame.getWidth()/2;
         final int centerY = parentFrame.getY() + parentFrame.getHeight()/2;
 
+        /* Initialises a new thread for new GUI */
         SwingWorker worker = new SwingWorker<Void, Void>() {
             public Void doInBackground() {
                 WriteInCardGUI writeInCardGUI = new WriteInCardGUI(centerX, centerY, getUniqueID(), fWriteInType, getParentCard());
@@ -74,6 +67,7 @@ public final class WriteInCardElement extends SelectableCardElement{
             }
         };
 
+        /* Draws the UI */
         worker.execute();
 
     }
