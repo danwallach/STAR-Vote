@@ -1,12 +1,11 @@
 package votebox;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
+import java.awt.*;
 
 /**
  * GUI utilized by the ActiveUI of a VoteBox during polls open to prompt user for PIN.
@@ -115,7 +114,7 @@ public class PINAuthorizationGUI extends JDialog {
 
         /* Text Field */
         pinTextField = new JTextField(new PlainDocument() {
-            private int limit = 4;
+            private int limit = 5;
             public void insertString(int offs, String str, AttributeSet attr) throws BadLocationException {
                 if(str == null)
                     return;
