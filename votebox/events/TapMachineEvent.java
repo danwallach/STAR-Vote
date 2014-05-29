@@ -13,7 +13,7 @@ public class TapMachineEvent extends AAnnounceEvent {
      */
     private static MatcherRule MATCHER = new MatcherRule() {
         private ASExpression pattern = new ListExpression(StringExpression
-                .makeString("tapmachine"));
+                .makeString("tap-machine"));
 
         public IAnnounceEvent match(int serial, ASExpression sexp){
             ASExpression res = pattern.match(sexp);
@@ -46,7 +46,7 @@ public class TapMachineEvent extends AAnnounceEvent {
     /** @see votebox.events.IAnnounceEvent#toSExp() */
     public ASExpression toSExp() {
         return new ListExpression(
-                StringExpression.makeString("tapmachine")
+                StringExpression.makeString("tap-machine")
         );
     }
 }

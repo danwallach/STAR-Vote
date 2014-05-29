@@ -43,8 +43,8 @@ public class CastCommittedBallotEvent extends ABallotEvent {
      * Matcher for the CastCommittedBallotEvent
      */
     private static MatcherRule MATCHER = new MatcherRule() {
-        private ASExpression pattern = ASExpression
-                .make("(cast-ballot %nonce:#string %bid:#string)");
+        private ASExpression pattern = new ListExpression(StringExpression
+                .makeString("cast-ballot"), StringWildcard.SINGLETON, StringWildcard.SINGLETON);
 
         public IAnnounceEvent match(int serial, ASExpression sexp) {
             ASExpression res = pattern.match(sexp);
@@ -52,9 +52,9 @@ public class CastCommittedBallotEvent extends ABallotEvent {
             if(res != NoMatch.SINGLETON) {
                 ListExpression list = (ListExpression) sexp;
 
-                ASExpression nonce = list.get(0);
+                ASExpression nonce = list.get(1);
 
-                String bid = list.get(1).toString();
+                String bid = list.get(2).toString();
 
                 return new CastCommittedBallotEvent(serial, nonce, bid);
             }

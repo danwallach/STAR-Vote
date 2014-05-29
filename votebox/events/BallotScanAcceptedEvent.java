@@ -9,7 +9,7 @@ import sexpression.*;
  */
 public class BallotScanAcceptedEvent extends AAnnounceEvent{
 
-    private String _bid;
+    private String bid;
 
     /**
      * The matcher for the BallotReceivedEvent.
@@ -44,14 +44,14 @@ public class BallotScanAcceptedEvent extends AAnnounceEvent{
      */
     public BallotScanAcceptedEvent(int serial, String bid) {
         super(serial);
-        _bid = bid;
+        this.bid = bid;
     }
 
     /**
      * @return the ballot id
      */
     public String getBID(){
-        return _bid;
+        return bid;
     }
 
     /**
@@ -65,6 +65,6 @@ public class BallotScanAcceptedEvent extends AAnnounceEvent{
     public ASExpression toSExp() {
         return new ListExpression( StringExpression
                 .makeString( "ballot-accepted" ),
-                StringExpression.makeString(_bid) );
+                StringExpression.makeString(bid) );
     }
 }

@@ -58,7 +58,7 @@ public class CastBallotUploadEvent extends AAnnounceEvent {
         ASExpression[] ballotIDs = ((ListExpression) iterator.next()).getArray();
         ASExpression[] precincts = ((ListExpression) iterator.next()).getArray();
         ASExpression[] nonceList = ((ListExpression) iterator.next()).getArray();
-        ArrayList<String> dumpList = new ArrayList<String>();
+        ArrayList<String> dumpList = new ArrayList<>();
 
         for (int i=0; i<ballotIDs.length; i++) {
             dumpList.add("cast:" + ballotIDs[i] + ":" + precincts[i] + ":" + nonceList[i].toString());

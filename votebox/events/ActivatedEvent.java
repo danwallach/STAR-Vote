@@ -22,10 +22,10 @@
 
 package votebox.events;
 
+import sexpression.*;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import sexpression.*;
 
 /**
  * Event that represents the activated message:<br>
@@ -69,7 +69,7 @@ public class ActivatedEvent extends AAnnounceEvent {
             if (res != NoMatch.SINGLETON) {
 
                 /* We will build a list of the connected machine's statuses */
-                ArrayList<StatusEvent> statuses = new ArrayList<StatusEvent>();
+                ArrayList<StatusEvent> statuses = new ArrayList<>();
 
                 /* each subexpression after "activated" should represent StatusEvents */
                 for (ASExpression s : (ListExpression) ((ListExpression) res).get( 0 )) {
@@ -131,7 +131,7 @@ public class ActivatedEvent extends AAnnounceEvent {
      */
     public ASExpression toSExp() {
         /* Build a list of statuses from this event */
-        ArrayList<ASExpression> statusList = new ArrayList<ASExpression>();
+        ArrayList<ASExpression> statusList = new ArrayList<>();
         for (IAnnounceEvent s : statuses)
             statusList.add( s.toSExp() );
 

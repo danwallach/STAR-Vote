@@ -23,7 +23,6 @@
 package votebox.events;
 
 import sexpression.*;
-import sexpression.stream.InvalidVerbatimStreamException;
 
 /**
  * This event represents what gets sent out on the network when the machine
@@ -37,8 +36,9 @@ import sexpression.stream.InvalidVerbatimStreamException;
 public class CommitBallotEvent extends ABallotEvent {
 
     private static MatcherRule MATCHER = new MatcherRule() {
-        private ASExpression pattern = ASExpression
-                .make("(commit-ballot %nonce:#string %ballot:#any %bid:#string %precinct:#string)");
+        private ASExpression pattern = new ListExpression(StringExpression.makeString("commit-ballot"),
+                StringWildcard.SINGLETON, Wildcard.SINGLETON, StringWildcard.SINGLETON,
+                StringWildcard.SINGLETON);
 
         public IAnnounceEvent match(int serial, ASExpression sexp) {
 
@@ -48,13 +48,13 @@ public class CommitBallotEvent extends ABallotEvent {
 
                 ListExpression lsexp = (ListExpression) sexp;
 
-                ASExpression nonce = lsexp.get(0);
+                ASExpression nonce = lsexp.get(1);
 
-                byte[] ballot = ((StringExpression) lsexp.get(1)).getBytesCopy();
+                byte[] ballot = ((StringExpression) lsexp.get(2)).getBytesCopy();
 
-                String bid = lsexp.get(2).toString();
+                String bid = lsexp.get(3).toString();
 
-                String precinct = lsexp.get(3).toString();
+                String precinct = lsexp.get(4).toString();
 
 
                 return new CommitBallotEvent(serial, nonce, ballot, bid, precinct);
@@ -95,15 +95,12 @@ public class CommitBallotEvent extends ABallotEvent {
      * @see votebox.events.IAnnounceEvent#toSExp()
      */
     public ASExpression toSExp() {
-        try {
-            return new ListExpression(StringExpression.make("commit-ballot"),
-                    getNonce(),
-                    StringExpression.makeVerbatim(getBallot()),
-                    StringExpression.make(getBID()),
-                    StringExpression.make(getPrecinct()));
-        } catch (InvalidVerbatimStreamException e) {
-            throw new RuntimeException("Couldn't serialize the ballot!");
-        }
+        return new ListExpression(StringExpression.make("commit-ballot"),
+                getNonce(),
+                StringExpression.makeString(getBallot()),
+                StringExpression.make(getBID()),
+                StringExpression.make(getPrecinct()));
+
     }
 
 }

@@ -1,9 +1,6 @@
 package votebox.events;
 
-import sexpression.ASExpression;
-import sexpression.ListExpression;
-import sexpression.NoMatch;
-import sexpression.StringExpression;
+import sexpression.*;
 
 /**
  * equivalent to EncryptedCastBallotEvent, however with functionality to deal with Non-Interactive, Zero-Knowledge proofs.
@@ -14,8 +11,8 @@ public class EncryptedCastBallotWithNIZKsEvent extends EncryptedCastBallotEvent 
      * Matcher for the EncryptedCastBallotEvent
      */
     private static MatcherRule MATCHER = new MatcherRule() {
-        private ASExpression pattern = ASExpression
-                .make("(encrypted-cast-ballot-with-nizks %nonce:#string %ballot:#any %bid:#any)");
+        private ASExpression pattern = new ListExpression(StringExpression.makeString("encrypted-cast-ballot-with-nizks"),
+                StringWildcard.SINGLETON, Wildcard.SINGLETON, StringWildcard.SINGLETON);
 
         public IAnnounceEvent match(int serial, ASExpression sexp) {
 
@@ -24,11 +21,11 @@ public class EncryptedCastBallotWithNIZKsEvent extends EncryptedCastBallotEvent 
 
                 ListExpression lsexp = (ListExpression) sexp;
 
-                ASExpression nonce = lsexp.get(0);
+                ASExpression nonce = lsexp.get(1);
 
-                byte[] ballot = ((StringExpression) lsexp.get(1)).getBytesCopy();
+                byte[] ballot = ((StringExpression) lsexp.get(2)).getBytesCopy();
 
-                String bid = lsexp.get(2).toString();
+                String bid = lsexp.get(3).toString();
 
                 return new EncryptedCastBallotWithNIZKsEvent(serial, nonce, ballot, bid);
             }

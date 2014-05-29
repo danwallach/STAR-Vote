@@ -51,7 +51,19 @@ public class VoteBoxEventsTest extends TestCase {
                 OverrideCastDenyEvent.getMatcher(), OverrideCommitEvent.getMatcher(),
                 PollsClosedEvent.getMatcher(), PollsOpenEvent.getMatcher(),
                 SupervisorEvent.getMatcher(), VoteBoxEvent.getMatcher(),
-                PINEnteredEvent.getMatcher(), InvalidPinEvent.getMatcher());
+                PINEnteredEvent.getMatcher(), InvalidPinEvent.getMatcher(),
+                BallotScanAcceptedEvent.getMatcher(), BallotScannedEvent.getMatcher(),
+                BallotScanRejectedEvent.getMatcher(), CastBallotUploadEvent.getMatcher(),
+                ChallengedBallotUploadEvent.getMatcher(), BallotPrintFailEvent.getMatcher(),
+                BallotPrintingEvent.getMatcher(), BallotPrintSuccessEvent.getMatcher(),
+                BallotScannerEvent.getMatcher(), AuthorizedToCastWithNIZKsEvent.getMatcher(),
+                CommitBallotEvent.getMatcher(), EncryptedCastBallotEvent.getMatcher(),
+                EncryptedCastBallotWithNIZKsEvent.getMatcher(), PollMachinesEvent.getMatcher(),
+                PollsOpenQEvent.getMatcher(), PollStatusEvent.getMatcher(),
+                ProvisionalAuthorizeEvent.getMatcher(), ProvisionalCommitEvent.getMatcher(),
+                ProvisionalCommitEvent.getMatcher(),
+                SpoilBallotEvent.getMatcher(), StartScannerEvent.getMatcher(),
+                StatusEvent.getMatcher(), TapMachineEvent.getMatcher(), ProvisionalBallotEvent.getMatcher());
 
         keyStore = new SimpleKeyStore("keys");
     }
@@ -65,9 +77,24 @@ public class VoteBoxEventsTest extends TestCase {
         return StringExpression.makeString(array);
     }
 
+    public void checkBallotEvent(ABallotEvent event, ABallotEvent event2){
+        assertEquals(event.getSerial(), event2.getSerial());
+
+        if(event.getBID() != null)
+            assertEquals(event.getBID(), event2.getBID());
+
+        if(event.getNonce() != null)
+            assertEquals(event.getNonce(), event2.getNonce());
+
+        if(event.getBallot() != null)
+            assertTrue(Arrays.equals(event.getBallot(), event2.getBallot()));
+
+        if(event.getPrecinct() != null)
+            assertEquals(event.getPrecinct(), event2.getPrecinct());
+    }
 
     public void testActivated() {
-        ArrayList<StatusEvent> statuses = new ArrayList<StatusEvent>();
+        ArrayList<StatusEvent> statuses = new ArrayList<>();
         SupervisorEvent supStatus = new SupervisorEvent(0, 123456, "active");
         VoteBoxEvent vbStatus = new VoteBoxEvent(0, 3, "ready", 75, 20, 30);
         statuses.add(new StatusEvent(0, 50, supStatus));
@@ -129,10 +156,8 @@ public class VoteBoxEventsTest extends TestCase {
 
         AuthorizedToCastEvent event2 = (AuthorizedToCastEvent) matcher.match(
                 50, sexp);
-        assertEquals(event.getSerial(), event2.getSerial());
-        assertEquals(event.getTargetSerial(), event2.getTargetSerial());
-        assertTrue(Arrays.equals(event.getNonce().toVerbatim(), event2.getNonce().toVerbatim()));
-        assertTrue(Arrays.equals(event.getBallot(), event2.getBallot()));
+
+        checkBallotEvent(event, event2);
     }
 
     public void testAuthorizedToCastWithNIZKs() {
@@ -145,17 +170,16 @@ public class VoteBoxEventsTest extends TestCase {
         AuthorizedToCastWithNIZKsEvent event = new AuthorizedToCastWithNIZKsEvent(50, 65, nonce,
                 "007", ballot, key);
         ASExpression sexp = event.toSExp();
-        assertEquals("(authorized-to-cast 65 "
-                + nonce + " 007 "
-                + StringExpression.makeString(ballot).toString() + ")", sexp
-                .toString(), key.toString());
+        assertEquals("(authorized-to-cast-with-nizks 65 "
+                + nonce.toString() + " "
+                + StringExpression.makeString(ballot).toString() + " 007 " + key.toASE() + ")", sexp
+                .toString());
 
         AuthorizedToCastWithNIZKsEvent event2 = (AuthorizedToCastWithNIZKsEvent) matcher.match(
                 50, sexp);
-        assertEquals(event.getSerial(), event2.getSerial());
-        assertEquals(event.getTargetSerial(), event2.getTargetSerial());
-        assertTrue(Arrays.equals(event.getNonce().toVerbatim(), event2.getNonce().toVerbatim()));
-        assertTrue(Arrays.equals(event.getBallot(), event2.getBallot()));
+
+        checkBallotEvent(event, event2);
+
         assertEquals(event.getFinalPubKey(), event2.getFinalPubKey());
     }
 
@@ -166,11 +190,11 @@ public class VoteBoxEventsTest extends TestCase {
 
         ASExpression sexp = event.toSExp();
 
+        assertEquals("(ballot-print-fail 123456789 " + nonce +")", sexp.toString());
+
         BallotPrintFailEvent event2 = (BallotPrintFailEvent)matcher.match(0, sexp);
 
-        assertEquals(event.getSerial(), event2.getSerial());
-        assertEquals(event.getBID(), event2.getBID());
-        assertEquals(event.getNonce(), event2.getNonce());
+        checkBallotEvent(event, event2);
     }
 
     public void testBallotPrinting(){
@@ -180,11 +204,11 @@ public class VoteBoxEventsTest extends TestCase {
 
         ASExpression sexp = event.toSExp();
 
+        assertEquals("(ballot-printing 123456789 " + nonce +")", sexp.toString());
+
         BallotPrintingEvent event2 = (BallotPrintingEvent)matcher.match(0, sexp);
 
-        assertEquals(event.getSerial(), event2.getSerial());
-        assertEquals(event.getBID(), event2.getBID());
-        assertEquals(event.getNonce(), event2.getNonce());
+        checkBallotEvent(event, event2);
     }
 
     public void testBallotPrintSuccess(){
@@ -194,14 +218,14 @@ public class VoteBoxEventsTest extends TestCase {
 
         ASExpression sexp = event.toSExp();
 
+        assertEquals("(ballot-print-success 123456789 " + nonce + ")", sexp.toString());
+
         BallotPrintSuccessEvent event2 = (BallotPrintSuccessEvent)matcher.match(0, sexp);
 
-        assertEquals(event.getSerial(), event2.getSerial());
-        assertEquals(event.getBID(), event2.getBID());
-        assertEquals(event.getNonce(), event2.getNonce());
+        checkBallotEvent(event, event2);
     }
 
-    public void testBallotReceived() {
+    public void testBallotReceived(){
         ASExpression nonce = getBlob();
         BallotReceivedEvent event = new BallotReceivedEvent(50, 65, nonce, "123", "456");
         ASExpression sexp = event.toSExp();
@@ -210,15 +234,166 @@ public class VoteBoxEventsTest extends TestCase {
 
         BallotReceivedEvent event2 = (BallotReceivedEvent) matcher.match(50,
                 sexp);
+
+        checkBallotEvent(event, event2);
+    }
+
+    public void testBallotScanAccepted(){
+        BallotScanAcceptedEvent event = new BallotScanAcceptedEvent(0, "123456789");
+
+        ASExpression sexp = event.toSExp();
+
+        assertEquals("(ballot-accepted 123456789)", sexp.toString());
+
+        BallotScanAcceptedEvent event2 = (BallotScanAcceptedEvent)matcher.match(0, sexp);
+
         assertEquals(event.getSerial(), event2.getSerial());
-        assertEquals(event.getTargetSerial(), event2.getTargetSerial());
-        assertTrue(Arrays.equals(event.getNonce().toVerbatim(), event2.getNonce().toVerbatim()));
+        assertEquals(event.getBID(), event2.getBID());
+    }
+    
+    public void testBallotScanned(){
+        BallotScannedEvent event = new BallotScannedEvent(0, "123456789");
+
+        ASExpression sexp = event.toSExp();
+
+        assertEquals("(ballot-scanned 123456789)", sexp.toString());
+
+        BallotScannedEvent event2 = (BallotScannedEvent)matcher.match(0, sexp);
+
+        checkBallotEvent(event, event2);
+    }
+    
+    public void testBallotScanner(){
+        BallotScannerEvent event = new BallotScannerEvent(50, 3, "ready", 75, 20, 30);
+        ASExpression sexp = event.toSExp();
+        assertEquals("(ballotscanner 3 ready 75 20 30)", sexp.toString());
+
+        BallotScannerEvent event2 = (BallotScannerEvent) matcher.match(50, sexp);
+        assertEquals(event.getSerial(), event2.getSerial());
+        assertEquals(event.getStatus(), event2.getStatus());
+        assertEquals(event.getLabel(), event2.getLabel());
+        assertEquals(event.getBattery(), event2.getBattery());
+        assertEquals(event.getPublicCount(), event2.getPublicCount());
+        assertEquals(event.getProtectedCount(), event2.getProtectedCount());
+    }
+
+    public void testBallotScanRejected(){
+        BallotScanRejectedEvent event = new BallotScanRejectedEvent(0, "123456789");
+
+        ASExpression sexp = event.toSExp();
+
+        assertEquals("(ballot-rejected 123456789)", sexp.toString());
+
+        BallotScanRejectedEvent event2 = (BallotScanRejectedEvent)matcher.match(0, sexp);
+
+        assertEquals(event.getSerial(), event2.getSerial());
+        assertEquals(event.getBID(), event2.getBID());
+    }
+
+    public void testCastBallotUpload(){
+        /*List<ASExpression> noncesList = new ArrayList<ASExpression>();
+
+        /* We generated 4 random nonces for checking the message
+        for(int i = 0; i < 4; i++)
+            noncesList.add(getBlob());
+
+        ListExpression nonces = new ListExpression(noncesList);
+
+        CastBallotUploadEvent event = new CastBallotUploadEvent(0, nonces);
+
+        ASExpression sexp = event.toSExp();
+
+        CastBallotUploadEvent event2 = (CastBallotUploadEvent)matcher.match(0, sexp);
+
+        assertEquals(event.getSerial(), event2.getSerial());
+        assertTrue(event.getDumpList().equals(event2.getDumpList()));
+        */
+
+        /* TODO Write this case when the upload events are better written */
+    }
+
+    public void testCastCommittedBallot(){
+        ASExpression nonce = getBlob();
+
+        CastCommittedBallotEvent event = new CastCommittedBallotEvent(0, nonce, "123456789");
+
+        ASExpression sexp = event.toSExp();
+
+        assertEquals("(cast-ballot " + nonce + " 123456789)", sexp.toString());
+
+        CastCommittedBallotEvent event2 = (CastCommittedBallotEvent)matcher.match(0, sexp);
+
+        checkBallotEvent(event, event2);
+
+    }
+
+    public void testChallengedBallotUpload(){
+        /* TODO When this method makes more sense, write a test case */
+    }
+
+    public void testCommitBallot(){
+        ASExpression nonce = getBlob();
+        byte[] ballot = getBlob().toVerbatim();
+
+        CommitBallotEvent event = new CommitBallotEvent(0, nonce, ballot, "123", "456");
+
+        ASExpression sexp = event.toSExp();
+
+
+        assertEquals("(commit-ballot " +
+                nonce +  " " +
+                StringExpression.makeString(ballot) + " 123 456)", event.toSExp().toString());
+
+        CommitBallotEvent event2 = (CommitBallotEvent)matcher.match(0, sexp);
+
+        checkBallotEvent(event, event2);
+    }
+
+    public void testEncryptedCastBallotEvent(){
+        ASExpression nonce = getBlob();
+        byte[] ballot = getBlob().toVerbatim();
+
+        EncryptedCastBallotEvent event = new EncryptedCastBallotEvent(0, nonce, ballot, "123456789");
+
+        ASExpression sexp = event.toSExp();
+
+        assertEquals("(encrypted-cast-ballot " +
+                nonce + " " +
+                StringExpression.makeString(ballot) +
+                " 123456789)", sexp.toString());
+
+        EncryptedCastBallotEvent event2 = (EncryptedCastBallotEvent)matcher.match(0, sexp);
+
+        checkBallotEvent(event, event2);
+    }
+
+    public void testEncryptedCastBallotWithNIZKs(){
+        ASExpression nonce = getBlob();
+        byte[] ballot = getBlob().toVerbatim();
+
+        EncryptedCastBallotWithNIZKsEvent event = new EncryptedCastBallotWithNIZKsEvent(0, nonce, ballot, "123456789");
+
+        ASExpression sexp = event.toSExp();
+
+        assertEquals("(encrypted-cast-ballot-with-nizks " +
+                nonce + " " +
+                StringExpression.makeString(ballot) +
+                " 123456789)", sexp.toString());
+
+        EncryptedCastBallotWithNIZKsEvent event2 = (EncryptedCastBallotWithNIZKsEvent)matcher.match(0, sexp);
+
+        checkBallotEvent(event, event2);
     }
 
     public void testInvalidPIN() {
         InvalidPinEvent event = new InvalidPinEvent(0, 1);
 
-        InvalidPinEvent event2 = (InvalidPinEvent) matcher.match(0, event.toSExp());
+        ASExpression sexp = event.toSExp();
+
+        assertEquals("(invalid-pin 1)", sexp.toString());
+
+        InvalidPinEvent event2 = (InvalidPinEvent) matcher.match(0, sexp);
+
 
         assertEquals(event.getSerial(), event2.getSerial());
         assertEquals(event.getTargetSerial(), event2.getTargetSerial());
@@ -239,33 +414,6 @@ public class VoteBoxEventsTest extends TestCase {
                 .getPollsOpenMsg().getTimestamp());
         assertEquals(event.getPollsOpenMsg().getKeyword(), event2
                 .getPollsOpenMsg().getKeyword());
-    }
-
-    public void testOverrideCancel() {
-        ASExpression nonce = getBlob();
-        OverrideCancelEvent event = new OverrideCancelEvent(50, 65, nonce);
-        ASExpression sexp = event.toSExp();
-        assertEquals("(override-cancel 65 "
-                + nonce.toString() + ")", sexp.toString());
-
-        OverrideCancelEvent event2 = (OverrideCancelEvent) matcher.match(50,
-                sexp);
-        assertEquals(event.getSerial(), event2.getSerial());
-        assertEquals(event.getTargetSerial(), event2.getTargetSerial());
-        assertTrue(Arrays.equals(event.getNonce().toVerbatim(), event2.getNonce().toVerbatim()));
-    }
-
-    public void testOverrideCast() {
-        ASExpression nonce = getBlob();
-        OverrideCommitEvent event = new OverrideCommitEvent(50, 65, nonce);
-        ASExpression sexp = event.toSExp();
-        assertEquals("(override-cast 65 "
-                + nonce.toString() + ")", sexp.toString());
-
-        OverrideCommitEvent event2 = (OverrideCommitEvent) matcher.match(50, sexp);
-        assertEquals(event.getSerial(), event2.getSerial());
-        assertEquals(event.getTargetSerial(), event2.getTargetSerial());
-        assertTrue(Arrays.equals(event.getNonce().toVerbatim(), event2.getNonce().toVerbatim()));
     }
 
     public void testOverrideCancelConfirm() {
@@ -292,6 +440,20 @@ public class VoteBoxEventsTest extends TestCase {
         OverrideCancelDenyEvent event2 = (OverrideCancelDenyEvent) matcher
                 .match(50, sexp);
         assertEquals(event.getSerial(), event2.getSerial());
+        assertTrue(Arrays.equals(event.getNonce().toVerbatim(), event2.getNonce().toVerbatim()));
+    }
+
+    public void testOverrideCancel() {
+        ASExpression nonce = getBlob();
+        OverrideCancelEvent event = new OverrideCancelEvent(50, 65, nonce);
+        ASExpression sexp = event.toSExp();
+        assertEquals("(override-cancel 65 "
+                + nonce.toString() + ")", sexp.toString());
+
+        OverrideCancelEvent event2 = (OverrideCancelEvent) matcher.match(50,
+                sexp);
+        assertEquals(event.getSerial(), event2.getSerial());
+        assertEquals(event.getTargetSerial(), event2.getTargetSerial());
         assertTrue(Arrays.equals(event.getNonce().toVerbatim(), event2.getNonce().toVerbatim()));
     }
 
@@ -326,13 +488,45 @@ public class VoteBoxEventsTest extends TestCase {
         assertTrue(Arrays.equals(event.getNonce().toVerbatim(), event2.getNonce().toVerbatim()));
     }
 
+    public void testOverrideCommit() {
+        ASExpression nonce = getBlob();
+        OverrideCommitEvent event = new OverrideCommitEvent(50, 65, nonce);
+        ASExpression sexp = event.toSExp();
+        assertEquals("(override-cast 65 "
+                + nonce.toString() + ")", sexp.toString());
+
+        OverrideCommitEvent event2 = (OverrideCommitEvent) matcher.match(50, sexp);
+        assertEquals(event.getSerial(), event2.getSerial());
+        assertEquals(event.getTargetSerial(), event2.getTargetSerial());
+        assertTrue(Arrays.equals(event.getNonce().toVerbatim(), event2.getNonce().toVerbatim()));
+    }
+
     public void testPINEntered() {
         PINEnteredEvent event = new PINEnteredEvent(0, "12345");
 
-        PINEnteredEvent event2 = (PINEnteredEvent) matcher.match(0, event.toSExp());
+        ASExpression sexp = event.toSExp();
+
+        PINEnteredEvent event2 = (PINEnteredEvent) matcher.match(0, sexp);
+
+        assertEquals("(pin-entered 12345)", sexp.toString());
 
         assertEquals(event.getSerial(), event2.getSerial());
         assertEquals(event.getPin(), event2.getPin());
+    }
+
+    public void testPollMachines(){
+        long curTime = System.currentTimeMillis();
+        PollMachinesEvent event = new PollMachinesEvent(0, curTime, "keyword");
+
+        ASExpression sexp = event.toSExp();
+
+        assertEquals("(poll-machines " + curTime + " keyword)", sexp.toString());
+
+        PollMachinesEvent event2 = (PollMachinesEvent)matcher.match(0, sexp);
+
+        assertEquals(event.getSerial(), event2.getSerial());
+        assertEquals(event.getKeyword(), event2.getKeyword());
+        assertEquals(event.getTimestamp(), event2.getTimestamp());
     }
 
     public void testPollsClosed() {
@@ -356,6 +550,127 @@ public class VoteBoxEventsTest extends TestCase {
         assertEquals(event.getKeyword(), event2.getKeyword());
     }
 
+    public void testPollsOpenQ(){
+        PollsOpenQEvent event = new PollsOpenQEvent(50, "hi");
+        ASExpression sexp = event.toSExp();
+        assertEquals("(polls-open? hi)", sexp.toString());
+
+        PollsOpenQEvent event2 = (PollsOpenQEvent) matcher.match(50, sexp);
+        assertEquals(event.getSerial(), event2.getSerial());
+        assertEquals(event.getKeyword(), event2.getKeyword());
+    }
+
+    public void testPollStatus(){
+        PollStatusEvent event = new PollStatusEvent(50, 65, 1);
+        ASExpression sexp = event.toSExp();
+        assertEquals("(poll-status 65 1)", sexp.toString());
+
+        PollStatusEvent event2 = (PollStatusEvent) matcher.match(50, sexp);
+        assertEquals(event.getSerial(), event2.getSerial());
+        assertEquals(event.getPollStatus(), event2.getPollStatus());
+        assertEquals(event.getTargetSerial(), event2.getTargetSerial());
+    }
+
+    public void testProvisionalAuthorize(){
+        ASExpression nonce = getBlob();
+
+        byte[] ballot = getBlob().toVerbatim();
+
+        ProvisionalAuthorizeEvent event = new ProvisionalAuthorizeEvent(50, 65, nonce, ballot);
+        ASExpression sexp = event.toSExp();
+        assertEquals("(provisional-authorized-to-cast 65 "
+                + nonce + " "
+                + StringExpression.makeString(ballot).toString() + ")", sexp
+                .toString());
+
+        ProvisionalAuthorizeEvent event2 = (ProvisionalAuthorizeEvent) matcher.match(
+                50, sexp);
+
+        checkBallotEvent(event, event2);
+    }
+
+    public void testProvisionalBallot(){
+        ASExpression nonce = getBlob();
+        ProvisionalBallotEvent event = new ProvisionalBallotEvent(50, nonce, "123456789");
+        ASExpression sexp = event.toSExp();
+        assertEquals("(provisional-ballot "
+                + nonce.toString() + " 123456789)", sexp.toString());
+
+        ProvisionalBallotEvent event2 = (ProvisionalBallotEvent) matcher.match(50,
+                sexp);
+
+        checkBallotEvent(event, event2);
+    }
+
+    public void testProvisionalCommit(){
+        ASExpression nonce = getBlob();
+        byte[] ballot = getBlob().toVerbatim();
+
+        ProvisionalCommitEvent event = new ProvisionalCommitEvent(0, nonce, ballot, "123");
+
+        ASExpression sexp = event.toSExp();
+
+
+        assertEquals("(commit-provisional-ballot " +
+                nonce + " " +
+                StringExpression.makeString(ballot) + " 123)", event.toSExp().toString());
+
+        ProvisionalCommitEvent event2 = (ProvisionalCommitEvent)matcher.match(0, sexp);
+
+        checkBallotEvent(event, event2);
+    }
+
+    public void testSpoilBallot(){
+        ASExpression nonce = getBlob();
+
+        SpoilBallotEvent event = new SpoilBallotEvent(0, "123456789", nonce);
+
+        ASExpression sexp = event.toSExp();
+
+        assertEquals("(spoil-ballot 123456789 " + nonce + ")", sexp.toString());
+
+        SpoilBallotEvent event2 = (SpoilBallotEvent)matcher.match(0, sexp);
+
+        checkBallotEvent(event, event2);
+
+    }
+
+    public void testStartScanner(){
+        StartScannerEvent event = new StartScannerEvent(0);
+
+        ASExpression sexp = event.toSExp();
+
+        assertEquals("(start-scanner)", sexp.toString());
+
+        StartScannerEvent event2 = (StartScannerEvent)matcher.match(0, sexp);
+
+        assertEquals(event.getSerial(), event2.getSerial());
+    }
+
+    public void testStatus(){
+        StatusEvent event = new StatusEvent(0, 65, new VoteBoxEvent(0, 1, "active", 100, 0, 0));
+
+        ASExpression sexp = event.toSExp();
+
+        assertEquals("(status 65 (votebox 1 active 100 0 0))", sexp.toString());
+        
+        StatusEvent event2 = (StatusEvent)matcher.match(0, sexp);
+        
+        assertEquals(event.getSerial(), event2.getSerial());
+        assertEquals(event.getTargetSerial(), event2.getTargetSerial());
+        
+        VoteBoxEvent subEvent = (VoteBoxEvent)event.getStatus();
+        VoteBoxEvent subEvent2 = (VoteBoxEvent)event2.getStatus();
+
+        assertEquals(subEvent.getSerial(), subEvent2.getSerial());
+        assertEquals(subEvent.getStatus(), subEvent2.getStatus());
+        assertEquals(subEvent.getLabel(), subEvent2.getLabel());
+        assertEquals(subEvent.getBattery(), subEvent2.getBattery());
+        assertEquals(subEvent.getPublicCount(), subEvent2.getPublicCount());
+        assertEquals(subEvent.getProtectedCount(), subEvent2.getProtectedCount());
+        
+    }
+
     public void testSupervisor() {
         SupervisorEvent event = new SupervisorEvent(50, 123456, "active");
         ASExpression sexp = event.toSExp();
@@ -367,12 +682,25 @@ public class VoteBoxEventsTest extends TestCase {
         assertEquals(event.getStatus(), event2.getStatus());
     }
 
+    public void testTapMachine(){
+        TapMachineEvent event = new TapMachineEvent(0);
+
+        ASExpression sexp = event.toSExp();
+
+        assertEquals("(tap-machine)", sexp.toString());
+
+        TapMachineEvent event2 = (TapMachineEvent)matcher.match(0, sexp);
+
+        assertEquals(event.getSerial(), event2.getSerial());
+    }
+
     public void testVoteBox() {
         VoteBoxEvent event = new VoteBoxEvent(50, 3, "ready", 75, 20, 30);
         ASExpression sexp = event.toSExp();
         assertEquals("(votebox 3 ready 75 20 30)", sexp.toString());
 
         VoteBoxEvent event2 = (VoteBoxEvent) matcher.match(50, sexp);
+     
         assertEquals(event.getSerial(), event2.getSerial());
         assertEquals(event.getStatus(), event2.getStatus());
         assertEquals(event.getLabel(), event2.getLabel());

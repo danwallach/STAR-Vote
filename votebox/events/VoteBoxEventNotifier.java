@@ -40,7 +40,7 @@ public class VoteBoxEventNotifier implements VoteBoxEventListener {
      * Constructs a new VoteBoxEventNotifier with an empty list of listeners.
      */
     public VoteBoxEventNotifier() {
-        listeners = new ArrayList<VoteBoxEventListener>();
+        listeners = new ArrayList<>();
     }
 
     public void activated(ActivatedEvent e) {

@@ -87,6 +87,16 @@ public class PollMachinesEvent extends AAnnounceEvent {
         this.keyword = keyword;
     }
 
+    /** @return the timestamp */
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    /** @return the keyword */
+    public String getKeyword() {
+        return keyword;
+    }
+
     /** @see votebox.events.IAnnounceEvent#fire(VoteBoxEventListener) */
     public void fire(VoteBoxEventListener l) {
         l.pollMachines( this );

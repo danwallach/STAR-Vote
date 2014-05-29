@@ -38,8 +38,8 @@ public class EncryptedCastBallotEvent extends CastCommittedBallotEvent{
      * Matcher for the EncryptedCastBallotEvent
      */
     private static MatcherRule MATCHER = new MatcherRule() {
-        private ASExpression pattern = ASExpression
-                .make("(encrypted-cast-ballot %nonce:#string %ballot:#any %bid:#any)");
+        private ASExpression pattern = new ListExpression(StringExpression.makeString("encrypted-cast-ballot"),
+                StringWildcard.SINGLETON, Wildcard.SINGLETON, StringWildcard.SINGLETON);
 
         public IAnnounceEvent match(int serial, ASExpression sexp) {
 
@@ -48,11 +48,11 @@ public class EncryptedCastBallotEvent extends CastCommittedBallotEvent{
 
                 ListExpression lsexp = (ListExpression) sexp;
 
-                ASExpression nonce = lsexp.get(0);
+                ASExpression nonce = lsexp.get(1);
 
-                byte[] ballot = ((StringExpression) lsexp.get(1)).getBytesCopy();
+                byte[] ballot = ((StringExpression) lsexp.get(2)).getBytesCopy();
 
-                String bid = lsexp.get(2).toString();
+                String bid = lsexp.get(3).toString();
 
                 return new EncryptedCastBallotEvent(serial, nonce, ballot, bid);
             }
