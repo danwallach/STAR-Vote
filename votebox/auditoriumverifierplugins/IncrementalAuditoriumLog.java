@@ -61,8 +61,7 @@ public class IncrementalAuditoriumLog implements IIncrementalPlugin {
 	/**
 	 * Add incremental log data.
 	 * 
-	 * @param entry
-	 *            Message to append to the log.
+	 * @param entry Message to append to the log.
 	 */
 	public void addLogData(Message entry) {
 		_allset.add(new Expression(entry.toASE()));
@@ -73,33 +72,27 @@ public class IncrementalAuditoriumLog implements IIncrementalPlugin {
 	/**
 	 * Add incremental log data.
 	 * 
-	 * @param entry
-	 *            S-expression representing a message to append to the log.
+	 * @param entry S-expression representing a message to append to the log.
 	 */
 	public void addLogData(ASExpression entry) throws InvalidLogEntryException {
 		try {
 			_allset.add(new Expression(entry));
 			_alldag.add(new Message(entry));
 			registerGlobals();
-		} catch (IncorrectFormatException e) {
-			throw new InvalidLogEntryException(e);
-		}
+		} catch (IncorrectFormatException e) { throw new InvalidLogEntryException(e); }
 	}
 
 	/**
 	 * Add incremental log data.
 	 * 
-	 * @param entry
-	 *            Expression value representing a message to append to the log.
+	 * @param entry Expression value representing a message to append to the log.
 	 */
 	public void addLogData(Expression entry) throws InvalidLogEntryException {
 		try {
 			_allset.add(entry);
 			_alldag.add(new Message(entry.getASE()));
 			registerGlobals();
-		} catch (IncorrectFormatException e) {
-			throw new InvalidLogEntryException(e);
-		}
+		} catch (IncorrectFormatException e) { throw new InvalidLogEntryException(e); }
 	}
 
 	/**
@@ -122,13 +115,12 @@ public class IncrementalAuditoriumLog implements IIncrementalPlugin {
 		bindings.put("all-set", _allsetValue);
 		_alldagValue = _alldag.toDAG();
 
-		// XXX: hack: this is the only way I could figure to pass along an
-		// outer tuning parameter to an interior data structure. I think we
-		// should work on standardizing this, that is, figure out which class
-		// holds the arguments for everyone. Verifier's as good a choice as
-		// any. [10/09/2007 11:37 dsandler]
+		/* TODO XXX: hack: this is the only way I could figure to pass along an outer tuning parameter to an interior data structure. I think we
+		   TODO should work on standardizing this, that is, figure out which class holds the arguments for everyone. Verifier's as good a choice as
+		   TODO any. [10/09/2007 11:37 dsandler] */
+        /* If the key is present, toggle based on the value */
 		if (_verifier.getArgs().containsKey("dagcache")) {
-			if (new Boolean(_verifier.getArgs().get("dagcache")).booleanValue())
+			if (Boolean.parseBoolean(_verifier.getArgs().get("dagcache")))
 				_alldagValue.enableCache();
 			else
 				_alldagValue.disableCache();
@@ -143,7 +135,6 @@ public class IncrementalAuditoriumLog implements IIncrementalPlugin {
      * Registers handlers for this IncrementalAuditoriumLog
      */
 	private void registerHandlers() {
-		_verifier.getPrimitiveFactories().put("signature-verify",
-				SignatureVerify.FACTORY);
+		_verifier.getPrimitiveFactories().put("signature-verify", SignatureVerify.FACTORY);
 	}
 }
