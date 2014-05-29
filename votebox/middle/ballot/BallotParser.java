@@ -85,8 +85,7 @@ public class BallotParser {
      *                      encapsulation to find where the ballot xml is stored.
      * @return              This method returns the Ballot object which represents our dom tree.
      *
-     * @throws votebox.middle.ballot.BallotParserException
-     * if the ballot parser encountered any problems translating the tree.
+     * @throws BallotParserException if the ballot parser encountered any problems translating the tree.
      */
     public Ballot getBallot(IBallotVars vars) throws BallotParserException {
 
@@ -119,8 +118,7 @@ public class BallotParser {
      * @return              This method returns the ballot object that is represented by the
      *                      given dom node.
      *
-     * @throws votebox.middle.ballot.BallotParserException
-     * if the ballot parser encountered any problems translating the tree.
+     * @throws BallotParserException if the ballot parser encountered any problems translating the tree.
      */
     private Ballot parseBallot(Node node) throws BallotParserException {
 
@@ -178,8 +176,7 @@ public class BallotParser {
      * @return      This method returns the card that is represented by the given dom
      *              node.
      *
-     * @throws votebox.middle.ballot.BallotParserException
-     * if the ballot parser encountered any problems translating the tree.
+     * @throws BallotParserException if the ballot parser encountered any problems translating the tree.
      */
     private Card parseCard(Node node) throws BallotParserException {
 
@@ -232,8 +229,7 @@ public class BallotParser {
      * @return              This method returns the new element which represents the given
      *                      dom node.
      *
-     * @throws votebox.middle.ballot.BallotParserException
-     * if the ballot parser encountered any problems translating the tree.
+     * @throws BallotParserException if the ballot parser encountered any problems translating the tree.
      */
     private SelectableCardElement parseElement(Node node) throws BallotParserException {
 
@@ -291,8 +287,7 @@ public class BallotParser {
      * @return      This method returns the new element which represents the given
      *              dom node.
      *
-     * @throws votebox.middle.ballot.BallotParserException
-     * if the ballot parser encountered any problems translating the tree.
+     * @throws BallotParserException if the ballot parser encountered any problems translating the tree.
      */
     private WriteInCardElement parseWriteInElement(Node node) throws BallotParserException {
 
@@ -345,8 +340,7 @@ public class BallotParser {
      * @param properties    This is the Properties object to which the given property
      *                      should be added.
      *
-     * @throws votebox.middle.ballot.BallotParserException
-     * if the property has been defined with an incorrect type.
+     * @throws BallotParserException if the property has been defined with an incorrect type.
      */
     private void parseProperties(Node node, Properties properties) throws BallotParserException {
 
@@ -370,7 +364,7 @@ public class BallotParser {
      * @param properties    Add the children of the given node to this properties
      *                      instance.
      *
-     * @throws votebox.middle.ballot.BallotParserException if the XML is not formatted correctly
+     * @throws BallotParserException if the XML is not formatted correctly
      */
     private void parseListProperties(Node node, Properties properties) throws BallotParserException {
 

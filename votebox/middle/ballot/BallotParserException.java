@@ -36,10 +36,8 @@ public class BallotParserException extends Exception {
 	/**
 	 * Public constructor.
 	 * 
-	 * @param message
-	 *            This is a message that is descriptive of the problem.
-	 * @param cause
-	 *            This is the exception that caused the problem.
+	 * @param message   This is a message that is descriptive of the problem.
+	 * @param cause     This is the exception that caused the problem.
 	 */
 	public BallotParserException(String message, Exception cause) {
 		super(message, cause);
