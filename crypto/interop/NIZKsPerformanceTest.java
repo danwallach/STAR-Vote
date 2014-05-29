@@ -1,29 +1,18 @@
 package crypto.interop;
 
-import java.io.File;
-import java.math.BigInteger;
-import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import auditorium.Key;
+import auditorium.SimpleKeyStore;
+import crypto.BallotEncrypter;
+import edu.uconn.cse.adder.AdderInteger;
 import edu.uconn.cse.adder.PrivateKey;
+import edu.uconn.cse.adder.PublicKey;
 import edu.uconn.cse.adder.SearchSpaceExhaustedException;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import edu.uconn.cse.adder.AdderInteger;
-import edu.uconn.cse.adder.PublicKey;
-
-import auditorium.Key;
-import auditorium.SimpleKeyStore;
-
 import sexpression.ASExpression;
 import sexpression.ListExpression;
-import crypto.BallotEncrypter;
 import sexpression.StringExpression;
 import supervisor.model.tallier.ChallengeDelayedWithNIZKsTallier;
 import votebox.events.AuthorizedToCastWithNIZKsEvent;
@@ -37,6 +26,14 @@ import votebox.middle.ballot.Card;
 import votebox.middle.ballot.SelectableCardElement;
 import votebox.middle.driver.*;
 import votebox.middle.view.IView;
+
+import java.io.File;
+import java.math.BigInteger;
+import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class NIZKsPerformanceTest {
@@ -374,7 +371,7 @@ public class NIZKsPerformanceTest {
 
             ASExpression nonce = StringExpression.makeString(seed);
             String bid = (r.nextInt() + "");
-            CommitBallotEvent event = new CommitBallotEvent(0, nonce, encBallot, ASExpression.make(bid), ASExpression.make("456"));
+            CommitBallotEvent event = new CommitBallotEvent(0, nonce, encBallot.toVerbatim(), bid, "456");
             IAnnounceEvent event1 = CommitBallotEvent.getMatcher().match(0, event.toSExp());
 
 
@@ -385,7 +382,7 @@ public class NIZKsPerformanceTest {
 
 
             long encryptStart = System.currentTimeMillis();
-            tallier.recordVotes(((CommitBallotEvent)event1).getBallot().toVerbatim(), ((CommitBallotEvent)event1).getNonce());
+            tallier.recordVotes(((CommitBallotEvent)event1).getBallot(), ((CommitBallotEvent)event1).getNonce());
             map.put(((BallotScannedEvent) bsE).getBID(), ((CommitBallotEvent)event1).getNonce());
             if(r.nextInt()%2 == 0){
                 tallier.confirmed(((CommitBallotEvent) event1).getNonce());
