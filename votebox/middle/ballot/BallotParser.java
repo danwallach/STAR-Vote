@@ -128,10 +128,10 @@ public class BallotParser {
         ArrayList<Card> cards = new ArrayList<Card>();
         Properties properties = new Properties();
 
-        /* Children can either be properties or pages */
-        for (int lcv = 0; lcv < children.getLength(); lcv++) {
+        /* Look through children items and parse */
+        for (int i = 0; i < children.getLength(); i++) {
 
-            Node child = children.item(lcv);
+            Node child = children.item(i);
             String childName = child.getNodeName();
 
             switch (childName) {
@@ -158,6 +158,7 @@ public class BallotParser {
 
             Properties cardProps = card.getProperties();
 
+            /* If it contains a race group, add the race groups to raceGroups */
             if(cardProps.contains(Properties.RACE_GROUP)){
 
         		try { List<String> r = cardProps.getStringList(Properties.RACE_GROUP); raceGroups.add(r); }
@@ -188,6 +189,7 @@ public class BallotParser {
 
         boolean hasWriteIn = false;
 
+        /* Look through children items and parse/add */
         for (int lcv = 0; lcv < children.getLength(); lcv++) {
 
             Node child = children.item(lcv);
@@ -242,6 +244,7 @@ public class BallotParser {
 
         /* Parse all the properties. */
         Properties properties = new Properties();
+
         for (int lcv = 0; lcv < children.getLength(); lcv++) {
 
             Node child = children.item( lcv );
@@ -353,11 +356,7 @@ public class BallotParser {
         String type = nodeAttributes.getNamedItem( "type" ).getNodeValue();
 
         try { properties.add( key, value, type ); }
-        catch (UnknownTypeException e) {
-            throw new BallotParserException( "While parsing the property " + key + " of type " + type + " and value "
-                                             + value + ", the parser encountered an error: " + e.getMessage(), e );
-        }
-        catch (UnknownFormatException e) {
+        catch (UnknownTypeException | UnknownFormatException e) {
             throw new BallotParserException( "While parsing the property " + key + " of type " + type + " and value "
                                              + value + ", the parser encountered an error: " + e.getMessage(), e );
         }
@@ -391,13 +390,9 @@ public class BallotParser {
         }
 
         try { properties.add( key, elts, type ); }
-        catch (UnknownTypeException e) {
+        catch (UnknownTypeException | UnknownFormatException e) {
             throw new BallotParserException( "While parsing the property " + key + " of type " + type + " and value "
                                              + elts  + ", the parser encountered an error: " + e.getMessage(), e );
-        }
-        catch (UnknownFormatException e) {
-            throw new BallotParserException( "While parsing the property " + key + " of type " + type + " and value "
-                                             + elts + ", the parser encountered an error: " + e.getMessage(), e );
         }
     }
 }
