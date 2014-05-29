@@ -32,12 +32,11 @@ public class SignatureVerify extends AST {
 
 	public static final ASTFactory FACTORY = new PrimFactory(2,
 			new IConstructor() {
-
 				public AST make(ASExpression from, AST... args) {
 					return new SignatureVerify(from, args[0], args[1]);
 				}
-			}) {
-
+			})
+    {
 		@Override
 		public String getName(){
 			return "signature-verify";
@@ -47,16 +46,28 @@ public class SignatureVerify extends AST {
 	private final AST _cert;
 	private final AST _signature;
 
+    /**
+     * Because each @SignatureVerify is the same we use a @Factory to construct
+     * @param from parent in the abstract syntax tree as an ASE
+     * @param cert the certificate
+     * @param signature the signature
+     */
 	private SignatureVerify(ASExpression from, AST cert, AST signature) {
 		super(from);
 		_cert = cert;
 		_signature = signature;
 	}
 
+    /**
+     * Verifies certificates and signatures
+     * @param environment lookup of non-primitive identifiers in this environment.
+     * @return checks the Visitor to see what it returns after it verifies cert/sig
+     */
 	@Override
 	public Value eval(ActivationRecord environment) {
-		final Value cert = _cert.eval(environment);
-		final Value sig = _signature.eval(environment);
+
+		final Value cert    = _cert.eval(environment);
+		final Value sig     = _signature.eval(environment);
 
 		return cert.execute(new AValueVisitor() {
 
@@ -66,16 +77,20 @@ public class SignatureVerify extends AST {
 
 					@Override
 					public Value forExpression(Expression sigvalue) {
+
 						try {
+                            /* Finds certification */
 							Cert c = new Cert(certvalue.getASE());
+
+                            /* Finds signature */
 							Signature s = new Signature(sigvalue.getASE());
-							RSACrypto.SINGLETON.verify(s, c);
+
+                            /* Verification */
+                            RSACrypto.SINGLETON.verify(s, c);
 							return True.SINGLETON;
-						} catch (IncorrectFormatException e) {
-							return False.SINGLETON;
-						} catch (AuditoriumCryptoException e) {
-							return False.SINGLETON;
 						}
+                        catch (IncorrectFormatException e)  { return False.SINGLETON; }
+                        catch (AuditoriumCryptoException e) { return False.SINGLETON; }
 					}
 				});
 			}
