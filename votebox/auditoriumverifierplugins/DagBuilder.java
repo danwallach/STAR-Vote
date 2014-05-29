@@ -44,22 +44,20 @@ public class DagBuilder {
 
     /*
      * Matching against this pattern should yield the following: [0]: cert [1]:
-     * signer id [2]: sigdata [3]: list of pointers that preceed [4]: data
+     * signer id [2]: sigdata [3]: list of pointers that precede [4]: data
      */
-    private static final ASExpression PATTERN = new ListExpression(
-            StringExpression.makeString( "signed-message" ),
-            Wildcard.SINGLETON, new ListExpression( StringExpression
-                    .makeString( "signature" ), StringWildcard.SINGLETON,
-                    StringWildcard.SINGLETON, new ListExpression(
-                            StringExpression.makeString( "succeeds" ),
-                            new ListWildcard( MessagePointer.PATTERN ),
-                            Wildcard.SINGLETON ) ) );
+    private static final ASExpression PATTERN = new ListExpression(StringExpression.makeString( "signed-message" ), Wildcard.SINGLETON,
+                                                new ListExpression(StringExpression.makeString( "signature" ), StringWildcard.SINGLETON, StringWildcard.SINGLETON,
+                                                new ListExpression( StringExpression.makeString( "succeeds" ), new ListWildcard( MessagePointer.PATTERN ),
+                                                Wildcard.SINGLETON ) ) );
 
-    /// mapping of ptr-->(listof predecessor ptrs)  
+    /* Mapping of ptr-->(listof predecessor ptrs) */
     private HashMap<Expression, ArrayList<Expression>> _predecessors;
-    /// mapping of ptr-->full-message
+
+    /* Mapping of ptr-->full-message */
     private HashMap<Expression, Expression> _ptrToMsg;
-    /// mapping of message-->its own ptr
+
+    /* mapping of message-->its own ptr */
     private HashMap<Expression, Expression> _msgToPtr;
 
     public DagBuilder() {
@@ -71,40 +69,39 @@ public class DagBuilder {
     /**
      * Add a message to the list of messages that this builder is holding
      * 
-     * @param message
-     *            Add this message to the list
-     * @throws FormatException
-     *             This mehtod throws if the given message's datum is not
-     *             formatted as expected.
+     * @param message Add this message to the list
+     *
+     * @throws FormatException This method throws if the given message's datum is not
+     *                         formatted as expected.
      */
     public void add(Message message) throws FormatException {
+
         try {
-        	Expression ptr = new Expression(
-        			new MessagePointer( message ).toASE());
+
+        	Expression ptr  = new Expression( new MessagePointer( message ).toASE());
         	Expression expr = new Expression( message.toASE() );
             
-        	// store ptr-->message mapping in DAG
+        	/* Store ptr-->message mapping in DAG */
         	_ptrToMsg.put( ptr, expr );
             _msgToPtr.put( expr, ptr );
 
-            ASExpression matchresult = PATTERN.match( message.getDatum() );
+            ASExpression matchresult = PATTERN.match(message.getDatum());
+
+            /* Throw an exception if there is a bad match */
             if (matchresult == NoMatch.SINGLETON)
-                throw new FormatException( message.getDatum(), new Exception(
-                        "didn't match pattern for an Auditorium message: "
-                		+ PATTERN ) );
+                throw new FormatException( message.getDatum(), new Exception("didn't match pattern for an Auditorium message: " + PATTERN ) );
+
             ListExpression matchlist = (ListExpression) matchresult;
 
             ArrayList<Expression> ptrlst = new ArrayList<Expression>();
-            for (ASExpression ptrexp : (ListExpression) matchlist.get( 3 )) {
-                ptrlst.add( new Expression( 
-                		new MessagePointer( ptrexp ).toASE() ) );
-            }
+
+            /* Creating ASE that represents a message */
+            for (ASExpression ptrexp : (ListExpression) matchlist.get(3))
+                ptrlst.add(new Expression(new MessagePointer(ptrexp).toASE()));
             
             _predecessors.put( ptr, ptrlst );
         }
-        catch (IncorrectFormatException e) {
-            throw new FormatException( message.getDatum(), e );
-        }
+        catch (IncorrectFormatException e) { throw new FormatException(message.getDatum(), e); }
     }
 
     /**
