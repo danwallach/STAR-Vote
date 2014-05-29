@@ -205,51 +205,44 @@ public class Properties {
      * must be of the type which is defined in the "type" attribute of the
      * property that is being added.
      * 
-     * @param key
-     *            Add this key to the dictionary
-     * @param value
-     *            Set this value for key
-     * @param type
-     *            This is value's type. It must be one of
-     *            {"Integer","Boolean","String"}
-     * @throws UnknownTypeException
-     *             This method throws if type is not one of
-     *             {"Integer","Boolean","String"}
-     * @throws UnknownFormatException
-     *             This method throws if value cannot be decoded, given that its
-     *             type is the type parameter.
+     * @param key       Add this key to the dictionary
+     * @param value     Set this value for key
+     * @param type      This is value's type. It must be one of {"Integer","Boolean","String"}
+     *
+     * @throws UnknownTypeException     if type is not one of {"Integer","Boolean","String"}
+     * @throws UnknownFormatException   if value cannot be decoded, given that its
+     *                                  type is the type parameter.
      */
-    public void add(String key, String value, String type)
-            throws UnknownTypeException, UnknownFormatException {
-        if (type.equals( "Integer" )) {
-            try {
-                Integer integerValue = Integer.parseInt(value);
-                /*if (integerValue.intValue() == -1)
-                {
-                    System.out.println("Attempting to map the " + key + " to -1");
-                }*/
-                _properties.put( key, integerValue );
-            }
-            catch (NumberFormatException e) {
-                throw new UnknownFormatException( type, value );
-            }
-        }
-        else if (type.equals( "Boolean" )) {
-            // Boolean.parseBoolean allows any string but "true" to be false.
-            // This is not good enough. We want to allow only the strings "true"
-            // and "false".
-            if (value.equals( "false" ))
-                _properties.put( key, Boolean.FALSE );
-            else if (value.equals( "true" ))
-                _properties.put( key, Boolean.TRUE );
-            else
-                throw new UnknownFormatException( type, value );
-        }
-        else if (type.equals( "String" )) {
-            _properties.put( key, value );
-        }
-        else {
-            throw new UnknownTypeException( type );
+    public void add(String key, String value, String type) throws UnknownTypeException, UnknownFormatException {
+
+        switch(type) {
+
+            case "Integer":
+
+                try {
+                    Integer integerValue = Integer.parseInt(value);
+                    _properties.put(key, integerValue);
+                }
+                catch (NumberFormatException e) { throw new UnknownFormatException(type, value); }
+
+                break;
+
+            case "Boolean":
+
+                /* Check if "true" or "false" and then put if it is one of these */
+                if (value.equals("true") || value.equals("false"))
+                    _properties.put(key, value.equals("true") && !value.equals("false"));
+                else
+                    throw new UnknownFormatException(type, value);
+
+                break;
+
+            case "String":
+                _properties.put(key, value);
+                break;
+
+            default:
+                throw new UnknownTypeException(type);
         }
     }
 
@@ -258,194 +251,180 @@ public class Properties {
      * single value, maps it to a collection of values. These values must all be
      * of the same type.
      * 
-     * @param key
-     *            Map the given values to this key.
-     * @param values
-     *            Map these values.
-     * @param type
-     *            The values inside the collection are of this type (one of
-     *            String, Integer). Note that boolean is not allowed.
-     * @throws UnknownTypeException
-     *             This method throws if type is not one of {"Integer","String"}
-     * @throws UnknownFormatException
-     *             This method throws if value cannot be decoded, given that its
-     *             type is the type parameter.
+     * @param key       the key from which the given values are mapped.
+     * @param values    the values to be mapped
+     * @param type      the values inside the collection are of this type (one of
+     *                  String, Integer). Note that boolean is not allowed.
+     *
+     * @throws UnknownTypeException     if type is not one of {"Integer","String"}
+     * @throws UnknownFormatException   if value cannot be decoded, given that its
+     *                                  type is the type parameter.
      */
-    public void add(String key, List<String> values, String type)
-            throws UnknownTypeException, UnknownFormatException {
+    public void add(String key, List<String> values, String type) throws UnknownTypeException, UnknownFormatException {
+
+        /* Check if empty and throw an error if so */
         if (values.isEmpty())
             throw new UnknownFormatException( type, "empty list" );
-        if (type.equals( "Integer" )) {
-            ArrayList<Integer> lst = new ArrayList<Integer>( values.size() );
-            for (String value : values)
-                try {
-                    lst.add( Integer.parseInt( value ) );
-                }
-                catch (NumberFormatException e) {
-                    throw new UnknownFormatException( type, value );
-                }
-            _properties.put( key, lst );
-        }
-        else if (type.equals( "String" )) {
-            _properties.put( key, values );
-        }
-        else {
-            throw new UnknownTypeException( type );
+
+        /* Check type and respond accordingly */
+        switch(type) {
+
+            case "Integer":
+
+                ArrayList<Integer> lst = new ArrayList<Integer>(values.size());
+
+                /* Parse and add ints to lst */
+                for (String value : values)
+                    try { lst.add(Integer.parseInt(value)); }
+                    catch (NumberFormatException e) { throw new UnknownFormatException(type, value); }
+
+                _properties.put(key, lst);
+                break;
+
+            case "String":
+
+                _properties.put(key, values);
+                break;
+
+            default: throw new UnknownTypeException(type);
         }
     }
 
     /**
      * This method gets the value associated with a given key.
      * 
-     * @param key
-     *            This is the key for which a value will be returned.
-     * @return This method returns the value associated with key if there is
-     *         one, or null if there isn't. This method offers no guarentees
-     *         about the type returned.
-     * 
-     * associated with the key
+     * @param key   the key for which a value will be returned.
+     * @return      the value associated with key if there is one,
+     *              or null if there isn't. This method offers no
+     *              guarantees about the type returned.
      */
     public Object getObject(String key) {
-        return _properties.get( key );
+        return _properties.get(key);
     }
 
     /**
      * This method gets the value associated with a given key.
      * 
-     * @param key
-     *            This is the key for which a value will be returned.
-     * @return This method returns the value associated with key if there is
-     *         one, or null if there isn't. This method guarentees that the
-     *         value returned is of type Integer.
-     * @throws IncorrectTypeException
-     *             This method throws if the object associated with key is not
-     *             of the type Integer.
+     * @param key   the key for which a value will be returned.
+     * @return      the value associated with key if there is one,
+     *              or null if there isn't. This method guarentees
+     *              that the value returned is of type Integer.
+     *
+     * @throws IncorrectTypeException if the object associated with key is not
+     *                                of the type Integer.
      */
     public Integer getInteger(String key) throws IncorrectTypeException {
-        Object o = null;
-        try {
-            return (Integer) (o = _properties.get( key ));
-        }
-        catch (ClassCastException e) {
-            throw new IncorrectTypeException( "Integer", o.getClass()
-                    .getSimpleName() );
-        }
+
+        Object o = _properties.get(key);
+
+        try { return (Integer)o; }
+        catch (ClassCastException e) { throw new IncorrectTypeException("Integer", o.getClass().getSimpleName()); }
     }
 
     /**
      * This method gets the value associated with a given key.
      * 
-     * @param key
-     *            This is the key for which a value will be returned.
-     * @return This method returns the value associated with key if there is
-     *         one, or null if there isn't. This method guarantees that the
-     *         value returned is of type String.
-     * @throws IncorrectTypeException
-     *             This method throws if the object associated with key is not
-     *             of the type String.
+     * @param key   the key for which a value will be returned.
+     * @return      the value associated with key if there is one,
+     *              or null if there isn't. This method guarantees
+     *              that the value returned is of type String.
+     *
+     * @throws IncorrectTypeException if the object associated with key is not
+     *                                of the type String.
      */
     public String getString(String key) throws IncorrectTypeException {
-        Object o = null;
-        try {
-            return (String) (o = _properties.get( key ));
-        }
-        catch (ClassCastException e) {
-            throw new IncorrectTypeException( "String", o.getClass()
-                    .getSimpleName() );
-        }
+
+        Object o = _properties.get(key);
+
+        try { return (String) o; }
+        catch (ClassCastException e) { throw new IncorrectTypeException("String", o.getClass() .getSimpleName()); }
     }
 
     /**
      * This method gets the value associated with a given key.
      * 
-     * @param key
-     *            This is the key for which a value will be returned.
-     * @return This method returns the value associated with key if there is
-     *         one, or null if there isn't. This method guarentees that the
-     *         value returned is of type Boolean.
-     * @throws IncorrectTypeException
-     *             This method throws if the object associated with key is not
-     *             of the type Boolean.
-     */
+     * @param key   the key for which a value will be returned.
+     * @return      the value associated with key if there is one,
+     *              or null if there isn't. This method guarantees
+     *              that the value returned is of type Boolean.
+     *
+     * @throws IncorrectTypeException if the object associated with key is not
+     *                                of the type Boolean.
+     */ /* TODO overload? */
     public Boolean getBoolean(String key) throws IncorrectTypeException {
-        Object o = null;
-        try {
-            return (Boolean) (o = _properties.get( key ));
-        }
-        catch (ClassCastException e) {
-            throw new IncorrectTypeException( "Boolean", o.getClass()
-                    .getSimpleName() );
-        }
+
+        Object o = _properties.get(key);
+
+        try { return (Boolean) o; }
+        catch (ClassCastException e) { throw new IncorrectTypeException("Boolean", o.getClass().getSimpleName()); }
     }
 
     /**
      * This method gets the value associated with a given key.
      * 
-     * @param key
-     *            This is the key for which a value will be returned.
-     * @return This method returns the value associated with key if there is
-     *         one, or null if there isn't. This method guarentees that the
-     *         value returned is of type "List of Integers".
-     * @throws IncorrectTypeException
-     *             This method throws if the object associated with key is not
-     *             of the type Boolean.
-     */
-    @SuppressWarnings("unchecked")
-    public List<Integer> getIntegerList(String key)
-            throws IncorrectTypeException {
-        Object o = null;
+     * @param key   the key for which a value will be returned.
+     * @return      the value associated with key if there is one or null
+     *              if there isn't. This method guarantees that the values
+     *              returned is of type "List of Integers".
+     *
+     * @throws IncorrectTypeException if the object associated with key is not
+     *                                of the type Boolean.
+     */ /* TODO overload */
+    public List<Integer> getIntegerList(String key) throws IncorrectTypeException {
+
+        Object o = _properties.get( key );
+
         try {
-            o = _properties.get( key );
-            // Type erasure for the lose! Must check the contents of the list.
+
+            /* Type erasure for the lose! Must check the contents of the list. */
             List l = (List) o;
+
+            /* Check to make sure still Integer */
             if (!(l.get( 0 ) instanceof Integer))
-                throw new IncorrectTypeException( "List<Integer>", "List<"
-                        + l.get( 0 ).getClass().getSimpleName() + ">" );
+                throw new IncorrectTypeException( "List<Integer>", "List<" + l.get( 0 ).getClass().getSimpleName() + ">" );
+
+            //noinspection unchecked
             return (List<Integer>) l;
         }
-        catch (ClassCastException e) {
-            throw new IncorrectTypeException( "List", o.getClass()
-                    .getSimpleName() );
-        }
+        catch (ClassCastException e) { throw new IncorrectTypeException("List", o.getClass().getSimpleName()); }
     }
 
     /**
      * This method gets the value associated with a given key.
      * 
-     * @param key
-     *            This is the key for which a value will be returned.
-     * @return This method returns the value associated with key if there is
-     *         one, or null if there isn't. This method guarentees that the
-     *         value returned is of type "List of Integers".
-     * @throws IncorrectTypeException
-     *             This method throws if the object associated with key is not
-     *             of the type "list of strings".
+     * @param key   the key for which a value will be returned.
+     * @return      the value associated with key if there is one, or
+     *              null if there isn't. This method guarantees that the
+     *              value returned is of type "List of Integers".
+     *
+     * @throws IncorrectTypeException if the object associated with key is not
+     *                                of the type "list of strings".
      */
-    @SuppressWarnings("unchecked")
     public List<String> getStringList(String key) throws IncorrectTypeException {
-        Object o = null;
+
+        Object o = _properties.get(key);
+
         try {
-            o = _properties.get( key );
-            // Type erasure for the lose! Must check the contents of the list.
+
+            /* Type erasure for the lose! Must check the contents of the list. */
             List l = (List) o;
+
+            /* Check to see if still Strings */
             if (!(l.get( 0 ) instanceof String))
-                throw new IncorrectTypeException( "List<String>", "List<"
-                        + l.get( 0 ).getClass().getSimpleName() + ">" );
+                throw new IncorrectTypeException( "List<String>", "List<" + l.get(0).getClass().getSimpleName() + ">" );
+
+            //noinspection unchecked
             return (List<String>) l;
         }
-        catch (ClassCastException e) {
-            throw new IncorrectTypeException( "List", o.getClass()
-                    .getSimpleName() );
-        }
+        catch (ClassCastException e) { throw new IncorrectTypeException("List", o.getClass().getSimpleName()); }
     }
 
     /**
      * Call this method to check if a given property has been set.
      * 
-     * @param key
-     *            This is the key for the given property.
-     * @return This method returns true of the property has been set (has an
-     *         assigned value) or false if it has not been.
+     * @param key   the key for the given property.
+     * @return      true of the property has been set (has an assigned value)
+     *              or false if it has not been.
      */
     public boolean contains(String key) {
         return _properties.containsKey( key );
@@ -453,8 +432,7 @@ public class Properties {
 
     /**
      * Call this method to get the number of properties that are mapped.
-     * 
-     * @return This method returns the number of properties that are mapped.
+     * @return the number of properties that are mapped.
      */
     public int size() {
         return _properties.size();
