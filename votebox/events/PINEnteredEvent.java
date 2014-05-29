@@ -15,7 +15,7 @@ public class PINEnteredEvent extends AAnnounceEvent {
      */
     private static MatcherRule MATCHER = new MatcherRule() {
         private ASExpression pattern = new ListExpression( StringExpression
-                .makeString( "pin-entered" ), StringWildcard.SINGLETON, StringWildcard.SINGLETON );
+                .makeString( "pin-entered" ), StringWildcard.SINGLETON );
 
         public IAnnounceEvent match(int serial, ASExpression sexp) {
             ASExpression res = pattern.match( sexp );
@@ -62,7 +62,7 @@ public class PINEnteredEvent extends AAnnounceEvent {
     /** @see votebox.events.IAnnounceEvent#toSExp() */
     public ASExpression toSExp() {
         return new ListExpression( StringExpression.makeString("pin-entered"),
-                StringExpression.makeString( pin));
+                StringExpression.makeString(pin));
     }
 
 }
