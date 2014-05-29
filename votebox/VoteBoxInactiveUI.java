@@ -48,7 +48,6 @@ public class VoteBoxInactiveUI extends JFrame implements IVoteBoxInactiveUI {
     private VoteBox votebox;
     
     private JLabel numLbl;
-
     private JLabel statusLbl;
 
     /**
@@ -62,12 +61,14 @@ public class VoteBoxInactiveUI extends JFrame implements IVoteBoxInactiveUI {
         GridBagConstraints c = new GridBagConstraints();
         votebox = vb;
 
+        /* Set up identifier label */
         JLabel titleLbl = new JLabel("This VoteBox is machine number:");
         titleLbl.setFont(new Font(FONTNAME, Font.PLAIN, 24));
         c.gridx = 0;
         c.gridy = 0;
         add(titleLbl, c);
 
+        /* Set up number label */
         numLbl = new JLabel();
         vb.registerForLabelChanged(new Observer() {
             public void update(Observable o, Object arg) {
@@ -80,6 +81,7 @@ public class VoteBoxInactiveUI extends JFrame implements IVoteBoxInactiveUI {
         c.insets = new Insets(50, 0, 50, 0);
         add(numLbl, c);
 
+        /* Set up status label */
         statusLbl = new JLabel("Waiting for authorization...");
         statusLbl.setFont(new Font(FONTNAME, Font.PLAIN, 24));
         c.gridy = 2;
