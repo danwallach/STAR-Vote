@@ -44,12 +44,10 @@ public class UnknownTypeException extends Exception {
 	/**
 	 * This is the public constructor for UnknownTypeException
 	 * 
-	 * @param type
-	 *            This is the string representation of the type that is unknown
+	 * @param type This is the string representation of the type that is unknown
 	 */
 	public UnknownTypeException(String type) {
-		super(type + " is an unknown type. Properties must be declared as "
-				+ "Integer, String, or Boolean");
+		super(type + " is an unknown type. Properties must be declared as " + "Integer, String, or Boolean");
 		_type = type;
 	}
 

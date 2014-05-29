@@ -51,11 +51,8 @@ public class IncorrectTypeException extends Exception {
 	/**
 	 * This is the public constructor for IncorrectTypeException.
 	 * 
-	 * @param expected
-	 *            This is the string representation for the type that was
-	 *            expected.
-	 * @param actual
-	 *            This is the string representation for the actual type.
+	 * @param expected  This is the string representation for the type that was expected.
+	 * @param actual    This is the string representation for the actual type.
 	 */
 	public IncorrectTypeException(String expected, String actual) {
 		super("Expected type " + expected + " but was type " + actual);

@@ -49,14 +49,11 @@ public class UnknownFormatException extends Exception {
 	/**
 	 * This is the public constructor for UnknownFormatException
 	 * 
-	 * @param type
-	 *            This is the type for which the value cannot be determined.
-	 * @param value
-	 *            This is the value which cannot be properly decoded.
+	 * @param type  This is the type for which the value cannot be determined.
+	 * @param value This is the value which cannot be properly decoded.
 	 */
 	public UnknownFormatException(String type, String value) {
-		super("Could not decode " + value + " to mean anything for type "
-				+ type);
+		super("Could not decode " + value + " to mean anything for type " + type);
 		_type = type;
 		_value = value;
 	}
