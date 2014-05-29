@@ -44,8 +44,7 @@ import votebox.middle.driver.*;
  */
 public final class Ballot {
 
-    public static final ASExpression BALLOT_PATTERN = ASExpression
-            .make("#list:(#string #any)");
+    public static final ASExpression BALLOT_PATTERN = ASExpression.make("#list:(#string #any)");
     
     /**
 	 * These are the cards that this ballot contains.
@@ -73,19 +72,15 @@ public final class Ballot {
     /**
      * This is Ballot's public constructor.
      * 
-     * @param cards
-     *            These are the cards that make up this ballot
-     * @param properties
-     *            These are the properties that were defined in the ballot's XML
-     *            file.
-     * @param elements
-     *            These are the elements that make up this ballot. This is a
-     *            dictionary mapping a unique id to its corresponding card
-     *            element for every card element contained in this ballot
-     * @param raceGroups
-     * 	          For every race, the race-ids that make it up.  This is equivalent
-     *            to a list of lists such that each sub list may only have one
-     *            child element selected in a valid ballot at any time.
+     * @param cards       These are the cards that make up this ballot
+     * @param properties  These are the properties that were defined in the ballot's XML
+     *                    file.
+     * @param elements    These are the elements that make up this ballot. This is a
+     *                    dictionary mapping a unique id to its corresponding card
+     *                    element for every card element contained in this ballot
+     * @param raceGroups  For every race, the race-ids that make it up.  This is equivalent
+     *                    to a list of lists such that each sub list may only have one
+     *                    child element selected in a valid ballot at any time.
      */
     public Ballot(List<Card> cards, Properties properties,
             HashMap<String, SelectableCardElement> elements,
@@ -95,8 +90,10 @@ public final class Ballot {
         _elements = elements;
         _raceGroups = raceGroups;
 
-        // 1) Set the parent pointer for each card back to this ballot
-        // 2) Set the strategy of each card that this ballot contains
+        /*
+         1) Set the parent pointer for each card back to this ballot
+         2) Set the strategy of each card that this ballot contains
+        */
         for (Card c : _cards) {
             c.setParent(this);
             c.setStrategy();
@@ -126,7 +123,7 @@ public final class Ballot {
 
     /**
      * Sets this ballot's view adapter
-     * @param value - new IAdapter to use
+     * @param value new IAdapter to use
      */
     public void setViewAdapter(IViewAdapter value) {
         _adapter = value;
@@ -169,49 +166,49 @@ public final class Ballot {
      * @throws UnknownUIDException - if element with uniqueID could not be found
      * @throws SelectionException - if selection failed
      */
-    public boolean select(String uniqueID) throws UnknownUIDException,
-            SelectionException {
+    public boolean select(String uniqueID) throws UnknownUIDException, SelectionException {
+
         SelectableCardElement ce = _elements.get(uniqueID);
+
         if (ce == null)
             throw new UnknownUIDException(uniqueID);
 
-        try {
-            return ce.select();
-        } catch (CardStrategyException e) {
-            throw new SelectionException("Problem selecting " + uniqueID + ":"
-                    + e.getMessage(), e);
+        try { return ce.select(); }
+        catch (CardStrategyException e) {
+            throw new SelectionException("Problem selecting " + uniqueID + ":" + e.getMessage(), e);
         }
     }
 
     /**
      * Deselects an element based on its UID.
      * 
-     * @param uniqueID - UID in question
+     * @param uniqueID UID in question
      * @return the result of SelectableCardElement.deselect(), on the found element
-     * @throws UnknownUIDException - if element with uniqueID could not be found
-     * @throws SelectionException - if deselection failed
+     * @throws UnknownUIDException if element with uniqueID could not be found
+     * @throws DeselectionException if deselection failed
      */
-    public boolean deselect(String uniqueID) throws UnknownUIDException,
-            DeselectionException {
+    public boolean deselect(String uniqueID) throws UnknownUIDException, DeselectionException {
+
         SelectableCardElement ce = _elements.get(uniqueID);
+
         if (ce == null)
             throw new UnknownUIDException(uniqueID);
 
-        try {
-            return ce.deselect();
-        } catch (CardStrategyException e) {
-            throw new DeselectionException("Problem deselecting " + uniqueID
-                    + ":" + e.getMessage(), e);
+        try { return ce.deselect(); }
+        catch (CardStrategyException e) {
+            throw new DeselectionException("Problem deselecting " + uniqueID + ":" + e.getMessage(), e);
         }
     }
 
     /**
-     * @param uid - UID of element to interogate
+     * @param uid UID of element to interogate
      * @return true, if selected and false otherwise
-     * @throws UnknownUIDException - if the element could not be found
+     * @throws UnknownUIDException if the element could not be found
      */
     public boolean isSelected(String uid) throws UnknownUIDException {
+
         SelectableCardElement ce = _elements.get(uid);
+
         if (ce == null)
             throw new UnknownUIDException(uid);
 
@@ -223,11 +220,12 @@ public final class Ballot {
      * @return true if an element with the UID was found, false otherwise
      */
     public boolean exists(String uid) {
-        // Check if it is an element.
+
+        /* Check if it is an element. */
         if (_elements.containsKey(uid))
             return true;
 
-        // Check if it is a card.
+        /* Check if it is a card. */
         for (Card c : this.getCards())
             if (c.getUniqueID().equals(uid))
                 return true;
@@ -236,41 +234,36 @@ public final class Ballot {
     }
 
     /**
-     * @param UID - UID of element to find
+     * @param UID UID of element to find
      * @return true, if UID is a Card
-     * @throws UnknownUIDException - if an Element with UID could not be found.
+     * @throws UnknownUIDException if an Element with UID could not be found.
      */
     public boolean isCard(String UID) throws UnknownUIDException {
-        // Check that it exists anywhere.
+
+        /* Check that it exists anywhere. */
         if (!exists(UID))
             throw new UnknownUIDException(UID);
 
-        // Check if it is an element.
-        if (_elements.containsKey(UID))
-            return false;
-
-        return true;
+        /* Check if it is a selectable card element (not a card) */
+        return !_elements.containsKey(UID);
     }
 
     /**
      * Returns the UID of the selected element in the card identified by UID.
      * 
-     * @param UID - UID of card to interrogate
+     * @param UID UID of card to interrogate
      * @return the UID of that card's selected element, if any
-     * @throws NonCardException - if UID does not map to a Card
-     * @throws UnknownUIDException - if UID does not exist
-     * @throws CardException - If more than one element is selected on the given Card.
+     * @throws NonCardException if UID does not map to a Card
+     * @throws UnknownUIDException if UID does not exist
+     * @throws CardException If more than one element is selected on the given Card.
      */
-    public String selectedElement(String UID) throws NonCardException,
-            UnknownUIDException, CardException {
-        // First, check for the correct behavior. Get the selected
-        // element from the card.
-        for (Card c : getCards())
+    public String selectedElement(String UID) throws NonCardException, UnknownUIDException, CardException {
+        /* First, check for the correct behavior. Get the selected element from the card. */
+       for (Card c : getCards())
             if (c.getUniqueID().equals(UID))
                 return c.getSelectedElement();
 
-        // If control gets here, something is wrong. The UID either
-        // doesn't exist or isn't a card.
+        /* If control gets here, something is wrong. The UID either doesn't exist or isn't a card. */
         if (!isCard(UID))
             throw new NonCardException(UID);
 
@@ -297,9 +290,13 @@ public final class Ballot {
      *         byte string).
      */
     public ListExpression getCastBallot() {
+
         ArrayList<ASExpression> pairs = new ArrayList<ASExpression>();
+
+        /* Add all the cast ballots and put into pairs for return */
         for (Card card : _cards)
             pairs.addAll(card.getCastBallot());
+
         return new ListExpression(pairs);
     }
     

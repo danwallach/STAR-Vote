@@ -43,8 +43,7 @@ public abstract class ACardStrategy {
 	 * When a SelectableCardElement has decided that it would like to be
 	 * selected, it delegates to this method.
 	 * 
-	 * @param element
-	 *            This element has chosen to be selected.
+	 * @param element This element has chosen to be selected.
 	 */
 	public abstract boolean select(SelectableCardElement element) throws CardStrategyException;
 
@@ -53,8 +52,7 @@ public abstract class ACardStrategy {
 	 * When a SelectableCardElement decides that it would like to be deselected,
 	 * it delegates to this method.
 	 * 
-	 * @param element
-	 *            This element has chosen to be deselected.< param>
+	 * @param element This element has chosen to be deselected.< param>
 	 */
 	public abstract boolean deselect(SelectableCardElement element) throws CardStrategyException;
 }
