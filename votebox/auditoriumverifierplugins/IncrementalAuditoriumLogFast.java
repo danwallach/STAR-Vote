@@ -63,8 +63,7 @@ public class IncrementalAuditoriumLogFast implements IIncrementalPlugin {
 	/**
 	 * Add incremental log data.
 	 * 
-	 * @param entry
-	 *            Message to append to the log.
+	 * @param entry Message to append to the log.
 	 */
 	public void addLogData(Message entry) {
 		_allset.add(new Expression(entry.toASE()));
@@ -75,33 +74,27 @@ public class IncrementalAuditoriumLogFast implements IIncrementalPlugin {
 	/**
 	 * Add incremental log data.
 	 * 
-	 * @param entry
-	 *            S-expression representing a message to append to the log.
+	 * @param entry S-expression representing a message to append to the log.
 	 */
 	public void addLogData(ASExpression entry) throws InvalidLogEntryException {
 		try {
 			_allset.add(new Expression(entry));
 			_alldag.add(new Message(entry));
 			registerGlobals();
-		} catch (IncorrectFormatException e) {
-			throw new InvalidLogEntryException(e);
-		}
+		} catch (IncorrectFormatException e) { throw new InvalidLogEntryException(e); }
 	}
 
 	/**
 	 * Add incremental log data.
 	 * 
-	 * @param entry
-	 *            Expression value representing a message to append to the log.
+	 * @param entry Expression value representing a message to append to the log.
 	 */
 	public void addLogData(Expression entry) throws InvalidLogEntryException {
 		try {
 			_allset.add(entry);
 			_alldag.add(new Message(entry.getASE()));
 			registerGlobals();
-		} catch (IncorrectFormatException e) {
-			throw new InvalidLogEntryException(e);
-		}
+		} catch (IncorrectFormatException e) { throw new InvalidLogEntryException(e); }
 	}
 
 	/**
@@ -124,9 +117,11 @@ public class IncrementalAuditoriumLogFast implements IIncrementalPlugin {
 		bindings.put("all-set", _allsetValue);
 		_alldagValue = _alldag.toDAG();
 
-		// XXX: see note in IncrementalAuditoriumLog.java at this point
+		/* TODO XXX: see note in IncrementalAuditoriumLog.java at this point */
+
+        /* Toggle cache dependent on value (if it is present) */
 		if (_verifier.getArgs().containsKey("dagcache")) {
-			if (new Boolean(_verifier.getArgs().get("dagcache")).booleanValue())
+			if (Boolean.parseBoolean(_verifier.getArgs().get("dagcache")))
 				_alldagValue.enableCache();
 			else
 				_alldagValue.disableCache();
@@ -141,7 +136,6 @@ public class IncrementalAuditoriumLogFast implements IIncrementalPlugin {
      * Registers handlers for this IncrementalAuditoriumLog
      */
 	private void registerHandlers() {
-		_verifier.getPrimitiveFactories().put("signature-verify",
-				SignatureVerify.FACTORY);
+		_verifier.getPrimitiveFactories().put("signature-verify", SignatureVerify.FACTORY);
 	}
 }
