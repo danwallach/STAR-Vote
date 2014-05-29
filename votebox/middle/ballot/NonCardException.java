@@ -29,7 +29,8 @@ package votebox.middle.ballot;
  * 
  */
 public class NonCardException extends Exception {
-	private static final long serialVersionUID = 1L;
+
+    private static final long serialVersionUID = 1L;
 	private String _uid;
 
 	public NonCardException(String uid) {

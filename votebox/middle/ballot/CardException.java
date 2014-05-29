@@ -23,7 +23,7 @@
 package votebox.middle.ballot;
 
 /**
- * Denotes an error or inconsistency in a Card's state (like a property that
+ * Denotes an error or inconsistency in a Card's state (e.g a property that
  * doesn't make any sense.)
  * 
  * @author Kyle
@@ -32,7 +32,6 @@ package votebox.middle.ballot;
 public class CardException extends Exception {
 
 	private static final long serialVersionUID = 1L;
-
 	private Card instance;
 
 	CardException(Card card, String message) {

@@ -161,8 +161,7 @@ public class SelectableCardElement {
 	 * The outside calls this method if they wish to attempt to select this card
 	 * element.
 	 * 
-	 * @throws CardStrategyException
-	 *             This method throws if the strategy runs into a problem.
+	 * @throws CardStrategyException This method throws if the strategy runs into a problem.
 	 */
 	public boolean select() throws CardStrategyException {
 		return getParentCard().select(this);
@@ -172,8 +171,7 @@ public class SelectableCardElement {
 	 * The outside calls this method if they wish to attempt to deselect this
 	 * card element.
 	 * 
-	 * @throws CardStrategyException
-	 *             This method throws if the strategy runs into a problem.
+	 * @throws CardStrategyException This method throws if the strategy runs into a problem.
 	 */
 	public boolean deselect() throws CardStrategyException {
 		return getParentCard().deselect(this);
@@ -183,14 +181,16 @@ public class SelectableCardElement {
 	 * The card strategy should call this method to change the state of the
 	 * selectable card element.
 	 * 
-	 * @param value
-	 */
+	 * @param value whether you want this selected
+	 */ /* TODO toggle? */
 	public void setSelected(boolean value) {
-		if(value != _selected && value == true){
+
+		if(value != _selected && value) {
 			_selected = true;
 			_selectedEvent.notifyObservers();
 		}
-		if(value != _selected && value == false){
+
+		if(value != _selected && !value) {
 			_selected = false;
 			_deselectedEvent.notifyObservers();
 		}
@@ -204,7 +204,6 @@ public class SelectableCardElement {
 	public Observer getDeselectHandler() {
 		return _deselectHandler;
 	}
-
 
 	public Event getSelectedEvent() {
 		return _selectedEvent;

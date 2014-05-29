@@ -39,10 +39,10 @@ public interface IBallotLookupAdapter {
 	/**
 	 * Look up a UID in the ballot, and check if it is representative of a Card.
 	 * 
-	 * @param UID
-	 *            Lookup this UID in the ballot.
-	 * @return This method returns true if the given UID is a Card, false if it
-	 *         isn't.
+	 * @param UID   Lookup this UID in the ballot.
+	 * @return      This method returns true if the given UID is a Card, false if it
+	 *              isn't.
+     *
 	 * @throws UnknownUIDException
 	 */
 	public boolean isCard(String UID) throws UnknownUIDException;
@@ -50,45 +50,34 @@ public interface IBallotLookupAdapter {
 	/**
 	 * Look up a card's selected element.
 	 * 
-	 * @param UID
-	 *            Look up the card given by this UID
-	 * @return This method returns the UID of the given card's currently
-	 *         selected element, or returns the UID of the card if no element on
-	 *         the card is selected.
-	 * @throws NonCardException
-	 *             This method throws if the UID given is not representative of
-	 *             a card.
-	 * @throws CardException
-	 *             This method throws if the Card encounters a problem when it
-	 *             tries to determine what the selected element is.
-	 * @throws UnknownUIDException
-	 *             This method throws if the UID given does not exist in the
-	 *             ballot.
+	 * @param UID   Look up the card given by this UID
+	 * @return      This method returns the UID of the given card's currently
+	 *              selected element, or returns the UID of the card if no element on
+	 *              the card is selected.
+     *
+	 * @throws NonCardException     if the UID given is not representative of a card.
+	 * @throws CardException        if the Card encounters a problem when it tries to
+     *                              determine what the selected element is.
+	 * @throws UnknownUIDException  if the UID given does not exist in the ballot.
 	 */
-	public String selectedElement(String UID) throws NonCardException,
-			CardException, UnknownUIDException;
+	public String selectedElement(String UID) throws NonCardException, CardException, UnknownUIDException;
 
 	/**
 	 * Call this method to check the state of an element.
 	 * 
-	 * @param uid
-	 *            This is the uniqueid of the element whose state you wish to
-	 *            check.
-	 * @throws UnknownUIDException
-	 *             This method throws an exception if the UID given as a
-	 *             parameter does not exist.
-	 * @return This method returns true if the element given is currently
-	 *         selected, or false if it is not.
+	 * @param uid This is the uniqueid of the element whose state you wish to check.
+     * @return true if the element given is currently selected, or false if it is not.
+	 *
+     * @throws UnknownUIDException if the UID given as a parameter does not exist.
 	 */
 	public boolean isSelected(String uid) throws UnknownUIDException;
 
 	/**
 	 * Call this method to check that a particular UID exists.
 	 * 
-	 * @param uid
-	 *            This is the UID you wish to check.
-	 * @return This method returns true if the checked UID exists, or false if
-	 *         it does not.
+	 * @param uid   This is the UID you wish to check.
+	 * @return      This method returns true if the checked UID exists, or false if
+	 *              it does not.
 	 */
 	public boolean exists(String uid);
 
@@ -123,8 +112,8 @@ public interface IBallotLookupAdapter {
 	public Map<String, List<ASExpression>> getAffectedRaces(List<String> affectedUIDs);
 	
 	/**
-	 * @param uids - Cast ballot
-	 * @return the racegroup this cast ballot corresponds to.
+	 * @param uids  cast ballot
+	 * @return      the racegroup this cast ballot corresponds to.
 	 */
 	public List<String> getRaceGroupContaining(List<ASExpression> uids);
 }

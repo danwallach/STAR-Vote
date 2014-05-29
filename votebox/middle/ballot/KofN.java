@@ -40,14 +40,12 @@ public class KofN extends ACardStrategy {
 	/**
 	 * This field is the maximum number of elements who can be selected in this
 	 * race.
-	 * 
 	 */
 	private int _maxNumber;
 
 	/**
 	 * This field is the number of elements who are currently selected in this
 	 * race.
-	 * 
 	 */
 	private int _count = 0;
 
@@ -58,27 +56,33 @@ public class KofN extends ACardStrategy {
 	/**
 	 * If this race has room for another selected candidate, then tell
 	 * the candidate to Select itself.
+     *
 	 * @param element This element wants to be selected.
 	 */
 	public boolean select(SelectableCardElement element) {
-		if (_count + 1 <= _maxNumber) {
+
+        if (_count < _maxNumber) {
 			_count++;
 			element.setSelected(true);
 			return true;
 		}
-		return false;
+
+        return false;
 	}
 
 	/**
 	 * Decrement the count and tell the element to Select itself.
+     *
 	 * @param element selectable element to deselect
 	 */
 	public boolean deselect(SelectableCardElement element) {
-		if (_count - 1 >= 0) {
+
+        if (_count > 0) {
 			_count--;
 			element.setSelected(false);
 			return true;
 		}
-		return false;
+
+        return false;
 	}
 }

@@ -33,7 +33,6 @@ import votebox.middle.driver.UnknownUIDException;
  * be implicitly deselected when the voter chooses another candidate in the
  * race. Selecting any candidate in any race implicitly deselects all other
  * candidates in the race.
- * 
  */
 
 public class RadioButton extends ACardStrategy {
@@ -53,33 +52,24 @@ public class RadioButton extends ACardStrategy {
 	 * When a SelectableCardElement has decided that it would like to be
 	 * selected, it delegates to this method.
 	 * 
-	 * @param element
-	 *            This element has chosen to be selected.
-	 * @throws DeselectionException
-	 * @throws UnknownUIDException
-	 * 
+	 * @param element This element has chosen to be selected.
+     *
+	 * @throws CardStrategyException if the view errors during deselection or
+     *                               an element doesn't exist during deselection
 	 */
-	public boolean select(SelectableCardElement element)
-			throws CardStrategyException {
-		// Deselect everyone else except the guy who has been hit.
+	public boolean select(SelectableCardElement element) throws CardStrategyException {
+
+		/* Deselect everyone else except the selection */
 		for (SelectableCardElement ce : element.getParentCard().getElements())
 			if (ce != element)
-				try {
-					ce.getParentCard().getParent().getViewAdapter().deselect(
-                            ce.getUniqueID(), false);
+				try { ce.getParentCard().getParent().getViewAdapter().deselect(ce.getUniqueID(), false); }
+                catch (UnknownUIDException e)  { throw new CardStrategyException("A RadioButton strategy wants to deselect an element in the view that does not exist.", e); }
+                catch (DeselectionException e) { throw new CardStrategyException("An error occurred in the view while trying to deselect an element: " + e.getMessage(), e); }
 
-				} catch (UnknownUIDException e) {
-					throw new CardStrategyException(
-							"A RadioButton strategy wants to deselect an element in the view that does not exist.",
-							e);
-				} catch (DeselectionException e) {
-					throw new CardStrategyException(
-							"An error occurred in the view while trying to deselect an element: "
-									+ e.getMessage(), e);
-				}
-
-        // Select the new guy.
+        /* Select the new guy. */
 		element.setSelected(true);
+
+        /* TODO WHY BOOLEANS NESTED EVERYWHERE */
 		return true;
 	}
 
@@ -91,6 +81,7 @@ public class RadioButton extends ACardStrategy {
 	 * @param element This element has chosen to be deselected.
 	 */
 	public boolean deselect(SelectableCardElement element) {
+        /*TODO WHY TRUE WHY */
 		element.setSelected(false);
 		return true;
 	}
