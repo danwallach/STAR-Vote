@@ -263,9 +263,8 @@ public class VoteBox{
                         /* Check if NIZKs are enabled and choose announcement format */
                         if (!_constants.getEnableNIZKs()) {
 
-                            auditorium.announce(new CommitBallotEvent(mySerial, nonce,
-                                    BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey(mySerial + "-public")),
-                                    StringExpression.makeString(bid), StringExpression.makeString(precinct)));
+                            auditorium.announce(new CommitBallotEvent(mySerial, nonce, BallotEncrypter.SINGLETON.encrypt(ballot,
+                                    _constants.getKeyStore().loadKey(mySerial + "-public")).toVerbatim(), bid, precinct));
                         }
 
                         else {
@@ -273,8 +272,7 @@ public class VoteBox{
                             ASExpression encBallot = BallotEncrypter.SINGLETON.encryptWithProof(ballot, (List<List<String>>) arg[1],
                                     (PublicKey) _constants.getKeyStore().loadAdderKey("public"));
 
-                            auditorium.announce(new CommitBallotEvent(mySerial, nonce,
-                                    encBallot, StringExpression.makeString(bid), StringExpression.makeString(precinct)));
+                            auditorium.announce(new CommitBallotEvent(mySerial, nonce, encBallot.toVerbatim(), bid, precinct));
                         }
 
                     }
@@ -296,7 +294,6 @@ public class VoteBox{
 
                     /* By this time, the voter is done voting */
                     /* Wait before returning to inactive */
-
                     long start = System.currentTimeMillis();
 
                     while (System.currentTimeMillis() - start < 5000) ;
@@ -463,9 +460,8 @@ public class VoteBox{
                         /* Check to see if NIZKs are enabled or not and format event accordingly*/
                         if (!_constants.getEnableNIZKs()) {
 
-                            auditorium.announce(new CommitBallotEvent(mySerial, nonce,
-                                    BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey(mySerial + "-public")),
-                                    StringExpression.makeString(bid), StringExpression.makeString(precinct)));
+                            auditorium.announce(new CommitBallotEvent(mySerial, nonce, BallotEncrypter.SINGLETON.encrypt(ballot,
+                                    _constants.getKeyStore().loadKey(mySerial + "-public")).toVerbatim(), bid, precinct));
 
                         } else {
 
@@ -473,10 +469,7 @@ public class VoteBox{
                                     (PublicKey) _constants.getKeyStore().loadAdderKey("public"));
 
 
-                            auditorium.announce(new CommitBallotEvent(mySerial,
-                                    nonce,
-                                    encBallot,
-                                    StringExpression.makeString(bid), StringExpression.makeString(precinct)));
+                            auditorium.announce(new CommitBallotEvent(mySerial, nonce, encBallot.toVerbatim(), bid, precinct));
 
                         }
                     } catch (AuditoriumCryptoException e) {

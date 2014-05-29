@@ -53,32 +53,29 @@ public class AuditoriumLog implements IVerifierPlugin {
 	}
 
 	/**
-	 * @param verifier
-	 *            This method registers the signature-verify primitive on this
-	 *            verifier.
+	 * @param verifier This method registers the signature-verify primitive on this
+	 *                 verifier.
 	 */
 	private void registerFactories(Verifier verifier) {
-		verifier.getPrimitiveFactories().put("signature-verify",
-				SignatureVerify.FACTORY);
+		verifier.getPrimitiveFactories().put("signature-verify", SignatureVerify.FACTORY);
 	}
 
 	/**
 	 * Load log data from a file and register all-set and all-dag to represent
 	 * this data in the given verifier.
 	 * 
-	 * @param verifier
-	 *            Load the log data from the location specified in the "log"
-	 *            argument given to this verifier and register all-dat and
-	 *            all-set to represent the log data in this verifier.
+	 * @param verifier Load the log data from the location specified in the "log"
+	 *                 argument given to this verifier and register all-dat and
+	 *                 all-set to represent the log data in this verifier.
 	 */
 	private void registerData(Verifier verifier) {
 		DagBuilder dag = new FastDAGBuilder(); // DagBuilder();
 		ArrayList<Expression> set = new ArrayList<Expression>();
 
 		try {
-			ASEInputStreamReader in = new ASEInputStreamReader(
-					new FileInputStream(new File(verifier.getArgs().get("log"))));
+			ASEInputStreamReader in = new ASEInputStreamReader( new FileInputStream(new File(verifier.getArgs().get("log"))));
 
+            /* Loop until end of file and load into dag to build set TODO EOF stuff */
 			while (true) {
 				Message msg = new Message(in.read());
 				dag.add(msg);
@@ -93,8 +90,9 @@ public class AuditoriumLog implements IVerifierPlugin {
 			throw new PluginException("auditorium", e);
 		}
 
+        /* Seals logs to avoid tampering */
 		HashMap<String, Value> bindings = new HashMap<String, Value>();
-		SetValue sv = new SetValue(set.toArray(new Expression[0]));
+		SetValue sv = new SetValue(set.toArray(new Expression[set.size()]));
 		DAGValue dv = dag.toDAG();
 		sv.seal();
 		dv.seal();
