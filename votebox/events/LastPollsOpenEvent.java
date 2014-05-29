@@ -39,8 +39,7 @@ import sexpression.*;
  */
 public class LastPollsOpenEvent extends AAnnounceEvent {
 
-    private int serial;
-
+    /** The last polls open event heard */
     private PollsOpenEvent pollsOpenMsg;
 
     /**
@@ -89,10 +88,6 @@ public class LastPollsOpenEvent extends AAnnounceEvent {
         this.pollsOpenMsg = pollsOpenMsg;
     }
 
-    public int getSerial() {
-        return serial;
-    }
-
     /**
      * @return the polls open message as an event
      */
@@ -100,10 +95,12 @@ public class LastPollsOpenEvent extends AAnnounceEvent {
         return pollsOpenMsg;
     }
 
+    /** @see votebox.events.IAnnounceEvent#fire(VoteBoxEventListener) */
     public void fire(VoteBoxEventListener l) {
         l.lastPollsOpen( this );
     }
 
+    /** @see votebox.events.IAnnounceEvent#toSExp() */
     public ASExpression toSExp() {
         return new ListExpression( StringExpression
                 .makeString( "last-polls-open" ), pollsOpenMsg.toSExp() );

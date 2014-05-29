@@ -15,25 +15,33 @@ public class VotePair {
 
     private ASExpression shortcode, vote;
 
+    /* Just set the fields */
     public VotePair(ASExpression shortcode, ASExpression vote){
         this.shortcode = shortcode;
         this.vote = vote;
     }
 
-
+    /* Getters */
     public ASExpression getShortcode(){
         return shortcode;
     }
-
 
     public ASExpression getVote() {
         return vote;
     }
 
+    /**
+     * Converts the @VotePair to an @ASExpression
+     * @return the @VotePair represented as an @ASExpression (@ListExpression)
+     */
     public ASExpression toSExp(){
         return new ListExpression(shortcode, vote);
     }
 
+    /**
+     * Creates a @VotePair from an @ASExpression
+     * @param e the @ASExpression from which to create a @VotePair
+     */
     public void fromSExp(ASExpression e){
         if(!(e instanceof ListExpression))
             throw new RuntimeException("Malformed VotePair expression!");

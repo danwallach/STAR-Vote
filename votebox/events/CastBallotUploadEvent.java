@@ -18,8 +18,7 @@ import java.util.Iterator;
  *
  */
 public class CastBallotUploadEvent extends AAnnounceEvent {
-    private int serial;
-    private ASExpression _nonces;
+    private ASExpression nonces;
 
 
     private static MatcherRule MATCHER = new MatcherRule() {
@@ -45,8 +44,8 @@ public class CastBallotUploadEvent extends AAnnounceEvent {
 
 
     public CastBallotUploadEvent(int serial, ASExpression nonces) {
-        this.serial = serial;
-        this._nonces = nonces;
+        super(serial);
+        this.nonces = nonces;
     }
 
     /**
@@ -54,7 +53,7 @@ public class CastBallotUploadEvent extends AAnnounceEvent {
      * @return a collection of nonces of cast ballots
      */
     public ArrayList<String> getDumpList() {
-        ListExpression ballotList = (ListExpression)_nonces;
+        ListExpression ballotList = (ListExpression) nonces;
         Iterator<ASExpression> iterator = ballotList.iterator();
         ASExpression[] ballotIDs = ((ListExpression) iterator.next()).getArray();
         ASExpression[] precincts = ((ListExpression) iterator.next()).getArray();
@@ -67,19 +66,17 @@ public class CastBallotUploadEvent extends AAnnounceEvent {
         return dumpList;
     }
 
-
-    public ASExpression toSExp() {
-        return new ListExpression(StringExpression.makeString("cast-ballot-upload"),
-                _nonces);
-    }
-
+    /** @see votebox.events.IAnnounceEvent#fire(VoteBoxEventListener) */
     public void fire(VoteBoxEventListener l) {
         l.uploadCastBallots(this);
     }
 
-    public int getSerial() {
-        return this.serial;
+    /** @see votebox.events.IAnnounceEvent#toSExp() */
+    public ASExpression toSExp() {
+        return new ListExpression(StringExpression.makeString("cast-ballot-upload"),
+                nonces);
     }
+
 
 
 }

@@ -39,8 +39,7 @@ import sexpression.*;
  */
 public class PollsClosedEvent extends AAnnounceEvent {
 
-    private int serial;
-
+    /** The time when the polls closed */
     private long timestamp;
 
     /**
@@ -79,12 +78,8 @@ public class PollsClosedEvent extends AAnnounceEvent {
      *            the local timestamp
      */
     public PollsClosedEvent(int serial, long timestamp) {
-        this.serial = serial;
+        super(serial);
         this.timestamp = timestamp;
-    }
-
-    public int getSerial() {
-        return serial;
     }
 
     /**
@@ -94,10 +89,12 @@ public class PollsClosedEvent extends AAnnounceEvent {
         return timestamp;
     }
 
+    /** @see votebox.events.IAnnounceEvent#fire(VoteBoxEventListener) */
     public void fire(VoteBoxEventListener l) {
         l.pollsClosed( this );
     }
 
+    /** @see votebox.events.IAnnounceEvent#toSExp() */
     public ASExpression toSExp() {
         return new ListExpression(
                 StringExpression.makeString( "polls-closed" ), StringExpression

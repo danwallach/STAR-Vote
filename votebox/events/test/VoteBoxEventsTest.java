@@ -22,7 +22,6 @@
 
 package votebox.events.test;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -44,7 +43,7 @@ public class VoteBoxEventsTest extends TestCase {
                 LastPollsOpenEvent.getMatcher(), OverrideCancelConfirmEvent.getMatcher(),
                 OverrideCancelDenyEvent.getMatcher(), OverrideCancelEvent.getMatcher(),
                 OverrideCommitConfirmEvent.getMatcher(),
-                OverrideCastDenyEvent.getMatcher(), OverrideCastEvent.getMatcher(),
+                OverrideCastDenyEvent.getMatcher(), OverrideCommitEvent.getMatcher(),
                 PollsClosedEvent.getMatcher(), PollsOpenEvent.getMatcher(),
                 SupervisorEvent.getMatcher(), VoteBoxEvent.getMatcher());
     }
@@ -182,12 +181,12 @@ public class VoteBoxEventsTest extends TestCase {
 
     public void testOverrideCast() {
         ASExpression nonce= getBlob();
-        OverrideCastEvent event = new OverrideCastEvent(50, 65, nonce);
+        OverrideCommitEvent event = new OverrideCommitEvent(50, 65, nonce);
         ASExpression sexp = event.toSExp();
         assertEquals("(override-cast 65 "
                 + nonce.toString() + ")", sexp.toString());
 
-        OverrideCastEvent event2 = (OverrideCastEvent) matcher.match(50, sexp);
+        OverrideCommitEvent event2 = (OverrideCommitEvent) matcher.match(50, sexp);
         assertEquals(event.getSerial(), event2.getSerial());
         assertEquals(event.getTargetSerial(), event2.getTargetSerial());
         assertTrue(Arrays.equals(event.getNonce().toVerbatim(), event2.getNonce().toVerbatim()));

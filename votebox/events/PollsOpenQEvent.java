@@ -39,8 +39,7 @@ import sexpression.*;
  */
 public class PollsOpenQEvent extends AAnnounceEvent {
 
-    private int serial;
-
+    /** The election keyword */
     private String keyword;
 
     /**
@@ -72,13 +71,11 @@ public class PollsOpenQEvent extends AAnnounceEvent {
     /**
      * Constructs a new PollsOpenEvent
      * 
-     * @param serial
-     *            the serial number
-     * @param keyword
-     *            the keyword
+     * @param serial the serial number
+     * @param keyword the keyword
      */
     public PollsOpenQEvent(int serial, String keyword) {
-        this.serial = serial;
+        super(serial);
         this.keyword = keyword;
     }
 
@@ -89,14 +86,12 @@ public class PollsOpenQEvent extends AAnnounceEvent {
         return keyword;
     }
 
-    public int getSerial() {
-        return serial;
-    }
-
+    /** @see votebox.events.IAnnounceEvent#fire(VoteBoxEventListener) */
     public void fire(VoteBoxEventListener l) {
         l.pollsOpenQ( this );
     }
 
+    /** @see votebox.events.IAnnounceEvent#toSExp() */
     public ASExpression toSExp() {
         return new ListExpression(
                 StringExpression.makeString( "polls-open?" ), StringExpression

@@ -164,7 +164,7 @@ public class Tap {
             public void overrideCancel(OverrideCancelEvent e) {}
             public void overrideCancelConfirm(OverrideCancelConfirmEvent e) {}
             public void overrideCancelDeny(OverrideCancelDenyEvent e) {}
-            public void overrideCast(OverrideCastEvent e) {}
+            public void overrideCast(OverrideCommitEvent e) {}
             public void overrideCastConfirm(OverrideCommitConfirmEvent e) {}
             public void overrideCastDeny(OverrideCastDenyEvent e) {}
             public void pollsOpen(PollsOpenEvent e) {}

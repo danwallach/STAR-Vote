@@ -37,12 +37,13 @@ import sexpression.*;
  * 
  * @author cshaw
  */
-public class OverrideCastEvent extends ABallotEvent {
+public class OverrideCommitEvent extends ABallotEvent {
 
+    /** The serial for the machine being overridden */
     private int targetSerial;
 
     /**
-     * Matcher for the OverrideCastEvent.
+     * Matcher for the OverrideCommitEvent.
      */
     private static MatcherRule MATCHER = new MatcherRule() {
         private ASExpression pattern = new ListExpression( StringExpression
@@ -55,7 +56,7 @@ public class OverrideCastEvent extends ABallotEvent {
                 int node = Integer.parseInt( ((ListExpression) res).get( 0 )
                         .toString() );
                 ASExpression nonce = ((ListExpression) res).get(1);
-                return new OverrideCastEvent( serial, node, nonce );
+                return new OverrideCommitEvent( serial, node, nonce );
             }
 
             return null;
@@ -63,7 +64,6 @@ public class OverrideCastEvent extends ABallotEvent {
     };
 
     /**
-     * 
      * @return a MatcherRule for parsing this event type.
      */
     public static MatcherRule getMatcher(){
@@ -71,16 +71,13 @@ public class OverrideCastEvent extends ABallotEvent {
     }//getMatcher
     
     /**
-     * Constructs a new OverrideCastEvent
+     * Constructs a new OverrideCommitEvent
      * 
-     * @param serial
-     *            the serial number of the sender
-     * @param node
-     *            the targetSerial id
-     * @param nonce
-     *            the nonce
+     * @param serial the serial number of the sender
+     * @param node the targetSerial id
+     * @param nonce the nonce
      */
-    public OverrideCastEvent(int serial, int node, ASExpression nonce) {
+    public OverrideCommitEvent(int serial, int node, ASExpression nonce) {
         super(serial, nonce);
         this.targetSerial = node;
     }
@@ -92,11 +89,12 @@ public class OverrideCastEvent extends ABallotEvent {
         return targetSerial;
     }
 
-
+    /** @see votebox.events.IAnnounceEvent#fire(VoteBoxEventListener) */
     public void fire(VoteBoxEventListener l) {
         l.overrideCast( this );
     }
 
+    /** @see votebox.events.IAnnounceEvent#toSExp() */
     public ASExpression toSExp() {
     	return new ListExpression( StringExpression
                 .makeString( "override-cast" ), StringExpression

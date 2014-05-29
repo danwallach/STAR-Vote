@@ -72,21 +72,20 @@ public class OverrideCommitConfirmEvent extends ABallotEvent {
     /**
      * Constructs a new OverrideCommitConfirmEvent
      * 
-     * @param serial
-     *            the serial number of the sender
-     * @param nonce
-     *            the nonce
-     * @param ballot
-     *            the encrypted ballot
+     * @param serial the serial number of the sender
+     * @param nonce the nonce
+     * @param ballot the encrypted ballot
      */
     public OverrideCommitConfirmEvent(int serial, ASExpression nonce, byte[] ballot) {
         super(serial, ballot, nonce);
     }
 
+    /** @see votebox.events.IAnnounceEvent#fire(VoteBoxEventListener) */
     public void fire(VoteBoxEventListener l) {
         l.overrideCastConfirm( this );
     }
 
+    /** @see votebox.events.IAnnounceEvent#toSExp() */
     public ASExpression toSExp() {
     	return new ListExpression( StringExpression
                 .makeString( "override-commit-confirm" ),

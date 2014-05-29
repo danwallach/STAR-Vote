@@ -42,23 +42,25 @@ import auditorium.AuditoriumHost.Pair;
  * the application.
  * 
  * @author cshaw
- */
+ */ /* TODO Revise these comments */
 public class VoteBoxAuditoriumConnector {
 
+    /** A reference to the network */
     private final AuditoriumHost auditorium;
+
+    /** A reference to the event dispatcher */
     private final VoteBoxEventNotifier notifier;
+
+    /** A matcher for events that come across the network */
     private final VoteBoxEventMatcher matcher;
 
     /**
      * Constructs a new VoteBoxAuditoriumConnector with the given serial number
      * and matcher rules to check against incoming announcements.
      * 
-     * @param serial
-     *            this machine's serial number
-     * @param params
-     *            parameters for configuring the connector
-     * @param rules
-     *            the matchers for messages this machine needs
+     * @param serial this machine's serial number
+     * @param params parameters for configuring the connector
+     * @param rules the matchers for messages this machine needs
      * @throws NetworkException
      */
     public VoteBoxAuditoriumConnector(int serial, 
@@ -92,8 +94,7 @@ public class VoteBoxAuditoriumConnector {
      * Adds a listener for VoteBox events. The listeners are called in the order
      * that they are added.
      * 
-     * @param l
-     *            the listener
+     * @param l the listener
      */
     public void addListener(VoteBoxEventListener l) {
         notifier.addListener( l );
@@ -112,20 +113,15 @@ public class VoteBoxAuditoriumConnector {
      * Attempts to connect to an auditorium, and if no hosts are discovered,
      * will wait a number of seconds and then try again
      * 
-     * @param delay
-     *            the wait time in between repeats
-     * @param repeats
-     *            the number of repeats (-1 to repeat forever)
+     * @param delay the wait time in between repeats
+     * @param repeats the number of repeats (-1 to repeat forever)
      * @throws NetworkException
      */
+    @SuppressWarnings("EmptyCatchBlock")
     public void connect(final int delay, final int repeats)
             throws NetworkException {
         HostPointer[] hosts = auditorium.discover();
-        // HostPointer[] hosts = { new HostPointer("1", "168.7.117.35", 9700),
-        // new HostPointer("2", "168.7.117.36", 9700),
-        // new HostPointer("3", "168.7.117.37", 9700),
-        // new HostPointer("4", "168.7.117.38", 9700),
-        // new HostPointer("5", "168.7.23.136", 9700) };
+
         for (HostPointer host : hosts) {
             if (!host.getNodeId().equals( auditorium.getNodeId() )) {
                 try {
@@ -137,7 +133,7 @@ public class VoteBoxAuditoriumConnector {
             }
         }
 
-        // Repeat if necessary
+        /* Repeat if necessary */
         if (hosts.length == 0 && repeats > 0 && delay > 0) {
             Timer timer = new Timer( delay * 1000, new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
@@ -145,8 +141,10 @@ public class VoteBoxAuditoriumConnector {
                         connect( delay, repeats - 1 );
                     }
                     catch (NetworkException e1) {
-                    	//NetworkException represents a recoverable error
-                    	//  so just note it and continue
+                    	/*
+                    	 * NetworkException represents a recoverable error
+                    	 * so just note it and continue
+                    	 */
                         System.out.println("Recoverable error occurred: "+e1.getMessage());
                         e1.printStackTrace(System.err);
                     }
@@ -165,8 +163,7 @@ public class VoteBoxAuditoriumConnector {
      * VoteBoxAuditoriumConnector. This allows for an abstraction based on who
      * sent the message.
      * 
-     * @param e
-     *            the event to announce
+     * @param e the event to announce
      */
     public void announce(IAnnounceEvent e) {
         auditorium.announce( e.toSExp() );

@@ -39,10 +39,10 @@ import sexpression.*;
  */
 public class PollMachinesEvent extends AAnnounceEvent {
 
-    private int serial;
-
+    /** The time that the event was sent out */
     private long timestamp;
 
+    /** The election keyword */
     private String keyword;
 
     /**
@@ -77,27 +77,22 @@ public class PollMachinesEvent extends AAnnounceEvent {
     /**
      * Constructs a new PollsOpenEvent
      *
-     * @param serial
-     *            the serial number
-     * @param timestamp
-     *            the local timestamp
-     * @param keyword
-     *            the keyword
+     * @param serial the serial number
+     * @param timestamp the local timestamp
+     * @param keyword the keyword
      */
     public PollMachinesEvent(int serial, long timestamp, String keyword) {
-        this.serial = serial;
+        super(serial);
         this.timestamp = timestamp;
         this.keyword = keyword;
     }
 
-    public int getSerial() {
-        return serial;
-    }
-
+    /** @see votebox.events.IAnnounceEvent#fire(VoteBoxEventListener) */
     public void fire(VoteBoxEventListener l) {
         l.pollMachines( this );
     }
 
+    /** @see votebox.events.IAnnounceEvent#toSExp() */
     public ASExpression toSExp() {
         return new ListExpression( StringExpression.makeString( "poll-machines" ),
                 StringExpression.makeString( Long.toString( timestamp ) ),

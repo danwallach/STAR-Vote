@@ -29,12 +29,13 @@ package votebox.events;
  * @author cshaw
  */
 public class JoinEvent{
-    
+
+    /** the serial of the machine that is joining */
 	private int serial;
 
     /**
      * Constructs a new JoinEvent.
-     * @param serial the serial number of the other machine
+     * @param serial the serial number of the joining machine
      */
 	public JoinEvent(int serial) {
 		super();
@@ -42,7 +43,7 @@ public class JoinEvent{
 	}
 
 	/**
-	 * @return the serial number of the other machine
+	 * @return the serial number of the joining machine
 	 */
 	public int getSerial() {
 		return serial;

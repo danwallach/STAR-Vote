@@ -1,10 +1,8 @@
 package votebox.events;
 
-import java.util.HashMap;
-
 import sexpression.ASExpression;
 import sexpression.ListExpression;
-import sexpression.NamedNoMatch;
+import sexpression.NoMatch;
 import sexpression.StringExpression;
 
 /**
@@ -20,10 +18,20 @@ public class EncryptedCastBallotWithNIZKsEvent extends EncryptedCastBallotEvent 
                 .make("(encrypted-cast-ballot-with-nizks %nonce:#string %ballot:#any %bid:#any)");
 
         public IAnnounceEvent match(int serial, ASExpression sexp) {
-            HashMap<String, ASExpression> result = pattern.namedMatch(sexp);
-            if (result != NamedNoMatch.SINGLETON)
-                return new EncryptedCastBallotWithNIZKsEvent(serial, result.get("nonce"), result
-                        .get("ballot"), result.get("bid"));
+
+            ASExpression res = pattern.match(sexp);
+            if (res != NoMatch.SINGLETON) {
+
+                ListExpression lsexp = (ListExpression) sexp;
+
+                ASExpression nonce = lsexp.get(0);
+
+                byte[] ballot = ((StringExpression) lsexp.get(1)).getBytesCopy();
+
+                String bid = lsexp.get(2).toString();
+
+                return new EncryptedCastBallotWithNIZKsEvent(serial, nonce, ballot, bid);
+            }
 
             return null;
         }
@@ -37,12 +45,14 @@ public class EncryptedCastBallotWithNIZKsEvent extends EncryptedCastBallotEvent 
         return MATCHER;
     }//getMatcher
 
-    public EncryptedCastBallotWithNIZKsEvent(int serial, ASExpression nonce, ASExpression ballot, ASExpression bid){
+    public EncryptedCastBallotWithNIZKsEvent(int serial, ASExpression nonce, byte[] ballot, String bid){
         super(serial, nonce, ballot, bid);
     }
 
     public ASExpression toSExp(){
         return new ListExpression(StringExpression.makeString("encrypted-cast-ballot-with-nizks"),
-                getNonce(), getBallot(), getBID());
+                getNonce(),
+                StringExpression.makeString(getBallot()),
+                StringExpression.makeString(getBID()));
     }
 }

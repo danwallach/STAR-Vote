@@ -31,7 +31,7 @@ import java.util.ArrayList;
  * order they were registered).
  * 
  * @author cshaw
- */
+ */ /* TODO Most of these comments should be inherited */
 public class VoteBoxEventNotifier implements VoteBoxEventListener {
 
     ArrayList<VoteBoxEventListener> listeners;
@@ -109,7 +109,7 @@ public class VoteBoxEventNotifier implements VoteBoxEventListener {
             l.overrideCancelDeny(e);
     }
 
-    public void overrideCast(OverrideCastEvent e) {
+    public void overrideCast(OverrideCommitEvent e) {
         for (VoteBoxEventListener l : listeners)
             l.overrideCast(e);
     }

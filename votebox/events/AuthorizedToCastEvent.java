@@ -96,7 +96,7 @@ public class AuthorizedToCastEvent extends ABallotEvent {
      * @param ballot the ballot data
      */
     public AuthorizedToCastEvent(int serial, int targetSerial, ASExpression nonce, String precinct, byte[] ballot) {
-        super(serial, ballot, nonce, precinct);
+        super(serial, nonce, ballot, precinct);
 
         this.targetSerial = targetSerial;
     }
@@ -124,7 +124,7 @@ public class AuthorizedToCastEvent extends ABallotEvent {
     	return new ListExpression( StringExpression
                 .makeString( "authorized-to-cast" ), StringExpression
                 .makeString( Integer.toString(targetSerial) ), getNonce(), StringExpression
-                .makeString( precinct), StringExpression.makeString( getBallot() ));
+                .makeString( getPrecinct() ), StringExpression.makeString( getBallot() ));
     }
     
 }

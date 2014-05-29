@@ -29,6 +29,7 @@ package votebox.events;
  */
 public class LeaveEvent {
 
+    /** the serial of the machine that left */
     private int serial;
 
     /**

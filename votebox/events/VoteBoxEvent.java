@@ -39,10 +39,13 @@ import sexpression.*;
  */
 public class VoteBoxEvent extends AAnnounceEvent {
 
+    /** A machine's label */
     private int label;
 
+    /** The status string of the machine */
     private String status;
 
+    /** The batter level */
     private int battery;
 
     private int protectedCount;
@@ -89,18 +92,12 @@ public class VoteBoxEvent extends AAnnounceEvent {
     /**
      * Constructs a new VoteBoxEvent
      * 
-     * @param serial
-     *            the serial number of the sender
-     * @param label
-     *            the label
-     * @param status
-     *            the votebox's status
-     * @param battery
-     *            the battery level
-     * @param protectedCount
-     *            the protected count
-     * @param publicCount
-     *            the public count
+     * @param serial the serial number of the sender
+     * @param label the label
+     * @param status the votebox's status
+     * @param battery the battery level
+     * @param protectedCount the protected count
+     * @param publicCount the public count
      */
     public VoteBoxEvent(int serial, int label, String status, int battery,
             int protectedCount, int publicCount) {
@@ -148,6 +145,12 @@ public class VoteBoxEvent extends AAnnounceEvent {
         return status;
     }
 
+    /** @see votebox.events.IAnnounceEvent#fire(VoteBoxEventListener) */
+    public void fire(VoteBoxEventListener l) {
+        l.votebox( this );
+    }
+
+    /** @see votebox.events.IAnnounceEvent#toSExp() */
     public ASExpression toSExp() {
         return new ListExpression(
                 StringExpression.makeString( "votebox" ),
@@ -159,8 +162,6 @@ public class VoteBoxEvent extends AAnnounceEvent {
                 StringExpression.makeString( Integer.toString( publicCount ) ) );
     }
 
-    public void fire(VoteBoxEventListener l) {
-        l.votebox( this );
-    }
+
 
 }
