@@ -11,7 +11,9 @@ import java.awt.image.BufferedImage;
  */
 public class RenderingUtilsTest /*extends TestCase*/ {
 
-
+    private static JFrame testFrame;
+    private static  JPanel testPanel;
+    private static JLabel testLabel;
 
     /*
     public void setUp() throws Exception {
@@ -21,14 +23,17 @@ public class RenderingUtilsTest /*extends TestCase*/ {
     */
 
     public static void main(String[] args) /*testDrawBox()*/{
-        testDrawBox();
+        testFrame =  new JFrame("Rendering Utils Test");
+
+        testPanel = new JPanel();
+
+
+        //testDrawBox();
+        testRenderPrintButton();
 
     }
 
     public static void testDrawBox(){
-        JFrame testFrame =  new JFrame("Rendering Utils Test");
-
-        JPanel testPanel = new JPanel();
 
         BufferedImage wrappedImage = new BufferedImage(1000, 1000,
                 BufferedImage.TYPE_INT_ARGB);
@@ -36,15 +41,15 @@ public class RenderingUtilsTest /*extends TestCase*/ {
 
         int DPI_SCALE_FACTOR = Math.round(1.0f*300/72);
 
-        int width = 150*DPI_SCALE_FACTOR;
-        int height = 100*DPI_SCALE_FACTOR;
+        int width = 15*DPI_SCALE_FACTOR;
+        int height = 10*DPI_SCALE_FACTOR;
 
 
         Graphics2D g = wrappedImage.createGraphics();
 
         RenderingUtils.drawBox(g, 500 - width / 2, 500 - height, width / 2, height / 2, true, 10 * DPI_SCALE_FACTOR / 8);
 
-        JLabel testLabel = new JLabel(new ImageIcon(wrappedImage));
+        testLabel = new JLabel(new ImageIcon(wrappedImage));
 
         testPanel.add(testLabel);
         testFrame.add(testPanel);
@@ -53,6 +58,21 @@ public class RenderingUtilsTest /*extends TestCase*/ {
 
         testFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         testFrame.setVisible(true);
+    }
+
+    public static void testRenderPrintButton(){
+        BufferedImage img = RenderingUtils.renderPrintButton("B1", "Matt Bernhard", "", "GLD", 8, 281, false, true);
+
+
+        testLabel = new JLabel(new ImageIcon(img));
+        testPanel.add(testLabel);
+        testFrame.add(testPanel);
+
+        testFrame.pack();
+        testFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        testFrame.setVisible(true);
+
+
     }
 
 
