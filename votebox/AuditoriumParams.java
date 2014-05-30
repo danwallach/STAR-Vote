@@ -49,7 +49,7 @@ public class AuditoriumParams implements IAuditoriumParams,
 
     public static final int DISCOVER_TIMEOUT = 4000;
     public static int DISCOVER_PORT = 9782;
-    public static final int DISCOVER_REPLY_TIMEOUT = 1000;
+    public static final int DISCOVER_REPLY_TIMEOUT = 4000;
     public static final int DISCOVER_REPLY_PORT = 9783;
     public static final int LISTEN_PORT = 9700;
     public static final int JOIN_TIMEOUT = 1000;
@@ -402,7 +402,7 @@ public class AuditoriumParams implements IAuditoriumParams,
 		try{
 			if(_config.containsKey("PAPER_HEIGHT_FOR_VVPAT"))
 				return Integer.parseInt(_config.get("PAPER_HEIGHT_FOR_VVPAT"));
-		}catch(NumberFormatException e){}
+		}catch(NumberFormatException e){ e.printStackTrace(); }
 
 		return PAPER_HEIGHT_FOR_VVPAT;
 	}
@@ -416,7 +416,7 @@ public class AuditoriumParams implements IAuditoriumParams,
 		try{
 			if(_config.containsKey("PAPER_WIDTH_FOR_VVPAT"))
 				return Integer.parseInt(_config.get("PAPER_WIDTH_FOR_VVPAT"));
-		}catch(NumberFormatException e){}
+		}catch(NumberFormatException e){ e.printStackTrace(); }
 
 		return PAPER_WIDTH_FOR_VVPAT;
 	}
@@ -430,7 +430,7 @@ public class AuditoriumParams implements IAuditoriumParams,
 		try{
 			if(_config.containsKey("PRINTABLE_HEIGHT_FOR_VVPAT"))
 				return Integer.parseInt(_config.get("PRINTABLE_HEIGHT_FOR_VVPAT"));
-		}catch(NumberFormatException e){}
+		}catch(NumberFormatException e){ e.printStackTrace(); }
 
 		return PRINTABLE_HEIGHT_FOR_VVPAT;
 	}
@@ -444,7 +444,7 @@ public class AuditoriumParams implements IAuditoriumParams,
 		try{
 			if(_config.containsKey("PRINTABLE_WIDTH_FOR_VVPAT"))
 				return Integer.parseInt(_config.get("PRINTABLE_WIDTH_FOR_VVPAT"));
-		}catch(NumberFormatException e){}
+		}catch(NumberFormatException e){ e.printStackTrace(); }
 
 		return PRINTABLE_WIDTH_FOR_VVPAT;
 	}
@@ -458,7 +458,7 @@ public class AuditoriumParams implements IAuditoriumParams,
         try{
             if(_config.containsKey("PRINTABLE_VERTICAL_MARGIN"))
                 return Integer.parseInt(_config.get("PRINTABLE_VERTICAL_MARGIN"));
-        }catch(NumberFormatException e){}
+        }catch(NumberFormatException e){ e.printStackTrace(); }
 
         return PRINTABLE_VERTICAL_MARGIN;
     }
@@ -472,7 +472,7 @@ public class AuditoriumParams implements IAuditoriumParams,
         try{
             if(_config.containsKey("PRINTABLE_HORIZONTAL_MARGIN"))
                 return Integer.parseInt(_config.get("PRINTABLE_HORIZONTAL_MARGIN"));
-        }catch(NumberFormatException e){}
+        }catch(NumberFormatException e){ e.printStackTrace(); }
 
         return PRINTABLE_HORIZONTAL_MARGIN;
     }
@@ -486,7 +486,7 @@ public class AuditoriumParams implements IAuditoriumParams,
         try{
             if(_config.containsKey("PRINTER_DEFAULT_DPI"))
                 return Integer.parseInt(_config.get("PRINTER_DEFAULT_DPI"));
-        }catch(NumberFormatException e){}
+        }catch(NumberFormatException e){ e.printStackTrace(); }
 
         return PRINTER_DEFAULT_DPI;
     }
@@ -500,7 +500,7 @@ public class AuditoriumParams implements IAuditoriumParams,
         try{
             if(_config.containsKey("JAVA_DEFAULT_DPI"))
                 return Integer.parseInt(_config.get("JAVA_DEFAULT_DPI"));
-        }catch(NumberFormatException e){}
+        }catch(NumberFormatException e){ e.printStackTrace(); }
 
         return JAVA_DEFAULT_DPI;
     }

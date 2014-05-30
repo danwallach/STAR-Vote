@@ -13,6 +13,7 @@ import java.util.zip.ZipOutputStream;
 /**
  * Stolen from http://www.mkyong.com/java/how-to-compress-files-in-zip-format/
  */
+/* TODO file path construction */
 public class AppZip
 {
     List<String> fileList;
@@ -20,7 +21,6 @@ public class AppZip
     private String SOURCE_FOLDER = "C:\\testzip";
 
     public AppZip(File source){
-//        OUTPUT_ZIP_FILE = output.getAbsolutePath();
         SOURCE_FOLDER = source.getAbsolutePath();
         fileList = new ArrayList<String>();
     }
@@ -33,38 +33,36 @@ public class AppZip
 
         byte[] buffer = new byte[1024];
 
-        try{
+        try {
 
-            FileOutputStream fos = new FileOutputStream(zipFile);
-            ZipOutputStream zos = new ZipOutputStream(fos);
+            FileOutputStream fos    = new FileOutputStream(zipFile);
+            ZipOutputStream zos     = new ZipOutputStream(fos);
 
-//            System.out.println("Output to Zip : " + zipFile);
+            /* For each file in the list, pull it out */
+            for (String file : this.fileList) {
 
-            for(String file : this.fileList){
-
-//                System.out.println("File Added : " + file);
-                ZipEntry ze= new ZipEntry(file);
+                ZipEntry ze = new ZipEntry(file);
                 zos.putNextEntry(ze);
 
-                FileInputStream in =
-                        new FileInputStream(SOURCE_FOLDER + File.separator + file);
+                /* Set up a new file stream for the file */
+                FileInputStream in = new FileInputStream(SOURCE_FOLDER + File.separator + file);
 
                 int len;
-                while ((len = in.read(buffer)) > 0) {
+
+                /* Write to the file */
+                while ((len = in.read(buffer)) > 0)
                     zos.write(buffer, 0, len);
-                }
 
                 in.close();
             }
 
             zos.closeEntry();
-            //remember close it
+
+            /* Remember to close it */
             zos.close();
 
-//            System.out.println("Done");
-        }catch(IOException ex){
-            ex.printStackTrace();
         }
+        catch (IOException ex) { ex.printStackTrace(); }
     }
 
     /**
@@ -74,24 +72,24 @@ public class AppZip
      */
     public void generateFileList(File node){
 
-        //add file only
-        if(node.isFile()){
+        /* Add file only */
+        if(node.isFile())
             fileList.add(generateZipEntry(node.getAbsoluteFile().toString()));
-        }
 
         if(node.isDirectory()){
+
             String[] subNote = node.list();
-            for(String filename : subNote){
+
+            for(String filename : subNote)
                 generateFileList(new File(node, filename));
-            }
         }
 
     }
 
     /**
      * Format the file path for zip
-     * @param file file path
-     * @return Formatted file path
+     * @param file  file path
+     * @return      Formatted file path
      */
     private String generateZipEntry(String file){
         return file.substring(SOURCE_FOLDER.length()+1, file.length());

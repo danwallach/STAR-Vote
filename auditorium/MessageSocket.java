@@ -62,6 +62,7 @@ public class MessageSocket {
             _in = new ASEInputStreamReader( _socket.getInputStream() );
         }
         catch (IOException e) {
+            e.printStackTrace();
             throw new NetworkException( "couldn't create socket", e );
         }
     }
@@ -107,21 +108,12 @@ public class MessageSocket {
      * Receive a message.
      * 
      * @return This method returns the message that is received.
-     * @throws IncorrectFormatException
-     *             This method throws if the incoming s-exp isn't formatted as a
-     *             message.
-     * @throws InvalidVerbatimStreamException
-     *             This method throws if the incoming stream isn't
-     *             s-expressions.
+     *
+     * @throws IncorrectFormatException if the incoming s-exp isn't formatted as a message.
      */
     public Message receive() throws NetworkException, IncorrectFormatException {
-        try {
-            return new Message( _in.read() );
-        }
-        catch (IOException e) {
-            throw new NetworkException( "while receiving:" + e.getMessage(), e );
-        }
-        catch (InvalidVerbatimStreamException e) {
+        try { return new Message(_in.read()); }
+        catch (IOException | InvalidVerbatimStreamException e) {
             throw new NetworkException( "while receiving:" + e.getMessage(), e );
         }
     }
