@@ -18,8 +18,6 @@ import crypto.interop.AdderKeyManipulator;
  * @author Montrose
  */
 public class ChallengeDelayedWithNIZKsTallier extends EncryptedTallierWithNIZKs {
-	private PublicKey _finalPublicKey;
-
     private List<String> writeIns;
 
 	private Map<ASExpression, byte[]> _pendingVotes = new HashMap<ASExpression, byte[]>();
