@@ -35,7 +35,6 @@ import junit.framework.TestCase;
  * class.
  * 
  * @author derrley
- * 
  */
 public class BallotParserTest extends TestCase {
 
@@ -46,68 +45,42 @@ public class BallotParserTest extends TestCase {
 	public class MyGlobalVars implements IBallotVars {
 
 		private String _ballotPath;
-
 		private String _ballotFile;
+        private String _layoutFile;
 
 		private URL _ballotSchema;
-
-		private String _layoutFile;
-
 		private URL _layoutSchema;
 
-		public String getBallotPath() {
-			return _ballotPath;
-		}
+        public String getBallotPath() { return _ballotPath; }
+		public String getBallotFile() { return _ballotFile; }
+		public String getLayoutFile() { return _layoutFile; }
 
-		public String getBallotFile() {
-			return _ballotFile;
-		}
+        public URL getBallotSchema() { return _ballotSchema; }
+		public URL getLayoutSchema() { return _layoutSchema; }
 
-		public URL getBallotSchema() {
-			return _ballotSchema;
-		}
-
-		public String getLayoutFile() {
-			return _layoutFile;
-		}
-
-		public URL getLayoutSchema() {
-			return _layoutSchema;
-		}
-
-		public void setBallotPath(String string) {
-			_ballotPath = string;
-		}
-
-		public void setBallotFile(String string) {
-			_ballotFile = string;
-		}
-
-		public void setBallotSchema(URL string) {
-			_ballotSchema = string;
-		}
-
-		public void setLayoutFile(String string) {
-			_layoutFile = string;
-		}
-
-		public void setLayoutSchema(URL string) {
-			_layoutSchema = string;
-		}
+		public void setBallotPath(String string) { _ballotPath   = string; }
+		public void setBallotFile(String string) { _ballotFile   = string; }
+		public void setBallotSchema(URL string)  { _ballotSchema = string; }
+		public void setLayoutFile(String string) { _layoutFile   = string; }
+		public void setLayoutSchema(URL string)  { _layoutSchema = string; }
 
 	}
 
 	/**
-	 * Empty layout
+	 * Empty layout. Makes sure the @BallotParser works
+     * with an empty @Ballot
 	 * 
 	 * @throws Exception
 	 */
 	public void test_zero() throws Exception {
+
+        /* Set up a ballot */
 		MyGlobalVars vars = new MyGlobalVars();
 		vars.setBallotFile(PATH + "test1.xml");
 		vars.setBallotSchema(SCHEMA);
 		Ballot ballot = new BallotParser().getBallot(vars);
 
+        /* Test */
 		assertEquals(1, ballot.getCards().size());
 		assertEquals(ballot, ballot.getCards().get(0).getParent());
 		assertTrue(ballot.getProperties().contains("prop1"));
