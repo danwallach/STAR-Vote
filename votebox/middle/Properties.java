@@ -370,6 +370,7 @@ public class Properties {
      * @throws IncorrectTypeException if the object associated with key is not
      *                                of the type Boolean.
      */ /* TODO overload */
+    @SuppressWarnings("unchecked")
     public List<Integer> getIntegerList(String key) throws IncorrectTypeException {
 
         Object o = _properties.get( key );
@@ -383,7 +384,6 @@ public class Properties {
             if (!(l.get( 0 ) instanceof Integer))
                 throw new IncorrectTypeException( "List<Integer>", "List<" + l.get( 0 ).getClass().getSimpleName() + ">" );
 
-            //noinspection unchecked
             return (List<Integer>) l;
         }
         catch (ClassCastException e) { throw new IncorrectTypeException("List", o.getClass().getSimpleName()); }
@@ -400,6 +400,7 @@ public class Properties {
      * @throws IncorrectTypeException if the object associated with key is not
      *                                of the type "list of strings".
      */
+    @SuppressWarnings("unchecked")
     public List<String> getStringList(String key) throws IncorrectTypeException {
 
         Object o = _properties.get(key);
@@ -413,7 +414,6 @@ public class Properties {
             if (!(l.get( 0 ) instanceof String))
                 throw new IncorrectTypeException( "List<String>", "List<" + l.get(0).getClass().getSimpleName() + ">" );
 
-            //noinspection unchecked
             return (List<String>) l;
         }
         catch (ClassCastException e) { throw new IncorrectTypeException("List", o.getClass().getSimpleName()); }
