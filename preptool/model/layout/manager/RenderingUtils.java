@@ -58,8 +58,8 @@ public class RenderingUtils {
     /**
      * The dimensions of the selection box.
      */
-    public static final int SELECTION_BOX_WIDTH = 150*DPI_SCALE_FACTOR;
-    public static final int SELECTION_BOX_HEIGHT = 100*DPI_SCALE_FACTOR;
+    public static final int SELECTION_BOX_WIDTH = 15*DPI_SCALE_FACTOR;
+    public static final int SELECTION_BOX_HEIGHT = 10*DPI_SCALE_FACTOR;
 
 	/**
 	 * The standard font to use
