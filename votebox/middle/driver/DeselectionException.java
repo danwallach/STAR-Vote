@@ -27,7 +27,6 @@ package votebox.middle.driver;
  * most likely caused by a top level view or model exception
  * 
  * @author Kyle
- * 
  */
 public class DeselectionException extends Exception {
 

@@ -383,8 +383,8 @@ public class AuditoriumParams implements IAuditoriumParams,
 
     /**
      * Checks the HashMap to see if it contains an entry for the printer for
-     * VVPAI and, if so, returns it.
-     * @return the identifier of the printer for VVPAI
+     * VVPAT and, if so, returns it.
+     * @return the identifier of the printer for VVPAT
      */
     public String getPrinterForVVPAT() {
 		if(_config.containsKey("PRINTER_FOR_VVPAT"))
@@ -395,8 +395,8 @@ public class AuditoriumParams implements IAuditoriumParams,
 
     /**
      * Checks the HashMap to see if it contains an entry for the paper height
-     * setting for VVPAI and, if so, returns it.
-     * @return the paper height setting for VVPAI
+     * setting for VVPAT and, if so, returns it.
+     * @return the paper height setting for VVPAT
      */
 	public int getPaperHeightForVVPAT() {
 		try{
@@ -409,8 +409,8 @@ public class AuditoriumParams implements IAuditoriumParams,
 
     /**
      * Checks the HashMap to see if it contains an entry for the paper width
-     * setting for VVPAI and, if so, returns it.
-     * @return the paper width setting for VVPAI
+     * setting for VVPAT and, if so, returns it.
+     * @return the paper width setting for VVPAT
      */
 	public int getPaperWidthForVVPAT() {
 		try{
@@ -423,8 +423,8 @@ public class AuditoriumParams implements IAuditoriumParams,
 
     /**
      * Checks the HashMap to see if it contains an entry for the printable height
-     * setting for VVPAI and, if so, returns it.
-     * @return the printable height setting for VVPAI
+     * setting for VVPAT and, if so, returns it.
+     * @return the printable height setting for VVPAT
      */
 	public int getPrintableHeightForVVPAT() {
 		try{
@@ -437,8 +437,8 @@ public class AuditoriumParams implements IAuditoriumParams,
 
     /**
      * Checks the HashMap to see if it contains an entry for the printable width
-     * setting for VVPAI and, if so, returns it.
-     * @return the printable width setting for VVPAI
+     * setting for VVPAT and, if so, returns it.
+     * @return the printable width setting for VVPAT
      */
 	public int getPrintableWidthForVVPAT() {
 		try{
