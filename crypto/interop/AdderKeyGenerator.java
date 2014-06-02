@@ -24,7 +24,12 @@ public class AdderKeyGenerator {
 		}
 		
 		File destDir = new File(args[0]);
-		
+
+        /**
+         * Checks whether the destination directory already exists, if not then make the directory.
+         * If it exits then it checks whether its a directory or not.
+         */
+
 		if(!destDir.exists()){
 			destDir.mkdirs();
 		}else{
@@ -41,7 +46,11 @@ public class AdderKeyGenerator {
 		
 		File pubFile = new File(destDir, "public.adder.key");
 		File privFile = new File(destDir, "private.adder.key");
-		
+
+        /**Prints out the exact location of the files where the public key and the private key
+         * are stored on the console
+         */
+
 		System.out.println(pubFile.getAbsolutePath());
 		System.out.println(privFile.getAbsolutePath());
 		
@@ -51,11 +60,15 @@ public class AdderKeyGenerator {
 		FileOutputStream pubOut = new FileOutputStream(pubFile);
 		FileOutputStream privOut = new FileOutputStream(privFile);
 		
-		//pubOut.write(pubKey.toString().getBytes());
+
+
+        /*Writes the public key to the 'public.adder.key' file.*/
 		pubOut.write(pubKey.toASE().toVerbatim());
-		//privOut.write(privKey.toString().getBytes());
+
+
+        /*Writes the private key to the 'private.adder.key' file.*/
 		privOut.write(privKey.toASE().toVerbatim());
-		
+
 		pubOut.flush();
 		privOut.flush();
 		
