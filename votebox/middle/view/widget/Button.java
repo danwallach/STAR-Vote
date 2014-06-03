@@ -112,306 +112,280 @@ public class Button extends FocusableLabel {
 
 
     @Override
-    public void initFromViewManager(IViewManager viewManagerAdapter,
-            IBallotLookupAdapter ballotLookupAdapter, IAdapter ballotAdapter,
-            IViewFactory factory, IBallotVars ballotVars) {
-        super.initFromViewManager( viewManagerAdapter, ballotLookupAdapter,
-            ballotAdapter, factory, ballotVars );
-        try {
-            setStrategy( viewManagerAdapter );
-        }
-        catch (UnknownStrategyException e) {
-            throw new BallotBoxViewException(
-                    "There was a problem initializing the strategy for button with UID "
-                            + getUniqueID(), e );
-        }
+    public void initFromViewManager(IViewManager viewManagerAdapter, IBallotLookupAdapter ballotLookupAdapter,
+                                    IAdapter ballotAdapter, IViewFactory factory, IBallotVars ballotVars) {
+
+        super.initFromViewManager(viewManagerAdapter, ballotLookupAdapter, ballotAdapter, factory, ballotVars);
+
+        try { setStrategy(viewManagerAdapter); }
+        catch (UnknownStrategyException e) { throw new BallotBoxViewException("There was a problem initializing the strategy for button with UID "+ getUniqueID(), e); }
     }
 
     /**
      * Call this method to make this Button's strategy agree with what is
      * defined in this Button's properties.
      *
-     * @param viewManager
-     *            Most of the button strategies will need to ask the ViewManager
-     *            to do something in particular. Use this ViewManager reference
-     *            if needed.
-     * @throws IncorrectTypeException
-     *             This method throws IncorrectTypeException if the strategy
-     *             isn't stored as a string property.
-     * @throws UnknownStrategyException
-     *             This method throws if the strategy that is set in this
-     *             button's properties is unknown.
+     * @param viewManager       reference to the ViewManager if needed for the button
+     *                          strategies to do something
+     *
+     * @throws UnknownStrategyException if the strategy that is set in this button's
+     *                                  properties is unknown.
      */
-    private void setStrategy(final IViewManager viewManager)
-            throws UnknownStrategyException {
-        // Retrieve the strategy from properties
-        String strategy = null;
-        if (this.getProperties().contains( Properties.BUTTON_STRATEGY ))
-            try {
-                strategy = this.getProperties().getString(
-                    Properties.BUTTON_STRATEGY );
-            }
-            catch (IncorrectTypeException e1) {
-                throw new UnknownStrategyException(
-                        "The strategy defined was of incorrect type." );
-            }
-        else {
-            throw new UnknownStrategyException(
-                    "There was no strategy defined." );
-        }
+    private void setStrategy(final IViewManager viewManager) throws UnknownStrategyException {
 
-        // Set the strategy based on what was defined in properties.
-        if (strategy.equals( "NextPage" )) {
-            _buttonStrategy = new IButtonStrategy() {
+        String strategy;
 
-                public void execute(Button context)
-                        throws BallotBoxViewException {
-                    viewManager.nextPage();
-                }
-            };
-        }
-        else if (strategy.equals( "PreviousPage" )) {
-            _buttonStrategy = new IButtonStrategy() {
+        /* Retrieve the strategy from properties */
+        if (this.getProperties().contains(Properties.BUTTON_STRATEGY))
 
-                public void execute(Button context)
-                        throws BallotBoxViewException {
-                    viewManager.previousPage();
-                }
-            };
-        }
-        else if (strategy.equals( "GoToPage" )) {
-            _buttonStrategy = new IButtonStrategy() {
+            try { strategy = this.getProperties().getString(Properties.BUTTON_STRATEGY); }
+            catch (IncorrectTypeException e1) { throw new UnknownStrategyException("The strategy defined was of incorrect type."); }
 
-                public void execute(Button context)
-                        throws BallotBoxViewException {
-                    int pagenum;
-                    if (context.getProperties().contains(
-                        Properties.PAGE_NUMBER ))
-                        try {
-                            pagenum = context.getProperties().getInteger(
-                                Properties.PAGE_NUMBER );
-                        }
-                        catch (IncorrectTypeException e) {
-                            throw new BallotBoxViewException(
-                                    "The page number property for button with UID"
-                                            + context.getUniqueID()
-                                            + " is not defined as an integer",
-                                    null );
-                        }
-                    else
-                        throw new BallotBoxViewException(
-                                "Button with UID: "
-                                        + context.getUniqueID()
-                                        + " attempted to jump to new page, but the button does not define a page.",
-                                null );
-                    viewManager.drawPage( pagenum, true);
-                }
-            };
-        }
-        else if (strategy.equals( "GoToPageContaining" )) {
-            _buttonStrategy = new IButtonStrategy() {
+        else throw new UnknownStrategyException("There was no strategy defined." );
 
-                public void execute(Button context)
-                        throws BallotBoxViewException {
-                    // Retrieve the uid of the drawable which is on the page
-                    // that needs to be jumped to.
-                    String uid = null;
-                    try {
-                        if (context.getProperties().contains( Properties.UID ))
-                            uid = context.getProperties().getString(
-                                Properties.UID );
-                        else
-                            throw new BallotBoxViewException(
-                                    "Button with UID "
-                                            + context.getUniqueID()
-                                            + " set its strategy to GoToPageContaining but did not set the UID property",
-                                    null );
-                    }
-                    catch (IncorrectTypeException e) {
-                        throw new BallotBoxViewException(
-                                "The UID property for button with uid "
-                                        + context.getUniqueID()
-                                        + " has the incorrect type", e );
-                    }
+        /* Set the strategy based on what was defined in properties. */
+        switch (strategy) {
 
-                    // Find the page and jump there.
-                    try {
-                        int jumpToPage = Button.this.getParent()
-                                .getParent().lookupPage( uid );
-//                        System.out.println("Trying to draw page " + jumpToPage);
-                        viewManager.drawPage( jumpToPage, true);
-                    }
-                    catch (UnknownUIDException e) {
-                        throw new BallotBoxViewException(
-                                "Button with UID "
-                                        + context.getUniqueID()
-                                        + " declared the GoToPageContaing strategy, but declared an invalid ID",
-                                e );
-                    }
-                    catch (DuplicateUIDException e) {
-                        throw new BallotBoxViewException(
-                                "Button with UID "
-                                        + context.getUniqueID()
-                                        + " declared the GoToPageContaining strategy, but wishes to jump to a page containing an ambiguous UID. Only UIDs which are declared once in the layout are considered unambiguous.",
-                                e );
-                    }
-                }
+            case "NextPage":
 
-            };
-        }
+                _buttonStrategy = new IButtonStrategy() {
 
-        else if (strategy.equals( "CastBallot" )) {
-            _buttonStrategy = new IButtonStrategy() {
-
-                public void execute(Button context)
-                        throws BallotBoxViewException {
-                    viewManager.castCommittedBallot();
-                }
-            };
-        }
-        else if (strategy.equals( "CommitBallot" )) {
-            _buttonStrategy = new IButtonStrategy() {
-
-                public void execute(Button context)
-                        throws BallotBoxViewException {
-                    viewManager.commitBallot();
-                }
-            };
-        }
-        else if (strategy.equals( "OverrideCancelConfirm" )) {
-            _buttonStrategy = new IButtonStrategy() {
-
-                public void execute(Button context)
-                        throws BallotBoxViewException {
-                    viewManager.overrideCancelConfirm();
-                }
-            };
-        }
-        else if (strategy.equals( "OverrideCancelDeny" )) {
-            _buttonStrategy = new IButtonStrategy() {
-
-                public void execute(Button context)
-                        throws BallotBoxViewException {
-                    viewManager.overrideCancelDeny();
-                }
-            };
-        }
-        else if (strategy.equals( "OverrideCastConfirm" )) {
-            _buttonStrategy = new IButtonStrategy() {
-
-                public void execute(Button context)
-                        throws BallotBoxViewException {
-                    viewManager.overrideCastConfirm();
-                }
-            };
-        }
-        else if (strategy.equals( "OverrideCastDeny" )) {
-            _buttonStrategy = new IButtonStrategy() {
-
-                public void execute(Button context)
-                        throws BallotBoxViewException {
-                    viewManager.overrideCastDeny();
-                }
-            };
-        }
-        else if (strategy.equals( "NextPageRequireSelection" )) {
-            _buttonStrategy = new IButtonStrategy() {
-                public void execute(Button context)
-                        throws BallotBoxViewException {
-                	String parent = "";
-                	String selected = null;
-                	try {
-                		parent = context.getProperties().getString(Properties.PARENT_CARD);
-                    	selected = viewManager.getBallotLookupAdapter().selectedElement(parent);
-                	}
-                	catch (Exception e) {
-                		throw new BallotBoxViewException(
-                				"The parent card property for button with UID"
-                				+ context.getUniqueID()
-                                + " is not defined as a string", e);
-                	}
-                	if (parent.equals(selected)) {
-                        int pagenum;
-                        if (context.getProperties().contains(Properties.NO_SELECTION_PAGE_NUMBER))
-                            try {
-                                Properties tempProperties = context.getProperties();
-                                String tempCurrentProperty = Properties.NO_SELECTION_PAGE_NUMBER;
-                                Integer tempInteger = tempProperties.getInteger(tempCurrentProperty);
-                                //pagenum = context.getProperties().getInteger(Properties.NO_SELECTION_PAGE_NUMBER );
-                                pagenum = tempInteger;
-                                //System.out.println("The value of pagenum has changed to " + pagenum);
-                            }
-                            catch (IncorrectTypeException e) {
-                                throw new BallotBoxViewException(
-                                        "The no selection page number property for button with UID"
-                                                + context.getUniqueID()
-                                                + " is not defined as an integer",
-                                        null );
-                            }
-                        else
-                            throw new BallotBoxViewException(
-                                    "Button with UID: "
-                                            + context.getUniqueID()
-                                            + " attempted to jump to the no selection alert page, but the button does not define a page.",
-                                    null );
-                        //System.out.println("Trying to draw page " + pagenum);
-                        viewManager.drawPage(pagenum, true);
-                	}
-                	else {
+                    public void execute(Button context) throws BallotBoxViewException {
                         viewManager.nextPage();
-                	}
-                }
-            };
-        }
-        else if (strategy.equals( "GoToPageRequireSelection" )) {
-            _buttonStrategy = new IButtonStrategy() {
+                    }
+                };
+                break;
 
-                public void execute(Button context)
-                        throws BallotBoxViewException {
-                	String parent = "";
-                	String selected = null;
-                	try {
-                		parent = context.getProperties().getString(Properties.PARENT_CARD);
-                    	selected = viewManager.getBallotLookupAdapter().selectedElement(parent);
-                	}
-                	catch (Exception e) {
-                		throw new BallotBoxViewException(
-                				"The parent card property for button with UID"
-                				+ context.getUniqueID()
-                                + " is not defined as a string", e);
-                	}
-                    String property;
-                	if (parent.equals(selected)) {
-                		property = Properties.NO_SELECTION_PAGE_NUMBER;
-                	}
-                	else {
-                		property = Properties.PAGE_NUMBER;
-                	}
-                    int pagenum;
-                    if (context.getProperties().contains(property))
+            case "PreviousPage":
+
+                _buttonStrategy = new IButtonStrategy() {
+
+                    public void execute(Button context) throws BallotBoxViewException {
+                        viewManager.previousPage();
+                    }
+                };
+                break;
+
+            case "GoToPage":
+
+                _buttonStrategy = new IButtonStrategy() {
+
+                    public void execute(Button context) throws BallotBoxViewException {
+
+                        int pagenum;
+
+                        if (context.getProperties().contains(Properties.PAGE_NUMBER))
+
+                            try { pagenum = context.getProperties().getInteger(Properties.PAGE_NUMBER); }
+                            catch (IncorrectTypeException e) {
+                                throw new BallotBoxViewException("The page number property for button with UID" +
+                                        context.getUniqueID() + " is not defined as an integer", null);
+                            }
+
+                        else
+                            throw new BallotBoxViewException("Button with UID: " + context.getUniqueID() + " attempted to" +
+                                    " jump to new page, but the button does not define a page.", null);
+
+                        viewManager.drawPage(pagenum, true);
+                    }
+                };
+                break;
+
+            case "GoToPageContaining":
+
+                _buttonStrategy = new IButtonStrategy() {
+
+                    public void execute(Button context) throws BallotBoxViewException {
+
+                    /* Retrieve the UIID of the drawable which is on the page that needs to be jumped to */
+
+                        String uid;
                         try {
-                            pagenum = context.getProperties().getInteger(property);
+                            if (context.getProperties().contains(Properties.UID))
+                                uid = context.getProperties().getString(Properties.UID);
+                            else
+                                throw new BallotBoxViewException("Button with UID " + context.getUniqueID() + " set its " +
+                                        "strategy to GoToPageContaining but did not set the UID property", null);
                         }
                         catch (IncorrectTypeException e) {
-                            throw new BallotBoxViewException(
-                                    "The page number property for button with UID"
-                                            + context.getUniqueID()
-                                            + " is not defined as an integer",
-                                    null );
+                            throw new BallotBoxViewException("The UID property for button with uid " + context.getUniqueID() +
+                                    " has the incorrect type", e);
                         }
-                    else
-                        throw new BallotBoxViewException(
-                                "Button with UID: "
-                                        + context.getUniqueID()
-                                        + " attempted to jump to new page, but the button does not define a page.",
-                                null );
-                    System.out.println("Trying to draw page " + pagenum);
-                    viewManager.drawPage( pagenum, true);
-                }
-            };
+
+                    /* Find the page and jump there. */
+                        try {
+                            int jumpToPage = Button.this.getParent().getParent().lookupPage(uid);
+                            viewManager.drawPage(jumpToPage, true);
+                        }
+                        catch (UnknownUIDException e) {
+                            throw new BallotBoxViewException("Button with UID " + context.getUniqueID() + " declared the " +
+                                    "GoToPageContaing strategy, but declared an invalid ID", e);
+                        }
+                        catch (DuplicateUIDException e) {
+                            throw new BallotBoxViewException("Button with UID " + context.getUniqueID() + " declared the " +
+                                    "GoToPageContaining strategy, but wishes to jump to a page " +
+                                    "containing an ambiguous UID. Only UIDs which are declared " +
+                                    "once in the layout are considered unambiguous.", e);
+                        }
+                    }
+
+                };
+                break;
+
+            case "CastBallot":
+
+                _buttonStrategy = new IButtonStrategy() {
+
+                    public void execute(Button context) throws BallotBoxViewException {
+                        viewManager.castCommittedBallot();
+                    }
+                };
+                break;
+
+            case "CommitBallot":
+
+                _buttonStrategy = new IButtonStrategy() {
+
+                    public void execute(Button context) throws BallotBoxViewException {
+                        viewManager.commitBallot();
+                    }
+                };
+                break;
+
+            case "OverrideCancelConfirm":
+
+                _buttonStrategy = new IButtonStrategy() {
+
+                    public void execute(Button context) throws BallotBoxViewException {
+                        viewManager.overrideCancelConfirm();
+                    }
+                };
+                break;
+
+            case "OverrideCancelDeny":
+
+                _buttonStrategy = new IButtonStrategy() {
+
+                    public void execute(Button context) throws BallotBoxViewException {
+                        viewManager.overrideCancelDeny();
+                    }
+                };
+                break;
+
+            case "OverrideCastConfirm":
+
+                _buttonStrategy = new IButtonStrategy() {
+
+                    public void execute(Button context)
+                            throws BallotBoxViewException {
+                        viewManager.overrideCastConfirm();
+                    }
+                };
+                break;
+
+            case "OverrideCastDeny":
+
+                _buttonStrategy = new IButtonStrategy() {
+
+                    public void execute(Button context) throws BallotBoxViewException {
+                        viewManager.overrideCastDeny();
+                    }
+                };
+                break;
+
+            case "NextPageRequireSelection":
+
+                _buttonStrategy = new IButtonStrategy() {
+
+                    public void execute(Button context) throws BallotBoxViewException {
+
+                        String parent;
+                        String selected;
+
+                        try {
+                            parent = context.getProperties().getString(Properties.PARENT_CARD);
+                            selected = viewManager.getBallotLookupAdapter().selectedElement(parent);
+                        }
+                        catch (Exception e) {
+                            throw new BallotBoxViewException("The parent card property for button with UID " + context.getUniqueID()
+                                                             + " is not defined as a string", e);
+                        }
+
+                        if (parent.equals(selected)) {
+
+                            int pagenum;
+
+                            if (context.getProperties().contains(Properties.NO_SELECTION_PAGE_NUMBER))
+
+                                try {
+                                    Properties tempProperties = context.getProperties();
+
+                                    String tempCurrentProperty = Properties.NO_SELECTION_PAGE_NUMBER;
+
+                                    pagenum = tempProperties.getInteger(tempCurrentProperty);
+                                }
+                                catch (IncorrectTypeException e) {
+                                    throw new BallotBoxViewException("The no selection page number property for button with UID"
+                                                                     + context.getUniqueID() + " is not defined as an integer", null);
+                                }
+
+                            else
+                                throw new BallotBoxViewException("Button with UID: " + context.getUniqueID() + " attempted " +
+                                                                 "to jump to the no selection alert page, but the button " +
+                                                                 "does not define a page.", null);
+
+                            viewManager.drawPage(pagenum, true);
+
+                        }
+                        else viewManager.nextPage();
+                    }
+                };
+                break;
+
+            case "GoToPageRequireSelection":
+
+                _buttonStrategy = new IButtonStrategy() {
+
+                    public void execute(Button context) throws BallotBoxViewException {
+
+                        String parent;
+                        String selected;
+
+                        try {
+                            parent = context.getProperties().getString(Properties.PARENT_CARD);
+                            selected = viewManager.getBallotLookupAdapter().selectedElement(parent);
+                        }
+                        catch (Exception e) {
+                            throw new BallotBoxViewException("The parent card property for button with UID " + context.getUniqueID()
+                                                             + " is not defined as a string", e);
+                        }
+
+                        String property;
+
+                        property = parent.equals(selected) ? Properties.NO_SELECTION_PAGE_NUMBER : Properties.PAGE_NUMBER;
+
+                        int pagenum;
+
+                        if (context.getProperties().contains(property))
+
+                            try { pagenum = context.getProperties().getInteger(property); }
+                            catch (IncorrectTypeException e) {
+                                throw new BallotBoxViewException("The page number property for button with UID " +
+                                                                 context.getUniqueID() + " is not defined as an integer", null);
+                            }
+
+                        else
+                            throw new BallotBoxViewException("Button with UID: " + context.getUniqueID() + " attempted " +
+                                                             "to jump to new page, but the button does not define a page.", null);
+
+                        viewManager.drawPage(pagenum, true);
+                    }
+                };
+                break;
+
+            default:
+                throw new UnknownStrategyException(strategy);
         }
-        else
-            throw new UnknownStrategyException( strategy );
     }
 
     /**
@@ -431,51 +405,42 @@ public class Button extends FocusableLabel {
      */
     public void focus() {
 
-        String uniqueID = "";
+        String uniqueID;
 
-        // If this is not a label, we need to figure out what is actually being displayed (i.e. which candidate has
-        // been selected) so that the proper sound file can be loaded. This is necessary because the review screen only
-        // has one button per race, but the look of the button changes if the race it reflects changes.
+        /*
+          If this is not a label, we need to figure out what is actually being displayed (i.e. which candidate has
+          been selected) so that the proper sound file can be loaded. This is necessary because the review screen only
+          has one button per race, but the look of the button changes if the race it reflects changes.
+         */
         if(getUniqueID().contains("B")){
-            try{
-                uniqueID =   this.getParent().getParent().lookup(
-                    _ballot.selectedElement( getUniqueID() ) ).get( 0 ).getUniqueID();
 
-            } catch (CardException e) {
-                throw new RuntimeException(e);
-            } catch (NonCardException e) {
-                throw new RuntimeException(e);
-            } catch (UnknownUIDException e) {
-                //throw new RuntimeException(e);
-            }
-        } else{
-            uniqueID = getUniqueID();
+            try { uniqueID = this.getParent().getParent().lookup(_ballot.selectedElement(getUniqueID())).get(0).getUniqueID(); }
+            catch (CardException | NonCardException | UnknownUIDException e) { throw new RuntimeException(e); }
         }
-            final String uid = uniqueID;
-            soundThread = new Thread(){
-                public void run() {
+        else uniqueID = getUniqueID();
 
+        final String uid = uniqueID;
 
+        soundThread = new Thread(){
 
-                    // prepare the mp3Player
+            public void run() {
+
+                    /*  Prepare the mp3Player */
                     try {
-                        FileInputStream fileInputStream = new FileInputStream(soundPath( _vars, uid,
-                                _viewManager.getLanguage() ));
+
+                        FileInputStream fileInputStream = new FileInputStream(soundPath(_vars, uid, _viewManager.getLanguage()));
                         BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
                         mp3Player = new Player(bufferedInputStream);
                         mp3Player.play();
-                    } catch (Exception e) {
-                        mp3Player = null;
-                        System.out.println("Problem playing audio: " + "media/" + (soundPath( _vars, uid,
-                                _viewManager.getLanguage() ) + ".mp3"));
-                        System.out.println(e);
-                    }
 
-                }
-            };
+                    }
+                    catch (Exception e) { e.printStackTrace(); mp3Player = null; }
+
+            }
+        };
 
         soundThread.start();
-        _state.focus( this );
+        _state.focus(this);
     }
 
     /**
@@ -484,7 +449,8 @@ public class Button extends FocusableLabel {
      * the image that GetImage(...) returns will need to be changed.
      */
     public void unfocus() {
-        _state.unfocus( this );
+
+        _state.unfocus(this);
 
         if(mp3Player != null)
             mp3Player.close();
@@ -497,66 +463,47 @@ public class Button extends FocusableLabel {
     @Override
     public IViewImage getImage() {
 
-        // If this particular button is a review screen button (if its UID is
-        // the same as a card's UID in the ballot), then the image which is
-        // associated with this element is the reviewScreenImage of the
-        // currently selected drawable in the card.
+        /*
+          If this particular button is a review screen button (if its UID is the same as
+          a card's UID in the ballot), then the image which is associated with this
+          element is the reviewScreenImage of the currently selected drawable in the card.
+        */
         try {
-            if (_ballot.exists( getUniqueID() )
-                    && _ballot.isCard( getUniqueID() )
-                    && !(_ballot.selectedElement( getUniqueID() )
-                            .equals( getUniqueID() )) && _state.equals(DefaultButtonState.Singleton)){
 
-                return this.getParent().getParent().lookup(
-                    _ballot.selectedElement( getUniqueID() ) ).get( 0 ).getReviewImage();
-            }
-            else if(_ballot.exists( getUniqueID() )
-                    && _ballot.isCard( getUniqueID() )
-                    && !(_ballot.selectedElement( getUniqueID() )
-                    .equals( getUniqueID() )) && _state.equals(FocusedButtonState.Singleton)){
+            boolean ballotCheck = _ballot.exists(getUniqueID()) && _ballot.isCard(getUniqueID()) &&
+                                !(_ballot.selectedElement(getUniqueID()).equals(getUniqueID()));
 
-                return ((FocusableLabel)this.getParent().getParent().lookup(
-                        _ballot.selectedElement( getUniqueID() ) ).get( 0 )).getFocusedReviewImage();
+            if (ballotCheck) {
+                if (_state.equals(DefaultButtonState.Singleton))
+                    return this.getParent().getParent().lookup(_ballot.selectedElement(getUniqueID())).get(0).getReviewImage();
+
+                else if (_state.equals(FocusedButtonState.Singleton))
+                    return ((FocusableLabel) this.getParent().getParent().lookup(_ballot.selectedElement(getUniqueID())).get(0)).getFocusedReviewImage();
             }
         }
-        catch (UnknownUIDException e) {
-            throw new BallotBoxViewException(
-                    "While attempting to connect uid " + getUniqueID()
-                            + " with a ballot element, an error occurred.", e );
-        }
-        catch (NonCardException e) {
-            throw new BallotBoxViewException(
-                    "While attempting to connect uid " + getUniqueID()
-                            + " with a ballot element, an error occurred.", e );
+        catch (UnknownUIDException | NonCardException e) {
+            throw new BallotBoxViewException("While attempting to connect uid " + getUniqueID() + " with a ballot element, an error occurred.", e);
         }
         catch (CardException e) {
-            throw new BallotBoxViewException(
-                    getUniqueID()
-                            + " was connected with the corresponding ballot element, but this element had an inconsistency.",
-                    e );
+            throw new BallotBoxViewException(getUniqueID() + " was connected with the corresponding ballot element, but this element had an inconsistency.", e);
         }
 
-        // If this particular button is not a review screen button, then the
-        // image is dictated by the state.
+        /* If this particular button is not a review screen button, then the image is dictated by the state.*/
         return _state.getImage( this );
     }
 
     @Override
     public IViewImage getReviewImage() {
-        if (_reviewImage == null) {
-            //System.out.println("> Button is attempting to open image with UID: " + getUniqueID() + " by passing: " + _vars.getBallotPath() + " | " + getUniqueID() + "_review_" + " | " + _viewManager.getSize() + " | " + _viewManager.getLanguage());
-            _reviewImage = _factory.makeImage( imagePath( _vars, getUniqueID()
-                    + "_review_", _viewManager.getSize(), _viewManager
-                    .getLanguage() ), false);
-        }
+        if (_reviewImage == null)
+            _reviewImage = _factory.makeImage(imagePath(_vars, getUniqueID() + "_review_", _viewManager.getSize(), _viewManager.getLanguage()), false);
+
         return _reviewImage;
     }
 
     /**
      * This is the getter method for _focusedEvent.
      * 
-     * @return This method returns the event that gets raised when this button's
-     *         state changes to "focused"
+     * @return      the event that gets raised when this button's state changes to "focused"
      */
     public Event getFocusedEvent() {
         return _focusedEvent;
@@ -565,8 +512,7 @@ public class Button extends FocusableLabel {
     /**
      * This is the getter method for _unfocusedEvent.
      * 
-     * @return This method returns the event that gets raised when this button's
-     *         state changes to "default"
+     * @return      the event that gets raised when this button's state changes to "default"
      */
     public Event getUnfocusedEvent() {
         return _unfocusedEvent;
@@ -575,8 +521,7 @@ public class Button extends FocusableLabel {
     /**
      * This is the getter method for _selectedEvent.
      * 
-     * @return This method returns the event that gets raised when this button's
-     *         state changes to "default"
+     * @return      the event that gets raised when this button's state changes to "default"
      */
     public Event getSelectedEvent() {
         return _selectedEvent;
@@ -585,8 +530,7 @@ public class Button extends FocusableLabel {
     /**
      * Call this method to set the state of this button.
      * 
-     * @param value
-     *            The button will be set to this new state.
+     * @param value     the state to which to set the button
      */
     public void setState(AButtonState value) {
         _state = value;
@@ -598,17 +542,14 @@ public class Button extends FocusableLabel {
      * @return _defaultImages
      */
     public IViewImage getDefaultImage() {
+
         if (_defaultImage == null) {
-
             if (getUniqueID().contains("B"))
-            {
                 _defaultImage = _factory.makeImage(imageToggleButtonPath(_vars, getUniqueID() + "_review", _viewManager.getLanguage()), false);
-            }
-            else{
+            else
                 _defaultImage = _factory.makeImage( imagePath( _vars, getUniqueID(), _viewManager.getSize(), _viewManager.getLanguage() ), false);
-            }
-
         }
+
         return _defaultImage;
     }
 
@@ -618,11 +559,10 @@ public class Button extends FocusableLabel {
      * @return _focusedImages
      */
     public IViewImage getFocusedImage() {
-//        if(getUniqueID().equals("B1"))
-//            throw new RuntimeException("SDFASDFASDFASDFASdf");
-        if (_focusedImage == null) {
+
+        if (_focusedImage == null)
             _focusedImage = _factory.makeImage(imagePath(_vars, getUniqueID() + "_focused", _viewManager.getSize(),_viewManager.getLanguage()), false);
-        }
+
         return _focusedImage;
     }
 
