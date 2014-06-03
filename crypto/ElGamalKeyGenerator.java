@@ -60,7 +60,9 @@ public class ElGamalKeyGenerator {
 		}//catch
 		
 		File dir = null;
-		
+
+        /*Create directory with output path in args[2] if it already does not exist */
+
 		try{
 			dir = new File(args[2]);
 			if(!dir.exists())
@@ -70,7 +72,10 @@ public class ElGamalKeyGenerator {
 			System.out.println("\tError: "+e.getMessage());
 			System.exit(0);
 		}//catch
-		
+
+        /**
+         * Generate ElGamal Private and Public key Pair(s).
+         */
 		for(int i = 0; i < limit; i++){
 			Pair<Key> keys = ElGamalCrypto.SINGLETON.generate(args[0]);
 			Key publicKey = keys.get1();
