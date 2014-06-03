@@ -25,7 +25,7 @@ package votebox.middle.view.widget;
 import votebox.middle.view.IViewImage;
 
 /**
- * This class deifnes the abstract state for a ToggleButton (used in state
+ * This class defines the abstract state for a ToggleButton (used in state
  * pattern). ToggleButtons delegate certain state-dependent behaviors to an
  * instance of this class.
  */
@@ -33,12 +33,10 @@ public abstract class AToggleButtonState {
 
     /**
      * Because the image that is used to represent a toggle button is
-     * state-speciffic, getImage is delegated here.
+     * state-specific, getImage is delegated here.
      * 
-     * @param context
-     *            This is the button that is delegating.
-     * @return This method returns the state-specific image that represents the
-     *         delegating button.
+     * @param context       the button that is delegating.
+     * @return              the state-specific image that represents the delegating button.
      */
     public abstract IViewImage getImage(ToggleButton context);
 
@@ -46,8 +44,7 @@ public abstract class AToggleButtonState {
      * The SelectableCardElement delegates to this method when it is told that
      * the user has chosen it to be toggled.
      * 
-     * @param context
-     *            This is the button that is delegating.
+     * @param context       the button that is delegating.
      */
     public abstract void select(ToggleButton context);
 
@@ -55,8 +52,7 @@ public abstract class AToggleButtonState {
      * Explicitly selects the element who delegates to this state object. This
      * will happen regardless of the current state.
      * 
-     * @param context
-     *            This is the button that is delegating.
+     * @param context       the button that is delegating.
      */
     public abstract void makeSelected(ToggleButton context);
 
@@ -64,8 +60,7 @@ public abstract class AToggleButtonState {
      * Explicitly deselects the element who delegates to this state object. Thi
      * swill happen regardless of the current state.
      * 
-     * @param context
-     *            This is the button that is delegating.
+     * @param context       the button that is delegating.
      */
     public abstract void makeDeselected(ToggleButton context);
 
@@ -73,8 +68,7 @@ public abstract class AToggleButtonState {
      * The SelectableCardElement delegates to this method when it is told that
      * the user is currently focused on it.
      * 
-     * @param context
-     *            This is the button that is delegating.
+     * @param context       the button that is delegating.
      */
     public abstract void focus(ToggleButton context);
 
@@ -82,8 +76,7 @@ public abstract class AToggleButtonState {
      * The SelectableCardElement delegates to this method when it is told that
      * the user is no longer focused on it.
      * 
-     * @param context
-     *            This is the button that is delegating.
+     * @param context       the button that is delegating.
      */
     public abstract void unfocus(ToggleButton context);
 

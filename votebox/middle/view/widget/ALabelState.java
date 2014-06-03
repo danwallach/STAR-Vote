@@ -13,8 +13,7 @@ public abstract class ALabelState {
      * This method is called by the Button when it has been asked to focus
      * itself.
      *
-     * @param context
-     *            This is the button that is delegating the behavior for focus.
+     * @param context       the button that is delegating the behavior for focus.
      */
     public abstract void focus(FocusableLabel context);
 
@@ -22,8 +21,7 @@ public abstract class ALabelState {
      * This method is called by the Button when it has been asked to unfocus
      * itself.
      *
-     * @param context
-     *            This is the button that is delegating the behavior for unfocus
+     * @param context       the button that is delegating the behavior for unfocus
      */
     public abstract void unfocus(FocusableLabel context);
 
@@ -31,9 +29,7 @@ public abstract class ALabelState {
      * This method is called by the Button when it has been asked to give its
      * current image.
      *
-     * @param context
-     *            This is the button that is delegating the behavior for
-     *            getImage.
+     * @param context       the button that is delegating the behavior for getImage.
      */
     public abstract IViewImage getImage(FocusableLabel context);
 }
