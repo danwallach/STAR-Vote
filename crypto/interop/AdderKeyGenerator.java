@@ -47,13 +47,15 @@ public class AdderKeyGenerator {
 		File pubFile = new File(destDir, "public.adder.key");
 		File privFile = new File(destDir, "private.adder.key");
 
-        /**Prints out the exact location of the files where the public key and the private key
+        /**
+         * Prints out the exact location of the files where the public key and the private key
          * are stored on the console
          */
 
 		System.out.println(pubFile.getAbsolutePath());
 		System.out.println(privFile.getAbsolutePath());
-		
+
+        // create public.adder.key and private.adder.key file in the same location path destDir
 		pubFile.createNewFile();
 		privFile.createNewFile();
 		
@@ -62,16 +64,18 @@ public class AdderKeyGenerator {
 		
 
 
-        /*Writes the public key to the 'public.adder.key' file.*/
+        /* Writes the public key to the 'public.adder.key' file. */
 		pubOut.write(pubKey.toASE().toVerbatim());
 
 
-        /*Writes the private key to the 'private.adder.key' file.*/
+        /* Writes the private key to the 'private.adder.key' file. */
 		privOut.write(privKey.toASE().toVerbatim());
 
+        // clear out the file pointer buffers
 		pubOut.flush();
 		privOut.flush();
-		
+
+        // close the file
 		pubOut.close();
 		privOut.close();
 		
