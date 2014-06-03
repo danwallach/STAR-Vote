@@ -33,23 +33,23 @@ public interface IViewImage {
     /**
      * Get the image.
      * 
-     * @return This method returns the image in the format that the current view
-     *         should expect. The view must cast the object that is returned to
-     *         what it expects. *Check the cast*
+     * @return      the image in the format that the current view should expect.
+     *              The view must cast the object that is returned to what it
+     *              expects. *Check the cast*
      */
     public Object getImage();
 
     /**
      * Get the width of this image.
      * 
-     * @return This method returns the width of this image in pixels.
+     * @return      the width of this image in pixels.
      */
     public int getWidth();
 
     /**
      * Get the height of this image.
      * 
-     * @return This method returns the height of this image in pixels.
+     * @return      the height of this image in pixels.
      */
     public int getHeight();
 }

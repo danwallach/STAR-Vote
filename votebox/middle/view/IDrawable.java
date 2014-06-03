@@ -41,21 +41,20 @@ public interface IDrawable {
     /**
      * From this method, the view can access the image for the IDrawable.
      * 
-     * @return This method returns the image that is associated with this
-     *         drawable for the given size index.
+     * @return      the image that is associated with this drawable for the given size index.
      */
     public abstract IViewImage getImage();
 
     /**
      * Call this method to get the "review screen version" of any particular
      * drawable. The review screen version of a drawable is scaled differently
-     * to fit a particular reveiw screen layout. Note that this method should be
+     * to fit a particular review screen layout. Note that this method should be
      * called on drawables that aren't, themselves, members of the review
      * screen. This method should be called by behavior in said review screen
      * drawables, in the process of determining which image represents the
      * "currently selected drawable" of any given group.
      * 
-     * @return This method returns the review screen version of any drawable.
+     * @return      the review screen version of any drawable.
      */
     public IViewImage getReviewImage();
 
@@ -63,18 +62,16 @@ public interface IDrawable {
      * Call this method to get the properties that were defined for this
      * drawable in the layout XML.
      * 
-     * @return This method returns the properties that were defined for this
-     *         drawable in the layout XML.
+     * @return      the properties that were defined for this drawable in the layout XML.
      */
     public Properties getProperties();
 
     /**
      * Call this method to get the associated group of this drawable.
-     * 
-     * @throws MeaninglessMethodException
-     *             This method throws if this method does is not meaningful for
-     *             the class.
-     * @return This method returns the group for this drawable
+     *
+     * @return      the group for this drawable
+     *
+     * @throws MeaninglessMethodException if this method does is not meaningful for the class.
      */
     public ToggleButtonGroup getGroup() throws MeaninglessMethodException;
 
@@ -82,29 +79,27 @@ public interface IDrawable {
      * The ViewManager will call this method on every drawable after it is
      * created. If the drawable needs to do something, it can here.
      * 
-     * @param viewManagerAdapter
-     *            The drawable can use this adapter to make calls to the view
-     *            manager.
-     * @param ballotLookupAdapter
-     *            The drawable cna use this adapter to look up information in
-     *            the ballot. This adapter cannot affect the ballot's state.
-     * 
-     * @param ballotAdapter
-     *            Use this adapter to change the state of the ballot.
-     * @param viewFactory
-     *            Use this to construct the new images.
-     * @param ballotVars
-     *            The path to the image file is here.
+     * @param viewManagerAdapter    an adapter that can be used by the drawable
+     *                              to make calls to the view manager.
+     *
+     * @param ballotLookupAdapter   an adapter that can be used by the drawable
+     *                              to look up information in the ballot. This
+     *                              adapter cannot affect the ballot's state.
+     *
+     * @param ballotAdapter         an adapter that can be used to change the state
+     *                              of the ballot
+     * @param viewFactory           a factory that can be used to construct the new image
+     *
+     * @param ballotVars            a container holding the path to the image file
      */
-    public void initFromViewManager(IViewManager viewManagerAdapter,
-            IBallotLookupAdapter ballotLookupAdapter, IAdapter ballotAdapter,
-            IViewFactory viewFactory, IBallotVars ballotVars);
+    public void initFromViewManager(IViewManager viewManagerAdapter, IBallotLookupAdapter ballotLookupAdapter,
+                                    IAdapter ballotAdapter, IViewFactory viewFactory, IBallotVars ballotVars);
 
     /**
      * Call this method to get the x-coordinate at which this drawable should be
      * drawn.
      * 
-     * @return The x-coordinate at which this drawable should be drawn.
+     * @return      the x-coordinate at which this drawable should be drawn.
      */
     public int getX();
 
@@ -112,9 +107,8 @@ public interface IDrawable {
      * Call this method to set the x-coordinate at which this drawable should be
      * drawn.
      * 
-     * @param x
-     *            This int will be set as the x-coordinate at which this
-     *            drawable should be drawn.
+     * @param x     an int that will be set as the x-coordinate at which this
+     *              drawable should be drawn.
      */
     public void setX(int x);
 
@@ -122,7 +116,7 @@ public interface IDrawable {
      * Call this method to get the y-coordinate at which this drawable should be
      * drawn.
      * 
-     * @return The y-coordinate at which this drawable should be drawn.
+     * @return      the y-coordinate at which this drawable should be drawn.
      */
     public int getY();
 
@@ -130,24 +124,22 @@ public interface IDrawable {
      * Call this method to set the y-coordinate at which this drawable should be
      * drawn.
      * 
-     * @param y
-     *            This int will be set as the y-coordinate at which this
-     *            drawable should be drawn.
+     * @param y     the int that will be set as the y-coordinate at which this
+     *              drawable should be drawn.
      */
     public void setY(int y);
 
     /**
      * Call this method to get this drawable's unique ID.
      * 
-     * @return This method returns the drawable's uniqueid.
+     * @return      the drawable's uniqueid.
      */
     public String getUniqueID();
 
     /**
      * This method sets which page is the parent of this drawable.
      * 
-     * @param parent
-     *            This page will be set as parent.
+     * @param parent    the page that will be set as the parent.
      */
     public void setParent(RenderPage parent);
 }

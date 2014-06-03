@@ -41,8 +41,7 @@ public interface IView {
     /**
      * Call this method to draw a Drawable element to the display.
      * 
-     * @param element
-     *            This is the drawable that wishes to be drawn.
+     * @param element   the drawable that wishes to be drawn.
      */
     void draw(IDrawable element);
 
@@ -50,9 +49,8 @@ public interface IView {
      * This method invalidates a given element. Calling this method tells the
      * view to reload the texture for a given element, then re-render the display
      * 
-     * @param element
-     *            This is the element which is no longer valid. Reload this
-     *            element's image and re-render it to the display
+     * @param element   the element which is no longer valid. Reload this
+     *                  element's image and re-render it to the display
      */
     void invalidate(IDrawable element);
 
@@ -60,9 +58,8 @@ public interface IView {
      * Call this method to identify a drawable to use as the background image.
      * This should not be a drawable that is used as an argument to "draw"
      * 
-     * @param element
-     *            This is the element which will be identified as the background
-     *            image.
+     * @param element   the element which will be identified as the background
+     *                  image.
      */
     void setBackground(IDrawable element);
 
@@ -72,10 +69,8 @@ public interface IView {
      * involves asking a view to dispatch events of a certain abstract type to a
      * queue that the requester provides.
      * 
-     * @param eventType
-     *            This is the abstract event type that is being registered on.
-     * @param lambda
-     *            Execute this handler when the event happens.
+     * @param eventType     the abstract event type that is being registered on.
+     * @param lambda        the handler to be executed when the event happens
      */
     void register(EventType eventType, IEventHandler lambda);
 
@@ -91,8 +86,7 @@ public interface IView {
      * event loop. Before the loop starts, and after the initialization, a given
      * lambda is executed.
      * 
-     * @param lambda
-     *            Run this lambda before the loop.
+     * @param lambda    the lambda to be run before the loop
      */
     void run(Runnable lambda);
 
@@ -109,14 +103,14 @@ public interface IView {
     /**
      * Gets the frame for use by the write-in GUI
      *
-     * @return the frame
+     * @return      the frame
      */
     public Frame getFrame();
 
     /**
      * Gets the Frame's background so it can be redrawn
      *
-     * @return the IDrawable background
+     * @return      the IDrawable background
      */
     public IDrawable getBackground();
 }

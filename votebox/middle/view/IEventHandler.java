@@ -33,9 +33,8 @@ public interface IEventHandler {
     /**
      * Handle the event that happened in the view.
      * 
-     * @param event
-     *            These are event parameters that might be needed when handling
-     *            the event.
+     * @param event     event parameters that might be needed when
+     *                  handling the event.
      */
     public void handle(InputEvent event);
 }
