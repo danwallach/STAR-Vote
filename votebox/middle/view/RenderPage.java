@@ -55,9 +55,7 @@ public class RenderPage {
         private String _uid;
 
         public ElementNotFoundException(String uid) {
-            super(
-                    "When attempting to resolve 'direction links' in a page, the uid "
-                            + uid + " was not recognized to be valid." );
+            super("When attempting to resolve 'direction links' in a page, the uid "+ uid + " was not recognized to be valid." );
             _uid = uid;
         }
 
@@ -89,11 +87,8 @@ public class RenderPage {
     /**
      * This is RenderPage's constructor
      * 
-     * @param children
-     *            This parameter will be assigned to the layout for this
-     *            RenderPage.
-     * @param properties
-     *            Properties associated with this page.
+     * @param children      the children to be assigned to the layout for this RenderPage.
+     * @param properties    the properties to be associated with this page.
      */
     public RenderPage(List<IDrawable> children, Properties properties) {
         _children = children;
@@ -104,7 +99,7 @@ public class RenderPage {
     /**
      * Accessor for this RenderPage's properties.
      * 
-     * @return properties for this RenderPage
+     * @return      properties for this RenderPage
      */
     public Properties getProperties(){
     	return _properties;
@@ -121,8 +116,7 @@ public class RenderPage {
     /**
      * Set the parent reference.
      * 
-     * @param parent
-     *            This is the layout that will get set as the parent.
+     * @param parent    the layout that will get set as the parent.
      */
     public void setParent(Layout parent) {
         _parent = parent;
@@ -131,7 +125,7 @@ public class RenderPage {
     /**
      * Get a reference to the parent layout.
      * 
-     * @return This method returns a reference to the parent layout.
+     * @return      a reference to the parent layout.
      */
     public Layout getParent() {
         return _parent;
@@ -147,60 +141,53 @@ public class RenderPage {
      * the screen.
      * 
      * 
-     * @param uidmap
-     *            This method will use this mapping of uid->element to "connect
-     *            the dots." When an element references another element, it will
-     *            use this map to determine what the actual object reference is
-     *            for that element.
-     * @throws Exception
-     *             This method throws if any element references a UID that is
-     *             not in uidmap.
+     * @param uidmap    mapping of uid->element used to "connect the dots." When an
+     *                  element references another element, it will use this map to
+     *                  determine what the actual object reference is for that element.
+     *
+     * @throws LayoutParserException if any element references a UID that is not in uidmap.
      */
     public void setNavigation(HashMap<String, LinkedList<IDrawable>> uidmap)
             throws LayoutParserException {
 
-
         try {
-            // Go through each card and "connect the dots."
+
+            /* Go through each card and "connect the dots." */
             for (IDrawable drawable : _children) {
 
                 if (drawable instanceof IFocusable) {
-                    IFocusable rce = (IFocusable) drawable;
 
-                    System.out.println(">>>>>>>>>" + rce.getUniqueID());
+                    IFocusable rce  = (IFocusable) drawable;
+                    Properties rceP = rce.getProperties();
 
-                    if (rce.getProperties().contains( Properties.UP ))
-                        rce.setUp( getFromDictionary( rce.getProperties()
-                                .getString( Properties.UP ), uidmap ) );
-                    if (rce.getProperties().contains( Properties.DOWN ))
-                        rce.setDown( getFromDictionary( rce.getProperties()
-                                .getString( Properties.DOWN ), uidmap ) );
-                    if (rce.getProperties().contains( Properties.LEFT ))
-                        rce.setLeft( getFromDictionary( rce.getProperties()
-                                .getString( Properties.LEFT ), uidmap ) );
-                    if (rce.getProperties().contains( Properties.RIGHT ))
-                        rce.setRight( getFromDictionary( rce.getProperties()
-                                .getString( Properties.RIGHT ), uidmap ) );
-                    if (rce.getProperties().contains( Properties.NEXT ))
-                        rce.setNext( getFromDictionary( rce.getProperties()
-                                .getString( Properties.NEXT ), uidmap ) );
-                    if (rce.getProperties().contains( Properties.PREVIOUS ))
-                        rce.setPrevious( getFromDictionary( rce.getProperties()
-                                .getString( Properties.PREVIOUS ), uidmap ) );
+                    /* TODO can we get rid of some of this by adding a function into rce? */
+                    if (rceP.contains(Properties.UP))
+                        rce.setUp(getFromDictionary(rceP.getString(Properties.UP), uidmap));
+
+                    if (rceP.contains(Properties.DOWN))
+                        rce.setDown(getFromDictionary(rceP.getString(Properties.DOWN), uidmap));
+
+                    if (rceP.contains(Properties.LEFT))
+                        rce.setLeft(getFromDictionary(rceP.getString(Properties.LEFT), uidmap));
+
+                    if (rceP.contains(Properties.RIGHT))
+                        rce.setRight(getFromDictionary(rceP.getString(Properties.RIGHT), uidmap));
+
+                    if (rceP.contains(Properties.NEXT))
+                        rce.setNext(getFromDictionary(rceP.getString(Properties.NEXT), uidmap));
+
+                    if (rceP.contains(Properties.PREVIOUS))
+                        rce.setPrevious(getFromDictionary(rceP.getString(Properties.PREVIOUS), uidmap));
                 }
             }
         }
         catch (ElementNotFoundException e) {
-            throw new LayoutParserException(
-                    "While setting the navigation links, " + e.getUID()
-                            + " was found to be an invalid ID", e );
+            throw new LayoutParserException("While setting the navigation links, " + e.getUID() + " was found to be an invalid ID", e);
         }
         catch (IncorrectTypeException e) {
-            throw new LayoutParserException(
-                    "While setting the navigation links, "
-                            + e.getActual()
-                            + " was the found type of a direction property. Please ensure that all direction properties have type 'String'",
-                    e );
+            throw new LayoutParserException("While setting the navigation links, " + e.getActual() + " was the found" +
+                                            " type of a direction property. Please ensure that all direction properties" +
+                                            " have type 'String'", e);
         }
     }
 
@@ -212,31 +199,28 @@ public class RenderPage {
      * be the first item that is drawn to the display, meaning that all items
      * drawn after the first will be layered on top of the first item.
      * 
-     * @param uidmap
-     *            This is a mapping from uid->drawable. This is convenient to
-     *            have in this method.
-     * @throws IncorrectTypeException
-     *             This method throws if the property was declared incorrectly.
+     * @param uidmap    a mapping from uid->drawable
+     *
+     * @throws LayoutParserException if the property was declared incorrectly.
      */
-    public void setBackgroundImage(HashMap<String, LinkedList<IDrawable>> uidmap)
-            throws LayoutParserException {
+    public void setBackgroundImage(HashMap<String, LinkedList<IDrawable>> uidmap) throws LayoutParserException {
+
         try {
+
             if (_properties.contains( Properties.BACKGROUND_LABEL )) {
-                String uid = _properties
-                        .getString( Properties.BACKGROUND_LABEL );
-                if (uidmap.containsKey( uid )) {
-                    _background = uidmap.get( uid ).get( 0 );
-                }
+
+                String uid = _properties.getString(Properties.BACKGROUND_LABEL);
+
+                if (uidmap.containsKey(uid))
+                    _background = uidmap.get(uid).get(0);
                 else
-                    throw new LayoutParserException(
-                            "BackgroundLabel property set to uid " + uid
-                                    + " which does not exist.", null );
+                    throw new LayoutParserException("BackgroundLabel property set to uid " + uid + " which does not exist.", null);
             }
+
         }
         catch (IncorrectTypeException e) {
-            throw new LayoutParserException(
-                    "We found that the 'BackgroundLabel' property was set to type "
-                            + e.getActual() + ". This should be a string.", e );
+            throw new LayoutParserException("We found that the 'BackgroundLabel' property was set to type " +
+                                            e.getActual() + ". This should be a string.", e);
         }
     }
 
@@ -245,44 +229,38 @@ public class RenderPage {
      * a lookup in the uidmap provided and return the RenderCardElement that is
      * mapped to a given uid.
      * 
-     * @param uid
-     *            The method will look up this uid.
-     * @param uidmap
-     *            The method will look up uid in this mapping of uid->element.
-     * @return This method will return the RenderCardElement which is mapped to
-     *         uid.
-     * @throws Exception
-     *             This method will throw if there is no mapping in uidmap for
-     *             uid.
+     * @param uid       the UID to be looked up by this method
+     * @param uidmap    the mapping of UID->element where the method will look for the UID
+     * @return          the RenderCardElement which is mapped to the UID.
+     *
+     * @throws ElementNotFoundException if there is no mapping in uidmap for UID.
      */
-    private IFocusable getFromDictionary(String uid,
-            HashMap<String, LinkedList<IDrawable>> uidmap)
-            throws ElementNotFoundException {
-        if (uidmap.containsKey( uid )
-                && uidmap.get( uid ).get( 0 ) instanceof IFocusable)
-            return (IFocusable) uidmap.get( uid ).get( 0 );
-        throw new ElementNotFoundException( uid );
+    private IFocusable getFromDictionary(String uid, HashMap<String, LinkedList<IDrawable>> uidmap) throws ElementNotFoundException {
 
+        if (uidmap.containsKey(uid))
+            if(uidmap.get(uid).get(0) instanceof IFocusable)
+                return (IFocusable) uidmap.get( uid ).get( 0 );
+
+        throw new ElementNotFoundException( uid );
     }
 
     /**
      * 
      * Call this method to draw this RenderPage to a view.
      * 
-     * @param view
-     *            Draw the card to this view.
+     * @param view  the view to which the RenderPage will be drawn
      */
     public void draw(IView view) {
-        view.setBackground( _background );
+
+        view.setBackground(_background);
         for (IDrawable dt : _children)
-            view.draw( dt );
+            view.draw(dt);
     }
 
     /**
      * Call this method to get the elements that make up this page.
      * 
-     * @return _children This method returns a list of all the elements that
-     *         belong to this page.
+     * @return      _children (a list of all the elements that belong to this page)
      */
     public List<IDrawable> getChildren() {
         return _children;
@@ -294,26 +272,24 @@ public class RenderPage {
      * setting/syncing with the ballot. Here, we simply call initFromViewManager
      * on each of the child elements.
      * 
-     * @param vmadapter
-     *            The child elements will use this adapter as a reference to the
-     *            view manager.
-     * @param lookupadapter
-     *            The child elements will use this adapter to make queries on
-     *            the state of the ballot.
-     * @param ballotadapter
-     *            The child elements will use this adapter to make changes to
-     *            the state of the ballot.
-     * @param factory
-     *            Use this factory to make new images.
-     * @param ballotvars
-     *            Use this to find the path to the image files.
+     * @param vmadapter         an adapter to be used by the child elements as
+     *                          a reference to the view manager
+     *
+     * @param lookupadapter     an adapter to be used by the child elements to
+     *                          make queries on the state of the ballot
+     *
+     * @param ballotadapter     an adapter to be used by the child elements to
+     *                          make changes to the state of the ballot
+     *
+     * @param factory           a factory used to make new images
+     *
+     * @param ballotvars        a container used to find the path to image files
      */
-    public void initFromViewManager(IViewManager vmadapter,
-            IBallotLookupAdapter lookupadapter, IAdapter ballotadapter,
+    public void initFromViewManager(IViewManager vmadapter, IBallotLookupAdapter lookupadapter, IAdapter ballotadapter,
             IViewFactory factory, IBallotVars ballotvars) {
+
         for (IDrawable d : _children)
-            d.initFromViewManager( vmadapter, lookupadapter, ballotadapter,
-                factory, ballotvars );
+            d.initFromViewManager(vmadapter, lookupadapter, ballotadapter, factory, ballotvars);
     }
     
     /**
@@ -322,10 +298,9 @@ public class RenderPage {
     public List<String> getUniqueIDs(){
     	List<String> ret = new ArrayList<String>();
     	
-    	for(IDrawable child : _children){
+    	for(IDrawable child : _children)
     		ret.add(child.getUniqueID());
-    	}
-    	
+
     	return ret;
     }
 }
