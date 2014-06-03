@@ -33,19 +33,18 @@ public abstract class AView implements IView, Runnable{
     protected final HashMap<IDrawable, Rectangle> _hitboxMap;
     protected final LinkedList<IDrawable> _currentDrawables;
     protected final HashMap<EventType, IEventHandler> _handlers;
+
     protected int _yoffset;
     protected IDrawable _background;
 
-
-    
-    private Thread _eventDispatcher = new Thread(this);
-    private List<Object[]> _pendingEvents = new ArrayList<Object[]>();
+    private Thread _eventDispatcher         = new Thread(this);
+    private List<Object[]> _pendingEvents   = new ArrayList<Object[]>();
     
     protected AView() {
         _hitboxMap = new HashMap<IDrawable, Rectangle>();
         _currentDrawables = new LinkedList<IDrawable>();
         _handlers = new HashMap<EventType, IEventHandler>();
-        
+
         _eventDispatcher.start();
     }
 
@@ -53,9 +52,9 @@ public abstract class AView implements IView, Runnable{
      * @see votebox.middle.view.IView#draw(votebox.middle.view.IDrawable)
      */
     public void draw(IDrawable element) {
-        _currentDrawables.add( element );
-        _hitboxMap.put( element, makeHitBox( element ) );
-        invalidate( element );
+        _currentDrawables.add(element);
+        _hitboxMap.put(element, makeHitBox(element));
+        invalidate(element);
     }
 
     /**
@@ -77,47 +76,38 @@ public abstract class AView implements IView, Runnable{
      * Call this method to create a rectangle that appropriately represents the
      * hit box of a given drawable.
      * 
-     * @param drawable
-     *            This is the given drawable.
-     * @return This method returns the rectangle that represents the hitbox of
-     *         drawable.
-     * @throws Exception
-     *             This method throws an exception if the drawable does not know
-     *             its image and has a problem finding it.
+     * @param drawable the given drawable.
+     * @return the rectangle that represents the hitbox of drawable.
      */
     protected Rectangle makeHitBox(IDrawable drawable) {
-        return new Rectangle( drawable.getX(), drawable.getY() + _yoffset,
-                drawable.getImage().getWidth(), drawable.getImage().getHeight() );
+        return new Rectangle(drawable.getX(), drawable.getY() + _yoffset, drawable.getImage().getWidth(), drawable.getImage().getHeight());
     }
 
     /**
      * Get the focusable which covers a given (x,y) coordinate.
      * 
-     * @param x
-     *            This is the given x-coordinate.
-     * @param y
-     *            This is the given y-coordinate.
-     * @return This method returns the focusable which contains the given
-     *         coordinate pair, or null if there is no focusable associated with
-     *         the pair.
+     * @param x the given x-coordinate.
+     * @param y the given y-coordinate.
+     * @return  the focusable which contains the given coordinate pair, or null
+     *          if there is no focusable associated with the pair.
      */
     protected IDrawable getFocusableFromHitbox(int x, int y) {
+
         for (IDrawable d : _hitboxMap.keySet())
-            if (d instanceof IFocusable && _hitboxMap.get( d ).contains( x, y ))
+            if (d instanceof IFocusable && _hitboxMap.get(d).contains(x, y))
                 return d;
+
         return null;
     }
 
     /**
      * If a given event type has been registered for, execute its handler.  Returns immediately.
      * 
-     * @param type
-     *            If this type of event has been registered for, execute the
-     *            handler.
-     * @param event
-     *            This structure wraps information about the event.
+     * @param type  the event type against which event will be checked
+     * @param event the event wrapper to be checked
      */
     protected void deliver(final EventType type, final InputEvent event) {
+
     	synchronized(_pendingEvents){
     	  _pendingEvents.add(new Object[]{type, event});
     	  _pendingEvents.notify();
@@ -128,17 +118,20 @@ public abstract class AView implements IView, Runnable{
      * Dispatches events (in the order of their arrival)
      */
     public void run(){
+
     	while(true){
+
     		synchronized(_pendingEvents){
+
     			while(_pendingEvents.size() == 0)
-					try {
-						_pendingEvents.wait();
-					} catch (InterruptedException e) {}
+					try { _pendingEvents.wait();
+					} catch (InterruptedException e) { e.printStackTrace(); }
     			
     			while(_pendingEvents.size() > 0){
-    				Object[] params = _pendingEvents.remove(0);
-    				EventType type = (EventType)params[0];
-    				InputEvent event = (InputEvent)params[1];
+
+    				Object[] params     = _pendingEvents.remove(0);
+    				EventType type      = (EventType)params[0];
+    				InputEvent event    = (InputEvent)params[1];
     				
     				if(_handlers.containsKey(type))
     					_handlers.get(type).handle(event);
@@ -147,7 +140,7 @@ public abstract class AView implements IView, Runnable{
     	}
     }
 
-    public IDrawable getBakground(){
+    public IDrawable getBackground(){
         return _background;
     }
 }

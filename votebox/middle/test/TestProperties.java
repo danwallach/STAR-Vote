@@ -72,7 +72,7 @@ public class TestProperties extends TestCase {
         Properties p = new Properties();
 
         try {
-            p.add( "key", "value", "randomtype" );
+            p.add("key", "value", "randomtype");
             assertFalse( true );
         }
         catch (UnknownTypeException e) { assertEquals("randomtype", e.getType()); }
