@@ -39,10 +39,8 @@ public class LayoutParserException extends Exception {
 	/**
 	 * Public constructor.
 	 * 
-	 * @param message
-	 *            This is a message that is descriptive of the problem.
-	 * @param cause
-	 *            This is the exception that caused the problem.
+	 * @param message   a message that is descriptive of the problem.
+	 * @param cause     the exception that caused the problem.
 	 */
 	public LayoutParserException(String message, Exception cause) {
 		super(message, cause);

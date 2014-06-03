@@ -31,20 +31,19 @@ package votebox.middle.view;
 public class UnsupportedLanguageException extends Exception {
 
 	/**
-	 * default serial version uid.
+	 * Default serial version uid.
 	 */
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * This is the language that isn't supported.
+	 * The language that isn't supported.
 	 */
 	private String _language;
 	
 	/**
 	 * This is the public constructor for UnsupportedLanguageException
 	 * 
-	 * @param language
-	 *            This is the language that isn't supported.
+	 * @param language      the language that isn't supported.
 	 */
 	public UnsupportedLanguageException(String language) {
 		super(language + "is not supported in this ballot.");

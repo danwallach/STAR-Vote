@@ -48,7 +48,6 @@ import org.xml.sax.SAXException;
 
 import votebox.AuditoriumParams;
 import votebox.middle.*;
-import votebox.middle.ballot.BallotParserException;
 import votebox.middle.view.widget.*;
 
 
@@ -84,7 +83,7 @@ public class LayoutParser {
     /**
      * A constructor so we can get election parameters in to this class
      *
-     * @param constants - election parameters
+     * @param constants     election parameters
      */
     public LayoutParser(AuditoriumParams constants){
         this.constants = constants;
@@ -97,9 +96,12 @@ public class LayoutParser {
      * shuffled candidate order it's fine for now.
      */
     public LayoutParser(){
-        //Since this is always run with Votebox, we can sort of cheat and assume there will be a
-        //vb.conf file. Of course if there isn't, people will be confused about why they see two
-        //"Could not parse..." messages
+        /*
+          Since this is always run with Votebox, we can sort of cheat and assume there will be a
+          vb.conf file. Of course if there isn't, people will be confused about why they see two
+          "Could not parse..." messages
+        */
+
         constants = new AuditoriumParams("vb.conf");
     }
 
@@ -108,229 +110,203 @@ public class LayoutParser {
      * translate a layout xml file to a dom tree (as an intermediate
      * representation), then, primarily, to a ballot object.
      * 
-     * @param vars
-     *            This method needs to know where to look for xml files and
-     *            media. It gets this information from this parameter
-     * @param size
-     *            The parser needs to know which layout xml file to read. This
-     *            parameter specifies the size index.
-     * @param lang
-     *            The parser needs to know which layout xml file to read. This
-     *            paramter specifies the language.
-     * @return This method returns the Layout object which represents the parsed
-     *         and translated layout xml file.
-     * @throws Exception
-     *             This method throws if the xml file or schema could not be
-     *             read, if the schema did not validate, or upon further testing
-     *             of our own, the layout content is not valid.
+     * @param vars      where to look for xml files and media
+     * @param size      the size index of the layout xml file to read
+     * @param lang      the language of the layout xml file to read
+     * @return          the Layout object which represents the parsed and translated layout xml file.
+     *
+     * @throws LayoutParserException if the xml file or schema could not be read, if the schema did not validate,
+     *                               or upon further testing of our own, the layout content is not valid.
      */
-    public Layout getLayout(IBallotVars vars, int size, String lang, IView view)
-            throws LayoutParserException {
+    public Layout getLayout(IBallotVars vars, int size, String lang, IView view) throws LayoutParserException {
+
         _drawables = new HashMap<String, LinkedList<IDrawable>>();
 
-        // document = new Document(); // sometimes patterns suck
         Document document;
-        try {
-            document = DocumentBuilderFactory.newInstance()
-                    .newDocumentBuilder().newDocument();
-        }
+
+        try { document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument(); }
         catch (ParserConfigurationException e) {
-            throw new LayoutParserException(
-                    "Internal Error. Could not get a new XML 'Document'.", e );
+            throw new LayoutParserException("Internal Error. Could not get a new XML 'Document'.", e);
         }
 
-        // parse layout xml -> dom tree.
+        /* Parse layout xml -> dom tree. */
         try {
             TransformerFactory.newInstance().newTransformer().transform(
-                new StreamSource( new File( vars.getLayoutFile() + "_" + size
-                        + "_" + lang + ".xml" ) ), new DOMResult( document ) );
+                new StreamSource(new File(vars.getLayoutFile() + "_" + size + "_" + lang + ".xml")), new DOMResult(document));
         }
         catch (TransformerConfigurationException e) {
-            throw new LayoutParserException(
-                    "Internal Error. Could not get a new 'transformer'.", e );
+            throw new LayoutParserException("Internal Error. Could not get a new 'transformer'.", e);
         }
         catch (TransformerException e) {
-            throw new LayoutParserException(
-                    "The XML you have given for size "
-                            + size
-                            + ", language "
-                            + lang
-                            + " is unparseable. The XML is probably not formed correctly.",
-                    e );
+            throw new LayoutParserException("The XML you have given for size " + size + ", language " + lang +
+                                            " is unparseable. The XML is probably not formed correctly.", e);
         }
 
-        // validate the dom tree against our schema
+        /* Validate the dom tree against our schema */
         try {
-            SchemaFactory.newInstance( XMLConstants.W3C_XML_SCHEMA_NS_URI )
-                    .newSchema( vars.getLayoutSchema() ).newValidator()
-                    .validate( new DOMSource( document ) );
+            SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI).newSchema(vars.getLayoutSchema())
+                    .newValidator().validate(new DOMSource(document));
         }
-        catch (SAXException e) {
-            throw new LayoutParserException(
-                    "Could not validate the XML against the schema.", e );
-        }
-        catch (IOException e) {
-            throw new LayoutParserException(
-                    "Internal Error. The schema against which the XML is validated could not be loaded.",
-                    e );
-        }
+        catch (SAXException e) { throw new LayoutParserException("Could not validate the XML against the schema.", e); }
+        catch (IOException e)  { throw new LayoutParserException("Internal Error. The schema against which the XML is validated could not be loaded.", e); }
 
-        // translate dom tree -> Layout object.
-        return parseLayout( document.getElementsByTagName( "Layout" ).item( 0 ), view );
+        /* Translate dom tree -> Layout object. */
+        return parseLayout(document.getElementsByTagName("Layout").item(0), view);
     }
 
     /**
      * This method interprets a given dom node as being of the layout type. This
      * method will convert the given dom node to a Layout object
      * 
-     * @param node
-     *            This is the dom node that is interpreted as being of type
-     *            layout *
-     * @return This method returns the newly constructed Layout object.
+     * @param node      the dom node that is interpreted as being of type layout *
+     * @return          the newly constructed Layout object.
      */
     private Layout parseLayout(Node node, IView view) throws LayoutParserException {
-        NodeList children = node.getChildNodes();
+
+        NodeList children           = node.getChildNodes();
         ArrayList<RenderPage> pages = new ArrayList<RenderPage>();
-        Properties properties = new Properties();
+        Properties properties       = new Properties();
 
-        // Children can either be properties or pages
+        /* Children can either be properties or pages */
         for (int lcv = 0; lcv < children.getLength(); lcv++) {
-            Node child = children.item( lcv );
 
-            if (child.getNodeName().equals( "Property" ))
-                parseProperties( child, properties );
-            else if (child.getNodeName().equals( "ListProperty" ))
-                parseListProperties( child, properties );
-            else if (child.getNodeName().equals( "Page" ))
-                pages.add( parsePage( child, view ) );
-            else if (child.getNodeName().equals( "#text" ))
-                ;// Do nothing
-            else
-                throw new LayoutParserException(
-                        "I don't recognize " + child.getNodeName()
-                                + " as being a Property or Page.", null );
+            Node child = children.item(lcv);
+            String childName = child.getNodeName();
+
+            switch(childName) {
+
+                case "Property":
+                case "ListProperty":    parseProperties(child, properties);
+                                        break;
+
+                case "Page":            pages.add(parsePage(child, view));
+                                        break;
+
+                case "#text":           break;
+
+                default:                throw new LayoutParserException("I don't recognize " + child.getNodeName() +
+                                                                        " as being a Property or Page.", null );
+
+            }
+
         }
 
-        return new Layout( properties, pages, _drawables );
+        return new Layout(properties, pages, _drawables);
     }
 
     /**
      * This method is a helper to parseLayout. This method converts a dom node
      * into a RenderPage object.
      * 
-     * @param node
-     *            This is the page node which is interpreted as a page.
-     * @return This method returns the RenderPage object that represents the
-     *         given dom page.
+     * @param node      the page node which is interpreted as a page.
+     * @return          the RenderPage object that represents the given dom page.
      */
     private RenderPage parsePage(Node node, IView view) throws LayoutParserException {
+
         NodeList children = node.getChildNodes();
         ArrayList<IDrawable> drawables = new ArrayList<IDrawable>();
         Properties properties = new Properties();
 
         for (int lcv = 0; lcv < children.getLength(); lcv++) {
-            Node child = children.item( lcv );
 
-            if (child.getNodeName().equals( "ToggleButtonGroup" ))
-                parseToggleGroup( drawables, child, view );
-            else if (child.getNodeName().equals( "Button" )
-                    || child.getNodeName().equals( "Label" )) {
-//                System.out.println("Found " + parseDrawable(child, null).getUniqueID() +
-//                " with next " + parseDrawable( child, null ).getProperties().NEXT);
-                drawables.add(parseDrawable(child, null, view));
+            Node child = children.item(lcv);
+
+            String childName = child.getNodeName();
+
+            switch(childName) {
+
+                case "ToggleButtonGroup":   parseToggleGroup(drawables, child, view);
+                                            break;
+
+                case "Button":
+                case "Label":               drawables.add(parseDrawable(child, null, view));
+                                            break;
+
+                case "#text":               break;
+
+                case "Property":            parseProperties(child, properties);
+                                            break;
+
+                case "ListProperty":        parseListProperties(child, properties);
+                                            break;
+
+                default:                    throw new LayoutParserException("I don't recognize " + child.getNodeName() +
+                                            " as being a ToggleButtonGroup, Button, or FocusableLabel", null);
 
             }
-            else if (child.getNodeName().equals( "#text" ))
-                ; // Do Nothing
-            else if (child.getNodeName().equals( "Property" ))
-                parseProperties( child, properties );
-            else if (child.getNodeName().equals( "ListProperty" ))
-                parseListProperties( child, properties );
-            else
-                throw new LayoutParserException( "I don't recognize "
-                        + child.getNodeName()
-                        + " as being a ToggleButtonGroup, Button, or FocusableLabel",
-                        null );
 
         }
 
-        RenderPage rp = new RenderPage( drawables, properties );
-//        System.out.println("Setting up the navigation");
-        rp.setNavigation(_drawables);
-//        for(IDrawable d : rp.getChildren()){
-//            if(d instanceof IFocusable){
-//                System.out.println("Next of " + d.getUniqueID() + " is " + ((IFocusable) d).getNext());
-//            }
-//        }
+        RenderPage rp = new RenderPage(drawables, properties);
 
-        rp.setBackgroundImage( _drawables );
+        rp.setNavigation(_drawables);
+        rp.setBackgroundImage(_drawables);
+
         return rp;
     }
 
     /**
-     * This method is a helper to parsePage. This method converts a dom node
-     * into a ToggleButtonGroup.
+     * This method is a helper to parsePage. This method converts a dom node into a ToggleButtonGroup.
+     * Membership in a group does not place toggle buttons as members of the layout. Groups only serve
+     * the purpose of implementing select/deselect strategies.
      * 
-     * @param list
-     *            This method will add all children toggle buttons to this list
-     *            of togglebuttons, as membership in a group does not place
-     *            toggle buttons as members of the layout. Groups only serve the
-     *            purpose of implenting select/deselect strategies.
-     * @param node
-     *            This is the node that is interpreted as the toggle button
-     *            group.
+     * @param list      the list of togglebuttons to which all children toggle buttons will be added
+     * @param node      the node that is interpreted as the toggle button group.
      */
-    private void parseToggleGroup(ArrayList<IDrawable> list, Node node, IView view)
-            throws LayoutParserException {
-        NodeList children = node.getChildNodes();
-        Properties properties = new Properties();
+    private void parseToggleGroup(ArrayList<IDrawable> list, Node node, IView view) throws LayoutParserException {
+
+        NodeList children       = node.getChildNodes();
+        Properties properties   = new Properties();
         ToggleButtonGroup group = new ToggleButtonGroup( properties );
 
         ArrayList<ToggleButton> buttons = new ArrayList<ToggleButton>();
-        ArrayList<Integer> verticals = new ArrayList<Integer>();
+        ArrayList<Integer> verticals    = new ArrayList<Integer>();
 
         for (int lcv = 0; lcv < children.getLength(); lcv++) {
-            Node child = children.item( lcv );
 
-            if (child.getNodeName().equals( "Property" ))
-                parseProperties( child, properties );
-            else if (child.getNodeName().equals( "ListProperty" ))
-                parseListProperties( child, properties );
-            else if (child.getNodeName().equals( "WriteInToggleButton" )) {
-                WriteInToggleButton button = (WriteInToggleButton) parseDrawable( child,
-                        group, view );
-                verticals.add(button.getY());
-                buttons.add(button);
+            Node child = children.item(lcv);
+            String childName = child.getNodeName();
+
+            switch(childName) {
+
+                case "ToggleButtonGroup":   ToggleButton button = (ToggleButton) parseDrawable(child, group, view);
+                                            verticals.add(button.getY());
+                                            buttons.add(button);
+                                            break;
+
+                case "#text":               break;
+
+                case "Property":            parseProperties(child, properties);
+                                            break;
+
+                case "ListProperty":        parseListProperties(child, properties);
+                                            break;
+
+                case "WriteInToggleButton": WriteInToggleButton wButton = (WriteInToggleButton) parseDrawable(child, group, view);
+                                            verticals.add(wButton.getY());
+                                            buttons.add(wButton);
+
+                default:                    throw new LayoutParserException("I don't recognize " + child.getNodeName() +
+                                                                            " as a property or toggle button.", null );
 
             }
-            else if (child.getNodeName().equals( "ToggleButton" )) {
-                ToggleButton button = (ToggleButton) parseDrawable( child,
-                    group, view );
-                verticals.add(button.getY());
-                buttons.add(button);
 
-            }
-            else if (child.getNodeName().equals( "#text" ))
-                ; // Do nothing
-            else
-                throw new LayoutParserException( "I don't recognize "
-                        + child.getNodeName()
-                        + " as a property or toggle button.", null );
         }
 
-        //Now mix the buttons so that they are displayed in random order
-        //If this election is configured that way (it won't be in Texas, most likely)
-        if(constants.shuffleCandidates()){
-            Collections.shuffle(verticals);
-        }
+        /* Now mix the buttons so that they are displayed in random order if this election is configured that way
+           (it most likely won't be in Texas) */
+        if(constants.shuffleCandidates()) Collections.shuffle(verticals);
 
 
-        for(int i = 0; i < buttons.size(); i++){
-            ToggleButton b = buttons.get(i);
+        int i = 0;
+
+        for(ToggleButton b : buttons){
+
             b.setY(verticals.get(i));
+            group.getButtons().add(b);
+            list.add(b);
 
-            group.getButtons().add( b );
-            list.add( b );
+            i++;
         }
     }
 
@@ -338,81 +314,96 @@ public class LayoutParser {
      * This method is a helper to parseToggleGroup and to parsePage. This method
      * converts a dom node into an IDrawable.
      * 
-     * @param node
-     *            This is the node which will be interpreted as an IDrawable.
-     * @param group
-     *            This is the group that this node needs to belong to. Pass null
-     *            here if this drawable does not belong to a group (or if a
-     *            group makes no sense -- IE label, etc.)
-     * @return This method returns the newly constructed drawable which
-     *         represents the given dom node.
-     * @throws Exception
-     *             This method throws if its helpers throw or if one of its
-     *             children is not a property.
+     * @param node      the node which will be interpreted as an IDrawable.
+     * @param group     the group that this node needs to belong to. Pass null
+     *                  here if this drawable does not belong to a group (or if a
+     *                  group makes no sense -- IE label, etc.)
+     * @return          the newly constructed drawable which represents the given dom node.
+     *
+     * @throws LayoutParserException if its helpers throw or if one of its children is not a property.
      */
-    private IDrawable parseDrawable(Node node, ToggleButtonGroup group, IView view)
-            throws LayoutParserException {
+    private IDrawable parseDrawable(Node node, ToggleButtonGroup group, IView view) throws LayoutParserException {
+
         NamedNodeMap nodeAttributes = node.getAttributes();
         NodeList children = node.getChildNodes();
 
-        // Extract the drawable's unique id.
-        String uniqueID = nodeAttributes.getNamedItem( "uid" ).getNodeValue();
+        /* Extract the drawable's unique id. */
+        String uniqueID = nodeAttributes.getNamedItem("uid").getNodeValue();
 
-        // Parse all the properties.
         Properties properties = new Properties();
+
+        /* Parse all the properties. */
         for (int lcv = 0; lcv < children.getLength(); lcv++) {
-            Node child = children.item( lcv );
 
-            if (child.getNodeName().equals( "Property" ))
-                parseProperties( child, properties );
-            else if (child.getNodeName().equals( "ListProperty" ))
-                parseListProperties( child, properties );
-            else if (child.getNodeName().equals( "#text" ))
-                ; // Do nothing
-            else
-                throw new LayoutParserException( "I don't recognize "
-                        + child.getNodeName() + " as a property.", null );
-        }
+            Node child = children.item(lcv);
+            String childName = child.getNodeName();
 
-        // Create the new drawable
-        IDrawable drawable = null;
-        if (node.getNodeName().equals( "Label" )) {
-            try{
-                //If this node does not have any direction properties, it shouldn't be focusable
-                if(properties.getString("Down") == null && properties.getString("Up") == null
-                        && properties.getString("Left") == null && properties.getString("Right") == null
-                        && properties.getString("Next") == null && properties.getString("Previous") == null)
-                    drawable = new Label( uniqueID, properties);
-                else
-                    drawable = new FocusableLabel( uniqueID, properties );
-            } catch(IncorrectTypeException e){
-                throw new RuntimeException(e);
+            switch(childName) {
+
+                case "Property":        parseListProperties(child, properties);
+                                        break;
+
+                case "ListProperty":    parseProperties(child, properties);
+                                        break;
+
+                case "#text":           break;
+
+                default:                throw new LayoutParserException("I don't recognize " + child.getNodeName() +
+                                                                        " as a property.", null);
+
             }
         }
-        else if (node.getNodeName().equals( "Button" )) {
-            drawable = new Button( uniqueID, properties );
-        }
-        //TODO XML this
-        else if (node.getNodeName().equals("WriteInToggleButton")){
-            drawable = new WriteInToggleButton(group, uniqueID,  properties, view);
-        }
-        else {
-            drawable = new ToggleButton( group, uniqueID, properties );
+
+        /* Create the new drawable */
+        IDrawable drawable;
+        String nodeName = node.getNodeName();
+
+        switch(nodeName) {
+
+            case "Label":
+
+                try{
+
+                    boolean allNull = properties.getString("Down") == null && properties.getString("Up")        == null &&
+                                      properties.getString("Left") == null && properties.getString("Right")     == null &&
+                                      properties.getString("Next") == null && properties.getString("Previous")  == null;
+
+                    /* If this node does not have any direction properties, it shouldn't be focusable */
+                    drawable = allNull ? new Label(uniqueID, properties) : new FocusableLabel(uniqueID, properties);
+
+                }
+                catch(IncorrectTypeException e){ throw new RuntimeException(e); }
+
+                break;
+
+            case "Button":
+
+                drawable = new Button(uniqueID, properties);
+                break;
+
+            case "WriteInToggleButton":
+
+                /* TODO XML THIS */
+                drawable = new WriteInToggleButton(group, uniqueID,  properties, view);
+                break;
+
+            default:
+
+                drawable = new ToggleButton(group, uniqueID, properties);
+
         }
 
-        // Extract the drawable's position
-        drawable.setX( Integer.parseInt( nodeAttributes.getNamedItem( "x" )
-                .getNodeValue() ) );
-        drawable.setY( Integer.parseInt( nodeAttributes.getNamedItem( "y" )
-                .getNodeValue() ) );
+        /* Extract the drawable's position */
+        drawable.setX(Integer.parseInt(nodeAttributes.getNamedItem("x").getNodeValue()));
+        drawable.setY(Integer.parseInt(nodeAttributes.getNamedItem("y").getNodeValue()));
 
-        // Add this drawable to the hash table.
-        if (_drawables.containsKey( uniqueID ))
-            _drawables.get( uniqueID ).add( 0, drawable );
+        /* Add this drawable to the hash table. */
+        if (_drawables.containsKey(uniqueID))
+            _drawables.get(uniqueID).add(0, drawable);
         else {
             LinkedList<IDrawable> l = new LinkedList<IDrawable>();
-            l.add( drawable );
-            _drawables.put( uniqueID, l );
+            l.add(drawable);
+            _drawables.put(uniqueID, l);
         }
 
         return drawable;
@@ -424,40 +415,23 @@ public class LayoutParser {
      * will add an entry representative of the given dom node to a given
      * Properties object
      * 
-     * @param node
-     *            This is the dom node which represents a property
-     * @param properties
-     *            This is the Properties object to which the given property
-     *            should be added.
-     * @throws Exception
-     *             This method throws an exception if the property has been
-     *             defined with an incorrect type.
+     * @param node          the dom node which represents a property
+     * @param properties    the Properties object to which the given property should be added.
+     *
+     * @throws LayoutParserException if the property has been defined with an incorrect type.
      */
-    private void parseProperties(Node node, Properties properties)
-            throws LayoutParserException {
+    private void parseProperties(Node node, Properties properties) throws LayoutParserException {
+
         NamedNodeMap nodeAttributes = node.getAttributes();
-        String key = nodeAttributes.getNamedItem( "name" ).getNodeValue();
-//        System.out.println("-----------------------------------------");
-//        System.out.println(key);
 
+        String key    = nodeAttributes.getNamedItem("name") .getNodeValue();
+        String value  = nodeAttributes.getNamedItem("value").getNodeValue();
+        String type   = nodeAttributes.getNamedItem("type") .getNodeValue();
 
-        String value = nodeAttributes.getNamedItem( "value" ).getNodeValue();
-//        System.out.println(value);
-        String type = nodeAttributes.getNamedItem( "type" ).getNodeValue();
-        try {
-            properties.add( key, value, type );
-        }
-        catch (UnknownTypeException e) {
-            throw new LayoutParserException(
-                    "There was an error while parsing the property " + key
-                            + " with type " + type + " and value " + value
-                            + e.getMessage(), e );
-        }
-        catch (UnknownFormatException e) {
-            throw new LayoutParserException(
-                    "There was an error while parsing the property " + key
-                            + " with type " + type + " and value " + value
-                            + e.getMessage(), e );
+        try { properties.add(key, value, type); }
+        catch (UnknownTypeException | UnknownFormatException e) {
+            throw new LayoutParserException("There was an error while parsing the property " + key + " with type " +
+                                            type + " and value " + value + e.getMessage(), e);
         }
     }
 
@@ -465,40 +439,30 @@ public class LayoutParser {
      * Given an XML node whose type is "ListProperty", add all its children to
      * the given Properties instance.
      * 
-     * @param node
-     *            This is the list property node.
-     * @param properties
-     *            Add the children of the given node to this properties
-     *            instance.
-     * @throws BallotParserException
-     *             If the XML is not formatted correctly, this method will
-     *             throw.
+     * @param node          the list property node.
+     * @param properties    the children of the given node to this properties instance.
+     *
+     * @throws LayoutParserException if the XML is not formatted correctly
      */
-    private void parseListProperties(Node node, Properties properties)
-            throws LayoutParserException {
+    private void parseListProperties(Node node, Properties properties) throws LayoutParserException {
+
         NamedNodeMap nodeAttributes = node.getAttributes();
-        String key = nodeAttributes.getNamedItem( "name" ).getNodeValue();
-        String type = nodeAttributes.getNamedItem( "type" ).getNodeValue();
+
+        String key  = nodeAttributes.getNamedItem("name").getNodeValue();
+        String type = nodeAttributes.getNamedItem("type").getNodeValue();
 
         NodeList children = node.getChildNodes();
         ArrayList<String> elts = new ArrayList<String>();
+
         for (int lcv = 0; lcv < children.getLength(); lcv++) {
-            Node child = children.item( lcv );
-            elts.add( child.getAttributes().getNamedItem( "value" )
-                    .getNodeValue() );
+            Node child = children.item(lcv);
+            elts.add(child.getAttributes().getNamedItem("value").getNodeValue());
         }
-        try {
-            properties.add( key, elts, type );
-        }
-        catch (UnknownTypeException e) {
-            throw new LayoutParserException( "While parsing the property "
-                    + key + " of type " + type + " and value " + elts
-                    + ", the parser encountered an error: " + e.getMessage(), e );
-        }
-        catch (UnknownFormatException e) {
-            throw new LayoutParserException( "While parsing the property "
-                    + key + " of type " + type + " and value " + elts
-                    + ", the parser encountered an error: " + e.getMessage(), e );
+
+        try { properties.add(key, elts, type); }
+        catch (UnknownTypeException | UnknownFormatException e) {
+            throw new LayoutParserException("While parsing the property " + key + " of type " + type + " and value " +
+                                            elts + ", the parser encountered an error: " + e.getMessage(), e);
         }
     }
 }

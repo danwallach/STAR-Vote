@@ -102,6 +102,7 @@ public class LayoutParserTest extends TestCase {
 	 * @throws Exception
 	 */
 	public void test_zero() throws Exception {
+
 		MyGlobalVars vars = new MyGlobalVars();
 		vars.setLayoutFile(PATH + "test0");
 		vars.setLayoutSchema(SCHEMA);
@@ -117,15 +118,19 @@ public class LayoutParserTest extends TestCase {
 	 * @throws Exception
 	 */
 	public void test_one() throws Exception {
+
 		MyGlobalVars vars = new MyGlobalVars();
-		vars.setLayoutFile(PATH + "test1");
+
+        vars.setLayoutFile(PATH + "test1");
 		vars.setLayoutSchema(SCHEMA);
-		Layout layout = new LayoutParser().getLayout(vars, 0, "en", null);
+
+        Layout layout = new LayoutParser().getLayout(vars, 0, "en", null);
 
 		assertEquals(new ArrayList<RenderPage>(), layout.getPages());
 
 		Properties p = layout.getProperties();
-		assertEquals(2, p.size());
+
+        assertEquals(2, p.size());
 		assertTrue(p.contains("LayoutProp1"));
 		assertTrue(p.contains("LayoutProp2"));
 		assertEquals(p.getString("LayoutProp1"), "1");
@@ -138,10 +143,13 @@ public class LayoutParserTest extends TestCase {
 	 * @throws Exception
 	 */
 	public void test_two() throws Exception {
+
 		MyGlobalVars vars = new MyGlobalVars();
-		vars.setLayoutFile(PATH + "test2");
+
+        vars.setLayoutFile(PATH + "test2");
 		vars.setLayoutSchema(SCHEMA);
-		Layout layout = new LayoutParser().getLayout(vars, 0, "en", null);
+
+        Layout layout = new LayoutParser().getLayout(vars, 0, "en", null);
 
 		assertEquals(1, layout.getPages().size());
 		assertEquals(0, layout.getPages().get(0).getChildren().size());
@@ -154,22 +162,29 @@ public class LayoutParserTest extends TestCase {
 	 * @throws Exception
 	 */
 	public void test_three() throws Exception {
-		MyGlobalVars vars = new MyGlobalVars();
-		vars.setLayoutFile(PATH + "test3");
+
+        MyGlobalVars vars = new MyGlobalVars();
+
+        vars.setLayoutFile(PATH + "test3");
 		vars.setLayoutSchema(SCHEMA);
-		Layout layout = new LayoutParser().getLayout(vars, 0, "en", null);
+
+        Layout layout = new LayoutParser().getLayout(vars, 0, "en", null);
 
 		assertEquals(1, layout.getPages().size());
 		assertEquals(2, layout.getPages().get(0).getChildren().size());
 		assertEquals(0, layout.getProperties().size());
 
 		RenderPage rp = layout.getPages().get(0);
-		FocusableLabel l = (FocusableLabel) rp.getChildren().get(0);
-		assertEquals("one", l.getUniqueID());
+
+        FocusableLabel l = (FocusableLabel) rp.getChildren().get(0);
+
+        assertEquals("one", l.getUniqueID());
 		assertEquals(100, l.getX());
 		assertEquals(101, l.getY());
-		l = (FocusableLabel) rp.getChildren().get(1);
-		assertEquals("two", l.getUniqueID());
+
+        l = (FocusableLabel) rp.getChildren().get(1);
+
+        assertEquals("two", l.getUniqueID());
 		assertEquals(200, l.getX());
 		assertEquals(201, l.getY());
 	}
@@ -180,10 +195,13 @@ public class LayoutParserTest extends TestCase {
 	 * @throws Exception
 	 */
 	public void test_four() throws Exception {
-		MyGlobalVars vars = new MyGlobalVars();
-		vars.setLayoutFile(PATH + "test4");
+
+        MyGlobalVars vars = new MyGlobalVars();
+
+        vars.setLayoutFile(PATH + "test4");
 		vars.setLayoutSchema(SCHEMA);
-		Layout layout = new LayoutParser().getLayout(vars, 0, "en", null);
+
+        Layout layout = new LayoutParser().getLayout(vars, 0, "en", null);
 
 		assertEquals(2, layout.getPages().size());
 		assertEquals(2, layout.getPages().get(0).getChildren().size());
@@ -191,20 +209,25 @@ public class LayoutParserTest extends TestCase {
 		assertEquals(0, layout.getProperties().size());
 
 		RenderPage rp = layout.getPages().get(0);
-		FocusableLabel l = (FocusableLabel) rp.getChildren().get(0);
-		assertEquals(0, l.getProperties().size());
+
+        FocusableLabel l = (FocusableLabel) rp.getChildren().get(0);
+
+        assertEquals(0, l.getProperties().size());
 		assertEquals("one", l.getUniqueID());
 		assertEquals(100, l.getX());
 		assertEquals(101, l.getY());
-		l = (FocusableLabel) rp.getChildren().get(1);
-		assertEquals(0, l.getProperties().size());
+
+        l = (FocusableLabel) rp.getChildren().get(1);
+
+        assertEquals(0, l.getProperties().size());
 		assertEquals("two", l.getUniqueID());
 		assertEquals(200, l.getX());
 		assertEquals(201, l.getY());
 
 		rp = layout.getPages().get(1);
 		l = (FocusableLabel) rp.getChildren().get(0);
-		assertEquals(0, l.getProperties().size());
+
+        assertEquals(0, l.getProperties().size());
 		assertEquals("three", l.getUniqueID());
 		assertEquals(300, l.getX());
 		assertEquals(301, l.getY());
@@ -214,18 +237,21 @@ public class LayoutParserTest extends TestCase {
 	 * Layout with one page page has labels labels have properties.
 	 */
 	public void test_five() throws Exception {
-		MyGlobalVars vars = new MyGlobalVars();
-		vars.setLayoutFile(PATH + "test5");
+
+        MyGlobalVars vars = new MyGlobalVars();
+
+        vars.setLayoutFile(PATH + "test5");
 		vars.setLayoutSchema(SCHEMA);
-		Layout layout = new LayoutParser().getLayout(vars, 0, "en", null);
+
+        Layout layout = new LayoutParser().getLayout(vars, 0, "en", null);
 
 		assertEquals(1, layout.getPages().size());
 		assertEquals(2, layout.getPages().get(0).getChildren().size());
 		assertEquals(0, layout.getProperties().size());
 
-		Properties p = layout.getPages().get(0).getChildren().get(0)
-				.getProperties();
-		assertTrue(layout.getPages().get(0).getChildren().get(0) instanceof FocusableLabel);
+		Properties p = layout.getPages().get(0).getChildren().get(0).getProperties();
+
+        assertTrue(layout.getPages().get(0).getChildren().get(0) instanceof FocusableLabel);
 		assertEquals(2, p.size());
 		assertTrue(p.contains("OnePropOne"));
 		assertEquals("property", p.getString("OnePropOne"));
@@ -233,7 +259,8 @@ public class LayoutParserTest extends TestCase {
 		assertEquals("property", p.getString("OnePropTwo"));
 
 		p = layout.getPages().get(0).getChildren().get(1).getProperties();
-		assertEquals(1, p.size());
+
+        assertEquals(1, p.size());
 		assertTrue(p.contains("TwoPropOne"));
 		assertEquals("property", p.getString("TwoPropOne"));
 	}
@@ -245,32 +272,41 @@ public class LayoutParserTest extends TestCase {
 	 * @throws Exception
 	 */
 	public void test_six() throws Exception {
-		MyGlobalVars vars = new MyGlobalVars();
-		vars.setLayoutFile(PATH + "test6");
+
+        MyGlobalVars vars = new MyGlobalVars();
+
+        vars.setLayoutFile(PATH + "test6");
 		vars.setLayoutSchema(SCHEMA);
-		Layout layout = new LayoutParser().getLayout(vars, 0, "en", null);
+
+        Layout layout = new LayoutParser().getLayout(vars, 0, "en", null);
 
 		assertEquals(1, layout.getPages().size());
 		assertEquals(2, layout.getPages().get(0).getChildren().size());
 		assertEquals(0, layout.getProperties().size());
 
 		FocusableLabel l = (FocusableLabel) layout.getPages().get(0).getChildren().get(0);
-		assertEquals("one", l.getUniqueID());
+
+        assertEquals("one", l.getUniqueID());
 		assertEquals(100, l.getX());
 		assertEquals(101, l.getY());
-		Properties p = l.getProperties();
-		assertEquals(2, p.size());
+
+        Properties p = l.getProperties();
+
+        assertEquals(2, p.size());
 		assertTrue(p.contains("OnePropOne"));
 		assertEquals("property", p.getString("OnePropOne"));
 		assertTrue(p.contains("OnePropTwo"));
 		assertEquals("property", p.getString("OnePropTwo"));
 
 		Button b = (Button) layout.getPages().get(0).getChildren().get(1);
-		assertEquals("two", b.getUniqueID());
+
+        assertEquals("two", b.getUniqueID());
 		assertEquals(200, b.getX());
 		assertEquals(201, b.getY());
-		p = b.getProperties();
-		assertEquals(1, p.size());
+
+        p = b.getProperties();
+
+        assertEquals(1, p.size());
 		assertTrue(p.contains("TwoPropOne"));
 		assertEquals("property", p.getString("TwoPropOne"));
 	}
@@ -282,85 +318,104 @@ public class LayoutParserTest extends TestCase {
 	 * @throws Exception
 	 */
 	public void test_seven() throws Exception {
-		MyGlobalVars vars = new MyGlobalVars();
-		vars.setLayoutFile(PATH + "test7");
+
+        MyGlobalVars vars = new MyGlobalVars();
+
+        vars.setLayoutFile(PATH + "test7");
 		vars.setLayoutSchema(SCHEMA);
-		Layout layout = new LayoutParser().getLayout(vars, 0, "en", null);
+
+        Layout layout = new LayoutParser().getLayout(vars, 0, "en", null);
 
 		assertEquals(1, layout.getPages().size());
 		assertEquals(6, layout.getPages().get(0).getChildren().size());
 		assertEquals(0, layout.getProperties().size());
 
 		FocusableLabel l = (FocusableLabel) layout.getPages().get(0).getChildren().get(0);
-		assertEquals("one", l.getUniqueID());
+
+        assertEquals("one", l.getUniqueID());
 		assertEquals(100, l.getX());
 		assertEquals(101, l.getY());
-		Properties p = l.getProperties();
-		assertEquals(2, p.size());
+
+        Properties p = l.getProperties();
+
+        assertEquals(2, p.size());
 		assertTrue(p.contains("OnePropOne"));
 		assertEquals("property", p.getString("OnePropOne"));
 		assertTrue(p.contains("OnePropTwo"));
 		assertEquals("property", p.getString("OnePropTwo"));
 
 		Button b = (Button) layout.getPages().get(0).getChildren().get(1);
-		assertEquals("two", b.getUniqueID());
+
+        assertEquals("two", b.getUniqueID());
 		assertEquals(200, b.getX());
 		assertEquals(201, b.getY());
-		p = b.getProperties();
-		assertEquals(1, p.size());
+
+        p = b.getProperties();
+
+        assertEquals(1, p.size());
 		assertTrue(p.contains("TwoPropOne"));
 		assertEquals("property", p.getString("TwoPropOne"));
 
-		ToggleButton tb1 = (ToggleButton) layout.getPages().get(0).getChildren()
-				.get(2);
+		ToggleButton tb1 = (ToggleButton) layout.getPages().get(0).getChildren().get(2);
 		ToggleButtonGroup tb1g = tb1.getGroup();
+
 		assertEquals("three", tb1.getUniqueID());
 		assertEquals(300, tb1.getX());
 		assertEquals(301, tb1.getY());
-		p = tb1.getProperties();
-		assertEquals(1, p.size());
+
+        p = tb1.getProperties();
+
+        assertEquals(1, p.size());
 		assertTrue(p.contains("ThreePropOne"));
 		assertEquals("property", p.getString("ThreePropOne"));
 
-		ToggleButton tb2 = (ToggleButton) layout.getPages().get(0).getChildren()
-				.get(3);
+		ToggleButton tb2 = (ToggleButton) layout.getPages().get(0).getChildren().get(3);
 		ToggleButtonGroup tb2g = tb2.getGroup();
-		assertEquals("four", tb2.getUniqueID());
+
+        assertEquals("four", tb2.getUniqueID());
 		assertEquals(400, tb2.getX());
 		assertEquals(401, tb2.getY());
-		p = tb2.getProperties();
-		assertEquals(1, p.size());
+
+        p = tb2.getProperties();
+
+        assertEquals(1, p.size());
 		assertTrue(p.contains("FourPropOne"));
 		assertEquals("property", p.getString("FourPropOne"));
 
-		ToggleButton tb3 = (ToggleButton) layout.getPages().get(0).getChildren()
-				.get(4);
+		ToggleButton tb3 = (ToggleButton) layout.getPages().get(0).getChildren().get(4);
 		ToggleButtonGroup tb3g = tb3.getGroup();
-		assertEquals("five", tb3.getUniqueID());
+
+        assertEquals("five", tb3.getUniqueID());
 		assertEquals(500, tb3.getX());
 		assertEquals(501, tb3.getY());
-		p = tb3.getProperties();
-		assertEquals(0, p.size());
 
-		ToggleButton tb4 = (ToggleButton) layout.getPages().get(0).getChildren()
-				.get(5);
+        p = tb3.getProperties();
+
+        assertEquals(0, p.size());
+
+		ToggleButton tb4 = (ToggleButton) layout.getPages().get(0).getChildren().get(5);
 		ToggleButtonGroup tb4g = tb4.getGroup();
-		assertEquals("six", tb4.getUniqueID());
+
+        assertEquals("six", tb4.getUniqueID());
 		assertEquals(600, tb4.getX());
 		assertEquals(601, tb4.getY());
-		p = tb4.getProperties();
-		assertEquals(0, p.size());
 
+        p = tb4.getProperties();
+
+        assertEquals(0, p.size());
 		assertTrue(tb1g == tb2g);
 		assertEquals(2, tb1g.getButtons().size());
-		p = tb1g.getProperties();
-		assertTrue(p.contains("GroupOneProperty"));
-		assertEquals("property", p.getString("GroupOneProperty"));
 
+        p = tb1g.getProperties();
+
+        assertTrue(p.contains("GroupOneProperty"));
+		assertEquals("property", p.getString("GroupOneProperty"));
 		assertTrue(tb3g == tb4g);
 		assertEquals(2, tb3g.getButtons().size());
-		p = tb3g.getProperties();
-		assertTrue(p.contains("GroupTwoProperty"));
+
+        p = tb3g.getProperties();
+
+        assertTrue(p.contains("GroupTwoProperty"));
 		assertEquals("property", p.getString("GroupTwoProperty"));
 	}
 
@@ -369,23 +424,25 @@ public class LayoutParserTest extends TestCase {
 	 * onto the first page. Is this the layout parser's fault ?
 	 */
 	public void test_eight() throws Exception {
-		MyGlobalVars vars = new MyGlobalVars();
-		vars.setLayoutFile(PATH + "test8");
+
+        MyGlobalVars vars = new MyGlobalVars();
+
+        vars.setLayoutFile(PATH + "test8");
 		vars.setLayoutSchema(SCHEMA);
-		Layout layout = new LayoutParser().getLayout(vars, 0, "en", null);
+
+        Layout layout = new LayoutParser().getLayout(vars, 0, "en", null);
 
 		assertEquals(2, layout.getPages().size());
 		assertEquals(4, layout.getPages().get(0).getChildren().size());
 		assertEquals(4, layout.getPages().get(1).getChildren().size());
 
 		FocusableLabel l = (FocusableLabel) layout.getPages().get(0).getChildren().get(0);
-		assertEquals("one", l.getUniqueID());
+        assertEquals("one", l.getUniqueID());
 
 		Button b = (Button) layout.getPages().get(0).getChildren().get(1);
 		assertEquals("two", b.getUniqueID());
 
-		ToggleButton tb = (ToggleButton) layout.getPages().get(0).getChildren()
-				.get(2);
+		ToggleButton tb = (ToggleButton) layout.getPages().get(0).getChildren().get(2);
 		assertEquals("three", tb.getUniqueID());
 
 		tb = (ToggleButton) layout.getPages().get(0).getChildren().get(3);
@@ -409,10 +466,13 @@ public class LayoutParserTest extends TestCase {
 	 * @throws Exception
 	 */
 	public void test_nine() throws Exception {
+
 		MyGlobalVars vars = new MyGlobalVars();
-		vars.setLayoutFile(PATH + "test9");
+
+        vars.setLayoutFile(PATH + "test9");
 		vars.setLayoutSchema(SCHEMA);
-		Layout layout = new LayoutParser().getLayout(vars, 0, "en", null);
+
+        Layout layout = new LayoutParser().getLayout(vars, 0, "en", null);
 		
 		assertEquals(4, layout.getPages().get(0).getChildren().size());
 		assertEquals(5, layout.getPages().get(1).getChildren().size());

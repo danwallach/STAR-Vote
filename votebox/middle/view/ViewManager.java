@@ -46,12 +46,11 @@ import votebox.middle.view.widget.ToggleButton;
 
 public class ViewManager implements IViewManager {
 
-    private final IViewFactory _factory;
-    private IView _view;
-    private final IAdapter _ballotAdapter;
     private final IBallotLookupAdapter _ballotLookupAdapter;
-    private final IBallotVars _variables;
     private final ArrayList<String> _supportedLanguages;
+    private final IAdapter _ballotAdapter;
+    private final IBallotVars _variables;
+    private final IViewFactory _factory;
     private final ObservableEvent _castBallotEvent;
     private final ObservableEvent _commitEvent;
     private final ObservableEvent _overrideCancelConfirm;
@@ -61,12 +60,15 @@ public class ViewManager implements IViewManager {
     private final ObservableEvent _reviewScreenEncountered;
     private final ObservableEvent _pageChanged;
 
-    //A variable that will only allow focusing with orange backgrounds
-    //if and only if a key on the keyboard/other input device is pressed,
-    //not including the mouse
+    private IView _view;
+
+
+    /**
+     * A variable that will only allow focusing with orange backgrounds
+     * if and only if a key on the keyboard/other input device is pressed,
+     * not including the mouse
+     */
     private static boolean focusEnabled = false;
-
-
 
     private IFocusable _currentFocusedElement = null;
     private Layout _layout = null;
@@ -75,43 +77,43 @@ public class ViewManager implements IViewManager {
     private int _mediaSize = 0;
     private String _language = "en";
     
-    //This is set when we're redrawing and don't want to queue up a bunch of mouse events
+    /* This is set when we're redrawing and don't want to queue up a bunch of mouse events */
     private boolean _ignoreMouseInput = false;
 
     /**
      * This is the public constructor for View Manager.
      * 
-     * @param adapter
-     *            This is the adapter that this view manager will use to
-     *            communicate with the ballot.
-     * @param vars
-     *            These are global variables which contain important path
-     *            information.
-     * @param lookupAdapter
-     *            Adapter used to fetch the state of the ballot.
-     * @param factory
-     *            Factory used to create the View to display the ballot.
+     * @param adapter           the adapter that this view manager will use to communicate
+     *                          with the ballot.
+     * @param vars              global variables which contain important path information.
+     * @param lookupAdapter     adapter used to fetch the state of the ballot.
+     * @param factory           factory used to create the View to display the ballot.
      * 
      * {@see votebox.middle.view.AView}
      */
-    public ViewManager(IAdapter adapter, IBallotLookupAdapter lookupAdapter,
-            IBallotVars vars, IViewFactory factory) {
+    public ViewManager(IAdapter adapter, IBallotLookupAdapter lookupAdapter, IBallotVars vars, IViewFactory factory) {
+
         _factory = factory;
         _view = factory.makeView();
 
         focusEnabled = _view.focusEnabled();
+
         _ballotAdapter = adapter;
         _ballotLookupAdapter = lookupAdapter;
+
         _variables = vars;
-        _supportedLanguages = new ArrayList<String>();
-        _castBallotEvent = new ObservableEvent();
-        _commitEvent = new ObservableEvent();
-        _overrideCancelConfirm = new ObservableEvent();
-        _overrideCancelDeny = new ObservableEvent();
-        _overrideCastConfirm = new ObservableEvent();
-        _overrideCastDeny = new ObservableEvent();
+        _supportedLanguages      = new ArrayList<String>();
+
+        _castBallotEvent         = new ObservableEvent();
+        _commitEvent             = new ObservableEvent();
+
+        _overrideCancelConfirm   = new ObservableEvent();
+        _overrideCancelDeny      = new ObservableEvent();
+        _overrideCastConfirm     = new ObservableEvent();
+        _overrideCastDeny        = new ObservableEvent();
+
         _reviewScreenEncountered = new ObservableEvent();
-        _pageChanged = new ObservableEvent();
+        _pageChanged             = new ObservableEvent();
 
         registerQueues();
         setMediaSizes();
@@ -149,18 +151,17 @@ public class ViewManager implements IViewManager {
     /**
      * Draw a given page to the display.
      *
-     * @param pagenum
-     *            Draw this page number to this display.
-     * @param previous
+     * @param pagenum   the page number to be drawn to the display
+     * @param previous  a boolean denoting whether or not we have selected next
+     *                  or previous to get to this page
      */
     public void drawPage(int pagenum, boolean previous) {
+
         _view.clearDisplay();
 
+        if(pagenum != _page) {
 
-        if(pagenum != _page)
-        {
         	List<String> affectedUIDs = _layout.getPages().get(_page).getUniqueIDs();
-        	
         	_pageChanged.notifyObservers(affectedUIDs);
         }
         
@@ -168,26 +169,21 @@ public class ViewManager implements IViewManager {
         setInitialFocus(previous);
 
 
-        _layout.initFromViewManager( _page, this, _ballotLookupAdapter,
-        		_ballotAdapter, _factory, _variables );
+        _layout.initFromViewManager(_page, this, _ballotLookupAdapter, _ballotAdapter, _factory, _variables);
 
 
         boolean postNotice = false;
         
-        try{
+        try {
+
         	String isReviewPage = _layout.getPages().get(pagenum).getProperties().getString("IsReviewPage"); 
 
-//        	System.out.println("Properties:");
-//        	System.out.println("\t"+_layout.getPages().get(pagenum).getProperties());
-        	
         	if(isReviewPage != null && isReviewPage.equals("yes")){
-//        		System.out.println("Notifying observers...");
         		_reviewScreenEncountered.notifyObservers(new Object[]{false, _ballotLookupAdapter.getCastBallot()});
         		postNotice = true;
-        	}//if
-        }catch(IncorrectTypeException e){
-        	e.printStackTrace();
+        	}
         }
+        catch (IncorrectTypeException e) { e.printStackTrace(); }
         
         _layout.draw( pagenum, _view );
         
@@ -199,25 +195,24 @@ public class ViewManager implements IViewManager {
      * Switch the focus to a given drawable. This method performs checks to
      * ensure that the given drawable is valid before doing anything with it.
      * 
-     * @param dt
-     *            Switch to this RenderCardElement.
+     * @param dt    the RenderCardElement to which to switch
      */
     private void switchFocus(IFocusable dt) {
 
-        // Check the validity of the reference we got
-        if (dt == null) {
-            return;
+        /* Check the validity of the reference we got */
+        if (dt != null) {
+
+            /* Tell the view to change the focus to the new element */
+            _currentFocusedElement.unfocus();
+
+            if (_view.focusEnabled()) dt.focus();
+
+            _view.invalidate(dt);
+            _view.invalidate(_currentFocusedElement);
+
+            /* Keep track of who the new element is */
+            _currentFocusedElement = dt;
         }
-
-        // Tell the view to change the focus to the new element
-        _currentFocusedElement.unfocus();
-        if(_view.focusEnabled())
-            dt.focus();
-        _view.invalidate( dt );
-        _view.invalidate( _currentFocusedElement );
-
-        // Keep track of who the new element is
-        _currentFocusedElement = dt;
     }
 
     /**
@@ -226,7 +221,7 @@ public class ViewManager implements IViewManager {
     private void invalidateAll() {
         for (IDrawable d : getCurrentPage().getChildren())
             if (d instanceof ToggleButton)
-                _view.invalidate( d ) ;
+                _view.invalidate(d) ;
     }
 
     /**
@@ -235,11 +230,12 @@ public class ViewManager implements IViewManager {
      * the view to report that an actual vote has been recorded, or that the
      * visual ballot representation has been changed.
      * 
-     * @param element
-     *            This is the element which has been selected
+     * @param element       the element which has been selected
      */
     public void select(IDrawable element) {
+
         if (element instanceof IFocusable) {
+
             ((IFocusable) element).select();
 
             if (element instanceof ToggleButton)
@@ -261,12 +257,12 @@ public class ViewManager implements IViewManager {
      * This method is called when the voter focuses on a specific candidate in a
      * race. This method usually is called when something is moused over.
      * 
-     * @param ce
-     *            This is the drawable which has been focused on.
+     * @param ce        the drawable which has been focused on.
      */
     public void focus(IDrawable ce) {
-        if (ce instanceof IFocusable && ce != _currentFocusedElement){
-            switchFocus( (IFocusable) ce );
+
+        if (ce instanceof IFocusable && ce != _currentFocusedElement) {
+            switchFocus((IFocusable) ce);
         }
     }
 
@@ -281,10 +277,12 @@ public class ViewManager implements IViewManager {
      * outside party cannot register malicious code.
      */
     public void castCommittedBallot() {
+
     	Object[] toPass = new Object[]{
     		_ballotLookupAdapter.getCastBallot(),
     		_ballotLookupAdapter.getRaceGroups()
     	};
+
         _castBallotEvent.notifyObservers(toPass);
     }
 
@@ -293,8 +291,7 @@ public class ViewManager implements IViewManager {
      * different entry points (such as the standalone version versus the
      * auditorium implementation) can do different things with the cast ballot.
      * 
-     * @param obs
-     *            This is the observer that gets registered
+     * @param obs       the observer that gets registered
      */
     public void registerForCastBallot(Observer obs) {
         _castBallotEvent.addObserver(obs);
@@ -304,10 +301,12 @@ public class ViewManager implements IViewManager {
      * Call this method if the voter has proceeded past the review screen.
      */
     public void commitBallot() {
+
     	Object[] toPass = new Object[]{
         	_ballotLookupAdapter.getCastBallot(),
         	_ballotLookupAdapter.getRaceGroups()
     	};
+
         _commitEvent.notifyObservers(toPass);
     }
 
@@ -316,8 +315,7 @@ public class ViewManager implements IViewManager {
      * review screen. There should be behavior registered which commits the
      * ballot to the network.
      * 
-     * @param observer
-     *            Register this observer for the commit event.
+     * @param observer      the observer to be registered for the commit event
      */
     public void registerForCommit(Observer observer) {
         _commitEvent.addObserver(observer);
@@ -329,14 +327,15 @@ public class ViewManager implements IViewManager {
      * the caller can go back to that page.
      */
     public int overrideCancel() throws IncorrectTypeException {
+
     	if (!_layout.getProperties().contains(Properties.OVERRIDE_CANCEL_PAGE))
-            throw new BallotBoxViewException(
-                    "Override Cancel Page does not exist", null);
-        int newPage = _layout.getProperties().getInteger(
-                Properties.OVERRIDE_CANCEL_PAGE);
+            throw new BallotBoxViewException("Override Cancel Page does not exist", null);
+
+        int newPage = _layout.getProperties().getInteger(Properties.OVERRIDE_CANCEL_PAGE);
         int currentPage = _page;
-        //System.out.println("Trying to draw page " + newPage);
+
         drawPage(newPage, false);
+
         return currentPage;
     }
 
@@ -346,14 +345,15 @@ public class ViewManager implements IViewManager {
      * caller can go back to that page.
      */
     public int overrideCast() throws IncorrectTypeException {
+
         if (!_layout.getProperties().contains(Properties.OVERRIDE_CAST_PAGE))
-            throw new BallotBoxViewException(
-                    "Override Cast Page does not exist", null);
-        int newPage = _layout.getProperties().getInteger(
-                Properties.OVERRIDE_CAST_PAGE);
+            throw new BallotBoxViewException("Override Cast Page does not exist", null);
+
+        int newPage = _layout.getProperties().getInteger(Properties.OVERRIDE_CAST_PAGE);
         int currentPage = _page;
-        //System.out.println("Trying to draw page " + newPage);
+
         drawPage(newPage, false);
+
         return currentPage;
     }
 
@@ -389,7 +389,7 @@ public class ViewManager implements IViewManager {
     /**
      * Register for the page change event.
      * 
-     * @param obs the observer
+     * @param obs       the observer
      */
     public void registerForPageChanged(Observer obs) {
     	_pageChanged.addObserver(obs);
@@ -398,8 +398,7 @@ public class ViewManager implements IViewManager {
     /**
      * Register for the override cancel confirm event
      * 
-     * @param obs
-     *            the observer
+     * @param obs       the observer
      */
     public void registerForOverrideCancelConfirm(Observer obs) {
         _overrideCancelConfirm.addObserver(obs);
@@ -408,8 +407,7 @@ public class ViewManager implements IViewManager {
     /**
      * Register for the override cancel deny event
      * 
-     * @param obs
-     *            the observer
+     * @param obs       the observer
      */
     public void registerForOverrideCancelDeny(Observer obs) {
         _overrideCancelDeny.addObserver(obs);
@@ -418,8 +416,7 @@ public class ViewManager implements IViewManager {
     /**
      * Register for the override cast confirm event
      * 
-     * @param obs
-     *            the observer
+     * @param obs       the observer
      */
     public void registerForOverrideCastConfirm(Observer obs) {
         _overrideCastConfirm.addObserver(obs);
@@ -428,8 +425,7 @@ public class ViewManager implements IViewManager {
     /**
      * Register for the override cast deny event
      * 
-     * @param obs
-     *            the observer
+     * @param obs       the observer
      */
     public void registerForOverrideCastDeny(Observer obs) {
         _overrideCastDeny.addObserver(obs);
@@ -450,6 +446,7 @@ public class ViewManager implements IViewManager {
      * of the one which is currently focused.
      */
     public void moveFocusLeft() {
+
         if(_currentFocusedElement == null)
             setInitialFocus(true);
 
@@ -463,6 +460,7 @@ public class ViewManager implements IViewManager {
      * of the one which is currently focused.
      */
     public void moveFocusRight() {
+
         if(_currentFocusedElement == null)
             setInitialFocus(true);
 
@@ -476,6 +474,7 @@ public class ViewManager implements IViewManager {
      * that is currently focused.
      */
     public void moveFocusUp() {
+
         if(_currentFocusedElement == null)
             setInitialFocus(true);
 
@@ -489,6 +488,7 @@ public class ViewManager implements IViewManager {
      * which is currently focused.
      */
     public void moveFocusDown() {
+
         if(_currentFocusedElement == null)
             setInitialFocus(true);
 
@@ -503,6 +503,7 @@ public class ViewManager implements IViewManager {
      * focused.
      */
     public void moveFocusNext() {
+
         if(_currentFocusedElement == null)
             setInitialFocus(true);
 
@@ -517,6 +518,7 @@ public class ViewManager implements IViewManager {
      * focused.
      */
     public void moveFocusBack() {
+
         if(_currentFocusedElement == null)
             setInitialFocus(true);
 
@@ -528,9 +530,8 @@ public class ViewManager implements IViewManager {
      * the next page.
      */
     public void nextPage() {
-        if (_page + 1 < _layout.getPages().size()) {
-            drawPage( _page + 1, false);
-        }
+        /* TODO check if this needs to be equality */
+        if (_page + 1 < _layout.getPages().size()) drawPage(_page + 1, false);
     }
 
     /**
@@ -538,10 +539,7 @@ public class ViewManager implements IViewManager {
      * the previous page.
      */
     public void previousPage() {
-        if (_page - 1 >= 0) {
-            //System.out.println("Trying to draw page " + (_page - 1));
-            drawPage( _page - 1, true);
-        }
+        if (_page > 0) drawPage( _page - 1, true);
     }
 
     /**
@@ -549,7 +547,7 @@ public class ViewManager implements IViewManager {
      * check this value to determine which size index to hand to a drawable when
      * the IView asks it for a representative image.
      * 
-     * @return This method returns the currently set media size index.
+     * @return          the currently set media size index.
      */
     public int getSize() {
         return _mediaSize;
@@ -560,7 +558,7 @@ public class ViewManager implements IViewManager {
      * check this value to determine which language value to hand to a drawable
      * when the IView asks it for a representative image.
      * 
-     * @return This method returns the currently set language value.
+     * @return          the currently set language value.
      */
     public String getLanguage() {
         return _language;
@@ -569,7 +567,7 @@ public class ViewManager implements IViewManager {
     /**
      * This method is the getter for the view that this manager is controlling.
      * 
-     * @return This method returns the view that this manager is controlling.
+     * @return          the view that this manager is controlling.
      */
     public IView getView() {
         return _view;
@@ -579,7 +577,7 @@ public class ViewManager implements IViewManager {
      * This is the getter method for the current page (the page that the voter
      * is currently viewing).
      * 
-     * @return This method returns the page that the voter is currently viewing.
+     * @return          the page that the voter is currently viewing.
      */
     public RenderPage getCurrentPage() {
         List<RenderPage> pages = _layout.getPages();
@@ -590,7 +588,7 @@ public class ViewManager implements IViewManager {
     /**
      * This is the getter method for _ballotAdapter.
      * 
-     * @return _ballotAdapter
+     * @return          _ballotAdapter
      */
     public IAdapter getBallotAdapter() {
         return _ballotAdapter;
@@ -609,8 +607,7 @@ public class ViewManager implements IViewManager {
      * Call this method to set the language that the view will use when it asks
      * a drawable for its image.
      * 
-     * @param lang
-     *            This is the language that wishes to be used.
+     * @param lang      the language that wishes to be used.
      */
     public void setLanguage(String lang) {
         if ( _supportedLanguages.contains(lang) ) {
@@ -625,20 +622,18 @@ public class ViewManager implements IViewManager {
      * Switch the size index that is currently being used to display images on
      * the screen.
      * 
-     * @param size
-     *            Switch the size index to this size.
+     * @param size      the size to which to change the size index
      */
     public void setSize(int size) {
         _mediaSize = size;
         makePages();
-        //System.out.println("Trying to draw page " + _page);
         drawPage( _page, false);
     }
 
     /**
      * This is the getter method for _supportedLanguages
      * 
-     * @return _supportedLanguages.
+     * @return      _supportedLanguages.
      */
     public List<String> getSupportedLanguages() {
         return _supportedLanguages;
@@ -652,32 +647,23 @@ public class ViewManager implements IViewManager {
      * as a macro for physically navigating through every page and selecting
      * members of a given party. This method is precisely how that is done.
      * 
-     * @param uid
-     *            This is the uid of the element that wants to be selected.
-     * @return If the element given is not a toggle button or doesn't exist,
-     *         this method will return false. Otherwise, this method will return
-     *         true.
+     * @param uid       the uid of the element that wants to be selected.
+     * @return          false if the element given is not a toggle button or
+     *                  doesn't exist, true otherwise TODO where is the false return?
+     *
+     * @throws SelectionException if there was a problem selecting something
      */
-    public boolean select(String uid) throws UnknownUIDException,
-            SelectionException {
+    public boolean select(String uid) throws UnknownUIDException, SelectionException {
+
         try {
-            for (IDrawable d : getCurrentLayout().lookup( uid ))
-                d.getGroup().select( (ToggleButton) d );
-        }
-        catch (BallotBoxViewException e) {
-            throw new SelectionException(
-                    "There was a problem selecting something in the view. : "
-                            + e.getMessage(), e );
-        }
-        catch (MeaninglessMethodException e) {
-            throw new SelectionException(
-                    "There was a problem selecting something in the view. : "
-                            + e.getMessage(), e );
+            for (IDrawable d : getCurrentLayout().lookup(uid))
+                d.getGroup().select((ToggleButton) d);
         }
         catch (ClassCastException e) {
-            throw new SelectionException(
-                    "There was a problem deselecting something in the view. "
-                            + uid + " is not a toggle button.", e );
+            throw new SelectionException("There was a problem deselecting something in the view. " + uid + " is not a toggle button.", e);
+        }
+        catch (BallotBoxViewException | MeaninglessMethodException e) {
+            throw new SelectionException("There was a problem selecting something in the view. : " + e.getMessage(), e);
         }
 
         return true;
@@ -687,35 +673,24 @@ public class ViewManager implements IViewManager {
      * Call this method to explicitly make one of the toggle buttons that is
      * currently in the layout be deselected. This method is implemented with a
      * best-effort approach.
-     * 
      *
-     * @param uid
-     *            This is the uid of the element that wants to be deselected.
-     * @param playSound
-     * @return If the element does not exist or is not a toggle button, this
-     *         method returns false. Otherwise, this method returns true.
+     * @param uid           the uid of the element that wants to be deselected.
+     * @param playSound     whether a sound is to be played
+     * @return              false if the element does not exist or is not a toggle
+     *                      button, true otherwise TODO false return?
      */
-    public boolean deselect(String uid, boolean playSound) throws UnknownUIDException,
-            DeselectionException {
-        try {
-            for (IDrawable d : getCurrentLayout().lookup( uid ))
-                d.getGroup().deselect( (ToggleButton) d, playSound);
+    public boolean deselect(String uid, boolean playSound) throws UnknownUIDException, DeselectionException {
 
-        }
-        catch (BallotBoxViewException e) {
-            throw new DeselectionException(
-                    "There was a problem deselecting something in the view. : "
-                            + e.getMessage(), e );
-        }
-        catch (MeaninglessMethodException e) {
-            throw new DeselectionException(
-                    "There was a problem deselecting something in the view. : "
-                            + e.getMessage(), e );
+        try {
+
+            for (IDrawable d : getCurrentLayout().lookup(uid))
+                d.getGroup().deselect((ToggleButton) d, playSound);
         }
         catch (ClassCastException e) {
-            throw new DeselectionException(
-                    "There was a problem deselecting something in the view. "
-                            + uid + " is not a toggle button.", e );
+            throw new DeselectionException("There was a problem deselecting something in the view. " + uid + " is not a toggle button.", e);
+        }
+        catch (BallotBoxViewException | MeaninglessMethodException  e) {
+            throw new DeselectionException("There was a problem deselecting something in the view. : " + e.getMessage(), e);
         }
 
         return true;
@@ -728,25 +703,25 @@ public class ViewManager implements IViewManager {
      * focused from which the voter can move. This method takes care of the job
      * of focusing that one initial element.
      *
-     * @param previous a boolean denoting whether or not we have selected next
-     *                or previous to get to this page
+     * @param previous      a boolean denoting whether or not we have selected next
+     *                      or previous to get to this page
      */
     private void setInitialFocus(boolean previous) {
-        // Find a focusable element, Focus it, Unfocus the rest of the
-        // elements.
 
+        /* Find a focusable element, Focus it, Unfocus the rest of the elements. */
         if(_view.focusEnabled()){
-            ArrayList<IDrawable> children = (ArrayList) getCurrentPage().getChildren();
+            ArrayList<IDrawable> children = (ArrayList<IDrawable>) getCurrentPage().getChildren();
 
             IDrawable first = null;
             IDrawable second = null;
-            for (int i = 0; i <  children.size(); i++) {
-                IDrawable drawable = children.get(i);
+
+            for (IDrawable drawable : children) {
 
                 if (drawable instanceof IFocusable) {
-                    if(first == null)
+
+                    if (first == null)
                         first = drawable;
-                    else if(second == null)
+                    else if (second == null)
                         second = drawable;
 
                     ((IFocusable) drawable).unfocus();
@@ -754,13 +729,13 @@ public class ViewManager implements IViewManager {
             }
 
 
-            if(previous && second != null){
+            if (previous && second != null) {
                 _currentFocusedElement =  (IFocusable) second;
-                System.out.println("Setting initial focus to " + second.getUniqueID());
                 ((IFocusable) second).focus();
-            } else if (!previous && first != null){
+
+            }
+            else if (!previous && first != null) {
                 _currentFocusedElement = (IFocusable) first;
-                System.out.println("Setting initial focus to " + first.getUniqueID());
                 ((IFocusable) first).focus();
             }
 
@@ -774,18 +749,14 @@ public class ViewManager implements IViewManager {
      * pages field.
      */
     private void makePages() {
-        try {
 
-            _layout = new LayoutParser().getLayout( _variables, getSize(),
-                    getLanguage(), _view );
-            _layout.initFromViewManager( this, _ballotLookupAdapter,
-                    _ballotAdapter, _factory, _variables );
+        try {
+            _layout = new LayoutParser().getLayout(_variables, getSize(), getLanguage(), _view);
+            _layout.initFromViewManager(this, _ballotLookupAdapter, _ballotAdapter, _factory, _variables);
         }
         catch (LayoutParserException e) {
-            throw new BallotBoxViewException(
-                    "While attempting to parse the layout for size "
-                            + getSize() + " and language " + getLanguage()
-                            + ", the parser encountered an error.", e );
+            throw new BallotBoxViewException("While attempting to parse the layout for size " + getSize() +
+                                             " and language " + getLanguage() + ", the parser encountered an error.", e );
         }
     }
 
@@ -795,7 +766,7 @@ public class ViewManager implements IViewManager {
      */
     private void registerQueues() {
     	
-    	//Registering for the cast ballot button being pressed
+    	/* Registering for the cast ballot button being pressed */
         _view.register( EventType.CAST_BALLOT, new IEventHandler() {
 
             public void handle(InputEvent event) throws BallotBoxViewException {
@@ -803,7 +774,7 @@ public class ViewManager implements IViewManager {
             }
         } );
 
-        //Registering for the kill key
+        /* Registering for the kill key */
         _view.register( EventType.KILL, new IEventHandler() {
 
             public void handle(InputEvent event) throws BallotBoxViewException {
@@ -811,8 +782,7 @@ public class ViewManager implements IViewManager {
             }
         } );
 
-        //Registering for the mouse button being pressed
-        //We ignore this event if the view is currently being redrawn
+        /* Registering for the mouse button being pressed. We ignore this event if the view is currently being redrawn */
         _view.register( EventType.MOUSE_DOWN, new IEventHandler() {
 
             public void handle(InputEvent event) throws BallotBoxViewException {
@@ -833,47 +803,51 @@ public class ViewManager implements IViewManager {
                 moveFocusLeft();
             }
         });
+
         _view.register( EventType.RIGHT, new IEventHandler() {
             public void handle(InputEvent event) {
                 moveFocusRight();
             }
         });
+
         _view.register( EventType.UP, new IEventHandler() {
             public void handle(InputEvent event) {
                 moveFocusUp();
             }
         });
+
         _view.register( EventType.DOWN, new IEventHandler() {
             public void handle(InputEvent event) {
                 moveFocusDown();
             }
         });
+
         _view.register( EventType.NEXT, new IEventHandler() {
             public void handle(InputEvent event) {
                 moveFocusNext();
             }
         });
+
         _view.register( EventType.PREVIOUS, new IEventHandler() {
             public void handle(InputEvent event) {
                 moveFocusBack();
             }
         });
+
         _view.register( EventType.SELECT, new IEventHandler() {
             public void handle(InputEvent event) {
                 select();
             }
         });
 
-
-        
-        //Registering for notice that the view is being redrawn
+        /* Registering for notice that the view is being redrawn */
         _view.register( EventType.BEGIN_PAGE_REDRAW, new IEventHandler() {
         	public void handle(InputEvent event) throws BallotBoxViewException {
         		_ignoreMouseInput = true;
         	}
         });
         
-        //Registering for notice that the view has finished being drawn
+        /* Registering for notice that the view has finished being drawn */
         _view.register( EventType.END_PAGE_REDRAW, new IEventHandler(){
         	public void handle(InputEvent event) throws BallotBoxViewException {
         		_ignoreMouseInput = false;
@@ -886,16 +860,10 @@ public class ViewManager implements IViewManager {
      * on properties that are defined in the ballot.
      */
     private void setMediaSizes() {
-        if (_ballotAdapter.getProperties()
-                .contains( Properties.START_IMAGE_SIZE ))
-            try {
-                _mediaSize = _ballotAdapter.getProperties().getInteger(
-                        Properties.START_IMAGE_SIZE );
-            }
-            catch (IncorrectTypeException e) {
-                System.err
-                        .println( "StartImageSize property was malformed. Using 0..." );
-            }
+
+        if (_ballotAdapter.getProperties().contains( Properties.START_IMAGE_SIZE ))
+            try { _mediaSize = _ballotAdapter.getProperties().getInteger(Properties.START_IMAGE_SIZE); }
+            catch (IncorrectTypeException e) { System.err.println( "StartImageSize property was malformed. Using 0..." ); }
     }
 
     /**
@@ -903,26 +871,19 @@ public class ViewManager implements IViewManager {
      * declared in the ballot's properties.
      */
     private void setLanguages() {
-        if (_ballotAdapter.getProperties().contains( Properties.LANGUAGES )) {
-            try {
-                for (String s : _ballotAdapter.getProperties().getStringList(
-                        Properties.LANGUAGES ))
-                    _supportedLanguages.add( s );
-            }
-            catch (IncorrectTypeException e) {
-                System.err
-                        .println( "Languages property mal formed. Using \"en\"..." );
-            }
+
+        if (_ballotAdapter.getProperties().contains(Properties.LANGUAGES)) {
+            try { for (String s : _ballotAdapter.getProperties().getStringList(Properties.LANGUAGES)) _supportedLanguages.add(s); }
+            catch (IncorrectTypeException e) { System.err.println("Languages property mal formed. Using \"en\"..."); }
         }
     }
 
     /**
-     * Regsters an observer for when a review screen is encountered.
+     * Registers an observer for when a review screen is encountered.
      * 
      * @param reviewScreenObserver - observer to register
      */
 	public void registerForReview(Observer reviewScreenObserver) {
-		//System.out.println("Registering for Review...");
 		_reviewScreenEncountered.addObserver(reviewScreenObserver);
 	}
 
