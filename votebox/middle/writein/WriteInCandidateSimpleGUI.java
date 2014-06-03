@@ -18,8 +18,10 @@ import java.awt.*;
  */
 public class WriteInCandidateSimpleGUI {
 
+    /* TODO Javadocs? */
     /* The width of the drawable/viewable space on the screen. */
     private static final int GUI_WIDTH = 800;
+
     /* The height of the drawable/viewable space on the screen. */
     private static final int REGULAR_GUI_HEIGHT = 225;
     private static final int PRESIDENTIAL_GUI_HEIGHT = 365;
@@ -30,13 +32,16 @@ public class WriteInCandidateSimpleGUI {
 
     /* The UID of the write-in candidate whose name will be entered in this GUI prompt. */
     private String CANDIDATE_UID;
+
     /* The type of the write-in candidate. */
     private String CANDIDATE_TYPE;
 
     /* The main view, on which to draw Drawable elements. */
     IView mainView;
+
     /* The parent of this GUI. When stop is called, the GUI will call the guiStopped() method on the parent. */
     WriteInToggleButton parent;
+
     /* The main panel used by this GUI. */
     JPanel mainPanel;
 
@@ -52,34 +57,36 @@ public class WriteInCandidateSimpleGUI {
     /**
      * Stop displaying the GUI.
      */
-    public void stop ()
-    {
-//        parent.guiStopped("Name1", CANDIDATE_TYPE.equals("Presidential") ? "Name2" : "");
+    public void stop () {
         mainPanel.setVisible(false);
         mainPanel.setEnabled(false);
-
     }
 
     /**
      * Constructor for the WriteInCandidateSimpleGUI.
      * Creates the GUI and builds its GUI Elements.
-     * @param cX the x-coordinate of the center of the GUI
-     * @param cY the y-coordinate of the center of the GUI
-     * @param uid the UID of the candidate
-     * @param guiType the Type of GUI to start (Regular or Presidential)
+     *
+     * @param cX            the x-coordinate of the center of the GUI
+     * @param cY            the y-coordinate of the center of the GUI
+     * @param uid           the UID of the candidate
+     * @param guiType       the type of GUI to start (Regular or Presidential)
      */
     public WriteInCandidateSimpleGUI (int cX, int cY, String uid, String guiType, IView view, WriteInToggleButton parentObject)
     {
-        // TODO Create the GUI
-        // Set the UID.
+        /* TODO Create the GUI? */
+        /* Set the UID. */
         CANDIDATE_UID = uid;
-        // Set the TYPE.
+
+        /* Set the TYPE. */
         CANDIDATE_TYPE = guiType;
-        // Set the main view.
+
+        /* Set the main view. */
         mainView = view;
-        // Set the parent.
+
+        /* Set the parent. */
         parent = parentObject;
-        // Build GUI Elements.
+
+        /* Build GUI Elements. */
         buildGUIElements(cX, cY);
     }
 
@@ -92,9 +99,10 @@ public class WriteInCandidateSimpleGUI {
         mainPanel = new JPanel();
 
         /* Set position properties. */
-        // Set the appropriate height for the GUI, based on the type of the candidate.
+        /* Set the appropriate height for the GUI, based on the type of the candidate. */
         int GUI_HEIGHT = CANDIDATE_TYPE.equals("Regular") ? REGULAR_GUI_HEIGHT : PRESIDENTIAL_GUI_HEIGHT;
+
         mainPanel.setBounds(centerX - GUI_WIDTH / 2, centerY - GUI_HEIGHT / 2, GUI_WIDTH, GUI_HEIGHT);
-        //mainView.draw(mainPanel); //FIXME Need to find a way to draw a JPanel (or at least 2 text fields) on the view. It is currently impossible, as they are not IDrawables.
+        //mainView.draw(mainPanel); /* FIXME Need to find a way to draw a JPanel (or at least 2 text fields) on the view. It is currently impossible, as they are not IDrawables. */
     }
 }
