@@ -538,46 +538,7 @@ public class BallotEncrypter {
      * @param args
      */
     public static void main(String[] args) throws Exception {
-        /*BallotParser parser = new BallotParser();
-        Ballot b = parser.getBallot(new IBallotVars() {
 
-            public String getBallotFile() {
-                return "ballot.xml";
-            }
-
-            public String getBallotPath() {
-                return "";
-            }
-
-            public URL getBallotSchema() {
-                return getClass().getResource(
-                        "/votebox/middle/schema/ballot_schema.xsd");
-
-            }
-
-            public String getLayoutFile() {
-                return null;
-            }
-
-            public URL getLayoutSchema() {
-                return null;
-            }
-        });
-
-        ThreadMXBean t = ManagementFactory.getThreadMXBean();
-
-        ListExpression b_count = b.getCastBallot();
-
-        ListExpression b_count_crypt = SINGLETON.encrypt(b_count, STATICKEY.SINGLETON.PUBLIC_KEY);
-        ListExpression rVals = SINGLETON.getRecentRandom();
-        long start = t.getCurrentThreadCpuTime();
-
-        @SuppressWarnings("unused")
-		ListExpression b_count_crypt_decrypt = SINGLETON.decrypt(b_count_crypt, rVals, STATICKEY.SINGLETON.PUBLIC_KEY);
-        long end = t.getCurrentThreadCpuTime();
-
-        System.err.println(end-start);
-        */
 
         BallotEncrypter be = new BallotEncrypter();
 
