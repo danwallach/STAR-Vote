@@ -41,6 +41,7 @@ public class ElGamalKeyGenerator {
 
 	/**
 	 * @param args
+     *              generator string | number of keys | output directory
 	 */
 	public static void main(String[] args) {
 		if(args.length != 3){
@@ -52,6 +53,7 @@ public class ElGamalKeyGenerator {
 		int limit = -1;
 		
 		try{
+            /*The Number of keys to be generated must be integer*/
 			limit = Integer.parseInt(args[1]);
 		}catch(Exception e){
 			System.out.println("Expected integer for [number of keys], found \""+args[1]+"\".");
@@ -73,27 +75,34 @@ public class ElGamalKeyGenerator {
 			System.exit(0);
 		}//catch
 
-        /**
-         * Generate ElGamal Private and Public key Pair(s).
-         */
+
+         /* Generate ElGamal Private and Public key Pair(s).*/
 		for(int i = 0; i < limit; i++){
 			Pair<Key> keys = ElGamalCrypto.SINGLETON.generate(args[0]);
 			Key publicKey = keys.get1();
 			Key privateKey = keys.get2();
-			
+
+            /*Here we parse the keys inro an s-expression*/
+
 			ASExpression pub = publicKey.toASE();
 			ASExpression priv = privateKey.toASE();
-			
+
+
 			File pubFile = new File(dir, i+"-public.key");
 			File privFile = new File(dir, i+"-private.key");
-			
+
+            /*The generated pair of public and private keys are stored
+            in the <index>-public.key and <index>-private.key respectively. */
+
 			try{
 				OutputStream out = new FileOutputStream(pubFile);
+                /* Convert the s-expression into Rivest Verbatim format and then write it to the <index>-public.key */
 				out.write(pub.toVerbatim());
 				out.flush();
 				out.close();
 
 				out = new FileOutputStream(privFile);
+                /* Convert the s-expression into Rivest Verbatim format and then write it to the <index>-private.key */
 				out.write(priv.toVerbatim());
 				out.flush();
 				out.close();
