@@ -45,21 +45,17 @@ import votebox.middle.IBallotVars;
  * 
  */
 public class GlobalVarsReader {
-    private final URL BallotSchema = getClass().getResource(
-        "/votebox/middle/schema/ballot_schema.xsd" );
 
-    private final URL LayoutSchema = getClass().getResource(
-        "/votebox/middle/schema/layout_schema.xsd" );
-
-    private final String Filename = "ballotbox.cfg";
+    private final URL BallotSchema  = getClass().getResource("/votebox/middle/schema/ballot_schema.xsd");
+    private final URL LayoutSchema  = getClass().getResource("/votebox/middle/schema/layout_schema.xsd");
+    private final String Filename   = "ballotbox.cfg";
 
     private String _rootPath;
 
     /**
      * This is the public constructor for GlobalVarsReader.
      * 
-     * @param rootpath
-     *            This is the path to the root of the media package.
+     * @param rootpath the path to the root of the media package.
      */
     public GlobalVarsReader(String rootpath) {
         _rootPath = rootpath;
@@ -70,40 +66,27 @@ public class GlobalVarsReader {
      * that one IGlobalVars object can be constructed with the information from
      * the stream.
      * 
-     * @return This method returns an IGlobalVars object that reflects the data
-     *         on the decorated stream.
-     * @throws IOException
-     *             This method throws if there are problems reading from the
-     *             stream.
+     * @return an IGlobalVars object that reflects the data on the decorated stream.
+     *
+     * @throws IOException if there are problems reading from the stream.
      */
     public IBallotVars parse() throws IOException {
-        BufferedReader b = new BufferedReader( new InputStreamReader(
-                new FileInputStream( _rootPath + File.separatorChar + Filename ) ) );
+
+        String completePath = _rootPath + File.separatorChar + Filename;
+
+        BufferedReader b = new BufferedReader( new InputStreamReader( new FileInputStream(completePath)));
 
         final String ballotstring = b.readLine();
         final String layoutstring = b.readLine();
 
         return new IBallotVars() {
 
-            public String getBallotPath() {
-                return _rootPath;
-            }
+            public String getBallotPath() { return _rootPath; }
+            public String getBallotFile() { return _rootPath + ballotstring; }
+            public String getLayoutFile() { return _rootPath + layoutstring; }
+            public URL  getLayoutSchema() { return LayoutSchema; }
+            public URL  getBallotSchema() { return BallotSchema; }
 
-            public String getBallotFile() {
-                return _rootPath + ballotstring;
-            }
-
-            public URL getBallotSchema() {
-                return BallotSchema;
-            }
-
-            public String getLayoutFile() {
-                return _rootPath + layoutstring;
-            }
-
-            public URL getLayoutSchema() {
-                return LayoutSchema;
-            }
         };
     }
 }

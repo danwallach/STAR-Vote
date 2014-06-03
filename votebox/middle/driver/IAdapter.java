@@ -23,9 +23,6 @@
 package votebox.middle.driver;
 
 import votebox.middle.Properties;
-import votebox.middle.view.AView;
-import votebox.middle.view.AWTView;
-import votebox.middle.view.IView;
 
 /**
  * This interface defines a general adapter that the
@@ -38,27 +35,21 @@ public interface IAdapter {
 	/**
 	 * Call this method to ask that a specific element be selected.
 	 * 
-	 * @param uid
-	 *            Ask to select a card element that has this UID.
-	 * @return This method returns true if the selection was a success (if it
-	 *         was allowed), and false otherwise.
-	 * @throws UnknownUIDException
-	 *             This method throws when the UID that is given as a parameter
-	 *             is not defined.
+	 * @param uid   UID of the card element to be selected
+	 * @return      true if the selection was a success (if it was allowed), and false otherwise.
+     *
+	 * @throws UnknownUIDException when the UID that is given as a parameter is not defined.
 	 */
 	public boolean select(String uid) throws UnknownUIDException, SelectionException;
 
 	/**
 	 * Call this method to ask that a specific element be deselected.
 	 * 
-	 * @return This method returns true if the deselection was a success (if it
-	 *         was allowed), and false otherwise.
-	 * @param uid
-	 *            Ask to deselect a card element that has this UID.
-	 * @param playSound
-     * @throws UnknownUIDException
-	 *             This method throws when the UID that is given as a parameter
-	 *             is not defined.
+	 * @param uid           UID of the card element to be deselected
+	 * @param playSound     sound to be played on deselect
+     * @return              true if the deselection was a success (if it was allowed), and false otherwise.
+     *
+     * @throws UnknownUIDException when the UID that is given as a parameter is not defined.
 	 */
 	public boolean deselect(String uid, boolean playSound) throws UnknownUIDException, DeselectionException;
 
