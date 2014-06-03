@@ -38,7 +38,6 @@ public interface IFocusable extends IDrawable {
 	
 	/**
 	 * Invoke this method to ask this focusable item to "focus" itself.
-	 * 
 	 */
 	public abstract void focus();
 
@@ -57,16 +56,15 @@ public interface IFocusable extends IDrawable {
 	 * Call this method to get the focusable that has been defined as being
 	 * "above" this one.
 	 * 
-	 * @return This method returns the focusable that is "above" this one.
+	 * @return      the focusable that is "above" this one.
 	 */
 	IFocusable getUp();
 
 	/**
 	 * Call this method to define which focusable is "above" this one.
 	 * 
-	 * @param focusable
-	 *            This is the focusable that will be defined as being "above"
-	 *            this one.
+	 * @param focusable     the focusable that will be defined as being "above"
+	 *                      this one.
 	 */
 	void setUp(IFocusable focusable);
 
@@ -74,16 +72,15 @@ public interface IFocusable extends IDrawable {
 	 * Call this method to get the focusable that has been defined as being
 	 * "below" this one.
 	 * 
-	 * @return This method returns the focusable that is "below" this one.
+	 * @return      the focusable that is "below" this one.
 	 */
 	IFocusable getDown();
 
 	/**
 	 * Call this method to define which focusable is "below" this one.
 	 * 
-	 * @param focusable
-	 *            This is the focusable that will be defined as being "below"
-	 *            this one.
+	 * @param focusable     the focusable that will be defined as being "below"
+	 *                      this one.
 	 */
 	void setDown(IFocusable focusable);
 
@@ -91,17 +88,15 @@ public interface IFocusable extends IDrawable {
 	 * Call this method to get the focusable that has been defined as being "to
 	 * the left" of this one.
 	 * 
-	 * @return This method returns the focusable that is "to the left" of this
-	 *         one.
+	 * @return      the focusable that is "to the left" of this one.
 	 */
 	IFocusable getLeft();
 
 	/**
 	 * Call this method to define which focusable is "left of" this one.
 	 * 
-	 * @param focusable
-	 *            This is the focusable that will be defined as being "left of"
-	 *            this one.
+	 * @param focusable     the focusable that will be defined as being "left of"
+	 *                      this one.
 	 */
 	void setLeft(IFocusable focusable);
 
@@ -109,17 +104,15 @@ public interface IFocusable extends IDrawable {
 	 * Call this method to get the focusable that has been defined as being "to
 	 * the right" of this one.
 	 * 
-	 * @return This method returns the focusable that is "to the right" of this
-	 *         one.
+	 * @return      the focusable that is "to the right" of this one.
 	 */
 	IFocusable getRight();
 
 	/**
 	 * Call this method to define which focusable is "right of" this one.
 	 * 
-	 * @param focusable
-	 *            This is the focusable that will be defined as being "right of"
-	 *            this one.
+	 * @param focusable     the focusable that will be defined as being "right of"
+	 *                      this one.
 	 */
 	void setRight(IFocusable focusable);
 
@@ -127,17 +120,16 @@ public interface IFocusable extends IDrawable {
 	 * Call this method to get the focusable that has been defined as being
 	 * "after" this one, by some predefined sequence.
 	 * 
-	 * @return This method returns the focusable that has been defined as being
-	 *         "after" this one, by some predefined sequence.
+	 * @return      the focusable that has been defined as being "after" this one,
+     *              by some predefined sequence.
 	 */
 	IFocusable getNext();
 
 	/**
 	 * Call this method to define which focusable is "next after" this one.
 	 * 
-	 * @param focusable
-	 *            This is the focusable that will be defined as being "next
-	 *            after" this one.
+	 * @param focusable     the focusable that will be defined as being "next
+	 *                      after" this one.
 	 */
 	void setNext(IFocusable focusable);
 
@@ -145,17 +137,16 @@ public interface IFocusable extends IDrawable {
 	 * Call this method to get the focusable that has been defined as being
 	 * "before" this one, by some predefined sequence.
 	 * 
-	 * @return This method returns the focusable that has been defined as being
-	 *         "before" this one, by some predefined sequence.
+	 * @return      the focusable that has been defined as being "before" this one,
+     *              by some predefined sequence.
 	 */
 	IFocusable getPrevious();
 
 	/**
 	 * Call this method to define which focusable is "previous before" this one.
 	 * 
-	 * @param focusable
-	 *            This is the focusable that will be defined as being "previous
-	 *            before" this one.
+	 * @param focusable     the focusable that will be defined as being "previous
+	 *                      before" this one.
 	 */
 	void setPrevious(IFocusable focusable);
 }

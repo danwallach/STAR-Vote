@@ -47,9 +47,9 @@ public interface IViewManager {
     /**
      * Flip to a particular page.
      *
-     * @param pagenum
-     *            Flip to this page.
-     * @param previous
+     * @param pagenum   the page to which to flip
+     * @param previous  whether this page came before the most recently used page
+     *                  TODO check this
      */
     void drawPage(int pagenum, boolean previous);
     
@@ -86,32 +86,28 @@ public interface IViewManager {
     /**
      * Set the language being displayed in the view.
      * 
-     * @param language
-     *            Set the language to this.
+     * @param language  the language to which the view is to be set
      */
     void setLanguage(String language);
 
     /**
      * Set the size being displayed in the view.
      * 
-     * @param size
-     *            Set the size to this.
+     * @param size      the size to which the view is to be set
      */
     void setSize(int size);
 
     /**
      * Get the current size.
      * 
-     * @return This method returns the current size of images that the view
-     *         manager is asking to have displayed.
+     * @return      the current size of images that the view manager is asking to have displayed.
      */
     int getSize();
 
     /**
      * Get the current language.
      * 
-     * @return This method returns the current language of images that the view
-     *         manager is asking to have displayed.
+     * @return      the current language of images that the view manager is asking to have displayed.
      */
     String getLanguage();
     

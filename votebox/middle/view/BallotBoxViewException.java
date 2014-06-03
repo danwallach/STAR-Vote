@@ -23,7 +23,7 @@
 package votebox.middle.view;
 
 /**
- * All exceptions which eminate from the view will be thrown in the form of a
+ * All exceptions which emanate from the view will be thrown in the form of a
  * BallotBoxViewException. It will have a type and a message.
  * 
  * @author Kyle
@@ -39,11 +39,8 @@ public class BallotBoxViewException extends RuntimeException {
 	/**
 	 * This is the BallotBoxViewException constructor.
 	 * 
-	 * @param cause
-	 *            If an SDLException caused this exception to be thrown, pass it
-	 *            to here.
-	 * @param message
-	 *            This is the exception's message.
+	 * @param cause     what caused the exception to be thrown (e.g. SDLException)
+	 * @param message   the exception's message.
 	 */
 	public BallotBoxViewException(String message, Exception cause) {
 		super(message, cause);

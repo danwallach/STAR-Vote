@@ -40,19 +40,19 @@ public class InputEvent {
     /**
      * This is the public constructor for Event.
      * 
-     * @param focused
-     *            This is the drawable that the mouse is currently focused on.
+     * @param focused   the drawable that the mouse is currently focused on.
      */
     public InputEvent(IDrawable focused) {
         _focused = focused;
-    }    
+    }
+
     /**
      * Call this method to get the drawable that was being pointed at by the
      * mouse at the time the event happened.
      * Note that if there is a payload, there is NOT a focusedDrawable and vice versa.
      * 
-     * @return This method returns the drawable that was being pointed at by the
-     *         mouse, or null if the mouse was not pointing to anything.
+     * @return      the drawable that was being pointed at by the mouse or null if
+     *              the mouse was not pointing to anything.
      */
     public IDrawable focusedDrawable() {
         return _focused;

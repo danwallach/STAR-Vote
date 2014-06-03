@@ -44,12 +44,11 @@ public class AWTImage implements IViewImage {
     /**
      * Construct a new AWT Image.
      *
-     * @param filename
-     *            Construct an image that loads its bytes from this path.
-     * @param isVolatile
+     * @param filename      the file from which the constructed image loads its bytes
+     * @param isVolatile    whether the AWTImage is volatile
      */
     public AWTImage(String filename, boolean isVolatile) {
-        _bufferedImage = new SoftReference<BufferedImage>( null );
+        _bufferedImage = new SoftReference<BufferedImage>(null);
         _filename = filename;
         _isVolatile = isVolatile;
     }
@@ -58,18 +57,10 @@ public class AWTImage implements IViewImage {
      * @see votebox.middle.view.IViewImage#getImage()
      */
     public BufferedImage getImage() {
+
         if (_isVolatile || _bufferedImage.get() == null)
-            try {
-                _bufferedImage = new SoftReference<BufferedImage>( ImageIO
-                        .read( new File( _filename ) ) );
-
-                System.out.println("Reading new image " + _filename);
-
-            }
-            catch (IOException e) {
-                throw new BallotBoxViewException( "The file " + _filename
-                        + " could not be loaded to represent an image", e );
-            }
+            try { _bufferedImage = new SoftReference<BufferedImage>(ImageIO.read(new File(_filename))); }
+            catch (IOException e) { throw new BallotBoxViewException( "The file " + _filename + " could not be loaded to represent an image", e ); }
 
         return _bufferedImage.get();
     }

@@ -34,7 +34,7 @@ public interface IViewFactory {
     /**
      * Construct a new view.
      * 
-     * @return This method returns a newly constructed view.
+     * @return      a newly constructed view.
      */
     public IView makeView();
 
@@ -42,12 +42,11 @@ public interface IViewFactory {
      * Construct an image object that can be drawn in views that are constructed
      * with this factory.
      * 
+     * @param path          the path from which the image's bytes will be loaded
+     * @param isVolatile    whether the image is volatile
      *
-     * @param path
-     *            Load the image's bytes from this path
-     * @param isVolatile
-     * @return This method returns an image object which can be used in views
-     *         that are constructed with this factory.
+     * @return              an image object which can be used in views that are
+     *                      constructed with this factory.
      */
     public IViewImage makeImage(String path, boolean isVolatile);
 }

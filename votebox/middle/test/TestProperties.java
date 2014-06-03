@@ -44,21 +44,21 @@ public class TestProperties extends TestCase {
      * This method tests the simple add, get, and contains functions. If this
      * method throws an exception, something went wrong.
      */
-    public void test_addGetContains() throws UnknownTypeException,
-            IncorrectTypeException, UnknownFormatException {
+    public void test_addGetContains() throws UnknownTypeException, IncorrectTypeException, UnknownFormatException {
+
         Properties p = new Properties();
 
-        p.add( "int", "3", "Integer" );
-        p.add( "string", "three", "String" );
-        p.add( "boolean", "true", "Boolean" );
+        p.add("int", "3", "Integer");
+        p.add("string", "three", "String");
+        p.add("boolean", "true", "Boolean");
 
-        assertTrue( p.contains( "int" ) );
-        assertTrue( p.contains( "string" ) );
-        assertTrue( p.contains( "boolean" ) );
+        assertTrue(p.contains("int"));
+        assertTrue(p.contains("string"));
+        assertTrue(p.contains("boolean"));
 
-        assertEquals( new Integer( 3 ), p.getInteger( "int" ) );
-        assertEquals( "three", p.getString( "string" ) );
-        assertEquals( new Boolean( true ), p.getBoolean( "boolean" ) );
+        assertEquals(new Integer(3), p.getInteger("int"));
+        assertEquals("three", p.getString("string"));
+        assertEquals(Boolean.TRUE, p.getBoolean("boolean"));
     }
 
     /**
@@ -68,15 +68,14 @@ public class TestProperties extends TestCase {
      * wrong.
      */
     public void test_UnknownTypeException() throws UnknownFormatException {
+
         Properties p = new Properties();
 
         try {
-            p.add( "key", "value", "randomtype" );
+            p.add("key", "value", "randomtype");
             assertFalse( true );
         }
-        catch (UnknownTypeException e) {
-            assertEquals( "randomtype", e.getType() );
-        }
+        catch (UnknownTypeException e) { assertEquals("randomtype", e.getType()); }
 
     }
 
@@ -87,24 +86,25 @@ public class TestProperties extends TestCase {
      * wrong.
      */
     public void test_UnknownFormatException() throws UnknownTypeException {
+
         Properties p = new Properties();
 
         try {
-            p.add( "key", "value", "Integer" );
-            assertTrue( false );
+            p.add("key", "value", "Integer");
+            assertTrue(false);
         }
         catch (UnknownFormatException e) {
-            assertEquals( "value", e.getValue() );
-            assertEquals( "Integer", e.getType() );
+            assertEquals("value", e.getValue());
+            assertEquals("Integer", e.getType());
         }
 
         try {
-            p.add( "key", "value", "Boolean" );
-            assertTrue( false );
+            p.add("key", "value", "Boolean");
+            assertTrue(false);
         }
         catch (UnknownFormatException e) {
-            assertEquals( "value", e.getValue() );
-            assertEquals( "Boolean", e.getType() );
+            assertEquals("value", e.getValue());
+            assertEquals("Boolean", e.getType());
         }
     }
 
@@ -114,115 +114,117 @@ public class TestProperties extends TestCase {
      * caught in the method, if this method throws an exception, something went
      * wrong.
      */
-    public void test_IncorrectTypeException() throws UnknownTypeException,
-            UnknownFormatException {
+    public void test_IncorrectTypeException() throws UnknownTypeException, UnknownFormatException {
+
         Properties p = new Properties();
 
-        p.add( "int", "3", "Integer" );
-        p.add( "string", "three", "String" );
-        p.add( "boolean", "true", "Boolean" );
+        p.add("int", "3", "Integer");
+        p.add("string", "three", "String");
+        p.add("boolean", "true", "Boolean");
 
         try {
-            p.getString( "int" );
-            assertTrue( false );
+            p.getString("int");
+            assertTrue(false);
         }
         catch (IncorrectTypeException e) {
-            assertEquals( "String", e.getExpected() );
-            assertEquals( "Integer", e.getActual() );
-        }
-
-        try {
-            p.getString( "boolean" );
-            assertTrue( false );
-        }
-        catch (IncorrectTypeException e) {
-            assertEquals( "String", e.getExpected() );
-            assertEquals( "Boolean", e.getActual() );
+            assertEquals("String", e.getExpected());
+            assertEquals("Integer", e.getActual());
         }
 
         try {
-            p.getInteger( "string" );
-            assertTrue( false );
+            p.getString("boolean");
+            assertTrue(false);
         }
         catch (IncorrectTypeException e) {
-            assertEquals( "Integer", e.getExpected() );
-            assertEquals( "String", e.getActual() );
+            assertEquals("String", e.getExpected());
+            assertEquals("Boolean", e.getActual());
         }
 
         try {
-            p.getInteger( "boolean" );
-            assertTrue( false );
+            p.getInteger("string");
+            assertTrue(false);
         }
         catch (IncorrectTypeException e) {
-            assertEquals( "Integer", e.getExpected() );
-            assertEquals( "Boolean", e.getActual() );
+            assertEquals("Integer", e.getExpected());
+            assertEquals("String", e.getActual());
         }
 
         try {
-            p.getBoolean( "string" );
-            assertTrue( false );
+            p.getInteger("boolean");
+            assertTrue(false);
         }
         catch (IncorrectTypeException e) {
-            assertEquals( "Boolean", e.getExpected() );
-            assertEquals( "String", e.getActual() );
+            assertEquals("Integer", e.getExpected());
+            assertEquals("Boolean", e.getActual());
         }
 
         try {
-            p.getBoolean( "int" );
-            assertTrue( false );
+            p.getBoolean("string");
+            assertTrue(false);
         }
         catch (IncorrectTypeException e) {
-            assertEquals( "Boolean", e.getExpected() );
-            assertEquals( "Integer", e.getActual() );
+            assertEquals("Boolean", e.getExpected());
+            assertEquals("String", e.getActual());
+        }
+
+        try {
+            p.getBoolean("int");
+            assertTrue(false);
+        }
+        catch (IncorrectTypeException e) {
+            assertEquals("Boolean", e.getExpected());
+            assertEquals("Integer", e.getActual());
         }
     }
 
     public void test_lists() throws Exception {
+
         Properties p = new Properties();
+
         ArrayList<String> stringlist = new ArrayList<String>();
         ArrayList<String> intlist = new ArrayList<String>();
 
-        stringlist.add( "Hello" );
-        stringlist.add( "World" );
+        stringlist.add("Hello");
+        stringlist.add("World");
 
-        intlist.add( "1" );
-        intlist.add( "2" );
+        intlist.add("1");
+        intlist.add("2");
 
-        p.add( "strings", stringlist, "String" );
-        p.add( "ints", intlist, "Integer" );
+        p.add("strings", stringlist, "String");
+        p.add("ints", intlist, "Integer");
         
-        List<String> getbackstring = p.getStringList( "strings" );
-        List<Integer> getbackint = p.getIntegerList( "ints" );
+        List<String>  getbackstring = p.getStringList("strings");
+        List<Integer> getbackint    = p.getIntegerList("ints");
         
         assertEquals(stringlist, getbackstring);
         assertEquals(new Integer(1), getbackint.get(0));
         assertEquals(new Integer(2), getbackint.get(1));
         
         try {
-            p.getStringList( "ints" );
-            assertTrue( false );
+            p.getStringList("ints");
+            assertTrue(false);
         }
         catch (IncorrectTypeException e) {
-            assertEquals( "List<String>", e.getExpected() );
-            assertEquals( "List<Integer>", e.getActual() );
+            assertEquals("List<String>", e.getExpected());
+            assertEquals("List<Integer>", e.getActual());
         }
         
         try {
-            p.getIntegerList( "strings" );
-            assertTrue( false );
+            p.getIntegerList("strings");
+            assertTrue(false);
         }
         catch (IncorrectTypeException e) {
-            assertEquals( "List<Integer>", e.getExpected() );
-            assertEquals( "List<String>", e.getActual() );
+            assertEquals("List<Integer>", e.getExpected());
+            assertEquals("List<String>", e.getActual());
         }
         
         try {
-            p.getString( "strings" );
-            assertTrue( false );
+            p.getString("strings");
+            assertTrue(false);
         }
         catch (IncorrectTypeException e) {
-            assertEquals( "String", e.getExpected() );
-            assertEquals( "ArrayList", e.getActual() );
+            assertEquals("String", e.getExpected());
+            assertEquals("ArrayList", e.getActual());
         }
     }
 }

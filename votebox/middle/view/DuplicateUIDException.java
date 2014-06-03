@@ -33,6 +33,9 @@ public class DuplicateUIDException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 
+    /**
+     * Constructor
+     */
 	public DuplicateUIDException(String uid) {
 		super(uid + " was declared more than once.");
 	}
