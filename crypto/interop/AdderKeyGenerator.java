@@ -55,14 +55,13 @@ public class AdderKeyGenerator {
 		System.out.println(pubFile.getAbsolutePath());
 		System.out.println(privFile.getAbsolutePath());
 
-        // create public.adder.key and private.adder.key file in the same location path destDir
+        /* create public.adder.key and private.adder.key file in the same location path destDir */
 		pubFile.createNewFile();
 		privFile.createNewFile();
 		
 		FileOutputStream pubOut = new FileOutputStream(pubFile);
 		FileOutputStream privOut = new FileOutputStream(privFile);
 		
-
 
         /* Writes the public key to the 'public.adder.key' file. */
 		pubOut.write(pubKey.toASE().toVerbatim());
