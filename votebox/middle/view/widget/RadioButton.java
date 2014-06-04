@@ -47,13 +47,13 @@ public class RadioButton extends AToggleButtonGroupStrategy {
 	 * @see votebox.middle.view.widget.AToggleButtonGroupStrategy#select(votebox.middle.view.widget.ToggleButton)
 	 */
 	public void select(ToggleButton element) {
-		// Deselect everyone else
-		for (ToggleButton button : element.getGroup().getButtons()) {
-			if (!button.equals(element)) {
+
+		/* Deselect everyone else */
+		for (ToggleButton button : element.getGroup().getButtons())
+			if (!button.equals(element))
 				button.makeDeselected(false);
-			}
-		}
-		// Select the new guy.
+
+		/* Select the new guy. */
 		element.makeSelected();
 	}
 

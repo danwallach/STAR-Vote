@@ -34,8 +34,7 @@ public interface IButtonStrategy {
 	/**
 	 * The behavior that is executed when the button is pressed is defined here.
 	 * 
-	 * @param context
-	 *            This is the button that is delegating the behavior.
+	 * @param context       the button that is delegating the behavior.
 	 */
 	public void execute(Button context) ;
 }
