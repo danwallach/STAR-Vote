@@ -50,8 +50,7 @@ public class ToggleButtonGroup {
 	/**
 	 * This is the public constructor for ToggleButtonGroup.
 	 * 
-	 * @param properties
-	 *            These are the properties that were parsed from the layout XML.
+	 * @param properties        the properties that were parsed from the layout XML.
 	 */
 	public ToggleButtonGroup(Properties properties) {
 		_properties = properties;
@@ -61,41 +60,49 @@ public class ToggleButtonGroup {
 	 * Call this method to set the strategy that this button group delegates to
 	 * based on what is set in this button group's properties.
 	 * 
-	 * @param viewManagerAdapter
-	 *            Often a strategy's constructor will need a reference to the
-	 *            view manager. Use this reference.
+	 * @param viewManagerAdapter    a reference to the viewManager
 	 */
-	public void setStrategy(IViewManager viewManagerAdapter, IAdapter ballotAdapter)
-			throws UnknownStrategyException {
-		if(_strategy != null)
-			return;
-		
-		if (_properties.contains(Properties.TOGGLE_BUTTON_GROUP_STRATEGY)) {
-			try {
-				String strategy = _properties
-						.getString(Properties.TOGGLE_BUTTON_GROUP_STRATEGY);
-				if (strategy.equals("Race"))
-					_strategy = new Race(ballotAdapter);
-				else if (strategy.equals("LanguageSelect"))
-					_strategy = new LanguageSelect(viewManagerAdapter);
-				else
-					throw new UnknownStrategyException(strategy);
-			} catch (IncorrectTypeException e) {
-				throw new UnknownStrategyException(_properties
-						.getObject(Properties.TOGGLE_BUTTON_GROUP_STRATEGY)
-						+ "(which is not of type string)");
-			}
-		} else {
-			throw new UnknownStrategyException("undefined");
-		}
+	public void setStrategy(IViewManager viewManagerAdapter, IAdapter ballotAdapter) throws UnknownStrategyException {
+
+        /* Make sure the strategy is currently null */
+		if(_strategy == null) {
+
+            /* Make sure there's a strategy in properties */
+            if (_properties.contains(Properties.TOGGLE_BUTTON_GROUP_STRATEGY)) {
+
+                try {
+
+                    /* Set the strategy based on the strategy in properties */
+                    String strategy = _properties.getString(Properties.TOGGLE_BUTTON_GROUP_STRATEGY);
+
+                    switch (strategy) {
+
+                        case "Race":
+                            _strategy = new Race(ballotAdapter);
+                            break;
+
+                        case "LanguageSelect":
+                            _strategy = new LanguageSelect(viewManagerAdapter);
+                            break;
+
+                        default:
+                            throw new UnknownStrategyException(strategy);
+                    }
+                }
+                catch (IncorrectTypeException e) {
+                    throw new UnknownStrategyException(_properties.getObject(Properties.TOGGLE_BUTTON_GROUP_STRATEGY) + "(which is not of type string)");
+                }
+
+            } /* If there isn't a strategy in properties, throw an exception */
+            else { throw new UnknownStrategyException("undefined"); }
+        }
 	}
 
 	/**
 	 * Toggle buttons should invoke this method when they want to select
 	 * themselves. The group should delegate to its strategy here.
 	 * 
-	 * @param context
-	 *            This is the button that would like to select itself.
+	 * @param context       the button that would like to select itself.
 	 */
 	public void select(ToggleButton context){
 		_strategy.select(context);
@@ -105,9 +112,8 @@ public class ToggleButtonGroup {
 	 * Toggle buttons should invoke this method when they want to deselect
 	 * themselves. The group should delegate to its strategy here.
 	 *
-     * @param context
-     *            This is the button that would like to deselect itself.
-     * @param playSound
+     * @param context       the button that would like to deselect itself.
+     * @param playSound     whether or not a sound should be played
      */
 	public void deselect(ToggleButton context, boolean playSound){
 		_strategy.deselect(context, playSound);
@@ -116,7 +122,7 @@ public class ToggleButtonGroup {
 	/**
 	 * This is the getter for _buttons
 	 * 
-	 * @return _buttons.
+	 * @return      _buttons.
 	 */
 	public ArrayList<ToggleButton> getButtons() {
 		return _buttons;
@@ -125,7 +131,7 @@ public class ToggleButtonGroup {
 	/**
 	 * This is the getter for _properties
 	 * 
-	 * @return _properties.
+	 * @return      _properties.
 	 */
 	public Properties getProperties() {
 		return _properties;

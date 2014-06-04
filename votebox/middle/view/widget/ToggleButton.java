@@ -52,21 +52,21 @@ import votebox.middle.view.IViewManager;
  */
 public class ToggleButton extends FocusableLabel {
 
-    private Event _selectedEvent = new Event();
-    private Event _deselectedEvent = new Event();
-    private Event _focusedEvent = new Event();
-    private Event _unfocusedEvent = new Event();
+    private Event _selectedEvent        = new Event();
+    private Event _deselectedEvent      = new Event();
+    private Event _focusedEvent         = new Event();
+    private Event _unfocusedEvent       = new Event();
 
-    private NavigationLinks _links = new NavigationLinks();
+    private NavigationLinks _links      = new NavigationLinks();
 
-    private AToggleButtonState _state = DefaultToggleButtonState.Singleton;
+    private AToggleButtonState _state   = DefaultToggleButtonState.Singleton;
 
     private ToggleButtonGroup _group;
 
+    protected IViewImage _focusedSelectedImage;
     protected IViewImage _defaultImage;
     protected IViewImage _selectedImage;
     protected IViewImage _focusedImage;
-    protected IViewImage _focusedSelectedImage;
     protected IViewImage _reviewImage;
 
     private Thread soundThread;
@@ -74,46 +74,45 @@ public class ToggleButton extends FocusableLabel {
     /**
      * This is the public constructor for ToggleButton. It invokes super.
      *
-     * @param group
-     *            This is the group to which this ToggleButton will belong.
-     * @param uid
-     *            Universal identifier of this ToggleButton.
-     * @param properties
-     *            Properties associated with this ToggleButon.
+     * @param group         the group to which this ToggleButton will belong.
+     * @param uid           the Universal identifier of this ToggleButton.
+     * @param properties    the properties associated with this ToggleButton.
      */
-    public ToggleButton(ToggleButtonGroup group, String uid,
-            Properties properties) {
-        super( uid, properties );
+    public ToggleButton(ToggleButtonGroup group, String uid, Properties properties) {
+
+        super(uid, properties);
 
         _group = group;
-
     }
 
+    /**
+     *
+     * @param viewManagerAdapter
+     * @param ballotLookupAdapter
+     * @param ballotAdapter
+     * @param factory
+     * @param vars
+     * TODO someone knowledgeable comment
+     */
     @Override
-    public void initFromViewManager(IViewManager viewManagerAdapter,
-            IBallotLookupAdapter ballotLookupAdapter, IAdapter ballotAdapter,
-            IViewFactory factory, IBallotVars vars) {
-        super.initFromViewManager( viewManagerAdapter, ballotLookupAdapter,
-            ballotAdapter, factory, vars );
+    public void initFromViewManager(IViewManager viewManagerAdapter, IBallotLookupAdapter ballotLookupAdapter,
+                                    IAdapter ballotAdapter, IViewFactory factory, IBallotVars vars) {
+
+        super.initFromViewManager(viewManagerAdapter, ballotLookupAdapter, ballotAdapter, factory, vars);
+
         try {
-            if (ballotLookupAdapter.exists( getUniqueID() )
-                    && ballotLookupAdapter.isSelected( getUniqueID() ))
-                setState( SelectedToggleButtonState.Singleton );
+            /* Check that the UID is in the adapter and that it is selected */
+            if (ballotLookupAdapter.exists(getUniqueID()) && ballotLookupAdapter.isSelected(getUniqueID()))
+                setState(SelectedToggleButtonState.Singleton);
         }
         catch (UnknownUIDException e) {
-            throw new BallotBoxViewException(
-                    "Internal Error. The ballot lookup adapter claims "
-                            + getUniqueID()
-                            + " exists but isSelected throws an unknown exception",
-                    e );
+            throw new BallotBoxViewException("Internal Error. The ballot lookup adapter claims " + getUniqueID() +
+                                             " exists but isSelected throws an unknown exception", e);
         }
-        try {
-            _group.setStrategy( viewManagerAdapter, ballotAdapter );
-        }
+
+        try { _group.setStrategy(viewManagerAdapter, ballotAdapter); } /* Set the strategy */
         catch (UnknownStrategyException e) {
-            throw new BallotBoxViewException(
-                    "There was a problem setting the strategy on a toggle button group:",
-                    e );
+            throw new BallotBoxViewException("There was a problem setting the strategy on a toggle button group:", e);
         }
     }
 
@@ -123,44 +122,37 @@ public class ToggleButton extends FocusableLabel {
      * by the voter as intending to be toggled. What happens next depends on
      * state, so this behavior is delegated.
      *
-     * @throws this
-     *             method throws if its strategy is Race and there's no ballot
-     *             element that corresponds with its UID.
      * @see votebox.middle.view.IFocusable#select()
      */
-    public void select() {
-
-        _state.select( this );
-    }
+    public void select() { _state.select(this); }
 
     /**
      * This method is called by the toggle button group when it decides that it
      * needs to make this element's state be selected
      */
     public void makeSelected() {
+
         soundThread  = new Thread(){
+
             public void run() {
 
-                // prepare the mp3Player
+                /* Prepare the mp3Player */
                 try {
-                    FileInputStream fileInputStream = new FileInputStream(soundPath( _vars, "Selected",
-                            _viewManager.getLanguage() ));
+
+                    FileInputStream fileInputStream = new FileInputStream(soundPath(_vars, "Selected", _viewManager.getLanguage()));
                     BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
+
                     mp3Player = new Player(bufferedInputStream);
                     mp3Player.play();
-                    if(this.isInterrupted())
-                        mp3Player.close();
-                } catch (Exception e) {
-                    mp3Player = null;
-                    System.out.println("Problem playing audio: " + "media/SelectedSound.mp3");
-                    System.out.println(e);
+
+                    if(this.isInterrupted()) mp3Player.close();
                 }
+                catch (Exception e) { mp3Player = null; e.printStackTrace(); }
 
 
 
             }
         };
-
 
         soundThread.start();
 
@@ -170,41 +162,39 @@ public class ToggleButton extends FocusableLabel {
     /**
      * This method is called by the toggle button group when it decides that it
      * needs to make this element's state be deselected
-     * @param playSound
+     *
+     * @param playSound     whether or not a sound should be played
      */
     public void makeDeselected(boolean playSound) {
 
-        //Only do this if this button is selected
+        /* Only do this if this button is selected */
         if(playSound){
 
             soundThread  = new Thread(){
+
                 public void run() {
 
-                    // prepare the mp3Player
+                    /* Prepare the mp3Player */
                     try {
-                        FileInputStream fileInputStream = new FileInputStream(soundPath( _vars, "Deselected",
-                                _viewManager.getLanguage() ));
+
+                        FileInputStream fileInputStream = new FileInputStream(soundPath(_vars, "Deselected", _viewManager.getLanguage()));
                         BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
+
                         mp3Player = new Player(bufferedInputStream);
                         mp3Player.play();
-                        if(this.isInterrupted())
-                            mp3Player.close();
-                    } catch (Exception e) {
-                        mp3Player = null;
-                        System.out.println("Problem playing audio: " + "media/DeselectedSound.mp3");
-                        System.out.println(e);
+
+                        /* Close the mp3Player if interrupted */
+                        if(this.isInterrupted()) mp3Player.close();
                     }
-
-
+                    catch (Exception e) { mp3Player = null; e.printStackTrace(); }
 
                 }
             };
 
-
             soundThread.start();
         }
 
-        _state.makeDeselected( this );
+        _state.makeDeselected(this);
     }
 
     /**
@@ -216,33 +206,31 @@ public class ToggleButton extends FocusableLabel {
      * @see votebox.middle.view.IFocusable#focus()
      */
     public void focus() {
+
         soundThread  = new Thread(){
+
             public void run() {
 
-                // prepare the mp3Player
+                /* Prepare the mp3Player */
                 try {
-                    FileInputStream fileInputStream = new FileInputStream(soundPath( _vars, getUniqueID(),
-                             _viewManager.getLanguage() ));
+
+                    FileInputStream fileInputStream = new FileInputStream(soundPath(_vars, getUniqueID(), _viewManager.getLanguage()));
                     BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
+
                     mp3Player = new Player(bufferedInputStream);
                     mp3Player.play();
-                    if(this.isInterrupted())
-                        mp3Player.close();
-                } catch (Exception e) {
-                    mp3Player = null;
-                    System.out.println("Problem playing audio: " + "media/" + getUniqueID() + ".mp3");
-                    System.out.println(e);
+
+                    /* Close the mp3Player if interrupted */
+                    if(this.isInterrupted()) mp3Player.close();
                 }
-
-
+                catch (Exception e) { mp3Player = null; e.printStackTrace(); }
 
             }
         };
 
-
         soundThread.start();
 
-        _state.focus( this );
+        _state.focus(this);
     }
 
     /**
@@ -252,36 +240,32 @@ public class ToggleButton extends FocusableLabel {
      * @see votebox.middle.view.IFocusable#unfocus()
      */
     public void unfocus() {
-        _state.unfocus( this );
-        if(mp3Player != null)
-            mp3Player.close();
+        _state.unfocus(this);
+        if(mp3Player != null) mp3Player.close();
     }
 
     /**
      * @see FocusableLabel#getImage()
      */
     @Override
-    public IViewImage getImage() {
-        return _state.getImage( this );
-    }
+    public IViewImage getImage() { return _state.getImage(this); }
 
     /**
      * @see FocusableLabel#getReviewImage()
      */
     @Override
     public IViewImage getReviewImage() {
-//        if (_reviewImage == null) {
-            //System.out.println("> ToggleButton is attempting to open image with UID: " + getUniqueID() + " by passing: " + _vars.getBallotPath() + " | " + getUniqueID() + "_review" + " | " + _viewManager.getSize() + " | " + _viewManager.getLanguage());
-            _reviewImage = _factory.makeImage( imageToggleButtonPath( _vars, getUniqueID() + "_review", _viewManager.getLanguage() ), false);
-//        }
+
+        String imgPath = imageToggleButtonPath(_vars, getUniqueID() + "_review", _viewManager.getLanguage());
+        _reviewImage = _factory.makeImage(imgPath, false);
+
         return _reviewImage;
     }
 
     /**
      * This is the setter for _state.
      * 
-     * @param state
-     *            _state's new value
+     * @param state     _state's new value
      */
     public void setState(AToggleButtonState state) {
         _state = state;
@@ -290,7 +274,7 @@ public class ToggleButton extends FocusableLabel {
     /**
      * This is the getter for _group
      * 
-     * @return _group
+     * @return      _group
      */
     public ToggleButtonGroup getGroup() {
         return _group;
@@ -299,43 +283,39 @@ public class ToggleButton extends FocusableLabel {
     /**
      * This is the getter for _defaultImage
      * 
-     * @return _defaultImage
+     * @return      _defaultImage
      */
     public IViewImage getDefaultImage() {
-        //if (_defaultImage == null) {
-            _defaultImage = _factory.makeImage( imagePath( _vars,
-                getUniqueID(), _viewManager.getSize(), _viewManager
-                        .getLanguage() ), false);
-        //}
+
+        String imgPath = imagePath(_vars, getUniqueID(), _viewManager.getSize(), _viewManager.getLanguage());
+        _defaultImage = _factory.makeImage(imgPath, false);
+
         return _defaultImage;
     }
 
     /**
      * This is the getter for _selectedImage
      * 
-     * @return _selectedImage
+     * @return      _selectedImage
      */
     public IViewImage getSelectedImage() {
-        //if (_selectedImage == null) {
-        System.out.println("> ToggleButton is attempting to open image with UID: " + getUniqueID() + " by passing: " + _vars.getBallotPath() + " | " + getUniqueID() +  " | " + _viewManager.getSize() + " | " + _viewManager.getLanguage());
-            _selectedImage = _factory.makeImage( imagePath( _vars,
-                getUniqueID() + "_selected", _viewManager.getSize(),
-                _viewManager.getLanguage() ), false);
-        //}
+
+        String imgPath = imagePath(_vars, getUniqueID() + "_selected", _viewManager.getSize(), _viewManager.getLanguage());
+        _selectedImage = _factory.makeImage(imgPath, false);
+
         return _selectedImage;
     }
 
     /**
      * This is the getter for _focusedImage
      * 
-     * @return _focusedImage
+     * @return      _focusedImage
      */
     public IViewImage getFocusedImage() {
-        //if (_focusedImage == null) {
-            _focusedImage = _factory.makeImage( imagePath( _vars, getUniqueID()
-                    + "_focused", _viewManager.getSize(), _viewManager
-                    .getLanguage() ), false);
-        //}
+
+        String imgPath = imagePath(_vars, getUniqueID() + "_focused", _viewManager.getSize(), _viewManager.getLanguage());
+       _focusedImage = _factory.makeImage(imgPath, false);
+
         return _focusedImage;
     }
 
@@ -345,19 +325,17 @@ public class ToggleButton extends FocusableLabel {
      * @return _focusedSelectedImage
      */
     public IViewImage getFocusedSelectedImage() {
-        //if (_focusedSelectedImage == null) {
-            _focusedSelectedImage = _factory.makeImage( imagePath( _vars,
-                getUniqueID() + "_focusedSelected", _viewManager.getSize(),
-                _viewManager.getLanguage() ), false);
-        //}
+
+        String imgPath = imagePath(_vars, getUniqueID() + "_focusedSelected", _viewManager.getSize(), _viewManager.getLanguage());
+        _focusedSelectedImage = _factory.makeImage(imgPath, false);
+
         return _focusedSelectedImage;
     }
 
     /**
      * This is the getter method for _focusedEvent.
      * 
-     * @return This method returns the event that is raised when this toggle
-     *         buttons switches to the focused state.
+     * @return      the event that is raised when this toggle buttons switches to the focused state.
      */
     public Event getFocusedEvent() {
         return _focusedEvent;
@@ -366,8 +344,7 @@ public class ToggleButton extends FocusableLabel {
     /**
      * This is the getter method for _unfocusedEvent.
      * 
-     * @return This method returns the event that is raised when this toggle
-     *         buttons switches to the unfocused state.
+     * @return      the event that is raised when this toggle buttons switches to the unfocused state.
      */
     public Event getUnfocusedEvent() {
         return _unfocusedEvent;
@@ -376,8 +353,7 @@ public class ToggleButton extends FocusableLabel {
     /**
      * This is the getter method for _selectedEvent.
      * 
-     * @return This method returns the event that is raised when this toggle
-     *         buttons switches to the selected state.
+     * @return      the event that is raised when this toggle buttons switches to the selected state.
      */
     public Event getSelectedEvent() {
         return _selectedEvent;
@@ -386,8 +362,7 @@ public class ToggleButton extends FocusableLabel {
     /**
      * This is the getter method for _deselectedEvent.
      * 
-     * @return This method returns the event that is raised when this toggle
-     *         buttons switches to the deselected state.
+     * @return      the event that is raised when this toggle buttons switches to the deselected state.
      */
     public Event getDeselectedEvent() {
         return _deselectedEvent;
@@ -459,10 +434,7 @@ public class ToggleButton extends FocusableLabel {
     /**
      * @see votebox.middle.view.IFocusable#setNext(votebox.middle.view.IFocusable)
      */
-    public void setNext(IFocusable focusable) {
-//        System.out.println("Setting " + getUniqueID() + "'s next to " + focusable);
-        _links.Next = focusable;
-    }
+    public void setNext(IFocusable focusable) { _links.Next = focusable; }
 
     /**
      * @see votebox.middle.view.IFocusable#getPrevious()

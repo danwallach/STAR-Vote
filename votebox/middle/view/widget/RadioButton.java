@@ -60,7 +60,5 @@ public class RadioButton extends AToggleButtonGroupStrategy {
 	/**
 	 * @see AToggleButtonGroupStrategy#deselect(ToggleButton, boolean)
 	 */
-	public void deselect(ToggleButton element, boolean playSound) {
-		// NO-OP
-	}
+	public void deselect(ToggleButton element, boolean playSound) { }
 }

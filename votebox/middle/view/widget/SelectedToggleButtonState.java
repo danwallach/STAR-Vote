@@ -64,9 +64,7 @@ public class SelectedToggleButtonState extends AToggleButtonState {
 	 * @see votebox.middle.view.widget.AToggleButtonState#select(votebox.middle.view.widget.ToggleButton)
 	 */
 	@Override
-	public void makeSelected(ToggleButton context) {
-		// NO-OP
-	}
+	public void makeSelected(ToggleButton context) { }
 
 	/**
 	 * @see votebox.middle.view.widget.AToggleButtonState#makeDeselected(votebox.middle.view.widget.ToggleButton)
@@ -90,8 +88,6 @@ public class SelectedToggleButtonState extends AToggleButtonState {
 	 * @see votebox.middle.view.widget.AToggleButtonState#unfocus(votebox.middle.view.widget.ToggleButton)
 	 */
 	@Override
-	public void unfocus(ToggleButton context) {
-		// NO -OP
-	}
+	public void unfocus(ToggleButton context) { }
 
 }
