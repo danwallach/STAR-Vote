@@ -61,6 +61,7 @@ public class Race extends AToggleButtonGroupStrategy {
 	public void select(ToggleButton context) {
 
 		try {
+            /* If selection is successful, select in context */
 			if (_adapter.select(context.getUniqueID())) context.makeSelected();
 		}
         catch (UnknownUIDException e) {
@@ -80,6 +81,7 @@ public class Race extends AToggleButtonGroupStrategy {
 	public void deselect(ToggleButton context, boolean playSound) {
 
 		try {
+            /* If deselection is successful, deselect in contxt*/
 			if (_adapter.deselect(context.getUniqueID(), playSound)) context.makeDeselected(playSound);
 		}
         catch (UnknownUIDException e) {
