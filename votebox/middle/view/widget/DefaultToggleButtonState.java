@@ -64,7 +64,7 @@ public class DefaultToggleButtonState extends AToggleButtonState {
      */
     @Override
     public void makeSelected(ToggleButton context) {
-        context.setState( SelectedToggleButtonState.Singleton );
+        context.setState(SelectedToggleButtonState.Singleton);
         context.getSelectedEvent().notifyObservers();
     }
 
@@ -72,16 +72,14 @@ public class DefaultToggleButtonState extends AToggleButtonState {
      * @see votebox.middle.view.widget.AToggleButtonState#makeDeselected(votebox.middle.view.widget.ToggleButton)
      */
     @Override
-    public void makeDeselected(ToggleButton context) {
-    // NO-OP
-    }
+    public void makeDeselected(ToggleButton context) { }
 
     /**
      * @see votebox.middle.view.widget.AToggleButtonState#focus(votebox.middle.view.widget.ToggleButton)
      */
     @Override
     public void focus(ToggleButton context) {
-        context.setState( FocusedToggleButtonState.Singleton );
+        context.setState(FocusedToggleButtonState.Singleton);
         context.getFocusedEvent().notifyObservers();
     }
 
@@ -89,8 +87,6 @@ public class DefaultToggleButtonState extends AToggleButtonState {
      * @see votebox.middle.view.widget.AToggleButtonState#unfocus(votebox.middle.view.widget.ToggleButton)
      */
     @Override
-    public void unfocus(ToggleButton context) {
-    // NO-OP
-    }
+    public void unfocus(ToggleButton context) { }
 
 }
