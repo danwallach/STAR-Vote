@@ -81,8 +81,8 @@ public class BallotEncrypter {
 
         List<AdderInteger> keyParts = new ArrayList<AdderInteger>();
 
-        //In order to fool Adder into encrypting our key properly, we break it into parts
-        //Which represent "votes" that will be encrypted using existing ElGamal
+        /*In order to fool Adder into encrypting our key properly, we break it into parts
+        Which represent "votes" that will be encrypted using existing ElGamal*/
         for(int i = 0; i < 16; i++){
             keyParts.add(new AdderInteger(new BigInteger(Arrays.copyOfRange(writeInKey, i, i + 1))));
         }
@@ -143,10 +143,6 @@ public class BallotEncrypter {
     		value.add(new AdderInteger(selection));
             valueIds.add(choice.get(0));
         }//for
-
-//        System.out.println(writeIns);
-
-//        secureWriteIns = encryptWriteIns(writeIns, writeInKey);
 
         PublicKey finalPubKey = AdderKeyManipulator.generateFinalPublicKey(pubKey);
 
@@ -309,10 +305,10 @@ public class BallotEncrypter {
     	
     	for(int i = 0; i < ballot.size(); i++){
     		ListExpression race = (ListExpression)ballot.get(i);
-    		//Vote vote = Vote.fromString(((ListExpression)race.get(0)).get(1).toString());
+
     		Vote vote = Vote.fromASE(((ListExpression)race.get(0)).get(1));
     		ListExpression voteIds = (ListExpression)((ListExpression)race.get(1)).get(1);
-    		//PublicKey finalPubKey = PublicKey.fromString(((ListExpression)race.get(3)).get(1).toString());
+
     		PublicKey finalPubKey = PublicKey.fromASE(((ListExpression)race.get(3)).get(1));
     		
     		idsToVote.put(voteIds.toString(), vote);
@@ -460,14 +456,6 @@ public class BallotEncrypter {
                         "incorrect set of r-values: uids do not match");
 
             ASExpression uid = ballotnext.get(0);
-            /*BigInteger r = new BigInteger(((StringExpression) rnext.get(1))
-                    .getBytes());
-            BigInteger cipher1 = new BigInteger(
-                    ((StringExpression) ((ListExpression) ballotnext.get(1))
-                            .get(0)).getBytes());
-            BigInteger cipher2 = new BigInteger(
-                    ((StringExpression) ((ListExpression) ballotnext.get(1))
-                            .get(1)).getBytes());*/
             BigInteger r = new BigInteger(((StringExpression) rnext.get(1)).toString());
             BigInteger cipher1 = new BigInteger(((ListExpression)ballotnext.get(1)).get(0).toString());
             BigInteger cipher2 = new BigInteger(((ListExpression)ballotnext.get(1)).get(1).toString());
@@ -475,8 +463,6 @@ public class BallotEncrypter {
             Pair<BigInteger> cipher = new Pair<BigInteger>(cipher1, cipher2);
             BigInteger plaincounter = ElGamalCrypto.SINGLETON.decrypt(r,
                     publicKey, cipher);
-            /*decryptedpairs.add(new ListExpression(uid, StringExpression
-                    .makeString(plaincounter.toByteArray())));*/
             decryptedpairs.add(new ListExpression(uid, StringExpression
                     .makeString(plaincounter.toString())));
         }
@@ -544,7 +530,7 @@ public class BallotEncrypter {
 
 
 
-        //Randomly generate a key for write-in encryption, will be sent over the wire, encrypted
+        /*Randomly generate a key for write-in encryption, will be sent over the wire, encrypted*/
         byte[] writeInKey = new byte[16];
 
         for (int i = 0; i < 16; i++)
@@ -554,8 +540,8 @@ public class BallotEncrypter {
         System.out.println("The write in key is: " + Arrays.toString(writeInKey));
         List<AdderInteger> keyParts = new ArrayList<AdderInteger>();
 
-        //In order to fool Adder into encrypting our key properly, we break it into parts
-        //Which represent "votes" that will be encrypted using existing ElGamal
+        /*In order to fool Adder into encrypting our key properly, we break it into parts
+        Which represent "votes" that will be encrypted using existing ElGamal*/
         for(int i = 0; i < 16; i++){
             keyParts.add(new AdderInteger(new BigInteger(Arrays.copyOfRange(writeInKey, i, i + 1))));
             System.out.print(keyParts.get(i) + " ");

@@ -26,9 +26,9 @@ import java.math.BigInteger;
 import java.util.Random;
 
 public class Modulus {
-    // half-way between 1024 and 2048
+    /* half-way between 1024 and 2048*/
     public static final int DEFAULT_PRIME_BITS = 1536;
-    // when testing a prime number, test to confidence 1-1/(2^PrimeConfidence)
+    /* when testing a prime number, test to confidence 1-1/(2^PrimeConfidence)*/
     public static final int DEFAULT_PRIME_CONFIDENCE = 64;
 
     private static BigInteger one = BigInteger.ONE;
@@ -48,19 +48,19 @@ public class Modulus {
             BigInteger q = p.multiply(two).add(one);
             if (q.isProbablePrime(primeConfidence)) {
                 for (;;) {
-                    // random generator
+                    /* random generator*/
                     BigInteger g = new BigInteger(numPrimeBits / 2, randomBits);
-                    // square it
+                    /* square it*/
                     BigInteger gsq = g.multiply(g);
-                    // g^2 needs to be less than q
+                    /* g^2 needs to be less than q*/
                     if (gsq.compareTo(q) >= 0)
                         continue;
-                    // degenerate case
+                    /* degenerate case*/
                     if (gsq.equals(one))
                         continue;
 
-                    // if we got here, that means that q is our modulus and gsq
-                    // is our generator
+                    /* if we got here, that means that q is our modulus and gsq
+                     is our generator*/
 
                     generator = gsq;
                     modulus = q;
