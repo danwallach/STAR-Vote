@@ -75,11 +75,11 @@ public class FocusableLabel implements IFocusable {
 
 
     ALabelState _state = DefaultLabelState.Singleton;
-    
-    protected IViewFactory _factory;
-    protected IViewManager _viewManager;
-    protected IBallotVars _vars;
+
     protected IBallotLookupAdapter _ballot;
+    protected IViewManager _viewManager;
+    protected IViewFactory _factory;
+    protected IBallotVars _vars;
 
 
     /**
@@ -92,10 +92,8 @@ public class FocusableLabel implements IFocusable {
     /**
      * This is the public constructor for FocusableLabel.
      * 
-     * @param uid
-     *            This is the drawable's UID.
-     * @param properties
-     *            These are the properties that were defined for this label.
+     * @param uid           the drawable's UID.
+     * @param properties    the properties that were defined for this label.
      */
     public FocusableLabel(String uid, Properties properties) {
         _uniqueID = uid;
@@ -112,7 +110,7 @@ public class FocusableLabel implements IFocusable {
     /**
      * Call this method to get the parent of this label.
      * 
-     * @return This method returns the parent of this label.
+     * @return      the parent of this label.
      */
     protected RenderPage getParent() {
         return _parent;
@@ -129,11 +127,10 @@ public class FocusableLabel implements IFocusable {
      * @see votebox.middle.view.IDrawable#getImage()
      */
     public IViewImage getReviewImage() {
-//        if (_reviewImage == null) {
-            _reviewImage = _factory.makeImage( imagePath( _vars, _uniqueID
-                    + "_review", _viewManager.getSize(), _viewManager
-                    .getLanguage() ), false);
-//        }
+
+        _reviewImage = _factory.makeImage(imagePath(_vars, _uniqueID + "_review", _viewManager.getSize(),
+                                                    _viewManager.getLanguage()), false);
+
         return _reviewImage;
     }
 
@@ -141,11 +138,9 @@ public class FocusableLabel implements IFocusable {
      * Returns the focused review image of the label
      */
     public IViewImage getFocusedReviewImage(){
-//        if(_focusedReviewImage == null){
-            _focusedReviewImage = _factory.makeImage( imagePath( _vars, _uniqueID
-                    + "_review_focused", _viewManager.getSize(), _viewManager
-                    .getLanguage() ), false);
-//        }
+
+        _focusedReviewImage = _factory.makeImage(imagePath(_vars, _uniqueID + "_review_focused", _viewManager.getSize(),
+                                                           _viewManager.getLanguage()), false);
 
         return _focusedReviewImage;
 
@@ -154,7 +149,7 @@ public class FocusableLabel implements IFocusable {
     /**
      * This is the getter for _uniqueID.
      * 
-     * @return _uniqueID
+     * @return      _uniqueID
      */
     public String getUniqueID() {
         return _uniqueID;
@@ -163,7 +158,7 @@ public class FocusableLabel implements IFocusable {
     /**
      * This is the getter for _properties.
      * 
-     * @return _properties
+     * @return      _properties
      */
     public Properties getProperties() {
         return _properties;
@@ -173,7 +168,7 @@ public class FocusableLabel implements IFocusable {
      * Call this method to get the x-coordinate at which this drawable should be
      * drawn.
      * 
-     * @return The x-coordinate at which this drawable should be drawn.
+     * @return      the x-coordinate at which this drawable should be drawn.
      */
     public int getX() {
         return _x;
@@ -183,9 +178,7 @@ public class FocusableLabel implements IFocusable {
      * Call this method to set the x-coordinate at which this drawable should be
      * drawn.
      * 
-     * @param x
-     *            This int will be set as the x-coordinate at which this
-     *            drawable should be drawn.
+     * @param x     the x-coordinate at which the drawable should be drawn
      */
     public void setX(int x) {
         _x = x;
@@ -195,7 +188,7 @@ public class FocusableLabel implements IFocusable {
      * Call this method to get the y-coordinate at which this drawable should be
      * drawn.
      * 
-     * @return The y-coordinate at which this drawable should be drawn.
+     * @return      the y-coordinate at which this drawable should be drawn.
      */
     public int getY() {
         return _y;
@@ -205,9 +198,7 @@ public class FocusableLabel implements IFocusable {
      * Call this method to set the y-coordinate at which this drawable should be
      * drawn.
      * 
-     * @param y
-     *            This int will be set as the y-coordinate at which this
-     *            drawable should be drawn.
+     * @param y     the y-coordinate at which this drawable should be drawn.
      */
     public void setY(int y) {
         _y = y;
@@ -226,11 +217,11 @@ public class FocusableLabel implements IFocusable {
      * interpreted as "reviewtitle4". Because we need a reference to the ballot
      * lookup adapter in order to check the number of selections, we must insert
      * this behavior here.
-     * 
+     * TODO someone more knowledgeable comment these params
      */
-    public void initFromViewManager(IViewManager viewManagerAdapter,
-            IBallotLookupAdapter ballotLookupAdapter, IAdapter ballotAdapter,
-            IViewFactory factory, IBallotVars ballotVars) {
+    public void initFromViewManager(IViewManager viewManagerAdapter, IBallotLookupAdapter ballotLookupAdapter,
+                                    IAdapter ballotAdapter, IViewFactory factory, IBallotVars ballotVars) {
+
         _factory = factory;
         _vars = ballotVars;
         _ballot = ballotLookupAdapter;
@@ -240,35 +231,25 @@ public class FocusableLabel implements IFocusable {
     /**
      * Construct the full path to an image given several parameters.
      * 
-     * @param vars
-     *            This is the vars object that has the ballot bath.
-     * @param uid
-     *            This is the image's unique id
-     * @param size
-     *            This is the image's size index
-     * @param lang
-     *            This is the image's language abbreviation.
-     * @return This method returns the path to the image.
+     * @param vars      the vars object that has the ballot bath.
+     * @param uid       the image's unique id
+     * @param size      the image's size index
+     * @param lang      the image's language abbreviation.
+     * @return          the path to the image.
      */
-    protected String imagePath(IBallotVars vars, String uid, int size,
-            String lang) {
+    protected String imagePath(IBallotVars vars, String uid, int size, String lang) {
         return vars.getBallotPath() + "/media/" + uid + "_" + size + "_" + lang + ".png";
     }
 
     /**
      * Construct the full path to an image given several parameters.
      *
-     * @param vars
-     *            This is the vars object that has the ballot bath.
-     * @param uid
-     *            This is the image's unique id
-     * @param lang
-     *            This is the image's language abbreviation.
-     *
-     * @return This method returns the path to the image
+     * @param vars      the vars object that has the ballot bath.
+     * @param uid       the image's unique id
+     * @param lang      the image's language abbreviation.
+     * @return          the path to the image
      */
     protected String soundPath(IBallotVars vars, String uid, String lang) {
-        System.out.println(uid);
         return vars.getBallotPath() + "/media/" + uid + "_" + lang + ".mp3";
     }
 
@@ -277,29 +258,19 @@ public class FocusableLabel implements IFocusable {
      * It loads an image to represent the selected options (except No Selection)
      * for the review page.
      *
-     * @param vars
-     *            This is the vars object that has the ballot bath.
-     * @param uid
-     *            This is the image's unique id
-     * @param lang
-     *            This is the image's language abbreviation.
-     * @return This method returns the path to the image.
+     * @param vars      the vars object that has the ballot bath.
+     * @param uid       the image's unique id
+     * @param lang      the image's language abbreviation.
+     * @return          the path to the image.
      */
     protected String imageToggleButtonPath (IBallotVars vars, String uid, String lang) {
         return vars.getBallotPath() + "/media/vvpat/" + uid + "_" + lang + ".png";
     }
 
-    public void select() {
-        // NO-OP
-    }
-
-    public void makeSelected() {
-        // NO-OP
-    }
-
-    public void makeDeselected(boolean playSound) {
-        // NO-OP
-    }
+    /* NO OPS */
+    public void select() { }
+    public void makeSelected() { }
+    public void makeDeselected(boolean playSound) { }
 
     /**
      * This method focuses the element. An element is considered to be focused
@@ -310,31 +281,29 @@ public class FocusableLabel implements IFocusable {
      * @see votebox.middle.view.IFocusable#focus()
      */
     public void focus() {
+
         soundThread  = new Thread(){
+
             public void run() {
 
-                // prepare the mp3Player
+                /* Prepare the mp3Player */
                 try {
-                    FileInputStream fileInputStream = new FileInputStream(soundPath( _vars, getUniqueID(),
-                            _viewManager.getLanguage() ));
+
+                    FileInputStream fileInputStream = new FileInputStream(soundPath(_vars, getUniqueID(), _viewManager.getLanguage()));
                     BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
+
                     mp3Player = new Player(bufferedInputStream);
                     mp3Player.play();
 
-                } catch (Exception e) {
-                    mp3Player = null;
-                    System.out.println("Problem playing audio: " + "media/" + getUniqueID() + ".mp3");
-                    System.out.println(e);
                 }
+                catch (Exception e) { mp3Player = null; e.printStackTrace(); }
 
             }
         };
 
         soundThread.start();
 
-        System.out.println("Focusing a label! " + _uniqueID);
-
-        _state.focus( this );
+        _state.focus(this);
     }
 
     /**
@@ -344,9 +313,10 @@ public class FocusableLabel implements IFocusable {
      * @see votebox.middle.view.IFocusable#unfocus()
      */
     public void unfocus() {
-        _state.unfocus( this );
 
-        if(mp3Player != null)
+        _state.unfocus(this);
+
+        if (mp3Player != null)
             mp3Player.close();
 
     }
@@ -356,8 +326,7 @@ public class FocusableLabel implements IFocusable {
     /**
      * This is the setter for _state.
      *
-     * @param state
-     *            _state's new value
+     * @param state     _state's new value
      */
     public void setState(ALabelState state) {
         _state = state;
@@ -367,14 +336,12 @@ public class FocusableLabel implements IFocusable {
     /**
      * This is the getter for _defaultImage
      *
-     * @return _defaultImage
+     * @return      _defaultImage
      */
     public IViewImage getDefaultImage() {
-//        if (_defaultImage == null) {
-            _defaultImage = _factory.makeImage( imagePath( _vars,
-                    getUniqueID(), _viewManager.getSize(), _viewManager
-                    .getLanguage() ), false);
-//        }
+
+            _defaultImage = _factory.makeImage(imagePath(_vars, getUniqueID(), _viewManager.getSize(), _viewManager.getLanguage()), false);
+
         return _defaultImage;
     }
 
@@ -383,15 +350,12 @@ public class FocusableLabel implements IFocusable {
     /**
      * This is the getter for _focusedImage
      *
-     * @return _focusedImage
+     * @return      _focusedImage
      */
     public IViewImage getFocusedImage() {
-        System.out.println("Getting a focused image for a label!");
-//        if (_focusedImage == null) {
-            _focusedImage = _factory.makeImage( imagePath( _vars, getUniqueID()
-                    + "_focused", _viewManager.getSize(), _viewManager
-                    .getLanguage() ), false);
-//        }
+
+            _focusedImage = _factory.makeImage(imagePath(_vars, getUniqueID() + "_focused", _viewManager.getSize(), _viewManager.getLanguage()), false);
+
         return _focusedImage;
     }
 
@@ -399,8 +363,7 @@ public class FocusableLabel implements IFocusable {
     /**
      * This is the getter method for _focusedEvent.
      *
-     * @return This method returns the event that is raised when this toggle
-     *         buttons switches to the focused state.
+     * @return      the event that is raised when this toggle buttons switches to the focused state.
      */
     public Event getFocusedEvent() {
         return _focusedEvent;
@@ -409,8 +372,7 @@ public class FocusableLabel implements IFocusable {
     /**
      * This is the getter method for _unfocusedEvent.
      *
-     * @return This method returns the event that is raised when this toggle
-     *         buttons switches to the unfocused state.
+     * @return      the event that is raised when this toggle buttons switches to the unfocused state.
      */
     public Event getUnfocusedEvent() {
         return _unfocusedEvent;
@@ -500,7 +462,6 @@ public class FocusableLabel implements IFocusable {
     public void setPrevious(IFocusable focusable) {
         _links.Previous = focusable;
     }
-
 
     /**
      * @see java.lang.Object#toString()
