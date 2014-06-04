@@ -112,7 +112,7 @@ public class BallotEncrypter {
     }
     
     /**
-     * Take an unencrypted ballot and make it encrypted, while also generating a NIZK.
+     * Take an unencrypted ballot and make it encrypted, while also generating a NIZK
      * 
      * @param ballot 
      *          This is the pre-encrypt ballot in the form ((race-id counter) ...)
