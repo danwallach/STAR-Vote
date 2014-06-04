@@ -13,12 +13,21 @@ import java.util.zip.ZipOutputStream;
 
 import javax.imageio.ImageIO;
 
+/* TODO someone knowledgeable comment this */
 public class BallotScaler {
 
     private static final int WINDOW_WIDTH = 1600;
     private static final int WINDOW_HEIGHT = 900;
-	
-	protected static void copy(InputStream in, String name, ZipOutputStream out) throws Exception{
+
+    /**
+     *
+     * @param in
+     * @param name
+     * @param out
+     * @throws Exception
+     */
+	protected static void copy(InputStream in, String name, ZipOutputStream out) throws Exception {
+
 		out.putNextEntry(new ZipEntry(name));
 		
 		int i;
@@ -26,8 +35,19 @@ public class BallotScaler {
 			out.write(i);
 	}
 
-	protected static void scaleLayout(InputStream in, String name, ZipOutputStream out, double scaleX, double scaleY) throws Exception{
+    /**
+     *
+     * @param in
+     * @param name
+     * @param out
+     * @param scaleX
+     * @param scaleY
+     * @throws Exception
+     */
+	protected static void scaleLayout(InputStream in, String name, ZipOutputStream out, double scaleX, double scaleY) throws Exception {
+
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
 		int i;
 		
 		while((i = in.read()) != -1) baos.write(i);
@@ -41,17 +61,16 @@ public class BallotScaler {
 		
 		String buf = "";
 		
-		while((i = str.indexOf("x=\"", i)) != -1){
+		while((i = str.indexOf("x=\"", i)) != -1) {
+
 			i+=3;
 			buf+=str.substring(oldI, i);
 			
 			int j = str.indexOf("\"", i);
 			double newX = Integer.parseInt(str.substring(i,j));
 			
-			System.out.print("X: "+newX+" -> ");
 			newX *= scaleX;
-			System.out.println(""+newX);
-			
+
 			buf += (""+(int)newX);
 			
 			oldI = j;
@@ -64,17 +83,16 @@ public class BallotScaler {
 		str = buf;
 		buf = "";
 		
-		while((i = str.indexOf("y=\"", i)) != -1){
+		while((i = str.indexOf("y=\"", i)) != -1) {
+
 			i+=3;
 			buf+=str.substring(oldI, i);
 			
 			int j = str.indexOf("\"", i);
 			double newY = Integer.parseInt(str.substring(i,j));
 
-			System.out.print("Y: "+newY+" -> ");
 			newY *= scaleY;
-			System.out.println(newY);
-			
+
 			buf += (""+(int)newY);
 			
 			oldI = j;
@@ -84,8 +102,18 @@ public class BallotScaler {
 		
 		out.write(buf.getBytes());
 	}
-	
-	protected static void scaleImage(InputStream in, String name, ZipOutputStream out, double scaleX, double scaleY) throws Exception{
+
+    /**
+     *
+     * @param in
+     * @param name
+     * @param out
+     * @param scaleX
+     * @param scaleY
+     * @throws Exception
+     */
+	protected static void scaleImage(InputStream in, String name, ZipOutputStream out, double scaleX, double scaleY) throws Exception {
+
 		BufferedImage img = ImageIO.read(in);
 		Image scaled = img.getScaledInstance((int)(img.getWidth()*scaleX), (int)(img.getHeight()*scaleY), Image.SCALE_SMOOTH);
 		
@@ -95,22 +123,31 @@ public class BallotScaler {
 		out.putNextEntry(new ZipEntry(name));
 		ImageIO.write(bScaled, "PNG", out);
 	}
-	
-	protected static void scaleBallot(File in, File out, double scaleX, double scaleY) throws Exception{
+
+    /**
+     *
+     * @param in
+     * @param out
+     * @param scaleX
+     * @param scaleY
+     * @throws Exception
+     */
+	protected static void scaleBallot(File in, File out, double scaleX, double scaleY) throws Exception {
+
 		ZipFile ballot = new ZipFile(in);
 		ZipOutputStream scaledBallot = new ZipOutputStream(new FileOutputStream(out));
 		
 		Enumeration<? extends ZipEntry> entries = ballot.entries();
 		
-		while(entries.hasMoreElements()){
+		while (entries.hasMoreElements()) {
 			ZipEntry entry = entries.nextElement();
 			
-			if(entry.getName().endsWith(".png")){
+			if (entry.getName().endsWith(".png")) {
 				scaleImage(ballot.getInputStream(entry), entry.getName(), scaledBallot, scaleX, scaleY);
 				continue;
 			}
 			
-			if(entry.getName().endsWith(".xml") && !entry.getName().endsWith("ballot.xml")){
+			if (entry.getName().endsWith(".xml") && !entry.getName().endsWith("ballot.xml")) {
 				scaleLayout(ballot.getInputStream(entry), entry.getName(), scaledBallot, scaleX, scaleY);
 				continue;
 			}
@@ -121,35 +158,27 @@ public class BallotScaler {
 		scaledBallot.flush();
 		scaledBallot.close();
 	}
-	
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) throws Exception{
-		if(args.length != 4){
-			System.out.println("Usage: java preptool.converter.BallotScaler [ballot zip file] [destination file] [width] [height]");
-			System.exit(-1);
-		}
-		
+
+    /**
+     *
+     * @param args
+     * @throws Exception
+     */
+	public static void main(String[] args) throws Exception {
+
+		if (args.length != 4) System.exit(-1);
+
 		File ballot = new File(args[0]);
-		if(!ballot.exists()){
-			System.out.println("Ballot file not found");
-			System.exit(-1);
-		}
-		
+		if (!ballot.exists()) System.exit(-1);
+
 		File outBallot = new File(args[1]);
-		if(outBallot.exists()){
-			System.out.println("Destination file already exists");
-			System.exit(-1);
-		}
-		
+		if (outBallot.exists()) System.exit(-1);
+
 		int width = Integer.parseInt(args[2]);
 		int height = Integer.parseInt(args[3]);
 		
-		double scaleX = ((double)width)/((double) WINDOW_WIDTH);
-		double scaleY = ((double)height)/((double) WINDOW_HEIGHT);
-		
-		System.out.println("Scaling <"+scaleX+", "+scaleY+">");
+		double scaleX = ((double)width)  / ((double) WINDOW_WIDTH);
+		double scaleY = ((double)height) / ((double) WINDOW_HEIGHT);
 		
 		scaleBallot(ballot, outBallot, scaleX, scaleY);
 	}
