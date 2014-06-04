@@ -22,9 +22,7 @@ public class FocusedLabelState extends ALabelState {
     /**
      * When the button asks to be focused, do nothing, it already is.
      */
-    public void focus(FocusableLabel context) {
-        // NO-OP
-    }
+    public void focus(FocusableLabel context) { }
 
     /**
      * When the button asks to be unfocused, change the button's state to

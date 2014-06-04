@@ -58,10 +58,8 @@ public class Label implements IDrawable {
     /**
      * This is the public constructor for Label.
      *
-     * @param uid
-     *            This is the drawable's UID.
-     * @param properties
-     *            These are the properties that were defined for this label.
+     * @param uid           the drawable's UID.
+     * @param properties    the properties that were defined for this label.
      */
     public Label(String uid, Properties properties) {
         _uniqueID = uid;
@@ -78,7 +76,7 @@ public class Label implements IDrawable {
     /**
      * Call this method to get the parent of this label.
      *
-     * @return This method returns the parent of this label.
+     * @return      the parent of this label.
      */
     protected RenderPage getParent() {
         return _parent;
@@ -88,16 +86,13 @@ public class Label implements IDrawable {
      * @see votebox.middle.view.IDrawable#getImage()
      */
     public IViewImage getImage() {
+
         if (_image == null) {
-            if (_uniqueID.equals( "reviewtitle" )) {
-                _image = _factory.makeImage( imagePath( _vars, _uniqueID
-                        + Integer.toString( _ballot.numSelections() ),
-                        _viewManager.getSize(), _viewManager.getLanguage() ), false);
-            }
-            else{
-                _image = _factory.makeImage( imagePath( _vars, _uniqueID,
-                        _viewManager.getSize(), _viewManager.getLanguage() ), false);
-            }
+
+            String suffix = _uniqueID.equals("reviewtitle") ? Integer.toString(_ballot.numSelections()) :  "";
+            String imgPath = imagePath(_vars, _uniqueID + suffix, _viewManager.getSize(), _viewManager.getLanguage());
+
+            _image = _factory.makeImage(imgPath, false);
         }
 
         return _image;
@@ -107,11 +102,12 @@ public class Label implements IDrawable {
      * @see votebox.middle.view.IDrawable#getImage()
      */
     public IViewImage getReviewImage() {
+
         if (_reviewImage == null) {
-            _reviewImage = _factory.makeImage( imagePath( _vars, _uniqueID
-                    + "_review", _viewManager.getSize(), _viewManager
-                    .getLanguage() ), false);
+            String imgPath = imagePath(_vars, _uniqueID + "_review", _viewManager.getSize(), _viewManager.getLanguage());
+            _reviewImage = _factory.makeImage(imgPath, false);
         }
+
         return _reviewImage;
     }
 
@@ -119,20 +115,19 @@ public class Label implements IDrawable {
      * Returns the focused review image of the label
      */
     public IViewImage getFocusedReviewImage(){
-        if(_focusedReviewImage == null){
-            _focusedReviewImage = _factory.makeImage( imagePath( _vars, _uniqueID
-                    + "_review_focused", _viewManager.getSize(), _viewManager
-                    .getLanguage() ), false);
+
+        if(_focusedReviewImage == null) {
+            String imgPath = imagePath(_vars, _uniqueID + "_review_focused", _viewManager.getSize(), _viewManager.getLanguage());
+            _focusedReviewImage = _factory.makeImage(imgPath, false);
         }
 
         return _focusedReviewImage;
-
     }
 
     /**
      * This is the getter for _unqiueID.
      *
-     * @return _uniqueID
+     * @return      _uniqueID
      */
     public String getUniqueID() {
         return _uniqueID;
@@ -141,7 +136,7 @@ public class Label implements IDrawable {
     /**
      * This is the getter for _properties.
      *
-     * @return _properties
+     * @return      _properties
      */
     public Properties getProperties() {
         return _properties;
@@ -151,7 +146,7 @@ public class Label implements IDrawable {
      * Call this method to get the x-coordinate at which this drawable should be
      * drawn.
      *
-     * @return The x-coordinate at which this drawable should be drawn.
+     * @return      the x-coordinate at which this drawable should be drawn.
      */
     public int getX() {
         return _x;
@@ -161,9 +156,7 @@ public class Label implements IDrawable {
      * Call this method to set the x-coordinate at which this drawable should be
      * drawn.
      *
-     * @param x
-     *            This int will be set as the x-coordinate at which this
-     *            drawable should be drawn.
+     * @param x     the x-coordinate at which this drawable should be drawn.
      */
     public void setX(int x) {
         _x = x;
@@ -173,7 +166,7 @@ public class Label implements IDrawable {
      * Call this method to get the y-coordinate at which this drawable should be
      * drawn.
      *
-     * @return The y-coordinate at which this drawable should be drawn.
+     * @return      the y-coordinate at which this drawable should be drawn.
      */
     public int getY() {
         return _y;
@@ -183,9 +176,7 @@ public class Label implements IDrawable {
      * Call this method to set the y-coordinate at which this drawable should be
      * drawn.
      *
-     * @param y
-     *            This int will be set as the y-coordinate at which this
-     *            drawable should be drawn.
+     * @param y     the y-coordinate at which this drawable should be drawn.
      */
     public void setY(int y) {
         _y = y;
@@ -204,11 +195,10 @@ public class Label implements IDrawable {
      * interpreted as "reviewtitle4". Because we need a reference to the ballot
      * lookup adapter in order to check the number of selections, we must insert
      * this behavior here.
-     *
+     * TODO someone knowledgeable comment params
      */
-    public void initFromViewManager(IViewManager viewManagerAdapter,
-                                    IBallotLookupAdapter ballotLookupAdapter, IAdapter ballotAdapter,
-                                    IViewFactory factory, IBallotVars ballotVars) {
+    public void initFromViewManager(IViewManager viewManagerAdapter, IBallotLookupAdapter ballotLookupAdapter,
+                                    IAdapter ballotAdapter, IViewFactory factory, IBallotVars ballotVars) {
         _factory = factory;
         _vars = ballotVars;
         _ballot = ballotLookupAdapter;
@@ -218,18 +208,13 @@ public class Label implements IDrawable {
     /**
      * Construct the full path to an image given several parameters.
      *
-     * @param vars
-     *            This is the vars object that has the ballot bath.
-     * @param uid
-     *            This is the image's unique id
-     * @param size
-     *            This is the image's size index
-     * @param lang
-     *            This is the image's language abbreviation.
-     * @return This method returns the path to the image.
+     * @param vars      the vars object that has the ballot bath.
+     * @param uid       the image's unique id
+     * @param size      the image's size index
+     * @param lang      the image's language abbreviation.
+     * @return          the path to the image.
      */
-    protected String imagePath(IBallotVars vars, String uid, int size,
-                               String lang) {
+    protected String imagePath(IBallotVars vars, String uid, int size, String lang) {
         return vars.getBallotPath() + "/media/" + uid + "_" + size + "_" + lang + ".png";
     }
 
@@ -238,13 +223,10 @@ public class Label implements IDrawable {
      * It loads an image to represent the selected options (except No Selection)
      * for the review page.
      *
-     * @param vars
-     *            This is the vars object that has the ballot bath.
-     * @param uid
-     *            This is the image's unique id
-     * @param lang
-     *            This is the image's language abbreviation.
-     * @return This method returns the path to the image.
+     * @param vars      the vars object that has the ballot bath.
+     * @param uid       the image's unique id
+     * @param lang      the image's language abbreviation.
+     * @return          the path to the image.
      */
     protected String imageToggleButtonPath (IBallotVars vars, String uid, String lang) {
         return vars.getBallotPath() + "/media/vvpat/" + uid + "_" + lang + ".png";

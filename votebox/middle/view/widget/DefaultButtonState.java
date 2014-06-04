@@ -30,6 +30,7 @@ import votebox.middle.view.IViewImage;
  */
 
 public class DefaultButtonState extends AButtonState {
+
     /**
      * Singleton Design Pattern.
      * 
@@ -45,7 +46,7 @@ public class DefaultButtonState extends AButtonState {
      * When the Button wishes to be focused, switch to the focused state
      */
     public void focus(Button context) {
-        context.setState( FocusedButtonState.Singleton );
+        context.setState(FocusedButtonState.Singleton);
         context.getFocusedEvent().notifyObservers();
     }
 
@@ -53,9 +54,7 @@ public class DefaultButtonState extends AButtonState {
      * When the Button wishes to be unfocused, do nothing, it is already
      * unfocused.
      */
-    public void unfocus(Button context) {
-    // NO-OP
-    }
+    public void unfocus(Button context) { }
 
     /**
      * @see votebox.middle.view.widget.AButtonState#getImage(votebox.middle.view.widget.Button)

@@ -48,9 +48,7 @@ public class Race extends AToggleButtonGroupStrategy {
 	/**
 	 * This is the public constructor for Race.
 	 * 
-	 * @param adapter
-	 *            Use this adapter to get access to the
-	 *            model.
+	 * @param adapter       the adapter used to get access to the model.
 	 */
 	public Race(IAdapter adapter) {
 		_adapter = adapter;
@@ -61,19 +59,18 @@ public class Race extends AToggleButtonGroupStrategy {
 	 */
 	@Override
 	public void select(ToggleButton context) {
+
 		try {
-			if (_adapter.select(context.getUniqueID()))
-				context.makeSelected();
-		} catch (UnknownUIDException e) {
-			throw new BallotBoxViewException(
-					"A ToggleButton whose UID is "
-							+ context.getUniqueID()
-							+ " belongs to a group whose strategy is Race, but there is no element in the ballot with the corresponding UID",
-					e);
-		} catch (SelectionException e) {
-			throw new BallotBoxViewException(
-					"There was a selection error in the ballot: "
-							+ e.getMessage(), e);
+            /* If selection is successful, select in context */
+			if (_adapter.select(context.getUniqueID())) context.makeSelected();
+		}
+        catch (UnknownUIDException e) {
+			throw new BallotBoxViewException("A ToggleButton whose UID is " + context.getUniqueID() + " belongs to a "  +
+                                             "group whose strategy is Race, but there is no element in the ballot with" +
+                                             " the corresponding UID", e);
+		}
+        catch (SelectionException e) {
+			throw new BallotBoxViewException("There was a selection error in the ballot: " + e.getMessage(), e);
 		}
 	}
 
@@ -82,19 +79,18 @@ public class Race extends AToggleButtonGroupStrategy {
 	 */
 	@Override
 	public void deselect(ToggleButton context, boolean playSound) {
+
 		try {
-			if (_adapter.deselect(context.getUniqueID(), playSound))
-				context.makeDeselected(playSound);
-		} catch (UnknownUIDException e) {
-			throw new BallotBoxViewException(
-					"A ToggleButton whose UID is "
-							+ context.getUniqueID()
-							+ " belongs to a group whose strategy is Race, but there is no element in the ballot with the corresponding UID",
-					e);
-		} catch (DeselectionException e) {
-			throw new BallotBoxViewException(
-					"There was a deselection error in the ballot: "
-							+ e.getMessage(), e);
+            /* If deselection is successful, deselect in contxt*/
+			if (_adapter.deselect(context.getUniqueID(), playSound)) context.makeDeselected(playSound);
+		}
+        catch (UnknownUIDException e) {
+			throw new BallotBoxViewException("A ToggleButton whose UID is " + context.getUniqueID() + " belongs to a "  +
+                                             "group whose strategy is Race, but there is no element in the ballot with" +
+                                             " the corresponding UID", e);
+		}
+        catch (DeselectionException e) {
+			throw new BallotBoxViewException("There was a deselection error in the ballot: "+ e.getMessage(), e);
 		}
 	}
 

@@ -72,10 +72,12 @@ public class Tap {
      * Initializes a new Trapper.<BR>
      *
      * @see Tap#start()
-     * @param serial - Serial number of this machine.
-     * @param out - OutputStream to send selected messages to.
+     *
+     * @param serial        serial number of this machine.
+     * @param out           OutputStream to send selected messages to.
      */
     public Tap(int serial, OutputStream out){
+
         _mySerial = serial;
         _wrappedOut = out;
         _output = new ASEWriter(_wrappedOut);
@@ -86,44 +88,60 @@ public class Tap {
 
     /**
      * Forwards the given event.
-     * @param event - IAnnounceEvent to forward.
+     *
+     * @param event         IAnnounceEvent to forward.
      */
     protected void forward(IAnnounceEvent event){
+
+        /* Write the event serial and convert and write as s-expression */
         try {
             _wrappedOut.write(event.getSerial());
             _output.writeASE(event.toSExp());
-        } catch (IOException e) {
-            System.err.println("Failed forwarding the message:\n"+event.toSExp()+"\nbecause: "+e.getMessage());
         }
-    }//forward
+        catch (IOException e) { e.printStackTrace(); }
+    }
 
+    /**
+     * Dumps the ballots to the server TODO more refined explanation
+     * @param ballotList    the list of ballotStrings to be dumped to the server
+     */
     protected void dumpBallotList(ArrayList<String> ballotList){
 
         HttpClient client = new DefaultHttpClient();
         HttpPost post = new HttpPost("http://starvote.cs.rice.edu/3FF968A3B47CT34C");
+
         try {
+
             List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
 
+            /* For each of the ballotStrings... */
             for (String ballotString : ballotList) {
+
+                /* Add them as a BNVP to nameValuePairs */
                 nameValuePairs.add(new BasicNameValuePair("message", ballotString));
+
+                /* Set entities for each of the url encoded forms of the NVP */
                 post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+                /* Execute the post */
                 client.execute(post);
             }
 
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+        catch (IOException e) { e.printStackTrace(); }
 
+        /* Shutdown the connection when done */
         client.getConnectionManager().shutdown();
     }
 
     /**
      * Connects the Trapper instance to the Auditorium network and listens for<BR>
      * Commit and EncryptedCastBallot messages to forward.
-     *
      */
     public void start(){
+
         try{
+
             _auditorium = new VoteBoxAuditoriumConnector(_mySerial,
                     AuditoriumParams.Singleton,
                     CommitBallotEvent.getMatcher(),
@@ -134,60 +152,60 @@ public class Tap {
                     ChallengedBallotUploadEvent.getMatcher(),
                     PollsClosedEvent.getMatcher()
             );
-        }catch(NetworkException e){
-            throw new RuntimeException("Unable to connect to Auditorium: "+e.getMessage(), e);
-        }//catch
+
+        }
+        catch(NetworkException e){ /* TODO runtime exception */
+            throw new RuntimeException("Unable to connect to Auditorium: " + e.getMessage(), e);
+        }
 
         _auditorium.addListener(new VoteBoxEventListener(){
 
             public void ballotAccepted(BallotScanAcceptedEvent e){
-                //BallotStore.castCommittedBallot(e.getBID().toString());
+                /* TODO? BallotStore.castCommittedBallot(e.getBID().toString()); */
             }
 
             public void commitBallot(CommitBallotEvent e) {
-			    //BallotStore.addBallot(e.getBID().toString(), e.getBallot());
-                System.out.println("TAP: committing ballot " + e.getBID().toString());
+			    /* TODO? BallotStore.addBallot(e.getBID().toString(), e.getBallot()); */
             }
 
             public void ballotReceived(BallotReceivedEvent e){
-                //BallotStore.mapPrecinct(e.getBID(), e.getPrecinct());
-                System.out.println("Mapping BID: " + e.getBID() + "to precinct: " + e.getPrecinct());
+                /* TODO? BallotStore.mapPrecinct(e.getBID(), e.getPrecinct()); */
             }
 
-            //Ignored events
-            public void activated(ActivatedEvent e) {}
-            public void assignLabel(AssignLabelEvent e) {}
-            public void authorizedToCast(AuthorizedToCastEvent e) {}
-            public void joined(JoinEvent e) {}
-            public void lastPollsOpen(LastPollsOpenEvent e) {}
+            /* Ignored events */
             public void left(LeaveEvent e) {}
-            public void overrideCancel(OverrideCancelEvent e) {}
-            public void overrideCancelConfirm(OverrideCancelConfirmEvent e) {}
-            public void overrideCancelDeny(OverrideCancelDenyEvent e) {}
-            public void overrideCast(OverrideCommitEvent e) {}
-            public void overrideCastConfirm(OverrideCommitConfirmEvent e) {}
-            public void overrideCastDeny(OverrideCastDenyEvent e) {}
+            public void joined(JoinEvent e) {}
+            public void votebox(VoteBoxEvent e) {}
             public void pollsOpen(PollsOpenEvent e) {}
+            public void activated(ActivatedEvent e) {}
             public void pollsOpenQ(PollsOpenQEvent e) {}
             public void supervisor(SupervisorEvent e) {}
-            public void votebox(VoteBoxEvent e) {}
-            public void ballotScanner(BallotScannerEvent e) {}
-            public void ballotScanned(BallotScannedEvent e) {}
-            public void castCommittedBallot(CastCommittedBallotEvent e) {}
-            public void pollStatus(PollStatusEvent pollStatusEvent) {}
+            public void assignLabel(AssignLabelEvent e) {}
             public void pinEntered(PINEnteredEvent event) {}
             public void invalidPin(InvalidPinEvent event) {}
+            public void lastPollsOpen(LastPollsOpenEvent e) {}
+            public void overrideCast(OverrideCommitEvent e) {}
+            public void ballotScanner(BallotScannerEvent e) {}
+            public void ballotScanned(BallotScannedEvent e) {}
+            public void overrideCancel(OverrideCancelEvent e) {}
             public void ballotRejected(BallotScanRejectedEvent e){}
-            public void ballotPrinting(BallotPrintingEvent ballotPrintingEvent) {}
-            public void ballotPrintSuccess(BallotPrintSuccessEvent ballotPrintSuccessEvent) {}
-            public void ballotPrintFail(BallotPrintFailEvent ballotPrintFailEvent) {}
-            public void scannerStart(StartScannerEvent startScannerEvent) {}
+            public void overrideCastDeny(OverrideCastDenyEvent e) {}
+            public void authorizedToCast(AuthorizedToCastEvent e) {}
+            public void tapMachine(TapMachineEvent tapMachineEvent) {}
+            public void pollStatus(PollStatusEvent pollStatusEvent) {}
+            public void overrideCancelDeny(OverrideCancelDenyEvent e) {}
             public void spoilBallot(SpoilBallotEvent spoilBallotEvent) {}
+            public void castCommittedBallot(CastCommittedBallotEvent e) {}
+            public void overrideCastConfirm(OverrideCommitConfirmEvent e) {}
+            public void scannerStart(StartScannerEvent startScannerEvent) {}
+            public void overrideCancelConfirm(OverrideCancelConfirmEvent e) {}
+            public void ballotPrinting(BallotPrintingEvent ballotPrintingEvent) {}
+            public void ballotPrintFail(BallotPrintFailEvent ballotPrintFailEvent) {}
+            public void ballotPrintSuccess(BallotPrintSuccessEvent ballotPrintSuccessEvent) {}
+            public void provisionalCommitBallot(ProvisionalCommitEvent provisionalCommitEvent) {}
             public void announceProvisionalBallot(ProvisionalBallotEvent provisionalBallotEvent) {}
             public void provisionalAuthorizedToCast(ProvisionalAuthorizeEvent provisionalAuthorizeEvent) {}
-            public void provisionalCommitBallot(ProvisionalCommitEvent provisionalCommitEvent) {}
 
-            public void tapMachine(TapMachineEvent tapMachineEvent) {}
 
             public void pollMachines(PollMachinesEvent pollMachinesEvent){
                 _auditorium.announce(new TapMachineEvent(_mySerial));
@@ -195,109 +213,138 @@ public class Tap {
 
 
             public void pollsClosed(PollsClosedEvent e) {
-                //_auditorium.announce(new CastBallotUploadEvent(_mySerial, BallotStore.getCastNonces()));
+                /* TODO? _auditorium.announce(new CastBallotUploadEvent(_mySerial, BallotStore.getCastNonces())); */
             }
 
             public void uploadCastBallots(CastBallotUploadEvent e) {
                 System.out.println("TAP: Uploading Cast Ballots");
                 dumpBallotList(e.getDumpList());
-                //_auditorium.announce(new ChallengedBallotUploadEvent(_mySerial, BallotStore.getDecryptedBallots(publicKey, privateKey)));
+                /* TODO? _auditorium.announce(new ChallengedBallotUploadEvent(_mySerial, BallotStore.getDecryptedBallots(publicKey, privateKey))); */
             }
             public void uploadChallengedBallots(ChallengedBallotUploadEvent e) {
                 System.out.println("TAP: Uploading Challenged Ballots");
                 dumpBallotList(e.getDumpList());
-                //BallotStore.clearBallots();
+                /* TODO? BallotStore.clearBallots(); */
             }
         });
 
-        try{
+        try {
             System.out.println("Connecting to auditorium...");
             _auditorium.connect();
             _auditorium.announce(new TapMachineEvent(_mySerial));
-        }catch(NetworkException e){
-            throw new RuntimeException("Unable to connect to Auditorium network: "+e.getMessage(), e);
-        }//catch
-    }//start
+        }
+        catch(NetworkException e){ throw new RuntimeException("Unable to connect to Auditorium network: "+e.getMessage(), e); }
+    }
 
     /**
-     * Usage:<BR>
+     * Usage:<BR> FIXME?
      * 		java votebox.Tap [serial] [report address] [port]
-     * @param args
-     * @throws InterruptedException
+     *
+     * @param args      arguments to be used
+     *
+     * @throws RuntimeException if there is an issue parsing values, the port used is bad,
+     *                          or there is an interruption in the process
      */
     public static void main(String[] args){
+
         params = new AuditoriumParams("tap.conf");
 
-        int serial = -1;
-        String reportAddr = null;
-        int port = -1;
+        String reportAddr;
 
-        if(args.length != 3){
+        int serial;
+        int port;
+
+        /* See if there isn't a full argument set */
+        if (args.length != 3) {
+
             int p = 0;
+
+            /* Assign the default serial */
             serial = params.getDefaultSerialNumber();
 
-            if(serial == -1){
-                try{
+            /* If the serial is still bad... */
+            if (serial == -1) {
+
+                /* Try the first of the given arguments */
+                try {
                     serial = Integer.parseInt(args[p]);
                     p++;
-                }catch(Exception e){
+                }
+                catch (Exception e) {
                     throw new RuntimeException("usage: Tap [serial] [report address] [port]\nExpected valid serial.");
                 }
             }
 
+            /* Assign the report address */
             reportAddr = params.getReportAddress();
 
-            if(reportAddr.length() == 0){
-                try{
+            /* If no valid address... */
+            if (reportAddr.length() == 0) {
+
+                /* Try one of the given arguments (first or second, depending) */
+                try {
                     reportAddr = args[p];
                     p++;
-                }catch(Exception e){
-                    throw new RuntimeException("usage: Tap [serial] [report address] [port]");
                 }
+                catch (Exception e) { throw new RuntimeException("usage: Tap [serial] [report address] [port]"); }
             }
 
+            /* Assign the port */
             port = params.getPort();
 
-            if(port == -1){
-                try{
+            /* If the port is still bad... */
+            if (port == -1) {
+
+                /* Try one of the given arguments (first, second, or third, depending) */
+                try {
                     port = Integer.parseInt(args[p]);
-                    p++;
-                }catch(Exception e){
+                }
+                catch (Exception e) {
                     throw new RuntimeException("usage: Tap [serial] [report address] [port]\nExpected valid port.");
                 }
             }
-        }else{
-            try{
+        }
+
+        /* If there is a full argument set... */
+        else {
+
+            /* Try to load up the args */
+            try {
                 serial = Integer.parseInt(args[0]);
                 reportAddr = args[1];
                 port = Integer.parseInt(args[2]);
-            }catch(Exception e){
-                throw new RuntimeException("usage: Tap [serial] [report address] [port]");
             }
+            catch (Exception e) { throw new RuntimeException("usage: Tap [serial] [report address] [port]"); }
         }
 
-        System.out.println("Using settings:\n\tSerial: "+serial+"\n\tReport Address: "+reportAddr+"\n\tPort: "+port);
+        try {
 
-        try{
+            /* Create a new socket address */
             InetSocketAddress addr = new InetSocketAddress(reportAddr, port);
 
-            while(true){
-                try{
+            /* Loop until an exception or tap is started */
+            while (true) {
+
+                try {
+
+                    /* Try to establish a socket connection */
                     Socket localCon = new Socket();
                     localCon.connect(addr);
 
+                    /* Start the tap */
                     (new Tap(serial, localCon.getOutputStream())).start();
                     break;
-                }catch(IOException e){
-                    System.out.println("Connection failed: "+e.getMessage());
+                }
+                catch (IOException e) { /* If no good, retry */
+                    System.out.println("Connection failed: " + e.getMessage());
                     System.out.println("Retry in 5 seconds...");
                     Thread.sleep(5000);
-                }//catch
-            }//while
-        }catch(NumberFormatException e){
-            throw new RuntimeException("usage: Tap [serial] [report address] [port]; where port is between 1 and 65335 & [serial] is a positive integer", e);
-        }catch(InterruptedException e){
-            throw new RuntimeException(e);
+                }
+            }
         }
-    }//main
+        catch (NumberFormatException e) {
+            throw new RuntimeException("usage: Tap [serial] [report address] [port]; where port is between 1 and 65335 & [serial] is a positive integer", e);
+        }
+        catch (InterruptedException e) { throw new RuntimeException(e); }
+    }
 }

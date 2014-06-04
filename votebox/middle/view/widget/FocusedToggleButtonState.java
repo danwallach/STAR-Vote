@@ -52,7 +52,7 @@ public class FocusedToggleButtonState extends AToggleButtonState {
 	}
 
 	/**
-	 * @see votebox.middle.view.widget.AToggleButtonState#toggle(votebox.middle.view.widget.ToggleButton)
+	 * @see votebox.middle.view.widget.AToggleButtonState#select(ToggleButton) TODO check this was #toggle
 	 */
 	@Override
 	public void select(ToggleButton context) {
@@ -60,7 +60,7 @@ public class FocusedToggleButtonState extends AToggleButtonState {
 	}
 
 	/**
-	 * @see votebox.middle.view.widget.AToggleButtonState#select(votebox.middle.view.widget.ToggleButton)
+	 * @see votebox.middle.view.widget.AToggleButtonState#makeSelected(ToggleButton) TODO check this wsa #select
 	 */
 	@Override
 	public void makeSelected(ToggleButton context) {
@@ -69,20 +69,16 @@ public class FocusedToggleButtonState extends AToggleButtonState {
 	}
 
 	/**
-	 * @see votebox.middle.view.widget.AToggleButtonState#deselect(votebox.middle.view.widget.ToggleButton)
+	 * @see votebox.middle.view.widget.AToggleButtonState#makeDeselected(ToggleButton) TODO check this was #deselect
 	 */
 	@Override
-	public void makeDeselected(ToggleButton context) {
-		// NO-OP
-	}
+	public void makeDeselected(ToggleButton context) { }
 
 	/**
 	 * @see votebox.middle.view.widget.AToggleButtonState#focus(votebox.middle.view.widget.ToggleButton)
 	 */
 	@Override
-	public void focus(ToggleButton context) {
-		// NO-OP
-	}
+	public void focus(ToggleButton context) { }
 
 	/**
 	 * @see votebox.middle.view.widget.AToggleButtonState#unfocus(votebox.middle.view.widget.ToggleButton)

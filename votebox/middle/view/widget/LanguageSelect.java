@@ -43,8 +43,7 @@ public class LanguageSelect extends AToggleButtonGroupStrategy {
     /**
      * This is the public constructor for LanguageSelect
      * 
-     * @param viewManagerAdapter
-     *            Use this viewmanager as a context to set the language in.
+     * @param viewManagerAdapter    a viewmanager used as a context in which to set the language
      */
     public LanguageSelect(IViewManager viewManagerAdapter) {
         _viewManager = viewManagerAdapter;
@@ -55,23 +54,17 @@ public class LanguageSelect extends AToggleButtonGroupStrategy {
      */
     @Override
     public void select(ToggleButton context) {
-        try {
-            _viewManager.setLanguage( context.getProperties().getString(
-                Properties.LANGUAGE ) );
-        }
-        catch (IncorrectTypeException e) {
-            throw new BallotBoxViewException(
-                    "Problem while selecting a language.", e );
-        }
-        RadioButton.Singleton.select( context );
+
+        try { _viewManager.setLanguage(context.getProperties().getString(Properties.LANGUAGE)); }
+        catch (IncorrectTypeException e) { throw new BallotBoxViewException("Problem while selecting a language.", e); }
+
+        RadioButton.Singleton.select(context);
     }
 
     /**
      * @see AToggleButtonGroupStrategy#deselect(ToggleButton, boolean)
      */
     @Override
-    public void deselect(ToggleButton context, boolean playSound) {
-    // NO-OP
-    }
+    public void deselect(ToggleButton context, boolean playSound) { }
 
 }

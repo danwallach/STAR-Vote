@@ -49,8 +49,10 @@ public class Controller {
      * with the model adapter. Finally it sets the view to visible.
      */
     public Controller() {
+
         ThreadGroup exceptionThreadGroup = new ExceptionGroup();
-        new Thread( exceptionThreadGroup, "Init thread" ) {
+
+        new Thread(exceptionThreadGroup, "Init thread") {
             public void run() {
                 model = new Model();
                 view = new View( model );
@@ -62,8 +64,7 @@ public class Controller {
     /**
      * The main method of the program, constructs a new Contoller
      * 
-     * @param args
-     *            not used
+     * @param args      not used
      */
     public static void main(String args[]) {
         new Controller();

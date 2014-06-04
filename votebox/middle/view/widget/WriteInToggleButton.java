@@ -3,7 +3,6 @@ package votebox.middle.view.widget;
 import votebox.middle.Properties;
 import votebox.middle.view.IView;
 import votebox.middle.view.IViewImage;
-import votebox.middle.writein.WriteInCandidateSimpleGUI;
 
 /**
  * @author Matt Bernhard
@@ -21,13 +20,12 @@ public class WriteInToggleButton extends ToggleButton {
     /**
      * This is the public constructor for ToggleButton. It invokes super.
      *
-     * @param group      This is the group to which this WriteInToggleButton will belong.
-     * @param uid        Universal identifier of this WriteInToggleButton.
-     * @param properties Properties associated with this WriteInToggleButton.
+     * @param group         the group to which this WriteInToggleButton will belong.
+     * @param uid           universal identifier of this WriteInToggleButton.
+     * @param properties    properties associated with this WriteInToggleButton.
      */
     public WriteInToggleButton(ToggleButtonGroup group, String uid, Properties properties, IView view) {
         super(group, uid, properties);
-
         this.view = view;
     }
 
@@ -35,29 +33,26 @@ public class WriteInToggleButton extends ToggleButton {
     /**
      * This is the getter for _selectedImage
      *
-     * @return _selectedImage
+     * @return      _selectedImage
      */
     public IViewImage getSelectedImage() {
-        //if (_selectedImage == null) {
-        System.out.println("> ToggleButton is attempting to open image with UID: " + getUniqueID() + " by passing: " + _vars.getBallotPath() + " | " + getUniqueID() +  "_selected | " + _viewManager.getSize() + " | " + _viewManager.getLanguage());
-        _selectedImage = _factory.makeImage( imagePath( _vars,
-                getUniqueID() + "_selected", _viewManager.getSize(),
-                _viewManager.getLanguage() ), true);
-        //}
+
+        String imgPath = imagePath(_vars, getUniqueID() + "_selected", _viewManager.getSize(), _viewManager.getLanguage());
+        _selectedImage = _factory.makeImage(imgPath, true);
+
         return _selectedImage;
     }
 
     /**
      * This is the getter for _focusedSelectedImage
      *
-     * @return _focusedSelectedImage
+     * @return      _focusedSelectedImage
      */
     public IViewImage getFocusedSelectedImage() {
-        //if (_focusedSelectedImage == null) {
-        _focusedSelectedImage = _factory.makeImage( imagePath( _vars,
-                getUniqueID() + "_focusedSelected", _viewManager.getSize(),
-                _viewManager.getLanguage() ), false);
-        //}
+
+        String imgPath = imagePath(_vars, getUniqueID() + "_focusedSelected", _viewManager.getSize(), _viewManager.getLanguage());
+        _focusedSelectedImage = _factory.makeImage(imgPath, false);
+
         return _focusedSelectedImage;
     }
 
@@ -66,10 +61,10 @@ public class WriteInToggleButton extends ToggleButton {
      */
     @Override
     public IViewImage getReviewImage() {
-//        if (_reviewImage == null) {
-        //System.out.println("> ToggleButton is attempting to open image with UID: " + getUniqueID() + " by passing: " + _vars.getBallotPath() + " | " + getUniqueID() + "_review" + " | " + _viewManager.getSize() + " | " + _viewManager.getLanguage());
-        _reviewImage = _factory.makeImage( imageToggleButtonPath( _vars, getUniqueID() + "_review", _viewManager.getLanguage() ), false);
-//        }
+
+        String imgPath = imageToggleButtonPath(_vars, getUniqueID() + "_review", _viewManager.getLanguage());
+        _reviewImage = _factory.makeImage(imgPath, false);
+
         return _reviewImage;
     }
 

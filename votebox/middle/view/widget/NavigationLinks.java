@@ -38,12 +38,12 @@ public class NavigationLinks {
 	/**
 	 * This is the element that is "below" this one.
 	 */
-	public IFocusable Down = null;
+	public IFocusable Down  = null;
 
 	/**
 	 * This is the element that is "left of" this one.
 	 */
-	public IFocusable Left = null;
+	public IFocusable Left  = null;
 
 	/**
 	 * This is the element that is "right of" this one.
@@ -53,7 +53,7 @@ public class NavigationLinks {
 	/**
 	 * This is the element that is "next after" this one.
 	 */
-	public IFocusable Next = null;
+	public IFocusable Next  = null;
 
 	/**
 	 * This is the element that is "before" this one.

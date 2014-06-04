@@ -43,8 +43,7 @@ public class UnknownStrategyException extends Exception {
 	/**
 	 * This is the public constructor for UnknownStrategyException
 	 * 
-	 * @param strategy
-	 *            This is the strategy that is unknown.
+	 * @param strategy      the strategy that is unknown.
 	 */
 	public UnknownStrategyException(String strategy) {
 		super(strategy + " is an unknown strategy.");
@@ -53,7 +52,7 @@ public class UnknownStrategyException extends Exception {
 	/**
 	 * This is the getter for _strategy.
 	 * 
-	 * @return _strategy
+	 * @return      _strategy
 	 */
 	public String getStrategy() {
 		return _strategy;

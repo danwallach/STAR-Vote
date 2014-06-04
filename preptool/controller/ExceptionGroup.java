@@ -33,12 +33,13 @@ import preptool.view.dialog.*;
  */
 public class ExceptionGroup extends ThreadGroup {
     public ExceptionGroup() {
-        super( "ExceptionGroup" );
+        super("ExceptionGroup");
     }
 
     public void uncaughtException(Thread t, Throwable e) {
-        new ExceptionDialog( findActiveFrame(), e.toString(), e.getStackTrace() )
-                .showDialog();
+
+        new ExceptionDialog(findActiveFrame(), e.toString(), e.getStackTrace()).showDialog();
+
         e.printStackTrace();
     }
 
@@ -48,13 +49,14 @@ public class ExceptionGroup extends ThreadGroup {
      * it to null.
      */
     private JFrame findActiveFrame() {
+
         Frame[] frames = JFrame.getFrames();
-        for (int i = 0; i < frames.length; i++) {
-            Frame frame = frames[i];
-            if (frame.isVisible()) {
+
+        /* For every frame, check if it's active and return it if it is */
+        for (Frame frame : frames)
+            if (frame.isVisible())
                 return (JFrame) frame;
-            }
-        }
+
         return null;
     }
 }
