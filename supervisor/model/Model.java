@@ -736,7 +736,7 @@ public class Model {
              * stores the votes in the tallier.
              */
             public void castCommittedBallot(CastCommittedBallotEvent e) {
-                /* TODO elimin ate this */
+                /* TODO eliminate this */
 //            	AMachine m = getMachineForSerial(e.getSerial());
 //                if (m != null && m instanceof BallotScannerMachine) {
 //                    auditorium.announce(new BallotCountedEvent(mySerial, e
