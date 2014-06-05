@@ -87,7 +87,7 @@ public class NIZKsPerformanceTest {
 
 		SimpleKeyStore store = new SimpleKeyStore("keys");
 
-		_publicKey = store.loadKey("0-public");
+		_publicKey = store.loadKey("0");
 		_adderPublicKey = (PublicKey)store.loadAdderKey("public");
         _adderPrivateKey = (PrivateKey)store.loadAdderKey("private");
 

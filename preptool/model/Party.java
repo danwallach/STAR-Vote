@@ -30,16 +30,19 @@ import org.w3c.dom.NodeList;
 import preptool.model.language.Language;
 import preptool.model.language.LocalizedString;
 
+import javax.swing.*;
+
 /**
  * Encapsulates a party's localized name and abbreviation.
  * @author cshaw
  */
-public class Party {
+public class Party extends JLabel {
 
 	/**
 	 * A blank party, signifies a candidate without a party
 	 */
 	public static Party NO_PARTY = new Party();
+
 
 	/**
 	 * The name of the party

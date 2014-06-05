@@ -36,40 +36,53 @@ import preptool.view.View;
 
 /**
  * A Module is a component of an ACard that holds some data and (usually) has an editor
- * view associated with it.  Adding new information to cards is as simple as adding the
+ * view associated with it in the preptool. Adding new information to cards is as "simple" as adding the
  * Module corresponding to that type of information.
- * @author cshaw
+ *
+ * @author Corey Shaw
  */
 public abstract class AModule extends Observable {
 
     /**
      * Parses an XML Element into a module
-     * @param elt the element
-     * @return the AModule
+     *
+     * @param elt the element from an xml file
+     * @return the AModule that the xml element represents
      */
     public static AModule parseXML(Element elt) {
+        /* Ensure that the element is in fact a modules*/
         assert elt.getTagName().equals("Module");
+
+        /* Pull out the type of the element and figure out what kind of module type it is */
         String type = elt.getAttribute("type");
-        if (type.equals("CandidatesModule"))
-            return CandidatesModule.parseXML(elt);
-        else if (type.equals("CheckBoxModule"))
-            return CheckBoxModule.parseXML(elt);
-        else if (type.equals("TextAreaModule"))
-            return TextAreaModule.parseXML(elt);
-        else if (type.equals("TextFieldModule"))
-            return TextFieldModule.parseXML(elt);
-        else if (type.equals("YesNoOptionsModule"))
-            return YesNoOptionsModule.parseXML(elt);
-//        else if (type.equals("TitleModule"))
-//            return TitleModule.parseXML(elt);
-        else
-            throw new BallotOpenException("Invalid module: " + type);
+
+        switch (type) {
+
+            case "CandidatesModule":
+                return CandidatesModule.parseXML(elt);
+            case "CheckBoxModule":
+                return CheckBoxModule.parseXML(elt);
+            case "TextAreaModule":
+                return TextAreaModule.parseXML(elt);
+            case "TextFieldModule":
+                return TextFieldModule.parseXML(elt);
+            case "YesNoOptionsModule":
+                return YesNoOptionsModule.parseXML(elt);
+
+            default:
+                throw new BallotOpenException("Invalid module: " + type);
+        }
     }
 
+    /**
+     * The unique identifier of this module that the
+     * ACard (or user of the card) can use to access this module.
+     */
     private String name;
 
     /**
      * Creates a new Module with the given unique name
+     *
      * @param name the name of the module
      */
     public AModule(String name) {
@@ -78,14 +91,14 @@ public abstract class AModule extends Observable {
     
     /**
      * Abstract method for generating the view of this module
+     *
      * @param view the main view
      * @return an AModuleView for this module
      */
     public abstract AModuleView generateView(View view);
 
     /**
-     * Returns this module's name.  The name is a unique identifier of this module that the
-     * ACard (or user of the card) can use to access this module. 
+     * @return this module's name.
      */
     public String getName() {
         return name;
@@ -93,16 +106,16 @@ public abstract class AModule extends Observable {
 
     /**
      * Returns true if this module has an editor view, defaults to true
+     *
      * @return true
      */
     public boolean hasView() {
         return true;
     }
 
-
-
     /**
      * Checks whether the information in this module is missing any translations
+     *
      * @param lang the language to check
      * @return true if missing translation information
      */
@@ -110,8 +123,9 @@ public abstract class AModule extends Observable {
 
     /**
      * Formats this module as a savable XML Element
-     * @param doc the document
-     * @return the Element
+     *
+     * @param doc the xml document that provides context for the XML write of the module
+     * @return the Element, an xml representation of a module
      */
     public abstract Element toSaveXML(Document doc);
 
