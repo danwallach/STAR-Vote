@@ -89,18 +89,21 @@ public class BallotEncrypter {
 
 
         Map<String, ListExpression> ballotMap = new HashMap<String, ListExpression>();
+
+        /*maps the ballot vote and the corresponding group id*/
         for(int i = 0; i < ballot.size(); i++){
                 ListExpression vote = (ListExpression)ballot.get(i);
                 String id = vote.get(0).toString();
                 ballotMap.put(id, vote);
         }
-
+        /*Iterate over the race groups and then map it with the corresponding parent raceid*/
         for(List<String> group : raceGroups){
                 List<ASExpression> races = new ArrayList<ASExpression>();
                 for(String raceId : group)
                         races.add(ballotMap.get(raceId));
 
                 ListExpression subBallot = new ListExpression(races);
+                /*Encrypt the mapped ballot with the elGamal Public key and the random generated writeInKey*/
                 subBallots.add(encryptSublistWithProof(subBallot, pubKey, writeInKey));
         }
 
