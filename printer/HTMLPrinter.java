@@ -20,43 +20,50 @@ import java.util.List;
 public class HTMLPrinter {
 
     /* All sizes are in pixels. */
-    public final static int CONTAINER_WIDTH = 812;
-    public final static int CONTAINER_HEIGHT = 940;
-    public final static int LEFT_MARGIN_WIDTH = 72;
-    public final static int RIGHT_MARGIN_WIDTH = 72;
-    public final static int TWO_COLUMNS_COLUMN_SIZE = (CONTAINER_WIDTH - LEFT_MARGIN_WIDTH - RIGHT_MARGIN_WIDTH) / 2;
-    public final static int ONE_COLUMN_COLUMN_SIZE = CONTAINER_WIDTH - LEFT_MARGIN_WIDTH - RIGHT_MARGIN_WIDTH;
-    public final static int BARCODE_DIVIDER_HEIGHT = 80;
+    private final static int CONTAINER_WIDTH = 812;
+    private final static int CONTAINER_HEIGHT = 940;
+    private final static int LEFT_MARGIN_WIDTH = 72;
+    private final static int RIGHT_MARGIN_WIDTH = 72;
+    private final static int BARCODE_DIVIDER_HEIGHT = 80;
 
-    // The ballot parameters.
-    public static AuditoriumParams BALLOT_CONSTANTS = null;
-    // The ballot ID.
-    public static String BALLOT_ID = "000000000";
-    // The path to the barcode image.
-    public static String BARCODE_IMAGE = "Barcode.png";
-    // The path to the line separator image.
-    public static String LINE_SEPARATOR_IMAGE = "LineSeparator.png";
+    private final static int TWO_COLUMNS_COLUMN_SIZE = (CONTAINER_WIDTH - LEFT_MARGIN_WIDTH - RIGHT_MARGIN_WIDTH) / 2;
+    private final static int ONE_COLUMN_COLUMN_SIZE = CONTAINER_WIDTH - LEFT_MARGIN_WIDTH - RIGHT_MARGIN_WIDTH;
+
+    /* The ballot parameters. */
+    private static AuditoriumParams BALLOT_CONSTANTS = null;
+
+    /* The ballot ID. */
+    private static String BALLOT_ID = "000000000";
+
+    /* The path to the barcode image. */
+    private static String BARCODE_IMAGE = "Barcode.png";
+
+    /* The path to the line separator image. */
+    private static String LINE_SEPARATOR_IMAGE = "LineSeparator.png";
 
     /**
      * Generates a HTML file that will be used to print a voter's selections.
-     * @param filename - The name of the HTML file to be written
-     * @param useTwoColumns - Whether or not to use two columns of images per page
-     * @param printFriendly - Whether or not to generate a printer-friendly HTML file. If true, then the HTML file will contain no colours and only black text on a white background.
-     * @param pathToBallotVVPATFolder - The path to the vvpat folder in the ballot files
-     * @param ballotConstants - The object that contains ballot parameters (such as election name)
-     * @param ballotID - The ID of the ballot
-     * @param barcodeFilePath - The path to the barcode file.
-     * @param lineSeparatorFilePath - The path to the line separator file. This can be a 10x10 solid black PNG. The HTML code resizes it to the correct dimensions.
-     * @param imageNames - ArrayLists of file names for images. One ArrayList per column.
+     *
+     * @param filename                  the name of the HTML file to be written
+     * @param useTwoColumns             whether or not to use two columns of images per page
+     * @param printFriendly             whether or not to generate a printer-friendly HTML file. If true, then the HTML file will contain no colours and only black text on a white background.
+     * @param pathToBallotVVPATFolder   the path to the vvpat folder in the ballot files
+     * @param ballotConstants           the object that contains ballot parameters (such as election name)
+     * @param ballotID                  the ID of the ballot
+     * @param barcodeFilePath           the path to the barcode file.
+     * @param lineSeparatorFilePath     the path to the line separator file. This can be a 10x10 solid black PNG. The HTML code resizes it to the correct dimensions.
+     * @param imageNames                ArrayLists of file names for images. One ArrayList per column.
      */
-    public static void generateHTMLFile (String filename, Boolean useTwoColumns, Boolean printFriendly, String pathToBallotVVPATFolder, AuditoriumParams ballotConstants, String ballotID, String barcodeFilePath, String lineSeparatorFilePath, List<ArrayList<String>> imageNames)
-    {
-        //System.out.println("Attempting to create an html file at " + filename);
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    public static void generateHTMLFile (String filename, Boolean useTwoColumns, Boolean printFriendly,
+                                         String pathToBallotVVPATFolder, AuditoriumParams ballotConstants,
+                                         String ballotID, String barcodeFilePath, String lineSeparatorFilePath,
+                                         List<ArrayList<String>> imageNames) {
+
         File file = new File(filename);
 
-        // If the file does not exist, then create it.
-        if (!file.exists())
-        {
+        /* If the file does not exist, then create it. */
+        if (!file.exists()) {
             try
             {
                 file.createNewFile();
@@ -69,14 +76,8 @@ public class HTMLPrinter {
 
         // Create the writer.
         BufferedWriter writer = null;
-        try
-        {
-            writer = new BufferedWriter(new FileWriter(file.getAbsoluteFile()));
-        }
-        catch (IOException e)
-        {
-            System.out.println("HTML File Generator Error: Unable to create BufferedWriter for file '" + filename + "'");
-        }
+        try { writer = new BufferedWriter(new FileWriter(file.getAbsoluteFile())); }
+        catch (IOException e) { System.err.println("HTML File Generator Error: Unable to create BufferedWriter for file '" + filename + "'"); }
 
         // Set the ballot constants object.
         BALLOT_CONSTANTS = ballotConstants;
@@ -87,44 +88,39 @@ public class HTMLPrinter {
         // Set the line separator.
         LINE_SEPARATOR_IMAGE = lineSeparatorFilePath;
 
-        // Actually write the HTML file.
-        try
-        {
-            // Beginning of the file.
-            writer.write("<html>\n");
+        /* Actually write the HTML file. */
 
-            // Beginning of head.
-            writer.write("<head>\n");
-            // End of head.
-            writer.write("</head>\n");
+        if (writer != null) {
 
-            // Beginning of body.
-            writer.write("<body bgcolor = \"#FFFFFF\" text = \"#000000\">\n");
+            try {
+                /* Beginning of the file. */
+                writer.write("<html>\n");
 
-            if (!useTwoColumns) // Ballot printing uses one-column format
-            {
-                generatorHelperForOneColumn(writer, printFriendly, pathToBallotVVPATFolder, imageNames);
+                /* Beginning of head. */
+                writer.write("<head>\n");
+
+                /* End of head. */
+                writer.write("</head>\n");
+
+                /* Beginning of body. */
+                writer.write("<body bgcolor = \"#FFFFFF\" text = \"#000000\">\n");
+
+                if (!useTwoColumns) // Ballot printing uses one-column format
+                    generatorHelperForOneColumn(writer, printFriendly, pathToBallotVVPATFolder, imageNames);
+                else // Ballot printing uses two-column format
+                    generatorHelperForTwoColumns(writer, printFriendly, pathToBallotVVPATFolder, imageNames);
+
+                // End of body.
+                writer.write("</body>\n");
+
+                // End of file.
+                writer.write("</html>\n");
+
+                writer.flush();
+                writer.close();
             }
-            else // Ballot printing uses two-column format
-            {
-                generatorHelperForTwoColumns(writer, printFriendly, pathToBallotVVPATFolder, imageNames);
-            }
-
-            // End of body.
-            writer.write("</body>\n");
-
-            // End of file.
-            writer.write("</html>\n");
-
-            writer.flush();
-            writer.close();
-            //System.out.println("It should have generated an html file.");
+            catch (IOException e) { System.err.println("HTML File Generator Error: Unable to write to file '" + filename + "'"); }
         }
-        catch (IOException e)
-        {
-            System.out.println("HTML File Generator Error: Unable to write to file '" + filename + "'");
-        }
-
     }
 
     /**
@@ -148,6 +144,7 @@ public class HTMLPrinter {
 //            String currentDate = dateFormat.format(date);
 //            writer.write("&nbsp;&nbsp;&nbsp;&nbsp;" + currentDate + "</p>\n");
 
+            /* TODO fix this with a file */
             if (printFriendly)
             {
                 // Creates the container for the columns of images.
