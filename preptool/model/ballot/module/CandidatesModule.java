@@ -730,31 +730,43 @@ public class CandidatesModule extends AModule {
         }
 
         /**
-         * Initializes the candidates toolbar (the add, remove, etc buttons)
+         * Initializes the candidates toolbar (the add, remove, etc buttons), with graceful
+         * erroring if the required images are not found
          */
         private void initializeCandidatesToolbar(boolean enableWriteIn) {
+
+            /* Initialize the toolbar and lock it in place */
             candidatesToolbar = new JToolBar();
             candidatesToolbar.setFloatable( false );
 
+            /* These will be temporarily used to hold information about toolbar components*/
             ImageIcon icon;
             String text;
 
+            /* TODO Can we clean this up at all? */
+
+            /* Load the add button */
             try {
                 icon = new ImageIcon( ClassLoader.getSystemClassLoader()
                         .getResource( "images/list-add.png" ) );
                 text = "";
             }
+
+            /* If the add button cannot be loaded, simply set the button's text to "Add" */
             catch (Exception e) {
                 icon = null;
                 text = "Add";
             }
+
+            /* Set this button to do its intended action */
             addCandidateButton = new JButton( new AbstractAction( text, icon ) {
-                private static final long serialVersionUID = 1L;
 
                 public void actionPerformed(ActionEvent e) {
                     addCandidateButtonPressed();
                 }
             } );
+
+            /* Set a tooltip and add the button to the toolbar */
             addCandidateButton.setToolTipText("Add");
             candidatesToolbar.add( addCandidateButton );
 
@@ -776,6 +788,8 @@ public class CandidatesModule extends AModule {
                             deleteCandidateButtonPressed();
                         }
                     } );
+
+            /* Initially, there's nothing to delete, so this button cannot be used */
             deleteCandidateButton.setEnabled( false );
             deleteCandidateButton.setToolTipText("Remove");
             candidatesToolbar.add( deleteCandidateButton );
@@ -824,7 +838,7 @@ public class CandidatesModule extends AModule {
 
             if (enableWriteIn)
             {
-                // Add the option to write-in a candidate, if the card is not a Party Card.
+                /* Add the option to write-in a candidate, if the card is not a Party Card. */
                 try {
                     icon = new ImageIcon( ClassLoader.getSystemClassLoader()
                             .getResource( "images/list-add-write-in.png" ) );
@@ -861,6 +875,7 @@ public class CandidatesModule extends AModule {
 
         /**
          * Given a candidateName, it returns whether or not the candidate is a Write-In Candidate or not.
+         *
          * @param candidateName the name of the candidate
          * @return whether or not this candidate is a Write-In Candidate
          */
@@ -881,6 +896,7 @@ public class CandidatesModule extends AModule {
             writeInNames.put("العربية", "كتابة اسم من اختيارك");
 
             Boolean isWriteIn = false;
+
             /* Check if the ToggleButton is a write-in candidate, regardless of language. */
             for (Language language : Language.getAllLanguages())
             {
@@ -911,27 +927,32 @@ public class CandidatesModule extends AModule {
     /**
      * Parses this Element into a CandidatesModule
      * 
-     * @param elt
-     *            the Element
-     * @return the CandidatesModule
+     * @param elt the XML Element to read from
+     * @return the CandidatesModule, from the provided XML
      */
     public static CandidatesModule parseXML(Element elt) {
-        assert elt.getTagName().equals( "Module" );
+        /* Ensure that this is actually a CandidatesModule */
         assert elt.getAttribute( "type" ).equals( "CandidatesModule" );
+
+        /* get the name */
         String name = elt.getAttribute( "name" );
+
+        /* Figure out if write-ins are enabled*/
         String writeInEnabledString = elt.getAttribute( "writein" );
         boolean enableWriteIn = writeInEnabledString.equals("true");
-        ArrayList<String> columns = new ArrayList<String>();
 
+        /* Construct the table's columns, based on the names found in the XML */
+        ArrayList<String> columns = new ArrayList<String>();
         NodeList list = elt.getElementsByTagName( "Column" );
         for (int i = 0; i < list.getLength(); i++) {
             Element child = (Element) list.item( i );
             columns.add( child.getAttribute( "name" ) );
         }
 
-        CandidatesModule module = new CandidatesModule( name, columns
-                .toArray( new String[columns.size()] ) , enableWriteIn);
+        /* Now construct the actual argument */
+        CandidatesModule module = new CandidatesModule( name, columns.toArray(new String[columns.size()]) , enableWriteIn);
 
+        /* Populate the rest of the module's data based on the rest of the XML */
         list = elt.getElementsByTagName( "CardElement" );
         for (int i = 0; i < list.getLength(); i++) {
             Element child = (Element) list.item( i );
@@ -941,12 +962,16 @@ public class CandidatesModule extends AModule {
         return module;
     }
 
+    /** the CardElements, i.e. candidate info, contained in this module */
     private ArrayList<CardElement> data;
 
+    /** The number of columns this modules has */
     private int columns;
 
+    /** The header for each column */
     private String[] colNames;
 
+    /** whether or not this module supports write-ins */
     private boolean writeInEnabled = false;
 
     /**
@@ -954,13 +979,11 @@ public class CandidatesModule extends AModule {
      * the columns. The number of candidates is assumed to be the number of
      * column names less one, as the last column should always be the Party.
      * 
-     * @param name
-     *            the module name
-     * @param colNames
-     *            column names
+     * @param name the module name
+     * @param colNames column names
      */
     public CandidatesModule(String name, String[] colNames, boolean allowWriteIn) {
-        super( name );
+        super(name);
         data = new ArrayList<CardElement>();
         columns = colNames.length - 1;
         this.colNames = colNames;
@@ -968,7 +991,7 @@ public class CandidatesModule extends AModule {
     }
 
     /**
-     * Generates and returns the table view for this module
+     * @return the generated table view for this module
      */
     @Override
     public AModuleView generateView(View view) {
@@ -976,12 +999,16 @@ public class CandidatesModule extends AModule {
     }
 
     /**
-     * Returns the data as an array of CardElements
+     * @return the data as an array of CardElements
      */
     public ArrayList<CardElement> getData() {
         return data;
     }
 
+    /**
+     * @param lang the language to check
+     * @return whether or not anything in the table needs translation
+     */
     @Override
     public boolean needsTranslation(Language lang) {
         boolean result = false;
@@ -993,23 +1020,25 @@ public class CandidatesModule extends AModule {
     /**
      * Formats the CandidatesModule as a savable XML Element
      * 
-     * @param doc
-     *            the document
-     * @return the Element
+     * @param doc the document
+     * @return the XML Element representation of a CandidatesModule
      */
     @Override
     public Element toSaveXML(Document doc) {
+        /* Write the header information out */
         Element moduleElt = doc.createElement( "Module" );
         moduleElt.setAttribute( "type", "CandidatesModule" );
         moduleElt.setAttribute( "name", getName() );
         moduleElt.setAttribute( "writein", writeInEnabled ? "true" : "false" );
 
+        /* Now write the column names */
         for (String col : colNames) {
             Element columnElt = doc.createElement( "Column" );
             columnElt.setAttribute( "name", col );
             moduleElt.appendChild( columnElt );
         }
 
+        /* Now write the rest of the card data, i.e. candidate names, parties, etc. */
         for (CardElement ce : data)
             moduleElt.appendChild( ce.toSaveXML( doc ) );
 
