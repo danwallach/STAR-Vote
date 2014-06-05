@@ -25,7 +25,7 @@ import java.util.*;
 public class BallotStore {
 
     /*
-     * This class is a combination of two seperate classes, whose functionalities became similar.
+     * This class is a combination of two separate classes, whose functionalities became similar.
      * The ballot manager is the first of these who held all the ballot files, their corresponding precincts,
      * and which ballotIds corresponded to the precincts and ballots. The second of the two is the BallotStore that
      * held all the hash chain functionality as well as all cast and un-cast ballots that had
