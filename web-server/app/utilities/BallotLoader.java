@@ -28,51 +28,58 @@ public class BallotLoader {
     private static HashMap<String, List<List<String>>> raceMap = new HashMap<String, List<List<String>>>();
 
     /**
-     * called by a boot-loader, startup task of play! framework. Extracts all ballot .zip files and generates
+     * Called by a boot-loader, startup task of play! framework. Extracts all ballot .zip files and generates
      * a mapping between precincts and their corresponding ballot files and race groups.
      */
-    public static void init(){
+    public static void init() {
+
+        /* Open the ballot directory and get a listing */
         File ballotDirectory = new File("public/ballots/");
         File[] ballots = ballotDirectory.listFiles();
 
+        if (ballots != null) {
 
-        for(int i=0; i<ballots.length; i++){
+            /* Cycle through the ballot files */
+            for (File ballot1 : ballots) {
 
-            //directories are needed
-            if(ballots[i].isDirectory()){
-                //ballotMap
-                File zipFile = new File(ballots[i].getAbsolutePath() + ".zip");
-                String ballotName = ballots[i].getName();
-                String precinct = ballotName.substring(ballotName.length()-3);
-                ballotMap.put(precinct, zipFile);
+                /* Check for directory (needed) */
+                if (ballot1.isDirectory()) {
 
-                //raceMap
-                Ballot ballot = null;
-                try {
-                    ballot = BallotImageHelper.getBallot(zipFile.getAbsolutePath());
-                } catch (IOException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                } catch (BallotParserException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    /* --- Create a ballotMap --- */
+
+                    /* Create a new zipfile based on the path of the directory */
+                    File zipFile = new File(ballot1.getAbsolutePath() + ".zip");
+
+                    /* Get the ballotName and precinct */
+                    String ballotName = ballot1.getName();
+                    String precinct = ballotName.substring(ballotName.length() - 3);
+
+                    /* Map the zipFile to the precinct */
+                    ballotMap.put(precinct, zipFile);
+
+                    /* --- Create a raceMap --- */
+                    Ballot ballot = null;
+
+                    /* Try to get the ballot from the zipFile */
+                    try { ballot = BallotImageHelper.getBallot(zipFile.getAbsolutePath()); }
+                    catch (IOException | BallotParserException e) { e.printStackTrace(); }
+
+                    /* Map the race groups to the precinct */
+                    raceMap.put(precinct, ballot.getRaceGroups());
                 }
-                raceMap.put(precinct, ballot.getRaceGroups());
             }
         }
     }
 
     /**
-     * @param name 3-digit precinct number
-     * @return a File object of the correct ballot for this precinct
+     * @param name      a 3-digit precinct number
+     * @return          a File object of the correct ballot for this precinct
      */
-    public static File getBallotFileByPrecinct(String name){
-        return ballotMap.get(name);
-    }
+    public static File getBallotFileByPrecinct(String name) { return ballotMap.get(name); }
 
     /**
-     * @param name 3-digit precinct number
-     * @return a List of the correct race groups for this precincts ballot
+     * @param name      a 3-digit precinct number
+     * @return          a List of the correct race groups for this precincts ballot
      */
-    public static List<List<String>> getRaceGroupByPrecinct(String name){
-        return raceMap.get(name);
-    }
+    public static List<List<String>> getRaceGroupByPrecinct(String name) { return raceMap.get(name); }
 }

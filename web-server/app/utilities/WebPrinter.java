@@ -17,7 +17,6 @@ import java.util.List;
  * User: mrdouglass95
  * Date: 6/27/13
  * Time: 11:51 AM
- * To change this template use File | Settings | File Templates.
  */
 
 /**
@@ -32,70 +31,44 @@ public class WebPrinter extends Printer{
     /**
      * Prints a committed ballot through use of class Web-HTMLPrinter.
      *
-     * @param ballot - the choices to print, in the form ((race-id choice) ...)
-     * @param bid the ballot ID
-     * @return success of print
+     * @param ballot        the choices to print, in the form ((race-id choice) ...)
+     * @param bid           the ballot ID
+     * @return              success of print
      */
-    public boolean printCommittedBallot(ListExpression ballot, String bid) {
-        System.out.println("Current Ballot: " + _currentBallotFile.getAbsolutePath());
+    public boolean printCommittedBallot(ListExpression ballot, final String bid) {
+
         final Map<String, Image> choiceToImage = BallotImageHelper.loadImagesForVVPAT(_currentBallotFile);
-        final Map<String, Image> raceTitles = BallotImageHelper.loadBallotTitles(_currentBallotFile);
-
-        final String fbid = bid;
-
-        ArrayList<RaceTitlePair> actualRaceNameImagePairs = getRaceNameImagePairs(choiceToImage);
-
+        final ArrayList<RaceTitlePair> actualRaceNameImagePairs = getRaceNameImagePairs(choiceToImage);
         final List<String> choices = new ArrayList<String>();
 
         ArrayList<ChoicePair> correctedBallot = correctBallot(ballot);
 
-
         /* This for loop uses the corrected ballot, which accounts for No Selections. */
-        for(int i = 0; i < correctedBallot.size(); i++)
-        {
-            ChoicePair currentItem = correctedBallot.get(i);
+        for (ChoicePair currentItem : correctedBallot)
             if (currentItem.getStatus() == 1)
                 choices.add(currentItem.getLabel());
-        }
-        /* Build an ArrayList of Race Titles. */
-        ArrayList<RaceTitlePair> raceTitlePairs = new ArrayList<RaceTitlePair>();
-        for (String raceTitleLabel:raceTitles.keySet())
-        {
-            raceTitlePairs.add(new RaceTitlePair(raceTitleLabel, raceTitles.get(raceTitleLabel)));
-        }
 
-
-        int totalSize = 0;
-        for(int i = 0; i < choices.size(); i++) {
-            String currentImageKey = choices.get(i);
-            Image img = choiceToImage.get(currentImageKey);
-
-            totalSize += img.getHeight(null);
-        }
-
-        final int fTotalSize = totalSize;
-        final ArrayList<RaceTitlePair> fActualRaceNamePairs = actualRaceNameImagePairs;
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        // This is where the HTML Printing occurs.
-
-        char sep = File.separatorChar; // seperator for this OS
+        /* This is where the HTML Printing occurs. */
+        char sep = File.separatorChar; /* separator for this OS */
         String cleanFilePath = _currentBallotFile.getAbsolutePath().substring(0, _currentBallotFile.getAbsolutePath().lastIndexOf(".zip")) + sep;
-        // Print to an HTML file. Parameters to be used:
+
+        /* Print to an HTML file. Parameters to be used: */
         String htmlFileName = cleanFilePath.substring(0, cleanFilePath.indexOf("public")) + "htmls" + sep + "ChallengedBallot_" + bid + ".html";
+
+        /* TODO should read in useTwoColumns and printerFriendly from somewhere */
         Boolean useTwoColumns = true;
         Boolean printerFriendly = true;
-        String pathToVVPATFolder = cleanFilePath + "data"+sep+"media"+sep+"vvpat"+sep;
+
+        String pathToVVPATFolder = cleanFilePath + "data" + sep + "media" + sep + "vvpat" + sep;
         String barcodeFileNameNoExtension = pathToVVPATFolder + "Barcode";
         String lineSeparatorFileName = pathToVVPATFolder + "LineSeparator.png";
-        //if((new File(cleanFilePath + "data")).exists())
-          //  displayDir(new File(cleanFilePath + "data"), 0);
 
-        //Generate a barcode of the bid
-        //Do it here so we can use height of the barcode for laying out other components on the printout
-        BufferedImage barcode = PrintImageUtils.getBarcode(fbid);
-        try
-        {
+        /* Generate a barcode of the bid */
+        /* Do it here so we can use height of the barcode for laying out other components on the printout */
+        BufferedImage barcode = PrintImageUtils.getBarcode(bid);
+
+        /* Draw the barcode and other separators onto the ballot */
+        try {
             BufferedImage lineSeparator = new BufferedImage(10,10,BufferedImage.TYPE_INT_ARGB);
             Graphics2D g = (Graphics2D) lineSeparator.getGraphics();
             g.setColor(Color.BLACK);
@@ -105,39 +78,42 @@ public class WebPrinter extends Printer{
             ImageIO.write(barcode, "PNG", new File(barcodeFileNameNoExtension + ".png"));
             ImageIO.write(barcode, "PNG", new File(barcodeFileNameNoExtension + "_flipped.png"));
         }
-        catch (IOException e)
-        {
-            System.out.println("Could not write barcode image to a file.");
-        }
+        catch (IOException e) { System.err.println("Could not write barcode image to a file."); }
 
-        // HTML Printing: Each column is an ArrayList of Strings. Each image is represented by its file name.
+        /* HTML Printing: Each column is an ArrayList of Strings. Each image is represented by its file name. */
         ArrayList<ArrayList<String>> columnsToPrint = new ArrayList<ArrayList<String>>();
-        int counter = 0;
-        while (counter < choices.size())
-        {
-            ArrayList<String> currentColumn = new ArrayList<String>();
+        ArrayList<String> currentColumn = new ArrayList<String>();
 
-            while ((currentColumn.size() < 46) && (counter < choices.size()))
-            {
-                String titleName = fActualRaceNamePairs.get(counter).getLabel();
-                String selectionName = choices.get(counter);
-                currentColumn.add(titleName + "_printable_en.png");
-                currentColumn.add(selectionName + "_printable_en.png");
-                counter++;
+        int i = 0;
+
+        /* For each of the selections */
+        for (String selection : choices) {
+
+            /* Add selection to 46 size columns */
+            String title = actualRaceNameImagePairs.get(i).getLabel();
+            currentColumn.add(title + "_printable_en.png");
+            currentColumn.add(selection + "_printable_en.png");
+            i++;
+
+            /* Add each column to columnsToPrint */
+            if (i % 46 == 0) {
+
+                columnsToPrint.add(currentColumn);
+                currentColumn = new ArrayList<String>();
+
+                /* TODO this is for two columns stopping */
+                if (i==92) break;
             }
-            System.out.println(currentColumn.size());
-            columnsToPrint.add(currentColumn);
+
         }
 
-        // Generate the HTML file with the properties set above.
-        System.out.println("Printing to HTML");
-
+        /* Generate the HTML file with the properties set above. */
         String path = _currentBallotFile.getAbsolutePath();
-        String webPathToVVPATFolder = sep + "assets" + path.substring(path.indexOf(sep + "ballots"), path.indexOf(".zip")) + sep + "data" + sep + "media" + sep + "vvpat" + sep;;
+        String webPathToVVPATFolder = sep + "assets" + path.substring(path.indexOf(sep + "ballots"), path.indexOf(".zip")) + sep + "data" + sep + "media" + sep + "vvpat" + sep;
         String webBarcodeFileNameNoExtension = webPathToVVPATFolder + "Barcode";
         String webLineSeparatorFileName = webPathToVVPATFolder + "LineSeparator.png";
 
-        WebHTMLPrinter.generateHTMLFile(htmlFileName, useTwoColumns, printerFriendly, webPathToVVPATFolder, _constants, fbid, webBarcodeFileNameNoExtension, webLineSeparatorFileName, columnsToPrint);
+        WebHTMLPrinter.generateHTMLFile(htmlFileName, useTwoColumns, printerFriendly, webPathToVVPATFolder, _constants, bid, webBarcodeFileNameNoExtension, webLineSeparatorFileName, columnsToPrint);
         return true;
     }
 }
