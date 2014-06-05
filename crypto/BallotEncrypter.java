@@ -172,20 +172,12 @@ public class BallotEncrypter {
 
 
 
+        /*Creating the return list of the vote , vote ids, proof and corresponding public keys */
 
-
-		ListExpression vList = new ListExpression(StringExpression.makeString("vote"),
-				//StringExpression.makeString(vote.toString()));
-				outASE);
-		ListExpression idList = new ListExpression(StringExpression.makeString("vote-ids"),
-				new ListExpression(valueIds));
-		ListExpression pList = new ListExpression(StringExpression.makeString("proof"),
-				//StringExpression.makeString(proof.toString()));
-				proof.toASE());
-		ListExpression kList = new ListExpression(StringExpression.makeString("public-key"),
-				//StringExpression.makeString(finalPubKey.toString()));
-				finalPubKey.toASE());
-		
+		ListExpression vList = new ListExpression(StringExpression.makeString("vote"),outASE);
+		ListExpression idList = new ListExpression(StringExpression.makeString("vote-ids"),new ListExpression(valueIds));
+		ListExpression pList = new ListExpression(StringExpression.makeString("proof"),	proof.toASE());
+		ListExpression kList = new ListExpression(StringExpression.makeString("public-key"),finalPubKey.toASE());
 		ListExpression ret = new ListExpression(vList, idList, pList, kList);
 		
 		return ret;
@@ -205,7 +197,7 @@ public class BallotEncrypter {
             SecretKeySpec keySpec = new SecretKeySpec(key, "AES");
 
             c.init(Cipher.ENCRYPT_MODE, keySpec);
-
+            /*Iterate over the wirtten in values for the names extract the writein's, convert it to ASExpression and then encrypt the writein values*/
             for(String w : writeIns){
                 System.out.println("Write in value: " + w);
                 byte [] enc = c.doFinal(w.getBytes());
@@ -237,24 +229,22 @@ public class BallotEncrypter {
     public ListExpression encrypt(ListExpression ballot, Key publicKey) {
     	ElGamalCrypto.SINGLETON.clearRecentRandomness();
         ArrayList<ASExpression> encryptedpairs = new ArrayList<ASExpression>();
+
+        /*Iterate over the ballot list and extract the raceid and the corresponding counter */
         for (ASExpression ase : ballot) {
             ListExpression le = (ListExpression) ase;
             StringExpression id = (StringExpression) le.get(0);
             StringExpression count = (StringExpression) le.get(1);
-            /*Pair<BigInteger> cipher = ElGamalCrypto.SINGLETON.encrypt(
-                    publicKey, new BigInteger(count
-                            .getBytes()));*/
+
 
 //            String writeIn = "";
 //            if(count.size() > 1){
 //                writeIn = count.toString().substring(1);
 //                count = StringExpression.makeString(count.toString().substring(0, 1));
 //            }
-            
+            /*Encrypt the counter corresponding to the race id and store it in cipher using the elGamal public key */
             Pair<BigInteger> cipher = ElGamalCrypto.SINGLETON.encrypt(publicKey, new BigInteger(count.toString()));
-            /*ASExpression cipherase = new ListExpression(StringExpression
-                    .makeString(cipher.get1().toByteArray()), StringExpression
-                    .makeString(cipher.get2().toByteArray()));*/
+
             ASExpression cipherase = new ListExpression(StringExpression.makeString(cipher.get1().toString()), 
             		StringExpression.makeString(cipher.get2().toString()));
             encryptedpairs.add(new ListExpression(id, cipherase));
@@ -305,7 +295,8 @@ public class BallotEncrypter {
     	Map<String, PublicKey> idsToPubKey = new HashMap<String, PublicKey>();
     	Map<String, List<AdderInteger>> idsToRs = new HashMap<String, List<AdderInteger>>();
     	Map<String, List<AdderInteger>> idsToDecrypted = new HashMap<String, List<AdderInteger>>();
-    	
+
+        /*Extract ballot information - raceids , random value, and the public keys*/
     	for(int i = 0; i < ballot.size(); i++){
     		ListExpression race = (ListExpression)ballot.get(i);
 
@@ -318,7 +309,7 @@ public class BallotEncrypter {
     		idsToRs.put(voteIds.toString(), rVals.get(i));
     		idsToPubKey.put(voteIds.toString(), finalPubKey);
     	}
-
+        /*Iterate over the set of ids and decrypt the adder integer using there corresponding public keys*/
     	for(String ids : idsToVote.keySet()){
     		Vote vote = idsToVote.get(ids);
     		List<AdderInteger> rs = idsToRs.get(ids);
@@ -331,7 +322,12 @@ public class BallotEncrypter {
 
     	return toTraditionalFormat(idsToDecrypted);
     }
-    
+
+    /**
+     *
+     * @param idsToPlaintext
+     * @return
+     */
     private ListExpression toTraditionalFormat(Map<String, List<AdderInteger>> idsToPlaintext){
     	List<ASExpression> subLists = new ArrayList<ASExpression>();
     	
@@ -344,7 +340,6 @@ public class BallotEncrypter {
     			AdderInteger plaintext = plaintexts.get(i);
     			List<ASExpression> subList = new ArrayList<ASExpression>();
     			subList.add(id);
-    			//subList.add(StringExpression.make(plaintext.toString()));
     			subList.add(plaintext.toASE());
     			subLists.add(new ListExpression(subList));
     		}
@@ -404,7 +399,8 @@ public class BallotEncrypter {
     		AdderInteger mPrime = hPrime.divide(key.getH().pow(r));
     		AdderInteger m = null;
     		
-    		//Observe that m was 0 or 1, thus step must be either f or 1 respectively
+    		/*Observe that m was 0 or 1, thus step must be either f or 1 respectively */
+
     		if(mPrime.equals(AdderInteger.ONE)){
     			m = AdderInteger.ZERO;
     		}//if
@@ -464,6 +460,8 @@ public class BallotEncrypter {
             BigInteger cipher2 = new BigInteger(((ListExpression)ballotnext.get(1)).get(1).toString());
             
             Pair<BigInteger> cipher = new Pair<BigInteger>(cipher1, cipher2);
+
+            /*decryption is being done using the elGamal crypto - less overhead*/
             BigInteger plaincounter = ElGamalCrypto.SINGLETON.decrypt(r,
                     publicKey, cipher);
             decryptedpairs.add(new ListExpression(uid, StringExpression
@@ -545,6 +543,7 @@ public class BallotEncrypter {
 
         /*In order to fool Adder into encrypting our key properly, we break it into parts
         Which represent "votes" that will be encrypted using existing ElGamal*/
+
         for(int i = 0; i < 16; i++){
             keyParts.add(new AdderInteger(new BigInteger(Arrays.copyOfRange(writeInKey, i, i + 1))));
             System.out.print(keyParts.get(i) + " ");
