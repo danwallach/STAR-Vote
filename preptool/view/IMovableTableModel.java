@@ -30,6 +30,7 @@ public interface IMovableTableModel {
 
     /**
      * Moves a row within the table
+     *
      * @param from the row to move
      * @param to the position to move to
      */
