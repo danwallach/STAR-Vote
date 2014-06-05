@@ -29,112 +29,104 @@ public class WebHTMLPrinter {
     /* All sizes are in pixels. */
     public final static double scalar = 0.73;
 
-    public final static int CONTAINER_WIDTH = (int)(812*scalar);
-    public final static int CONTAINER_HEIGHT = (int)(940*scalar);
-    public final static int LEFT_MARGIN_WIDTH = (int)(72*scalar);
-    public final static int RIGHT_MARGIN_WIDTH = (int)(72*scalar);
-    public final static int TWO_COLUMNS_COLUMN_SIZE = (CONTAINER_WIDTH - LEFT_MARGIN_WIDTH - RIGHT_MARGIN_WIDTH) / 2;
-    public final static int ONE_COLUMN_COLUMN_SIZE = CONTAINER_WIDTH - LEFT_MARGIN_WIDTH - RIGHT_MARGIN_WIDTH;
-    public final static int BARCODE_DIVIDER_HEIGHT = (int)(80*scalar);
+    public final static int CONTAINER_WIDTH         = (int)(812*scalar);
+    public final static int CONTAINER_HEIGHT        = (int)(940*scalar);
+    public final static int LEFT_MARGIN_WIDTH       = (int)(72*scalar);
+    public final static int RIGHT_MARGIN_WIDTH      = (int)(72*scalar);
+    public final static int BARCODE_DIVIDER_HEIGHT  = (int)(80*scalar);
 
-    // The ballot parameters.
+    public final static int TWO_COLUMNS_COLUMN_SIZE = (CONTAINER_WIDTH - LEFT_MARGIN_WIDTH - RIGHT_MARGIN_WIDTH) / 2;
+    public final static int ONE_COLUMN_COLUMN_SIZE  = CONTAINER_WIDTH - LEFT_MARGIN_WIDTH - RIGHT_MARGIN_WIDTH;
+
+    /* The ballot parameters. */
     public static AuditoriumParams BALLOT_CONSTANTS = null;
-    // The ballot ID.
+
+    /* The ballot ID. */
     public static String BALLOT_ID = "000000000";
-    // The path to the barcode image.
+
+    /* The path to the barcode image. */
     public static String BARCODE_IMAGE = "Barcode.png";
-    // The path to the line separator image.
+
+    /* The path to the line separator image. */
     public static String LINE_SEPARATOR_IMAGE = "LineSeparator.png";
 
     /**
      * Generates and saves a render of a ballot to html file
-     * @param filename file name of file to be created
-     * @param pathToBallotVVPATFolder file path to VVPAT folder for media
-     * @param ballotID the ballot ID
-     * @param barcodeFilePath path to the barcode image
-     * @param lineSeparatorFilePath correct file separator for this OS
-     * @param imageNames names of ballot images
+     *
+     * @param filename                  file name of file to be created
+     * @param pathToBallotVVPATFolder   file path to VVPAT folder for media
+     * @param ballotID                  the ballot ID
+     * @param barcodeFilePath           path to the barcode image
+     * @param lineSeparatorFilePath     correct file separator for this OS
+     * @param imageNames                names of ballot images
      */
-    public static void generateHTMLFile (String filename, Boolean useTwoColumns, Boolean printFriendly, String pathToBallotVVPATFolder, AuditoriumParams ballotConstants, String ballotID, String barcodeFilePath, String lineSeparatorFilePath, List<ArrayList<String>> imageNames)
-    {
-        //System.out.println("Attempting to create an html file at " + filename);
+    public static void generateHTMLFile (String filename, Boolean useTwoColumns, Boolean printFriendly, String pathToBallotVVPATFolder,
+                                         AuditoriumParams ballotConstants, String ballotID, String barcodeFilePath,
+                                         String lineSeparatorFilePath, List<ArrayList<String>> imageNames) {
+
         File file = new File(filename);
 
-        // If the file does not exist, then create it.
+        /* If the file does not exist, then create it. */
         if (!file.exists())
-        {
-            try
-            {
-                file.createNewFile();
-            }
-            catch (IOException e)
-            {
-                System.out.println("HTML File Generator Error: Unable to create file '" + filename + "'");
-            }
-        }
+            try { file.createNewFile(); }
+            catch (IOException e) { System.err.println("HTML File Generator Error: Unable to create file '" + filename + "'"); }
 
-        // Create the writer.
+
+        /* Create the writer. */
         BufferedWriter writer = null;
-        try
-        {
-            writer = new BufferedWriter(new FileWriter(file.getAbsoluteFile()));
-        }
-        catch (IOException e)
-        {
-            System.out.println("HTML File Generator Error: Unable to create BufferedWriter for file '" + filename + "'");
-        }
 
-        // Set the ballot constants object.
+        /* Try to instantiate a new BufferedWriter based on the file */
+        try { writer = new BufferedWriter(new FileWriter(file.getAbsoluteFile())); }
+        catch (IOException e) { System.err.println("HTML File Generator Error: Unable to create BufferedWriter for file '" + filename + "'"); }
+
+        /* Set the ballot constants object. */
         BALLOT_CONSTANTS = ballotConstants;
-        // Set the ballot ID.
+
+        /* Set the ballot ID. */
         BALLOT_ID = ballotID;
-        // Set the barcode.
+
+        /* Set the barcode. */
         BARCODE_IMAGE = barcodeFilePath;
-        // Set the line separator.
+
+        /* Set the line separator. */
         LINE_SEPARATOR_IMAGE = lineSeparatorFilePath;
 
-        // Actually write the HTML file.
-        try
-        {
-            // open div.
-            writer.write("<div id=\"ballotrender\" style=\"background-color:#FFFFFF;border:1px solid black;\">\n");
+        /* Actually write the HTML file. */
+        if (writer != null) {
 
-            if (!useTwoColumns) // Ballot printing uses one-column format
-            {
-                generatorHelperForOneColumn(writer, printFriendly, pathToBallotVVPATFolder, imageNames);
+            try {
+                /* Open div. */
+                writer.write("<div id=\"ballotrender\" style=\"background-color:#FFFFFF;border:1px solid black;\">\n");
+
+                /* Ballot printing uses one-column format so print that way if necessary */
+                if (!useTwoColumns) generatorHelperForOneColumn(writer, printFriendly, pathToBallotVVPATFolder, imageNames);
+                else generatorHelperForTwoColumns(writer, printFriendly, pathToBallotVVPATFolder, imageNames);
+
+                /* Set the end of div. */
+                writer.write("</div>\n");
+
+                /* Housekeeping */
+                writer.flush();
+                writer.close();
             }
-            else // Ballot printing uses two-column format
-            {
-                generatorHelperForTwoColumns(writer, printFriendly, pathToBallotVVPATFolder, imageNames);
-            }
-
-            // End of div.
-            writer.write("</div>\n");
-
-            writer.flush();
-            writer.close();
-            //System.out.println("It should have generated an html file.");
+            catch (IOException e) { System.err.println("HTML File Generator Error: Unable to write to file '" + filename + "'"); }
         }
-        catch (IOException e)
-        {
-            System.out.println("HTML File Generator Error: Unable to write to file '" + filename + "'");
-        }
-
     }
 
-    /**
+     /**
      * Creates a "page" that contains two columns of images.
-     * @param writer - The writer to the HTML file
-     * @param printFriendly - Whether or not to generate a printer-friendly HTML file. If true, then the HTML file will contain no colours and only black text on a white background.
-     * @param pathToBallotVVPATFolder - The path to the vvpat folder in the ballot files
-     * @param imageNames - ArrayLists of file names for images. One ArrayList per column.
+      *
+     * @param writer                    the writer to the HTML file
+     * @param printFriendly             whether or not to generate a printer-friendly HTML file. If true,
+      *                                 then the HTML file will contain no colours and only black text on a white background.
+     * @param pathToBallotVVPATFolder   the path to the vvpat folder in the ballot files
+     * @param imageNames                ArrayLists of file names for images. One ArrayList per column.
      */
     private static void generatorHelperForTwoColumns (BufferedWriter writer, Boolean printFriendly, String pathToBallotVVPATFolder, List<ArrayList<String>> imageNames)
     {
-        try
-        {
-            // Writes the header of the page(s) to be printed.
-            // <p style="font-family:arial;color:red;font-size:20px;">A paragraph.</p>
+        try {
+            /* TODO fix this mess with a file probably */
+            /* Writes the header of the page(s) to be printed. */
             writer.write("<p style = \"font-family:arial;color:black;font-size:20px;\">&nbsp;&nbsp;&nbsp;&nbsp;" + BALLOT_CONSTANTS.getElectionName() + "<br>\n");
 
             DateFormat dateFormat = new SimpleDateFormat("MMMM d, y hh:mm:ss");
@@ -143,58 +135,54 @@ public class WebHTMLPrinter {
             String currentDate = dateFormat.format(date);
             writer.write("&nbsp;&nbsp;&nbsp;&nbsp;" + currentDate + "</p>\n");
 
-            if (printFriendly)
-            {
-                // Creates the container for the columns of images.
+            if (printFriendly) {
+
+                /* Creates the container for the columns of images. */
                 writer.write("<div id = \"container\" style = \"background-color:#FFFFFF;width:" + CONTAINER_WIDTH + "px;height:" + CONTAINER_HEIGHT + "px;\">\n");
 
-                // Creates the left and right margins.
+                /* Creates the left and right margins. */
                 writer.write("<div id = \"left_margin\" style = \"background-color:#FFFFFF;width:" + LEFT_MARGIN_WIDTH + "px;height:" + CONTAINER_HEIGHT + "px;float:left;\"><br></div>\n");
                 writer.write("<div id = \"right_margin\" style = \"background-color:#FFFFFF;width:" + RIGHT_MARGIN_WIDTH + "px;height:" + CONTAINER_HEIGHT + "px;float:right;\"><br></div>\n");
 
-                // Creates the divider for the content.
+                /* Creates the divider for the content. */
                 writer.write("<div id = \"content\" style = \"background-color:#FFFFFF;width:" + ONE_COLUMN_COLUMN_SIZE + "px;height:" + CONTAINER_HEIGHT + "px;float:left;\">\n");
 
-                // Add the barcode to the container (top).
+                /* Add the barcode to the container (top). */
                 writer.write("<div id = \"barcode_top\" style = \"background-color:#FFFFFF;width:" + ONE_COLUMN_COLUMN_SIZE + "px;height:" + BARCODE_DIVIDER_HEIGHT + "px;float:left;text-align:center;\">\n");
                 writer.write("<center><img src = \"" + BARCODE_IMAGE + "_flipped.png\" alt = \"Image did not load properly\" width = \"" + TWO_COLUMNS_COLUMN_SIZE + "\"></center>\n");
                 writer.write("</div>\n");
             }
-            else
-            {
-                // Creates the container for the columns of images.
+            else {
+
+                /* Creates the container for the columns of images. */
                 writer.write("<div id = \"container\" style = \"background-color:#CCFF00;width:" + CONTAINER_WIDTH + "px;height:" + CONTAINER_HEIGHT + "px;\">\n");
 
-                // Creates the left and right margins.
+                /* Creates the left and right margins. */
                 writer.write("<div id = \"left_margin\" style = \"background-color:#000000;width:" + LEFT_MARGIN_WIDTH + "px;height:" + CONTAINER_HEIGHT + "px;float:left;\"><br></div>\n");
                 writer.write("<div id = \"right_margin\" style = \"background-color:#000000;width:" + RIGHT_MARGIN_WIDTH + "px;height:" + CONTAINER_HEIGHT + "px;float:right;\"><br></div>\n");
 
-                // Creates the divider for the content.
+                /* Creates the divider for the content. */
                 writer.write("<div id = \"content\" style = \"background-color:#CCFFFF;width:" + ONE_COLUMN_COLUMN_SIZE + "px;height:" + CONTAINER_HEIGHT + "px;float:left;\">\n");
 
-                // Add the barcode to the container (top).
+                /* Add the barcode to the container (top). */
                 writer.write("<div id = \"barcode_top\" style = \"background-color:#FF0000;width:" + ONE_COLUMN_COLUMN_SIZE + "px;height:" + BARCODE_DIVIDER_HEIGHT + "px;float:left;text-align:center;\">\n");
                 writer.write("<center><img src = \"" + BARCODE_IMAGE + "_flipped.png\" alt = \"Image did not load properly\" width = \"" + TWO_COLUMNS_COLUMN_SIZE + "\"></center>\n");
                 writer.write("</div>\n");
             }
 
 
-            // Left Column //////////////////////////////////////////////////////////////////////////////////////////////////////
-            if (printFriendly)
-            {
-                // Create the left column.
-                writer.write("<div id = \"left_column\" style=\"background-color:#FFFFFF;width:" + TWO_COLUMNS_COLUMN_SIZE + "px;height:" + (CONTAINER_HEIGHT - 2 * BARCODE_DIVIDER_HEIGHT) + "px;float:left;\">\n");
-            }
-            else
-            {
-                // Create the left column.
-                writer.write("<div id = \"left_column\" style=\"background-color:#ABCDEF;width:" + TWO_COLUMNS_COLUMN_SIZE + "px;height:" + (CONTAINER_HEIGHT - 2 * BARCODE_DIVIDER_HEIGHT) + "px;float:left;\">\n");
-            }
+            /* ------------ Left Column ------------ */
 
-            // Put images in the left column.
+            /* Create the left column. */
+            if (printFriendly) writer.write("<div id = \"left_column\" style=\"background-color:#FFFFFF;width:" + TWO_COLUMNS_COLUMN_SIZE + "px;height:" + (CONTAINER_HEIGHT - 2 * BARCODE_DIVIDER_HEIGHT) + "px;float:left;\">\n");
+            else writer.write("<div id = \"left_column\" style=\"background-color:#ABCDEF;width:" + TWO_COLUMNS_COLUMN_SIZE + "px;height:" + (CONTAINER_HEIGHT - 2 * BARCODE_DIVIDER_HEIGHT) + "px;float:left;\">\n");
+
+
+            /* Put images in the left column. */
             ArrayList<String> left_column = imageNames.get(0);
-            Boolean isSelectionImage = false; // Used to leave an empty line after every selectionImage
-            int i = 0; //counts iterations allowing one to add margins to every first and second image accordingly
+
+            Boolean isSelectionImage = false; /* Used to leave an empty line after every selectionImage */
+            int i = 0; /* Counts iterations allowing one to add margins to every first and second image accordingly */
             for (String imageName : left_column)
             {
                 // Load in the image.

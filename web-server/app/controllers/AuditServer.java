@@ -32,11 +32,11 @@ import static play.data.Form.form;
  */
 public class AuditServer extends Controller {
 
-    //    forms for searching for ballots in DBs
+    /* Forms for searching for ballots in DBs */
     static Form<ChallengedBallot> challengeForm = form(ChallengedBallot.class);
     static Form<CastBallot> confirmForm = form(CastBallot.class);
 
-    static String adminusrhash = "administrator";
+    static String adminusrhash  = "administrator";
     static String adminpasshash = "veryimportant";
 
     static boolean init = false;
@@ -44,17 +44,15 @@ public class AuditServer extends Controller {
 
     /**
      * Serves the Home Page of the site
+     *
+     * @return      the home page of the site
      */
-    public static Result index() {
-        //if(!init){
-        //    init = true;
-        //    BallotLoader.init();
-        //}
-        return ok(index.render());
-    }
+    public static Result index() { return ok(index.render()); }
 
     /**
      * Page for requesting cast ballot hash lookup for confirming cast ballots.
+     *
+     * @return      page for requesting cast ballot hash lookup
      */
     public static Result confirm() {
         return ok(confirmballot.render(CastBallot.all(), confirmForm, null));
@@ -62,49 +60,68 @@ public class AuditServer extends Controller {
 
     /**
      * Serves up the About Us page, accessible from menu bar.
+     *
+     * @return      the About Us page
      */
     public static Result aboutUs() {
         return ok(aboutUs.render());
     }
 
+    /**
+     * Returns the test page image render
+     *
+     * @return      the test page
+     */
     public static Result test(){
-        //return ok(imgTest.render());
+        /* TODO return ok(imgTest.render()); */
         return null;
     }
 
     /**
      * Confirms ballot was cast by looking for hash in cast ballot database
+     *
+     * @param bid       the unique ballot identifier for the ballot to get
+     * @return          the page for confirmed/cast ballots viewing
      */
-    public static Result getCastBallot(String bid){
-//      db lookup
+    public static Result getCastBallot(String bid) {
+
+        String errorCode = "**Could not locate a cast ballot with Ballot Identification Number (BID): " + bid +
+                           ". If the BID you entered is correctly displayed, please contact your local election office.**";
+
+        /* Database lookup */
         CastBallot ballot = CastBallot.getBallot(bid);
-        if (ballot != null) {
-            return ok(castballotfound.render(ballot, bid));
-        } else {
-            return ok(confirmballot.render(CastBallot.all(), confirmForm,
-            "**Could not locate a cast ballot with Ballot Identification Number (BID): " + bid + ". If the BID you entered is correctly displayed, please contact your local election office.**"));
-        }
+
+        /* Make sure the ballot is okay, then search for it, otherwise return an error page */
+        if (ballot != null) return ok(castballotfound.render(ballot, bid));
+        else                return ok(confirmballot.render(CastBallot.all(), confirmForm, errorCode));
     }
 
     /**
      * Verifies that the username and password entered at the admin login screen are correct
      *
-     * @return the admin page of the website
+     * @return      the admin page of the website
      */
-    public static Result adminverify(){
+    public static Result adminverify() {
+
+        /* Pull the page */
         final Map<String, String[]> values = request().body().asFormUrlEncoded();
-        final String usr = values.get("username")[0];
+
+        /* Get the username and password fields */
+        final String usr  = values.get("username")[0];
         final String pass = values.get("password")[0];
-        if(usr.equals(adminusrhash) && pass.equals(adminpasshash)){
+
+        /* Check the input hash against the credentials hashes -- if good, send to admin page */
+        if (usr.equals(adminusrhash) && pass.equals(adminpasshash)) {
             session("pass", pass);
             return ok(admin.render(null));
-        }else{
-            return ok(adminlogin.render("Username or Password is not correct"));
-        }
+        } /* If it's no good, return the error */
+        else return ok(adminlogin.render("Username or Password is not correct"));
     }
 
     /**
      * Serves the admin login screen.
+     *
+     * @return      the admin login screen
      */
     public static Result adminlogin(){
         return ok(adminlogin.render(null));
@@ -113,128 +130,139 @@ public class AuditServer extends Controller {
     /**
      * Verifies that the admin is currently logged in, then clears data from the ebean database.
      * Serves up admin page with success message if admin logged in, or error page if admin not logged in.
+     *
+     * @return      the admin page with success/error dependent on login success
      */
-    public static Result adminclear(){
-        if(session("pass")!=null&&session("pass").equals(adminpasshash)){
-            for(CastBallot cb: CastBallot.all()){
-                CastBallot.remove(cb);
-            }
-            for(ChallengedBallot cb: ChallengedBallot.all()){
-                ChallengedBallot.remove(cb);
-            }
+    public static Result adminclear() {
+
+        /* Check the password hash against the actual hash -- if good, clear data */
+        if (session("pass") != null && session("pass").equals(adminpasshash)) {
+
+            /* Destroy all the cast ballot / challenged ballot info from the database */
+            for (CastBallot cb: CastBallot.all())  CastBallot.remove(cb);
+            for (ChallengedBallot cb: ChallengedBallot.all()) ChallengedBallot.remove(cb);
+
+            /* Send to the data cleared page */
             return ok(admin.render("**Data has been cleared***"));
         }
-        else
-            return ok(badPage.render());
+        /* If not, send to error page */
+        else return ok(badPage.render());
     }
 
     /**
      * Page for requesting challenged ballot render
+     *
+     * @return      the challenged ballot page with rendered ballot
      */
-    public static Result challenge() {
-        return ok(challengeballot.render(ChallengedBallot.all(), challengeForm, null));
-    }
+    public static Result challenge() { return ok(challengeballot.render(ChallengedBallot.all(), challengeForm, null)); }
 
     /**
      * Retrieves challenged ballot database entry
      */
-    public static Result getChallengedBallot(String bid){
-//      db lookup
-        ChallengedBallot ballot = ChallengedBallot.getBallot(bid);
-        if (ballot == null) {
-            return ok(challengeballot.render(ChallengedBallot.all(), challengeForm,
-                    "**Could not locate a challenged ballot with Ballot Identification Number (BID): " + bid + ". If the BID you entered is correctly displayed, please contact your local election office.**"));
-        }
+    public static Result getChallengedBallot(String bid) {
 
+        String errorCode = "**Could not locate a challenged ballot with Ballot Identification Number (BID): " + bid +
+                           ". If the BID you entered is correctly displayed, please contact your local election office.**";
+
+        /*  Database lookup */
+        ChallengedBallot ballot = ChallengedBallot.getBallot(bid);
+
+        /* Check the ballot to make sure it's not bad -- if it is, send to error page */
+        if (ballot == null)
+            return ok(challengeballot.render(ChallengedBallot.all(), challengeForm, errorCode));
+
+        /* If good, send to the ballot found page */
         return ok(challengedballotfound.render(ballot, bid));
     }
 
     /**
      * Used to determine whether a ballot, given the ballot ID, is challenged or cast under the system
-     * @param bid ballot ID
+     *
+     * @param bid       ballot ID
+     * @return          the page based on the status of the ballot (whether the ballot is valid/cast/challenged)
      */
-    public static Result handleBallotState(String bid){
-        if(bid.equals("none")) return ok(index.render());
+    public static Result handleBallotState(String bid) {
 
-        if(CastBallot.getBallot(bid) != null){
-            return getCastBallot(bid);
-        } else if(ChallengedBallot.getBallot(bid) != null){
-            return getChallengedBallot(bid);
-        } else {
-            return ok(ballotnotfound.render(bid));
-        }
+        /* Send to the proper page based on what the ballot is */
+        return bid.equals("none")                       ?   ok(index.render())       :
+               CastBallot.getBallot(bid) != null        ?   getCastBallot(bid)       :
+               ChallengedBallot.getBallot(bid) != null  ?   getChallengedBallot(bid) : ok(ballotnotfound.render(bid));
     }
-
-    /*public static Result addToDB(String bid){
-        if(!bid.equals("none")){
-                ChallengedBallot cb = new ChallengedBallot(bid, "futurama547", "hash", "nounce");
-                ChallengedBallot.create(cb);
-        }
-        System.out.println(ChallengedBallot.find.all().size());
-        return ok(index.render());
-    }
-
-    public static Result getFromDB(String bid){
-        ChallengedBallot cb = ChallengedBallot.getBallot(bid);
-        System.out.println(cb);
-        return ok(index.render());
-    }
-
-    public static Result postAttempt(){
-        final Map<String, String[]> values = request().body().asFormUrlEncoded();
-        final String name = values.get("name")[0];
-        System.out.println(name);
-        return ok(index.render());
-    }*/
 
     /**
      * Socket handling for ballot end-of-election dump/upload from each voting station
      * Parses and stores new cast and challenged ballots
+     *
+     * @return
      */
     public static Result ballotDump() {
 
-        /* code for this method in handling a POST command are found at http://www.vogella.com/articles/ApacheHttpClient/article.html */
-
-        System.out.println("Connection SUCCESSFUL!");
+        /* Code for this method in handling a POST command are found at http://www.vogella.com/articles/ApacheHttpClient/article.html */
 
         final Map<String, String[]> values = request().body().asFormUrlEncoded();
         final String event = values.get("message")[0];
 
         StringTokenizer typeParser = new StringTokenizer(event, ":");
-//                      todo: add machine-unique keys/ids to prevent any source from dumping and/or for discarding ballots from unknown sources
-//                      todo: make the transfer less hodgepodge and create a protocol
-        String ballotType = typeParser.nextToken();
-        String ballotID = typeParser.nextToken();
-        String ballotPrecinct = typeParser.nextToken();
-        String params = typeParser.nextToken();
+
+        /*
+            todo: add machine-unique keys/ids to prevent any source from dumping and/or for discarding ballots from unknown sources
+            todo: make the transfer less hodgepodge and create a protocol
+        */
+
+        /* Separate ballot data into different fields */
+        String ballotType       = typeParser.nextToken();
+        String ballotID         = typeParser.nextToken();
+        String ballotPrecinct   = typeParser.nextToken();
+        String params           = typeParser.nextToken();
+
+        /* Set up a new parser for parameter parsing */
         StringTokenizer paramParser = new StringTokenizer(params, ";");
-//                        todo: check for duplicates?
-        if ("cast".equals(ballotType)) {
-            CastBallot.create(new CastBallot(ballotID, String.valueOf(paramParser.nextToken().hashCode())));
-        } else if ("chall".equals(ballotType)){
+
+        /* todo: check for duplicates? */
+
+        /* Check the ballot type -- if cast, create a new CastBallot with the info */
+        if ("cast".equals(ballotType)) CastBallot.create(new CastBallot(ballotID, String.valueOf(paramParser.nextToken().hashCode())));
+
+        /* If challenged... */
+        else if ("chall".equals(ballotType)) {
+
+            /* Create a new ChallengedBallot */
             ChallengedBallot cb = new ChallengedBallot(ballotID, ballotPrecinct, String.valueOf(paramParser.nextToken().hashCode()), paramParser.nextToken());
             ChallengedBallot.create(cb);
+
+            /* Set up a new WebPrinter for the race */
             WebPrinter printer = new WebPrinter(BallotLoader.getBallotFileByPrecinct(ballotPrecinct), BallotLoader.getRaceGroupByPrecinct(ballotPrecinct));
+
+            /* Create a new ListExpression from the decrypted ballot */
             ListExpression ballot = new ListExpression(ListExpression.make(cb.decryptedBallot));
+
+            /* TODO related to ChallengedBallotUploadEvent */
             ballot = (ListExpression)ballot.getArray()[0];
-            System.out.println("Decrypted Ballot" + cb.decryptedBallot);
+
+            /* TODO why is this committed ballot? */
+            /* Render the ballot */
             printer.printCommittedBallot(ballot, cb.ballotid);
         }
+
         return ok(index.render());
     }
 
     /**
-     * retrieves an html file (from a BID) from the internal storage of the web-server and serves file as content
+     * Retrieves an html file (from a BID) from the internal storage of the web-server and serves file as content
      *
-     * @param ballotid ballot ID
-     * @return content of an html file from a predetermined directory.
+     * @param ballotid      ballot ID
+     * @return              content of an html file from a predetermined directory.
      */
-    public static Result getBallotHtmlFile(String ballotid){
+    public static Result getBallotHtmlFile(String ballotid) {
+
         File file = new File("htmls/ChallengedBallot_" + ballotid + ".html");
         return ok(file);
     }
 
-    public static Result getAPI(){
-        return redirect("/assets/api/index.html");
-    }
+    /**
+     * Sends to the API page
+     *
+     * @return      the API page
+     */
+    public static Result getAPI() { return redirect("/assets/api/index.html"); }
 }

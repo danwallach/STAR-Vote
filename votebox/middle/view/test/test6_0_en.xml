@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?> 
-<Layout>	
+<!--suppress ALL -->
+<Layout>
 	<Page>
 		<Label x="100" y="101" uid="one">
 			<Property name="OnePropOne" type="String" value="property"></Property>

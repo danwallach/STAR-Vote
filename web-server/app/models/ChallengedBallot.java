@@ -14,6 +14,7 @@ import java.util.List;
 
 @Entity
 public class ChallengedBallot extends Model {
+
     public static final int BALLOTS_PER_PAGE = 100;
 
     /**
@@ -35,7 +36,16 @@ public class ChallengedBallot extends Model {
     public String decryptedBallot;
 
 
+    /**
+     * Constructor
+     *
+     * @param bid               the ballot identification number
+     * @param precinct          the precinct for the ballot
+     * @param hash              the hash for the ballot
+     * @param decryptedBallot   the decrypted version of the ballot
+     */
     public ChallengedBallot(String bid,String precinct, String hash, String decryptedBallot) {
+
         ballotid = bid;
         this.hash = hash;
         this.precinct = precinct;
@@ -52,12 +62,12 @@ public class ChallengedBallot extends Model {
     /**
      * Database lookup for a Challenged Ballot with the giver BID.
      *
-     * @param bid ballot ID
-     * @return the corresponding ballot or null if non-existent
+     * @param bid       ballot ID
+     * @return          the corresponding ballot or null if non-existent
      */
     public static ChallengedBallot getBallot(String bid) {
+
         ChallengedBallot ballot = find.where().ieq("ballotid", bid).findUnique();
-        System.out.println(ballot);
         return ballot;
     }
 
@@ -78,10 +88,7 @@ public class ChallengedBallot extends Model {
      * Store a Challenged Ballot into the database.
      * @param ballot ballot to be stored
      */
-    public static void create(ChallengedBallot ballot) {
-        System.out.println("Saved Ballot");
-        ballot.save();
-    }
+    public static void create(ChallengedBallot ballot) { ballot.save(); }
 
     /**
      * Remove a ballot from a database

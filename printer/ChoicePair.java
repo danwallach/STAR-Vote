@@ -15,17 +15,14 @@ public class ChoicePair {
 
     /* The ID of the image file. */
     private final String _label;
+
     /* Flag that indicates the selected status ('selected' or 'not selected') */
     private final Boolean _selected;
 
 
-    public ChoicePair (String label, Integer status)
-    {
+    public ChoicePair (String label, Integer status) {
         _label = label;
-        if (status.intValue() == 1)
-            _selected = true;
-        else
-            _selected = false;
+        _selected = (status == 1);
     }
 
     /* Getters */
@@ -33,10 +30,14 @@ public class ChoicePair {
     {
         return _label;
     }
-    public int getStatus()
-    {
-        if (_selected)
-            return 1;
+
+    /**
+     * Returns the status of the ChoicePair
+     *
+     * @return      1 if selected, 0 otherwise
+     */
+    public int getStatus() {
+        if (_selected)  return 1;
         return 0;
     }
 

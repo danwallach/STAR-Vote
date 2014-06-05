@@ -58,6 +58,7 @@ import printer.HTMLPrinter;
 /**
  * This class handles all print calls made by Voteboxes, Supervisors and any future additions that will need to print
  */
+@SuppressWarnings("WeakerAccess")
 public class Printer{
 
     protected final AuditoriumParams _constants;
@@ -68,7 +69,7 @@ public class Printer{
 
     public static int counter = 0;
 
-    public static int DPI_SCALE;
+    private static int DPI_SCALE;
 
     public Printer(File ballotFile, List<List<String>> races, String confFilePath){
         this(ballotFile, races, confFilePath, false);
@@ -100,20 +101,13 @@ public class Printer{
      * If a VVPAT is connected,
      *   print the voter's choices.
      *
-     * @param ballot - the choices to print, in the form ((race-id choice) ...)
-     * @return  - true if the print executed successfully
+     * @param ballot        the choices to print, in the form ((race-id choice) ...)
+     * @return              true if the print executed successfully, false otherwise
      */
-	public boolean printCommittedBallot(ListExpression ballot, String bid) {
-        System.out.println("Current Ballot: " + _currentBallotFile.getAbsolutePath());
+	@SuppressWarnings("StatementWithEmptyBody")
+    public boolean printCommittedBallot(ListExpression ballot, final String bid) {
+
 		final Map<String, Image> choiceToImage = BallotImageHelper.loadImagesForVVPAT(_currentBallotFile);
-        final Map<String, Image> raceTitles = BallotImageHelper.loadBallotTitles(_currentBallotFile);
-
-        final String fbid = bid;
-
-//        System.out.println("Number of races " + (choiceToImage).size());
-//        for(String i : choiceToImage.keySet()){
-//            System.out.println("Image title: " + i);
-//        }
 
         ArrayList<RaceTitlePair> actualRaceNameImagePairs = getRaceNameImagePairs(choiceToImage);
 
@@ -123,45 +117,24 @@ public class Printer{
 
 
         /* This for loop uses the corrected ballot, which accounts for No Selections. */
-        for(int i = 0; i < correctedBallot.size(); i++)
-        {
-            ChoicePair currentItem = correctedBallot.get(i);
-            if (currentItem.getStatus() == 1){
-                System.out.println(currentItem.getLabel());
+        for (ChoicePair currentItem : correctedBallot)
+            if (currentItem.getStatus() == 1)
                 choices.add(currentItem.getLabel());
-            }
-        }
-        /* Build an ArrayList of Race Titles. */
-        ArrayList<RaceTitlePair> raceTitlePairs = new ArrayList<RaceTitlePair>();
-        for (String raceTitleLabel:raceTitles.keySet())
-        {
-            raceTitlePairs.add(new RaceTitlePair(raceTitleLabel, raceTitles.get(raceTitleLabel)));
-        }
-
-
-		int totalSize = 0;
-		for(int i = 0; i < choices.size(); i++) {
-            String currentImageKey = choices.get(i);
-            Image img = choiceToImage.get(currentImageKey);
-
-			totalSize += img.getHeight(null);
-        }
-
-		final int fTotalSize = totalSize;
-        final ArrayList<RaceTitlePair> fActualRaceNamePairs = actualRaceNameImagePairs;
 
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         // This is where the HTML Printing occurs.
 
         String fileChar = System.getProperty("file.separator");
-        String cleanFilePath = _currentBallotFile.getAbsolutePath().substring(0, _currentBallotFile.getAbsolutePath().lastIndexOf(".")) + fileChar;
+        String ballotPath = _currentBallotFile.getAbsolutePath();
+        String cleanFilePath = ballotPath.substring(0, ballotPath.lastIndexOf(".")) + fileChar;
 
-        if(!test)
-            cleanFilePath = _currentBallotFile.getAbsolutePath().substring(0, _currentBallotFile.getAbsolutePath().lastIndexOf(fileChar) + 1);
-        System.out.println(cleanFilePath);
+        if(!test) cleanFilePath = ballotPath.substring(0, ballotPath.lastIndexOf(fileChar) + 1);
+
         // Print to an HTML file. Parameters to be used:
         String htmlFileName = cleanFilePath + "PrintableBallot.html";
+
+        /* TODO actually read in these from somewhere */
         Boolean useTwoColumns = true;
         Boolean printerFriendly = true;
 
@@ -171,7 +144,8 @@ public class Printer{
 
         //Generate a barcode of the bid
         //Do it here so we can use height of the barcode for laying out other components on the printout
-        BufferedImage barcode = PrintImageUtils.getBarcode(fbid);
+        BufferedImage barcode = PrintImageUtils.getBarcode(bid);
+
         try
         {
             BufferedImage lineSeparator = new BufferedImage(10,10,BufferedImage.TYPE_INT_ARGB);
@@ -183,32 +157,36 @@ public class Printer{
             ImageIO.write(barcode, "PNG", new File(barcodeFileNameNoExtension + ".png"));
             ImageIO.write(barcode, "PNG", new File(barcodeFileNameNoExtension + "_flipped.png"));
         }
-        catch (IOException e)
-        {
-            System.out.println("Could not write barcode image to a file.");
-        }
+        catch (IOException e) { System.err.println("Could not write barcode image to a file."); }
 
-        // HTML Printing: Each column is an ArrayList of Strings. Each image is represented by its file name.
+        /* HTML Printing: Each column is an ArrayList of Strings. Each image is represented by its file name. */
         ArrayList<ArrayList<String>> columnsToPrint = new ArrayList<ArrayList<String>>();
-        int counter = 0;
-        while (counter < choices.size())
-        {
-            ArrayList<String> currentColumn = new ArrayList<String>();
-            while ((currentColumn.size() < 46) && (counter < choices.size()))
-            {
-                String titleName = fActualRaceNamePairs.get(counter).getLabel();
-                String selectionName = choices.get(counter);
-                System.out.println("Selection: " + selectionName);
-                currentColumn.add(titleName + "_printable_en.png");
-                currentColumn.add(selectionName + "_printable_en.png");
-                counter++;
+        ArrayList<String> currentColumn = new ArrayList<String>();
+
+        int i = 0;
+
+        /* For each of the selections */
+        for (String selection : choices) {
+
+            /* Add selection to 46 size columns */
+            String title = actualRaceNameImagePairs.get(i).getLabel();
+            currentColumn.add(title + "_printable_en.png");
+            currentColumn.add(selection + "_printable_en.png");
+            i++;
+
+            /* Add each column to columnsToPrint */
+            if (i % 46 == 0) {
+
+                columnsToPrint.add(currentColumn);
+                currentColumn = new ArrayList<String>();
+
+                /* TODO this is for two columns stopping */
+                if (i==92) break;
             }
-            columnsToPrint.add(currentColumn);
         }
 
-        System.out.println("HTML file: " + htmlFileName);
         // Generate the HTML file with the properties set above.
-        HTMLPrinter.generateHTMLFile(htmlFileName, useTwoColumns, printerFriendly, pathToVVPATFolder, _constants, fbid, barcodeFileNameNoExtension, lineSeparatorFileName, columnsToPrint);
+        HTMLPrinter.generateHTMLFile(htmlFileName, useTwoColumns, printerFriendly, pathToVVPATFolder, _constants, bid, barcodeFileNameNoExtension, lineSeparatorFileName, columnsToPrint);
 
         // Get the file that is to be read for commands and its parameter separator string.
         String filename = _printerConstants.getCommandsFileFilename();
@@ -218,195 +196,130 @@ public class Printer{
         File file = new File (filename);
 
         // If the file does not exist, then print error.
-        if (!file.exists())
-        {
-            System.err.println("The specified file could not be found: " + filename);
-        }
+        if (!file.exists()) System.err.println("The specified file could not be found: " + filename);
 
         // Create holders for the two commands.
         String convertHTMLtoPDFCommandLine = "";
         String printPDFCommandLine = "";
 
         // Create the reader.
-        BufferedReader reader = null;
-        try
-        {
+        BufferedReader reader;
+
+        try {
             reader = new BufferedReader(new FileReader(file.getAbsoluteFile()));
             convertHTMLtoPDFCommandLine = reader.readLine();
             printPDFCommandLine = reader.readLine();
             reader.close();
             System.out.println(convertHTMLtoPDFCommandLine);
         }
-        catch (IOException e)
-        {
-            System.out.println("Unable to read from file " + filename);
-            e.printStackTrace();
-        }
+        catch (IOException e) { System.err.println("Unable to read from file " + filename); e.printStackTrace(); }
 
         // Get the OS.
         String currentOS = _constants.getOS();
 
-        if (currentOS.equals("Windows"))
-        {
+        if (currentOS.equals("Windows")) {
+
             // Create arrays of the command and its parameters (to use with the exec method in JDK 7+
             String[] convertHTMLtoPDFCommandArray = convertHTMLtoPDFCommandLine.split(fileSeparator);
             String[] printPDFCommandArray = printPDFCommandLine.split(fileSeparator);
 
             // Attempt to convert HTML to PDF.
-            try
-            {
-                Runtime.getRuntime().exec(convertHTMLtoPDFCommandArray);
-            }
-            catch (IOException e)
-            {
-                System.err.println("Converting HTML to PDF failed.");
-                e.printStackTrace();
-            }
+            try { Runtime.getRuntime().exec(convertHTMLtoPDFCommandArray); }
+            catch (IOException e) { System.err.println("Converting HTML to PDF failed."); e.printStackTrace(); }
 
             // Need to make the thread wait for the PDF to get created.
             long start = System.currentTimeMillis();
             while (System.currentTimeMillis() - start < 1000);
 
             // Attempt to print PDF.
-            try
-            {
-                Runtime.getRuntime().exec(printPDFCommandArray);
-            }
-            catch (IOException e)
-            {
-                System.err.println("Printing PDF failed.");
-                e.printStackTrace();
-            }
+            try { Runtime.getRuntime().exec(printPDFCommandArray); }
+            catch (IOException e) { System.err.println("Printing PDF failed."); e.printStackTrace(); }
         }
-        else
-        {
-            if (currentOS.equals("Linux"))
-            {
-                // Create a ProcessBuilder.
-                ProcessBuilder pb;
+        else {
+
+            if (currentOS.equals("Linux")) {
 
                 // Attempt to convert HTML to PDF.
-                try
-                {
-//                    pb = new ProcessBuilder("bash", "-c", convertHTMLtoPDFCommandLine);
+                try {
                     Prince prince = new Prince("/usr/local/bin/prince");
                     System.out.println("Location: " + System.getProperty("user.dir") + "/ballot_printout.pdf");
                     prince.convert(htmlFileName, System.getProperty("user.dir") + "/ballot_printout.pdf");
-//                    pb.start();
                 }
-                catch (IOException e)
-                {
-                    System.err.println("Converting HTML to PDF failed.");
-                    e.printStackTrace();
-                }
+                catch (IOException e) { System.err.println("Converting HTML to PDF failed."); e.printStackTrace(); }
 
                 // Need to make the thread wait for the PDF to get created.
                 long start = System.currentTimeMillis();
-                while (System.currentTimeMillis() - start < 1000);
+                while (System.currentTimeMillis() - start < 1000) ;
 
-                // Attempt to print PDF.
-//                try
-//                {
-//                    pb = new ProcessBuilder("bash", "-c", printPDFCommandLine);
-//                    pb.start();
-//                }
-//                catch (IOException e)
-//                {
-//                    System.err.println("Printing PDF failed.");
-//                    e.printStackTrace();
-//                }
             }
         }
-
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-//
-//		Printable printedBallot = new Printable(){
-//
-//			public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
-//
-//                int numPages = fTotalSize / (int)pageFormat.getImageableHeight();
-//				if(fTotalSize % (int)pageFormat.getImageableHeight() != 0)
-//					numPages++;
-//
-//				if(pageIndex >= numPages)
-//					return Printable.NO_SUCH_PAGE;
-//
-//				return Printable.PAGE_EXISTS;
-//
-//			}
-//
-//		};
-//
-//		return printOnVVPAT(printedBallot);
-
         return true;
 	}
 
     protected ArrayList<RaceTitlePair> getRaceNameImagePairs(Map<String, Image> imageMap) {
+
         // This ArrayList holds all the numeric IDs that correspond to race labels.
         // If a race label's image has UID L50, then this ArrayList will hold 50 to represent that race label.
         ArrayList<Integer> raceNumericIDs = new ArrayList<Integer> ();
+
         for (String UID:imageMap.keySet())
-        {
             if (UID.contains("L"))
-            {
                 raceNumericIDs.add(new Integer(UID.substring(1)));
-            }
-        }
+
         ArrayList<RaceTitlePair> sortedRaceNameImagePairs = new ArrayList<RaceTitlePair> ();
-        Integer[] sortedRaceNumIDArray = raceNumericIDs.toArray(new Integer[0]);
+        Integer[] sortedRaceNumIDArray = raceNumericIDs.toArray(new Integer[raceNumericIDs.size()]);
         Arrays.sort(sortedRaceNumIDArray);
 
-        for (Integer ID:sortedRaceNumIDArray)
-        {
+        for (Integer ID:sortedRaceNumIDArray) {
             String currentKey = "L" + ID.toString();
             sortedRaceNameImagePairs.add(new RaceTitlePair(currentKey, imageMap.get(currentKey)));
         }
+
         return sortedRaceNameImagePairs;
     }
 
     protected ArrayList<ChoicePair> correctBallot(ListExpression rawBallot) {
+
         // List of races is called: _races
         ArrayList<ChoicePair> updatedBallot = new ArrayList<ChoicePair>();
-        for (int raceIdx = 0; raceIdx < _races.size(); raceIdx++)
-        {
-            List<String> currentRace = _races.get(raceIdx);
+
+        for (List<String> currentRace : _races) {
+
             Boolean existingSelectedOption = false;
 
-            for (int labelIdx = 0; labelIdx < currentRace.size(); labelIdx++)
-            {
-                String currentLabel = currentRace.get(labelIdx);
-                for (int choiceIdx = 0; choiceIdx < rawBallot.size(); choiceIdx++)
-                {
-                    ListExpression currentChoice = (ListExpression)rawBallot.get(choiceIdx);
-                    if (currentChoice.get(0).toString().equals(currentLabel))
-                    {
+            for (String currentLabel : currentRace) {
+
+                for (int choiceIdx = 0; choiceIdx < rawBallot.size(); choiceIdx++) {
+
+                    ListExpression currentChoice = (ListExpression) rawBallot.get(choiceIdx);
+
+                    if (currentChoice.get(0).toString().equals(currentLabel)) {
+
                         System.out.println(">>>>>>>>>>>" + currentChoice.get(1).toString());
-                        if (currentChoice.get(1).toString().equals("1"))
-                        {
+
+                        if (currentChoice.get(1).toString().equals("1")) {
                             // THIS option was selected.
                             existingSelectedOption = true;
-                            updatedBallot.add(new ChoicePair(currentLabel,new Integer(1)));
+                            updatedBallot.add(new ChoicePair(currentLabel, 1));
                             break;
                         }
-                        else if (currentChoice.get(1).toString().equals("0")) // The if statement checks for consistency, but is not required.
-                        {
-                            updatedBallot.add(new ChoicePair(currentLabel,new Integer(0)));
+
+                        // The if statement checks for consistency, but is not required.
+                        else if (currentChoice.get(1).toString().equals("0")) {
+                            updatedBallot.add(new ChoicePair(currentLabel, 0));
                             break;
                         }
-                        else //We have a write in...
-                        {
-                            if(currentChoice.get(1).toString().charAt(0) == '1'){
+
+                        //We have a write in...
+                        else {
+                            if (currentChoice.get(1).toString().charAt(0) == '1') {
                                 // THIS option was selected.
                                 existingSelectedOption = true;
-                                updatedBallot.add(new ChoicePair(currentLabel,new Integer(1)));
+                                updatedBallot.add(new ChoicePair(currentLabel, 1));
                                 break;
-                            }else{
-                                updatedBallot.add(new ChoicePair(currentLabel,new Integer(0)));
+                            }
+                            else {
+                                updatedBallot.add(new ChoicePair(currentLabel, 0));
                                 break;
                             }
                         }
@@ -415,30 +328,24 @@ public class Printer{
             }
 
             // If there is a valid option selected, do nothing. Otherwise, add the "No Selection" option and select that one.
-            if (!existingSelectedOption)
-            {
-                updatedBallot.add(new ChoicePair(currentRace.get(0),new Integer(1)));
+            if (!existingSelectedOption) {
+                updatedBallot.add(new ChoicePair(currentRace.get(0), 1));
             }
         }
 
-        // Print the updated ballot (for consistency checking).
-        /*for (int i = 0; i < updatedBallot.size(); i++)
-        {
-            ChoicePair currentItem = updatedBallot.get(i);
-        }*/
         return updatedBallot;
     }
 
     public void printedReceipt(String bID){
 
-        //TODO is this supposed to be a hash?
+        /*TODO is this supposed to be a hash? */
         final String bid = bID;
         Printable printedReceipt = new Printable(){
 
             public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
+
                 //print is called by Java until NO_SUCH_PAGE is returned
-                if(pageIndex>0)
-                    return Printable.NO_SUCH_PAGE;
+                if(pageIndex>0) return Printable.NO_SUCH_PAGE;
 
 
                 int pageWidth = _constants.getPaperWidthForVVPAT();
@@ -449,34 +356,50 @@ public class Printer{
                 int xBound = _constants.getPrintableHeightForVVPAT()-111;
 
                 int y = 250;
+
                 graphics.setFont(new Font("Arial", 0, 16));
                 printCenteredText("Thank you for voting!", xBound, y, graphics);
+
                 y+=30;
+
                 graphics.setFont(new Font("Arial", 0, 12));
                 printCenteredText("District: "+ AuditoriumParams.ELECTION_NAME, xBound, y, graphics);
+
                 y+=20;
+
                 DateFormat dateFormat = new SimpleDateFormat("MMMM d, y");
                 Date date = new Date();
                 printCenteredText("Date: "+ dateFormat.format(date), xBound, y, graphics);
+
                 y+=30;
+
                 printCenteredText("Your ballot is currently printing", xBound, y, graphics);
+
                 y+=20;
+
                 printCenteredText("If you wish to cast your ballot, scan it in the scanner at this voting location", xBound, y, graphics);
+
                 y+=20;
+
                 printCenteredText("If you wish to challenge your ballot, take it home and scan the QRCode below", xBound, y, graphics);
+
                 y+=20;
+
                 String domain = "starvote.cs.rice.edu";
                 String URL = "http://"+domain+"/ballot?ballotid="+bid;
-                QRCodeGenerator qGen = new QRCodeGenerator();
-                BufferedImage i = qGen.getImage(URL);
+                BufferedImage i = QRCodeGenerator.getImage(URL);
+
                 int imgStartX = xBound/2-i.getWidth()/2;
+
                 graphics.drawImage(i,imgStartX,y,null);
+
                 y+=i.getHeight()+20;
 
                 printCenteredText("To see your vote, please visit: "+URL , xBound, y, graphics);
-                y+=20;
-                printCenteredText("Or you may go to "+domain+"/challenge and enter your ballot id: "+ bid, xBound, y, graphics);
 
+                y+=20;
+
+                printCenteredText("Or you may go to " + domain + "/challenge and enter your ballot id: "+ bid, xBound, y, graphics);
 
                 return Printable.PAGE_EXISTS;
             }
@@ -486,38 +409,37 @@ public class Printer{
         printOnVVPAT(printedReceipt);
     }
 
-    private void printCenteredText(String s, int xBound, int y, Graphics g){
+    private void printCenteredText(String s, int xBound, int y, Graphics g) {
+
         FontMetrics fm = g.getFontMetrics();
         Rectangle2D rect = fm.getStringBounds(s, g);
         int sLength = (int) rect.getWidth();
-        if(sLength>fm.getStringBounds(s,g).getWidth()){
+
+        if (sLength>fm.getStringBounds(s,g).getWidth()) {
             printCenteredText(s.substring(0, sLength-1), xBound, y, g);
             printCenteredText(s.substring(sLength, s.length()), xBound, (int) (y+rect.getHeight()+5), g);
         }
-        else{
+        else {
             int sXStart = xBound/2 - sLength/2;
             g.drawString(s, sXStart, y);
         }
     }
 
     //this class prints the pin for the user given measurements for a POS terminal printer
-    public void printPin(String userPin){
+    public void printPin(String userPin) {
 
         final String pin = userPin;
         Printable printedPin = new Printable(){
 
             public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
+
                 //print is called by Java until NO_SUCH_PAGE is returned
-                if(pageIndex>0)
-                    return Printable.NO_SUCH_PAGE;
+                if(pageIndex>0) return Printable.NO_SUCH_PAGE;
 
                 Image stateSeal = null;
-                try {
-                    stateSeal = ImageIO.read(new File("images//images//seal_tx.png"));
-                } catch (IOException e) {
-                    System.out.print("Could not find TX state seal image");
-                    e.printStackTrace();
-                }
+                try { stateSeal = ImageIO.read(new File("images//images//seal_tx.png")); }
+                catch (IOException e) { System.out.print("Could not find TX state seal image"); e.printStackTrace(); }
+
                 //numbers are measurements for standard font
                 int pageWidth = _constants.getPaperWidthForVVPAT();
                 int pageHeight = _constants.getPaperHeightForVVPAT();
@@ -544,23 +466,28 @@ public class Printer{
 
     /**
      * Prints onto the attached VVPAT printer, if possible.
-     * @param toPrint - the Printable to print.
+     *
+     * @param toPrint       the Printable to print.
      */
 	public boolean printOnVVPAT(Printable toPrint){
+
 		//VVPAT not ready
-		if(_constants.getPrinterForVVPAT().equals("")) return false;
+		if (_constants.getPrinterForVVPAT().equals("")) return false;
 
 		PrintService[] printers = PrinterJob.lookupPrintServices();
 
 		PrintService vvpat = null;
 
-		for(PrintService printer : printers){
+		for (PrintService printer : printers) {
+
 			PrinterName name = printer.getAttribute(PrinterName.class);
-			if(name.getValue().equals(_constants.getPrinterForVVPAT())){
+
+			if(name.getValue().equals(_constants.getPrinterForVVPAT())) {
 				vvpat = printer;
 				break;
-			}//if
-		}//for
+			}
+		}
+
         if(vvpat == null) System.out.println("No available printers");
         else System.out.println("Printing on " + vvpat.getName());
 
@@ -568,7 +495,6 @@ public class Printer{
 			Bugout.msg("VVPAT is configured, but not detected as ready.");
 			return false;
 		}
-
 
 		PrinterJob job = PrinterJob.getPrinterJob();
 
@@ -578,15 +504,10 @@ public class Printer{
         aset.add(pr);
         aset.add(PrintQuality.HIGH);
 
-
-
-
 		try {
 
             PageFormat pf = job.getPageFormat(aset);
             Paper paper = pf.getPaper();
-
-
 
             job.setPrintService(vvpat) ;
 
@@ -598,23 +519,16 @@ public class Printer{
             int leftInset = (_constants.getPaperWidthForVVPAT() - _constants.getPrintableWidthForVVPAT()) / 2;
             int topInset = (_constants.getPaperHeightForVVPAT() - _constants.getPrintableHeightForVVPAT()) / 2;
 
-
             paper.setImageableArea(leftInset, topInset, imageableWidth, imageableHeight);
 
             pf.setPaper(paper);
 
             job.setPrintable(toPrint, pf);
 
-
             job.print();
-
-		} catch (PrinterException e) {
-			Bugout.err("VVPAT printing failed: "+e.getMessage());
-			return false;
 		}
+        catch (PrinterException e) { Bugout.err("VVPAT printing failed: " + e.getMessage()); return false; }
 
         return true;
-
-
 	}
 }
