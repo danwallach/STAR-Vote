@@ -41,24 +41,25 @@ public class ElGamalCrypto {
 
     public static final ElGamalCrypto SINGLETON = new ElGamalCrypto();
 
-    // this generator and modulus were generated through Modulus.main() and
-    // consumed 7 minutes of CPU on a 2GHz Core 2 Duo iMac. random member
-    // (derived from mod/2) - this will be used to get the additive property out
-    // of doing multiplication.
+    /* this generator and modulus were generated through Modulus.main() and
+    consumed 7 minutes of CPU on a 2GHz Core 2 Duo iMac. random member
+    (derived from mod/2) - this will be used to get the additive property out
+    of doing multiplication.*/
+
     private static final String GENERATOR_STRING = "2016433053757341104328548369260225448420178492488839339195079012913740203550581367917603578255836416301659447919134003412324535550203014660828445101581073366209571738168074363709988319601925328131931318253630428729995428849722161812181697865734851328186930582450521842890975960480674438455535966317209024008129126238043911181175493403751902643934946891633427176473184689859908734305925529262343808427749985844869145540026953651663690952752846237422048321944844544";
     private static final String MOD_STRING = "4008068760601560176181090811191269958616134140815365887701703622467302386397406595276102404102599183050725940409230956564362213996772507892182603738589047156399535390756432494533344022585855134419330844861393164590002967760368498512584631894520092843017130932721913480603013976030676448835771942383177369284649842316969774775111437516174141766494812679525434402192524629913006391105583246025610804250839276542776846098833535690824388875515507421677606470210284503";
     private static final String MEMBER_STRING = "2004034380300780088090545405595634979308067070407682943850851811233651193198703297638051202051299591525362970204615478282181106998386253946091301869294523578199767695378216247266672011292927567209665422430696582295001483880184249256292315947260046421508565466360956740301506988015338224417885971191588684642324921158484887387555718758087070883247406339762717201096262314956503195552791623012805402125419638271388423049416767845412194437757753710838803235105142251";
     private static final int NUM_PRIME_BITS = 1536;
     private static final int PRIME_CONFIDENCE = 80;
 
-    // These annotations will go in generated public and private ElGamal keys.
+    /* These annotations will go in generated public and private ElGamal keys.*/
     private static final String PRIVATE_ANNOTATION = "ElGamalPrivate";
     private static final String PUBLIC_ANNOTATION = "ElGamalPublic";
 
-    // Pre[-compute this many values for the member table (0 for now..)
+    /* Pre[-compute this many values for the member table (0 for now..)*/
     private static final int TABLE_SIZE = 0;
 
-    // Member fields
+    /* Member fields*/
     private final Modulus _modulusCls;
     private final BigInteger _mod;
     private final BigInteger _gen;
@@ -166,7 +167,6 @@ public class ElGamalCrypto {
                     return blcv;
             }
     }
-
     /**
      * @return This method returns the most recent randomness used by the
      *         encrypt method.
