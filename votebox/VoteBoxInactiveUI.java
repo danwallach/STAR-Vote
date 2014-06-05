@@ -55,6 +55,7 @@ public class VoteBoxInactiveUI extends JFrame implements IVoteBoxInactiveUI {
      * @param vb the votebox booth
      */
     public VoteBoxInactiveUI(VoteBox vb) {
+
         super("VoteBox");
         setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
         setLayout(new GridBagLayout());
@@ -93,6 +94,7 @@ public class VoteBoxInactiveUI extends JFrame implements IVoteBoxInactiveUI {
      * If no label, label become "-". Otherwise, it becomes the VoteBox's label
      */
     private void updateLabel() {
+
         if (votebox.getLabel()==0)
             numLbl.setText("-");
         else
