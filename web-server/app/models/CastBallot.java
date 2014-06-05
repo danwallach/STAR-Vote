@@ -13,7 +13,9 @@ import javax.persistence.*;
  */
 @Entity
 public class CastBallot extends Model {
+
     public static final int BALLOTS_PER_PAGE = 100;
+
     @Id
     public Long id;
 
@@ -44,21 +46,23 @@ public class CastBallot extends Model {
     /**
      * A database lookup for a Cast Ballot by Ballot ID.
      *
-     * @param bid the ballot ID
-     * @return the matching Cast Ballot or null if not found
+     * @param bid       the ballot ID
+     * @return          the matching Cast Ballot or null if not found
      */
     public static CastBallot getBallot(String bid){
         return find.where().ieq("ballotid", bid).findUnique();
     }
 
-//        todo: implement for paginated viewing
-//    public static List<CastBallot> getBallotList(int pageNum) {
-//        return null;
-//    }
-
+/*
+    todo: implement for paginated viewing
+    public static List<CastBallot> getBallotList(int pageNum) {
+        return null;
+    }
+*/
     /**
      * Saves a ballot into the ebean database
-     * @param ballot ballot to be saved
+     *
+     * @param ballot        ballot to be saved
      */
     public static void create(CastBallot ballot) {
         ballot.save();
@@ -66,7 +70,8 @@ public class CastBallot extends Model {
 
     /**
      * removes a Ballot from the database
-     * @param ballot ballot to be removed
+     *
+     * @param ballot        ballot to be removed
      */
     public static void remove(CastBallot ballot){
         ballot.delete();
