@@ -94,9 +94,9 @@ public class Modulus {
         this.generator = new BigInteger(generator);
         this.modulus = new BigInteger(modulus);
 
-        // generator should be smaller than modulus
+        /* generator should be smaller than modulus */
         assert this.generator.compareTo(this.modulus) < 0;
-        // modulus should be prime!
+        /* modulus should be prime!*/
         assert this.modulus.isProbablePrime(this.primeConfidence);
     }
 
@@ -138,7 +138,8 @@ public class Modulus {
     /**
      * returns a random integer less than the modulus
      * 
-     * @return
+     * @return random value less than the modulus
+     *
      */
     public BigInteger getRandomValue() {
         BigInteger returnVal;
@@ -155,6 +156,10 @@ public class Modulus {
         }
     }
 
+    /**
+     * Converts the generator and the modulus to strings.
+     * @return
+     */
     public String toString() {
         return "NumPrimeBits: " + numPrimeBits + "\nPrimeConfidence: "
                 + primeConfidence + "\nGenerator: " + generator.toString()
