@@ -23,53 +23,68 @@ import com.google.zxing.common.*;
 public class QRCodeGenerator {
 
     private byte[] b;
-    public static BitMatrix getCode(String toEncode){
 
+    /**
+     * Encodes the given String as barcode data
+     *
+     * @param toEncode      the String to encode as a barcode
+     * @return              the encoded String as a BitMatrix
+     */
+    public static BitMatrix getCode(String toEncode) {
+
+        /* Set the encoding */
         Charset charset = Charset.forName("UTF-8");
         CharsetEncoder encoder = charset.newEncoder();
+
+        /* Create a byte array*/
         byte[] b = null;
+
+        /* Try to use a ByteBuffer to convert the String to UTF-8 bytes */
         try {
-            // Convert a string to UTF-8 bytes in a ByteBuffer
             ByteBuffer bbuf = encoder.encode(CharBuffer.wrap(toEncode));
             b = bbuf.array();
-        } catch (CharacterCodingException e) {
-            System.out.println(e.getMessage());
         }
+        catch (CharacterCodingException e) { e.printStackTrace(); }
 
         String data;
         BitMatrix matrix = null;
+
+        /* Set up the preferred height and width of the barcode */
         int h = 150;
         int w = 150;
+
+        /* Try to create a new String of the data encoded in UTF-8*/
         try {
+
             data = new String(b, "UTF-8");
-            // get a byte matrix for the data
 
             com.google.zxing.Writer writer = new MultiFormatWriter();
+
+            /* Set up the encoder with the character set */
             try {
                 Hashtable<EncodeHintType, String> hints = new Hashtable<EncodeHintType, String>(2);
                 hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
-                matrix = writer.encode(data,
-                        com.google.zxing.BarcodeFormat.QR_CODE, w, h, hints);
-            } catch (com.google.zxing.WriterException e) {
-                System.out.println(e.getMessage());
+
+                /* Write the matrix using the encoder*/
+                matrix = writer.encode(data, com.google.zxing.BarcodeFormat.QR_CODE, w, h, hints);
             }
+            catch (com.google.zxing.WriterException e) { e.printStackTrace(); }
 
-            // change this path to match yours (this is my mac home folder, you can use: c:\\qr_png.png if you are on windows)
-            //String filePath = "C:/Users/Matt/workspace/starvote/QROut";
-            //File file = new File(filePath);
-
-        } catch (UnsupportedEncodingException e) {
-            System.out.println(e.getMessage());
         }
+        catch (UnsupportedEncodingException e) { e.printStackTrace(); }
 
         return matrix;
     }
 
-    public static BufferedImage getImage(String toEncode){
+    /**
+     * Converts a String to a barcode image
+     *
+     * @param toEncode      the String to encode as a barcode
+     * @return              the encoded String as a barcode image
+     */
+    public static BufferedImage getImage(String toEncode) {
         BitMatrix matrix = getCode(toEncode);
         return MatrixToImageWriter.toBufferedImage(matrix);
-
-
     }
 
 }

@@ -15,12 +15,17 @@ public class RaceTitlePair {
 
     /* The ID of the image file. */
     private final String _label;
+
     /* Image that corresponds to the label above. */
     private final Image _image;
 
-
-    public RaceTitlePair (String label, Image image)
-    {
+    /**
+     * Constructor
+     *
+     * @param label     the label for the race title
+     * @param image     the image for the race title
+     */
+    public RaceTitlePair (String label, Image image) {
         _label = label;
         _image = image;
     }
