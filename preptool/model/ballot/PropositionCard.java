@@ -23,12 +23,8 @@
 package preptool.model.ballot;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
 import preptool.model.XMLTools;
 import preptool.model.ballot.module.PropositionModule;
 import preptool.model.ballot.module.TextAreaModule;
@@ -38,6 +34,9 @@ import preptool.model.language.LiteralStrings;
 import preptool.model.layout.manager.ALayoutManager;
 import preptool.model.layout.manager.ALayoutManager.ICardLayout;
 import votebox.middle.Properties;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * PropositionCard is the implementation of an ACard that constitutes a
@@ -68,13 +67,13 @@ public class PropositionCard extends ACard {
         super("Proposition");
         modules.add(new TextFieldModule("Title", "Title"));
         modules.add(new TextAreaModule("Description", "Description"));
-        modules.add(new PropositionModule("YesNoOpts"));
+        modules.add(new PropositionModule("PropOpts"));
     }
 
     @Override
     public void assignUIDsToBallot(ALayoutManager manager) {
         setUID(manager.getNextBallotUID());
-        PropositionModule optionsModule = (PropositionModule) getModuleByName("YesNoOpts");
+        PropositionModule optionsModule = (PropositionModule) getModuleByName("PropOpts");
         for (CardElement ce : optionsModule.getData()) {
             ce.setUID(manager.getNextBallotUID());
         }
@@ -96,7 +95,7 @@ public class PropositionCard extends ACard {
         Language lang = manager.getLanguage();
         TextFieldModule titleModule = (TextFieldModule) getModuleByName("Title");
         TextAreaModule descriptionModule = (TextAreaModule) getModuleByName("Description");
-        PropositionModule optionsModule = (PropositionModule) getModuleByName("YesNoOpts");
+        PropositionModule optionsModule = (PropositionModule) getModuleByName("PropOpts");
 
         cardLayout.setTitle(titleModule.getData(lang));
         cardLayout.setDescription(descriptionModule.getData(lang));
@@ -120,7 +119,7 @@ public class PropositionCard extends ACard {
         boolean first = true;
         int id = -200;
     	
-        PropositionModule optionsModule = (PropositionModule) getModuleByName("YesNoOpts");
+        PropositionModule optionsModule = (PropositionModule) getModuleByName("PropOpts");
         for (CardElement ce : optionsModule.getData()) {
             if(first)    {
                 first = false;

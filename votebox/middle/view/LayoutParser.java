@@ -22,12 +22,14 @@
 
 package votebox.middle.view;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
+import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+import votebox.AuditoriumParams;
+import votebox.middle.*;
+import votebox.middle.view.widget.*;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -39,16 +41,12 @@ import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.SchemaFactory;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-
-import votebox.AuditoriumParams;
-import votebox.middle.*;
-import votebox.middle.view.widget.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
 
 
 /**
@@ -150,6 +148,7 @@ public class LayoutParser {
         catch (SAXException e) { throw new LayoutParserException("Could not validate the XML against the schema.", e); }
         catch (IOException e)  { throw new LayoutParserException("Internal Error. The schema against which the XML is validated could not be loaded.", e); }
 
+        System.out.println("In getLayout: " + document + " | " + document.getElementsByTagName("Layout") + " | " + document.getElementsByTagName("Layout").item(0));
         /* Translate dom tree -> Layout object. */
         return parseLayout(document.getElementsByTagName("Layout").item(0), view);
     }
@@ -163,6 +162,7 @@ public class LayoutParser {
      */
     private Layout parseLayout(Node node, IView view) throws LayoutParserException {
 
+        System.out.println("In parseLayout: " + node);
         NodeList children           = node.getChildNodes();
         ArrayList<RenderPage> pages = new ArrayList<RenderPage>();
         Properties properties       = new Properties();
@@ -202,6 +202,8 @@ public class LayoutParser {
      * @return          the RenderPage object that represents the given dom page.
      */
     private RenderPage parsePage(Node node, IView view) throws LayoutParserException {
+
+        System.out.println("In parsePage: " + node);
 
         NodeList children = node.getChildNodes();
         ArrayList<IDrawable> drawables = new ArrayList<IDrawable>();

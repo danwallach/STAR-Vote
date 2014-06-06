@@ -22,18 +22,17 @@
 
 package votebox.middle.datacollection;
 
-import java.io.*;
-import java.util.Arrays;
-import java.util.Observable;
-import java.util.Observer;
-
 import auditorium.IAuditoriumParams;
 import auditorium.IKeyStore;
-
 import printer.Printer;
 import sexpression.ListExpression;
 import votebox.middle.driver.Driver;
 import votebox.middle.view.AWTViewFactory;
+
+import java.io.*;
+import java.util.Arrays;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  * This is a launcher for the vote system. Use this launcher in order to do
@@ -87,6 +86,7 @@ public class Launcher {
             dest.delete();
             baldir.delete();
             baldir.mkdirs();
+            dest.mkdirs();
 
             /* Unzip the ballot to the ballot directory */
             Driver.unzip(ballotLocation, baldir.getAbsolutePath());
