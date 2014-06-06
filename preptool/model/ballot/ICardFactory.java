@@ -24,18 +24,18 @@ package preptool.model.ballot;
 
 /**
  * Factory interface for creating ACards.
+ *
  * @author Corey Shaw
  */
 public interface ICardFactory {
 
 	/**
-	 * Makes a new card
-	 * @return the card
+	 * @return Makes a new card
 	 */
 	public ACard makeCard();
 
 	/**
-	 * Returns the String to display in the view's add card menu.
+	 * @return the String to display in the view's add card menu.
 	 */
 	public String getMenuString();
 
