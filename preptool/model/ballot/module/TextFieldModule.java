@@ -22,36 +22,28 @@
 
 package preptool.model.ballot.module;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.util.HashMap;
-
-import javax.swing.JLabel;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-
 import preptool.model.XMLTools;
 import preptool.model.language.Language;
 import preptool.model.language.LocalizedString;
 import preptool.view.AModuleView;
 import preptool.view.View;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.util.HashMap;
+
 
 /**
  * A TextFieldModule is a module that contains some localized text on a card.
- * The view for this module is a one-line text field.
+ * The view for this module is a one-line text field. This is where candidate and
+ * party names, as well as race and proposition titles, will be entered
  * 
  * @author Corey Shaw
  */
@@ -64,11 +56,9 @@ public class TextFieldModule extends AModule {
      */
     private class ModuleView extends AModuleView {
 
-        private static final long serialVersionUID = 1L;
+        /** The actual text field where user-input is taken in */
         private JTextField field;
-        private Language primaryLanguage;
-        private Language language;
-        private JMenuItem copyFromItem;
+
 
         /**
          * Constructs this module's view
@@ -93,20 +83,20 @@ public class TextFieldModule extends AModule {
                     SwingUtilities.invokeLater( new Runnable() {
                         public void run() {
                             field.validate();
-                            setData( language, field.getText() );
+                            setData( getLanguage(), field.getText() );
                         }
                     } );
                 }
             } );
             JPopupMenu contextMenu = new JPopupMenu();
-            copyFromItem = new JMenuItem();
-            copyFromItem.addActionListener( new ActionListener() {
+            setCopyFromItem(new JMenuItem());
+            getCopyFromItem().addActionListener( new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    setData( language, getData( primaryLanguage ) );
-                    field.setText( getData( language ) );
+                    setData( getLanguage(), getData( getPrimaryLanguage() ) );
+                    field.setText( getData( getLanguage() ) );
                 }
             } );
-            contextMenu.add( copyFromItem );
+            contextMenu.add( getCopyFromItem() );
             field.setComponentPopupMenu( contextMenu );
             c.gridx = 1;
             c.weightx = 1;
@@ -118,7 +108,7 @@ public class TextFieldModule extends AModule {
          * Updates the language to the new selected language
          */
         public void languageSelected(Language lang) {
-            language = lang;
+            setLanguage(lang);
             field.setText( getData( lang ) );
         }
 
@@ -133,8 +123,8 @@ public class TextFieldModule extends AModule {
          * Updates the primary language
          */
         public void updatePrimaryLanguage(Language lang) {
-            primaryLanguage = lang;
-            copyFromItem.setText( "Copy from " + lang.getName() );
+            setPrimaryLanguage(lang);
+            getCopyFromItem().setText( "Copy from " + lang.getName() );
         }
     }
 

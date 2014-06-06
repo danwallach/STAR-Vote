@@ -178,7 +178,7 @@ public class CandidatesModule extends AModule {
              * @return the value in the specified row and column
              */
             public Object getValueAt(int row, int column) {
-                return data.get( row ).getColumn( language, column );
+                return data.get( row ).getColumn( getLanguage(), column );
             }
 
             /**
@@ -249,7 +249,7 @@ public class CandidatesModule extends AModule {
                     return;
                 }
 
-                data.get( row ).setColumn( language, column, aValue );
+                data.get( row ).setColumn( getLanguage(), column, aValue );
                 fireTableCellUpdated( row, column );
                 setChanged();
                 notifyObservers();
@@ -303,7 +303,7 @@ public class CandidatesModule extends AModule {
                 else {
                     /* Find the party and its translation, then return this component */
                     Party party = (Party) value;
-                    setText( party.getName( language ) + " " );
+                    setText( party.getName( getLanguage() ) + " " );
                 }
 
                 return this;
@@ -333,7 +333,7 @@ public class CandidatesModule extends AModule {
                 else {
                     /* Find the party and its translation, then return this component */
                     Party party = (Party) value;
-                    setText( party.getName( language ) + " " );
+                    setText( party.getName( getLanguage() ) + " " );
                 }
 
                 return this;
@@ -396,20 +396,10 @@ public class CandidatesModule extends AModule {
         private CandidateTableModel tableModel;
 
         /**
-         * Menu item to copy a candidate from the primary language
-         */
-        private JMenuItem tableCopyFromItem;
-
-        /**
          * Menu item to copy all candidates from the primary language
          */
         private JMenuItem tableCopyAllFromItem;
 
-        /** The language of this module */
-        private Language language;
-
-        /** The default language of this module */
-        private Language primaryLanguage;
 
         /**
          * Default Preptool language, to be used when the other 2 language variables are not instantiated.
@@ -525,7 +515,7 @@ public class CandidatesModule extends AModule {
          * @param lang the new language
          */
         public void languageSelected(Language lang) {
-            language = lang;
+            setLanguage(lang);
             updatePartyDropDown();
             validate();
             repaint();
@@ -632,10 +622,10 @@ public class CandidatesModule extends AModule {
          * @param lang the new primary language
          */
         public void updatePrimaryLanguage(Language lang) {
-            primaryLanguage = lang;
+            setPrimaryLanguage(lang);
 
             /* Sets the copy options for the table in the right-click dropdown*/
-            tableCopyFromItem.setText( "Copy selected candidate from " + lang.getName() );
+            getCopyFromItem().setText( "Copy selected candidate from " + lang.getName() );
             tableCopyAllFromItem.setText( "Copy all candidates from " + lang.getName() );
         }
 
@@ -686,18 +676,18 @@ public class CandidatesModule extends AModule {
             JPopupMenu tableContextMenu = new JPopupMenu();
 
             /* This will be the menu item that handles the "copy from" selection*/
-            tableCopyFromItem = new JMenuItem();
-            tableCopyFromItem.addActionListener( new ActionListener() {
+            setCopyFromItem(new JMenuItem());
+            getCopyFromItem().addActionListener( new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     if (candidatesTable.getSelectedRow() != -1) {
                         /* Find the selection's text in the primary language and copy it to this language*/
                         int idx = candidatesTable.getSelectedRow();
-                        data.get( idx ).copyFromPrimary( language, primaryLanguage );
-                        languageSelected( language );
+                        data.get( idx ).copyFromPrimary( getLanguage(), getPrimaryLanguage() );
+                        languageSelected( getLanguage() );
                     }
                 }
             } );
-            tableContextMenu.add( tableCopyFromItem );
+            tableContextMenu.add( getCopyFromItem() );
 
             /* This will be the menu item that handles "copy all from" selections*/
             tableCopyAllFromItem = new JMenuItem();
@@ -705,9 +695,9 @@ public class CandidatesModule extends AModule {
                 public void actionPerformed(ActionEvent e) {
                     /* Look up all elements on this card and copy their primary language text to this language */
                     for (CardElement cardElement : data)
-                        cardElement.copyFromPrimary( language,
-                            primaryLanguage );
-                    languageSelected( language );
+                        cardElement.copyFromPrimary( getLanguage(),
+                            getPrimaryLanguage() );
+                    languageSelected( getLanguage() );
                 }
             } );
             tableContextMenu.add( tableCopyAllFromItem );

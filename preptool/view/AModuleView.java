@@ -22,7 +22,9 @@
 
 package preptool.view;
 
-import javax.swing.JPanel;
+import preptool.model.language.Language;
+
+import javax.swing.*;
 
 /**
  * A superclass for module views.  It subclasses JPanel and also includes
@@ -32,4 +34,36 @@ import javax.swing.JPanel;
 public abstract class AModuleView extends JPanel implements
 		IMultiLanguageEditor {
 
+    /** The primary language for the input, will be used in the right-click "copy from" option */
+    private Language primaryLanguage;
+
+    /** The current language that this module contains data for */
+    private Language language;
+
+    /** The right-click option to copy translated text from the primary language */
+    private JMenuItem copyFromItem;
+
+    public Language getPrimaryLanguage() {
+        return primaryLanguage;
+    }
+
+    public void setPrimaryLanguage(Language primaryLanguage) {
+        this.primaryLanguage = primaryLanguage;
+    }
+
+    public Language getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(Language language) {
+        this.language = language;
+    }
+
+    public JMenuItem getCopyFromItem() {
+        return copyFromItem;
+    }
+
+    public void setCopyFromItem(JMenuItem copyFromItem) {
+        this.copyFromItem = copyFromItem;
+    }
 }

@@ -59,15 +59,6 @@ public class TextAreaModule extends AModule {
         /** The actual field where text will be entered into the module by the user */
         private JTextArea field;
 
-        /** The primary language for the input, will be used in the right-click "copy from" option */
-        private Language primaryLanguage;
-
-        /** The current language that this module contains data for */
-        private Language language;
-
-        /** The right-click option to copy translated text from the primary language */
-        private JMenuItem copyFromItem;
-
         /**
          * Constructs a new ModuleView with the given main view
          * 
@@ -80,7 +71,7 @@ public class TextAreaModule extends AModule {
             GridBagConstraints c = new GridBagConstraints();
 
             /* Initialize the text area */
-            field = new JTextArea( getData( language ) );
+            field = new JTextArea( getData( getLanguage() ) );
             field.setBorder( BorderFactory.createTitledBorder( label ) );
 
             /* Set up the module to update everytime a key is pressed inside the text field */
@@ -89,7 +80,7 @@ public class TextAreaModule extends AModule {
                 public void keyTyped(KeyEvent e) {
                     SwingUtilities.invokeLater( new Runnable() {
                         public void run() {
-                            setData( language, field.getText() );
+                            setData( getLanguage(), field.getText() );
                         }
                     } );
                 }
@@ -97,14 +88,14 @@ public class TextAreaModule extends AModule {
 
             /* Set up the right-click menu */
             JPopupMenu contextMenu = new JPopupMenu();
-            copyFromItem = new JMenuItem();
-            copyFromItem.addActionListener( new ActionListener() {
+            setCopyFromItem(new JMenuItem());
+            getCopyFromItem().addActionListener( new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    setData( language, getData( primaryLanguage ) );
-                    field.setText( getData( language ) );
+                    setData( getLanguage(), getData( getPrimaryLanguage() ) );
+                    field.setText( getData( getLanguage() ) );
                 }
             } );
-            contextMenu.add( copyFromItem );
+            contextMenu.add( getCopyFromItem() );
             field.setComponentPopupMenu( contextMenu );
 
             /* Format and add the text field */
@@ -122,7 +113,7 @@ public class TextAreaModule extends AModule {
          * @param lang the new selected language
          */
         public void languageSelected(Language lang) {
-            language = lang;
+            setLanguage(lang);
             field.setText( getData( lang ) );
         }
 
@@ -143,8 +134,8 @@ public class TextAreaModule extends AModule {
          * @param lang the new primary language
          */
         public void updatePrimaryLanguage(Language lang) {
-            primaryLanguage = lang;
-            copyFromItem.setText( "Copy from " + lang.getName() );
+            setLanguage(lang);
+            getCopyFromItem().setText( "Copy from " + lang.getName() );
         }
     }
 
