@@ -45,9 +45,10 @@ import java.util.ArrayList;
 public class Ballot {
 
     /**
-     * Parses XML into a Ballot object
-     * @param elt the element
-     * @return the Ballot
+     * Parses an XML element into a Ballot object
+     *
+     * @param elt the XML Element to be parsed
+     * @return the Ballot object parsed from XML
      */
     public static Ballot parseXML(Element elt) {
         assert elt.getTagName().equals("Ballot");
@@ -86,7 +87,7 @@ public class Ballot {
     private ArrayList<Party> parties;
 
     /**
-     * Constructs a blank Ballot with an empty list of cards.
+     * Constructs a blank Ballot with an empty list of cards, languages, and parties.
      */
     public Ballot() {
         cards = new ArrayList<ACard>();
@@ -96,7 +97,8 @@ public class Ballot {
 
     /**
      * Assigns the UIDs to the ballot elements
-     * @param manager the layout manager
+     *
+     * @param manager the layout manager that does the assigning
      */
     public void assignUIDsToBallot(ALayoutManager manager) {
         for (ACard card : cards)
@@ -132,9 +134,10 @@ public class Ballot {
     }
 
     /**
-     * Converts this ballot to a savable XML representation, to be opened later
-     * @param doc the document
-     * @return the element for this Ballot
+     * Converts this ballot to a savable XML representation, to be opened later by the preptool
+     *
+     * @param doc the document that this Ballot is a part of
+     * @return this Ballot as an XML Element
      */
     public Element toSaveXML(Document doc) {
         Element ballotElt = doc.createElement("Ballot");
@@ -153,9 +156,10 @@ public class Ballot {
     }
 
     /**
-     * Converts this ballot to an XML representation
-     * @param doc the document
-     * @return the element for this Ballot
+     * Converts this ballot to an XML representation used in VoteBox
+     *
+     * @param doc the document that this ballot is a part of
+     * @return this Ballot as a VoteBox XML Element
      */
     public Element toXML(Document doc) {
         Element ballotElt = doc.createElement("Ballot");
