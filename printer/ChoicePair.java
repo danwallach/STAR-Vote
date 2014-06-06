@@ -37,8 +37,7 @@ public class ChoicePair {
      * @return      1 if selected, 0 otherwise
      */
     public int getStatus() {
-        if (_selected)  return 1;
-        return 0;
+        return _selected ? 1 : 0;
     }
 
     /**

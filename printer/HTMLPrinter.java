@@ -63,16 +63,9 @@ public class HTMLPrinter {
         File file = new File(filename);
 
         /* If the file does not exist, then create it. */
-        if (!file.exists()) {
-            try
-            {
-                file.createNewFile();
-            }
-            catch (IOException e)
-            {
-                System.out.println("HTML File Generator Error: Unable to create file '" + filename + "'");
-            }
-        }
+        if (!file.exists())
+            try { file.createNewFile(); }
+            catch (IOException e) { System.err.println("HTML File Generator Error: Unable to create file '" + filename + "'"); }
 
         // Create the writer.
         BufferedWriter writer = null;
@@ -81,10 +74,13 @@ public class HTMLPrinter {
 
         // Set the ballot constants object.
         BALLOT_CONSTANTS = ballotConstants;
+
         // Set the ballot ID.
         BALLOT_ID = ballotID;
+
         // Set the barcode.
         BARCODE_IMAGE = barcodeFilePath;
+
         // Set the line separator.
         LINE_SEPARATOR_IMAGE = lineSeparatorFilePath;
 
@@ -162,8 +158,8 @@ public class HTMLPrinter {
                 writer.write("<center><img src = \"" + BARCODE_IMAGE + "_flipped.png\" alt = \"Image did not load properly\" width = \"" + TWO_COLUMNS_COLUMN_SIZE + "\"></center>\n");
                 writer.write("</div>\n");
             }
-            else
-            {
+            else {
+
                 // Creates the container for the columns of images.
                 writer.write("<div id = \"container\" style = \"background-color:#CCFF00;width:" + CONTAINER_WIDTH + "px;height:" + CONTAINER_HEIGHT + "px;\">\n");
 
@@ -182,8 +178,7 @@ public class HTMLPrinter {
 
 
             // Left Column //////////////////////////////////////////////////////////////////////////////////////////////////////
-            if (printFriendly)
-            {
+            if (printFriendly) {
                 // Create the left column.
                 writer.write("<div id = \"left_column\" style=\"background-color:#FFFFFF;width:" + TWO_COLUMNS_COLUMN_SIZE + "px;height:" + (CONTAINER_HEIGHT - 2 * BARCODE_DIVIDER_HEIGHT) + "px;float:left;\">\n");
             }
