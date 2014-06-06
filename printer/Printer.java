@@ -411,10 +411,10 @@ public class Printer{
 
             public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
 
-                //print is called by Java until NO_SUCH_PAGE is returned
+                /* Print is called by Java until NO_SUCH_PAGE is returned */
                 if(pageIndex>0) return Printable.NO_SUCH_PAGE;
 
-
+                /* Set up page constants */
                 int pageWidth = _constants.getPaperWidthForVVPAT();
                 int pageHeight = _constants.getPaperHeightForVVPAT();
                 int printableWidth = _constants.getPrintableWidthForVVPAT();
@@ -422,50 +422,70 @@ public class Printer{
 
                 int xBound = _constants.getPrintableHeightForVVPAT()-111;
 
+                /* Set the initial y position*/
                 int y = 250;
 
+                /* Print the first line of text after setting the font */
                 graphics.setFont(new Font("Arial", 0, 16));
                 printCenteredText("Thank you for voting!", xBound, y, graphics);
 
+                /* Move down a line */
                 y+=30;
 
+                /* Print another line of text after changing the font size */
                 graphics.setFont(new Font("Arial", 0, 12));
                 printCenteredText("District: "+ AuditoriumParams.ELECTION_NAME, xBound, y, graphics);
 
+                /* Move down a smaller line */
                 y+=20;
 
+                /* Print the date */
                 DateFormat dateFormat = new SimpleDateFormat("MMMM d, y");
                 Date date = new Date();
                 printCenteredText("Date: "+ dateFormat.format(date), xBound, y, graphics);
 
+                /* Move down a line */
                 y+=30;
 
+                /* Print a print message*/
                 printCenteredText("Your ballot is currently printing", xBound, y, graphics);
 
+                /* Move down a smaller line */
                 y+=20;
 
+                /* Print information about casting */
                 printCenteredText("If you wish to cast your ballot, scan it in the scanner at this voting location", xBound, y, graphics);
 
+                /* Move down a smaller line */
                 y+=20;
 
+                /* Print information about challenging */
                 printCenteredText("If you wish to challenge your ballot, take it home and scan the QRCode below", xBound, y, graphics);
 
+                /* Move down a smaller line*/
                 y+=20;
 
+                /* Housekeeping */
                 String domain = "starvote.cs.rice.edu";
                 String URL = "http://"+domain+"/ballot?ballotid="+bid;
                 BufferedImage i = QRCodeGenerator.getImage(URL);
 
+                /* Figure out the x position of the image */
                 int imgStartX = xBound/2-i.getWidth()/2;
 
+                /* Draw the image (centred) */
                 graphics.drawImage(i,imgStartX,y,null);
 
+                /* Move a line below the image */
                 y+=i.getHeight()+20;
 
+                /* Print information about view vote online */
                 printCenteredText("To see your vote, please visit: "+URL , xBound, y, graphics);
 
+                /* Move down a smaller line */
                 y+=20;
 
+                /* Print information about viewing vote online by entering BID */
                 printCenteredText("Or you may go to " + domain + "/challenge and enter your ballot id: "+ bid, xBound, y, graphics);
 
                 return Printable.PAGE_EXISTS;
@@ -473,6 +493,7 @@ public class Printer{
 
         };
 
+        /* Send this to be printed */
         printOnVVPAT(printedReceipt);
     }
 
@@ -518,19 +539,22 @@ public class Printer{
 
             public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
 
-                //print is called by Java until NO_SUCH_PAGE is returned
+                /* Print is called by Java until NO_SUCH_PAGE is returned */
                 if(pageIndex>0) return Printable.NO_SUCH_PAGE;
 
                 Image stateSeal = null;
+
+                /* Try to read the stateSeal image from the file */
                 try { stateSeal = ImageIO.read(new File("images//images//seal_tx.png")); }
                 catch (IOException e) { System.out.print("Could not find TX state seal image"); e.printStackTrace(); }
 
-                //numbers are measurements for standard font
+                /* Measurements for the page: numbers used  are measurements for standard font */
                 int pageWidth = _constants.getPaperWidthForVVPAT();
                 int pageHeight = _constants.getPaperHeightForVVPAT();
                 int printableWidth = _constants.getPrintableWidthForVVPAT();
                 int printableHeight = _constants.getPrintableHeightForVVPAT();
 
+                /* Settings for image/pin positioning and image scaling */
                 int imgWidth = pageWidth*3/4;
                 int imgHeight = pageWidth*3/4;
                 int pinStartX = printableWidth/2 - 54;
@@ -538,6 +562,7 @@ public class Printer{
                 int imgStartX = printableWidth/2-imgWidth/2;
                 int imgStartY = printableHeight-imgHeight-40;
 
+                /* Draw the image and the string to the page*/
                 graphics.drawImage(stateSeal, imgStartX, imgStartY, imgWidth, imgHeight, null);
                 graphics.drawString("Your PIN is: "+ pin, pinStartX, pinStartY);
 
@@ -546,6 +571,7 @@ public class Printer{
 
         };
 
+        /* Send the page to be printed on VVPAT */
         printOnVVPAT(printedPin);
     }
 
@@ -556,60 +582,68 @@ public class Printer{
      */
 	public boolean printOnVVPAT(Printable toPrint){
 
-		//VVPAT not ready
+		/* Check in case VVPAT not ready */
 		if (_constants.getPrinterForVVPAT().equals("")) return false;
 
 		PrintService[] printers = PrinterJob.lookupPrintServices();
 
 		PrintService vvpat = null;
 
+        /* Check the printer list */
 		for (PrintService printer : printers) {
 
 			PrinterName name = printer.getAttribute(PrinterName.class);
 
+            /* When the correct printer name is found, set it as the printer */
 			if(name.getValue().equals(_constants.getPrinterForVVPAT())) {
 				vvpat = printer;
 				break;
 			}
 		}
 
-        if(vvpat == null) System.out.println("No available printers");
-        else System.out.println("Printing on " + vvpat.getName());
-
+        /* Error if the printer could not be found/set */
 		if(vvpat == null){
 			Bugout.msg("VVPAT is configured, but not detected as ready.");
 			return false;
 		}
 
+        /* Printer job housekeeping */
 		PrinterJob job = PrinterJob.getPrinterJob();
-
         PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
         PrinterResolution pr = new PrinterResolution(300, 300, PrinterResolution.DPI);
 
         aset.add(pr);
         aset.add(PrintQuality.HIGH);
 
+        /* Try to format and print the page */
 		try {
 
             PageFormat pf = job.getPageFormat(aset);
             Paper paper = pf.getPaper();
 
+            /* Set the printer for the job */
             job.setPrintService(vvpat) ;
 
+            /* Send the paper the dimensions */
             paper.setSize(_constants.getPaperWidthForVVPAT(), _constants.getPaperHeightForVVPAT());
 
+            /* Info for imageable area */
             int imageableWidth = _constants.getPrintableWidthForVVPAT();
             int imageableHeight = _constants.getPrintableHeightForVVPAT();
 
             int leftInset = (_constants.getPaperWidthForVVPAT() - _constants.getPrintableWidthForVVPAT()) / 2;
             int topInset = (_constants.getPaperHeightForVVPAT() - _constants.getPrintableHeightForVVPAT()) / 2;
 
+            /* Set the imageable area beased on _constants */
             paper.setImageableArea(leftInset, topInset, imageableWidth, imageableHeight);
 
+            /* Set the paper for the PageFormat*/
             pf.setPaper(paper);
 
+            /* Send the printable to print to the paper */
             job.setPrintable(toPrint, pf);
 
+            /* Print the page */
             job.print();
 		}
         catch (PrinterException e) { Bugout.err("VVPAT printing failed: " + e.getMessage()); return false; }
