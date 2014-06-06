@@ -30,9 +30,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import preptool.model.XMLTools;
+import preptool.model.ballot.module.PropositionModule;
 import preptool.model.ballot.module.TextAreaModule;
 import preptool.model.ballot.module.TextFieldModule;
-import preptool.model.ballot.module.YesNoOptionsModule;
 import preptool.model.language.Language;
 import preptool.model.language.LiteralStrings;
 import preptool.model.layout.manager.ALayoutManager;
@@ -68,13 +68,13 @@ public class PropositionCard extends ACard {
         super("Proposition");
         modules.add(new TextFieldModule("Title", "Title"));
         modules.add(new TextAreaModule("Description", "Description"));
-        modules.add(new YesNoOptionsModule("YesNoOpts"));
+        modules.add(new PropositionModule("YesNoOpts"));
     }
 
     @Override
     public void assignUIDsToBallot(ALayoutManager manager) {
         setUID(manager.getNextBallotUID());
-        YesNoOptionsModule optionsModule = (YesNoOptionsModule) getModuleByName("YesNoOpts");
+        PropositionModule optionsModule = (PropositionModule) getModuleByName("YesNoOpts");
         for (CardElement ce : optionsModule.getData()) {
             ce.setUID(manager.getNextBallotUID());
         }
@@ -96,7 +96,7 @@ public class PropositionCard extends ACard {
         Language lang = manager.getLanguage();
         TextFieldModule titleModule = (TextFieldModule) getModuleByName("Title");
         TextAreaModule descriptionModule = (TextAreaModule) getModuleByName("Description");
-        YesNoOptionsModule optionsModule = (YesNoOptionsModule) getModuleByName("YesNoOpts");
+        PropositionModule optionsModule = (PropositionModule) getModuleByName("YesNoOpts");
 
         cardLayout.setTitle(titleModule.getData(lang));
         cardLayout.setDescription(descriptionModule.getData(lang));
@@ -120,7 +120,7 @@ public class PropositionCard extends ACard {
         boolean first = true;
         int id = -200;
     	
-        YesNoOptionsModule optionsModule = (YesNoOptionsModule) getModuleByName("YesNoOpts");
+        PropositionModule optionsModule = (PropositionModule) getModuleByName("YesNoOpts");
         for (CardElement ce : optionsModule.getData()) {
             if(first)    {
                 first = false;

@@ -46,7 +46,7 @@ import java.util.HashMap;
  * party names, as well as race and proposition titles, will be entered
  * 
  * @author Corey Shaw
- */
+ */ /* TODO These classes could use a heavier dose of inheritance */
 public class TextFieldModule extends AModule {
 
     /**
@@ -63,20 +63,25 @@ public class TextFieldModule extends AModule {
         /**
          * Constructs this module's view
          * 
-         * @param view
-         *            the main view
+         * @param view the main view for the mini-MVC
          */
         protected ModuleView(View view) {
+            /* Set up the layout */
             setLayout( new GridBagLayout() );
             GridBagConstraints c = new GridBagConstraints();
 
+            /* Add the field's accompanying label */
             c.gridx = 0;
             c.gridy = 0;
             c.insets = new Insets( 0, 10, 0, 0 );
             c.anchor = GridBagConstraints.LINE_START;
             JLabel prompt = new JLabel( label + ":  " );
             add( prompt, c );
+
+            /* Build the field itself */
             field = new JTextField( 25 );
+
+            /* Set the field to update the module whenever a key is typed */
             field.addKeyListener( new KeyAdapter() {
                 @Override
                 public void keyTyped(KeyEvent e) {
@@ -88,6 +93,8 @@ public class TextFieldModule extends AModule {
                     } );
                 }
             } );
+
+            /* Set up and add the right-click menu */
             JPopupMenu contextMenu = new JPopupMenu();
             setCopyFromItem(new JMenuItem());
             getCopyFromItem().addActionListener( new ActionListener() {
@@ -98,6 +105,8 @@ public class TextFieldModule extends AModule {
             } );
             contextMenu.add( getCopyFromItem() );
             field.setComponentPopupMenu( contextMenu );
+
+            /* Now layout and add the text field */
             c.gridx = 1;
             c.weightx = 1;
             c.insets = new Insets( 0, 0, 0, 0 );
@@ -106,6 +115,8 @@ public class TextFieldModule extends AModule {
 
         /**
          * Updates the language to the new selected language
+         *
+         * @param lang the new language
          */
         public void languageSelected(Language lang) {
             setLanguage(lang);
@@ -113,7 +124,8 @@ public class TextFieldModule extends AModule {
         }
 
         /**
-         * Returns true if the module needs translation in the given language
+         * @param lang the language that the module's data should be translated into
+         * @return true if the module needs translation in the given language, false if not
          */
         public boolean needsTranslation(Language lang) {
             return TextFieldModule.this.needsTranslation( lang );
@@ -121,6 +133,8 @@ public class TextFieldModule extends AModule {
 
         /**
          * Updates the primary language
+         *
+         * @param lang the new primary language
          */
         public void updatePrimaryLanguage(Language lang) {
             setPrimaryLanguage(lang);
@@ -131,21 +145,24 @@ public class TextFieldModule extends AModule {
     /**
      * Parses an XML Element into a TextFieldModule
      * 
-     * @param elt
-     *            the element
-     * @return the TextFieldModule
+     * @param elt the XML representation of this module
+     * @return the TextFieldModule object, built from XML
      */
     public static TextFieldModule parseXML(Element elt) {
-        assert elt.getTagName().equals( "Module" );
+        /* ensure that we have the right kind of module */
         assert elt.getAttribute( "type" ).equals( "TextFieldModule" );
 
+        /* Grab the properties out of the XML */
         HashMap<String, Object> properties = XMLTools.getProperties( elt );
 
+        /* Set up the name and label */
         String name = elt.getAttribute( "name" );
         String label = (String) properties.get( "label" );
 
+        /* build the actual object */
         TextFieldModule module = new TextFieldModule( name, label );
 
+        /* populate the object with information read in from the XML */
         NodeList list = elt.getElementsByTagName( "LocalizedString" );
         for (int i = 0; i < list.getLength(); i++) {
             Element child = (Element) list.item( i );
@@ -156,17 +173,17 @@ public class TextFieldModule extends AModule {
         return module;
     }
 
+    /** The data contained in the text field */
     private LocalizedString data;
 
+    /** The label shown next to the text field */
     private String label;
 
     /**
      * Constructs a new TextFieldModule with the given module name and label
      * 
-     * @param name
-     *            the module name
-     * @param label
-     *            a label that will be shown next to the text field on the view
+     * @param name the module name
+     * @param label a label that will be shown next to the text field on the view
      */
     public TextFieldModule(String name, String label) {
         super( name );
@@ -175,36 +192,33 @@ public class TextFieldModule extends AModule {
     }
 
     /**
-     * Generates ane returns this module's view
+     * @param view the view that this mini-view will be part of
+     * @return the newly generated view for this module
      */
     public AModuleView generateView(View view) {
         return new ModuleView( view );
     }
 
     /**
-     * Returns this module's data as a String in the given language
-     * 
-     * @param lang
-     *            the language
+     * @param lang the language we want the data translated into
+     * @return this module's data as a String in the given language
      */
     public String getData(Language lang) {
         return data.get( lang );
     }
 
     /**
-     * Returns true if the module needs translation in the given language
+     * @return true if the module needs translation in the given language, false if not
      */
     public boolean needsTranslation(Language lang) {
         return getData( lang ).equals( "" );
     }
 
     /**
-     * Sets the data to the given string
+     * Sets the data (i.e. the text field text) to the given string
      * 
-     * @param lang
-     *            the language
-     * @param s
-     *            the string
+     * @param lang the language the new data is translated to
+     * @param s the data itself
      */
     public void setData(Language lang, String s) {
         data.set( lang, s );
@@ -214,6 +228,9 @@ public class TextFieldModule extends AModule {
 
     /**
      * Formats this TextFieldModule as a savable XML Element
+     *
+     * @param doc the document this will be an element of
+     * @return an XML representation of this object
      */
     public Element toSaveXML(Document doc) {
         Element moduleElt = doc.createElement( "Module" );

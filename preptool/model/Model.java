@@ -22,29 +22,8 @@
 
 package preptool.model;
 
-import java.awt.Component;
-import java.awt.image.BufferedImage;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Stack;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-
-import javax.swing.*;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactoryConfigurationError;
-
-
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
-
 import preptool.controller.exception.BallotExportException;
 import preptool.controller.exception.BallotOpenException;
 import preptool.controller.exception.BallotPreviewException;
@@ -60,6 +39,19 @@ import preptool.model.layout.manager.Spacer;
 import preptool.view.ProgressInfo;
 import preptool.view.View;
 import preptool.view.dialog.ProgressDialog;
+
+import javax.swing.*;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactoryConfigurationError;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Stack;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 
 /**
@@ -96,7 +88,7 @@ public class Model {
 
         cardFactories = new ICardFactory[] {
                 PartyCard.FACTORY, RaceCard.FACTORY, PresidentialRaceCard.FACTORY,
-                PropositionCard.FACTORY, WriteInCard.FACTORY
+                PropositionCard.FACTORY
         };
     }
 

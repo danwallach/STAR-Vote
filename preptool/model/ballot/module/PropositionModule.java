@@ -22,59 +22,64 @@
 
 package preptool.model.ballot.module;
 
-import java.util.ArrayList;
-
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
 import preptool.model.ballot.CardElement;
 import preptool.model.language.Language;
 import preptool.model.language.LiteralStrings;
 import preptool.view.AModuleView;
 import preptool.view.View;
 
+import java.util.ArrayList;
+
 
 /**
  * A YesNoOptionsModule is a module that contains CardElements corresponding to
  * Yes and No options on a card. This module does not have a view.
+ *
  * @author Corey Shaw
  */
-public class YesNoOptionsModule extends AModule {
+public class PropositionModule extends AModule {
 
     /**
      * Parses an XML Element into a YesNoOptionsModule
      * @param elt the Element
      * @return the YesNoOptionsModule
      */
-    public static YesNoOptionsModule parseXML(Element elt) {
-        assert elt.getTagName().equals("Module");
-        assert elt.getAttribute("type").equals("YesNoOptionsModule");
+    public static PropositionModule parseXML(Element elt) {
+        /* Ensure that the module is the correct type */
+        assert elt.getAttribute("type").equals("PropositionModule");
+
+        /* Get the data */
         String name = elt.getAttribute("name");
 
-        YesNoOptionsModule module = new YesNoOptionsModule(name);
+        /* Build the object */
+        PropositionModule module = new PropositionModule(name);
 
         return module;
     }
 
+    /** The data contained herein, i.e. the card elements containing yes, no, and none of the above*/
     private ArrayList<CardElement> data;
 
     /**
      * Constructs a new YesNoOptionsModule with the given module name
      * @param name the module name
      */
-    public YesNoOptionsModule(String name) {
+    public PropositionModule(String name) {
         super(name);
+
+        /* Build the data elements */
         data = new ArrayList<CardElement>();
 
         data.add(new CardElement(LiteralStrings.Singleton.get("YES")));
         data.add(new CardElement(LiteralStrings.Singleton.get("NO")));
-		//#ifdef NONE_OF_ABOVE
         data.add(new CardElement(LiteralStrings.Singleton.get("NONE_OF_ABOVE")));
-		//#endif
     }
 
     /**
+     * This module has no view.
+     *
      * @throws UnsupportedOperationException
      */
     @Override
@@ -84,7 +89,7 @@ public class YesNoOptionsModule extends AModule {
     }
 
     /**
-     * Returns the data as an array of CardElements
+     * @return the data as an array of CardElements
      */
     public ArrayList<CardElement> getData() {
         return data;
@@ -92,6 +97,7 @@ public class YesNoOptionsModule extends AModule {
 
     /**
      * This module does not have a view.
+     *
      * @return false
      */
     public boolean hasView() {
@@ -99,6 +105,8 @@ public class YesNoOptionsModule extends AModule {
     }
 
     /**
+     * This module has translation information into every language supported.
+     *
      * @return false
      */
     @Override
@@ -107,12 +115,15 @@ public class YesNoOptionsModule extends AModule {
     }
 
     /**
-     * Formats this YesNoOptionsModule as a savable XML Element
+     * Formats this PropositionModule as a savable XML Element
+     *
+     * @param doc the document this is an element of
+     * @return an XML representation of this module
      */
     @Override
     public Element toSaveXML(Document doc) {
         Element moduleElt = doc.createElement("Module");
-        moduleElt.setAttribute("type", "YesNoOptionsModule");
+        moduleElt.setAttribute("type", "PropositionModule");
         moduleElt.setAttribute("name", getName());
 
         return moduleElt;

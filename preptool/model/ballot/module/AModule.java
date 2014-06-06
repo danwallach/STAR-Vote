@@ -22,16 +22,14 @@
 
 package preptool.model.ballot.module;
 
-import java.util.Observable;
-
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
 import preptool.controller.exception.BallotOpenException;
 import preptool.model.language.Language;
 import preptool.view.AModuleView;
 import preptool.view.View;
+
+import java.util.Observable;
 
 
 /**
@@ -66,8 +64,8 @@ public abstract class AModule extends Observable {
                 return TextAreaModule.parseXML(elt);
             case "TextFieldModule":
                 return TextFieldModule.parseXML(elt);
-            case "YesNoOptionsModule":
-                return YesNoOptionsModule.parseXML(elt);
+            case "PropositionModule":
+                return PropositionModule.parseXML(elt);
 
             default:
                 throw new BallotOpenException("Invalid module: " + type);
