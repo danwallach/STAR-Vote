@@ -22,18 +22,16 @@
 
 package preptool.model.ballot;
 
-import java.util.ArrayList;
-
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
 import preptool.model.Party;
 import preptool.model.XMLTools;
 import preptool.model.language.Language;
 import preptool.model.layout.manager.ALayoutManager;
+
+import java.util.ArrayList;
 
 /**
  * A Ballot is the model's notion of the entire ballot itself. It contains a
@@ -41,6 +39,7 @@ import preptool.model.layout.manager.ALayoutManager;
  * choice the user must make on the ballot. Note that there are some choices
  * that the user makes that are not within the ballot, such as the user's
  * language. These are implemented purely in the Layout.
+ *
  * @author Corey Shaw
  */
 public class Ballot {
