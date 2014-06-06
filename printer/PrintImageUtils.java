@@ -24,30 +24,37 @@ public class PrintImageUtils {
     /**
      * Trims the given image so that there is no trailing white/transparent block.
      *
-     * @param image - Image to trim
-     * @param trimFromEnd - If true, the image should have whitespace at the end removed instead of that at the front
-     * @param maxToTrim - the maximum amount of whitespace to trim, necessary for uniform scaling later on
-     * @return trimmed image
+     * @param image             image to be evaluated for trimming
      *
-     * This was taken from BallotImageHelper
+     * @param trimFromEnd       whether the image should have whitespace at the end removed instead of
+     *                          that at the front
+     *
+     * @param maxToTrim         the maximum amount of whitespace to trim, necessary for uniform scaling
+     *                          later on
+     *
+     * @return                  trimmed image
+     *
+     * @see tap.BallotImageHelper
      */
 
     public static BufferedImage trimImageHorizontally(BufferedImage image, boolean trimFromEnd, int maxToTrim) {
 
         BufferedImage outImage;
 
-        if(trimFromEnd){
+        /* Check if we need to trim from the end or the front */
+        if (trimFromEnd) {
 
+            /* Flip the image*/
             outImage = flipImageHorizontally(image);
 
+            /* Trim the image */
             outImage = trimImageHorizontallyHelper(outImage, maxToTrim);
 
+            /* Flip it back */
             outImage = flipImageHorizontally(outImage);
 
-        }
-        else{
-            outImage = trimImageHorizontallyHelper(image, maxToTrim);
-        }
+        } /* Otherwise, just trim it normally */
+        else outImage = trimImageHorizontallyHelper(image, maxToTrim);
 
         return outImage;
     }
@@ -55,10 +62,15 @@ public class PrintImageUtils {
     /**
      * Trims the given image so that there is no trailing white/transparent block.
      *
-     * @param image - Image to trim
-     * @param trimFromBelow - If true, the image should have whitespace from below the non-empty space removed instead of that from above
-     * @param maxToTrim - the maximum amount of whitespace to trim, necessary for uniform scaling later on
-     * @return trimmed image
+     * @param image             image to trim
+     *
+     * @param trimFromBelow     whether the image should have whitespace from below the non-empty space
+     *                          removed instead of that from above
+     *
+     * @param maxToTrim         the maximum amount of whitespace to trim, necessary for uniform scaling
+     *                          later on
+     *
+     * @return                  trimmed image
      *
      * This was taken from BallotImageHelper
      */
@@ -67,18 +79,20 @@ public class PrintImageUtils {
 
         BufferedImage outImage;
 
-        if(trimFromBelow){
+        /* Check if we need to trim from above or from below */
+        if (trimFromBelow) {
 
+            /* Flip the image vertically */
             outImage = flipImageVertically(image);
 
+            /* Trim the whitespace */
             outImage = trimImageVerticallyHelper(outImage, maxToTrim);
 
+            /* Flip it back vertically */
             outImage = flipImageVertically(outImage);
 
-        }
-        else{
-            outImage = trimImageVerticallyHelper(image, maxToTrim);
-        }
+        } /* Otherwise, just trim it normally */
+        else outImage = trimImageVerticallyHelper(image, maxToTrim);
 
         return outImage;
     }
@@ -86,41 +100,69 @@ public class PrintImageUtils {
     /**
      * A method which will invert an image with respect to its y-axis
      *
-     * @param image - image to be flipped
-     * @return - a flipped image
+     * @param image     image to be flipped
+     * @return          a flipped image
      */
-    public static BufferedImage flipImageHorizontally(BufferedImage image){
+    public static BufferedImage flipImageHorizontally(BufferedImage image) {
+
+        /* Create a new clean image of the same size/type */
         BufferedImage flipped = new BufferedImage(image.getWidth(), image.getHeight(), image.getType());
+
+        /* Instantiate Affine transformation for flipping and translating */
         AffineTransform tran = AffineTransform.getTranslateInstance(image.getWidth(), 0);
         AffineTransform flip = AffineTransform.getScaleInstance(-1d, 1d);
+
+        /* Merge these */
         tran.concatenate(flip);
 
+        /* Creates a Graphics2D object linked  */
         Graphics2D g = flipped.createGraphics();
+
+        /* Set the transformation on the graphic */
         g.setTransform(tran);
+
+        /* Draw the image onto the graphic */
         g.drawImage(image, 0, 0, null);
+
+        /* Now dispose of the graphic */
         g.dispose();
 
+        /* Return the flipped image */
         return flipped;
-
     }
 
     /**
      * A method which will flip an image with respect to its x-axis
      *
-     * @param image - image to be flipped
-     * @return - a flipped image
+     * @param image     image to be flipped
+     * @return          a flipped image
      */
-    public static BufferedImage flipImageVertically(BufferedImage image){
+    public static BufferedImage flipImageVertically(BufferedImage image) {
+
+        /* Create a new clean image of the same size/type */
         BufferedImage flipped = new BufferedImage(image.getWidth(), image.getHeight(), image.getType());
+
+        /* Instantiate Affine transformation for flipping and translating */
         AffineTransform tran = AffineTransform.getTranslateInstance(0, image.getHeight());
         AffineTransform flip = AffineTransform.getScaleInstance(1d, -1d);
         tran.concatenate(flip);
 
+        /* Merge these */
+        tran.concatenate(flip);
+
+        /* Creates a Graphics2D object linked  */
         Graphics2D g = flipped.createGraphics();
+
+        /* Set the transformation on the graphic */
         g.setTransform(tran);
+
+        /* Draw the image onto the graphic */
         g.drawImage(image, 0, 0, null);
+
+        /* Now dispose of the graphic */
         g.dispose();
 
+        /* Return the flipped image */
         return flipped;
 
     }
@@ -128,20 +170,26 @@ public class PrintImageUtils {
     /**
      * A helper method which actually trims an image. This method trims columns.
      *
-     * @param image - image to be trimmed
-     * @param maxToTrim - the maximum whitespace that can be trimmed off this image
-     * @return - a trimmed image
+     * @param image             image to be trimmed
+     * @param maxToTrim         the maximum whitespace that can be trimmed off this image
+     * @return                  a trimmed image
      */
-    private static BufferedImage trimImageHorizontallyHelper(BufferedImage image, int maxToTrim){
-        try{
+    private static BufferedImage trimImageHorizontallyHelper(BufferedImage image, int maxToTrim) {
+
+        try {
+
             int[] pix = new int[image.getWidth() * image.getHeight()];
+
             PixelGrabber grab = new PixelGrabber(image, 0, 0, image.getWidth(), image.getHeight(), pix, 0, image.getWidth());
+
             if(!grab.grabPixels()) return image;
 
             int lastClearColumn = 0;
+
+            /* TODO fix goto crap */
             out:
-            for(int x = 1; x < image.getWidth(); x++){
-                for(int y = 0; y < image.getHeight(); y++){
+            for (int x = 1; x < image.getWidth(); x++) {
+                for (int y = 0; y < image.getHeight(); y++) {
                     int i = y*image.getWidth() + x;
                     int pixel = pix[i];
 
@@ -154,31 +202,38 @@ public class PrintImageUtils {
                     if(red == 255 && green == 255 && blue == 255) continue;
 
                     break out;
-                }//for
+                }
                 lastClearColumn = x;
-            }//for
+            }
 
             int trimmable = Math.min(lastClearColumn, maxToTrim);
 
             return image.getSubimage(trimmable, 0, image.getWidth() - trimmable, image.getHeight());
-        }catch(InterruptedException e){ return image; }
+        }
+        catch (InterruptedException e) { return image; }
     }
 
 
     /**
      * A helper method which actually trims an image. This method trims rows.
      *
-     * @param image - image to be trimmed
-     * @param maxToTrim - the maximum whitespace that can be trimmed off this image
-     * @return - a trimmed image
+     * @param image         image to be trimmed
+     * @param maxToTrim     the maximum whitespace that can be trimmed off this image
+     * @return              a trimmed image
      */
     private static BufferedImage trimImageVerticallyHelper(BufferedImage image, int maxToTrim){
-        try{
+
+        try {
+
             int[] pix = new int[image.getWidth() * image.getHeight()];
+
             PixelGrabber grab = new PixelGrabber(image, 0, 0, image.getWidth(), image.getHeight(), pix, 0, image.getWidth());
+
             if(!grab.grabPixels()) return image;
 
             int lastClearRow = 0;
+
+            /* TODO fix goto crap */
             out:
             for(int y = 1; y < image.getHeight(); y++){
                 for(int x = 0; x < image.getWidth(); x++){
@@ -195,260 +250,34 @@ public class PrintImageUtils {
                     if(red == 255 && green == 255 && blue == 255) continue;
 
                     break out;
-                }//for
+                }
                 lastClearRow = y;
-            }//for
+            }
 
             int trimmable = Math.min(lastClearRow, maxToTrim);
 
             return image.getSubimage(0, trimmable, image.getWidth(), image.getHeight() - trimmable);
-        }catch(InterruptedException e){ return image; }
-    }
-
-    /**
-     * A method that determines how much whitespace will be trimmed off an image
-     *
-     * @param image - image to be evaluated for trimming
-     * @param flipped - whether or not the image is being trimmed from the end or beginning
-     * @return the amount of whitespace that will be trimmed
-     */
-    public static int getHorizontalImageTrim(BufferedImage image, boolean flipped){
-        BufferedImage outImage;
-        int whitespace = -1;
-
-        if(flipped){
-
-            outImage = flipImageHorizontally(image);
-
-
-            whitespace = getHorizontalImageTrimHelper(outImage);
-
-;
         }
-        else{
-            whitespace = getHorizontalImageTrimHelper(image);
-        }
-
-        return whitespace;
-
+        catch (InterruptedException e) { return image; }
     }
-
-    /**
-     * A method that determines how much whitespace will be trimmed off an image
-     *
-     * @param image - image to be evaluated for trimming
-     * @param flipped - whether or not the image is being trimmed from below or above
-     * @return the amount of whitespace that will be trimmed
-     */
-    public static int getVerticalImageTrim(BufferedImage image, boolean flipped){
-        BufferedImage outImage;
-        int whitespace = -1;
-
-        if(flipped){
-
-            outImage = flipImageVertically(image);
-
-
-            whitespace = getVerticalImageTrimHelper(outImage);
-
-            ;
-        }
-        else{
-            whitespace = getVerticalImageTrimHelper(image);
-        }
-
-        return whitespace;
-
-    }
-
-    /**
-     * A method that determines how much whitespace (columns) will be trimmed off an image.
-     *
-     * @param image - image to be trimmed
-     * @return the amount of whitespace that will be trimmed
-     */
-    private static int getHorizontalImageTrimHelper(BufferedImage image){
-        try{
-            int[] pix = new int[image.getWidth() * image.getHeight()];
-            PixelGrabber grab = new PixelGrabber(image, 0, 0, image.getWidth(), image.getHeight(), pix, 0, image.getWidth());
-            if(!grab.grabPixels()) return -1;
-
-            int lastClearColumn = 0;
-            out:
-            for(int x = 1; x < image.getWidth(); x++){
-                for(int y = 0; y < image.getHeight(); y++){
-                    int i = y*image.getWidth() + x;
-                    int pixel = pix[i];
-
-                    int alpha = (pixel >> 24) & 0xff;
-                    int red   = (pixel >> 16) & 0xff;
-                    int green = (pixel >>  8) & 0xff;
-                    int blue  = (pixel      ) & 0xff;
-
-                    if(alpha == 0) continue;
-                    if(red == 255 && green == 255 && blue == 255) continue;
-
-                    break out;
-                }//for
-                lastClearColumn = x;
-
-            }//for
-
-            return lastClearColumn;
-        }catch(InterruptedException e){ return -1; }
-
-    }
-
-    /**
-     * A method that determines how much whitespace (rows) will be trimmed off an image.
-     *
-     * @param image - image to be trimmed
-     * @return the amount of whitespace that will be trimmed
-     */
-    private static int getVerticalImageTrimHelper(BufferedImage image){
-        try{
-            int[] pix = new int[image.getWidth() * image.getHeight()];
-            PixelGrabber grab = new PixelGrabber(image, 0, 0, image.getWidth(), image.getHeight(), pix, 0, image.getWidth());
-            if(!grab.grabPixels()) return -1;
-
-            int lastClearRow = 0;
-            out:
-            for(int y = 1; y < image.getHeight(); y++){
-                for(int x = 0; x < image.getWidth(); x++){
-
-                    int i = y*image.getWidth() + x;
-                    int pixel = pix[i];
-
-                    int alpha = (pixel >> 24) & 0xff;
-                    int red   = (pixel >> 16) & 0xff;
-                    int green = (pixel >>  8) & 0xff;
-                    int blue  = (pixel      ) & 0xff;
-
-                    if(alpha == 0) continue;
-                    if(red == 255 && green == 255 && blue == 255) continue;
-
-                    break out;
-                }//for
-                lastClearRow = y;
-            }//for
-
-            return lastClearRow;
-        }catch(InterruptedException e){ return -1; }
-    }
-
-    /**
-     * Convenience method that returns a scaled instance of the
-     * provided {@code BufferedImage}.
-     *
-     * @param img the original image to be scaled
-     * @param targetWidth the desired width of the scaled instance,
-     *    in pixels
-     * @param targetHeight the desired height of the scaled instance,
-     *    in pixels
-     * @param hint one of the rendering hints that corresponds to
-     *    {@code RenderingHints.KEY_INTERPOLATION} (e.g.
-     *    {@code RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR},
-     *    {@code RenderingHints.VALUE_INTERPOLATION_BILINEAR},
-     *    {@code RenderingHints.VALUE_INTERPOLATION_BICUBIC})
-     * @param higherQuality if true, this method will use a multi-step
-     *    scaling technique that provides higher quality than the usual
-     *    one-step technique (only useful in downscaling cases, where
-     *    {@code targetWidth} or {@code targetHeight} is
-     *    smaller than the original dimensions, and generally only when
-     *    the {@code BILINEAR} hint is specified)
-     * @return a scaled version of the original {@code BufferedImage}
-     *
-     * Taken from  https://today.java.net/pub/a/today/2007/04/03/perils-of-image-getscaledinstance.html
-     */
-    public static BufferedImage getScaledInstance(BufferedImage img,
-                                           int targetWidth,
-                                           int targetHeight,
-                                           Object hint,
-                                           boolean higherQuality)
-    {
-        int type = (img.getTransparency() == Transparency.OPAQUE) ?
-                BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB;
-        BufferedImage ret = img;
-        int w, h;
-        if (higherQuality) {
-            // Use multi-step technique: start with original size, then
-            // scale down in multiple passes with drawImage()
-            // until the target size is reached
-            w = img.getWidth();
-            h = img.getHeight();
-        } else {
-            // Use one-step technique: scale directly from original
-            // size to target size with a single drawImage() call
-            w = targetWidth;
-            h = targetHeight;
-        }
-
-        do {
-            if (higherQuality && w > targetWidth) {
-                w /= 2;
-                if (w < targetWidth) {
-                    w = targetWidth;
-                }
-            }
-
-            if (higherQuality && h > targetHeight) {
-                h /= 2;
-                if (h < targetHeight) {
-                    h = targetHeight;
-                }
-            }
-
-            BufferedImage tmp = new BufferedImage(w, h, type);
-            Graphics2D g2 = tmp.createGraphics();
-            g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, hint);
-            g2.drawImage(ret, 0, 0, w, h, null);
-            g2.dispose();
-
-            ret = tmp;
-        } while (w != targetWidth || h != targetHeight);
-
-
-        return ret;
-    }
-
-    /**
-     *  A class that will return a higher dpi image so that printing isn't hideous
-     *
-     *  @param image - the image to be scaled properly
-     *  @param printWidth - width of the printable image
-     *  @param printHeight - height of the printable image
-     *  @return printImg - the image that will be printed
-     */
-    public static BufferedImage getImageForPrinting(BufferedImage image,
-                                                    int printWidth,
-                                                    int printHeight){
-
-        BufferedImage printImg = null;
-
-        return printImg;
-
-    }
-
 
     /**
      * A method for generating a barcode of some text
      *
-     * @param string - the string to be converted to barcode, will be a bid in this case
-     * @return - an image representing the barcode to be drawn on a ballot
+     * @param string        the string to be converted to barcode, will be a bid in this case
+     * @return              an image representing the barcode to be drawn on a ballot
      */
     public static BufferedImage getBarcode(String string){
+
+        /* Try to encode the string as a barcode */
         try {
+
             Code128Writer writer = new Code128Writer();
             BitMatrix bar = writer.encode(string, BarcodeFormat.CODE_128, 264, 48, new HashMap<EncodeHintType,Object>());
 
-            BufferedImage code = MatrixToImageWriter.toBufferedImage(bar);
-
-            return code;
-
-
-        }catch (WriterException e){
-            throw new RuntimeException(e);
+            return MatrixToImageWriter.toBufferedImage(bar);
         }
+        catch (WriterException e){ throw new RuntimeException(e); }
 
     }
 }
