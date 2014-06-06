@@ -67,14 +67,27 @@ public class Printer{
     private List<List<String>> _races;
     private boolean test;
 
-    public static int counter = 0;
-
     private static int DPI_SCALE;
 
+    /**
+     * Alternate constructor
+     *
+     * @param ballotFile        the ballot file
+     * @param races             the list of lists of all candidates in each race on a ballot
+     * @param confFilePath      the filepath of the configuration file
+     */
     public Printer(File ballotFile, List<List<String>> races, String confFilePath){
         this(ballotFile, races, confFilePath, false);
     }
 
+    /**
+     * Standard (well defined) constructor
+     *
+     * @param ballotFile        the ballot file
+     * @param races             the list of lists of all candidates in each race on a ballot
+     * @param confFilePath      the filepath of the configuration file
+     * @param test              whether testing is enabled or not
+     */
     public Printer(File ballotFile, List<List<String>> races, String confFilePath, boolean test) {
         _constants = new AuditoriumParams(confFilePath);
         _printerConstants = new AuditoriumParams("printer.conf");
@@ -84,22 +97,37 @@ public class Printer{
         DPI_SCALE = _constants.getPrinterDefaultDpi()/_constants.getJavaDefaultDpi();
     }
 
+    /**
+     * Alternate constructor
+     *
+     * @param ballotFile        the ballot file
+     * @param races             the list of lists of all candidates in each race on a ballot
+     */
     public Printer(File ballotFile,List<List<String>> races) {
         this(ballotFile, races, "vb.conf");
     }
 
+    /**
+     * Alternate constructor
+     *
+     * @param ballotFile        the ballot file
+     * @param races             the list of lists of all candidates in each race on a ballot
+     * @param test              whether testing is enabled or not
+     */
     public Printer(File ballotFile,List<List<String>> races, boolean test){
         this(ballotFile, races, "vb.conf", test);
     }
 
+    /**
+     * Default constructor
+     */
     public Printer(){
         _constants = new AuditoriumParams("supervisor.conf");
         _printerConstants = new AuditoriumParams("printer.conf");
     }
 
     /**
-     * If a VVPAT is connected,
-     *   print the voter's choices.
+     * If a VVPAT is connected, print the voter's choices.
      *
      * @param ballot        the choices to print, in the form ((race-id choice) ...)
      * @return              true if the print executed successfully, false otherwise
@@ -113,11 +141,11 @@ public class Printer{
 
         final List<String> choices = new ArrayList<String>();
 
-        ArrayList<ChoicePair> correctedBallot = correctBallot(ballot);
+        ArrayList<ChoicePair> reformedBallot = reformBallot(ballot);
 
 
         /* This for loop uses the corrected ballot, which accounts for No Selections. */
-        for (ChoicePair currentItem : correctedBallot)
+        for (ChoicePair currentItem : reformedBallot)
             if (currentItem.getStatus() == 1)
                 choices.add(currentItem.getLabel());
 
@@ -256,70 +284,111 @@ public class Printer{
         return true;
 	}
 
+    /**
+     * Converts the mapping of (Race Names:Images) to a sorted ArrayList of RaceTitlePairs
+     *
+     * @param imageMap      a mapping of images of names to text names for all races
+     * @return              a sorted ArrayList of RaceTitlePairs
+     */
     protected ArrayList<RaceTitlePair> getRaceNameImagePairs(Map<String, Image> imageMap) {
 
-        // This ArrayList holds all the numeric IDs that correspond to race labels.
-        // If a race label's image has UID L50, then this ArrayList will hold 50 to represent that race label.
+        /* This ArrayList will hold all the numeric IDs that correspond to race labels. */
         ArrayList<Integer> raceNumericIDs = new ArrayList<Integer> ();
 
+        /*
+          Go through the image mapping and whenever a UID starts with "L", add the following number to raceNumericIDs.
+          If a race label's image has UID L50, then this ArrayList will hold 50 to represent that race label.
+        */
         for (String UID:imageMap.keySet())
             if (UID.contains("L"))
                 raceNumericIDs.add(new Integer(UID.substring(1)));
 
+        /* Now sort them by number */
         ArrayList<RaceTitlePair> sortedRaceNameImagePairs = new ArrayList<RaceTitlePair> ();
         Integer[] sortedRaceNumIDArray = raceNumericIDs.toArray(new Integer[raceNumericIDs.size()]);
         Arrays.sort(sortedRaceNumIDArray);
 
+        /* Go through each integer in the sorted array */
         for (Integer ID:sortedRaceNumIDArray) {
+
+            /* Add the "L" back */
             String currentKey = "L" + ID.toString();
+
+            /* Add them back to the sorted ArrayList as RaceTitlePairs (mapping of keys to images */
             sortedRaceNameImagePairs.add(new RaceTitlePair(currentKey, imageMap.get(currentKey)));
         }
 
+        /* Returne the ArrayList */
         return sortedRaceNameImagePairs;
     }
 
-    protected ArrayList<ChoicePair> correctBallot(ListExpression rawBallot) {
+    /**
+     * Converts the raw ballot into an ArrayList of ChoicePairs for later printing
+     *
+     * @param rawBallot     the vote decisions as a ListExpression
+     * @return              the vote decisions as an ArrayList of ChoicePairs
+     */
+    protected ArrayList<ChoicePair> reformBallot(ListExpression rawBallot) {
 
-        // List of races is called: _races
-        ArrayList<ChoicePair> updatedBallot = new ArrayList<ChoicePair>();
+        ArrayList<ChoicePair> reformedBallot = new ArrayList<ChoicePair>();
 
+        /* Cycle through each race in the List of all races */
         for (List<String> currentRace : _races) {
 
             Boolean existingSelectedOption = false;
 
+            /* Cycle through each label in each race */
             for (String currentLabel : currentRace) {
 
-                for (int choiceIdx = 0; choiceIdx < rawBallot.size(); choiceIdx++) {
+                /* Cycle through each ASExpression in the raw ballot until we find our currentLabel */
+                for (ASExpression curChoice : rawBallot) {
 
-                    ListExpression currentChoice = (ListExpression) rawBallot.get(choiceIdx);
+                    ListExpression currentChoice = (ListExpression) curChoice;
 
+                    /* If the first element of the ListExpression is the current String... */
                     if (currentChoice.get(0).toString().equals(currentLabel)) {
 
-                        System.out.println(">>>>>>>>>>>" + currentChoice.get(1).toString());
+                        ASExpression voteChoice = currentChoice.get(1);
 
-                        if (currentChoice.get(1).toString().equals("1")) {
-                            // THIS option was selected.
+                        /* See if the option was selected */
+                        if (voteChoice.toString().equals("1")) {
+
+
+                            /* Reflect that a valid option was selected */
                             existingSelectedOption = true;
-                            updatedBallot.add(new ChoicePair(currentLabel, 1));
+
+                            /* Add the choice-decision pairing to the ArrayList */
+                            reformedBallot.add(new ChoicePair(currentLabel, 1));
                             break;
                         }
 
-                        // The if statement checks for consistency, but is not required.
-                        else if (currentChoice.get(1).toString().equals("0")) {
-                            updatedBallot.add(new ChoicePair(currentLabel, 0));
+                        /* See if it was not selected */
+                        else if (voteChoice.toString().equals("0")) {
+
+                            /* Add the choice-decision pairing to the ArrayList */
+                            reformedBallot.add(new ChoicePair(currentLabel, 0));
                             break;
                         }
 
-                        //We have a write in...
+                        /* Write-in */
                         else {
-                            if (currentChoice.get(1).toString().charAt(0) == '1') {
-                                // THIS option was selected.
+
+                            /* Check if the write-in was selected */
+                            if (voteChoice.toString().charAt(0) == '1') {
+
+                                /* Reflect that a valid option was selected */
                                 existingSelectedOption = true;
-                                updatedBallot.add(new ChoicePair(currentLabel, 1));
+
+                                /* Add the choice-decision pairing to the ArrayList */
+                                reformedBallot.add(new ChoicePair(currentLabel, 1));
                                 break;
                             }
+
+                            /* Otherwise, just show it as not selected */
                             else {
-                                updatedBallot.add(new ChoicePair(currentLabel, 0));
+
+                                /* Add the choice-decision pairing to the ArrayList */
+                                reformedBallot.add(new ChoicePair(currentLabel, 0));
                                 break;
                             }
                         }
@@ -327,19 +396,22 @@ public class Printer{
                 }
             }
 
-            // If there is a valid option selected, do nothing. Otherwise, add the "No Selection" option and select that one.
-            if (!existingSelectedOption) {
-                updatedBallot.add(new ChoicePair(currentRace.get(0), 1));
-            }
+            /* If there is a valid option selected, do nothing. Otherwise, add the "No Selection" option and select that one. */
+            if (!existingSelectedOption)
+                reformedBallot.add(new ChoicePair(currentRace.get(0), 1));
         }
 
-        return updatedBallot;
+        return reformedBallot;
     }
 
-    public void printedReceipt(String bID){
+    /**
+     * Renders a printed receipt for the committed ballot and sends to VVPAT for printing
+     *
+     * @param bid       the ballot ID
+     */
+    public void printedReceipt(final String bid){
 
         /*TODO is this supposed to be a hash? */
-        final String bid = bID;
         Printable printedReceipt = new Printable(){
 
             public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
@@ -409,6 +481,15 @@ public class Printer{
         printOnVVPAT(printedReceipt);
     }
 
+    /**
+     * Given a string and graphic, along with horizontal margins and vertical printing location,
+     * prints the string an graphic to the page (centred)
+     *
+     * @param s             the text to be printed to the page
+     * @param xBound        the horizontal margins
+     * @param y             the vertical positioning of the text/image
+     * @param g             the graphic to be printed to the page
+     */
     private void printCenteredText(String s, int xBound, int y, Graphics g) {
 
         FontMetrics fm = g.getFontMetrics();
@@ -426,6 +507,12 @@ public class Printer{
     }
 
     //this class prints the pin for the user given measurements for a POS terminal printer
+
+    /**
+     * Prints the PIN for the user given measurements set in _constants
+     *
+     * @param userPin       the user PIN to be printed
+     */
     public void printPin(String userPin) {
 
         final String pin = userPin;
