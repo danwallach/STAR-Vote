@@ -22,37 +22,28 @@
 
 package preptool.model.ballot.module;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.util.HashMap;
-
-import javax.swing.BorderFactory;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.JTextArea;
-import javax.swing.SwingUtilities;
-
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-
 import preptool.model.XMLTools;
 import preptool.model.language.Language;
 import preptool.model.language.LocalizedString;
 import preptool.view.AModuleView;
 import preptool.view.View;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.util.HashMap;
+
 
 /**
  * A TextAreaModule is a module that stores localized text on a card. The view
  * for this module is a large text area for the user to enter a large amount of
- * text.
+ * text. This is used for propositions on ballots.
  * 
  * @author Corey Shaw
  */
@@ -65,27 +56,34 @@ public class TextAreaModule extends AModule {
      */
     private class ModuleView extends AModuleView {
 
-        private static final long serialVersionUID = 1L;
-
+        /** The actual field where text will be entered into the module by the user */
         private JTextArea field;
 
+        /** The primary language for the input, will be used in the right-click "copy from" option */
         private Language primaryLanguage;
 
+        /** The current language that this module contains data for */
         private Language language;
 
+        /** The right-click option to copy translated text from the primary language */
         private JMenuItem copyFromItem;
 
         /**
          * Constructs a new ModuleView with the given main view
          * 
-         * @param view
+         * @param view The main view, necessary for completing the mini-MVC
          */
+        @SuppressWarnings("UnusedParameters")
         protected ModuleView(View view) {
+            /* Set up the layout */
             setLayout( new GridBagLayout() );
             GridBagConstraints c = new GridBagConstraints();
 
+            /* Initialize the text area */
             field = new JTextArea( getData( language ) );
             field.setBorder( BorderFactory.createTitledBorder( label ) );
+
+            /* Set up the module to update everytime a key is pressed inside the text field */
             field.addKeyListener( new KeyAdapter() {
                 @Override
                 public void keyTyped(KeyEvent e) {
@@ -96,6 +94,8 @@ public class TextAreaModule extends AModule {
                     } );
                 }
             } );
+
+            /* Set up the right-click menu */
             JPopupMenu contextMenu = new JPopupMenu();
             copyFromItem = new JMenuItem();
             copyFromItem.addActionListener( new ActionListener() {
@@ -106,6 +106,8 @@ public class TextAreaModule extends AModule {
             } );
             contextMenu.add( copyFromItem );
             field.setComponentPopupMenu( contextMenu );
+
+            /* Format and add the text field */
             c.gridx = 0;
             c.weightx = 1;
             c.weighty = 1;
@@ -116,6 +118,8 @@ public class TextAreaModule extends AModule {
 
         /**
          * Updates the language to the new selected language
+         *
+         * @param lang the new selected language
          */
         public void languageSelected(Language lang) {
             language = lang;
@@ -125,6 +129,9 @@ public class TextAreaModule extends AModule {
         /**
          * Returns true if the module needs to be translated in the given
          * language
+         *
+         * @param lang the language in question
+         * @return Whether the module has a translation for all of its data in language lang
          */
         public boolean needsTranslation(Language lang) {
             return TextAreaModule.this.needsTranslation( lang );
@@ -132,6 +139,8 @@ public class TextAreaModule extends AModule {
 
         /**
          * Updates the primary language
+         *
+         * @param lang the new primary language
          */
         public void updatePrimaryLanguage(Language lang) {
             primaryLanguage = lang;
@@ -142,21 +151,24 @@ public class TextAreaModule extends AModule {
     /**
      * Parses an XML Element into a TextAreaModule
      * 
-     * @param elt
-     *            the element
-     * @return the TextAreaModule
+     * @param elt the element that a module is being parsed from
+     * @return the newly constructed TextAreaModule from XML
      */
     public static TextAreaModule parseXML(Element elt) {
-        assert elt.getTagName().equals( "Module" );
+        /* Ensure that this is in fact a TextAreaModule */
         assert elt.getAttribute( "type" ).equals( "TextAreaModule" );
 
+        /* Get the properties from the XML */
         HashMap<String, Object> properties = XMLTools.getProperties( elt );
 
+        /* Set up the names and labels*/
         String name = elt.getAttribute( "name" );
         String label = (String) properties.get( "label" );
 
+        /* Build the actual object */
         TextAreaModule module = new TextAreaModule( name, label );
 
+        /* Fill in the requisite data in the module */
         NodeList list = elt.getElementsByTagName( "LocalizedString" );
         for (int i = 0; i < list.getLength(); i++) {
             Element child = (Element) list.item( i );
@@ -167,17 +179,17 @@ public class TextAreaModule extends AModule {
         return module;
     }
 
+    /** The data contained in this module */
     private LocalizedString data;
 
+    /** The label for this module */
     private String label;
 
     /**
-     * Constructs a new TextAreaModule with given module name and label
+     * Constructs a new TextAreaModule with given module name and label, and initialize the data
      * 
-     * @param name
-     *            the module name
-     * @param label
-     *            the label to be shown next to the text area on the view
+     * @param name the module name
+     * @param label the label to be shown next to the text area on the view
      */
     public TextAreaModule(String name, String label) {
         super( name );
@@ -186,7 +198,8 @@ public class TextAreaModule extends AModule {
     }
 
     /**
-     * Generates ane returns the view for this module
+     * @param view the view that this mini-view will be part of
+     * @return The generated view for this module
      */
     @Override
     public AModuleView generateView(View view) {
@@ -194,17 +207,16 @@ public class TextAreaModule extends AModule {
     }
 
     /**
-     * Returns the data as a String in the given language
-     * 
-     * @param lang
-     *            the language
+     * @param lang the language
+     * @return the data as a String in the given language
      */
     public String getData(Language lang) {
         return data.get( lang );
     }
 
     /**
-     * Returns true if the module needs to be translated in the given language
+     * @param lang the language to check
+     * @return true if the module needs to be translated in the given language, false if not
      */
     @Override
     public boolean needsTranslation(Language lang) {
@@ -212,12 +224,10 @@ public class TextAreaModule extends AModule {
     }
 
     /**
-     * Sets the data to the given string
+     * Sets the data to the given string and updates the UI
      * 
-     * @param lang
-     *            the language
-     * @param s
-     *            the string
+     * @param lang the language that the data is in
+     * @param s the string the actual data itself
      */
     public void setData(Language lang, String s) {
         data.set( lang, s );
@@ -227,6 +237,9 @@ public class TextAreaModule extends AModule {
 
     /**
      * Formats this TextAreaModule as a savable XML Element
+     *
+     * @param doc the context for this XML element
+     * @return the newly constructed XML element
      */
     @Override
     public Element toSaveXML(Document doc) {

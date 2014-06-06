@@ -41,7 +41,7 @@ import java.util.HashMap;
  * option on a card. The view for this module is a check box with a label.
  * 
  * @author Corey Shaw
- */
+ */ /* TODO This module is never used, and can likely be removed. I'll leave it, uncommented, for now */
 public class CheckBoxModule extends AModule {
 
     /**
@@ -59,6 +59,7 @@ public class CheckBoxModule extends AModule {
          * 
          * @param view the main view, used to complete the mini-MVC
          */
+        @SuppressWarnings("UnusedParameters")
         protected ModuleView(View view) {
             /* Set the layout to the dreaded GridBag */
             setLayout( new GridBagLayout() );
@@ -120,9 +121,7 @@ public class CheckBoxModule extends AModule {
         String label = (String) properties.get( "label" );
         boolean data = (Boolean) properties.get( "data" );
 
-        CheckBoxModule module = new CheckBoxModule( name, label, data );
-
-        return module;
+        return new CheckBoxModule( name, label, data );
     }
 
     private boolean data;

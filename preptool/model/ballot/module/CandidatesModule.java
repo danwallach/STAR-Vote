@@ -240,7 +240,10 @@ public class CandidatesModule extends AModule {
             @Override
             public void setValueAt(Object aValue, int row, int column) {
 
-                /* Check to make sure we aren't trying to add anything to a non-existent location */
+                /*
+                 * Check to make sure we aren't trying to add anything to a non-existent location,
+                 * as can happen when deleting a row
+                 */
                 if(row >= getRowCount() || column > columns) {
                     JOptionPane.showMessageDialog(null, "That is not a valid location in the table");
                     return;
