@@ -121,7 +121,7 @@ public class Printer{
     /**
      * Default constructor
      */
-    public Printer(){
+    public Printer() {
         _constants = new AuditoriumParams("supervisor.conf");
         _printerConstants = new AuditoriumParams("printer.conf");
     }
@@ -150,8 +150,7 @@ public class Printer{
                 choices.add(currentItem.getLabel());
 
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        // This is where the HTML Printing occurs.
+        /* ---------------- This is where the HTML Printing occurs ---------------- */
 
         String fileChar = System.getProperty("file.separator");
         String ballotPath = _currentBallotFile.getAbsolutePath();
@@ -159,7 +158,7 @@ public class Printer{
 
         if(!test) cleanFilePath = ballotPath.substring(0, ballotPath.lastIndexOf(fileChar) + 1);
 
-        // Print to an HTML file. Parameters to be used:
+        /* Print to an HTML file. Parameters to be used: */
         String htmlFileName = cleanFilePath + "PrintableBallot.html";
 
         /* TODO actually read in these from somewhere */
@@ -170,8 +169,8 @@ public class Printer{
         String barcodeFileNameNoExtension = pathToVVPATFolder + "Barcode";
         String lineSeparatorFileName = pathToVVPATFolder + "LineSeparator.png";
 
-        //Generate a barcode of the bid
-        //Do it here so we can use height of the barcode for laying out other components on the printout
+        /* Generate a barcode of the BID */
+        /* Do it here so we can use height of the barcode for laying out other components on the printout */
         BufferedImage barcode = PrintImageUtils.getBarcode(bid);
 
         try
@@ -213,73 +212,69 @@ public class Printer{
             }
         }
 
-        // Generate the HTML file with the properties set above.
+        /* Generate the HTML file with the properties set above. */
         HTMLPrinter.generateHTMLFile(htmlFileName, useTwoColumns, printerFriendly, pathToVVPATFolder, _constants, bid, barcodeFileNameNoExtension, lineSeparatorFileName, columnsToPrint);
 
-        // Get the file that is to be read for commands and its parameter separator string.
+        /* Get the file that is to be read for commands and its parameter separator string. */
         String filename = _printerConstants.getCommandsFileFilename();
         String fileSeparator = _printerConstants.getCommandsFileParameterSeparator();
 
-        // Open the file.
+        /* Open the file. */
         File file = new File (filename);
 
-        // If the file does not exist, then print error.
+        /* If the file does not exist, then print error. */
         if (!file.exists()) System.err.println("The specified file could not be found: " + filename);
 
-        // Create holders for the two commands.
+        /* Create holders for the two commands. */
         String convertHTMLtoPDFCommandLine = "";
         String printPDFCommandLine = "";
 
-        // Create the reader.
+        /* Create the reader. */
         BufferedReader reader;
 
+        /* Try to read the HTML into the converter */
         try {
             reader = new BufferedReader(new FileReader(file.getAbsoluteFile()));
             convertHTMLtoPDFCommandLine = reader.readLine();
             printPDFCommandLine = reader.readLine();
             reader.close();
-            System.out.println(convertHTMLtoPDFCommandLine);
         }
         catch (IOException e) { System.err.println("Unable to read from file " + filename); e.printStackTrace(); }
 
-        // Get the OS.
+        /* Get the OS. */
         String currentOS = _constants.getOS();
 
         if (currentOS.equals("Windows")) {
 
-            // Create arrays of the command and its parameters (to use with the exec method in JDK 7+
+            /* Create arrays of the command and its parameters (to use with the exec method in JDK 7+ */
             String[] convertHTMLtoPDFCommandArray = convertHTMLtoPDFCommandLine.split(fileSeparator);
             String[] printPDFCommandArray = printPDFCommandLine.split(fileSeparator);
 
-            // Attempt to convert HTML to PDF.
+            /* Attempt to convert HTML to PDF. */
             try { Runtime.getRuntime().exec(convertHTMLtoPDFCommandArray); }
             catch (IOException e) { System.err.println("Converting HTML to PDF failed."); e.printStackTrace(); }
 
-            // Need to make the thread wait for the PDF to get created.
+            /* Need to make the thread wait for the PDF to get created. */
             long start = System.currentTimeMillis();
             while (System.currentTimeMillis() - start < 1000);
 
-            // Attempt to print PDF.
+            /* Attempt to print PDF. */
             try { Runtime.getRuntime().exec(printPDFCommandArray); }
             catch (IOException e) { System.err.println("Printing PDF failed."); e.printStackTrace(); }
         }
-        else {
+        else if (currentOS.equals("Linux")) {
 
-            if (currentOS.equals("Linux")) {
-
-                // Attempt to convert HTML to PDF.
-                try {
-                    Prince prince = new Prince("/usr/local/bin/prince");
-                    System.out.println("Location: " + System.getProperty("user.dir") + "/ballot_printout.pdf");
-                    prince.convert(htmlFileName, System.getProperty("user.dir") + "/ballot_printout.pdf");
-                }
-                catch (IOException e) { System.err.println("Converting HTML to PDF failed."); e.printStackTrace(); }
-
-                // Need to make the thread wait for the PDF to get created.
-                long start = System.currentTimeMillis();
-                while (System.currentTimeMillis() - start < 1000) ;
-
+            /* Attempt to convert HTML to PDF. */
+            try {
+                Prince prince = new Prince("/usr/local/bin/prince");
+                System.out.println("Location: " + System.getProperty("user.dir") + "/ballot_printout.pdf");
+                prince.convert(htmlFileName, System.getProperty("user.dir") + "/ballot_printout.pdf");
             }
+            catch (IOException e) { System.err.println("Converting HTML to PDF failed."); e.printStackTrace(); }
+
+            /* Need to make the thread wait for the PDF to get created. */
+            long start = System.currentTimeMillis();
+            while (System.currentTimeMillis() - start < 1000) ;
         }
         return true;
 	}
@@ -492,21 +487,24 @@ public class Printer{
      */
     private void printCenteredText(String s, int xBound, int y, Graphics g) {
 
+        /* Set up graphical info */
         FontMetrics fm = g.getFontMetrics();
         Rectangle2D rect = fm.getStringBounds(s, g);
         int sLength = (int) rect.getWidth();
 
+        /* See if the side length of the rectangle is bigger than what the string can fit */
         if (sLength>fm.getStringBounds(s,g).getWidth()) {
+
+            /* If it is, print the substring that fits and then print the rest under the graphic */
             printCenteredText(s.substring(0, sLength-1), xBound, y, g);
             printCenteredText(s.substring(sLength, s.length()), xBound, (int) (y+rect.getHeight()+5), g);
         }
         else {
+            /* If it isn't, draw the string centered */
             int sXStart = xBound/2 - sLength/2;
             g.drawString(s, sXStart, y);
         }
     }
-
-    //this class prints the pin for the user given measurements for a POS terminal printer
 
     /**
      * Prints the PIN for the user given measurements set in _constants
