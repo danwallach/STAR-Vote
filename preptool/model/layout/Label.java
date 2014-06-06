@@ -31,7 +31,7 @@ import org.w3c.dom.Element;
 /**
  * A Label is a component that consists of some text that has no action when it
  * is clicked.
- * @author cshaw
+ * @author Corey Shaw
  */
 public class Label extends ALayoutComponent {
 

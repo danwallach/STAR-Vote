@@ -62,7 +62,7 @@ import preptool.view.dragndrop.TableTransferHandler;
  * A Dialog that allows the user to edit the parties that are used in the
  * ballot.
  * 
- * @author cshaw
+ * @author Corey Shaw
  */
 public class PartiesDialog extends JDialog implements IMultiLanguageEditor {
 

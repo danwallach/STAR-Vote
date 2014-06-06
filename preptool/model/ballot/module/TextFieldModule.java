@@ -53,14 +53,14 @@ import preptool.view.View;
  * A TextFieldModule is a module that contains some localized text on a card.
  * The view for this module is a one-line text field.
  * 
- * @author cshaw
+ * @author Corey Shaw
  */
 public class TextFieldModule extends AModule {
 
     /**
      * An inner class for the TextFieldModule's view
      * 
-     * @author cshaw
+     * @author Corey Shaw
      */
     private class ModuleView extends AModuleView {
 

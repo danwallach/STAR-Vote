@@ -34,7 +34,7 @@ import preptool.model.layout.ALayoutComponent;
  * A Spacer is a holder for an ALayoutComponent, but it also subclasses JLabel
  * so that it can be placed onto a JPanel. This allows Swing to layout our
  * components for us.
- * @author cshaw, ttorous
+ * @author Corey Shaw, ttorous
  */
 @SuppressWarnings("serial")
 public class Spacer extends JLabel {

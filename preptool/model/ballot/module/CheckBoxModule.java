@@ -22,50 +22,45 @@
 
 package preptool.model.ballot.module;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.HashMap;
-
-import javax.swing.JCheckBox;
-import javax.swing.JLabel;
-
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
 import preptool.model.XMLTools;
 import preptool.model.language.Language;
 import preptool.view.AModuleView;
 import preptool.view.View;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.HashMap;
 
 
 /**
  * A CheckBoxModule is a module that allows the user to specify a togglable
  * option on a card. The view for this module is a check box with a label.
  * 
- * @author cshaw
+ * @author Corey Shaw
  */
 public class CheckBoxModule extends AModule {
 
     /**
      * An inner class for the CheckBoxModule's view
      * 
-     * @author cshaw
+     * @author Corey Shaw
      */
     private class ModuleView extends AModuleView {
 
-        private static final long serialVersionUID = 1L;
+        /** The checkbox that allows options on a card to be toggled */
         private JCheckBox checkBox;
 
         /**
          * Constructs the module view
          * 
-         * @param view
-         *            the main view
+         * @param view the main view, used to complete the mini-MVC
          */
         protected ModuleView(View view) {
+            /* Set the layout to the dreaded GridBag */
             setLayout( new GridBagLayout() );
             GridBagConstraints c = new GridBagConstraints();
 

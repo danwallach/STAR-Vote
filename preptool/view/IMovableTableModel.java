@@ -24,7 +24,7 @@ package preptool.view;
 
 /**
  * Interface for a TableModel that supports the moveRow operation
- * @author cshaw
+ * @author Corey Shaw
  */
 public interface IMovableTableModel {
 

@@ -22,42 +22,9 @@
 
 package preptool.model.ballot.module;
 
-import java.awt.Component;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.DefaultCellEditor;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JToolBar;
-import javax.swing.ListCellRenderer;
-import javax.swing.ListSelectionModel;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.event.TableModelEvent;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
-
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-
 import preptool.model.Party;
 import preptool.model.ballot.CardElement;
 import preptool.model.language.Language;
@@ -65,6 +32,19 @@ import preptool.view.AModuleView;
 import preptool.view.IMovableTableModel;
 import preptool.view.View;
 import preptool.view.dragndrop.TableTransferHandler;
+
+import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 
 /**
@@ -259,6 +239,13 @@ public class CandidatesModule extends AModule {
              */
             @Override
             public void setValueAt(Object aValue, int row, int column) {
+
+                /* Check to make sure we aren't trying to add anything to a non-existent location */
+                if(row >= getRowCount() || column > columns) {
+                    JOptionPane.showMessageDialog(null, "That is not a valid location in the table");
+                    return;
+                }
+
                 data.get( row ).setColumn( language, column, aValue );
                 fireTableCellUpdated( row, column );
                 setChanged();
@@ -603,7 +590,7 @@ public class CandidatesModule extends AModule {
             TableColumn column = candidatesTable.getColumnModel().getColumn(columns);
 
             /* Create a new dropdown to put the parties on */
-            final JComboBox<JLabel> dropDown = new JComboBox<JLabel>();
+            final JComboBox<Party> dropDown = new JComboBox<Party>();
             //noinspection unchecked
             dropDown.setRenderer( new PartyRenderer() );
 
@@ -616,12 +603,12 @@ public class CandidatesModule extends AModule {
             }
 
             /* Add an edit option that will allow the addition or removal of parties */
-            dropDown.addItem(new JLabel("Edit..."));
+            dropDown.addItem(Party.getEditParty());
 
             /* The only case where we do anything is when the edit option is selected */
             dropDown.addActionListener( new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    if (dropDown.getSelectedItem().equals( "Edit..." )) {
+                    if (dropDown.getSelectedItem().equals(Party.getEditParty())) {
                         /* Shown the dialog to add, remove, or edit the parties */
                         allParties = view.showPartiesDialog();
 

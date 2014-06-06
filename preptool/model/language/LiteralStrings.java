@@ -27,7 +27,7 @@ import java.util.HashMap;
 /**
  * A class that contains literal localized strings used by the LayoutManager, so
  * that it can output the correct strings based on the language.
- * @author cshaw
+ * @author Corey Shaw
  */
 public class LiteralStrings {
 

@@ -38,7 +38,7 @@ import java.util.List;
  * https://sys.cs.rice.edu/votebox/trac/wiki/VotingMessages</a> for a complete
  * list of messages.
  * 
- * @author cshaw
+ * @author Corey Shaw
  */
 public class ActivatedEvent extends AAnnounceEvent {
 

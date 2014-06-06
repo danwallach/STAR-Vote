@@ -47,7 +47,7 @@ import preptool.view.View;
 /**
  * A Dialog that allows the user to select the languages that are in the ballot.
  * 
- * @author cshaw
+ * @author Corey Shaw
  */
 public class LanguagesDialog extends JDialog {
 

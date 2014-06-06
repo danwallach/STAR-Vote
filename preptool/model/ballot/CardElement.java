@@ -39,7 +39,7 @@ import java.util.HashMap;
  * A CardElement is an option that the user has to choose from, that lies in the
  * ballot. For instance, candidates in a race would be represented using
  * CardElements.
- * @author cshaw, Mircea C. Berechet
+ * @author Corey Shaw, Mircea C. Berechet
  */
 public class CardElement {
 

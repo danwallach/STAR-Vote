@@ -42,7 +42,7 @@ import votebox.middle.Properties;
 /**
  * PropositionCard is the implementation of an ACard that constitutes a
  * proposition.
- * @author cshaw
+ * @author Corey Shaw
  */
 public class PropositionCard extends ACard {
 

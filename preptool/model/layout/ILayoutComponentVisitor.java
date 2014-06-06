@@ -26,7 +26,7 @@ package preptool.model.layout;
  * A visitor interface over the ALayoutComponent composite.
  * @param <P> the parameter type
  * @param <R> the return type
- * @author cshaw
+ * @author Corey Shaw
  */
 public interface ILayoutComponentVisitor<P,R> {
 	

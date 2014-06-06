@@ -36,7 +36,7 @@ import preptool.model.XMLTools;
  * to be selected at a time; when another is clicked, the others are deselected.
  * This is analagous to a Card in the ballot, but can be used for things that
  * aren't in the ballot as well (such as language selection).
- * @author cshaw
+ * @author Corey Shaw
  */
 public class ToggleButtonGroup extends ALayoutComponent {
 

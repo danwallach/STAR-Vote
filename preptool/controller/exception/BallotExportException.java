@@ -25,7 +25,7 @@ package preptool.controller.exception;
 /**
  * Exception thrown when an error occurs during an export ballot operation.
  * 
- * @author cshaw
+ * @author Corey Shaw
  */
 public class BallotExportException extends RuntimeException {
 

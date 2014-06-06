@@ -38,7 +38,7 @@ import javax.swing.JList;
  * Inspired by
  * http://java.sun.com/docs/books/tutorial/uiswing/examples/dnd/ExtendedDnDDemoProject/src/dnd/ListTransferHandler.java
  * <br>
- * Modifications by cshaw
+ * Modifications by Corey Shaw
  */
 public class ListTransferHandler extends StringTransferHandler {
 

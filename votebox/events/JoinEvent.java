@@ -26,7 +26,7 @@ package votebox.events;
  * An event that is fired whenever a connection to this machine is established,
  * regardless of who initiated it.  This event is not an IAnnounceEvent and has
  * no SExpression form.
- * @author cshaw
+ * @author Corey Shaw
  */
 public class JoinEvent{
 

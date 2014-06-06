@@ -30,7 +30,7 @@ import java.util.ArrayList;
  * array of listeners, and forwards events received onto those listeners (in the
  * order they were registered).
  * 
- * @author cshaw
+ * @author Corey Shaw
  */ /* TODO Most of these comments should be inherited */
 public class VoteBoxEventNotifier implements VoteBoxEventListener {
 

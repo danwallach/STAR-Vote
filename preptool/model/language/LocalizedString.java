@@ -22,16 +22,16 @@
 
 package preptool.model.language;
 
-import java.util.HashMap;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import java.util.HashMap;
+
 /**
  * A class that contains multiple translations of a String. It is a wrapper for
  * a map from language to string.
- * @author cshaw
+ * @author Corey Shaw
  */
 public class LocalizedString {
 

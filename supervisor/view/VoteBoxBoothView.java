@@ -53,7 +53,7 @@ import supervisor.model.VoteBoxBooth;
  * button for authorization or override. The button is hidden when the polls are
  * closed.
  *
- * @author cshaw
+ * @author Corey Shaw
  */
 @SuppressWarnings("serial")
 public class VoteBoxBoothView extends AMachineView {

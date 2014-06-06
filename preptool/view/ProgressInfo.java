@@ -27,7 +27,7 @@ import java.util.Observable;
 /**
  * A class that contains task names and progress values of an asynchronous task.
  * Observers (such as a ProgressDialog) can receive updates of the progress.
- * @author cshaw
+ * @author Corey Shaw
  */
 public class ProgressInfo extends Observable {
 

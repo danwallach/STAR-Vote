@@ -28,7 +28,7 @@ import preptool.model.language.Language;
  * An interface that links with a LanguageBar.  The LanguageBar uses this interface
  * to inform the editor that the language has been changed or to check if all
  * translation data exists.
- * @author cshaw
+ * @author Corey Shaw
  */
 public interface IMultiLanguageEditor {
 	

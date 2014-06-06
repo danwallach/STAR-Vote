@@ -26,7 +26,7 @@ import preptool.model.language.Language;
 
 /**
  * A factory for making a LayoutManager with a given language
- * @author cshaw
+ * @author Corey Shaw
  */
 public interface ILayoutManagerFactory {
 

@@ -44,7 +44,7 @@ import preptool.view.ProgressInfo;
 /**
  * A progress dialog that corresponds to an asynchronous task
  * 
- * @author cshaw
+ * @author Corey Shaw
  */
 public class ProgressDialog extends JDialog {
 

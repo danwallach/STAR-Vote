@@ -30,7 +30,7 @@ import preptool.model.language.Language;
 /**
  * An interface that specifies a listener that is called when the set
  * of available languages has changed
- * @author cshaw
+ * @author Corey Shaw
  */
 public interface LanguageChangeListener {
 

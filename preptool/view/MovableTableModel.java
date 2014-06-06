@@ -32,7 +32,7 @@ import javax.swing.table.DefaultTableModel;
  * moves a single row within the table, and fires a special move event that
  * distinguishes from simply updating the objects in each row
  * 
- * @author cshaw
+ * @author Corey Shaw
  */
 public class MovableTableModel extends DefaultTableModel implements
         IMovableTableModel {

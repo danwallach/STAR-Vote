@@ -62,7 +62,7 @@ import printer.PrintImageUtils;
  * ALayoutManager is a more useful abstraction of the LayoutManager, providing
  * methods for different types of pages, and also implementing a card visitor to
  * layout the different types of cards.
- * @author cshaw
+ * @author Corey Shaw
  */
 public abstract class
         ALayoutManager implements ILayoutManager {
@@ -676,7 +676,7 @@ public abstract class
      * tied to the LayoutManager) knows what to do with it. Then the
      * makeIntoPanels method can be called and a list of JPanels is returned
      * with all information laid out properly.
-     * @author cshaw
+     * @author Corey Shaw
      */
     public interface ICardLayout {
 

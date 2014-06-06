@@ -32,7 +32,7 @@ import supervisor.model.Model;
 /**
  * The Supervisor's view. The common denominator is simply the frame, and the
  * observer that switches views between the active and inactive UI.
- * @author cshaw
+ * @author Corey Shaw
  */
 @SuppressWarnings("serial")
 public class View extends JFrame {

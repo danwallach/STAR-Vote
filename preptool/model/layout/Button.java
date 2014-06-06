@@ -33,7 +33,7 @@ import preptool.model.XMLTools;
 
 /**
  * A Button is a component that executes an action in VoteBox when clicked.
- * @author cshaw
+ * @author Corey Shaw
  */
 public class Button extends ALayoutComponent {
 

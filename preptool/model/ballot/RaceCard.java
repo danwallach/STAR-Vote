@@ -41,7 +41,7 @@ import votebox.middle.Properties;
 /**
  * RaceCard is the implementation of an ACard that constitutes a race with
  * single candidates.
- * @author cshaw, Mircea C. Berechet
+ * @author Corey Shaw, Mircea C. Berechet
  */
 public class RaceCard extends ACard {
 

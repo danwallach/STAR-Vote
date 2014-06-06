@@ -35,7 +35,7 @@ import preptool.model.XMLTools;
  * that is anything that can be laid out and displayed on the screen, including
  * labels, buttons, and toggle buttons. An ALayoutComponent records its size and
  * position, and the relative position of other ALayoutComponents on the page.
- * @author cshaw
+ * @author Corey Shaw
  */
 public abstract class ALayoutComponent implements Cloneable {
 

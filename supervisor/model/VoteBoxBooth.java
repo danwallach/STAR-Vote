@@ -24,7 +24,7 @@ package supervisor.model;
 
 /**
  * The model of a VoteBox booth on the network
- * @author cshaw
+ * @author Corey Shaw
  */
 public class VoteBoxBooth extends AMachine {
 

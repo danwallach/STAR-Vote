@@ -29,7 +29,7 @@ import javax.swing.JPanel;
 /**
  * An interface that is passed to a PreviewPane and is called whenever the
  * PreviewPane wants the current panels from the card.
- * @author cshaw
+ * @author Corey Shaw
  */
 public interface IPreviewPaneGenerator {
 

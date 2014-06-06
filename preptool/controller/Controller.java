@@ -30,7 +30,7 @@ import preptool.view.*;
  * view and creates the adapters necesarry for communication between the model
  * and view
  * 
- * @author cshaw
+ * @author Corey Shaw
  */
 public class Controller {
 

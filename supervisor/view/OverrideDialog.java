@@ -43,7 +43,7 @@ import supervisor.model.Model;
  * authorization. The dialog asks if the user wants to cancel the ballot, commit
  * the ballot, or not override anything.
  *
- * @author cshaw
+ * @author Corey Shaw
  */
 @SuppressWarnings("serial")
 public class OverrideDialog extends JDialog {

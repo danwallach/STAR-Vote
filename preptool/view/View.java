@@ -83,7 +83,7 @@ import preptool.view.dragndrop.ListTransferListener;
  * The View is the entire graphical user interface of the program. It extends a
  * JFrame, which holds all of the components of the View.
  * 
- * @author cshaw
+ * @author Corey Shaw
  */
 public class View extends JFrame {
 

@@ -29,7 +29,7 @@ import org.w3c.dom.Element;
 
 /**
  * A component that represents the background image of a page
- * @author cshaw
+ * @author Corey Shaw
  */
 public class Background extends ALayoutComponent {
 

@@ -37,7 +37,7 @@ import preptool.view.ProgressInfo;
 /**
  * Interface specifying a LayoutManager. On the highest level, the purpose of a
  * LayoutManager is to take a Ballot and produce a corresponding Layout.
- * @author cshaw
+ * @author Corey Shaw
  */
 public interface ILayoutManager {
 

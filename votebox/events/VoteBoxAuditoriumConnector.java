@@ -41,7 +41,7 @@ import auditorium.AuditoriumHost.Pair;
  * Auditorium, handles the VoteBox messaging protocol, and generates events to
  * the application.
  * 
- * @author cshaw
+ * @author Corey Shaw
  */ /* TODO Revise these comments */
 public class VoteBoxAuditoriumConnector {
 

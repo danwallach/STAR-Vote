@@ -39,7 +39,7 @@ import printer.PrintImageUtils;
  * A set of static functions useful for rendering different types of layout
  * components. These methods are independent of implementation as they take many
  * customization parameters.
- * @author cshaw, ttorous, mbernhard, mberichet
+ * @author Corey Shaw, ttorous, mbernhard, mberichet
  */
 public class RenderingUtils {
 

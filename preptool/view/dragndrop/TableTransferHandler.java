@@ -40,7 +40,7 @@ import preptool.view.IMovableTableModel;
  * Inspired by Copied from
  * http://java.sun.com/docs/books/tutorial/uiswing/examples/dnd/ExtendedDnDDemoProject/src/dnd/TableTransferHandler.java
  * <br>
- * Modifications by cshaw
+ * Modifications by Corey Shaw
  */
 public class TableTransferHandler extends StringTransferHandler {
 

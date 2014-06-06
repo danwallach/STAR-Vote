@@ -24,7 +24,7 @@ package supervisor.model;
 
 /**
  * The model of a supervisor machine on the network.
- * @author cshaw
+ * @author Corey Shaw
  */
 public class SupervisorMachine extends AMachine {
 

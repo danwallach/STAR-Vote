@@ -33,7 +33,7 @@ import preptool.model.language.Language;
  * A ToggleButton is similar to a button, but it holds state in that it can
  * either be selected or deselected. It is usually contained within a
  * ToggleButtonGroup, which specifies a strategy for selection of these buttons.
- * @author cshaw
+ * @author Corey Shaw
  */
 public class ToggleButton extends ALayoutComponent {
 

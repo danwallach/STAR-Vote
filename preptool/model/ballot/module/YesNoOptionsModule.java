@@ -38,7 +38,7 @@ import preptool.view.View;
 /**
  * A YesNoOptionsModule is a module that contains CardElements corresponding to
  * Yes and No options on a card. This module does not have a view.
- * @author cshaw
+ * @author Corey Shaw
  */
 public class YesNoOptionsModule extends AModule {
 

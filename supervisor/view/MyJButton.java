@@ -37,7 +37,7 @@ import supervisor.Supervisor;
  * A decorator for a JButton that uses a standardized font, and turns on
  * antialiasing.
  *
- * @author cshaw
+ * @author Corey Shaw
  */
 @SuppressWarnings("serial")
 public class MyJButton extends JButton {

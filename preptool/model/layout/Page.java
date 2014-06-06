@@ -34,7 +34,7 @@ import preptool.model.XMLTools;
  * A Page represents what a user would see on the screen at any point during
  * voting. Each Page contains a list of ALayoutComponents, which keep track of
  * their size and location, and can be rendered on the screen.
- * @author cshaw
+ * @author Corey Shaw
  */
 public class Page {
 

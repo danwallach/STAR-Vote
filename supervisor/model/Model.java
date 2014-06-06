@@ -53,7 +53,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * onto the network, generating and traking voters and pins, authorizing machines, opening and closing elections, and
  * much more. Also contains a link to Auditorium, for broadcasting (and hearing) messages on the network.
  * 
- * @author cshaw
+ * @author Corey Shaw
  */
 public class Model {
 

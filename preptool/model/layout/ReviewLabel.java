@@ -26,7 +26,7 @@ import java.awt.Dimension;
 
 /**
  * A special type of Label that is seen on review screens.
- * @author cshaw
+ * @author Corey Shaw
  */
 public class ReviewLabel extends Label {
 

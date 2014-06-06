@@ -34,7 +34,7 @@ import preptool.model.XMLTools;
  * The Layout class encapsulates all of the information that sizes and positions
  * items in the ballot. It contains a list of pages, that each contain a number
  * of components that VoteBox can display.
- * @author cshaw
+ * @author Corey Shaw
  */
 public class Layout {
 

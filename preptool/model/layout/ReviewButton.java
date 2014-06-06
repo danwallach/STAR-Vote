@@ -27,7 +27,7 @@ import java.awt.Dimension;
 
 /**
  * A special type of Button that is seen on review screens.
- * @author cshaw
+ * @author Corey Shaw
  */
 public class ReviewButton extends Button {
 

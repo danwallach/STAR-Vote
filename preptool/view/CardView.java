@@ -39,7 +39,7 @@ import preptool.model.language.Language;
  * A CardView is a panel that is shown in the card editor pane. It contains a
  * list of module views, displaying them in rows on the panel.
  * 
- * @author cshaw
+ * @author Corey Shaw
  */
 public class CardView extends JPanel implements IMultiLanguageEditor {
 

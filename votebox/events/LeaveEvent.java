@@ -25,7 +25,7 @@ package votebox.events;
 /**
  * An event that is fired whenever a connection to another machine is lost. This
  * event is not an IAnnounceEvent and has no sexpression form.
- * @author cshaw
+ * @author Corey Shaw
  */
 public class LeaveEvent {
 

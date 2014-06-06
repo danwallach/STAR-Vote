@@ -34,7 +34,7 @@ import javax.swing.*;
 
 /**
  * Encapsulates a party's localized name and abbreviation.
- * @author cshaw
+ * @author Corey Shaw
  */
 public class Party extends JLabel {
 
@@ -43,6 +43,8 @@ public class Party extends JLabel {
 	 */
 	public static Party NO_PARTY = new Party();
 
+    /** A special party that will allow parties to be added to the list of parties */
+    private final static Party EDIT_PARTY = new Party("Edit...", "Edit...");
 
 	/**
 	 * The name of the party
@@ -61,6 +63,13 @@ public class Party extends JLabel {
 		name = new LocalizedString();
 		abbrev = new LocalizedString();
 	}
+
+    public Party(String name, String abbrev) {
+        this();
+
+        setName(Language.getLanguageForName("English"), name);
+        setAbbrev(Language.getLanguageForName("English"), abbrev);
+    }
 
 	/**
 	 * Clears the party so it is identical to NO_PARTY - used when deleting a
@@ -95,7 +104,14 @@ public class Party extends JLabel {
 		return name.get(lang);
 	}
 
-	/**
+    /**
+     * @return
+     */
+    public static Party getEditParty() {
+        return EDIT_PARTY;
+    }
+
+    /**
 	 * @param lang the language of this abbreviation
 	 * @param abbrev the abbreviation to set
 	 */

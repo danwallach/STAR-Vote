@@ -49,7 +49,7 @@ import supervisor.model.*;
  *
  * TODO We may revise this to include password protection or some form of authentication
  *
- * @author cshaw
+ * @author Corey Shaw
  */
 @SuppressWarnings("serial")
 public class InactiveUI extends JPanel {

@@ -27,7 +27,7 @@ import javax.swing.JPanel;
 /**
  * A superclass for module views.  It subclasses JPanel and also includes
  * the IMultiLanguageEditor interface.
- * @author cshaw
+ * @author Corey Shaw
  */
 public abstract class AModuleView extends JPanel implements
 		IMultiLanguageEditor {

@@ -30,7 +30,7 @@ import votebox.AuditoriumParams;
 /**
  * This is the main entry point of the Supervisor. It is the "Controller" of the
  * MVC pattern.
- * @author cshaw
+ * @author Corey Shaw
  */
 public class Supervisor {
 

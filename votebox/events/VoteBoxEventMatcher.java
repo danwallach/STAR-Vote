@@ -30,7 +30,7 @@ import sexpression.ASExpression;
  * exists in its own class so that messages that contain other messages can have
  * their own VoteBoxEventMatchers that only use the rules of the contained
  * messages.
- * @author cshaw
+ * @author Corey Shaw
  */
 public class VoteBoxEventMatcher {
 

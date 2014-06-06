@@ -45,7 +45,7 @@ import supervisor.model.TapMachine;
  * and a grid of all of the machines on the network as well as controls
  * for those machines.
  *
- * @author cshaw
+ * @author Corey Shaw
  */
 @SuppressWarnings("serial")
 public class ActiveUI extends JPanel {

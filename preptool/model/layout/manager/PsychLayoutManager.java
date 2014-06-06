@@ -51,7 +51,7 @@ import preptool.model.layout.*;
  * PsychLayoutManager is a concrete implementation of a LayoutManager, as
  * specified by the Psychology department.<br>
  * See the wiki for more details about this layout
- * @author cshaw, ttorous, derrley
+ * @author Corey Shaw, ttorous, derrley
  */
 public class PsychLayoutManager extends ALayoutManager {
 
@@ -200,7 +200,7 @@ public class PsychLayoutManager extends ALayoutManager {
      * PsychLayoutPanel is a subclass of JFrame and is used to temporarily hold
      * layout components so that GridBagLayout can be used to get the locations
      * of all of the components.
-     * @author cshaw
+     * @author Corey Shaw
      */
     public class PsychLayoutPanel extends JFrame {
 

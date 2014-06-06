@@ -38,7 +38,7 @@ import supervisor.model.*;
  * attempts to recreate it, the MVG simply calls update on the existing view,
  * and then returns it.
  *
- * @author cshaw
+ * @author Corey Shaw
  */
 public class MachineViewGenerator {
 

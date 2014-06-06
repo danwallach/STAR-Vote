@@ -37,7 +37,7 @@ import sexpression.stream.*;
  * Temporary class for tallying votes as they are seen (unencrypted) on the
  * network
  * 
- * @author cshaw
+ * @author Corey Shaw
  */
 public class Tallier implements ITallier{
 

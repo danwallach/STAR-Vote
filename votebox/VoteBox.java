@@ -67,7 +67,7 @@ import java.util.List;
  * 3) The votebox "middle" (that is, the link between the voter and the backend,
  * the gui)
  * 
- * @author derrley, cshaw
+ * @author derrley, Corey Shaw
  */
 public class VoteBox{
 

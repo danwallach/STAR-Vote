@@ -43,7 +43,7 @@ import org.xml.sax.SAXException;
 
 /**
  * Static methods for reading, writing, and formatting XML documents.
- * @author cshaw
+ * @author Corey Shaw
  */
 public class XMLTools {
 

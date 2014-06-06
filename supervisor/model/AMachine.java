@@ -29,7 +29,7 @@ import java.util.Observer;
  * This is a mini-model in the machine MVC, which will be contained entirely within the
  * larger Supervisor MVC.
  *
- * @author cshaw
+ * @author Corey Shaw
  */
 public abstract class AMachine implements Comparable {
 

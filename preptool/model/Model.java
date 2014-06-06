@@ -66,7 +66,7 @@ import preptool.view.dialog.ProgressDialog;
  * Implementation of the model of the preptool. Contains a Ballot and a
  * LayoutManager.
  * 
- * @author cshaw
+ * @author Corey Shaw
  */
 public class Model {
 

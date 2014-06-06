@@ -25,7 +25,7 @@ package preptool.controller.exception;
 /**
  * Exception thrown when an error occurs during an open ballot operation.
  * 
- * @author cshaw
+ * @author Corey Shaw
  */
 public class BallotOpenException extends RuntimeException {
 

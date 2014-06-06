@@ -40,7 +40,7 @@ import javax.swing.TransferHandler;
  * Inspired by Copied from
  * http://java.sun.com/docs/books/tutorial/uiswing/examples/dnd/ExtendedDnDDemoProject/src/dnd/StringTransferHandler.java
  * <br>
- * Modifications by cshaw
+ * Modifications by Corey Shaw
  */
 public abstract class StringTransferHandler extends TransferHandler {
 

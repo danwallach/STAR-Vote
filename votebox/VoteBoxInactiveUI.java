@@ -35,7 +35,7 @@ import javax.swing.JLabel;
 /**
  * The view that is shown for a booth that is not currently voting - mainly shows
  * that booth's label
- * @author cshaw
+ * @author Corey Shaw
  */
 @SuppressWarnings("serial")
 public class VoteBoxInactiveUI extends JFrame implements IVoteBoxInactiveUI {

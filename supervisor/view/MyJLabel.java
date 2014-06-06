@@ -36,7 +36,7 @@ import supervisor.Supervisor;
  * A decorator for a JLabel that uses a standardized font, and turns on
  * antialiasing.
  *
- * @author cshaw
+ * @author Corey Shaw
  */
 @SuppressWarnings("serial")
 public class MyJLabel extends JLabel {

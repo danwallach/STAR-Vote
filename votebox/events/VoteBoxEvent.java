@@ -35,7 +35,7 @@ import sexpression.*;
  * https://sys.cs.rice.edu/votebox/trac/wiki/VotingMessages</a> for a complete
  * list of messages.
  * 
- * @author cshaw
+ * @author Corey Shaw
  */
 public class VoteBoxEvent extends AAnnounceEvent {
 

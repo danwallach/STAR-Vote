@@ -54,14 +54,14 @@ import preptool.view.View;
  * for this module is a large text area for the user to enter a large amount of
  * text.
  * 
- * @author cshaw
+ * @author Corey Shaw
  */
 public class TextAreaModule extends AModule {
 
     /**
      * An inner class for the TextAreaModule's view
      * 
-     * @author cshaw
+     * @author Corey Shaw
      */
     private class ModuleView extends AModuleView {
 

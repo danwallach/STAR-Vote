@@ -42,7 +42,7 @@ import supervisor.model.SupervisorMachine;
  *
  * NOTE: no supervisor will have a machine representation of itself,
  *
- * @author cshaw
+ * @author Corey Shaw
  */
 @SuppressWarnings("serial")
 public class SupervisorMachineView extends AMachineView {

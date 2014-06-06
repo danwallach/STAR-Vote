@@ -34,7 +34,7 @@ import preptool.model.language.Language;
 /**
  * A LanguageButton is a ToggleButton that specifies a language selection
  * on the ballot, thus it must have a Language.
- * @author cshaw
+ * @author Corey Shaw
  */
 public class LanguageButton extends ToggleButton {
 

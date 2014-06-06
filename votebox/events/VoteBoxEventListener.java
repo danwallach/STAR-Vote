@@ -26,7 +26,7 @@ package votebox.events;
  * A listener that handles various VoteBox message events on an auditorium
  * network. Events for a machine joining and leaving are included as well.
  * 
- * @author cshaw
+ * @author Corey Shaw
  */
 public interface VoteBoxEventListener {
 

@@ -41,7 +41,7 @@ import votebox.middle.Properties;
 /**
  * PresidentialRaceCard is the implementation of an ACard that constitutes a
  * race between candidates that have running mates.
- * @author cshaw, Mircea C. Berechet
+ * @author Corey Shaw, Mircea C. Berechet
  */
 public class PresidentialRaceCard extends ACard {
 

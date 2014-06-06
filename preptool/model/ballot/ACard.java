@@ -47,7 +47,7 @@ import preptool.model.layout.manager.ALayoutManager.ICardLayout;
  * cut taxes would be represented using an ACard. An ACard contains a list of
  * AModules, which contain information specific to the type of card, i.e. a
  * title or a list of candidates
- * @author cshaw
+ * @author Corey Shaw
  */
 public abstract class ACard {
 

@@ -43,7 +43,7 @@ import javax.swing.JScrollPane;
 /**
  * A panel that contains the live preview of the current card.
  * 
- * @author cshaw
+ * @author Corey Shaw
  */
 public class PreviewPane extends JPanel {
 

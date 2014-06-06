@@ -27,7 +27,7 @@ import sexpression.ASExpression;
 /**
  * A MatcherRule checks to see if the given sexpression is a match, and then
  * builds a corresponding event and returns it.
- * @author cshaw
+ * @author Corey Shaw
  */
 public interface MatcherRule {
 

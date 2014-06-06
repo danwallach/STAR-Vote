@@ -49,7 +49,7 @@ import preptool.model.language.Language;
  * languages are available. In addition, the bar can check to see if all
  * translation information has been entered, and show a warning if it hasn't.
  * 
- * @author cshaw
+ * @author Corey Shaw
  */
 public class LanguageBar extends JPanel implements ActionListener {
 

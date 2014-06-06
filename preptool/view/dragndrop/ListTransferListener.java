@@ -25,7 +25,7 @@ package preptool.view.dragndrop;
 /**
  * Interface for a listener that is called when a ListTransferHandler moves an
  * item in a JList
- * @author cshaw
+ * @author Corey Shaw
  */
 public interface ListTransferListener {
 

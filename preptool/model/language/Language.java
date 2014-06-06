@@ -22,15 +22,14 @@
 
 package preptool.model.language;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import javax.swing.ImageIcon;
 
 /**
  * The Language class encapsulates an icon (flag), name, and short name
  * (abbreviation) of a language.
- * @author cshaw
+ * @author Corey Shaw
  */
 public class Language {
 

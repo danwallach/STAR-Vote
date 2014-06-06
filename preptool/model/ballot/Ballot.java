@@ -41,7 +41,7 @@ import preptool.model.layout.manager.ALayoutManager;
  * choice the user must make on the ballot. Note that there are some choices
  * that the user makes that are not within the ballot, such as the user's
  * language. These are implemented purely in the Layout.
- * @author cshaw
+ * @author Corey Shaw
  */
 public class Ballot {
 
