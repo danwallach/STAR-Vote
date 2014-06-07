@@ -175,8 +175,9 @@ public class LayoutParser {
 
             switch(childName) {
 
-                case "Property":
-                case "ListProperty":    parseProperties(child, properties);
+                case "Property":        parseProperties(child, properties);
+                                        break;
+                case "ListProperty":    parseListProperties(child, properties);
                                         break;
 
                 case "Page":            pages.add(parsePage(child, view));
