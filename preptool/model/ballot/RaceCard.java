@@ -97,13 +97,11 @@ public class RaceCard extends ACard {
         ArrayList<String> dataStrings = new ArrayList<String>();
 
         for(CardElement ce : cardElements){
+            System.out.println("Getting card data: " + ce.getName(language, 0));
             dataStrings.add(ce.getName(language, 0));
         }
 
         return dataStrings;
-
-
-
     }
 
 

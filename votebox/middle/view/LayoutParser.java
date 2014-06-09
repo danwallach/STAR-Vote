@@ -223,6 +223,7 @@ public class LayoutParser {
                                             break;
 
                 case "Button":
+                case "FocusableLabel":
                 case "Label":               drawables.add(parseDrawable(child, null, view));
                                             break;
 
@@ -235,7 +236,7 @@ public class LayoutParser {
                                             break;
 
                 default:                    throw new LayoutParserException("I don't recognize " + child.getNodeName() +
-                                            " as being a ToggleButtonGroup, Button, or FocusableLabel", null);
+                                            " as being a ToggleButtonGroup, Button, or Label", null);
 
             }
 
@@ -273,7 +274,7 @@ public class LayoutParser {
 
             switch(childName) {
 
-                case "ToggleButtonGroup":   ToggleButton button = (ToggleButton) parseDrawable(child, group, view);
+                case "ToggleButton":   ToggleButton button = (ToggleButton) parseDrawable(child, group, view);
                                             verticals.add(button.getY());
                                             buttons.add(button);
                                             break;
@@ -373,6 +374,7 @@ public class LayoutParser {
                                       properties.getString("Next") == null && properties.getString("Previous")  == null;
 
                     /* If this node does not have any direction properties, it shouldn't be focusable */
+                    /* TODO This isn't used, in fact, Label isn't used. Dispose of it? */
                     drawable = allNull ? new Label(uniqueID, properties) : new FocusableLabel(uniqueID, properties);
 
                 }
@@ -387,7 +389,6 @@ public class LayoutParser {
 
             case "WriteInToggleButton":
 
-                /* TODO XML THIS */
                 drawable = new WriteInToggleButton(group, uniqueID,  properties, view);
                 break;
 

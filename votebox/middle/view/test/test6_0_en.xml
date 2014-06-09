@@ -2,8 +2,8 @@
 <!--suppress ALL -->
 <Layout>
 	<Page>
-		<Label x="100" y="101" uid="one">
+		<FocusableLabel x="100" y="101" uid="one">
 			<Property name="OnePropOne" type="String" value="property"></Property>
 			<Property name="OnePropTwo" type="String" value="property"></Property>
-		</Label>		<Button uid="two" x="200" y="201">
+		</FocusableLabel>		<Button uid="two" x="200" y="201">
 			<Property name="TwoPropOne" type="String" value="property"></Property>		</Button>	</Page></Layout>

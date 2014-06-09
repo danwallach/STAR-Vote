@@ -220,11 +220,12 @@ public class CardElement {
 	 * @param val the data to set
 	 */
 	public void setColumn(Language lang, int idx, Object val) {
-		if (idx == numNames)
-            /* If this is the edit parties dialog option, just ignore it */
+
+        if (idx == numNames) {
+             /* If this is the edit parties dialog option, just ignore it */
 			if (!val.equals("Edit..."))
                 party = (Party) val;
-
+        }
 		else
 			names[idx].set(lang, (String) val);
 	}
