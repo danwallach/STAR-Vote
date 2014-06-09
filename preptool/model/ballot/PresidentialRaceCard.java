@@ -99,6 +99,7 @@ public class PresidentialRaceCard extends ACard {
 
     /**
      * The blank review text here will be:
+     *
      *              TopRaceName: NONE
      *              BotRaceName: NONE
      *
@@ -112,8 +113,10 @@ public class PresidentialRaceCard extends ACard {
 
     /**
      * The review text for the selected candidates will be:
+     *
      *              TopRaceName: TopCandidateName
      *              BotRaceName: BotCandidateName
+     *
      * @see preptool.model.ballot.ACard#getReviewTitle(preptool.model.language.Language)
      */
     @Override
