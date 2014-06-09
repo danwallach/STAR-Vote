@@ -165,7 +165,7 @@ public class Printer{
         Boolean useTwoColumns = true;
         Boolean printerFriendly = true;
 
-        String pathToVVPATFolder = cleanFilePath +  "data" + fileChar + "media" + fileChar + "vvpat" + fileChar;
+        String pathToVVPATFolder = cleanFilePath + fileChar + "media" + fileChar + "vvpat" + fileChar;
         String barcodeFileNameNoExtension = pathToVVPATFolder + "Barcode";
         String lineSeparatorFileName = pathToVVPATFolder + "LineSeparator.png";
 
@@ -180,9 +180,10 @@ public class Printer{
             g.setColor(Color.BLACK);
             g.fillRect(0,0,10,10);
 
-            ImageIO.write(lineSeparator, "PNG", new File(lineSeparatorFileName));
-            ImageIO.write(barcode, "PNG", new File(barcodeFileNameNoExtension + ".png"));
-            ImageIO.write(barcode, "PNG", new File(barcodeFileNameNoExtension + "_flipped.png"));
+            File lineSeparatorFile =  new File(lineSeparatorFileName);
+            ImageIO.write(lineSeparator, "png", lineSeparatorFile);
+            ImageIO.write(barcode, "png", new File(barcodeFileNameNoExtension + ".png"));
+            ImageIO.write(barcode, "png", new File(barcodeFileNameNoExtension + "_flipped.png"));
         }
         catch (IOException e) { System.err.println("Could not write barcode image to a file."); }
 
