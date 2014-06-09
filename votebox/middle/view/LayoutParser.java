@@ -177,6 +177,7 @@ public class LayoutParser {
 
                 case "Property":        parseProperties(child, properties);
                                         break;
+
                 case "ListProperty":    parseListProperties(child, properties);
                                         break;
 
@@ -343,10 +344,10 @@ public class LayoutParser {
 
             switch(childName) {
 
-                case "Property":        parseListProperties(child, properties);
+                case "Property":        parseProperties(child, properties);
                                         break;
 
-                case "ListProperty":    parseProperties(child, properties);
+                case "ListProperty":    parseListProperties(child, properties);
                                         break;
 
                 case "#text":           break;
