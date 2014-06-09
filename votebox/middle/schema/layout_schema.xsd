@@ -19,6 +19,7 @@
       <xs:element name="Property" type="propertyType" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="ListProperty" type="listPropertyType" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="Label" type="drawableType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="FocusableLabel" type="drawableType" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="Button" type="drawableType" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="ToggleButtonGroup" type="groupType" minOccurs="0" maxOccurs="unbounded"/>
     </xs:choice>
