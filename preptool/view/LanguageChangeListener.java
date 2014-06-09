@@ -36,7 +36,8 @@ public interface LanguageChangeListener {
 
 	/**
 	 * Called when the set of languages has changed
-	 * @param languages the new array of languages
+     *
+	 * @param languages         the new array of languages
 	 */
 	public void languagesChanged(ArrayList<Language> languages);
 	

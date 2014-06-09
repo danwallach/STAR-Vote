@@ -31,8 +31,8 @@ public interface IMovableTableModel {
     /**
      * Moves a row within the table
      *
-     * @param from the row to move
-     * @param to the position to move to
+     * @param from      the row to move
+     * @param to        the position to move to
      */
     public void moveRow(int from, int to);
     

@@ -67,27 +67,35 @@ public class MovableTableModel extends DefaultTableModel implements
      * Moves the row from index 'from' to index 'to', and fires a table move
      * event
      * 
-     * @param from
-     *            the from index
-     * @param to
-     *            the to index
+     * @param from      the from index
+     * @param to        the to index
      */
     @SuppressWarnings("unchecked")
     public void moveRow(int from, int to) {
+
+        /* Make sure they're not at the same location */
         if (from != to) {
-            Vector row = (Vector) dataVector.get( from );
-            if (to > from) {
+
+            /* Pull the from information */
+            Vector row = (Vector) dataVector.get(from);
+
+            /* If to is further down */
+            if (to > from)
+                /* Slide up other elements in between to and from */
                 for (int i = from; i < to; i++)
-                    dataVector.set( i, dataVector.get( i + 1 ) );
-            }
-            else {
+                    dataVector.set(i, dataVector.get(i + 1));
+
+            else
+                /* Slide down other elements between to and from */
                 for (int i = from; i > to; i--)
-                    dataVector.set( i, dataVector.get( i - 1 ) );
-            }
-            dataVector.set( to, row );
+                    dataVector.set(i, dataVector.get(i - 1));
+
+            /* Set the correct row to "to" */
+            dataVector.set(to, row);
         }
-        fireTableChanged( new TableModelEvent( this, from, to,
-                TableModelEvent.ALL_COLUMNS, MOVE ) );
+
+        /* Notify the observers that the table has changed */
+        fireTableChanged(new TableModelEvent(this, from, to, TableModelEvent.ALL_COLUMNS, MOVE));
     }
 
 }

@@ -108,83 +108,107 @@ public class LanguageBar extends JPanel implements ActionListener {
     /**
      * Constructs a new LanguageBar
      * 
-     * @param view
-     *            the view
-     * @param ed
-     *            the editor
-     * @param langs
-     *            the languages
-     * @param startLanguage
-     *            the starting language
+     * @param view                  the view
+     * @param ed                    the editor
+     * @param langs                 the languages
+     * @param startLanguage         the starting language
      */
-    public LanguageBar(View view, IMultiLanguageEditor ed,
-            ArrayList<Language> langs, Language startLanguage) {
+    public LanguageBar(View view, IMultiLanguageEditor ed, ArrayList<Language> langs, Language startLanguage) {
+
+        /* Basic setup */
         super();
         this.view = view;
         this.editor = ed;
         languages = langs;
-        currentLanguage = (startLanguage != null) ? startLanguage : languages
-                .get( 0 );
+        currentLanguage = (startLanguage != null) ? startLanguage : languages.get(0);
 
-        setBorder( BorderFactory.createEtchedBorder() );
-        setLayout( new GridBagLayout() );
+        /* Set up the border and layout */
+        setBorder(BorderFactory.createEtchedBorder());
+        setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
+        /* Set up variables and add a new label for the language */
         c.gridx = 0;
         c.gridy = 0;
-        c.insets = new Insets( 3, 3, 3, 0 );
+        c.insets = new Insets(3, 3, 3, 0);
         c.anchor = GridBagConstraints.LINE_START;
-        add( new JLabel( "Language: " ), c );
+        add(new JLabel("Language: "), c);
 
-        languageButton = new JButton( currentLanguage.getName(),
-                currentLanguage.getIcon() );
-        languageButton.addActionListener( new ActionListener() {
+        /* Set up a new button for the language */
+        languageButton = new JButton(currentLanguage.getName(), currentLanguage.getIcon());
+
+        /* Create an ActionListener for the language menu */
+        languageButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                languageMenu.show( languageButton, 0, -(int) languageMenu
-                        .getPreferredSize().getHeight() );
+                languageMenu.show(languageButton, 0, -(int) languageMenu.getPreferredSize().getHeight());
             }
         } );
-        c.gridx = 1;
-        add( languageButton, c );
 
+        /* Add the language button */
+        c.gridx = 1;
+        add(languageButton, c);
+
+        /* Initialise the popup menu*/
         initializePopupMenu();
 
+        /* Create a new status label and add it to the form */
         statusLabel = new JLabel();
-        statusLabel.setForeground( Color.RED );
+        statusLabel.setForeground(Color.RED);
         c.gridx = 2;
         c.weightx = 1;
-        c.insets = new Insets( 3, 10, 3, 0 );
-        add( statusLabel, c );
+        c.insets = new Insets(3, 10, 3, 0);
+        add(statusLabel, c);
 
+        /* Set up a new ActionListener*/
         ActionListener checkTranslationTask = new ActionListener() {
+
             public void actionPerformed(ActionEvent e) {
+
                 boolean res = false;
+
+                /* For each language see if there needs translation information  */
                 for (Language lang : languages)
-                    res |= editor.needsTranslation( lang );
-                if (res) {
-                    statusLabel.setText( "Missing translation information" );
-                }
-                else {
-                    statusLabel.setText( "" );
-                }
+                    res |= editor.needsTranslation(lang);
+
+                /* Set the text based on if there needs translation information */
+                String s = res ? "Missing translation information" : "";
+                statusLabel.setText(s);
             }
         };
-        Timer timer = new Timer( 5000, checkTranslationTask );
-        timer.setInitialDelay( 100 );
-        timer.setRepeats( true );
+
+        /* Set up the timer */
+        Timer timer = new Timer(5000, checkTranslationTask);
+        timer.setInitialDelay(100);
+        timer.setRepeats(true);
         timer.start();
 
-        view.addLanguageChangeListener( new LanguageChangeListener() {
+        /* Set up a new LanguageChangeListener */
+        view.addLanguageChangeListener(new LanguageChangeListener() {
+
             public void languagesChanged(ArrayList<Language> langs) {
+
                 languages = langs;
-                if (!languages.contains( currentLanguage )) {
-                    currentLanguage = languages.get( 0 );
-                    languageButton.setIcon( currentLanguage.getIcon() );
-                    languageButton.setText( currentLanguage.getName() );
-                    editor.languageSelected( currentLanguage );
-                    languageSelected.notifyObservers( currentLanguage );
+
+                /* See if the current language is contained within languages */
+                if (!languages.contains(currentLanguage)) {
+
+                    /* If not, set the current language to the first language */
+                    currentLanguage = languages.get(0);
+
+                    /* Set the icon and text as well */
+                    languageButton.setIcon(currentLanguage.getIcon());
+                    languageButton.setText(currentLanguage.getName());
+
+                    /* Also set up the editor and notify observers */
+                    editor.languageSelected(currentLanguage);
+                    languageSelected.notifyObservers(currentLanguage);
+
                 }
-                editor.updatePrimaryLanguage( languages.get( 0 ) );
+
+                /* Update the primary language */
+                editor.updatePrimaryLanguage(languages.get(0));
+
+                /* Initialise the popup menu */
                 initializePopupMenu();
             }
         } );
@@ -196,22 +220,36 @@ public class LanguageBar extends JPanel implements ActionListener {
      * pressed the Edit button, show the Language Dialog.
      */
     public void actionPerformed(ActionEvent e) {
+
         Language lang = null;
+
+        /* Go through each of the languages and check if the event source is one of the menu items */
         for (int i = 0; i < languages.size(); i++) {
-            if (e.getSource() == menuItems.get( i ))
-                lang = languages.get( i );
+
+            /* If it is, set the language to that one */
+            if (e.getSource() == menuItems.get(i))
+                lang = languages.get(i);
         }
+
+        /* Check that language isn't null and not the current language */
         if (lang != null && currentLanguage != lang) {
+
+            /* Now set the current language to this language */
             currentLanguage = lang;
-            languageButton.setIcon( currentLanguage.getIcon() );
-            languageButton.setText( currentLanguage.getName() );
-            editor.languageSelected( lang );
-            languageSelected.notifyObservers( currentLanguage );
+
+            /* Also update the icon and text */
+            languageButton.setIcon(currentLanguage.getIcon());
+            languageButton.setText(currentLanguage.getName());
+
+            /* Make sure to update the editor language and notify observers */
+            editor.languageSelected(lang);
+            languageSelected.notifyObservers(currentLanguage);
+
         }
         else {
-            if (e.getSource() == editItem) {
+            /* If the source of th event is an edit item, display the language dialog */
+            if (e.getSource() == editItem)
                 view.showLanguageDialog();
-            }
         }
     }
 
@@ -219,47 +257,58 @@ public class LanguageBar extends JPanel implements ActionListener {
      * Updates the editor with the current language
      */
     public void refreshEditorLanguage() {
-        editor.updatePrimaryLanguage( languages.get( 0 ) );
-        editor.languageSelected( currentLanguage );
+        /* TODO should this be configurable (not the first language?)*/
+        editor.updatePrimaryLanguage(languages.get(0));
+        editor.languageSelected(currentLanguage);
     }
 
     /**
      * Initializes the popup menu
      */
     private void initializePopupMenu() {
+
+        /* Setup */
         languageMenu = new JPopupMenu();
         menuItems = new ArrayList<JMenuItem>();
-        for (int i = 0; i < languages.size(); i++) {
-            JMenuItem item = new JMenuItem( languages.get( i ).getName(),
-                    languages.get( i ).getIcon() );
-            item.addActionListener( this );
-            menuItems.add( item );
-            languageMenu.add( item );
+
+        /* For each of the languages... */
+        for (Language language : languages) {
+
+            /* Create a representative menu item and add an ActionListener for it */
+            JMenuItem item = new JMenuItem(language.getName(), language.getIcon());
+            item.addActionListener(this);
+
+            /* Add the menuItem to menuItems and languageMenu */
+            menuItems.add(item);
+            languageMenu.add(item);
         }
+
         languageMenu.addSeparator();
-        editItem = new JMenuItem( "Edit..." );
-        editItem.addActionListener( this );
-        languageMenu.add( editItem );
+
+        /* Set up an edit menu option and associated ActionListener and add it */
+        editItem = new JMenuItem("Edit...");
+        editItem.addActionListener(this);
+        languageMenu.add(editItem);
     }
 
     /**
-     * @return the currentLanguage
+     * @return          the currentLanguage
      */
     public Language getCurrentLanguage() {
         return currentLanguage;
     }
 
     /**
-     * @return the primary language
+     * @return          the primary language
      */
     public Language getPrimaryLanguage() {
-        return languages.get( 0 );
+        return languages.get(0);
     }
 
     /**
      * Adds a language select listener
      */
     public void addLanguageSelectListener(Observer l) {
-        languageSelected.addObserver( l );
+        languageSelected.addObserver(l);
     }
 }

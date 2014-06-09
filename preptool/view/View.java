@@ -229,42 +229,39 @@ public class View extends JFrame {
      * in their respective locations. Does *NOT* show the frame: the Controller
      * is responsible for doing that once everything is initialized.
      * 
-     * @param m
-     *            the model of the program
+     * @param m         the model of the program
      */
     public View(Model m) {
-        super( "VoteBox Preparation Tool" );
+
+        super("VoteBox Preparation Tool");
         model = m;
         languageChangeListeners = new ArrayList<LanguageChangeListener>();
 
-        try {
-            UIManager
-                    .setLookAndFeel( UIManager.getSystemLookAndFeelClassName() );
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
+        try { UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); }
+        catch (Exception e) { e.printStackTrace(); }
 
-        // Mac OS X only: Use single menu bar at top of screen. Ignored on
-        // other platforms.
+        /*
+          TODO Mac OS X only: Use single menu bar at top of screen. Ignored on
+          other platforms.
 
-        // XXX: I think this doesn't fly if you set it after the UI has been
-        // initialized. It needs to be an argument to the JVM (e.g.
-        // -Dapple.laf.useScreenMenuBar=true) or set in the Info.plist of a .app
-        // (created with Jar Bundler or the jarbundler ant task). Similarly, the
-        // app's "dock name" and "dock icon" can be set this way. --dsandler
-        System.setProperty( "apple.laf.useScreenMenuBar", "true" );
+          XXX: I think this doesn't fly if you set it after the UI has been
+          initialized. It needs to be an argument to the JVM (e.g.
+          -Dapple.laf.useScreenMenuBar=true) or set in the Info.plist of a .app
+          (created with Jar Bundler or the jarbundler ant task). Similarly, the
+          app's "dock name" and "dock icon" can be set this way. --dsandler
+        */
+        System.setProperty("apple.laf.useScreenMenuBar", "true");
 
-        addWindowListener( new WindowAdapter() {
+        addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 exitButtonPressed();
             }
         } );
 
-        setDefaultCloseOperation( WindowConstants.DO_NOTHING_ON_CLOSE );
-        setSize( 1000, 800 );
-        setLayout( new GridBagLayout() );
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        setSize(1000, 800);
+        setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         
         initializePrefMenu();
@@ -275,44 +272,40 @@ public class View extends JFrame {
         c.gridwidth = 2;
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.FIRST_LINE_START;
-        add( toolbar, c );
+        add(toolbar, c);
 
         initializeListPanel();
         c.gridy = 1;
         c.weighty = 0;
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.LAST_LINE_START;
-        listPanel.add( listToolbar, c );
-        listPanel.setBorder( BorderFactory
-                .createBevelBorder( BevelBorder.LOWERED ) );
+        listPanel.add(listToolbar, c);
+        listPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 
         initializeCardPanel();
-        JSplitPane cardSplitPane = new JSplitPane( JSplitPane.VERTICAL_SPLIT,
-                true, cardPanel, previewPanel );
-        cardSplitPane.setDividerLocation( 400 );
+        JSplitPane cardSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, cardPanel, previewPanel);
+        cardSplitPane.setDividerLocation(400);
 
         JPanel rightSide = new JPanel();
-        rightSide.setLayout( new GridBagLayout() );
+        rightSide.setLayout(new GridBagLayout());
         GridBagConstraints c2 = new GridBagConstraints();
         c2.gridx = 0;
         c2.gridy = 0;
         c2.weightx = 1;
         c2.weighty = 1;
         c2.fill = GridBagConstraints.BOTH;
-        rightSide.add( cardSplitPane, c2 );
+        rightSide.add(cardSplitPane, c2);
         c2.gridy = 1;
         c2.weighty = 0;
         IMultiLanguageEditor editor = new IMultiLanguageEditor() {
+
             public void languageSelected(Language lang) {
                 if (currentCardView != null)
-                    currentCardView.languageSelected( lang );
+                    currentCardView.languageSelected(lang);
             }
 
             public boolean needsTranslation(Language lang) {
-                if (currentCardView != null)
-                    return currentCardView.needsTranslation( lang );
-                else
-                    return false;
+                return currentCardView != null && currentCardView.needsTranslation(lang);
             }
 
             public void updatePrimaryLanguage(Language lang) {
@@ -320,18 +313,19 @@ public class View extends JFrame {
                     currentCardView.updatePrimaryLanguage( lang );
             }
         };
-        languageBar = new LanguageBar( this, editor, model.getLanguages(),
-                model.getLanguages().get( 0 ) );
-        languageBar.addLanguageSelectListener( new Observer() {
+
+        languageBar = new LanguageBar(this, editor, model.getLanguages(), model.getLanguages().get(0));
+
+        languageBar.addLanguageSelectListener(new Observer() {
             public void update(Observable o, Object arg) {
                 previewPanel.clear();
             }
         } );
-        rightSide.add( languageBar, c2 );
 
-        JSplitPane splitPane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT,
-                true, listPanel, rightSide );
-        splitPane.setDividerLocation( 300 );
+        rightSide.add(languageBar, c2);
+
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, listPanel, rightSide);
+        splitPane.setDividerLocation(300);
         c.gridx = 0;
         c.gridy = 1;
         c.gridwidth = 1;
@@ -339,19 +333,19 @@ public class View extends JFrame {
         c.weighty = 1;
         c.weightx = 1;
         c.fill = GridBagConstraints.BOTH;
-        add( splitPane, c );
+        add(splitPane, c);
 
         initializeMenuBar();
-        setJMenuBar( menuBar );
+        setJMenuBar(menuBar);
 
         initializePopupMenu();
 
         titleObserver = new Observer() {
             public void update(Observable o, Object arg) {
                 if (languageBar.getCurrentLanguage().equals(
-                    model.getLanguages().get( 0 ) )) {
+                    model.getLanguages().get(0))) {
                     int idx = cardList.getSelectedIndex();
-                    setCardTitle( model.getCardTitle( idx ), idx );
+                    setCardTitle(model.getCardTitle(idx), idx);
                     validate();
                     repaint();
                 }
@@ -366,8 +360,7 @@ public class View extends JFrame {
      * the user can choose which type
      */
     public void addCardButtonPressed() {
-        addCardMenu.show( addCardButton, 0, -(int) addCardMenu
-                .getPreferredSize().getHeight() );
+        addCardMenu.show(addCardButton, 0, -(int) addCardMenu.getPreferredSize().getHeight());
     }
     
     /**
@@ -375,8 +368,7 @@ public class View extends JFrame {
      * the user can choose which type
      */
     public void prefButtonPressed() {
-        prefMenu.show( prefButton, 0, (int) prefButton
-                .getPreferredSize().getHeight() );
+        prefMenu.show(prefButton, 0, (int) prefButton.getPreferredSize().getHeight());
     }
 
     /**
@@ -386,7 +378,7 @@ public class View extends JFrame {
      *            the listener
      */
     public void addLanguageChangeListener(LanguageChangeListener l) {
-        languageChangeListeners.add( l );
+        languageChangeListeners.add(l);
     }
 
     /**
@@ -396,17 +388,16 @@ public class View extends JFrame {
     public void cardListSelectionChanged() {
         int idx = cardList.getSelectedIndex();
         if (idx == -1) {
-            setCardPane( noCardsPanel );
-            deleteCardButton.setEnabled( false );
-            moveUpCardButton.setEnabled( false );
-            moveDownCardButton.setEnabled( false );
+            setCardPane(noCardsPanel);
+            deleteCardButton.setEnabled(false);
+            moveUpCardButton.setEnabled(false);
+            moveDownCardButton.setEnabled(false);
         }
         else {
-            setCardPane( new CardView( this, model.getCardType( idx ), model
-                    .getCardModules( idx ) ) );
-            deleteCardButton.setEnabled( true );
-            moveUpCardButton.setEnabled( (idx > 0) );
-            moveDownCardButton.setEnabled( (idx < cardListModel.size() - 1) );
+            setCardPane(new CardView(this, model.getCardType(idx), model.getCardModules(idx)));
+            deleteCardButton.setEnabled(true);
+            moveUpCardButton.setEnabled((idx > 0));
+            moveDownCardButton.setEnabled((idx < cardListModel.size() - 1));
         }
     }
 
@@ -415,22 +406,20 @@ public class View extends JFrame {
      * popup, then deletes the card and removes from the list
      */
     public void deleteCardButtonPressed() {
-        int answer = JOptionPane.showConfirmDialog( this,
-            "Are you sure you want to delete this card?", "Delete Card",
-            JOptionPane.YES_NO_OPTION );
+
+        int answer = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete this card?", "Delete Card", JOptionPane.YES_NO_OPTION);
+
         if (answer == JOptionPane.YES_OPTION) {
+
             int idx = cardList.getSelectedIndex();
-            int newIdx;
-            if (idx == cardListModel.size() - 1)
-                newIdx = idx - 1;
-            else
-                newIdx = idx + 1;
+            int newIdx = (idx == cardListModel.size() - 1) ? idx - 1 : idx + 1;
 
-            cardList.setSelectedIndex( newIdx );
-            model.deleteCard( idx );
+            cardList.setSelectedIndex(newIdx);
+            model.deleteCard(idx);
 
-            //Re-enable the Straight Party option if it gets removed
-            String removed = (String)cardListModel.remove( idx );
+            /* Re-enable the Straight Party option if it gets removed */
+            String removed = (String)cardListModel.remove(idx);
+
             if(removed.contains("Straight Party"))
                 addCardMenu.getComponent(idx).setEnabled(true);
 
@@ -444,18 +433,17 @@ public class View extends JFrame {
      * then exits
      */
     public void exitButtonPressed() {
-        int answer = JOptionPane
-                .showConfirmDialog(
-                    this,
-                    "If you exit, any changes you have made since the last time you saved the current ballot will be lost.  Save?",
-                    "Exit", JOptionPane.YES_NO_CANCEL_OPTION );
+
+        String prompt = "If you exit, any changes you have made since the last time you saved the current ballot will be lost.  Save?";
+        int answer = JOptionPane.showConfirmDialog(this, prompt, "Exit", JOptionPane.YES_NO_CANCEL_OPTION);
+
         if (answer == JOptionPane.YES_OPTION) {
             boolean saved = saveBallotButtonPressed();
             if (saved)
-                System.exit( 0 );
+                System.exit(0);
         }
         else if (answer == JOptionPane.NO_OPTION) {
-            System.exit( 0 );
+            System.exit(0);
         }
         else if (answer == JOptionPane.CANCEL_OPTION) {
             /* Do nothing in this case. Specifically, do not exit.*/
@@ -468,35 +456,40 @@ public class View extends JFrame {
      * long-running process)
      */
     public void exportButtonPressed() {
+
         try {
             String[] cardsNeedTranslation = model.checkTranslations();
+
             if (cardsNeedTranslation.length > 0) {
+
                 String body = "You have not entered translations for all text in this ballot.\n\nThe following cards are missing translations:\n";
+
                 for (String s : cardsNeedTranslation)
                     body += s + "\n";
+
                 body += "\nContinue exporting?";
-                int answer = JOptionPane.showConfirmDialog( this, body,
-                    "Export", JOptionPane.YES_NO_OPTION );
-                if (answer == JOptionPane.NO_OPTION)
-                    return;
+
+                int answer = JOptionPane.showConfirmDialog(this, body, "Export", JOptionPane.YES_NO_OPTION);
+
+                if (answer == JOptionPane.NO_OPTION) return;
             }
 
-            // Ask the user if he wants to export as a ZIP file - will be
-            // removed once the runtime supports ballots in ZIP format
-            int answer = JOptionPane.showConfirmDialog( this,
-                "Would you like to export the ballot as a ZIP file?",
-                "Export as ZIP", JOptionPane.YES_NO_OPTION );
+            /*
+              Ask the user if he wants to export as a ZIP file - will be
+              removed once the runtime supports ballots in ZIP format
+            */
+            String prompt = "Would you like to export the ballot as a ZIP file?";
+            int answer = JOptionPane.showConfirmDialog(this, prompt, "Export as ZIP", JOptionPane.YES_NO_OPTION);
 
             if (answer == JOptionPane.YES_OPTION) {
-                //JFileChooser fc = new JFileChooser();
+
             	JFileChooser fc = fileChooser;
-                fc.setFileFilter( new FileFilter() {
+
+                fc.setFileFilter(new FileFilter() {
                     @Override
                     public boolean accept(File f) {
                         String path = f.getAbsolutePath();
-                        return (f.isDirectory() || path.length() > 4
-                                && path.substring( path.length() - 4 ).equals(
-                                    ".zip" ));
+                        return (f.isDirectory() || path.length() > 4 && path.substring(path.length() - 4).equals(".zip"));
                     }
 
                     @Override
@@ -504,30 +497,34 @@ public class View extends JFrame {
                         return "Ballot export files";
                     }
                 } );
-                answer = fc.showDialog( this, "Export" );
+
+                answer = fc.showDialog(this, "Export");
+
                 if (answer == JFileChooser.APPROVE_OPTION) {
                     File file = fc.getSelectedFile();
-                    model.exportAsZip( this, file.getAbsolutePath() );
+                    model.exportAsZip(this, file.getAbsolutePath());
                 }
             }
             else {
-                //JFileChooser fc = new JFileChooser();
+
             	JFileChooser fc = fileChooser;
-                fc.setFileSelectionMode( JFileChooser.DIRECTORIES_ONLY );
-                answer = fc.showDialog( this, "Export" );
+                fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                answer = fc.showDialog(this, "Export");
+
                 if (answer == JFileChooser.APPROVE_OPTION) {
+
                     File file = fc.getSelectedFile();
                     file.mkdirs();
                     model.export( this, file.getAbsolutePath() );
+
                 }
             }
         }
         catch (BallotExportException e) {
-            JOptionPane
-                    .showMessageDialog(
-                        this,
-                        "An error occurred while exporting the ballot.\nPlease verify the directory is writable, and try again.",
-                        "Error", JOptionPane.ERROR_MESSAGE );
+
+            String error = "An error occurred while exporting the ballot.\nPlease verify the directory is writable, and try again.";
+
+            JOptionPane.showMessageDialog(this, error, "Error", JOptionPane.ERROR_MESSAGE);
 
         }
     }
@@ -536,11 +533,14 @@ public class View extends JFrame {
      * Fires a languages changed event
      */
     public void fireLanguagesChanged(ArrayList<Language> languages) {
-        model.setLanguages( languages );
+
+        model.setLanguages(languages);
+
         for (int i = 0; i < model.getNumCards(); i++)
-            setCardTitle( model.getCardTitle( i ), i );
+            setCardTitle(model.getCardTitle(i), i);
+
         for (LanguageChangeListener l : languageChangeListeners)
-            l.languagesChanged( languages );
+            l.languagesChanged(languages);
     }
 
     /**
@@ -548,15 +548,19 @@ public class View extends JFrame {
      * current card down one in the list
      */
     public void moveDownCardButtonPressed() {
+
         int idx = cardList.getSelectedIndex();
+
         if (idx < cardListModel.size() - 1) {
+
             int newIdx = idx + 1;
-            model.moveCard( idx, newIdx );
+            model.moveCard(idx, newIdx);
             invalidate();
-            String element = (String) cardListModel.remove( idx );
-            cardListModel.add( newIdx, element );
-            cardList.setSelectedIndex( newIdx );
+            String element = (String) cardListModel.remove(idx);
+            cardListModel.add(newIdx, element);
+            cardList.setSelectedIndex(newIdx);
             validate();
+
         }
     }
 
@@ -565,15 +569,19 @@ public class View extends JFrame {
      * current card up one in the list
      */
     public void moveUpCardButtonPressed() {
+
         int idx = cardList.getSelectedIndex();
+
         if (idx > 0) {
+
             int newIdx = idx - 1;
-            model.moveCard( idx, newIdx );
+            model.moveCard(idx, newIdx);
             invalidate();
-            String element = (String) cardListModel.remove( idx );
-            cardListModel.add( newIdx, element );
-            cardList.setSelectedIndex( newIdx );
+            String element = (String) cardListModel.remove(idx);
+            cardListModel.add(newIdx, element);
+            cardList.setSelectedIndex(newIdx);
             validate();
+
         }
     }
 
@@ -582,16 +590,16 @@ public class View extends JFrame {
      * then loads a fresh ballot
      */
     public void newBallotButtonPressed() {
-        int answer = JOptionPane
-                .showConfirmDialog(
-                    this,
-                    "If you start a new ballot, any changes you have made since the last time you saved the current ballot will be lost.  Continue?",
-                    "New Ballot", JOptionPane.YES_NO_OPTION );
+
+        String prompt = "If you start a new ballot, any changes you have made since the last time you saved the current ballot will be lost.  Continue?";
+
+        int answer = JOptionPane.showConfirmDialog(this, prompt, "New Ballot", JOptionPane.YES_NO_OPTION);
+
         if (answer == JOptionPane.YES_OPTION) {
             model.newBallot();
             cardListModel.removeAllElements();
-            setCardPane( noCardsPanel );
-            fireLanguagesChanged( model.getLanguages() );
+            setCardPane(noCardsPanel);
+            fireLanguagesChanged(model.getLanguages());
 
             addCardMenu.getComponent(0).setEnabled(true);
         }
@@ -605,21 +613,18 @@ public class View extends JFrame {
      */
     public void openBallotButtonPressed() {
         try {
-            int answer = JOptionPane
-                    .showConfirmDialog(
-                        this,
-                        "If you open a ballot, any changes you have made since the last time you saved the current ballot will be lost.  Continue?",
-                        "Open Ballot", JOptionPane.YES_NO_OPTION );
+
+            String prompt = "If you open a ballot, any changes you have made since the last time you saved the current ballot will be lost.  Continue?";
+            int answer = JOptionPane.showConfirmDialog(this, prompt, "Open Ballot", JOptionPane.YES_NO_OPTION);
+
             if (answer == JOptionPane.YES_OPTION) {
+
                 JFileChooser fc = new JFileChooser();
-            	//JFileChooser fc = fileChooser;
-                fc.setFileFilter( new FileFilter() {
+                fc.setFileFilter(new FileFilter() {
                     @Override
                     public boolean accept(File f) {
                         String path = f.getAbsolutePath();
-                        return (f.isDirectory() || (path.length() > 4
-                                && path.substring( path.length() - 4 ).equals(
-                                    ".bal" )));
+                        return (f.isDirectory() || (path.length() > 4 && path.substring(path.length() - 4).equals(".bal")));
                     }
 
                     @Override
@@ -627,39 +632,34 @@ public class View extends JFrame {
                         return "Ballot files";
                     }
                 } );
-                answer = fc.showOpenDialog( this );
+
+                answer = fc.showOpenDialog(this);
+
                 if (answer == JFileChooser.APPROVE_OPTION) {
+
                     File file = fc.getSelectedFile();
-                    model.open( file.getAbsolutePath() );
+                    model.open(file.getAbsolutePath());
                     cardListModel.removeAllElements();
-                    for (int i = 0; i < model.getNumCards(); i++) {
-                        cardListModel.addElement( model.getCardTitle( i ) );
-                    }
-                    if (cardListModel.size() > 0)
-                        cardList.setSelectedIndex( 0 );
-                    else
-                        cardList.setSelectedIndex( -1 );
 
-                    if(((String)cardListModel.get(0)).contains("Straight Party"))
-                        addCardMenu.getComponent(0).setEnabled(false);
-                    else
-                        addCardMenu.getComponent(0).setEnabled(true);
+                    for (int i = 0; i < model.getNumCards(); i++)
+                        cardListModel.addElement(model.getCardTitle(i));
 
+
+                    int set = cardListModel.size() > 0 ? 0 : -1;
+                    cardList.setSelectedIndex(set);
+
+                    boolean sp = !((String)cardListModel.get(0)).contains("Straight Party");
+                    addCardMenu.getComponent(0).setEnabled(sp);
                 }
-                fireLanguagesChanged( model.getLanguages() );
 
-
-
+                fireLanguagesChanged(model.getLanguages());
             }
-
-
         }
         catch (BallotOpenException e) {
-            JOptionPane
-                    .showMessageDialog(
-                        this,
-                        "An error occurred while opening the ballot.\nPlease verify the file is not corrupt, and try again.",
-                        "Error", JOptionPane.ERROR_MESSAGE );
+
+            String error = "An error occurred while opening the ballot.\nPlease verify the file is not corrupt, and try again.";
+
+            JOptionPane.showMessageDialog(this, error, "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
     }
@@ -669,13 +669,11 @@ public class View extends JFrame {
      * temporary directory and then launches VoteBox
      */
     public void previewButtonPressed() {
-        try {
-            model.previewBallot( this );
-        }
+
+        try { model.previewBallot(this); }
         catch (BallotPreviewException e) {
-            JOptionPane.showMessageDialog( this,
-                "An error occurred while previewing the ballot.", "Error",
-                JOptionPane.ERROR_MESSAGE );
+            String error = "An error occurred while previewing the ballot.";
+            JOptionPane.showMessageDialog(this, error, "Error", JOptionPane.ERROR_MESSAGE );
         }
     }
 
@@ -694,16 +692,15 @@ public class View extends JFrame {
      * location (confirming if overwrite), then saves the ballot
      */
     public boolean saveBallotButtonPressed() {
+
         try {
-            //JFileChooser fc = new JFileChooser();
+
         	JFileChooser fc = fileChooser;
-            fc.setFileFilter( new FileFilter() {
+            fc.setFileFilter(new FileFilter() {
                 @Override
                 public boolean accept(File f) {
                     String path = f.getAbsolutePath();
-                    return (f.isDirectory() || path.length() > 4
-                            && path.substring( path.length() - 4 ).equals(
-                                ".bal" ));
+                    return (f.isDirectory() || path.length() > 4 && path.substring(path.length() - 4).equals(".bal"));
                 }
 
                 @Override
@@ -711,15 +708,20 @@ public class View extends JFrame {
                     return "Ballot files";
                 }
             } );
-            int answer = fc.showSaveDialog( this );
+
+            int answer = fc.showSaveDialog(this);
+
             if (answer == JFileChooser.APPROVE_OPTION) {
+
                 File file = fc.getSelectedFile();
+
                 if (file.exists()) {
-                    answer = JOptionPane.showConfirmDialog( this,
-                        "The file you selected already exists. Overwrite?",
-                        "Overwrite Saved Ballot", JOptionPane.YES_NO_OPTION );
+
+                    String prompt = "The file you selected already exists. Overwrite?";
+                    answer = JOptionPane.showConfirmDialog(this, prompt, "Overwrite Saved Ballot", JOptionPane.YES_NO_OPTION);
+
                     if (answer == JOptionPane.YES_OPTION) {
-                        model.saveAs( file.getAbsolutePath() );
+                        model.saveAs(file.getAbsolutePath());
                         return true;
                     }
                 }
@@ -730,11 +732,8 @@ public class View extends JFrame {
             }
         }
         catch (BallotSaveException e) {
-            JOptionPane
-                    .showMessageDialog(
-                        this,
-                        "An error occurred while saving the ballot.\nPlease verify the directory is writable, and try again.",
-                        "Error", JOptionPane.ERROR_MESSAGE );
+            String error = "An error occurred while saving the ballot.\nPlease verify the directory is writable, and try again.";
+            JOptionPane.showMessageDialog(this, error, "Error", JOptionPane.ERROR_MESSAGE);
         }
         return false;
     }
@@ -746,11 +745,11 @@ public class View extends JFrame {
      *            the card view
      */
     public void setCardPane(CardView panel) {
-        setCardPane( (JPanel) panel );
+
+        setCardPane((JPanel) panel);
         currentCardView = panel;
         languageBar.refreshEditorLanguage();
-        model.getBallot().getCards().get( cardList.getSelectedIndex() )
-                .addModuleObserver( "Title", titleObserver );
+        model.getBallot().getCards().get(cardList.getSelectedIndex()).addModuleObserver("Title", titleObserver);
     }
 
     /**
@@ -782,10 +781,8 @@ public class View extends JFrame {
      *            the index
      */
     public void setCardTitle(String title, int idx) {
-        if (title.equals( "" ))
-            cardListModel.setElementAt( "<untitled>", idx );
-        else
-            cardListModel.setElementAt( title, idx );
+        String set = title.equals("") ? "<untitled>" : title;
+        cardListModel.setElementAt(set, idx);
     }
 
     /**
@@ -794,12 +791,12 @@ public class View extends JFrame {
      * in the ballot
      */
     public void showLanguageDialog() {
-        LanguagesDialog dialog = new LanguagesDialog( this, Language
-                .getAllLanguages(), model.getLanguages() );
-        dialog.setVisible( true );
-        if (dialog.okButtonWasPressed()) {
-            fireLanguagesChanged( dialog.getSelectedLanguages() );
-        }
+
+        LanguagesDialog dialog = new LanguagesDialog(this, Language.getAllLanguages(), model.getLanguages());
+        dialog.setVisible(true);
+
+        if (dialog.okButtonWasPressed())
+            fireLanguagesChanged(dialog.getSelectedLanguages());
     }
 
     /**
@@ -807,9 +804,8 @@ public class View extends JFrame {
      * allowing the user to edit the parties in the ballot
      */
     public ArrayList<Party> showPartiesDialog() {
-        PartiesDialog dialog = new PartiesDialog( this, model.getParties(),
-                model.getLanguages(), languageBar.getCurrentLanguage() );
-        dialog.setVisible( true );
+        PartiesDialog dialog = new PartiesDialog(this, model.getParties(), model.getLanguages(), languageBar.getCurrentLanguage());
+        dialog.setVisible(true);
         return model.getParties();
     }
 
@@ -817,66 +813,66 @@ public class View extends JFrame {
      * Initializes the card panel, the no cards panel, and the preview panel
      */
     private void initializeCardPanel() {
+
         cardPanel = new JPanel();
-        cardPanel.setBorder( BorderFactory
-                .createBevelBorder( BevelBorder.LOWERED ) );
-        cardPanel.setLayout( new GridBagLayout() );
+        cardPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+        cardPanel.setLayout(new GridBagLayout());
 
         noCardsPanel = new JPanel();
-        noCardsPanel.setLayout( new GridBagLayout() );
+        noCardsPanel.setLayout(new GridBagLayout());
         GridBagConstraints c2 = new GridBagConstraints();
+
         c2.gridx = 0;
         c2.gridy = 0;
-        noCardsPanel.add( new JLabel(
-                "This ballot is currently empty (it does not contain"
-                        + " any races)." ), c2 );
-        c2.gridy = 1;
-        noCardsPanel.add( new JLabel(
-                "To get started, click on the '+' button in the lower left corner"
-                        + " of the screen." ), c2 );
-        setCardPane( noCardsPanel );
+        noCardsPanel.add(new JLabel("This ballot is currently empty (it does not contain any races)."), c2);
 
-        previewPanel = new PreviewPane( new IPreviewPaneGenerator() {
+        c2.gridy = 1;
+        noCardsPanel.add(new JLabel("To get started, click on the '+' button in the lower left corner of the screen."), c2);
+
+        setCardPane(noCardsPanel);
+
+        previewPanel = new PreviewPane(new IPreviewPaneGenerator() {
+
             public ArrayList<JPanel> getPreviewPanels() {
-                if (cardList.getSelectedIndex() != -1)
-                    return model.previewCard( cardList.getSelectedIndex(),
-                        languageBar.getCurrentLanguage() );
-                else
-                    return new ArrayList<JPanel>();
+
+                ArrayList<JPanel> preview = model.previewCard(cardList.getSelectedIndex(), languageBar.getCurrentLanguage());
+                return (cardList.getSelectedIndex() != -1) ? new ArrayList<JPanel>() : preview;
             }
         } );
-        previewPanel.setBorder( BorderFactory
-                .createBevelBorder( BevelBorder.LOWERED ) );
-        // previewPanel.setBackground(Color.WHITE);
+
+        previewPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
     }
 
     /**
-     * Initializes the list panel: the card list and the buttons associated with
-     * it
+     * Initializes the list panel: the card list and the buttons associated with it
      */
     private void initializeListPanel() {
+
         listPanel = new JPanel();
-        listPanel.setLayout( new GridBagLayout() );
+        listPanel.setLayout(new GridBagLayout());
 
         cardListModel = new DefaultListModel();
-        cardList = new JList( cardListModel );
-        cardList.setDragEnabled( true );
+        cardList = new JList(cardListModel);
+        cardList.setDragEnabled(true);
+
         ListTransferHandler lth = new ListTransferHandler();
         lth.addListTransferListener( new ListTransferListener() {
             public void listItemMoved(int from, int to) {
-                model.moveCard( from, to );
+                model.moveCard(from, to);
             }
         } );
+
         cardList.setTransferHandler(lth);
-        cardList.getSelectionModel().setSelectionMode(
-                ListSelectionModel.SINGLE_SELECTION);
+        cardList.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         cardList.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent e) {
                 cardListSelectionChanged();
             }
         });
-        JScrollPane cardListScrollPane = new JScrollPane( cardList );
+
+        JScrollPane cardListScrollPane = new JScrollPane(cardList);
         GridBagConstraints c = new GridBagConstraints();
+
         c.gridx = 0;
         c.gridy = 0;
         c.gridwidth = 1;
@@ -892,79 +888,83 @@ public class View extends JFrame {
         String text;
 
         try {
-            icon = new ImageIcon( ClassLoader.getSystemClassLoader()
-                    .getResource( "images/list-add.png" ) );
+            icon = new ImageIcon( ClassLoader.getSystemClassLoader().getResource("images/list-add.png"));
             text = "";
         }
         catch (Exception e) {
             icon = null;
             text = "Add";
         }
-        addCardButton = new JButton( new AbstractAction( text, icon ) {
+
+        addCardButton = new JButton(new AbstractAction(text, icon) {
             private static final long serialVersionUID = 1L;
 
             public void actionPerformed(ActionEvent e) {
                 addCardButtonPressed();
             }
         } );
-        listToolbar.add( addCardButton );
+
+        listToolbar.add(addCardButton);
 
         try {
-            icon = new ImageIcon( ClassLoader.getSystemClassLoader()
-                    .getResource( "images/list-remove.png" ) );
+            icon = new ImageIcon(ClassLoader.getSystemClassLoader().getResource("images/list-remove.png"));
             text = "";
         }
         catch (Exception e) {
             icon = null;
             text = "Remove";
         }
-        deleteCardButton = new JButton( new AbstractAction( text, icon ) {
+
+        deleteCardButton = new JButton(new AbstractAction(text, icon) {
             private static final long serialVersionUID = 1L;
 
             public void actionPerformed(ActionEvent e) {
                 deleteCardButtonPressed();
             }
         } );
-        deleteCardButton.setEnabled( false );
-        listToolbar.add( deleteCardButton );
+
+        deleteCardButton.setEnabled(false);
+        listToolbar.add(deleteCardButton);
 
         try {
-            icon = new ImageIcon( ClassLoader.getSystemClassLoader()
-                    .getResource( "images/go-up.png" ) );
+            icon = new ImageIcon(ClassLoader.getSystemClassLoader().getResource("images/go-up.png"));
             text = "";
         }
         catch (Exception e) {
             icon = null;
             text = "Up";
         }
-        moveUpCardButton = new JButton( new AbstractAction( text, icon ) {
+
+        moveUpCardButton = new JButton(new AbstractAction(text, icon) {
             private static final long serialVersionUID = 1L;
 
             public void actionPerformed(ActionEvent e) {
                 moveUpCardButtonPressed();
             }
         } );
-        moveUpCardButton.setEnabled( false );
-        listToolbar.add( moveUpCardButton );
+
+        moveUpCardButton.setEnabled(false);
+        listToolbar.add(moveUpCardButton);
 
         try {
-            icon = new ImageIcon( ClassLoader.getSystemClassLoader()
-                    .getResource( "images/go-down.png" ) );
+            icon = new ImageIcon(ClassLoader.getSystemClassLoader().getResource("images/go-down.png"));
             text = "";
         }
         catch (Exception e) {
             icon = null;
             text = "Down";
         }
-        moveDownCardButton = new JButton( new AbstractAction( text, icon ) {
+
+        moveDownCardButton = new JButton(new AbstractAction(text, icon) {
             private static final long serialVersionUID = 1L;
 
             public void actionPerformed(ActionEvent e) {
                 moveDownCardButtonPressed();
             }
         } );
-        moveDownCardButton.setEnabled( false );
-        listToolbar.add( moveDownCardButton );
+
+        moveDownCardButton.setEnabled(false);
+        listToolbar.add(moveDownCardButton);
     }
 
     /**
@@ -974,109 +974,96 @@ public class View extends JFrame {
         menuBar = new JMenuBar();
         ImageIcon icon;
 
-        // not all platforms use Control as the shortcut keymask
-        int shortcutKeyMask = java.awt.Toolkit.getDefaultToolkit()
-                .getMenuShortcutKeyMask();
+        /* Not all platforms use Control as the shortcut keymask */
+        int shortcutKeyMask = java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 
-        JMenu fileMenu = new JMenu( "File" );
-        JMenuItem newBallotMenuItem = new JMenuItem( newBallotButton
-                .getAction() );
-        newBallotMenuItem.setAccelerator( KeyStroke.getKeyStroke(
-            KeyEvent.VK_N, shortcutKeyMask ) );
-        fileMenu.add( newBallotMenuItem );
-        JMenuItem openBallotMenuItem = new JMenuItem( openBallotButton
-                .getAction() );
-        openBallotMenuItem.setAccelerator( KeyStroke.getKeyStroke(
-            KeyEvent.VK_O, shortcutKeyMask ) );
-        fileMenu.add( openBallotMenuItem );
-        JMenuItem saveBallotMenuItem = new JMenuItem( saveBallotButton
-                .getAction() );
-        saveBallotMenuItem.setAccelerator( KeyStroke.getKeyStroke(
-            KeyEvent.VK_S, shortcutKeyMask ) );
-        fileMenu.add( saveBallotMenuItem );
-        fileMenu.addSeparator();
-        JMenuItem exportBallotMenuItem = new JMenuItem( exportBallotButton
-                .getAction() );
-        fileMenu.add( exportBallotMenuItem );
-        JMenuItem previewMenuItem = new JMenuItem( previewButton.getAction() );
-        fileMenu.add( previewMenuItem );
+        JMenu fileMenu = new JMenu("File");
+
+        JMenuItem newBallotMenuItem = new JMenuItem(newBallotButton.getAction());
+        newBallotMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, shortcutKeyMask));
+        fileMenu.add(newBallotMenuItem);
+
+        JMenuItem openBallotMenuItem = new JMenuItem(openBallotButton.getAction());
+        openBallotMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, shortcutKeyMask));
+        fileMenu.add(openBallotMenuItem);
+
+        JMenuItem saveBallotMenuItem = new JMenuItem(saveBallotButton.getAction());
+        saveBallotMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, shortcutKeyMask));
+        fileMenu.add(saveBallotMenuItem);
+
         fileMenu.addSeparator();
 
-        try {
-            icon = new ImageIcon( ClassLoader.getSystemClassLoader()
-                    .getResource( "images/system-log-out.png" ) );
-        }
-        catch (Exception e) {
-            icon = null;
-        }
-        JMenuItem quitMenuItem = new JMenuItem( "Quit", icon );
-        quitMenuItem.addActionListener( new ActionListener() {
+        JMenuItem exportBallotMenuItem = new JMenuItem(exportBallotButton.getAction());
+        fileMenu.add(exportBallotMenuItem);
+
+        JMenuItem previewMenuItem = new JMenuItem(previewButton.getAction());
+        fileMenu.add(previewMenuItem);
+
+        fileMenu.addSeparator();
+
+        try { icon = new ImageIcon(ClassLoader.getSystemClassLoader().getResource("images/system-log-out.png")); }
+        catch (Exception e) { icon = null; }
+
+        JMenuItem quitMenuItem = new JMenuItem("Quit", icon);
+
+        quitMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 exitButtonPressed();
             }
         } );
-        quitMenuItem.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_Q,
-            shortcutKeyMask ) );
-        fileMenu.add( quitMenuItem );
-        menuBar.add( fileMenu );
 
-        JMenu editMenu = new JMenu( "Edit" );
-        JMenuItem cutMenuItem = new JMenuItem( new DefaultEditorKit.CutAction() );
-        cutMenuItem.setText( "Cut" );
-        try {
-            icon = new ImageIcon( ClassLoader.getSystemClassLoader()
-                    .getResource( "images/edit-cut.png" ) );
-        }
-        catch (Exception e) {
-            icon = null;
-        }
-        cutMenuItem.setIcon( icon );
-        cutMenuItem.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_X,
-            shortcutKeyMask ) );
-        editMenu.add( cutMenuItem );
+        quitMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, shortcutKeyMask));
+        fileMenu.add(quitMenuItem);
+        menuBar.add(fileMenu);
+
+        JMenu editMenu = new JMenu("Edit");
+        JMenuItem cutMenuItem = new JMenuItem(new DefaultEditorKit.CutAction());
+        cutMenuItem.setText("Cut");
+
+        try { icon = new ImageIcon(ClassLoader.getSystemClassLoader().getResource("images/edit-cut.png")); }
+        catch (Exception e) { icon = null; }
+
+        cutMenuItem.setIcon(icon);
+        cutMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, shortcutKeyMask));
+        editMenu.add(cutMenuItem);
 
         JMenuItem copyMenuItem = new JMenuItem(
                 new DefaultEditorKit.CopyAction() );
         copyMenuItem.setText( "Copy" );
-        try {
-            icon = new ImageIcon( ClassLoader.getSystemClassLoader()
-                    .getResource( "images/edit-copy.png" ) );
-        }
-        catch (Exception e) {
-            icon = null;
-        }
-        copyMenuItem.setIcon( icon );
-        copyMenuItem.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_C,
-            shortcutKeyMask ) );
-        editMenu.add( copyMenuItem );
 
-        JMenuItem pasteMenuItem = new JMenuItem(
-                new DefaultEditorKit.PasteAction() );
-        pasteMenuItem.setText( "Paste" );
-        try {
-            icon = new ImageIcon( ClassLoader.getSystemClassLoader()
-                    .getResource( "images/edit-paste.png" ) );
-        }
-        catch (Exception e) {
-            icon = null;
-        }
-        pasteMenuItem.setIcon( icon );
-        pasteMenuItem.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_V,
-            shortcutKeyMask ) );
-        editMenu.add( pasteMenuItem );
+        try { icon = new ImageIcon(ClassLoader.getSystemClassLoader().getResource("images/edit-copy.png")); }
+        catch (Exception e) { icon = null; }
 
-        menuBar.add( editMenu );
+        copyMenuItem.setIcon(icon);
+        copyMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, shortcutKeyMask));
+        editMenu.add(copyMenuItem);
+
+        JMenuItem pasteMenuItem = new JMenuItem(new DefaultEditorKit.PasteAction());
+
+        pasteMenuItem.setText("Paste");
+
+        try { icon = new ImageIcon(ClassLoader.getSystemClassLoader().getResource("images/edit-paste.png")); }
+        catch (Exception e) { icon = null; }
+
+        pasteMenuItem.setIcon(icon);
+        pasteMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, shortcutKeyMask));
+        editMenu.add(pasteMenuItem);
+
+        menuBar.add(editMenu);
     }
 
     /**
      * Initializes the add card popup menu
      */
     private void initializePopupMenu() {
+
         addCardMenu = new JPopupMenu();
 
         for (final ICardFactory fac : model.getCardFactories()) {
-            final JMenuItem item = new JMenuItem( fac.getMenuString() );
-            item.addActionListener( new ActionListener() {
+
+            final JMenuItem item = new JMenuItem(fac.getMenuString());
+
+            item.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     ACard card = fac.makeCard();
 
@@ -1085,6 +1072,7 @@ public class View extends JFrame {
                     //Make PartyCards always first so they will be displayed
                     // at the beginning of a voting session
                     if(card instanceof PartyCard){
+
                         idx = 0;
 
                         //For reasons stemming from implementation, it helps to update the data
@@ -1092,24 +1080,25 @@ public class View extends JFrame {
                         card.getReviewBlankText(languageBar.getPrimaryLanguage());
 
                         //Should parties automatically be added to the card?
-                        model.addCardAtFront( card );
-                        cardListModel.insertElementAt("", 0 );
+                        model.addCardAtFront(card);
+                        cardListModel.insertElementAt("", 0);
 
                         //We only allow for one straight party card at a time
                         //Why would you need more?
                         item.setEnabled(false);
 
                     }
-                    else{
-                        model.addCard( card );
-                        cardListModel.addElement( "" );
+                    else {
+                        model.addCard(card);
+                        cardListModel.addElement("");
                         idx = model.getNumCards() - 1;
                     }
-                    setCardTitle( model.getCardTitle( idx ), idx );
-                    cardList.setSelectedIndex( idx );
+
+                    setCardTitle(model.getCardTitle(idx), idx);
+                    cardList.setSelectedIndex(idx);
                 }
             } );
-            addCardMenu.add( item );
+            addCardMenu.add(item);
         }
     }
 
@@ -1117,116 +1106,101 @@ public class View extends JFrame {
      * Initializes the main toolbar
      */
     private void initializeToolbar() {
+
         toolbar = new JToolBar();
-        toolbar.setFloatable( false );
+        toolbar.setFloatable(false);
 
         ImageIcon icon;
 
-        try {
-            icon = new ImageIcon( ClassLoader.getSystemClassLoader()
-                    .getResource( "images/document-new.png" ) );
-        }
-        catch (Exception e) {
-            icon = null;
-        }
-        newBallotButton = new JButton(
-                new AbstractAction( "New Ballot", icon ) {
+        try { icon = new ImageIcon(ClassLoader.getSystemClassLoader().getResource("images/document-new.png")); }
+        catch (Exception e) { icon = null; }
+
+        newBallotButton = new JButton(new AbstractAction("New Ballot", icon) {
+
                     private static final long serialVersionUID = 1L;
 
                     public void actionPerformed(ActionEvent e) {
                         newBallotButtonPressed();
                     }
-                } );
-        toolbar.add( newBallotButton );
+        } );
 
-        try {
-            icon = new ImageIcon( ClassLoader.getSystemClassLoader()
-                    .getResource( "images/document-open.png" ) );
-        }
-        catch (Exception e) {
-            icon = null;
-        }
+        toolbar.add(newBallotButton);
+
+        try { icon = new ImageIcon(ClassLoader.getSystemClassLoader().getResource("images/document-open.png")); }
+        catch (Exception e) { icon = null; }
+
         openBallotButton = new JButton(
-                new AbstractAction( "Open Ballot", icon ) {
+                new AbstractAction("Open Ballot", icon) {
                     private static final long serialVersionUID = 1L;
 
                     public void actionPerformed(ActionEvent e) {
                         openBallotButtonPressed();
                     }
                 } );
-        toolbar.add( openBallotButton );
 
-        try {
-            icon = new ImageIcon( ClassLoader.getSystemClassLoader()
-                    .getResource( "images/document-save.png" ) );
-        }
-        catch (Exception e) {
-            icon = null;
-        }
+        toolbar.add(openBallotButton);
+
+        try { icon = new ImageIcon(ClassLoader.getSystemClassLoader().getResource("images/document-save.png")); }
+        catch (Exception e) { icon = null; }
+
         saveBallotButton = new JButton(
-                new AbstractAction( "Save Ballot", icon ) {
+
+                new AbstractAction("Save Ballot", icon) {
                     private static final long serialVersionUID = 1L;
 
                     public void actionPerformed(ActionEvent e) {
                         saveBallotButtonPressed();
                     }
-                } );
-        toolbar.add( saveBallotButton );
+        } );
 
-        try {
-            icon = new ImageIcon( ClassLoader.getSystemClassLoader()
-                    .getResource( "images/media-flash.png" ) );
-        }
-        catch (Exception e) {
-            icon = null;
-        }
-        exportBallotButton = new JButton( new AbstractAction(
-                "Export to VoteBox", icon ) {
+        toolbar.add(saveBallotButton);
+
+        try { icon = new ImageIcon(ClassLoader.getSystemClassLoader().getResource("images/media-flash.png")); }
+        catch (Exception e) { icon = null; }
+
+        exportBallotButton = new JButton(new AbstractAction("Export to VoteBox", icon) {
 
             private static final long serialVersionUID = 1L;
 
             public void actionPerformed(ActionEvent e) {
                 exportButtonPressed();
             }
+
         } );
-        toolbar.add( exportBallotButton );
 
-        try {
-            icon = new ImageIcon( ClassLoader.getSystemClassLoader()
-                    .getResource( "images/system-search.png" ) );
-        }
-        catch (Exception e) {
-            icon = null;
-        }
-        previewButton = new JButton( new AbstractAction( "Preview in VoteBox",
-                icon ) {
+        toolbar.add(exportBallotButton);
+
+        try { icon = new ImageIcon(ClassLoader.getSystemClassLoader().getResource("images/system-search.png")); }
+        catch (Exception e) { icon = null; }
+
+        previewButton = new JButton(new AbstractAction("Preview in VoteBox", icon) {
+
             private static final long serialVersionUID = 1L;
-
             public void actionPerformed(ActionEvent e) {
                 previewButtonPressed();
             }
+
         } );
+
         //This button is annoying, so disable it
         previewButton.setEnabled(false);
 
-        toolbar.add( previewButton );
+        toolbar.add(previewButton);
         
-        try {
-            icon = new ImageIcon( ClassLoader.getSystemClassLoader()
-                    .getResource( "images/system-options.png" ) );
-        }
-        catch (Exception e) {
-            icon = null;
-        }
-        prefButton = new JButton( new AbstractAction( "Preferences",
-                icon ) {
+        try { icon = new ImageIcon(ClassLoader.getSystemClassLoader().getResource("images/system-options.png")); }
+        catch (Exception e) { icon = null; }
+
+        prefButton = new JButton(new AbstractAction("Preferences", icon ) {
+
             private static final long serialVersionUID = 1L;
 
             public void actionPerformed(ActionEvent e) {
                 prefButtonPressed();
             }
+
         } );
-        toolbar.add( prefButton );
+
+        toolbar.add(prefButton);
     }
 
     /**
@@ -1237,50 +1211,47 @@ public class View extends JFrame {
     }
     
     private void initializePrefMenu() {
+
     	final JFrame frame = this;
+
     	prefMenu = new JPopupMenu();
-    	final JMenuItem races = new JMenuItem("Number of Races per Review Card (Current: "+model.getCardsPerReviewPage()+")");
-    	races.addActionListener( new ActionListener() {
+
+    	final JMenuItem races = new JMenuItem("Number of Races per Review Card (Current: " + model.getCardsPerReviewPage() + ")");
+
+    	races.addActionListener(new ActionListener() {
+
     		public void actionPerformed(ActionEvent e) {
-    			String temp = (String)JOptionPane.showInputDialog(
-                        frame,
-                        "How many races would you like "
-                        + "displayed on each review page?",
-                        "",
-                        JOptionPane.PLAIN_MESSAGE,
-                        null,
-                        null,
-                        "10");
+
+                String prompt = "How many races would you like displayed on each review page?";
+    			String temp = (String) JOptionPane.showInputDialog(frame, prompt, "", JOptionPane.PLAIN_MESSAGE, null, null, "10");
+
     			if (temp != null)
     				model.setCardsPerReviewPage(Integer.parseInt(temp));
-    			else
-    				return;
+    			else return;
     			
-    			races.setText("Number of Races per Review Card (Current: "+model.getCardsPerReviewPage()+")");
+    			races.setText("Number of Races per Review Card (Current: " + model.getCardsPerReviewPage() + ")");
     		}
     	} );
-    	prefMenu.add( races );
+    	prefMenu.add(races);
     	
     	final JMenuItem font = new JMenuItem("Base Font Size (Current: " + model.getBaseFontSize()+")");
-    	font.addActionListener( new ActionListener() {
+
+    	font.addActionListener(new ActionListener() {
+
     		public void actionPerformed(ActionEvent e) {
-    			String temp = (String)JOptionPane.showInputDialog(
-                        frame,
-                        "Please enter your desired font size:",
-                        "",
-                        JOptionPane.PLAIN_MESSAGE,
-                        null,
-                        null,
-                        "8");
+
+                String prompt = "Please enter your desired font size:";
+    			String temp = (String)JOptionPane.showInputDialog(frame, prompt, "", JOptionPane.PLAIN_MESSAGE, null, null, "8");
+
     			if (temp != null)
     				model.setFontSize(Integer.parseInt(temp));
-    			else
-    				return;
+    			else return;
     			
-    			font.setText("Base Font Size (Current: " + model.getBaseFontSize()+")");
+    			font.setText("Base Font Size (Current: " + model.getBaseFontSize() + ")");
     		}
     	} );
-    	prefMenu.add( font );
+
+    	prefMenu.add(font);
 
         final JCheckBoxMenuItem sound = new JCheckBoxMenuItem("Use Text-to-Speech");
         sound.setState(true);
@@ -1290,9 +1261,6 @@ public class View extends JFrame {
                 model.setTextToSpeech(sound.getState());
             }
         });
-        prefMenu.add( sound );
-    	
-
+        prefMenu.add(sound);
     }
-
 }

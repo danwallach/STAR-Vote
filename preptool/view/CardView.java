@@ -49,41 +49,53 @@ public class CardView extends JPanel implements IMultiLanguageEditor {
     /**
      * Constructs a new CardView
      * 
-     * @param view
-     *            the main view
-     * @param type
-     *            the type name of the card
-     * @param modules
-     *            list of the modules on the card
+     * @param view          the main view
+     * @param type          the type name of the card
+     * @param modules       list of the modules on the card
      */
     public CardView(View view, String type, ArrayList<AModule> modules) {
+
+        /* Set up grid bag stuff */
         views = new ArrayList<AModuleView>();
-        setLayout( new GridBagLayout() );
+        setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
-        JLabel typeLabel = new JLabel( type );
-        typeLabel.setFont( new Font( "Lucida Sans", Font.BOLD, 16 ) );
+        /* Set up and add the label for the card */
+        JLabel typeLabel = new JLabel(type);
+        typeLabel.setFont(new Font("Lucida Sans", Font.BOLD, 16));
         c.gridx = 0;
         c.gridy = 0;
         c.weightx = 1;
         c.anchor = GridBagConstraints.FIRST_LINE_START;
         c.fill = GridBagConstraints.BOTH;
-        c.insets = new Insets( 10, 10, 0, 0 );
-        add( typeLabel, c );
+        c.insets = new Insets(10, 10, 0, 0);
+        add(typeLabel, c);
 
-        c.insets = new Insets( 10, 0, 0, 0 );
+        c.insets = new Insets(10, 0, 0, 0);
 
-        for (int i = 0; i < modules.size(); i++) {
-            if (modules.get( i ).hasView()) {
-                AModuleView v = modules.get( i ).generateView( view );
-                views.add( v );
+        /* For each module... */
+        for (AModule module : modules) {
+
+            /* Check if the module has a view */
+            if (module.hasView()) {
+
+                /* Generate and add the view */
+                AModuleView v = module.generateView(view);
+                views.add(v);
             }
         }
+
+        /* Go through each of the views */
         for (int i = 0; i < views.size(); i++) {
+
+            /* c.gridy starts from 1 */
             c.gridy = i + 1;
-            if (i == views.size() - 1)
-                c.weighty = 1;
-            add( views.get( i ), c );
+
+            /* If we get to the last one, Set c.weighty */
+            if (i == views.size() - 1) c.weighty = 1;
+
+            /* Add the views given the layout constraints */
+            add(views.get(i), c);
         }
     }
 
@@ -100,13 +112,16 @@ public class CardView extends JPanel implements IMultiLanguageEditor {
      * Checks all modules on this view and reports if any need translation
      * information in the given language
      * 
-     * @param lang
-     *            the language
+     * @param lang      the language
      */
     public boolean needsTranslation(Language lang) {
+
         boolean res = false;
+
+        /* For each module in views, look and see if it needs translation */
         for (AModuleView mod : views)
-            res |= mod.needsTranslation( lang );
+            res |= mod.needsTranslation(lang);
+
         return res;
     }
 
@@ -115,8 +130,10 @@ public class CardView extends JPanel implements IMultiLanguageEditor {
      * was updated
      */
     public void updatePrimaryLanguage(Language lang) {
+
+        /* For each module in views, update the primary language */
         for (AModuleView mod : views)
-            mod.updatePrimaryLanguage( lang );
+            mod.updatePrimaryLanguage(lang);
     }
 
 }

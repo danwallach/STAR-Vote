@@ -43,6 +43,8 @@ public abstract class AModuleView extends JPanel implements
     /** The right-click option to copy translated text from the primary language */
     private JMenuItem copyFromItem;
 
+    /* Getters and Setters */
+
     public Language getPrimaryLanguage() {
         return primaryLanguage;
     }
