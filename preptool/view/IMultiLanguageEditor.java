@@ -34,21 +34,24 @@ public interface IMultiLanguageEditor {
 	
 	/**
 	 * Method that is called by a LanguageBar when a language has been selected
-	 * @param lang the language
+     *
+	 * @param       lang the language
 	 */
 	public void languageSelected(Language lang);
 	
 	/**
 	 * Checks if the editor has all translation information filled in for the
 	 * given language
-	 * @param lang the language
-	 * @return whether all translation info is entered
+     *
+	 * @param       lang the language
+	 * @return      whether all translation info is entered
 	 */
 	public boolean needsTranslation(Language lang);
 	
 	/**
 	 * Called by a LanguageBar when the primary language has changed
-	 * @param lang the language
+     *
+	 * @param       lang the language
 	 */
 	public void updatePrimaryLanguage(Language lang);
 	

@@ -68,59 +68,66 @@ public class PreviewPane extends JPanel {
     /**
      * Constructs a new preview pane with the given preview pane generator
      * 
-     * @param generator
-     *            the preview pane generator
+     * @param generator         the preview pane generator
      */
     public PreviewPane(IPreviewPaneGenerator generator) {
+
+        /* Setup */
         super();
         this.generator = generator;
 
-        setLayout( new GridBagLayout() );
+        /* Create a new layout */
+        setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
-        JLabel previewLabel = new JLabel( "Preview" );
-        previewLabel.setFont( new Font( "Arial", Font.BOLD, 16 ) );
+        /* Create a new label and setup font, positioning, etc., then add */
+        JLabel previewLabel = new JLabel("Preview");
+        previewLabel.setFont(new Font("Arial", Font.BOLD, 16));
         c.gridx = 0;
         c.gridy = 0;
         c.weightx = 1;
         c.anchor = GridBagConstraints.FIRST_LINE_START;
         c.fill = GridBagConstraints.BOTH;
-        c.insets = new Insets( 10, 10, 10, 0 );
-        add( previewLabel, c );
+        c.insets = new Insets(10, 10, 10, 0);
+        add(previewLabel, c);
 
+        /* Initialise and add the refresh button */
         initializeRefreshButton();
         c.gridx = 1;
         c.weightx = 0;
-        c.insets = new Insets( 10, 10, 10, 10 );
-        add( refreshButton, c );
+        c.insets = new Insets(10, 10, 10, 10);
+        add(refreshButton, c);
 
+        /* Create and add a scroll pane */
         mainScrollPane = new JScrollPane();
         c.gridx = 0;
         c.gridy = 1;
         c.gridwidth = 2;
         c.weighty = 1;
-        c.insets = new Insets( 0, 10, 10, 10 );
-        add( mainScrollPane, c );
+        c.insets = new Insets(0, 10, 10, 10);
+        add(mainScrollPane, c);
     }
 
     /**
      * Initializes the refresh button
      */
     private void initializeRefreshButton() {
+
         ImageIcon icon;
-        try {
-            icon = new ImageIcon( ClassLoader.getSystemClassLoader()
-                    .getResource( "images/view-refresh.png" ) );
-        }
-        catch (Exception e) {
-            icon = null;
-        }
-        refreshButton = new JButton( new AbstractAction( "Refresh", icon ) {
+
+        /* Try to load the image icon */
+        try { icon = new ImageIcon(ClassLoader.getSystemClassLoader().getResource("images/view-refresh.png")); }
+        catch (Exception e) { icon = null; }
+
+        /* Initialise the button */
+        refreshButton = new JButton(new AbstractAction("Refresh", icon) {
+
             private static final long serialVersionUID = 1L;
 
             public void actionPerformed(ActionEvent e) {
                 refreshButtonPressed();
             }
+
         } );
     }
 
@@ -129,59 +136,72 @@ public class PreviewPane extends JPanel {
      */
     public void refreshButtonPressed() {
         ArrayList<JPanel> panel = generator.getPreviewPanels();
-        setScrollPane( panel );
+        setScrollPane(panel);
     }
 
     /**
      * Sets the scroll pane to the given list of panels
      * 
-     * @param panels
-     *            the panels
+     * @param panels        the panels
      */
     public void setScrollPane(ArrayList<JPanel> panels) {
-        remove( mainScrollPane );
+
+        /* Remove the current pane and create a new set of constraints */
+        remove(mainScrollPane);
         GridBagConstraints c = new GridBagConstraints();
 
+        /* Create a new label */
         JLabel label = new JLabel();
+
+        /* See if there are more than one panel */
         if (panels.size() > 1) {
-            BufferedImage dashedLine = new BufferedImage( 600, 1,
-                    BufferedImage.TYPE_INT_ARGB );
+
+            /* If so, set up the preview pane with dashed lines between cards */
+            BufferedImage dashedLine = new BufferedImage(600, 1, BufferedImage.TYPE_INT_ARGB);
             Graphics2D graphics = dashedLine.createGraphics();
-            graphics.setColor( Color.BLACK );
-            BasicStroke stroke = new BasicStroke( 1f, BasicStroke.CAP_BUTT,
-                    BasicStroke.JOIN_ROUND, 1f, new float[] {
-                        1f
-                    }, 0f );
-            graphics.setStroke( stroke );
-            graphics.drawLine( 0, 0, 600, 0 );
-            label.setIcon( new ImageIcon( dashedLine ) );
+            graphics.setColor(Color.BLACK);
+            BasicStroke stroke = new BasicStroke(1f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND, 1f, new float[] {1f}, 0f);
+
+            /* Dashed line */
+            graphics.setStroke(stroke);
+            graphics.drawLine(0, 0, 600, 0);
+            label.setIcon(new ImageIcon(dashedLine));
         }
 
+        /* Create a new panel */
         JPanel panel = new JPanel();
-        panel.setLayout( new GridBagLayout() );
+        panel.setLayout(new GridBagLayout());
         panel.validate();
         panel.repaint();
+
+        /* Take each panel */
         for (int i = 0; i < panels.size(); i++) {
+
+            /* Add the dashed line separator */
             if (i >= 1) {
                 c.gridy = 2 * i - 1;
-                c.insets = new Insets( 0, 0, 0, 0 );
-                panel.add( label, c );
+                c.insets = new Insets(0, 0, 0, 0);
+                panel.add(label, c);
             }
+
+            /* Add the panels */
             c.gridx = 0;
             c.gridy = 2 * i;
-            c.insets = new Insets( 15, 0, 15, 0 );
-            panel.add( panels.get( i ), c );
+            c.insets = new Insets(15, 0, 15, 0);
+            panel.add(panels.get(i), c);
         }
-        mainScrollPane = new JScrollPane( panel );
-        panel.setBackground( Color.WHITE );
+
+        /* Setup positioning, colour, etc. and add to the form */
+        mainScrollPane = new JScrollPane(panel);
+        panel.setBackground(Color.WHITE);
         c.gridx = 0;
         c.gridy = 1;
         c.gridwidth = 2;
         c.weighty = 1;
         c.anchor = GridBagConstraints.FIRST_LINE_START;
         c.fill = GridBagConstraints.BOTH;
-        c.insets = new Insets( 0, 10, 10, 10 );
-        add( mainScrollPane, c );
+        c.insets = new Insets(0, 10, 10, 10);
+        add(mainScrollPane, c);
         validate();
         repaint();
     }
