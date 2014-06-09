@@ -31,6 +31,7 @@ import java.util.HashMap;
 /**
  * A class that contains multiple translations of a String. It is a wrapper for
  * a map from language to string.
+ *
  * @author Corey Shaw
  */
 public class LocalizedString {
@@ -50,6 +51,8 @@ public class LocalizedString {
 	/**
 	 * Checks all Strings in both maps, and makes sure there are the
 	 * same number of localizations
+     *
+     * @return true if the input map is the same size, false otherwise
 	 */
 	@Override
 	public boolean equals(Object obj) {
@@ -66,8 +69,10 @@ public class LocalizedString {
 	
 	/**
 	 * Returns the translation for the given language
-	 * @param lang the language
-	 * @return the translation
+     *
+	 * @param lang the language to get the translation for
+	 * @return the translation into the specified language,
+     *         or an empty string if we don't have a translation
 	 */
 	public String get(Language lang) {
 		String val = map.get(lang);
@@ -79,6 +84,7 @@ public class LocalizedString {
 
 	/**
 	 * Sets (or adds) the translation for the given language to the given String
+     *
 	 * @param lang the language
 	 * @param val the String
 	 */
@@ -88,17 +94,18 @@ public class LocalizedString {
 
 	/**
 	 * Converts this card to a savable XML representation, to be opened later
+     *
 	 * @param doc the document
 	 * @param name name to attach to the element
-	 * 
 	 * @return the element for this card
 	 */
 	public Element toSaveXML(Document doc, String name) {
 		Element elt = doc.createElement("LocalizedString");
 		elt.setAttribute("name", name);
+
+        /* For each language, write it into the XML */
 		for (Language lang: map.keySet()) {
 			Element stringElt = doc.createElement("String");
-            //System.out.println(lang);
             stringElt.setAttribute("language", lang.getName());
 			stringElt.setAttribute("text", map.get(lang));
 			elt.appendChild(stringElt);
@@ -108,11 +115,15 @@ public class LocalizedString {
 
 	/**
 	 * Parses XML into a LocalizedString object
+     *
 	 * @param elt the element
 	 * @return the LocalizedString
 	 */
 	public static LocalizedString parseXML(Element elt) {
+        /* Sanity check */
 		assert elt.getTagName().equals("LocalizedString");
+
+
 		LocalizedString ls = new LocalizedString();
 
 		NodeList list = elt.getElementsByTagName("String");
