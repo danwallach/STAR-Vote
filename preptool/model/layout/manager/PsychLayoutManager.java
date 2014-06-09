@@ -35,6 +35,7 @@ import java.awt.font.FontRenderContext;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -98,7 +99,7 @@ public class PsychLayoutManager extends ALayoutManager {
          * Constructor, simply initializes the list of candidates
          */
         public PsychCardLayout() {
-            candidates = new ArrayList<ToggleButton>();
+            candidates = new ArrayList<>();
         }
 
         /**
@@ -139,7 +140,7 @@ public class PsychLayoutManager extends ALayoutManager {
             int cnt = 0;
 
             /* A list of the panels we make, to be returned */
-            ArrayList<JPanel> panels = new ArrayList<JPanel>();
+            ArrayList<JPanel> panels = new ArrayList<>();
 
             /* Create new JPanels for each candidate on this card */
             while (cnt < candidates.size()) {
@@ -244,11 +245,10 @@ public class PsychLayoutManager extends ALayoutManager {
      * PsychLayoutPanel is a subclass of JFrame and is used to temporarily hold
      * layout components so that GridBagLayout can be used to get the locations
      * of all of the components.
+     *
      * @author Corey Shaw
      */
     public class PsychLayoutPanel extends JFrame {
-
-        private static final long serialVersionUID = 1L;
 
         /**
          * North panel (for the title)
@@ -275,31 +275,36 @@ public class PsychLayoutManager extends ALayoutManager {
          * four internal panes.
          */
         PsychLayoutPanel() {
-            // Compute size of window
+            /* Compute size of window */
             int width = WINDOW_WIDTH;
             int height = WINDOW_HEIGHT;
-            JFrame testFrame = new JFrame();
-            testFrame.setSize(width, height);
-            testFrame.pack();
-            Insets insets = testFrame.getInsets();
-            int insetwidth = insets.left + insets.right;
-            int insetheight = insets.top + insets.bottom;
-            height = height + insetheight - 2;
-            width = width + insetwidth - 2;
+
+            /* Construct a frame so we can get an Insets object from it */
+            JFrame sampleFrame = new JFrame();
+            sampleFrame.setSize(width, height);
+            sampleFrame.pack();
+
+            /* Get the insets and use them to determine the visible width and height of the frame */
+            Insets insets = sampleFrame.getInsets();
+            int insetWidth = insets.left + insets.right;
+            int insetHeight = insets.top + insets.bottom;
+            height = height + insetHeight - 2;
+            width = width + insetWidth - 2;
             setSize(width, height);
 
-            // Initialize frame
+            /* Initialize this frame and its layout with the previously computed sizes */
             pack();
             setPreferredSize(new Dimension(width, height));
             setMinimumSize(new Dimension(width, height));
             setResizable(false);
             setLayout(new GridBagLayout());
-            north = new JPanel();
-            south = new JPanel();
-            west = new JPanel();
+
+            /* Initialize east pane, which will contain the actual ballot card */
             east = new JPanel();
 
-            // Initialize west pane
+            /* Initialize west pane */
+            /* This pane will hold progress information about the voting session */
+            west = new JPanel();
             GridBagConstraints constraints = new GridBagConstraints();
             constraints.fill = GridBagConstraints.BOTH;
             constraints.gridx = 0;
@@ -307,12 +312,15 @@ public class PsychLayoutManager extends ALayoutManager {
             constraints.gridheight = 3;
             constraints.gridwidth = 1;
             constraints.weighty = 1;
-            constraints.weightx = 0; // .25
+            constraints.weightx = 0;
+            /* Set the background to STAR-blue */
             west.setBackground(new Color(48, 149, 242));
             add(west, constraints);
             west.setLayout(new GridBagLayout());
 
-            // Initialize north pane
+            /* Initialize north pane */
+            /* This pane will hold information about the current election and voting session */
+            north = new JPanel();
             constraints.gridx = 1;
             constraints.gridy = 0;
             constraints.gridheight = 1;
@@ -323,7 +331,8 @@ public class PsychLayoutManager extends ALayoutManager {
             add(north, constraints);
             north.setLayout(new GridBagLayout());
 
-            // Initialize south pane
+            /* Initialize south pane, which holds navigation buttons */
+            south = new JPanel();
             constraints.gridx = 1;
             constraints.gridy = 2;
             constraints.gridheight = 1;
@@ -337,37 +346,27 @@ public class PsychLayoutManager extends ALayoutManager {
         }
 
         /**
-         * @return an array of all components in the four panes
-         */
+         * @return an array of all components in the four panes, in order: north, south, west, east
+         */ /* TODO Vet this revision */
         public Component[] getAllComponents() {
-            Component[] northComps = north.getComponents();
-            Component[] southComps = south.getComponents();
-            Component[] westComps = west.getComponents();
-            Component[] eastComps = east.getComponents();
+            List<Component> comps = new ArrayList<>(Arrays.asList(north.getComponents()));
+            comps.addAll(Arrays.asList(south.getComponents()));
+            comps.addAll(Arrays.asList(west.getComponents()));
+            comps.addAll(Arrays.asList(east.getComponents()));
 
-            Component[] comps = new Component[northComps.length
-                    + southComps.length + westComps.length + eastComps.length];
-            int i = 0;
-            for (Component c : northComps)
-                comps[i++] = c;
-            for (Component c : southComps)
-                comps[i++] = c;
-            for (Component c : westComps)
-                comps[i++] = c;
-            for (Component c : eastComps)
-                comps[i++] = c;
-            return comps;
+            return comps.toArray(north.getComponents());
         }
 
         /**
          * Adds a JPanel to the frame as the east panel
+         *
          * @param panel the panel to add
          */
         protected void addAsEastPanel(JPanel panel) {
-            // Remove east pane if already exists
+            /* Remove east pane if already exists */
             if (east != null) remove(east);
 
-            // Set constraints and add east pane
+            /* Set constraints and add east pane */
             east = panel;
             GridBagConstraints constraints = new GridBagConstraints();
             constraints.gridx = 1;
@@ -381,42 +380,16 @@ public class PsychLayoutManager extends ALayoutManager {
         }
 
         /**
-         * Adds a Cast Ballot button to the frame, with the given label as
-         * instructions
-         * @param l the label that tells the user where they're going
-         */
-        protected void addCastButton(Label l) {
-            Spacer PCastInfo = new Spacer(l, south);
-            Spacer PCastButton = new Spacer(castButton, south);
-
-            // Setup constraints and add label and button
-            GridBagConstraints constraints = new GridBagConstraints();
-            constraints.weightx = .5;
-            constraints.weighty = .5;
-            constraints.insets = new Insets(0, 0, 0, 0);
-            constraints.gridx = 1;
-            constraints.gridy = 0;
-            constraints.anchor = GridBagConstraints.LINE_END;
-            south.add(PCastInfo, constraints);
-            constraints.gridx = 1;
-            constraints.gridy = 1;
-            constraints.insets = new Insets(0, 0, 32, 50);
-            south.add(PCastButton, constraints);
-        }
-        
-        /**
-         * Adds a Committ Ballot button to the frame, with the given label as
-         * instructions
+         * Adds a Commit Ballot button to the frame, with the given label as instructions
+         *
          * @param l the label that tells the user where they're going
          */
         protected void addCommitButton(Label l) {
             Spacer PCastInfo = new Spacer(l, south);
             
-            Spacer PCastButton = null;
-            
-            PCastButton = new Spacer(commitButton, south);
+            Spacer PCastButton = new Spacer(commitButton, south);
 
-            // Setup constraints and add label and button
+            /* Setup constraints  */
             GridBagConstraints constraints = new GridBagConstraints();
             constraints.weightx = .5;
             constraints.weighty = .5;
@@ -424,28 +397,37 @@ public class PsychLayoutManager extends ALayoutManager {
             constraints.gridx = 1;
             constraints.gridy = 0;
             constraints.anchor = GridBagConstraints.LINE_END;
+
+            /* Add the label */
             south.add(PCastInfo, constraints);
+
             constraints.gridx = 1;
             constraints.gridy = 1;
             constraints.insets = new Insets(0, 0, 32, 50);
+
+            /* Add the button */
             south.add(PCastButton, constraints);
         }
 
         /**
          * Adds a Next button to the frame, with the given label as instructions
+         *
          * @param l the label that tells the user where they're going
          */
         protected void addNextButton(Label l) {
+            /* Create a spacer for the label */
             Spacer PNextInfo = new Spacer(l, south);
-            nextButton = new Button(getNextLayoutUID(), LiteralStrings.Singleton
-                    .get("NEXT_PAGE_BUTTON", language), "NextPage");
+
+            /* Create the next, er, next button and set its size constraint*/
+            nextButton = new Button(getNextLayoutUID(), LiteralStrings.Singleton.get("NEXT_PAGE_BUTTON", language), "NextPage");
             nextButton.setIncreasedFontSize(true);
             nextButton.setSize(nextButton.execute(sizeVisitor));
 
+            /* Add the button to a spacer */
             Spacer PNextButton = new Spacer(nextButton, south);
 
 
-            // Setup constraints and add label and button
+            /* Setup constraints and add label and button spacers */
             GridBagConstraints constraints = new GridBagConstraints();
             constraints.weightx = .5;
             constraints.weighty = .5;
@@ -462,20 +444,23 @@ public class PsychLayoutManager extends ALayoutManager {
 
 
         /**
-         * Adds a Previous button to the frame, with the given label as
-         * instructions
+         * Adds a Previous button to the frame, with the given label as instructions
+         *
          * @param l the label that tells the user where they're going
          */
         protected void addPreviousButton(Label l) {
+            /* Create a spacer for the label */
             Spacer PPreviousInfo = new Spacer(l, south);
-            previousButton = new Button(getNextLayoutUID(),
-                    LiteralStrings.Singleton.get("PREVIOUS_PAGE_BUTTON", language),
-                    "PreviousPage");
+
+            /* Create a new previous button and set its size information */
+            previousButton = new Button(getNextLayoutUID(), LiteralStrings.Singleton.get("PREVIOUS_PAGE_BUTTON", language), "PreviousPage");
             previousButton.setIncreasedFontSize(true);
             previousButton.setSize(previousButton.execute(sizeVisitor));
+
+            /* Add the button to a spacer*/
             Spacer PPreviousButton = new Spacer(previousButton, south);
 
-            // Setup constraints and add label and button
+            /* Setup constraints and add label and button spacers */
             GridBagConstraints constraints = new GridBagConstraints();
             constraints.weightx = .5;
             constraints.weighty = .5;
@@ -490,21 +475,23 @@ public class PsychLayoutManager extends ALayoutManager {
         }
 
         /**
-         * Adds a Return button to the frame, with the given label as
-         * instructions
+         * Adds a Return button to the frame, with the given label as instructions
+         *
          * @param l the label that tells the user where they're going
          * @param target page number of the target
          */
         protected void addReturnButton(Label l, int target) {
-        	returnButton = new Button(getNextLayoutUID(), LiteralStrings.Singleton
-                    .get("RETURN_BUTTON", language), "GoToPage");
+            /* Create the return button, loading its text and setting its font size, etc. */
+        	returnButton = new Button(getNextLayoutUID(), LiteralStrings.Singleton.get("RETURN_BUTTON", language), "GoToPage");
             returnButton.setIncreasedFontSize(true);
             returnButton.setSize(returnButton.execute(sizeVisitor));
             returnButton.setPageNum(target);
+
+            /* Put the label and button on spacers */
             Spacer PReturnInfo = new Spacer(l, south);
             Spacer PReturnButton = new Spacer(returnButton, south);
 
-            // Setup constraints and add label and button
+            /* Setup constraints and add label and button spacers */
             GridBagConstraints constraints = new GridBagConstraints();
             constraints.gridx = 0;
             constraints.gridy = 0;
@@ -514,62 +501,31 @@ public class PsychLayoutManager extends ALayoutManager {
             constraints.insets = new Insets(0, 0, 32, 0);
             south.add(PReturnButton, constraints);
         }
-
-        //#ifdef NONE_OF_ABOVE
-        protected void addReturnRequireSelectionButton(Label l, int target, String parentCardUID) {
-            returnButton = new Button(
-        			getNextLayoutUID(),
-        			LiteralStrings.Singleton.get("RETURN_BUTTON", language),
-        			"GoToPageRequireSelection");
-            returnButton.setIncreasedFontSize(true);
-            returnButton.setSize(returnButton.execute(sizeVisitor));
-            returnButton.setPageNum(target);
-            returnButton.setParentCardUID(parentCardUID);
-            Spacer PReturnInfo = new Spacer(l, south);
-            Spacer PReturnButton = new Spacer(returnButton, south);
-
-            // Setup constraints and add label and button
-            GridBagConstraints constraints = new GridBagConstraints();
-            constraints.gridx = 0;
-            constraints.gridy = 0;
-            south.add(PReturnInfo, constraints);
-            constraints.gridx = 0;
-            constraints.gridy = 1;
-            constraints.insets = new Insets(0, 0, 32, 0);
-            south.add(PReturnButton, constraints);
-        }
-        //#endif
 
         /**
          * Adds the sidebar to the west pane, with the given step highlighted
+         *
          * @param step the current step
          */
         protected void addSideBar(int step) {
+            /* Create special constraints for teh side bar */
             GridBagConstraints constraints = new GridBagConstraints();
             Spacer PYouAreNowOn;
             Spacer PMakeYourChoice;
             Spacer PReviewYourChoices;
             Spacer PRecordYourVote;
 
-            // Select correct highlighted label for current step
-            if (step == 1)
-                PYouAreNowOn = new Spacer(instructionsBold, west);
-            else
-                PYouAreNowOn = new Spacer(instructions, west);
-            if (step == 2)
-                PMakeYourChoice = new Spacer(makeYourChoicesBold, west);
-            else
-                PMakeYourChoice = new Spacer(makeYourChoices, west);
-            if (step == 3)
-                PReviewYourChoices = new Spacer(reviewYourChoicesBold, west);
-            else
-                PReviewYourChoices = new Spacer(reviewYourChoices, west);
-            if (step == 4)
-                PRecordYourVote = new Spacer(recordYourVoteBold, west);
-            else
-                PRecordYourVote = new Spacer(recordYourVote, west);
+            /* Select correct highlighted label for current step */
+            if (step == 1) PYouAreNowOn       = new Spacer(instructionsBold, west);
+            else           PYouAreNowOn       = new Spacer(instructions, west);
+            if (step == 2) PMakeYourChoice    = new Spacer(makeYourChoicesBold, west);
+            else           PMakeYourChoice    = new Spacer(makeYourChoices, west);
+            if (step == 3) PReviewYourChoices = new Spacer(reviewYourChoicesBold, west);
+            else           PReviewYourChoices = new Spacer(reviewYourChoices, west);
+            if (step == 4) PRecordYourVote    = new Spacer(recordYourVoteBold, west);
+            else           PRecordYourVote    = new Spacer(recordYourVote, west);
 
-            // Add labels to west pane
+            /* Add the labels to west pane */
             constraints.gridy = 0;
             constraints.gridx = 0;
             constraints.weighty = 1;
@@ -588,20 +544,23 @@ public class PsychLayoutManager extends ALayoutManager {
         }
 
         /**
-         * Adds a title   to this frame
-         * @param title the   title
-         * 
-         * @return the added title
+         * Adds a title to this frame
+         *
+         * @param title the title to add
+         * @return a spacer containing the added title
          */
         protected Spacer addTitle(Label title) {
-            // Setup constraints and add title to north pane
+            /* Setup constraints and add title to north pane */
             GridBagConstraints constraints = new GridBagConstraints();
             constraints.gridwidth = 1;
             constraints.weightx = 1;
             constraints.weighty = 1;
             constraints.anchor = GridBagConstraints.NORTH;
             title.setCentered(true);
+
+            /* We reserve this space for the side bar */
             title.setWidth(WINDOW_WIDTH - 225);
+
             title.setSize(title.execute(sizeVisitor));
             Spacer label = new Spacer(title, north);
             north.add(label, constraints);
@@ -611,6 +570,7 @@ public class PsychLayoutManager extends ALayoutManager {
 
         /**
          * Adds a title String to this frame
+         *
          * @param titleText the String title
          */
         protected Spacer addTitle(String titleText) {
@@ -759,25 +719,6 @@ public class PsychLayoutManager extends ALayoutManager {
         }
 
         /**
-         * Renders a selected ToggleButton
-         */
-         public BufferedImage forSelectedToggleButton(ToggleButton tb, Boolean... param) {
-             //System.out.println("PsychLayout's forToggleButton");
-             int size = 1;
-
-             int fontsize = (size + 1) * FONT_SIZE_MULTIPLE;
-             if (tb.isIncreasedFontSize()) {
-                 fontsize += 4;
-             }
-
-
-
-             return RenderingUtils.renderToggleButton(
-                     tb.getText(), tb.getSecondLine(), tb.getParty(), fontsize,
-                     tb.getWidth(), tb.isBold(), param[0], param[1]);
-         }
-
-        /**
          * Returns null
          */
         public BufferedImage forToggleButtonGroup(ToggleButtonGroup tbg,
@@ -834,7 +775,6 @@ public class PsychLayoutManager extends ALayoutManager {
             if (l.isIncreasedFontSize()) {
                 fontsize += 4;
             }
-            ;
 
             return RenderingUtils.getLabelSize(l.getText(),
                     l.getInstructions(), l.getDescription(), fontsize, l
@@ -992,13 +932,6 @@ public class PsychLayoutManager extends ALayoutManager {
     protected Label moreCandidatesInfo;
 
     /**
-     * Instructions for a races, based on the type of race
-     */
-    protected Label raceInstructions;
-    protected Label partyInstructions;
-    protected Label propInstructions;
-
-    /**
      * The background for this layout
      */
     protected Background background;
@@ -1129,19 +1062,19 @@ public class PsychLayoutManager extends ALayoutManager {
 
 
     public Label getPartyInstructions() {
-        return partyInstructions = new Label(getNextLayoutUID(),
+        return new Label(getNextLayoutUID(),
                 LiteralStrings.Singleton.get("PARTY_INSTRUCTIONS", language),
                 sizeVisitor);
     }
 
     public Label getPropInstructions() {
-        return propInstructions = new Label(getNextLayoutUID(),
+        return new Label(getNextLayoutUID(),
                         LiteralStrings.Singleton.get("PROPOSITION_INSTRUCTIONS", language),
                         sizeVisitor);
     }
 
     public Label getRaceInstructions() {
-        return raceInstructions = new Label(getNextLayoutUID(),
+        return new Label(getNextLayoutUID(),
                 LiteralStrings.Singleton.get("RACE_INSTRUCTIONS", language),
                 sizeVisitor);
     }
@@ -1200,7 +1133,7 @@ public class PsychLayoutManager extends ALayoutManager {
         //layout.getPages().add(new Page());
         int reviewPageNum = layout.getPages().size();
 
-        HashMap<Integer, Integer> pageTargets = new HashMap<Integer, Integer>();
+        HashMap<Integer, Integer> pageTargets = new HashMap<>();
         
         for (int raceN = 0; raceN < ballot.getCards().size(); raceN++) {
         	ACard card = ballot.getCards().get(raceN);
@@ -1312,7 +1245,7 @@ public class PsychLayoutManager extends ALayoutManager {
     protected ArrayList<Page> makeCardLayoutPage(ACard card, boolean jump,
             int target, int idx, int total) {
         ArrayList<JPanel> cardPanels = makeCardPage(card);
-        ArrayList<Page> pages = new ArrayList<Page>();
+        ArrayList<Page> pages = new ArrayList<>();
 
         @SuppressWarnings("unused")
 		Spacer title = null;
@@ -1874,7 +1807,7 @@ public class PsychLayoutManager extends ALayoutManager {
     @Override
     protected ArrayList<Page> makeReviewPage(Ballot ballot, HashMap<Integer, Integer> pageTargets) {
 
-    	ArrayList<Page> reviewPages = new ArrayList<Page>();
+    	ArrayList<Page> reviewPages = new ArrayList<>();
     	int position = 0; //the current position in the list of race review things
 
     	//inline modification of the amount of review screens
