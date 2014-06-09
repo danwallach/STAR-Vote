@@ -31,14 +31,14 @@ public class PartyCard extends ACard {
 
 
         /**
-         * @return the String to be displayed on the menu
+         * @see ICardFactory#getMenuString()
          */
         public String getMenuString() {
             return "Add Straight Party Support";
         }
 
         /**
-         * @return a newly made card
+         *  @see preptool.model.ballot.ICardFactory#makeCard()
          */
         public ACard makeCard() {
             return new PartyCard();
@@ -61,9 +61,7 @@ public class PartyCard extends ACard {
     }
 
     /**
-     * Assigns the UIDs to this card
-     *
-     * @param manager the layout manager which assigns the UIDs in the context of other cards
+     * @see preptool.model.ballot.ACard#assignUIDsToBallot(preptool.model.layout.manager.ALayoutManager)
      */
     public void assignUIDsToBallot(ALayoutManager manager) {
         setUID(manager.getNextBallotUID());
@@ -107,16 +105,21 @@ public class PartyCard extends ACard {
      * @return the finished card layout object, with the proper information about this card
      */
     public ALayoutManager.ICardLayout layoutCard(ALayoutManager manager, ALayoutManager.ICardLayout cardLayout) {
+        /* Get the language and set this card as Straight Party*/
         Language lang = manager.getLanguage();
         title.setData(lang, LiteralStrings.Singleton.get("STRAIGHT_PARTY").get(lang));
-        TextFieldModule title = (TextFieldModule) getModuleByName("Title");
-        CandidatesModule candidatesModule = (CandidatesModule) getModuleByName("Party");
 
+        /* Add title information to the layout */
+        TextFieldModule title = (TextFieldModule) getModuleByName("Title");
         cardLayout.setTitle(title.getData(lang));
+
+        /* Layout the candidates module this card contains */
+        CandidatesModule candidatesModule = (CandidatesModule) getModuleByName("Party");
         for (CardElement ce : candidatesModule.getData()) {
             /* Note that we put the party where the candidate's name would normally be */
             cardLayout.addCandidate(ce.getUID(), ce.getParty().getName(lang));
         }
+
         return cardLayout;
     }
 
@@ -182,13 +185,13 @@ public class PartyCard extends ACard {
             ids.add(ce.getUID());
         }
 
-
-
         /* Need to carry the grouping of these candidates together for NIZK purposes. */
-        XMLTools.addListProperty(doc, cardElt, Properties.RACE_GROUP, "String", ids.toArray(new String[0]));
+        XMLTools.addListProperty(doc, cardElt, Properties.RACE_GROUP, "String", ids.toArray(new String[ids.size()]));
 
+        /* Note that this is a straight ticket card in the XML */
         XMLTools.addProperty(doc, cardElt, Properties.CARD_STRATEGY, "String", "StraightTicket");
 
         return cardElt;
     }
 }
+
