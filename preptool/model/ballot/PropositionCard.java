@@ -86,7 +86,7 @@ public class PropositionCard extends ACard {
     @Override
     public void assignUIDsToBallot(ALayoutManager manager) {
 
-        /* Assign a topmost UID to this card*/
+        /* Assign a topmost UID to this card */
         setUID(manager.getNextBallotUID());
 
         /* Iterate through all the elements of the PropositionModule to assign UIDs*/
@@ -98,7 +98,7 @@ public class PropositionCard extends ACard {
 
     /**
      * The no selection review text for this card will look like:
-
+     *
      *              Proposition title text: NONE
      *
      * @see preptool.model.ballot.ACard#getReviewBlankText(preptool.model.language.Language)
@@ -134,11 +134,11 @@ public class PropositionCard extends ACard {
         TextFieldModule titleModule = (TextFieldModule) getModuleByName("Title");
         cardLayout.setTitle(titleModule.getData(lang));
 
-        /* Leyout the text for the description, which further elaborates on the title (the proposition) */
+        /* Layout the text for the description, which further elaborates on the title (the proposition) */
         TextAreaModule descriptionModule = (TextAreaModule) getModuleByName("Description");
         cardLayout.setDescription(descriptionModule.getData(lang));
 
-        /* Now assign a UID to each option */
+        /* Now layout each option */
         PropositionModule optionsModule = (PropositionModule) getModuleByName("PropOpts");
         for (CardElement ce : optionsModule.getData()) {
             cardLayout.addCandidate(ce.getUID(), ce.getName(lang, 0));

@@ -138,7 +138,7 @@ public class PresidentialRaceCard extends ACard {
         TextFieldModule titleModule = (TextFieldModule) getModuleByName("Title");
         cardLayout.setTitle(titleModule.getData(lang));
 
-        /* Layout the candidates based on the candidatesModule's code*/
+       /* Layout the candidates based on the CandidatesModule's contents */
         CandidatesModule candidatesModule = (CandidatesModule) getModuleByName("Candidates");
         for (CardElement ce : candidatesModule.getData()) {
             cardLayout.addCandidate(ce.getUID(), ce.getName(lang, 0), ce
