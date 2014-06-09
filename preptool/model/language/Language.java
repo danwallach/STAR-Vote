@@ -29,8 +29,9 @@ import java.util.HashMap;
 /**
  * The Language class encapsulates an icon (flag), name, and short name
  * (abbreviation) of a language.
+ *
  * @author Corey Shaw
- */
+ */ /* TODO This class is really dumb. Fix it. */
 public class Language {
 
 	/**
@@ -50,9 +51,10 @@ public class Language {
 
 	/**
 	 * Constructs a new language with given name, short name, and icon
-	 * @param name the name
-	 * @param shortName the short name
-	 * @param icon the icon
+     *
+	 * @param name the name of the language
+	 * @param shortName the short name (e.g. for English, the short name would be "en")
+	 * @param icon the icon of the flag associated with that language
 	 */
 	public Language(String name, String shortName, ImageIcon icon) {
 		this.icon = icon;
@@ -88,13 +90,17 @@ public class Language {
 
 	/**
 	 * Returns an array of all languages available to this program
+     *
 	 * @return the array of languages
 	 */
 	public static ArrayList<Language> getAllLanguages() {
+        /* If the array has already been constructed, just return it. */
 		if (allLanguages != null) return allLanguages;
 
 		allLanguages = new ArrayList<Language>();
 		ImageIcon icon;
+
+        /* TODO Is there a better way to do this? Also, shouldn't it be done in the constructor? */
 
 		try {
 			icon = new ImageIcon(ClassLoader.getSystemClassLoader()
@@ -186,16 +192,20 @@ public class Language {
 
 	/**
 	 * Retrieves the Language object by name
-	 * @param name the language name
-	 * @return the Language
+     *
+	 * @param name the string representation of the language name
+	 * @return the Language object
 	 */
 	public static Language getLanguageForName(String name) {
+
+        /* If the map is null, initialize it and add all of the languages we support to it */
 		if (allLanguagesMap == null) {
 			allLanguagesMap = new HashMap<String, Language>();
 			ArrayList<Language> languages = getAllLanguages();
 			for (Language lang : languages)
 				allLanguagesMap.put(lang.getName(), lang);
 		}
+
 		return allLanguagesMap.get(name);
 	}
 
