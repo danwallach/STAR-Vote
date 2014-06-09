@@ -299,11 +299,11 @@ public class CandidatesModule extends AModule {
                 /* If the component is not a party object, just set the text to its toString representation and return this */
                 /* TODO This seems bad... */
                 if (!(value instanceof Party))
-                    setText( value.toString() );
+                    setText(value.toString());
                 else {
                     /* Find the party and its translation, then return this component */
                     Party party = (Party) value;
-                    setText( party.getName( getLanguage() ) + " " );
+                    setText(party.getName( getLanguage() ) + " ");
                 }
 
                 return this;
@@ -329,11 +329,11 @@ public class CandidatesModule extends AModule {
                /* If the component is not a party object, just set the text to its toString representation and return this */
                 /* TODO This seems bad... */
                 if (!(value instanceof Party))
-                    setText( value.toString() );
+                    setText(value.toString());
                 else {
                     /* Find the party and its translation, then return this component */
                     Party party = (Party) value;
-                    setText( party.getName( getLanguage() ) + " " );
+                    setText(party.getName( getLanguage() ) + " ");
                 }
 
                 return this;
@@ -625,7 +625,7 @@ public class CandidatesModule extends AModule {
             setPrimaryLanguage(lang);
 
             /* Sets the copy options for the table in the right-click dropdown*/
-            getCopyFromItem().setText( "Copy selected candidate from " + lang.getName() );
+            getCopyFromItem().setText("Copy selected candidate from " + lang.getName());
             tableCopyAllFromItem.setText( "Copy all candidates from " + lang.getName() );
         }
 
@@ -677,16 +677,16 @@ public class CandidatesModule extends AModule {
 
             /* This will be the menu item that handles the "copy from" selection*/
             setCopyFromItem(new JMenuItem());
-            getCopyFromItem().addActionListener( new ActionListener() {
+            getCopyFromItem().addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     if (candidatesTable.getSelectedRow() != -1) {
                         /* Find the selection's text in the primary language and copy it to this language*/
                         int idx = candidatesTable.getSelectedRow();
-                        data.get( idx ).copyFromPrimary( getLanguage(), getPrimaryLanguage() );
-                        languageSelected( getLanguage() );
+                        data.get(idx).copyFromPrimary(getLanguage(), getPrimaryLanguage());
+                        languageSelected(getLanguage());
                     }
                 }
-            } );
+            });
             tableContextMenu.add( getCopyFromItem() );
 
             /* This will be the menu item that handles "copy all from" selections*/

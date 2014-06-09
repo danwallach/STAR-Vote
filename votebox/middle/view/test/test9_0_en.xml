@@ -3,7 +3,7 @@
 <Property name="StartImageSize" type="Integer" value="3"/>
 <Property name="MaxImageSize" type="Integer" value="3"/>
 <Page>
-<Label uid="B39" x="369" y="6"/>
+<FocusableLabel uid="B39" x="369" y="6"/>
 <Button uid="L40" x="667" y="525">
 <Property name="ButtonStrategy" type="String" value="NextPage"/>
 <Property name="Up" type="String" value="B41"/>
@@ -27,7 +27,7 @@
 </ToggleButtonGroup>
 </Page>
 <Page>
-<Label uid="B57" x="203" y="6"/>
+<FocusableLabel uid="B57" x="203" y="6"/>
 <Button uid="L58" x="0" y="525">
 <Property name="ButtonStrategy" type="String" value="PreviousPage"/>
 <Property name="Up" type="String" value="B60"/>

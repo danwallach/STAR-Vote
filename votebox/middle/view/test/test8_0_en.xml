@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?> 
 <Layout>	
 	<Page>
-		<Label x="100" y="101" uid="one">
-		</Label>		
+		<FocusableLabel x="100" y="101" uid="one">
+		</FocusableLabel>
 		<Button uid="two" x="200" y="201">		
 		</Button>
 		<ToggleButtonGroup>			
@@ -13,7 +13,7 @@
 		</ToggleButtonGroup>
 	</Page>
 	<Page>
-		<Label uid="five" x="500" y="501"></Label>
+		<FocusableLabel uid="five" x="500" y="501"></FocusableLabel>
 		<Button uid="six" x="600" y="601"></Button>
 		<ToggleButtonGroup>
 			<ToggleButton uid="seven" x="700" y="701"></ToggleButton>

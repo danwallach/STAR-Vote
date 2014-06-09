@@ -17,27 +17,10 @@ public class AdderKeyManipulator {
 	 * Sets the cached final public key.
 	 * This is used so VoteBoxes and Supervisors can coordinate their
 	 * key usage.
-	 * 
+	 *
 	 * @param newKey - the key to load into the cache.
-	 * //@param baseKey - the key the newKey must be a derivative of.
 	 */
-	public static void setCachedKey(PublicKey newKey/*, PublicKey baseKey*/)/* throws AuditoriumCryptoException*/{
-		/*if(baseKey.getF() != null && !(baseKey.getF().equals(newKey.getF())))
-			throw new AuditoriumCryptoException("F's don't match", null);
-		
-		if(baseKey.getG() != null && !(baseKey.getG().equals(newKey.getG())))
-			throw new AuditoriumCryptoException("G's don't match", null);
-		
-		if(baseKey.getP() != null && !(baseKey.getP().equals(newKey.getP())))
-			throw new AuditoriumCryptoException("P's don't match", null);
-		
-		if(baseKey.getQ() != null && !(baseKey.getQ().equals(newKey.getQ())))
-			throw new AuditoriumCryptoException("Q's don't match", null);
-		
-		if(baseKey.getH() != null && baseKey.getH().equals(newKey.getH()))
-			throw new AuditoriumCryptoException("H's DO match", null);*/
-		
-//		System.out.println("Cached Key Set: "+newKey);
+	public static void setCachedKey(PublicKey newKey){
 		
 		_cachedKey = newKey;
 	}
