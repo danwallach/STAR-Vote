@@ -31,14 +31,14 @@ public class PartyCard extends ACard {
 
 
         /**
-         * @return the String to be displayed on the menu
+         * @see ICardFactory#getMenuString()
          */
         public String getMenuString() {
             return "Add Straight Party Support";
         }
 
         /**
-         * @return a newly made card
+         *  @see preptool.model.ballot.ICardFactory#makeCard()
          */
         public ACard makeCard() {
             return new PartyCard();
@@ -61,9 +61,7 @@ public class PartyCard extends ACard {
     }
 
     /**
-     * Assigns the UIDs to this card
-     *
-     * @param manager the layout manager which assigns the UIDs in the context of other cards
+     * @see preptool.model.ballot.ACard#assignUIDsToBallot(preptool.model.layout.manager.ALayoutManager)
      */
     public void assignUIDsToBallot(ALayoutManager manager) {
         setUID(manager.getNextBallotUID());
@@ -196,3 +194,4 @@ public class PartyCard extends ACard {
         return cardElt;
     }
 }
+

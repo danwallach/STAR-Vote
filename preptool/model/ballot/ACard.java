@@ -125,9 +125,9 @@ public abstract class ACard {
     }
 
     /**
-     * Assigns the UIDs to this card
+     * Assigns the UIDs to this card and its elements
      *
-     * @param manager the layout manager
+     *  @param manager the layout manager which assigns the UIDs in the context of other cards
      */
     public abstract void assignUIDsToBallot(ALayoutManager manager);
 
