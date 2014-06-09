@@ -233,10 +233,12 @@ public class View extends JFrame {
      */
     public View(Model m) {
 
+        /* Setup */
         super("VoteBox Preparation Tool");
         model = m;
         languageChangeListeners = new ArrayList<LanguageChangeListener>();
 
+        /* Set look and feel */
         try { UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); }
         catch (Exception e) { e.printStackTrace(); }
 
@@ -252,6 +254,7 @@ public class View extends JFrame {
         */
         System.setProperty("apple.laf.useScreenMenuBar", "true");
 
+        /* Create a window listener */
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -259,33 +262,49 @@ public class View extends JFrame {
             }
         } );
 
+        /* Set size, layout, and default close operation */
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         setSize(1000, 800);
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
-        
+
+        /* Initialise preference menu */
         initializePrefMenu();
 
+        /* Initialise toolbar */
         initializeToolbar();
+
+        /* Positioning... */
         c.gridx = 0;
         c.gridy = 0;
         c.gridwidth = 2;
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.FIRST_LINE_START;
+
+        /* Add the toolbar */
         add(toolbar, c);
 
+        /* Initialise the list panel */
         initializeListPanel();
+
+        /* Positioning */
         c.gridy = 1;
         c.weighty = 0;
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.LAST_LINE_START;
+
+        /* Add the list toolbar and set the border */
         listPanel.add(listToolbar, c);
         listPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 
+        /* Initialise the card panel */
         initializeCardPanel();
+
+        /* Create a new split pane with divider */
         JSplitPane cardSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, cardPanel, previewPanel);
         cardSplitPane.setDividerLocation(400);
 
+        /* Create a new panel and set the layout */
         JPanel rightSide = new JPanel();
         rightSide.setLayout(new GridBagLayout());
         GridBagConstraints c2 = new GridBagConstraints();
@@ -297,6 +316,8 @@ public class View extends JFrame {
         rightSide.add(cardSplitPane, c2);
         c2.gridy = 1;
         c2.weighty = 0;
+
+        /* Create a new IMultiLanguageEditor */
         IMultiLanguageEditor editor = new IMultiLanguageEditor() {
 
             public void languageSelected(Language lang) {
@@ -314,16 +335,20 @@ public class View extends JFrame {
             }
         };
 
+        /* Create a new language bar for choosing languages */
         languageBar = new LanguageBar(this, editor, model.getLanguages(), model.getLanguages().get(0));
 
+        /* Add a language select listener */
         languageBar.addLanguageSelectListener(new Observer() {
             public void update(Observable o, Object arg) {
                 previewPanel.clear();
             }
         } );
 
+        /* Add the language bar to the form */
         rightSide.add(languageBar, c2);
 
+        /* Create a new split pane with divider, position it, and add it to the form */
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, listPanel, rightSide);
         splitPane.setDividerLocation(300);
         c.gridx = 0;
@@ -335,11 +360,16 @@ public class View extends JFrame {
         c.fill = GridBagConstraints.BOTH;
         add(splitPane, c);
 
+        /* Initialise the menu bar */
         initializeMenuBar();
+
+        /* Set the menu bar */
         setJMenuBar(menuBar);
 
+        /* Initialise the popup menu */
         initializePopupMenu();
 
+        /* Add a new title observer */
         titleObserver = new Observer() {
             public void update(Observable o, Object arg) {
                 if (languageBar.getCurrentLanguage().equals(
@@ -351,7 +381,8 @@ public class View extends JFrame {
                 }
             }
         };
-        
+
+        /* Set up a new file chooser */
         fileChooser = new JFileChooser();
     }
 
@@ -374,8 +405,7 @@ public class View extends JFrame {
     /**
      * Adds the language change listener
      * 
-     * @param l
-     *            the listener
+     * @param l         the listener
      */
     public void addLanguageChangeListener(LanguageChangeListener l) {
         languageChangeListeners.add(l);
@@ -386,13 +416,18 @@ public class View extends JFrame {
      * show the new card
      */
     public void cardListSelectionChanged() {
+
+        /* Get the index of the selected card */
         int idx = cardList.getSelectedIndex();
+
+        /* If there was no card selected, then disable everything */
         if (idx == -1) {
             setCardPane(noCardsPanel);
             deleteCardButton.setEnabled(false);
             moveUpCardButton.setEnabled(false);
             moveDownCardButton.setEnabled(false);
         }
+        /* Otherwise, set the card pane based on the selection and enable buttons */
         else {
             setCardPane(new CardView(this, model.getCardType(idx), model.getCardModules(idx)));
             deleteCardButton.setEnabled(true);
@@ -407,14 +442,21 @@ public class View extends JFrame {
      */
     public void deleteCardButtonPressed() {
 
-        int answer = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete this card?", "Delete Card", JOptionPane.YES_NO_OPTION);
+        /* Prompt after action */
+        String prompt = "Are you sure you want to delete this card?";
+        int answer = JOptionPane.showConfirmDialog(this, prompt, "Delete Card", JOptionPane.YES_NO_OPTION);
 
+        /* Check the result of the prompt and, if yes, delete the card */
         if (answer == JOptionPane.YES_OPTION) {
 
+            /* Figure out which card was selected */
             int idx = cardList.getSelectedIndex();
-            int newIdx = (idx == cardListModel.size() - 1) ? idx - 1 : idx + 1;
 
+            /* If it's the last card, set the second to last card as selected -- otherwise, set the next card */
+            int newIdx = (idx == cardListModel.size() - 1) ? idx - 1 : idx + 1;
             cardList.setSelectedIndex(newIdx);
+
+            /* Delete the originally selected card */
             model.deleteCard(idx);
 
             /* Re-enable the Straight Party option if it gets removed */
@@ -422,8 +464,6 @@ public class View extends JFrame {
 
             if(removed.contains("Straight Party"))
                 addCardMenu.getComponent(idx).setEnabled(true);
-
-
         }
     }
 
@@ -434,20 +474,22 @@ public class View extends JFrame {
      */
     public void exitButtonPressed() {
 
+        /* Prompt after action */
         String prompt = "If you exit, any changes you have made since the last time you saved the current ballot will be lost.  Save?";
         int answer = JOptionPane.showConfirmDialog(this, prompt, "Exit", JOptionPane.YES_NO_CANCEL_OPTION);
 
+        /* Check the result of the prompt and, if yes, save and exit*/
         if (answer == JOptionPane.YES_OPTION) {
             boolean saved = saveBallotButtonPressed();
             if (saved)
                 System.exit(0);
         }
+        /* If not, just exit */
         else if (answer == JOptionPane.NO_OPTION) {
             System.exit(0);
         }
-        else if (answer == JOptionPane.CANCEL_OPTION) {
-            /* Do nothing in this case. Specifically, do not exit.*/
-        }
+        /* If cancel, do nothing -- do not exit */
+        else if (answer == JOptionPane.CANCEL_OPTION) { }
     }
 
     /**
@@ -458,10 +500,14 @@ public class View extends JFrame {
     public void exportButtonPressed() {
 
         try {
+
+            /* Check translations */
             String[] cardsNeedTranslation = model.checkTranslations();
 
+            /* If more than 0 cards need translations */
             if (cardsNeedTranslation.length > 0) {
 
+                /* Tell the user that they are missing translations and... */
                 String body = "You have not entered translations for all text in this ballot.\n\nThe following cards are missing translations:\n";
 
                 for (String s : cardsNeedTranslation)
@@ -469,20 +515,21 @@ public class View extends JFrame {
 
                 body += "\nContinue exporting?";
 
+                /* ...ask if they want to continue exporting */
                 int answer = JOptionPane.showConfirmDialog(this, body, "Export", JOptionPane.YES_NO_OPTION);
 
+                /* If the answer is no, return -- otherwise, continue */
                 if (answer == JOptionPane.NO_OPTION) return;
             }
 
-            /*
-              Ask the user if he wants to export as a ZIP file - will be
-              removed once the runtime supports ballots in ZIP format
-            */
+            /* Ask the user if he wants to export as a ZIP file - will be removed once the runtime supports ballots in ZIP format */
             String prompt = "Would you like to export the ballot as a ZIP file?";
             int answer = JOptionPane.showConfirmDialog(this, prompt, "Export as ZIP", JOptionPane.YES_NO_OPTION);
 
+            /* If the answer is yes */
             if (answer == JOptionPane.YES_OPTION) {
 
+                /* Open a file chooser and show zip files */
             	JFileChooser fc = fileChooser;
 
                 fc.setFileFilter(new FileFilter() {
@@ -498,32 +545,38 @@ public class View extends JFrame {
                     }
                 } );
 
+                /* See what is pressed */
                 answer = fc.showDialog(this, "Export");
 
+                /* If approval, then export the file as a zip */
                 if (answer == JFileChooser.APPROVE_OPTION) {
                     File file = fc.getSelectedFile();
                     model.exportAsZip(this, file.getAbsolutePath());
                 }
             }
+            /* If the answer is no */
             else {
 
+                /* Set up a file chooser to only show directories */
             	JFileChooser fc = fileChooser;
                 fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
+                /* See what is pressed */
                 answer = fc.showDialog(this, "Export");
 
+                /* If approval, then export */
                 if (answer == JFileChooser.APPROVE_OPTION) {
 
                     File file = fc.getSelectedFile();
                     file.mkdirs();
-                    model.export( this, file.getAbsolutePath() );
-
+                    model.export(this, file.getAbsolutePath());
                 }
             }
         }
         catch (BallotExportException e) {
 
+            /* Pop up an error message if there's a problem */
             String error = "An error occurred while exporting the ballot.\nPlease verify the directory is writable, and try again.";
-
             JOptionPane.showMessageDialog(this, error, "Error", JOptionPane.ERROR_MESSAGE);
 
         }
@@ -534,11 +587,15 @@ public class View extends JFrame {
      */
     public void fireLanguagesChanged(ArrayList<Language> languages) {
 
+        /* Set the languages */
         model.setLanguages(languages);
 
+        /* Cycle through the cards and set the card title based on the card title */
+        /* TODO maybe this should be in the model */
         for (int i = 0; i < model.getNumCards(); i++)
             setCardTitle(model.getCardTitle(i), i);
 
+        /* Calls each of the listeners so they know languages have been changed */
         for (LanguageChangeListener l : languageChangeListeners)
             l.languagesChanged(languages);
     }
@@ -549,16 +606,29 @@ public class View extends JFrame {
      */
     public void moveDownCardButtonPressed() {
 
+        /* Find the card that has been selected */
         int idx = cardList.getSelectedIndex();
 
+        /* Check that the selected card is not the last one */
         if (idx < cardListModel.size() - 1) {
 
+            /* Move the card down */
             int newIdx = idx + 1;
             model.moveCard(idx, newIdx);
+
+            /* Invalidate */
             invalidate();
+
+            /* Remove the old card position */
             String element = (String) cardListModel.remove(idx);
+
+            /* Add the element to the model at newIdx */
             cardListModel.add(newIdx, element);
+
+            /* Set the new selected index to newIdx*/
             cardList.setSelectedIndex(newIdx);
+
+            /* Validate */
             validate();
 
         }
@@ -570,16 +640,29 @@ public class View extends JFrame {
      */
     public void moveUpCardButtonPressed() {
 
+        /* Find the card that has been selected */
         int idx = cardList.getSelectedIndex();
 
+        /* Check that the selected card is not the first one */
         if (idx > 0) {
 
+            /* Move the card up */
             int newIdx = idx - 1;
             model.moveCard(idx, newIdx);
+
+            /* Invalidate */
             invalidate();
+
+            /* Remove the card from the old position */
             String element = (String) cardListModel.remove(idx);
+
+            /* Add the element to the model at newIdx */
             cardListModel.add(newIdx, element);
+
+            /* Set the selected index to newIdx */
             cardList.setSelectedIndex(newIdx);
+
+            /* Validate */
             validate();
 
         }
@@ -591,16 +674,26 @@ public class View extends JFrame {
      */
     public void newBallotButtonPressed() {
 
+        /* Prompt after action */
         String prompt = "If you start a new ballot, any changes you have made since the last time you saved the current ballot will be lost.  Continue?";
-
         int answer = JOptionPane.showConfirmDialog(this, prompt, "New Ballot", JOptionPane.YES_NO_OPTION);
 
+        /* Check if the answer is yes */
         if (answer == JOptionPane.YES_OPTION) {
+
+            /* Start a new ballot */
             model.newBallot();
+
+            /* Remove all elements from the model */
             cardListModel.removeAllElements();
+
+            /* Set the card pane to an empty panel */
             setCardPane(noCardsPanel);
+
+            /* Fire a languages changed event */
             fireLanguagesChanged(model.getLanguages());
 
+            /* Enable the first component in the add card menu */
             addCardMenu.getComponent(0).setEnabled(true);
         }
 
@@ -612,14 +705,20 @@ public class View extends JFrame {
      * chooser, then loads the ballot
      */
     public void openBallotButtonPressed() {
+
         try {
 
+            /* Prompt user after action */
             String prompt = "If you open a ballot, any changes you have made since the last time you saved the current ballot will be lost.  Continue?";
             int answer = JOptionPane.showConfirmDialog(this, prompt, "Open Ballot", JOptionPane.YES_NO_OPTION);
 
+            /* Check if the answer is yes */
             if (answer == JOptionPane.YES_OPTION) {
 
+                /* Open a new file chooser */
                 JFileChooser fc = new JFileChooser();
+
+                /* Only show .bal files */
                 fc.setFileFilter(new FileFilter() {
                     @Override
                     public boolean accept(File f) {
@@ -633,34 +732,39 @@ public class View extends JFrame {
                     }
                 } );
 
+                /* See what was pressed */
                 answer = fc.showOpenDialog(this);
 
+                /* If approval... */
                 if (answer == JFileChooser.APPROVE_OPTION) {
 
+                    /* Get the file an*/
                     File file = fc.getSelectedFile();
                     model.open(file.getAbsolutePath());
                     cardListModel.removeAllElements();
 
+                    /* Add the card title to the card list model */
                     for (int i = 0; i < model.getNumCards(); i++)
                         cardListModel.addElement(model.getCardTitle(i));
 
-
+                    /* Set the selected index based on the size of the card list model */
                     int set = cardListModel.size() > 0 ? 0 : -1;
                     cardList.setSelectedIndex(set);
 
+                    /* Enable straight party based on the model */
                     boolean sp = !((String)cardListModel.get(0)).contains("Straight Party");
                     addCardMenu.getComponent(0).setEnabled(sp);
                 }
 
+                /* Fire a languages changed event */
                 fireLanguagesChanged(model.getLanguages());
             }
         }
         catch (BallotOpenException e) {
 
+            /* If there is a problem opening the ballot, pop up an error dialog */
             String error = "An error occurred while opening the ballot.\nPlease verify the file is not corrupt, and try again.";
-
             JOptionPane.showMessageDialog(this, error, "Error", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
         }
     }
 
@@ -670,8 +774,11 @@ public class View extends JFrame {
      */
     public void previewButtonPressed() {
 
+        /* Try to preview the ballot */
         try { model.previewBallot(this); }
         catch (BallotPreviewException e) {
+
+            /* If there is a problem previewing the ballot, pop up an error dialog */
             String error = "An error occurred while previewing the ballot.";
             JOptionPane.showMessageDialog(this, error, "Error", JOptionPane.ERROR_MESSAGE );
         }
@@ -680,8 +787,7 @@ public class View extends JFrame {
     /**
      * Removes the language change listener
      * 
-     * @param l
-     *            the listener
+     * @param l         the listener
      */
     public void removeLanguageChangeListener(LanguageChangeListener l) {
         languageChangeListeners.remove( l );
@@ -726,7 +832,7 @@ public class View extends JFrame {
                     }
                 }
                 else {
-                    model.saveAs( file.getAbsolutePath() );
+                    model.saveAs(file.getAbsolutePath());
                     return true;
                 }
             }
@@ -741,8 +847,7 @@ public class View extends JFrame {
     /**
      * Sets the card pane to the given card view
      * 
-     * @param panel
-     *            the card view
+     * @param panel         the card view
      */
     public void setCardPane(CardView panel) {
 
@@ -755,8 +860,7 @@ public class View extends JFrame {
     /**
      * Sets the card pane to a generic panel
      * 
-     * @param panel
-     *            the panel
+     * @param panel         the panel
      */
     public void setCardPane(JPanel panel) {
         currentCardView = null;
@@ -775,10 +879,8 @@ public class View extends JFrame {
     /**
      * Sets the card title in the card list
      * 
-     * @param title
-     *            the new title
-     * @param idx
-     *            the index
+     * @param title         the new title
+     * @param idx           the index
      */
     public void setCardTitle(String title, int idx) {
         String set = title.equals("") ? "<untitled>" : title;
@@ -1069,22 +1171,22 @@ public class View extends JFrame {
 
                     int idx;
 
-                    //Make PartyCards always first so they will be displayed
-                    // at the beginning of a voting session
+                    /* Make PartyCards always first so they will be displayed at the beginning of a voting session */
                     if(card instanceof PartyCard){
 
                         idx = 0;
 
-                        //For reasons stemming from implementation, it helps to update the data
-                        //within the card before adding it to the pane, so its name is actually displayed.
+                        /*
+                          For reasons stemming from implementation, it helps to update the data within the card before
+                          adding it to the pane, so its name is actually displayed.
+                        */
                         card.getReviewBlankText(languageBar.getPrimaryLanguage());
 
-                        //Should parties automatically be added to the card?
+                        /* TODO Should parties automatically be added to the card? */
                         model.addCardAtFront(card);
                         cardListModel.insertElementAt("", 0);
 
-                        //We only allow for one straight party card at a time
-                        //Why would you need more?
+                        /* Only allow for one straight party card at a time */
                         item.setEnabled(false);
 
                     }
@@ -1182,7 +1284,7 @@ public class View extends JFrame {
 
         } );
 
-        //This button is annoying, so disable it
+        /* This button is annoying, so disable it */
         previewButton.setEnabled(false);
 
         toolbar.add(previewButton);
