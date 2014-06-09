@@ -62,7 +62,8 @@ import printer.PrintImageUtils;
  * ALayoutManager is a more useful abstraction of the LayoutManager, providing
  * methods for different types of pages, and also implementing a card visitor to
  * layout the different types of cards.
- * @author Corey Shaw
+ *
+ * @author Corey Shaw, Dan Sandler
  */
 public abstract class
         ALayoutManager implements ILayoutManager {
@@ -89,24 +90,21 @@ public abstract class
     private static final int WIDTH_SELECTED_IMAGES = 600;
 
 	/**
-     * Creates a Layout using the information from the given Ballot.
-     * @param ballot the ballot
-     * @return the layout
+     * @see preptool.model.layout.manager.ILayoutManager#makeLayout(preptool.model.ballot.Ballot)
      */
     public abstract Layout makeLayout(Ballot ballot);
 
     /**
-     * Executes this as a visitor to get a JPanel for the card's type
-     * @param card the card
-     * @return a JPanel with all elements laid out on it
+     * @see preptool.model.layout.manager.ILayoutManager#makeCardPage(preptool.model.ballot.ACard)
      */
     public abstract ArrayList<JPanel> makeCardPage(ACard card);
 
     /**
      * Makes a review page that shows all of the cards on the screen and allows
      * the user to go back and change his response.
-     * @param ballot the ballot
-     * @param pageTargets mapping of races to review pages
+     *
+     * @param ballot the ballot, the collection of Cards
+     * @param pageTargets mapping of races (Cards) to review pages
      * @return the review page
      */
     protected abstract ArrayList<Page> makeReviewPage(Ballot ballot,
@@ -114,75 +112,70 @@ public abstract class
 
     /**
      * Makes an introductory page with instructions on how to use VoteBox.
+     *
+     * @param hasLanguageSelect  whether the ballot will have a language selection page
      * @return the instructions page
      */
-    protected abstract Page makeInstructionsPage(boolean hadLanguageSelect);
+    protected abstract Page makeInstructionsPage(boolean hasLanguageSelect);
 
     /**
-     * Makes a cast ballot page that asks the user for confirmation.
+     * Makes a commit ballot page that asks the user for confirmation.
+     *
      * @return the cast ballot page
      */
-    protected abstract Page makeCastPage();
+    protected abstract Page makeCommitPage();
 
     /**
-     * Makes a language selection page that gives the user an option of
-     * different languages
      * @param languages a list of the languages available
+     * @return a language selection page that gives the user an option of different languages
      */
     protected abstract Page makeLanguageSelectPage(ArrayList<Language> languages);
     
     /**
-     * Makes a special page that is shown when an override-cancel message
-     * is received, and asks for confirmation
+     * @return a special page that is shown when an override-cancel message is received, and asks for confirmation
      */
     protected abstract Page makeOverrideCancelPage();
     
     /**
-     * Makes a special page that is shown when an override-cast message
-     * is received, and asks for confirmation
+     * @return a special page that is shown when an override-cast message is received, and asks for confirmation
      */
     protected abstract Page makeOverrideCastPage();
 
     /**
-     * Makes a success page that informs the user that the ballot was
-     * successfully cast.
-     * @return the success page
+     * @return a success page that informs the user that the ballot was successfully committed.
      */
     protected abstract Page makeSuccessPage();
 
     /**
-     * Returns a size visitor that determines the size of a component specific
-     * to this layout configuration
-     * @return the visitor
+     * @return a size visitor that determines the size of a component specific to this layout configuration
      */
     public abstract ILayoutComponentVisitor<Object, Dimension> getSizeVisitor();
 
     /**
-     * Returns an image visitor that renders an image of a component specific to
+     * @return an image visitor that renders an image of a component specific to
      * this layout configuration
-     * @return the visitor
      */
     public abstract ILayoutComponentVisitor<Boolean, BufferedImage> getImageVisitor();
 
     /**
-     * The next unique ID to assign
+     * The next unique ID to assign for a layout element
      */
     private int nextLUID = 1;
+
+    /**
+     * The next unique ID to assign for a selectable element
+     */
     private int nextBUID = 1;
 
     /**
-     * Returns the next unique ID with an L in front (for Layout), and
-     * increments the counter
-     * @return the unique ID
+     * @return the next unique ID with an L in front (for Layout), and increments the counter
      */
     public String getNextLayoutUID() {
         return "L" + nextLUID++;
     }
 
     /**
-     * Returns the next unique ID with a B in front (for Ballot), and increments
-     * the counter
-     * @return the unique ID
+     * @return the next unique ID with a B in front (for Ballot), and increments the counter
      */
     public String getNextBallotUID() {
         return "B" + nextBUID++;
@@ -190,6 +183,7 @@ public abstract class
 
     /**
      * Sets the unique IDs of the entire ballot
+     *
      * @param ballot the ballot
      */
     public final void assignUIDsToBallot(Ballot ballot) {
@@ -197,60 +191,70 @@ public abstract class
     }
 
     /**
-     * Renders all images in a Layout to disk, ignoring duplicates.
+     * Renders all images in a Layout to the disk, ignoring duplicates.
+     *
      * @param layout the layout holding images
-     * @param location path to output the images to
+     * @param location the path to output the images to
      * @param progressInfo used to indicate the status of the rendering
      */
     public void renderAllImagesToDisk(final Layout layout, final String location,
             ProgressInfo progressInfo) {
+
+        /* Keeps tabe on which UIDs have been generated and written to the disk */
         final HashSet<String> uids = new HashSet<String>();
+
+        /* An easy reference for the shortname of the current language */
         final String langShortName = getLanguage().getShortName();
+
+        /* Open a file for the destination of the images */
         File path = new File(location);
         if (!path.exists()) path.mkdirs();
 
-//        File selectedSource = new File("sound/SelectedSound.mp3");
-//        File deselectedSource = new File("sound/DeselectedSound.mp3");
-//        File selectedTarget = new File(location + "SelectedSound.mp3");
-//        File deselectedTarget = new File(location + "DeselectedSound.mp3");
-//
-//        try{
-//            Files.copy(selectedSource.toPath(), selectedTarget.toPath(), StandardCopyOption.REPLACE_EXISTING);
-//            Files.copy(deselectedSource.toPath(), deselectedTarget.toPath(), StandardCopyOption.REPLACE_EXISTING);
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-
+        /* A reference list of all supported languages */
         ArrayList<Language> langs = Language.getAllLanguages();
+
+        /* A reference list for the names of all supported languages */
         final ArrayList<String> langNames = new ArrayList<String>(langs.size());
         for(Language lang: langs){
            langNames.add(lang.getName());
         }
 
 
+        /* This is our visitor for the rendering, anonymously filled in here. */
         final ILayoutComponentVisitor<Object, Void> renderVisitor = new ILayoutComponentVisitor<Object, Void>() {
-
-            private ArrayList<String> seenUIDs = new ArrayList<String>();
-            private String _uid = null;
 
             private boolean first = true;
 
+            /* TODO There must be a better way to check if we've seen this UID before... */
+
+
+            /**
+             * @see preptool.model.layout.ILayoutComponentVisitor#forBackground(preptool.model.layout.Background, Object[])
+             */
             public Void forBackground(Background bg, Object... param) {
+                /* This is how we avoid duplicats */
                 if (!uids.contains(bg.getUID())) {
                     try {
+                        /* Using our visitor, generate an image that we can write out */
                         BufferedImage img = bg.execute(getImageVisitor());
-                        ImageIO
-                                .write(img, "png", new File(location
-                                        + bg.getUID() + "_1_" + langShortName
-                                        + ".png"));
+
+                        /* Write out the image in the specified format, e.g. /media/L71_1_en.png */
+                        ImageIO.write(img, "png", new File(location + bg.getUID() + "_1_" + langShortName + ".png"));
+
                     } catch (IOException e) {
+                        /* If we encounter an error, we need to stop since we shouldn't output incomplete ballots */
                         throw new RuntimeException(e);
                     }
                     uids.add(bg.getUID());
                 }
+
+                /* This is part of the weirdness of the visitor patter. TODO Rewrite the visitor? */
                 return null;
             }
 
+            /**
+             * @see preptool.model.layout.ILayoutComponentVisitor
+             */
             public Void forButton(Button b, Object... param) {
                 if (!uids.contains(b.getUID())) {
                     try {
@@ -274,8 +278,9 @@ public abstract class
                 return null;
             }
 
-
-
+            /**
+             * @see preptool.model.layout.ILayoutComponentVisitor
+             */
             public Void forLabel(Label l, Object... param) {
                 if (!uids.contains(l.getUID())) {
                     try {
@@ -305,6 +310,9 @@ public abstract class
                 return null;
             }
 
+            /**
+             * @see preptool.model.layout.ILayoutComponentVisitor
+             */
             public Void forReviewButton(ReviewButton rb, Object... param) {
 
                 // _1_ is the file necessary for review
@@ -382,7 +390,9 @@ public abstract class
 
             }
 
-
+            /**
+             * @see preptool.model.layout.ILayoutComponentVisitor
+             */
             public Void forReviewLabel(ReviewLabel rl, Object... param) {
                 if (!uids.contains(rl.getUID())) {
                     try {
@@ -410,6 +420,9 @@ public abstract class
                 return null;
             }
 
+            /**
+             * @see preptool.model.layout.ILayoutComponentVisitor
+             */
             public Void forToggleButton(ToggleButton tb, Object... param) {
 
                 if (!uids.contains(tb.getUID())) {
@@ -470,13 +483,15 @@ public abstract class
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
-                    _uid = tb.getUID();
                     uids.add(tb.getUID());
                 }
 
                 return null;
             }
 
+            /**
+             * @see preptool.model.layout.ILayoutComponentVisitor
+             */
             public Void forToggleButtonGroup(ToggleButtonGroup tbg,
                     Object... param) {
 
@@ -487,6 +502,9 @@ public abstract class
                 return null;
             }
 
+            /**
+             * @see preptool.model.layout.ILayoutComponentVisitor
+             */
 			public Void forPrintButton(PrintButton pb, Object... param) {
 
 
@@ -543,6 +561,9 @@ public abstract class
 
 			}
 
+            /**
+             * @see preptool.model.layout.ILayoutComponentVisitor
+             */
             public void forAudio(String uid, String text){
                 if(GENERATE_AUDIO){
 

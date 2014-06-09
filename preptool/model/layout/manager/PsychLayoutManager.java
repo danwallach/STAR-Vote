@@ -1178,7 +1178,7 @@ public class PsychLayoutManager extends ALayoutManager {
         for(Page reviewPage : reviewPages)
         	reviewPage.markAsReviewPage();
 
-        layout.getPages().add(reviewPageNum + (ballot.getCards().size() / CARDS_PER_REVIEW_PAGE) + 1, makeCastPage());
+        layout.getPages().add(reviewPageNum + (ballot.getCards().size() / CARDS_PER_REVIEW_PAGE) + 1, makeCommitPage());
 
         layout.getPages().add(reviewPageNum + (ballot.getCards().size() / CARDS_PER_REVIEW_PAGE) + 2, makeSuccessPage());
         
@@ -1447,7 +1447,7 @@ public class PsychLayoutManager extends ALayoutManager {
     }
 
     @Override
-    protected Page makeCastPage() {
+    protected Page makeCommitPage() {
         PsychLayoutPanel frame = new PsychLayoutPanel();
         Label recordTitle = new Label(getNextLayoutUID(),
                 LiteralStrings.Singleton.get("RECORD_TITLE", language));
