@@ -2359,141 +2359,107 @@ public class PsychLayoutManager extends ALayoutManager {
     }
 
     /**
-     * Makes a simple background (without the sidebar). Used on override pages
-     * and the success page.
-     * @return the success page background
-     */
+     * @return a simple background (without the sidebar). Used on override pages and the success page.
+     */ /* TODO Remove the buttons and labels and see if this still works */
     protected Background makeSimpleBackground() {
+
+        /* Everything will be laid out on this panel, even though they don't really matter */
         PsychLayoutPanel frame = new PsychLayoutPanel();
 
-        Label instructionsTitle = new Label("L0", LiteralStrings.Singleton.get(
-                "INSTRUCTIONS_TITLE", language));
+        /* This is the title for the instructions that will be laid over on this background */
+        Label instructionsTitle = new Label("L0", LiteralStrings.Singleton.get("INSTRUCTIONS_TITLE", language));
         instructionsTitle.setCentered(true);
         instructionsTitle.setSize(instructionsTitle.execute(sizeVisitor));
         frame.addTitle(instructionsTitle);
+
+        /* Add a sidebar */
         frame.addSideBar(1);
+
+        /* Add info for the next button */
         frame.addNextButton(nextInfo);
 
+        /* This is the panel where selection info and instructions are displayed */
         JPanel east = new JPanel();
         east.setLayout(new GridBagLayout());
-        Label instrLabel = new Label(getNextLayoutUID(), LiteralStrings.Singleton.get(
-                "INSTRUCTIONS", language), sizeVisitor);
 
+        /* These are the instructions for the panel */
+        Label instrLabel = new Label(getNextLayoutUID(), LiteralStrings.Singleton.get("INSTRUCTIONS", language), sizeVisitor);
+
+        /* Set navigation between the buttons. I don't think this really matters */
         nextButton.setPrevious(instrLabel);
         nextButton.setLeft(instrLabel);
         instrLabel.setNext(nextButton);
         instrLabel.setRight(nextButton);
 
+        /* Add the panel */
         Spacer sp = new Spacer(instrLabel, east);
         east.add(sp);
         frame.addAsEastPanel(east);
 
+        /* Update and finalize the frame */
         frame.validate();
         frame.pack();
 
-        BufferedImage image = new BufferedImage(WINDOW_WIDTH, WINDOW_HEIGHT,
-                BufferedImage.TYPE_INT_RGB);
+        /* Now we have spaced the frame properly, draw the correct graphical components on it */
+        BufferedImage image = new BufferedImage(WINDOW_WIDTH, WINDOW_HEIGHT, BufferedImage.TYPE_INT_RGB);
         Graphics2D graphs = (Graphics2D) image.getGraphics();
+
+        /* Draw the white center panel */
         graphs.setColor(Color.WHITE);
         graphs.fillRect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+
+        /* Draw a pink top panel */
         graphs.setColor(Color.PINK);
         graphs.fillRect(0, 0, WINDOW_WIDTH, frame.north.getHeight());
+
+        /* Return our new background */
         return new Background(getNextLayoutUID(), image);
     }
 
-    //#ifdef NONE_OF_ABOVE
-//    protected Page makeNoSelectionPage(int target) {
-//        PsychLayoutPanel frame = new PsychLayoutPanel();
-//          successTitle = new  (getNextLayoutUID(),
-//                LiteralStrings.Singleton.get("NO_SELECTION_TITLE", language));
-//        successTitle.setBold(true);
-//        successTitle.setCentered(true);
-//        successTitle.setSize(successTitle.execute(sizeVisitor));
-//        frame.addTitle(successTitle);
-//        frame.remove(frame.west);
-//
-//        JPanel east = new JPanel();
-//        east.setLayout(new GridBagLayout());
-//          instrLabel = new  (getNextLayoutUID(),
-//                LiteralStrings.Singleton.get("NO_SELECTION", language), sizeVisitor);
-//        Spacer sp = new Spacer(instrLabel, east);
-//        east.add(sp);
-//        frame.addAsEastPanel(east);
-//
-//          returnLbl = new  (getNextLayoutUID(), LiteralStrings.Singleton
-//                .get("RETURN_RACE", language), sizeVisitor);
-//        frame.addReturnButton(returnLbl, target);
-//
-//        frame.validate();
-//        frame.pack();
-//
-//        Page page = new Page();
-//        page.getComponents().add(simpleBackground);
-//        page.setBackgroundLabel(simpleBackground.getUID());
-//
-//        ALayoutComponent button = null;
-//        ALayoutComponent tempButton = null;
-//
-//        for (Component c : frame.getAllComponents()) {
-//            Spacer s = (Spacer) c;
-//            s.updatePosition();
-//            page.getComponents().add(s.getComponent());
-//            button = s.getComponent();
-//
-//            if(button instanceof ToggleButton){
-//                if(tempButton == null){
-//                    button.setPrevious(previousButton);
-//                    previousButton.setNext(button);
-//
-//                }else{
-//                    button.setPrevious(tempButton);
-//                    tempButton.setNext(button);
-//                }
-//
-//                tempButton = button;
-//
-//            }
-//        }
-//
-//        //If the temporary button is still null at this point that means the
-//        //page contains no ToggleButtons
-//        if(tempButton != null){
-//            tempButton.setNext(nextButton);
-//            nextButton.setPrevious(tempButton);
-//        }
-//
-//        return page;
-//    }
-    //#endif
-
+    /**
+     * @return a page indicating that the vote was committed and is printing
+     */
     @Override
     protected Page makeSuccessPage() {
+        /* The panel that all the components will be laid out on */
         PsychLayoutPanel frame = new PsychLayoutPanel();
-        Label successTitle = new Label(getNextLayoutUID(),
-                LiteralStrings.Singleton.get("SUCCESS_TITLE", language));
+
+        /* Add the title for the success screen */
+        Label successTitle = new Label(getNextLayoutUID(), LiteralStrings.Singleton.get("SUCCESS_TITLE", language));
         successTitle.setBold(true);
         successTitle.setCentered(true);
         successTitle.setSize(successTitle.execute(sizeVisitor));
         frame.addTitle(successTitle);
+
+        /* Dispose of the west-most frame*/
         frame.remove(frame.west);
 
+        /* Create the panel where the success message will be shown */
         JPanel east = new JPanel();
         east.setLayout(new GridBagLayout());
-        Label instrLabel = new Label(getNextLayoutUID(),
-                LiteralStrings.Singleton.get("SUCCESS", language), sizeVisitor);
+
+        /* This is the message indicating the voting session was successful and is nearly completed */
+        Label instrLabel = new Label(getNextLayoutUID(), LiteralStrings.Singleton.get("SUCCESS", language), sizeVisitor);
         Spacer sp = new Spacer(instrLabel, east);
         east.add(sp);
+
+        /* Add the label panel */
         frame.addAsEastPanel(east);
 
+        /* Update and finalize the panel */
         frame.validate();
         frame.pack();
 
+        /* Create a new page with the simple background */
         Page page = new Page();
+
+        /* TODO Do we need a null check here like we have with the regular background? */
         page.getComponents().add(simpleBackground);
         page.setBackgroundLabel(simpleBackground.getUID());
 
-        for (Component c : frame.getAllComponents()) {
-            Spacer s = (Spacer) c;
+        /* Add the components to the page */
+        for (Component co : frame.getAllComponents()) {
+            Spacer s = (Spacer) co;
             s.updatePosition();
             page.getComponents().add(s.getComponent());
         }
@@ -2501,64 +2467,52 @@ public class PsychLayoutManager extends ALayoutManager {
         return page;
     }
 
+    /**
+     * @return a page indicating that the provisional vote was committed and is printing
+     */
     protected Page makeProvisionalSuccessPage() {
+            /* The panel that all the components will be laid out on */
         PsychLayoutPanel frame = new PsychLayoutPanel();
-        Label successTitle = new Label(getNextLayoutUID(),
-                LiteralStrings.Singleton.get("SUCCESS_TITLE", language));
+
+        /* Add the title for the success screen */
+        Label successTitle = new Label(getNextLayoutUID(), LiteralStrings.Singleton.get("SUCCESS_TITLE", language));
         successTitle.setBold(true);
         successTitle.setCentered(true);
         successTitle.setSize(successTitle.execute(sizeVisitor));
         frame.addTitle(successTitle);
+
+        /* Dispose of the west-most frame*/
         frame.remove(frame.west);
 
+        /* Create the panel where the success message will be shown */
         JPanel east = new JPanel();
         east.setLayout(new GridBagLayout());
-        Label instrLabel = new Label(getNextLayoutUID(),
-                LiteralStrings.Singleton.get("PROVISIONAL", language), sizeVisitor);
+
+        /* This is the message indicating the voting session was successful and is nearly completed */
+        Label instrLabel = new Label(getNextLayoutUID(), LiteralStrings.Singleton.get("PROVISIONAL", language), sizeVisitor);
         Spacer sp = new Spacer(instrLabel, east);
         east.add(sp);
+
+        /* Add the label panel */
         frame.addAsEastPanel(east);
 
+        /* Update and finalize the panel */
         frame.validate();
         frame.pack();
 
+        /* Create a new page with the simple background */
         Page page = new Page();
+
+        /* TODO Do we need a null check here like we have with the regular background? */
         page.getComponents().add(simpleBackground);
         page.setBackgroundLabel(simpleBackground.getUID());
 
-//        ALayoutComponent button = null;
-//        ALayoutComponent tempButton = null;
-
-//        previousButton.setNext(instrLabel);
-//        instrLabel.setPrevious(previousButton);
-
-        for (Component c : frame.getAllComponents()) {
-            Spacer s = (Spacer) c;
+        /* Add the components to the page */
+        for (Component co : frame.getAllComponents()) {
+            Spacer s = (Spacer) co;
             s.updatePosition();
             page.getComponents().add(s.getComponent());
-//            button = s.getComponent();
-
-//            if(button instanceof ToggleButton){
-//                if(tempButton == null){
-//                    button.setPrevious(instrLabel);
-//                    instrLabel.setNext(button);
-//
-//                }else{
-//                    button.setPrevious(tempButton);
-//                    tempButton.setNext(button);
-//                }
-//
-//                tempButton = button;
-//
-//            }
         }
-
-        //If the temporary button is still null at this point that means the
-        //page contains no ToggleButtons
-//        if(tempButton != null){
-//            tempButton.setNext(nextButton);
-//            nextButton.setPrevious(tempButton);
-//        }
 
         return page;
     }
