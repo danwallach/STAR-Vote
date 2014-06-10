@@ -1271,49 +1271,62 @@ public class PsychLayoutManager extends ALayoutManager {
 
     /**
      * Makes a Background for this LayoutManager.
+     *
      * @return the Background
      */
     protected Background makeBackground() {
+
+        /* Initialize our panel */
         PsychLayoutPanel frame = new PsychLayoutPanel();
 
-        Label instructionsTitle = new Label("L0", LiteralStrings.Singleton.get(
-                "INSTRUCTIONS_TITLE", language));
+        /* Initialize the instructions label and add it to the panel */
+        Label instructionsTitle = new Label("L0", LiteralStrings.Singleton.get("INSTRUCTIONS_TITLE", language));
         instructionsTitle.setCentered(true);
         instructionsTitle.setSize(instructionsTitle.execute(sizeVisitor));
         frame.addTitle(instructionsTitle);
+
+        /* Add a side bar */
         frame.addSideBar(1);
+
+        /* Add a next button along with its label */
         frame.addNextButton(nextInfo);
 
+        /* Create and add the panel where the actual selections will be made */
         JPanel east = new JPanel();
         east.setLayout(new GridBagLayout());
-        Label instrLabel = new Label("L0", LiteralStrings.Singleton.get(
-                "INSTRUCTIONS", language), sizeVisitor);
+        Label instrLabel = new Label("L0", LiteralStrings.Singleton.get("INSTRUCTIONS", language), sizeVisitor);
         Spacer sp = new Spacer(instrLabel, east);
         east.add(sp);
         frame.addAsEastPanel(east);
 
+        /* Draw and align the frame  */
         frame.validate();
         frame.pack();
 
-        BufferedImage image = new BufferedImage(WINDOW_WIDTH, WINDOW_HEIGHT,
-                BufferedImage.TYPE_INT_RGB);
+        /* Draw the background */
+        BufferedImage image = new BufferedImage(WINDOW_WIDTH, WINDOW_HEIGHT, BufferedImage.TYPE_INT_RGB);
         Graphics2D graphs = (Graphics2D) image.getGraphics();
+
+        /* First color the whole image white*/
         graphs.setColor(Color.WHITE);
         graphs.fillRect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+
+        /* Now color the sidebar blue */
         graphs.setColor(new Color(48, 149, 242));
         graphs.fillRect(0, 0, frame.west.getWidth(), WINDOW_HEIGHT);
+
+        /* Color the top and bottom borders pink */
         graphs.setColor(Color.PINK);
-        graphs.fillRect(frame.west.getWidth(), 0, frame.north.getWidth(),
-                frame.north.getHeight());
-        graphs.fillRect(frame.west.getWidth(), WINDOW_HEIGHT
-                - frame.south.getHeight(), frame.south.getWidth(), frame.south
-                .getHeight());
+        graphs.fillRect(frame.west.getWidth(), 0, frame.north.getWidth(), frame.north.getHeight());
+        graphs.fillRect(frame.west.getWidth(), WINDOW_HEIGHT - frame.south.getHeight(), frame.south.getWidth(), frame.south.getHeight());
+
         return new Background(getNextLayoutUID(), image);
     }
 
     /**
      * Makes a Page that contains a Card, by creating the page as normal and
      * then calling into the visitor to handle the Card-specific components
+     *
      * @param card the card
      * @param jump whether this page is a jump page from the review screen
      * @param target page number of the review screen
@@ -1326,8 +1339,7 @@ public class PsychLayoutManager extends ALayoutManager {
         ArrayList<JPanel> cardPanels = makeCardPage(card);
         ArrayList<Page> pages = new ArrayList<>();
 
-        @SuppressWarnings("unused")
-		Spacer title = null;
+		Spacer title;
         
         for (int i = 0; i < cardPanels.size(); i++) {
             // Setup card frame
