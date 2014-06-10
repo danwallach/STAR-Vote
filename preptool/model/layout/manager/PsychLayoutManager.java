@@ -1330,53 +1330,63 @@ public class PsychLayoutManager extends ALayoutManager {
      * @param card the card
      * @param jump whether this page is a jump page from the review screen
      * @param target page number of the review screen
-     * @param idx the index of the card
+     * @param idx the index of the card in the ballot
      * @param total total number of cards
      * @return the completed Page
      */
-    protected ArrayList<Page> makeCardLayoutPage(ACard card, boolean jump,
-            int target, int idx, int total) {
+    protected ArrayList<Page> makeCardLayoutPage(ACard card, boolean jump, int target, int idx, int total) {
+
+        /* TODO Maybe move this functionality into ACard, since it should be able to deal with it */
+
+        /* Get the card panels */
         ArrayList<JPanel> cardPanels = makeCardPage(card);
+
+        /* This will hold the pages as they're generated */
         ArrayList<Page> pages = new ArrayList<>();
 
-		Spacer title;
-        
+        /* For each card, create a panel */
         for (int i = 0; i < cardPanels.size(); i++) {
-            // Setup card frame
+
+            /* Setup card frame */
             PsychLayoutPanel cardFrame = new PsychLayoutPanel();
-            title = cardFrame.addTitle(card.getTitle(language));
+            cardFrame.addTitle(card.getTitle(language));
             cardFrame.addSideBar(2);
+
+            /* If this page wasn't jumped to, i.e. isn't an override or review page */
             if (!jump) {
-                if (i > 0) {
-                    cardFrame.addPreviousButton((Label) moreCandidatesInfo.clone());
-                }
-                else if (idx == 1) {
-                    cardFrame.addPreviousButton(new Label(getNextLayoutUID(),
-                            LiteralStrings.Singleton.get("BACK_INSTRUCTIONS",
-                                    language), sizeVisitor));
-                }
-                else {
-                    cardFrame.addPreviousButton(previousInfo);
-                }
-                if (i < cardPanels.size() - 1) {
-                    cardFrame.addNextButton((Label) moreCandidatesInfo.clone());
-                }
-                else if (idx == total) {
-                	Label forward = new Label(
-                			getNextLayoutUID(),
-                            LiteralStrings.Singleton.get("FORWARD_REVIEW", language), 
-                            sizeVisitor);
 
-                    cardFrame.addNextButton(forward);
-                }
-                else {
-                    cardFrame.addNextButton(nextInfo);
-                }
-            } else {
-                cardFrame.addReturnButton(returnInfo, target);
-
+                /* If this is not the first page of the card and we haven't jumped, add a "go back to see more candidates" button  */
                 if (i > 0)
                     cardFrame.addPreviousButton((Label) moreCandidatesInfo.clone());
+
+                /* If this is the first selection page of the first card in the ballot, add a button to go back to the instructions */
+                else if (idx == 1)
+                    cardFrame.addPreviousButton(new Label(getNextLayoutUID(), LiteralStrings.Singleton.get("BACK_INSTRUCTIONS", language), sizeVisitor));
+
+                /* Otherwise we're on the first page of a card that isn't the first card, so add a normal previous card button */
+                else cardFrame.addPreviousButton(previousInfo);
+
+                /* If this is not the last selection page in the ballot, add a view more candidates button */
+                if (i < cardPanels.size() - 1)
+                    cardFrame.addNextButton((Label) moreCandidatesInfo.clone());
+
+                /* If this is the last selection page in the ballot, add a forward to review button */
+                else if (idx == total)
+                    cardFrame.addNextButton(new Label(getNextLayoutUID(), LiteralStrings.Singleton.get("FORWARD_REVIEW", language), sizeVisitor));
+
+                /* Otherwise, add a normal next page button*/
+                else cardFrame.addNextButton(nextInfo);
+            }
+
+            /* If we were jumped to this page, add only a return button and more candidates options*/
+            else {
+                cardFrame.addReturnButton(returnInfo, target);
+
+                /* If this isn't the first page in the review section, add a "go back to see more candidates" */
+                if (i > 0)
+                    cardFrame.addPreviousButton((Label) moreCandidatesInfo.clone());
+
+                /* If this isn't the last page in the review section, add a "go forward to see more candidates" button */
                 if (i < cardPanels.size() - 1)
                     cardFrame.addNextButton((Label) moreCandidatesInfo.clone());
             }

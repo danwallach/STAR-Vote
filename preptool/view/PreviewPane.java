@@ -116,13 +116,10 @@ public class PreviewPane extends JPanel {
         ImageIcon icon;
 
         /* Try to load the image icon */
-        try { icon = new ImageIcon(ClassLoader.getSystemClassLoader().getResource("images/view-refresh.png")); }
-        catch (Exception e) { icon = null; }
+        icon = new ImageIcon("rsrc/preptool/images/view-refresh.png");
 
         /* Initialise the button */
         refreshButton = new JButton(new AbstractAction("Refresh", icon) {
-
-            private static final long serialVersionUID = 1L;
 
             public void actionPerformed(ActionEvent e) {
                 refreshButtonPressed();

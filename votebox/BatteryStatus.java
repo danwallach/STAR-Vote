@@ -33,8 +33,9 @@ public class BatteryStatus {
 
     /**
      * Reads the batter status based on the operating system
-     * @param OS the operating system being used
-     * @return the percentage of battery as an integer
+     *
+     * @param OS        the operating system being used
+     * @return          the percentage of battery as an integer
      */
 	@SuppressWarnings("ResultOfMethodCallIgnored")
     public static int read(String OS){

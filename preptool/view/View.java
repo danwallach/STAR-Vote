@@ -34,29 +34,7 @@ import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.DefaultListModel;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JToolBar;
-import javax.swing.KeyStroke;
-import javax.swing.ListSelectionModel;
-import javax.swing.UIManager;
-import javax.swing.WindowConstants;
+import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -160,12 +138,12 @@ public class View extends JFrame {
     /**
      * List of cards on the current ballot
      */
-    private JList cardList;
+    private JList<String> cardList;
 
     /**
      * List model for the card list
      */
-    private DefaultListModel cardListModel;
+    private DefaultListModel<String> cardListModel;
 
     /**
      * Toolbar containing card list modifier buttons
@@ -460,7 +438,7 @@ public class View extends JFrame {
             model.deleteCard(idx);
 
             /* Re-enable the Straight Party option if it gets removed */
-            String removed = (String)cardListModel.remove(idx);
+            String removed = cardListModel.remove(idx);
 
             if(removed.contains("Straight Party"))
                 addCardMenu.getComponent(idx).setEnabled(true);
@@ -472,6 +450,7 @@ public class View extends JFrame {
      * or the quit menu option): Confirms and gives the user a chance to save,
      * then exits
      */
+    @SuppressWarnings("StatementWithEmptyBody")
     public void exitButtonPressed() {
 
         /* Prompt after action */
@@ -489,7 +468,7 @@ public class View extends JFrame {
             System.exit(0);
         }
         /* If cancel, do nothing -- explicitly do not exit */
-        else if (answer == JOptionPane.CANCEL_OPTION) { }
+        else if (answer == JOptionPane.CANCEL_OPTION);
     }
 
     /**
@@ -568,6 +547,7 @@ public class View extends JFrame {
                 if (answer == JFileChooser.APPROVE_OPTION) {
 
                     File file = fc.getSelectedFile();
+                    //noinspection ResultOfMethodCallIgnored
                     file.mkdirs();
                     model.export(this, file.getAbsolutePath());
                 }
@@ -620,7 +600,7 @@ public class View extends JFrame {
             invalidate();
 
             /* Remove the old card position */
-            String element = (String) cardListModel.remove(idx);
+            String element = cardListModel.remove(idx);
 
             /* Add the element to the model at newIdx */
             cardListModel.add(newIdx, element);
@@ -654,7 +634,7 @@ public class View extends JFrame {
             invalidate();
 
             /* Remove the card from the old position */
-            String element = (String) cardListModel.remove(idx);
+            String element = cardListModel.remove(idx);
 
             /* Add the element to the model at newIdx */
             cardListModel.add(newIdx, element);
@@ -752,7 +732,7 @@ public class View extends JFrame {
                     cardList.setSelectedIndex(set);
 
                     /* Enable straight party based on the model */
-                    boolean sp = !((String)cardListModel.get(0)).contains("Straight Party");
+                    boolean sp = !cardListModel.get(0).contains("Straight Party");
                     addCardMenu.getComponent(0).setEnabled(sp);
                 }
 
@@ -782,15 +762,6 @@ public class View extends JFrame {
             String error = "An error occurred while previewing the ballot.";
             JOptionPane.showMessageDialog(this, error, "Error", JOptionPane.ERROR_MESSAGE );
         }
-    }
-
-    /**
-     * Removes the language change listener
-     * 
-     * @param l         the listener
-     */
-    public void removeLanguageChangeListener(LanguageChangeListener l) {
-        languageChangeListeners.remove(l);
     }
 
     /**
@@ -986,7 +957,7 @@ public class View extends JFrame {
             public ArrayList<JPanel> getPreviewPanels() {
 
                 ArrayList<JPanel> preview = model.previewCard(cardList.getSelectedIndex(), languageBar.getCurrentLanguage());
-                return (cardList.getSelectedIndex() != -1) ? new ArrayList<JPanel>() : preview;
+                return (cardList.getSelectedIndex() != -1) ? preview :  new ArrayList<JPanel>();
             }
         } );
 
@@ -1004,8 +975,8 @@ public class View extends JFrame {
         listPanel.setLayout(new GridBagLayout());
 
         /* Create a new model and list */
-        cardListModel = new DefaultListModel();
-        cardList = new JList(cardListModel);
+        cardListModel = new DefaultListModel<String>();
+        cardList = new JList<String>(cardListModel);
         cardList.setDragEnabled(true);
 
         /* Housekeeping for the list */
@@ -1024,7 +995,7 @@ public class View extends JFrame {
             }
         });
 
-        /* Create a new scrool pane and constraints */
+        /* Create a new scroll pane and constraints */
         JScrollPane cardListScrollPane = new JScrollPane(cardList);
         GridBagConstraints c = new GridBagConstraints();
 
@@ -1046,7 +1017,7 @@ public class View extends JFrame {
 
         /* Try and set the image and text */
         try {
-            icon = new ImageIcon(ClassLoader.getSystemClassLoader().getResource("images/list-add.png"));
+            icon = new ImageIcon("rsrc/preptool/images/list-add.png");
             text = "";
         }
         catch (Exception e) {
@@ -1068,7 +1039,7 @@ public class View extends JFrame {
 
         /* Try and set the image and text */
         try {
-            icon = new ImageIcon(ClassLoader.getSystemClassLoader().getResource("images/list-remove.png"));
+            icon = new ImageIcon("rsrc/preptool/images/list-remove.png");
             text = "";
         }
         catch (Exception e) {
@@ -1094,7 +1065,7 @@ public class View extends JFrame {
 
         /* Try and set the image and text */
         try {
-            icon = new ImageIcon(ClassLoader.getSystemClassLoader().getResource("images/go-up.png"));
+            icon = new ImageIcon("rsrc/preptool/images/go-up.png");
             text = "";
         }
         catch (Exception e) {
@@ -1118,7 +1089,7 @@ public class View extends JFrame {
 
         /* Try to set the image and text */
         try {
-            icon = new ImageIcon(ClassLoader.getSystemClassLoader().getResource("images/go-down.png"));
+            icon = new ImageIcon("rsrc/preptool/images/go-down.png");
             text = "";
         }
         catch (Exception e) {
@@ -1184,8 +1155,8 @@ public class View extends JFrame {
         fileMenu.addSeparator();
 
         /* Try to load the image */
-        try { icon = new ImageIcon(ClassLoader.getSystemClassLoader().getResource("images/system-log-out.png")); }
-        catch (Exception e) { icon = null; }
+        icon = new ImageIcon("rsrc/preptool/images/system-log-out.png");
+        
 
         /* Create a new "quit" menu item and add it to the file menu */
         JMenuItem quitMenuItem = new JMenuItem("Quit", icon);
@@ -1206,8 +1177,8 @@ public class View extends JFrame {
         cutMenuItem.setText("Cut");
 
         /* Try to load the image */
-        try { icon = new ImageIcon(ClassLoader.getSystemClassLoader().getResource("images/edit-cut.png")); }
-        catch (Exception e) { icon = null; }
+        icon = new ImageIcon("rsrc/preptool/images/edit-cut.png");
+        
 
         /* Set the icon and try to add this to the edit menu */
         cutMenuItem.setIcon(icon);
@@ -1219,8 +1190,8 @@ public class View extends JFrame {
         copyMenuItem.setText("Copy");
 
         /* Try to load the image */
-        try { icon = new ImageIcon(ClassLoader.getSystemClassLoader().getResource("images/edit-copy.png")); }
-        catch (Exception e) { icon = null; }
+        icon = new ImageIcon("rsrc/preptool/images/edit-copy.png");
+        
 
         /* Set the icon and add this to the edit menu */
         copyMenuItem.setIcon(icon);
@@ -1232,8 +1203,8 @@ public class View extends JFrame {
         pasteMenuItem.setText("Paste");
 
         /* Try to load the image */
-        try { icon = new ImageIcon(ClassLoader.getSystemClassLoader().getResource("images/edit-paste.png")); }
-        catch (Exception e) { icon = null; }
+        icon = new ImageIcon("rsrc/preptool/images/edit-paste.png");
+        
 
         /* Set the icon and add this to the edit menu */
         pasteMenuItem.setIcon(icon);
@@ -1311,8 +1282,8 @@ public class View extends JFrame {
         ImageIcon icon;
 
         /* Try to load the new icon */
-        try { icon = new ImageIcon(ClassLoader.getSystemClassLoader().getResource("images/document-new.png")); }
-        catch (Exception e) { icon = null; }
+        icon = new ImageIcon("rsrc/preptool/images/document-new.png");
+        
 
         /* Create a "new ballot" button */
         newBallotButton = new JButton(new AbstractAction("New Ballot", icon) {
@@ -1328,8 +1299,8 @@ public class View extends JFrame {
         toolbar.add(newBallotButton);
 
         /* Try to load the image */
-        try { icon = new ImageIcon(ClassLoader.getSystemClassLoader().getResource("images/document-open.png")); }
-        catch (Exception e) { icon = null; }
+        icon = new ImageIcon("rsrc/preptool/images/document-open.png");
+        
 
         /* Create a "open ballot" button */
         openBallotButton = new JButton(new AbstractAction("Open Ballot", icon) {
@@ -1345,8 +1316,7 @@ public class View extends JFrame {
         toolbar.add(openBallotButton);
 
         /* Try to load the image */
-        try { icon = new ImageIcon(ClassLoader.getSystemClassLoader().getResource("images/document-save.png")); }
-        catch (Exception e) { icon = null; }
+        icon = new ImageIcon("rsrc/preptool/images/document-save.png");
 
         /* Create a "save ballot" button */
         saveBallotButton = new JButton(new AbstractAction("Save Ballot", icon) {
@@ -1362,8 +1332,7 @@ public class View extends JFrame {
         toolbar.add(saveBallotButton);
 
         /* Try to load the image */
-        try { icon = new ImageIcon(ClassLoader.getSystemClassLoader().getResource("images/media-flash.png")); }
-        catch (Exception e) { icon = null; }
+        icon = new ImageIcon("rsrc/preptool/images/media-flash.png");
 
         /* Create a "export" button */
         exportBallotButton = new JButton(new AbstractAction("Export to VoteBox", icon) {
@@ -1380,8 +1349,7 @@ public class View extends JFrame {
         toolbar.add(exportBallotButton);
 
         /* Try to load the image */
-        try { icon = new ImageIcon(ClassLoader.getSystemClassLoader().getResource("images/system-search.png")); }
-        catch (Exception e) { icon = null; }
+        icon = new ImageIcon("rsrc/preptool/images/system-search.png");
 
         /* Create a "preview" button */
         previewButton = new JButton(new AbstractAction("Preview in VoteBox", icon) {
@@ -1400,8 +1368,7 @@ public class View extends JFrame {
         toolbar.add(previewButton);
 
         /* Try to load the image */
-        try { icon = new ImageIcon(ClassLoader.getSystemClassLoader().getResource("images/system-options.png")); }
-        catch (Exception e) { icon = null; }
+        icon = new ImageIcon("rsrc/preptool/images/system-options.png");
 
         /* Create a "preferences" button */
         prefButton = new JButton(new AbstractAction("Preferences", icon ) {
