@@ -62,7 +62,7 @@ public class TextAreaModule extends AModule {
         /**
          * Constructs a new ModuleView with the given main view
          * 
-         * @param view The main view, necessary for completing the mini-MVC
+         * @param view      The main view, necessary for completing the mini-MVC
          */
         @SuppressWarnings("UnusedParameters")
         protected ModuleView(View view) {
@@ -110,7 +110,7 @@ public class TextAreaModule extends AModule {
         /**
          * Updates the language to the new selected language
          *
-         * @param lang the new selected language
+         * @param lang      the new selected language
          */
         public void languageSelected(Language lang) {
             setLanguage(lang);
@@ -121,8 +121,8 @@ public class TextAreaModule extends AModule {
          * Returns true if the module needs to be translated in the given
          * language
          *
-         * @param lang the language in question
-         * @return Whether the module has a translation for all of its data in language lang
+         * @param lang      the language in question
+         * @return          Whether the module has a translation for all of its data in language lang
          */
         public boolean needsTranslation(Language lang) {
             return TextAreaModule.this.needsTranslation( lang );
@@ -131,7 +131,7 @@ public class TextAreaModule extends AModule {
         /**
          * Updates the primary language
          *
-         * @param lang the new primary language
+         * @param lang      the new primary language
          */
         public void updatePrimaryLanguage(Language lang) {
             setLanguage(lang);
@@ -142,8 +142,8 @@ public class TextAreaModule extends AModule {
     /**
      * Parses an XML Element into a TextAreaModule
      * 
-     * @param elt the element that a module is being parsed from
-     * @return the newly constructed TextAreaModule from XML
+     * @param elt       the element that a module is being parsed from
+     * @return          the newly constructed TextAreaModule from XML
      */
     public static TextAreaModule parseXML(Element elt) {
         /* Ensure that this is in fact a TextAreaModule */
@@ -179,8 +179,8 @@ public class TextAreaModule extends AModule {
     /**
      * Constructs a new TextAreaModule with given module name and label, and initialize the data
      * 
-     * @param name the module name
-     * @param label the label to be shown next to the text area on the view
+     * @param name          the module name
+     * @param label         the label to be shown next to the text area on the view
      */
     public TextAreaModule(String name, String label) {
         super( name );
@@ -189,8 +189,8 @@ public class TextAreaModule extends AModule {
     }
 
     /**
-     * @param view the view that this mini-view will be part of
-     * @return The generated view for this module
+     * @param view      the view that this mini-view will be part of
+     * @return          The generated view for this module
      */
     @Override
     public AModuleView generateView(View view) {
@@ -198,16 +198,16 @@ public class TextAreaModule extends AModule {
     }
 
     /**
-     * @param lang the language
-     * @return the data as a String in the given language
+     * @param lang      the language
+     * @return          the data as a String in the given language
      */
     public String getData(Language lang) {
         return data.get( lang );
     }
 
     /**
-     * @param lang the language to check
-     * @return true if the module needs to be translated in the given language, false if not
+     * @param lang      the language to check
+     * @return          true if the module needs to be translated in the given language, false if not
      */
     @Override
     public boolean needsTranslation(Language lang) {
@@ -217,8 +217,8 @@ public class TextAreaModule extends AModule {
     /**
      * Sets the data to the given string and updates the UI
      * 
-     * @param lang the language that the data is in
-     * @param s the string the actual data itself
+     * @param lang      the language that the data is in
+     * @param s         the string the actual data itself
      */
     public void setData(Language lang, String s) {
         data.set( lang, s );
@@ -229,8 +229,8 @@ public class TextAreaModule extends AModule {
     /**
      * Formats this TextAreaModule as a savable XML Element
      *
-     * @param doc the context for this XML element
-     * @return the newly constructed XML element
+     * @param doc       the context for this XML element
+     * @return          the newly constructed XML element
      */
     @Override
     public Element toSaveXML(Document doc) {

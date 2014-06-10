@@ -38,7 +38,7 @@ public class PartyCard extends ACard {
         }
 
         /**
-         *  @see preptool.model.ballot.ICardFactory#makeCard()
+         * @see preptool.model.ballot.ICardFactory#makeCard()
          */
         public ACard makeCard() {
             return new PartyCard();
@@ -77,8 +77,8 @@ public class PartyCard extends ACard {
      * Returns the text to show on the review screen if the user has not made a
      * selection on this card
      *
-     * @param language the language in which the review screen text should be
-     * @return "No Selection" in the specified language
+     * @param language      the language in which the review screen text should be
+     * @return              "No Selection" in the specified language
      */
     public String getReviewBlankText(Language language) {
         title.setData(language, LiteralStrings.Singleton.get("STRAIGHT_PARTY").get(language));
@@ -88,8 +88,8 @@ public class PartyCard extends ACard {
     /**
      * Returns the review title for this card
      *
-     * @param language the language in which the review screen text should be
-     * @return the review title in the specified language
+     * @param language      the language in which the review screen text should be
+     * @return              the review title in the specified language
      */
     public String getReviewTitle(Language language) {
         title.setData(language, LiteralStrings.Singleton.get("STRAIGHT_PARTY").get(language));
@@ -100,9 +100,9 @@ public class PartyCard extends ACard {
     /**
      * Lays out this card in the given ICardLayout
      *
-     * @param manager    the layout manager that will layout this card
-     * @param cardLayout the card layout object specifying how the card should be laid out
-     * @return the finished card layout object, with the proper information about this card
+     * @param manager           the layout manager that will layout this card
+     * @param cardLayout        the card layout object specifying how the card should be laid out
+     * @return                  the finished card layout object, with the proper information about this card
      */
     public ALayoutManager.ICardLayout layoutCard(ALayoutManager manager, ALayoutManager.ICardLayout cardLayout) {
         /* Get the language and set this card as Straight Party*/
@@ -124,8 +124,8 @@ public class PartyCard extends ACard {
     }
 
     /**
-     * @param language the language in which to get the data
-     * @return a list of all of the parties contained on this card in the given language
+     * @param language      the language in which to get the data
+     * @return              a list of all of the parties contained on this card in the given language
      */
     @Override
     public ArrayList<String> getCardData(Language language) {
@@ -151,8 +151,8 @@ public class PartyCard extends ACard {
      * Since there will only be one of these, we can just return the string literal
      * of it for a given language
      *
-     * @param lang the language to get the title in
-     * @return the title, if any
+     * @param lang      the language to get the title in
+     * @return          the title, if any
      */
     public String getTitle(Language lang) {
         return LiteralStrings.Singleton.get("STRAIGHT_PARTY").get(lang);
@@ -160,8 +160,8 @@ public class PartyCard extends ACard {
     }
 
     /**
-     * @param doc the document that this card is a part of
-     * @return an XML representation of this card
+     * @param doc       the document that this card is a part of
+     * @return          an XML representation of this card
      */
     public Element toXML(Document doc) {
         /* First do all the bookkeeping for ACard*/

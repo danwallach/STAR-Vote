@@ -30,12 +30,12 @@ package preptool.model.ballot;
 public interface ICardFactory {
 
 	/**
-	 * @return Makes a new card
+	 * @return      a new card
 	 */
 	public ACard makeCard();
 
 	/**
-	 * @return the String to display in the view's add card menu.
+	 * @return      the String to display in the view's add card menu.
 	 */
 	public String getMenuString();
 

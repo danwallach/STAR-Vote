@@ -63,7 +63,7 @@ public class TextFieldModule extends AModule {
         /**
          * Constructs this module's view
          * 
-         * @param view the main view for the mini-MVC
+         * @param view      the main view for the mini-MVC
          */
         protected ModuleView(View view) {
             /* Set up the layout */
@@ -116,7 +116,7 @@ public class TextFieldModule extends AModule {
         /**
          * Updates the language to the new selected language
          *
-         * @param lang the new language
+         * @param lang      the new language
          */
         public void languageSelected(Language lang) {
             setLanguage(lang);
@@ -134,7 +134,7 @@ public class TextFieldModule extends AModule {
         /**
          * Updates the primary language
          *
-         * @param lang the new primary language
+         * @param lang      the new primary language
          */
         public void updatePrimaryLanguage(Language lang) {
             setPrimaryLanguage(lang);
@@ -145,8 +145,8 @@ public class TextFieldModule extends AModule {
     /**
      * Parses an XML Element into a TextFieldModule
      * 
-     * @param elt the XML representation of this module
-     * @return the TextFieldModule object, built from XML
+     * @param elt       the XML representation of this module
+     * @return          the TextFieldModule object, built from XML
      */
     public static TextFieldModule parseXML(Element elt) {
         /* ensure that we have the right kind of module */
@@ -182,8 +182,8 @@ public class TextFieldModule extends AModule {
     /**
      * Constructs a new TextFieldModule with the given module name and label
      * 
-     * @param name the module name
-     * @param label a label that will be shown next to the text field on the view
+     * @param name          the module name
+     * @param label         a label that will be shown next to the text field on the view
      */
     public TextFieldModule(String name, String label) {
         super( name );
@@ -192,23 +192,23 @@ public class TextFieldModule extends AModule {
     }
 
     /**
-     * @param view the view that this mini-view will be part of
-     * @return the newly generated view for this module
+     * @param view      the view that this mini-view will be part of
+     * @return          the newly generated view for this module
      */
     public AModuleView generateView(View view) {
         return new ModuleView( view );
     }
 
     /**
-     * @param lang the language we want the data translated into
-     * @return this module's data as a String in the given language
+     * @param lang      the language we want the data translated into
+     * @return          this module's data as a String in the given language
      */
     public String getData(Language lang) {
         return data.get( lang );
     }
 
     /**
-     * @return true if the module needs translation in the given language, false if not
+     * @return      true if the module needs translation in the given language, false if not
      */
     public boolean needsTranslation(Language lang) {
         return getData( lang ).equals( "" );
@@ -217,8 +217,8 @@ public class TextFieldModule extends AModule {
     /**
      * Sets the data (i.e. the text field text) to the given string
      * 
-     * @param lang the language the new data is translated to
-     * @param s the data itself
+     * @param lang      the language the new data is translated to
+     * @param s         the data itself
      */
     public void setData(Language lang, String s) {
         data.set( lang, s );
@@ -229,8 +229,8 @@ public class TextFieldModule extends AModule {
     /**
      * Formats this TextFieldModule as a savable XML Element
      *
-     * @param doc the document this will be an element of
-     * @return an XML representation of this object
+     * @param doc       the document this will be an element of
+     * @return          an XML representation of this object
      */
     public Element toSaveXML(Document doc) {
         Element moduleElt = doc.createElement( "Module" );

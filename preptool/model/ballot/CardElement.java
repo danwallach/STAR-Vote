@@ -65,9 +65,9 @@ public class CardElement {
 	/**
 	 * Parses XML into a CardElement object
      *
-	 * @param elt the XML element to parse
-	 * @param names number of names in the new CardElement
-	 * @return the CardElement, parsed from XML
+	 * @param elt           the XML element to parse
+	 * @param names         number of names in the new CardElement
+	 * @return              the CardElement, parsed from XML
 	 */
 	public static CardElement parseXML(Element elt, int names) {
         /* Sanity check */
@@ -107,7 +107,7 @@ public class CardElement {
 	/**
 	 * Creates a new CardElement, with the given number of names
      *
-	 * @param num the number of names
+	 * @param num       the number of names
 	 */
 	public CardElement(int num) {
 		numNames = num;
@@ -124,7 +124,7 @@ public class CardElement {
 	 * Creates a new CardElement with a single name, and sets the given
 	 * LocalizedString to that name
      *
-	 * @param str the LocalizedString for the name
+	 * @param str       the LocalizedString for the name
 	 */
 	public CardElement(LocalizedString str) {
         /* We now have exactly one string */
@@ -141,8 +141,8 @@ public class CardElement {
 	/**
 	 * Copies all names to the given language from the primary language
      *
-	 * @param lang the language to copy to
-	 * @param primary the primary language
+	 * @param lang          the language to copy to
+	 * @param primary       the primary language
 	 */
 	public void copyFromPrimary(Language lang, Language primary) {
 		for (int i = 0; i < numNames; i++)
@@ -154,9 +154,9 @@ public class CardElement {
 	 * number is within numNames, that name is returned as a String. If it is
 	 * the next column, the party is returned
      *
-	 * @param lang the language in which to get the data
-	 * @param idx the column index of the desired data
-	 * @return the data for this column
+	 * @param lang      the language in which to get the data
+	 * @param idx       the column index of the desired data
+	 * @return          the data for this column
 	 */
 	public Object getColumn(Language lang, int idx) {
 		if (idx == numNames)
@@ -168,31 +168,24 @@ public class CardElement {
 	/**
 	 * Returns the name for the given index
      *
-	 * @param lang the language the name is in
-	 * @param idx the index of the name
-	 * @return the name
+	 * @param lang      the language the name is in
+	 * @param idx       the index of the name
+	 * @return          the name
 	 */
 	public String getName(Language lang, int idx) {
 		return names[idx].get(lang);
 	}
 
 	/**
-	 * @return the number of names here contained
-	 */
-	public int getNumNames() {
-		return numNames;
-	}
-
-	/**
-	 * @return the party
+	 * @return      the party
 	 */
 	public Party getParty() {
 		return party;
 	}
 
 	/**
-	 * @return the unique ID of this Card Element, set by the LayoutManager when
-	 *         exporting.
+	 * @return      the unique ID of this Card Element, set by the LayoutManager when
+	 *              exporting.
 	 */
 	public String getUID() {
 		return uniqueID;
@@ -202,8 +195,8 @@ public class CardElement {
 	 * Returns whether or not this card element is missing translation
 	 * information for the given language
      *
-	 * @param lang the language in question
-	 * @return the result
+	 * @param lang      the language in question
+	 * @return      the result
 	 */ /* TODO I think this should iterate through the names and look at their languages? */
 	public boolean needsTranslation(Language lang) {
 		return false;
@@ -215,9 +208,9 @@ public class CardElement {
 	 * "Edit...", then the user has selected to edit the parties, and this
 	 * call is ignored.
      *
-	 * @param lang the language of the data to set
-	 * @param idx the column number to set data in
-	 * @param val the data to set
+	 * @param lang      the language of the data to set
+	 * @param idx       the column number to set data in
+	 * @param val       the data to set
 	 */
 	public void setColumn(Language lang, int idx, Object val) {
 
@@ -231,14 +224,14 @@ public class CardElement {
 	}
 
     /**
-     * @param p the party to set
+     * @param party         the party to set
      */
-    public void setParty(Party p) {
-        party = p;
+    public void setParty(Party party) {
+        this.party = party;
     }
     
 	/**
-	 * @param uid the unique ID to set
+	 * @param uid       the unique ID to set
 	 */
 	public void setUID(String uid) {
 		uniqueID = uid;
@@ -247,8 +240,8 @@ public class CardElement {
 	/**
 	 * Converts this element to a savable XML representation, to be opened later by the preptool
      *
-     * @param doc the document that this CE is a part of
-     * @return this CE as a preptool XML Element
+     * @param doc       the document that this CE is a part of
+     * @return          this CE as a preptool XML Element
 	 */
 	public Element toSaveXML(Document doc) {
 		Element cardElementElt = doc.createElement("CardElement");
@@ -261,8 +254,8 @@ public class CardElement {
 	/**
 	 * Converts this card element to an XML representation for use by VoteBox
      *
-     * @param doc the document that this CE is a part of
-     * @return this CE as a VoteBox XML Element
+     * @param doc       the document that this CE is a part of
+     * @return          this CE as a VoteBox XML Element
 	 */
 	public Element toXML(Document doc) {
         Element cardElementElt;

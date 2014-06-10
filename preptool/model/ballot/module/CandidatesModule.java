@@ -76,9 +76,9 @@ public class CandidatesModule extends AModule {
             /**
              * Returns the name of the object at the given row, in the given language
              *
-             * @param language the language the name should be returned in
-             * @param rowIndex the row containing the desired name
-             * @return the name of the object in the specified row
+             * @param language      the language the name should be returned in
+             * @param rowIndex      the row containing the desired name
+             * @return              the name of the object in the specified row
              */
             public String getSelectionName(Language language, int rowIndex) {
                 return data.get(rowIndex).getName(language, 0);
@@ -137,8 +137,8 @@ public class CandidatesModule extends AModule {
             /**
              * Returns the type of the data stored in the specified column.
              *
-             * @param columnIndex the column whose data type we're trying to get.
-             * @return the Party type, if the requested column is that last; otherwise it's a String.
+             * @param columnIndex       the column whose data type we're trying to get.
+             * @return                  the Party type, if the requested column is that last; otherwise it's a String.
              */
             @Override
             public Class<?> getColumnClass(int columnIndex) {
@@ -150,15 +150,15 @@ public class CandidatesModule extends AModule {
 
 
             /**
-             * @return the number of columns
+             * @return      the number of columns
              */
             public int getColumnCount() {
                 return colNames.length;
             }
 
             /**
-             * @param column the columns whose name we want
-             * @return the name of the specified columns
+             * @param column        the columns whose name we want
+             * @return              the name of the specified columns
              */
             @Override
             public String getColumnName(int column) {
@@ -166,23 +166,23 @@ public class CandidatesModule extends AModule {
             }
 
             /**
-             * @return the number of rows, i.e. candidates
+             * @return      the number of rows, i.e. candidates
              */
             public int getRowCount() {
                 return data.size();
             }
 
             /**
-             * @param row the row in the table
-             * @param column the column in the table
-             * @return the value in the specified row and column
+             * @param row           the row in the table
+             * @param column        the column in the table
+             * @return              the value in the specified row and column
              */
             public Object getValueAt(int row, int column) {
                 return data.get( row ).getColumn( getLanguage(), column );
             }
 
             /**
-             * @param row inserts a new row after this row
+             * @param row       inserts a new row after this row
              */
             /* This method is never used. */
             @SuppressWarnings("unused")
@@ -195,9 +195,10 @@ public class CandidatesModule extends AModule {
 
             /**
              * Queries the specified location to see if it is writable
-             * @param row the row in the table
-             * @param column the column in the table
-             * @return true since all cells are editable in this table
+             *
+             * @param row           the row in the table
+             * @param column        the column in the table
+             * @return              true since all cells are editable in this table
              */
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -207,8 +208,8 @@ public class CandidatesModule extends AModule {
             /**
              * Moves the specified row to the specified location
              *
-             * @param from the row to move
-             * @param to   the position to move to
+             * @param from      the row to move
+             * @param to        the position to move to
              */
             public void moveRow(int from, int to) {
                 CardElement element = data.remove( from );
@@ -221,7 +222,7 @@ public class CandidatesModule extends AModule {
             }
 
             /**
-             * @param row the row to remove
+             * @param row       the row to remove
              */
             public void removeRow(int row) {
                 data.remove( row );
@@ -233,9 +234,9 @@ public class CandidatesModule extends AModule {
             /**
              * Put a value in the table
              *
-             * @param aValue the value to put in the table
-             * @param row the row in the table to put
-             * @param column the column in the table to put
+             * @param aValue        the value to put in the table
+             * @param row           the row in the table to put
+             * @param column        the column in the table to put
              */
             @Override
             public void setValueAt(Object aValue, int row, int column) {
@@ -275,12 +276,12 @@ public class CandidatesModule extends AModule {
             /**
              * Renders a party in a combo box with the name of the party (in the current language)
              *
-             * @param list the list of parties
-             * @param value the party object to render
-             * @param index the index of the party in the comboBox
-             * @param isSelected whether or not the party is currently selected
-             * @param cellHasFocus whether or not the party is currently focused
-             * @return a rendered component for the party
+             * @param list              the list of parties
+             * @param value             the party object to render
+             * @param index             the index of the party in the comboBox
+             * @param isSelected        whether or not the party is currently selected
+             * @param cellHasFocus      whether or not the party is currently focused
+             * @return                  a rendered component for the party
              */
             public Component getListCellRendererComponent(JList list,
                     Object value, int index, boolean isSelected,
@@ -314,13 +315,13 @@ public class CandidatesModule extends AModule {
              * Renders a party in a table with the name of the party (in the
              * current language)
              * 
-             * @param table the context this is getting rendered in
-             * @param value the object to render
-             * @param isSelected whether or not this is currently selected
-             * @param hasFocus whether or not this is currently focused
-             * @param row the row in the table
-             * @param column the column in the table
-             * @return a rendered version of this
+             * @param table             the context this is getting rendered in
+             * @param value             the object to render
+             * @param isSelected        whether or not this is currently selected
+             * @param hasFocus          whether or not this is currently focused
+             * @param row               the row in the table
+             * @param column            the column in the table
+             * @return                  a rendered version of this
              */
             public Component getTableCellRendererComponent(JTable table,
                     Object value, boolean isSelected, boolean hasFocus,
@@ -409,8 +410,8 @@ public class CandidatesModule extends AModule {
         /**
          * Constructs a new ModuleView with the given main view
          *
-         * @param view the main view
-         * @param enableWriteIn whether or not write-in candidates should be enabled for this view
+         * @param view                  the main view
+         * @param enableWriteIn         whether or not write-in candidates should be enabled for this view
          */
         protected ModuleView(View view, boolean enableWriteIn) {
             /* Set the new view and its layout */
@@ -512,7 +513,7 @@ public class CandidatesModule extends AModule {
         /**
          * Updates the fields with the information for the new language
          *
-         * @param lang the new language
+         * @param lang      the new language
          */
         public void languageSelected(Language lang) {
             setLanguage(lang);
@@ -567,9 +568,9 @@ public class CandidatesModule extends AModule {
         }
 
         /**
-         * @param lang the language to check translation into
-         * @return whether or not the CandidatesModule that this view
-         * corresponds to is missing any translations
+         * @param lang      the language to check translation into
+         * @return          whether or not the CandidatesModule that this view
+         *                  corresponds to is missing any translations
          */
         public boolean needsTranslation(Language lang) {
             return CandidatesModule.this.needsTranslation( lang );
@@ -619,7 +620,7 @@ public class CandidatesModule extends AModule {
         /**
          * Called when the primary language has changed
          *
-         * @param lang the new primary language
+         * @param lang      the new primary language
          */
         public void updatePrimaryLanguage(Language lang) {
             setPrimaryLanguage(lang);
@@ -856,8 +857,8 @@ public class CandidatesModule extends AModule {
         /**
          * Given a candidateName, it returns whether or not the candidate is a Write-In Candidate or not.
          *
-         * @param candidateName the name of the candidate
-         * @return whether or not this candidate is a Write-In Candidate
+         * @param candidateName         the name of the candidate
+         * @return                      whether or not this candidate is a Write-In Candidate
          */
         public Boolean isWriteInCandidate (String candidateName)
         {
@@ -907,8 +908,8 @@ public class CandidatesModule extends AModule {
     /**
      * Parses this Element into a CandidatesModule
      * 
-     * @param elt the XML Element to read from
-     * @return the CandidatesModule, from the provided XML
+     * @param elt       the XML Element to read from
+     * @return the      CandidatesModule, from the provided XML
      */
     public static CandidatesModule parseXML(Element elt) {
         /* Ensure that this is actually a CandidatesModule */
@@ -959,8 +960,8 @@ public class CandidatesModule extends AModule {
      * the columns. The number of candidates is assumed to be the number of
      * column names less one, as the last column should always be the Party.
      * 
-     * @param name the module name
-     * @param colNames column names
+     * @param name          the module name
+     * @param colNames      column names
      */
     public CandidatesModule(String name, String[] colNames, boolean allowWriteIn) {
         super(name);
@@ -971,7 +972,7 @@ public class CandidatesModule extends AModule {
     }
 
     /**
-     * @return the generated table view for this module
+     * @return      the generated table view for this module
      */
     @Override
     public AModuleView generateView(View view) {
@@ -986,8 +987,8 @@ public class CandidatesModule extends AModule {
     }
 
     /**
-     * @param lang the language to check
-     * @return whether or not anything in the table needs translation
+     * @param lang      the language to check
+     * @return          whether or not anything in the table needs translation
      */
     @Override
     public boolean needsTranslation(Language lang) {
@@ -1000,8 +1001,8 @@ public class CandidatesModule extends AModule {
     /**
      * Formats the CandidatesModule as a savable XML Element
      * 
-     * @param doc the document
-     * @return the XML Element representation of a CandidatesModule
+     * @param doc       the document
+     * @return          the XML Element representation of a CandidatesModule
      */
     @Override
     public Element toSaveXML(Document doc) {

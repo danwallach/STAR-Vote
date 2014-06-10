@@ -39,14 +39,15 @@ import printer.PrintImageUtils;
  * A set of static functions useful for rendering different types of layout
  * components. These methods are independent of implementation as they take many
  * customization parameters.
- * @author Corey Shaw, ttorous, mbernhard, mberichet
+ *
+ * @author Corey Shaw, Ted Torous, Matt Bernhard, Mircea Berechet
  */
 public class RenderingUtils {
 
-	/**
-	 * Max dimensions for buttons. Longer text will be clipped.
-	 */
+	/** Max width for buttons. Longer text will be clipped. */
 	public static final int MAX_BUTTON_WIDTH = 600;
+
+    /** Max height for buttons. Taller text will be clipped. */
 	public static final int MAX_BUTTON_HEIGHT = 100;
 
     /**
@@ -55,22 +56,17 @@ public class RenderingUtils {
      */
     public static final int DPI_SCALE_FACTOR = Math.round(1.0f*300/72);
 
-    /**
-     * The dimensions of the selection box.
-     */
+    /** The width of the selection box */
     public static final int SELECTION_BOX_WIDTH = 15*DPI_SCALE_FACTOR;
+
+    /** The height of the selection box */
     public static final int SELECTION_BOX_HEIGHT = 10*DPI_SCALE_FACTOR;
 
-	/**
-	 * The standard font to use
-	 */
+	/** The standard font to use */
 	public static final String FONT_NAME = "Arial Unicode";
 
-	/**
-	 * A dummy 1x1 image used for getting the sizes of components
-	 */
-	private static final BufferedImage DUMMY_IMAGE = new BufferedImage(1, 1,
-			BufferedImage.TYPE_INT_ARGB);
+	/** A dummy 1x1 image used for getting the sizes of components */
+	private static final BufferedImage DUMMY_IMAGE = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
 
 	/**
 	 * Copies a buffered Image. Borrowed 100% from
@@ -89,12 +85,13 @@ public class RenderingUtils {
 
 	/**
 	 * Calculates the size of a button.<br>
-	 * Note: Buttons do not automatically wrap - must be wrapped w/ a \n in the
+	 * Note: Buttons do not automatically wrap - must be wrapped with a \n in the
 	 * text of the button
-	 * @param text the text of the button
-	 * @param fontsize the size of the font to use
-	 * @param bold whether the button has bold text
-	 * @return the size of the Button
+     *
+	 * @param text      the text of the button
+	 * @param fontsize  the size of the font to use
+	 * @param bold      whether the button has bold text
+	 * @return          the size of the Button
 	 */
 	public static Dimension getButtonSize(String text, int fontsize,
 			boolean bold) {

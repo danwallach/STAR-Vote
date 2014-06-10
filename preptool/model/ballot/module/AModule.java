@@ -44,8 +44,8 @@ public abstract class AModule extends Observable {
     /**
      * Parses an XML Element into a module
      *
-     * @param elt the element from an xml file
-     * @return the AModule that the xml element represents
+     * @param elt       the element from an xml file
+     * @return the      AModule that the xml element represents
      */
     public static AModule parseXML(Element elt) {
         /* Ensure that the element is in fact a modules*/
@@ -81,7 +81,7 @@ public abstract class AModule extends Observable {
     /**
      * Creates a new Module with the given unique name
      *
-     * @param name the name of the module
+     * @param       name the name of the module
      */
     public AModule(String name) {
         this.name = name;
@@ -90,13 +90,13 @@ public abstract class AModule extends Observable {
     /**
      * Abstract method for generating the view of this module
      *
-     * @param view the main view
-     * @return an AModuleView for this module
+     * @param       view the main view
+     * @return      an AModuleView for this module
      */
     public abstract AModuleView generateView(View view);
 
     /**
-     * @return this module's name.
+     * @return      this module's name.
      */
     public String getName() {
         return name;
@@ -105,7 +105,7 @@ public abstract class AModule extends Observable {
     /**
      * Returns true if this module has an editor view, defaults to true
      *
-     * @return true
+     * @return      true
      */
     public boolean hasView() {
         return true;
@@ -114,16 +114,16 @@ public abstract class AModule extends Observable {
     /**
      * Checks whether the information in this module is missing any translations
      *
-     * @param lang the language to check
-     * @return true if missing translation information
+     * @param lang      the language to check
+     * @return          true if missing translation information
      */
     public abstract boolean needsTranslation(Language lang);
 
     /**
      * Formats this module as a savable XML Element
      *
-     * @param doc the xml document that provides context for the XML write of the module
-     * @return the Element, an xml representation of a module
+     * @param doc       the xml document that provides context for the XML write of the module
+     * @return          the Element, an xml representation of a module
      */
     public abstract Element toSaveXML(Document doc);
 

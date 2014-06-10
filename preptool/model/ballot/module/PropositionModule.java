@@ -34,7 +34,7 @@ import java.util.ArrayList;
 
 
 /**
- * A YesNoOptionsModule is a module that contains CardElements corresponding to
+ * A PropositionModule is a module that contains CardElements corresponding to
  * Yes and No options on a card. This module does not have a view.
  *
  * @author Corey Shaw
@@ -42,9 +42,10 @@ import java.util.ArrayList;
 public class PropositionModule extends AModule {
 
     /**
-     * Parses an XML Element into a YesNoOptionsModule
-     * @param elt the Element
-     * @return the YesNoOptionsModule
+     * Parses an XML Element into a PropositionModule
+     * 
+     * @param elt   the Element
+     * @return      the PropositionModule
      */
     public static PropositionModule parseXML(Element elt) {
         /* Ensure that the module is the correct type */
@@ -63,8 +64,9 @@ public class PropositionModule extends AModule {
     private ArrayList<CardElement> data;
 
     /**
-     * Constructs a new YesNoOptionsModule with the given module name
-     * @param name the module name
+     * Constructs a new PropositionModule with the given module name
+     * 
+     * @param name      the module name
      */
     public PropositionModule(String name) {
         super(name);
@@ -84,12 +86,11 @@ public class PropositionModule extends AModule {
      */
     @Override
     public AModuleView generateView(View view) {
-        throw new UnsupportedOperationException(
-                "YesNoOptionsModule has no view");
+        throw new UnsupportedOperationException("PropositionModule has no view");
     }
 
     /**
-     * @return the data as an array of CardElements
+     * @return      the data as an array of CardElements
      */
     public ArrayList<CardElement> getData() {
         return data;
@@ -98,7 +99,7 @@ public class PropositionModule extends AModule {
     /**
      * This module does not have a view.
      *
-     * @return false
+     * @return      false
      */
     public boolean hasView() {
         return false;
@@ -107,7 +108,7 @@ public class PropositionModule extends AModule {
     /**
      * This module has translation information into every language supported.
      *
-     * @return false
+     * @return      false
      */
     @Override
     public boolean needsTranslation(Language lang) {
@@ -117,8 +118,8 @@ public class PropositionModule extends AModule {
     /**
      * Formats this PropositionModule as a savable XML Element
      *
-     * @param doc the document this is an element of
-     * @return an XML representation of this module
+     * @param doc       the document this is an element of
+     * @return          an XML representation of this module
      */
     @Override
     public Element toSaveXML(Document doc) {

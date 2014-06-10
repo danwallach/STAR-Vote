@@ -57,7 +57,7 @@ public class CheckBoxModule extends AModule {
         /**
          * Constructs the module view
          * 
-         * @param view the main view, used to complete the mini-MVC
+         * @param view      the main view, used to complete the mini-MVC
          */
         @SuppressWarnings("UnusedParameters")
         protected ModuleView(View view) {
@@ -85,31 +85,24 @@ public class CheckBoxModule extends AModule {
         /**
          * Does nothing
          */
-        public void languageSelected(Language lang) {
-        // NO-OP
-        }
+        public void languageSelected(Language lang) {}
 
         /**
          * @return false
          */
-        public boolean needsTranslation(Language lang) {
-            return false;
-        }
+        public boolean needsTranslation(Language lang) { return false; }
 
         /**
          * Does nothing
          */
-        public void updatePrimaryLanguage(Language lang) {
-        // NO-OP
-        }
+        public void updatePrimaryLanguage(Language lang) {}
     }
 
     /**
      * Parses this XML Element into a CheckBoxModule
      * 
-     * @param elt
-     *            the Element
-     * @return the CheckBoxModule
+     * @param elt       the Element
+     * @return          the CheckBoxModule
      */
     public static CheckBoxModule parseXML(Element elt) {
         assert elt.getTagName().equals( "Module" );
@@ -124,8 +117,10 @@ public class CheckBoxModule extends AModule {
         return new CheckBoxModule( name, label, data );
     }
 
+    /** The data contained in this module */
     private boolean data;
 
+    /** The label for this module */
     private String label;
 
     /**

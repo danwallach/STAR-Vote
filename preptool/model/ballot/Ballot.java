@@ -47,8 +47,8 @@ public class Ballot {
     /**
      * Parses an XML element into a Ballot object
      *
-     * @param elt the XML Element to be parsed
-     * @return the Ballot object parsed from XML
+     * @param elt       the XML Element to be parsed
+     * @return          the Ballot object parsed from XML
      */
     public static Ballot parseXML(Element elt) {
         assert elt.getTagName().equals("Ballot");
@@ -98,7 +98,7 @@ public class Ballot {
     /**
      * Assigns the UIDs to the ballot elements
      *
-     * @param manager the layout manager that does the assigning
+     * @param manager       the layout manager that does the assigning
      */
     public void assignUIDsToBallot(ALayoutManager manager) {
         for (ACard card : cards)
@@ -106,28 +106,28 @@ public class Ballot {
     }
 
     /**
-     * @return the cards
+     * @return      the cards
      */
     public ArrayList<ACard> getCards() {
         return cards;
     }
 
     /**
-     * @return the languages
+     * @return      the languages
      */
     public ArrayList<Language> getLanguages() {
         return languages;
     }
 
     /**
-     * @return the parties
+     * @return      the parties
      */
     public ArrayList<Party> getParties() {
         return parties;
     }
 
     /**
-     * @param languages the languages to set
+     * @param languages         the languages to set
      */
     public void setLanguages(ArrayList<Language> languages) {
         this.languages = languages;
@@ -136,8 +136,8 @@ public class Ballot {
     /**
      * Converts this ballot to a savable XML representation, to be opened later by the preptool
      *
-     * @param doc the document that this Ballot is a part of
-     * @return this Ballot as an XML Element
+     * @param doc       the document that this Ballot is a part of
+     * @return          this Ballot as an XML Element
      */
     public Element toSaveXML(Document doc) {
         Element ballotElt = doc.createElement("Ballot");
@@ -158,8 +158,8 @@ public class Ballot {
     /**
      * Converts this ballot to an XML representation used in VoteBox
      *
-     * @param doc the document that this ballot is a part of
-     * @return this Ballot as a VoteBox XML Element
+     * @param doc       the document that this ballot is a part of
+     * @return          this Ballot as a VoteBox XML Element
      */
     public Element toXML(Document doc) {
         Element ballotElt = doc.createElement("Ballot");
