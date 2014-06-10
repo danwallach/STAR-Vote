@@ -1391,10 +1391,10 @@ public class PsychLayoutManager extends ALayoutManager {
                     cardFrame.addNextButton((Label) moreCandidatesInfo.clone());
             }
 
-            // Add card's content as east pane
+            /* Add card's content as east pane */
             cardFrame.addAsEastPanel(cardPanels.get(i));
 
-            // Add instructions
+            /* Add instructions to the top of the panel */
             GridBagConstraints constraints = new GridBagConstraints();
             constraints.anchor = GridBagConstraints.NORTH;
             constraints.fill = GridBagConstraints.VERTICAL;
@@ -1402,80 +1402,161 @@ public class PsychLayoutManager extends ALayoutManager {
             constraints.gridx = 0;
             constraints.weightx = 1;
             constraints.weighty = 1;
-            Spacer instspacer;
+            Spacer insetspacer;
 
-            Label instructions = null;
+            /* Determine what kind of card we have and get the appropriate instructions */
+            boolean isPartyCard = card instanceof PartyCard;
+            boolean isPropositionCard = card instanceof PropositionCard;
 
-            if(card instanceof PartyCard)
-                instructions = getPartyInstructions();
-            else if(card instanceof PropositionCard)
-                instructions = getPropInstructions();
-            else
-                instructions = getRaceInstructions();
+            Label instructions = isPartyCard       ? getPartyInstructions() :
+                                 isPropositionCard ? getPropInstructions()  : getRaceInstructions();
 
-
-            instspacer = new Spacer(instructions, cardFrame.north);
-
-            cardFrame.north.add(instspacer, constraints);
+            /* Put the instructions on a spacer and add them to the top of the card panel */
+            insetspacer = new Spacer(instructions, cardFrame.north);
+            cardFrame.north.add(insetspacer, constraints);
             cardFrame.validate();
             cardFrame.pack();
 
-            // Add all components to a Page, with their updated positions
+            /* Add all components to a Page, with their updated positions */
             Page cardPage = new Page();
             cardPage.getComponents().add(background);
             cardPage.setBackgroundLabel(background.getUID());
 
+            /* Denote whether the component on the card should be titled */
             boolean titled = false;
 
+            /* This button will allow us set up intermediary keyboard navigation until all the buttons are added */
             ALayoutComponent tempButton = null;
 
+            /* Iterate over all the components and add them to the page */
             for (Component c : cardFrame.getAllComponents()) {
+
+                /* We will pretend the component is actually a spacer to handle its positioning */
                 Spacer s = (Spacer) c;
                 s.updatePosition();
-                if (!(s.getComponent() instanceof ToggleButton)){
+
+                /* TODO This could probably use some redoing... */
+                /* If this isn't a toggle button, we can directly add the component to the layout */
+                if (!(s.getComponent() instanceof ToggleButton))
                     cardPage.getComponents().add(s.getComponent());
-                }//if
 
+                /* Get the component out for manipulation */
                 ALayoutComponent button = s.getComponent();
-                boolean flag = false;
 
+                /* A flag that will determine if a label component is focusable and needs navigation setup */
+                boolean focusable = false;
 
+                /* If we have a label */
                 if(button instanceof Label){
-                    if(((Label) button).getText().equals(card.getTitle(language)))
-                        if(titled)
-                            flag = true;
-                        else
-                            titled = true;
+
+                    /* If this is the title of the component group */
+                    if(((Label) button).getText().equals(card.getTitle(language))) {
+
+                        /* The title should be able to be navigated to */
+                        if(titled) focusable = true;
+
+                        /* If there hasn't previously been a title, then it shouldn't be navigated
+                         *  to but this component group is titled
+                         */
+                        else titled = true;
+
+                    }
                 }
 
+                /* At this point, we either have buttons or otherwise focusable components */
+                if(button instanceof ToggleButton || focusable){
 
-
-
-
-
-                if(button instanceof ToggleButton || flag){
+                    /*
+                     * Review cards have less-involved navigation, effectively they are only one column:
+                     *
+                     *                                 INSTRUCTIONS
+                     *                                    TITLE
+                     *                                  SELECTION 1
+                     *                                  SELECTION 2
+                     *                                  SELECTION 3
+                     *                                      .
+                     *                                      .
+                     *                                      .
+                     *                                  SELECTION N
+                     *
+                     *                                    RETURN
+                     *
+                     * Cyclic navigation (that is, two-keyed, next element and previous element selection) will start
+                     * at the top and work its way down, and then circle back on getting to the bottom.
+                     *
+                     * 4-directional navigation will work much the same way, with the up and down keys doing the same
+                     * as cyclic navigation, and the left and right keys toggling between the RETURN button and the
+                     * bottom-most selection, in this case SELECTION N
+                     */
                     if(jump){
+                        /* TODO Make this work with lots of candidates (i > n) */
 
-                        //TODO Make this work with lots of candidates (i > n)
+                        /* If this is the first button we've seen, we can set the instruction's navigation*/
                         if(tempButton == null){
                             button.setPrevious(instructions);
                             button.setUp(instructions);
                             instructions.setDown(button);
                             instructions.setNext(button);
 
-                        }else{
+                        }
+
+                        /*
+                         * If this isn't the first button, the previously seen button is stored in tmpButton and we can
+                         * set up its navigation
+                         */
+                        else{
                             button.setPrevious(tempButton);
                             button.setUp(tempButton);
                             tempButton.setNext(button);
                             tempButton.setDown(button);
                         }
 
+                        /* Ensure that horizontal navigation is short, only between the return button and the column of instructions/selections*/
                         button.setLeft(returnButton);
                         button.setRight(returnButton);
 
 
-                        tempButton = button;
-                    } else{
+                    }
+
+                    /*
+                     * If we're not a review page, navigation is a little complicated
+                     *
+                     * Here we effectively have 3 columns, one with the previous button, one with the selections, and
+                     * one with the next button, as follows:
+                     *
+                     *                                  INSTRUCTIONS
+                     *
+                     *                                    TITLE
+                     *                                  SELECTION 1
+                     *                                  SELECTION 2
+                     *                                      .
+                     *                                      .
+                     *                                      .
+                     *                                  SELECTION N
+                     *
+                     *                   PREVIOUS PAGE                   NEXT PAGE
+                     *
+                     * Cyclic navigation will start on the PREVIOUS PAGE button, and the "next" link will be INSTRUCTIONS,
+                     * after which it will navigate down the center column. On getting to the bottom of the center column,
+                     * the next option will go to the NEXT PAGE button. Reverse this process for the "back" links.
+                     *
+                     * 4-directional navigation works as one would expect, starting at the PREVIOUS PAGE button. UP will
+                     * result in the focusing of SELECTION N, DOWN and RIGHT will go to the INSTRUCTIONS, and LEFT will
+                     * go to the NEXT PAGE button.
+                     *
+                     * In the center column, down and up work as expected, where UP at the top (INSTRUCTIONS) will go to
+                     * the PREVIOUS PAGE button, and DOWN at the bottom of the column (SELECTION N) will go to NEXT PAGE.
+                     * Otherwise, in the center column, UP and DOWN will go to the elements above and below, respectively.
+                     * E.g., if SELECTION 1 is focused, UP will go to TITLE, DOWN will go to SELECTION 2, LEFT will go to
+                     * PREVIOUS PAGE, and RIGHT will go to NEXT PAGE.
+                     *
+                     * For the right-most column, navigation is simply the inverse of the left-most column. RIGHT will
+                     * focus PREVIOUS PAGE, LEFT will go to SELECTION N, and UP and DOWN function just as they do for
+                     * PREVIOUS PAGE
+                     */
+                    else{
+
+                        /* If this is the first button, set up the instruction's navigation */
                         if(tempButton == null){
                             button.setPrevious(instructions);
                             button.setUp(instructions);
@@ -1487,7 +1568,10 @@ public class PsychLayoutManager extends ALayoutManager {
                             instructions.setRight(button);
                             nextButton.setDown(button);
 
-                        }else{
+                        }
+
+                        /* If we are not the first button, use the last button to set up navigation */
+                        else{
                             button.setPrevious(tempButton);
                             button.setUp(tempButton);
                             tempButton.setNext(button);
@@ -1497,20 +1581,26 @@ public class PsychLayoutManager extends ALayoutManager {
                         button.setLeft(previousButton);
                         button.setRight(nextButton);
 
-
-                        tempButton = button;
-
                     }
+
+                    /* Update so the next button can get back to this button */
+                    tempButton = button;
 
                 }
             }
 
+            /* Now that we've set up all of the components, tie up the loose ends */
+
+            /* If we are a review screen, tie the return button to the last seen button */
             if(jump){
                 tempButton.setNext(returnButton);
                 tempButton.setDown(returnButton);
                 returnButton.setPrevious(tempButton);
                 returnButton.setUp(tempButton);
-            } else{
+            }
+
+            /* Otherwise tie the last selection button to the previous and next buttons */
+            else{
                 tempButton.setNext(nextButton);
                 tempButton.setDown(nextButton);
                 nextButton.setPrevious(tempButton);
@@ -1519,35 +1609,44 @@ public class PsychLayoutManager extends ALayoutManager {
                 previousButton.setUp(tempButton);
             }
 
+            /* Add the new page to the list of pages */
             pages.add(cardPage);
         }
         return pages;
     }
 
+    /**
+     * @return a page that will inform the voter that they are about to commit and print their vote
+     */
     @Override
     protected Page makeCommitPage() {
+
+        /* This frame will hold the components */
         PsychLayoutPanel frame = new PsychLayoutPanel();
-        Label recordTitle = new Label(getNextLayoutUID(),
-                LiteralStrings.Singleton.get("RECORD_TITLE", language));
+
+        /* Title for this screen */
+        Label recordTitle = new Label(getNextLayoutUID(), LiteralStrings.Singleton.get("RECORD_TITLE", language));
         recordTitle.setBold(true);
         recordTitle.setCentered(true);
         recordTitle.setSize(recordTitle.execute(sizeVisitor));
         frame.addTitle(recordTitle);
-        frame.addSideBar(4);
-        frame.addPreviousButton(new Label(getNextLayoutUID(),
-                LiteralStrings.Singleton.get("BACK_REVIEW", language),
-                sizeVisitor));
-        frame.addCommitButton(new Label(getNextLayoutUID(),
-                LiteralStrings.Singleton.get("NEXT_PAGE_BUTTON", language),
-                sizeVisitor));
 
+        /* Add the sidebar in the correct step */
+        frame.addSideBar(4);
+
+        /* Add a back button to go back to the review screen */
+        frame.addPreviousButton(new Label(getNextLayoutUID(), LiteralStrings.Singleton.get("BACK_REVIEW", language), sizeVisitor));
+
+        /* Add a commit/print button to go to the print screen and print the ballot */
+        frame.addCommitButton(new Label(getNextLayoutUID(), LiteralStrings.Singleton.get("NEXT_PAGE_BUTTON", language), sizeVisitor));
+
+        /* On the selection panel, display instruction about what is about to happen, the printing, etc. */
         JPanel east = new JPanel();
         east.setLayout(new GridBagLayout());
-        Label instrLabel = new Label(getNextLayoutUID(),
-                LiteralStrings.Singleton.get("RECORD_INSTRUCTIONS", language),
-                sizeVisitor);
+        Label instrLabel = new Label(getNextLayoutUID(), LiteralStrings.Singleton.get("RECORD_INSTRUCTIONS", language), sizeVisitor);
         Spacer sp = new Spacer(instrLabel, east);
 
+        /* Set up the keyboard navigation. 3 columns, from PREVIOUS to INSTRuCTIONS to PRINT */
         previousButton.setNext(instrLabel);
         previousButton.setRight(instrLabel);
         instrLabel.setLeft(previousButton);
@@ -1557,48 +1656,63 @@ public class PsychLayoutManager extends ALayoutManager {
         commitButton.setPrevious(instrLabel);
         commitButton.setLeft(instrLabel);
 
+        /* Add the panel */
         east.add(sp);
         frame.addAsEastPanel(east);
 
+        /* Update the frame */
         frame.validate();
         frame.pack();
 
+        /* Create and initialize a new page */
         Page page = new Page();
         page.getComponents().add(background);
         page.setBackgroundLabel(background.getUID());
 
+        /* Populate the page with the previously added components on the frame */
         for (Component c : frame.getAllComponents()) {
+
+            /* Pretend the components are spacers for positioning */
             Spacer s = (Spacer) c;
             s.updatePosition();
+
             page.getComponents().add(s.getComponent());
         }
         return page;
     }
 
+    /**
+     * @param hasLanguageSelect whether the ballot will enable users to select a language
+     * @return a page containing all of the instructions for the election, to be shown at the beginning of the voting process
+     */
     @Override
-    protected Page makeInstructionsPage(boolean hadLanguageSelect) {
+    protected Page makeInstructionsPage(boolean hasLanguageSelect) {
+
+        /* This frame will hold the components */
         PsychLayoutPanel frame = new PsychLayoutPanel();
 
-        Label instructionsTitle = new Label(getNextLayoutUID(),
-                LiteralStrings.Singleton.get("INSTRUCTIONS_TITLE", language));
+        /* Create and add a label containing the title of this page */
+        Label instructionsTitle = new Label(getNextLayoutUID(), LiteralStrings.Singleton.get("INSTRUCTIONS_TITLE", language));
         instructionsTitle.setCentered(true);
         instructionsTitle.setSize(instructionsTitle.execute(sizeVisitor));
         frame.addTitle(instructionsTitle);
         frame.addSideBar(1);
 
+        /* Create and populate a panel containing all of the election instructions */
         JPanel east = new JPanel();
         east.setLayout(new GridBagLayout());
-        Label instrLabel = new Label(getNextLayoutUID(),
-                LiteralStrings.Singleton.get("INSTRUCTIONS", language),
-                sizeVisitor);
+        Label instrLabel = new Label(getNextLayoutUID(), LiteralStrings.Singleton.get("INSTRUCTIONS", language), sizeVisitor);
 
-        if (hadLanguageSelect){
-            frame.addPreviousButton(new Label(getNextLayoutUID(),
-                    LiteralStrings.Singleton.get("BACK_LANGUAGE_SELECT",
-                            language), sizeVisitor));
-            frame.addNextButton(new Label(getNextLayoutUID(),
-                    LiteralStrings.Singleton.get("FORWARD_FIRST_RACE", language),
-                    sizeVisitor));
+        /* If there is a language option, then this page will have different buttons */
+        if (hasLanguageSelect){
+
+            /* Add a button to go back ot language selection */
+            frame.addPreviousButton(new Label(getNextLayoutUID(), LiteralStrings.Singleton.get("BACK_LANGUAGE_SELECT", language), sizeVisitor));
+
+            /* Add a button to go to the first race*/
+            frame.addNextButton(new Label(getNextLayoutUID(), LiteralStrings.Singleton.get("FORWARD_FIRST_RACE", language), sizeVisitor));
+
+            /* Navigation will be the 3 column model described above, only without selections */
             nextButton.setPrevious(instrLabel);
             nextButton.setLeft(instrLabel);
             instrLabel.setNext(nextButton);
@@ -1607,11 +1721,15 @@ public class PsychLayoutManager extends ALayoutManager {
             instrLabel.setLeft(previousButton);
             previousButton.setNext(instrLabel);
             previousButton.setRight(instrLabel);
-        } else{
-            frame.addNextButton(new Label(getNextLayoutUID(),
-                    LiteralStrings.Singleton.get("FORWARD_FIRST_RACE", language),
-                    sizeVisitor));
+        }
 
+        /* If there is no language selection, there is only one button */
+        else{
+
+            /* Add a button to go to the first race*/
+            frame.addNextButton(new Label(getNextLayoutUID(), LiteralStrings.Singleton.get("FORWARD_FIRST_RACE", language), sizeVisitor));
+
+            /* Since there are only two elements here, any navigation will just toggle between them*/
             instrLabel.setNext(nextButton);
             instrLabel.setRight(nextButton);
             nextButton.setPrevious(instrLabel);
@@ -1620,80 +1738,100 @@ public class PsychLayoutManager extends ALayoutManager {
 
         }
 
-
+        /* Add the instructions to a label and put them on a spacer on the panel */
         Spacer sp = new Spacer(instrLabel, east);
         east.add(sp);
         frame.addAsEastPanel(east);
 
+        /* Update the frame */
         frame.validate();
         frame.pack();
 
+        /* Create the page*/
         Page page = new Page();
+
+        /* If there is a background, add it to the page*/
         if (background != null) {
             page.getComponents().add(background);
             page.setBackgroundLabel(background.getUID());
         }
 
+        /* Add all the components to the page */
         for (Component c : frame.getAllComponents()) {
             Spacer s = (Spacer) c;
             s.updatePosition();
             page.getComponents().add(s.getComponent());
         }
+
         return page;
     }
 
+    /**
+     * @param languages a list of the languages available
+     * @return a page that will allow the user to select a language
+     */
     @Override
     protected Page makeLanguageSelectPage(ArrayList<Language> languages) {
+
+        /* A frame for positioning the components */
         PsychLayoutPanel frame = new PsychLayoutPanel();
 
-        frame.addTitle(LiteralStrings.Singleton.get("LANGUAGE_SELECT_TITLE",
-                language));
-        frame.addSideBar(1);
-        frame.addNextButton(new Label(getNextLayoutUID(),
-                LiteralStrings.Singleton.get("FORWARD_INSTRUCTIONS", language),
-                sizeVisitor));
+        /* Add a title to the page*/
+        frame.addTitle(LiteralStrings.Singleton.get("LANGUAGE_SELECT_TITLE", language));
 
+        /* Update the sidebar to reflect the current step */
+        frame.addSideBar(1);
+
+        /* Add the forawrding instructions to the page */
+        frame.addNextButton(new Label(getNextLayoutUID(), LiteralStrings.Singleton.get("FORWARD_INSTRUCTIONS", language), sizeVisitor));
+
+        /* This selections panel will hold the languages. This is effectively cribbed from CandidatesModule */
         JPanel east = new JPanel();
         east.setLayout(new GridBagLayout());
         GridBagConstraints eastConstraints = new GridBagConstraints();
 
         eastConstraints.anchor = GridBagConstraints.SOUTH;
         eastConstraints.fill = GridBagConstraints.VERTICAL;
-        int ycoord = 0; // the ycoordinate of where to add in gridbag
+        int ycoord = 0;
         eastConstraints.gridy = ycoord;
         eastConstraints.gridx = 0;
 
         ycoord++;
-        Label title = new Label(getNextLayoutUID(), LiteralStrings.Singleton
-                .get("LANGUAGE_SELECT_TITLE", language));
+
+        /* Title the language selection module */
+        Label title = new Label(getNextLayoutUID(), LiteralStrings.Singleton.get("LANGUAGE_SELECT_TITLE", language));
         title.setWidth(LANG_SELECT_WIDTH);
         title.setBoxed(true);
         title.setCentered(true);
         title.setSize(title.execute(sizeVisitor));
 
+        /* Put the module on a spacer and add it */
         Spacer PTitle = new Spacer(title, east);
         east.add(PTitle, eastConstraints);
 
-        Label instLabel = new Label(getNextLayoutUID(),
-                LiteralStrings.Singleton.get("LANGUAGE_SELECT_INSTRUCTIONS",
-                        language), sizeVisitor);
+        /* A label for instructing the voter on how to select a language */
+        Label instLabel = new Label(getNextLayoutUID(), LiteralStrings.Singleton.get("LANGUAGE_SELECT_INSTRUCTIONS", language), sizeVisitor);
 
+        /* link the instruction and title into navigation */
         instLabel.setNext(title);
         title.setPrevious(instLabel);
 
-
+        /* Link the next button */
         instLabel.setRight(nextButton);
 
+        /* Create a toggle button group for the languages */
         ToggleButtonGroup tbg = new ToggleButtonGroup("LanguageSelect");
 
+        /* This will hold temporary information about a language button for navigation and placement */
         ALayoutComponent tempButton = null;
 
+        /* Now add a button for every language passed in */
         for (Language lang : languages) {
-            LanguageButton button = new LanguageButton(getNextLayoutUID(), lang
-                    .getName());
 
-            //Setup the navigation for this.
-            //TODO Write some sort of manual for how this all works
+            /* First create a new button */
+            LanguageButton button = new LanguageButton(getNextLayoutUID(), lang.getName());
+
+            /* Here we set up 3 column navigation just like selection pages */
             if(tempButton == null){
                 title.setNext(button);
                 title.setDown(button);
@@ -1710,28 +1848,35 @@ public class PsychLayoutManager extends ALayoutManager {
             button.setLeft(nextButton);
             button.setRight(nextButton);
 
+            /* Set language, position, and size information for the button */
             button.setLanguage(lang);
             button.setWidth(LANG_SELECT_WIDTH);
             button.setIncreasedFontSize(true);
             button.setSize(button.execute(sizeVisitor));
             eastConstraints.gridy = ycoord++;
             eastConstraints.gridx = 0;
+
+            /* Add the button to a spacer, the panel, and the button group */
             Spacer PDrawable = new Spacer(button, east);
             east.add(PDrawable, eastConstraints);
             tbg.getButtons().add(button);
 
+            /* Update the placeholder button */
             tempButton = button;
         }
 
+        /* Tie up the loose ends with navigation */
         tempButton.setNext(nextButton);
         tempButton.setDown(nextButton);
         nextButton.setPrevious(tempButton);
         nextButton.setUp(tempButton);
         nextButton.setLeft(tempButton);
 
+        /* Add the button group to the panel, the panel to the frame */
         east.add(new Spacer(tbg, east));
         frame.addAsEastPanel(east);
 
+        /* reset the layout constraints */
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.anchor = GridBagConstraints.NORTH;
         constraints.fill = GridBagConstraints.VERTICAL;
@@ -1740,24 +1885,34 @@ public class PsychLayoutManager extends ALayoutManager {
         constraints.weightx = 1;
         constraints.weighty = 1;
 
+        /* add the instructions */
         Spacer instspacer = new Spacer(instLabel, frame.north);
         frame.north.add(instspacer, constraints);
 
+        /* Update the frame */
         frame.validate();
         frame.pack();
 
+        /* Now create the page */
         Page page = new Page();
+
+        /* Add the background information, if there is any */
         if (background != null) {
             page.getComponents().add(background);
             page.setBackgroundLabel(background.getUID());
         }
 
+        /* Add the components to the frame */
         for (Component c : frame.getAllComponents()) {
+            /* Position the component */
             Spacer s = (Spacer) c;
             s.updatePosition();
+
+            /* Since we're adding the toggle button group of languages, we don't need to add the buttons themselves */
             if (!(s.getComponent() instanceof ToggleButton))
                 page.getComponents().add(s.getComponent());
         }
+
         return page;
     }
 
@@ -2091,7 +2246,7 @@ public class PsychLayoutManager extends ALayoutManager {
                     //currentIndex++;
                     continue;
                 }
-                /**
+                /*
                  * Shift everything down except the button labels.
                  * They are descriptions of the buttons on the current page and they should remain where they are.
                  * Normally, the review page card would contain components that have UIDs that alternate between L and B.
