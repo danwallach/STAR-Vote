@@ -466,7 +466,7 @@ public class PartiesDialog extends JDialog implements IMultiLanguageEditor {
             partiesTableModel.setValueAt(parties.get(i).getAbbrev(lang), i, 1);
         }
 
-        /* Readd the listener */
+        /* Read the listener */
         partiesTableModel.addTableModelListener(tableListener);
     }
 
