@@ -37,11 +37,11 @@ import sexpression.*;
  * 
  * @author Corey Shaw
  */
-public class OverrideCastDenyEvent extends ABallotEvent {
+public class OverrideCommitDenyEvent extends ABallotEvent {
 
 
     /**
-     * Matcher for the OverrideCastDenyEvent
+     * Matcher for the OverrideCommitDenyEvent
      */
     private static MatcherRule MATCHER = new MatcherRule() {
         private ASExpression pattern = new ListExpression( StringExpression
@@ -53,7 +53,7 @@ public class OverrideCastDenyEvent extends ABallotEvent {
                 /*byte[] nonce = ((StringExpression) ((ListExpression) res)
                         .get( 0 )).getBytesCopy();*/
             	ASExpression nonce = ((ListExpression) res).get(0);
-                return new OverrideCastDenyEvent( serial, nonce );
+                return new OverrideCommitDenyEvent( serial, nonce );
             }
 
             return null;
@@ -69,12 +69,12 @@ public class OverrideCastDenyEvent extends ABallotEvent {
     }//getMatcher
     
     /**
-     * Constructs a new OverrideCastDenyEvent
+     * Constructs a new OverrideCommitDenyEvent
      * 
      * @param serial the serial number of the sender
      * @param nonce the nonce
      */
-    public OverrideCastDenyEvent(int serial, ASExpression nonce) {
+    public OverrideCommitDenyEvent(int serial, ASExpression nonce) {
         super(serial, nonce);
     }
 

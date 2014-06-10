@@ -143,7 +143,7 @@ public interface VoteBoxEventListener {
      * @param e
      *            the event
      */
-    public void overrideCastDeny(OverrideCastDenyEvent e);
+    public void overrideCastDeny(OverrideCommitDenyEvent e);
 
     /**
      * Fired when the polls-closed message is received

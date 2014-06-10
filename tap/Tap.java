@@ -189,7 +189,7 @@ public class Tap {
             public void ballotScanned(BallotScannedEvent e) {}
             public void overrideCancel(OverrideCancelEvent e) {}
             public void ballotRejected(BallotScanRejectedEvent e){}
-            public void overrideCastDeny(OverrideCastDenyEvent e) {}
+            public void overrideCastDeny(OverrideCommitDenyEvent e) {}
             public void authorizedToCast(AuthorizedToCastEvent e) {}
             public void tapMachine(TapMachineEvent tapMachineEvent) {}
             public void pollStatus(PollStatusEvent pollStatusEvent) {}

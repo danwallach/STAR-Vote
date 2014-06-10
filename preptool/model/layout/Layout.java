@@ -72,7 +72,7 @@ public class Layout {
     /**
      * @return the overrideCastPage
      */
-    public int getOverrideCastPage() {
+    public int getOverrideCommitPage() {
         return overrideCastPage;
     }
 
@@ -113,7 +113,7 @@ public class Layout {
 	public Element toXML(Document doc) {
 		Element layoutElt = doc.createElement("Layout");
         XMLTools.addProperty(doc, layoutElt, "OverrideCancelPage", "Integer", overrideCancelPage);
-        XMLTools.addProperty(doc, layoutElt, "OverrideCastPage", "Integer", overrideCastPage);
+        XMLTools.addProperty(doc, layoutElt, "OverrideCommitPage", "Integer", overrideCastPage);
         XMLTools.addProperty(doc, layoutElt, "ProvisionalSuccessPage", "Integer", provisionalPage);
         
 		for (Page p : pages) {

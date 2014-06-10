@@ -374,17 +374,17 @@ public class LiteralStrings {
         ls = new LocalizedString();
         ls.set(ENGLISH, "Override Cast");
         ls.set(SPANISH, "Anular Emisión");
-        map.put("OVERRIDE_CAST_TITLE", ls);
+        map.put("OVERRIDE_COMMIT_TITLE", ls);
 
         ls = new LocalizedString();
         ls.set(ENGLISH, "The election supervisor has requested that this ballot be recorded. \n Please record this vote, or continue voting if this request was sent by mistake.");
         ls.set(SPANISH, "El supervisor electoral ha solicitado que se registró esta votación. \n Registre esta votación, o continuar votando si esta petición se envió por error.");
-        map.put("OVERRIDE_CAST_INSTRUCTIONS", ls);
+        map.put("OVERRIDE_COMMIT_INSTRUCTIONS", ls);
 
         ls = new LocalizedString();
         ls.set(ENGLISH, "Yes, Record and Print this Ballot");
         ls.set(SPANISH, "Sí, Registre e Imprima esta Boleta");
-        map.put("OVERRIDE_CAST_CONFIRM", ls);
+        map.put("OVERRIDE_COMMIT_CONFIRM", ls);
 
         ls = new LocalizedString();
         ls.set(ENGLISH, "No, Ignore this Request");

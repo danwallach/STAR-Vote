@@ -48,7 +48,7 @@ public class VoteBoxEventsTest extends TestCase {
                 LastPollsOpenEvent.getMatcher(), OverrideCancelConfirmEvent.getMatcher(),
                 OverrideCancelDenyEvent.getMatcher(), OverrideCancelEvent.getMatcher(),
                 OverrideCommitConfirmEvent.getMatcher(),
-                OverrideCastDenyEvent.getMatcher(), OverrideCommitEvent.getMatcher(),
+                OverrideCommitDenyEvent.getMatcher(), OverrideCommitEvent.getMatcher(),
                 PollsClosedEvent.getMatcher(), PollsOpenEvent.getMatcher(),
                 SupervisorEvent.getMatcher(), VoteBoxEvent.getMatcher(),
                 PINEnteredEvent.getMatcher(), InvalidPinEvent.getMatcher(),
@@ -477,12 +477,12 @@ public class VoteBoxEventsTest extends TestCase {
 
     public void testOverrideCommitDeny() {
         ASExpression nonce = getBlob();
-        OverrideCastDenyEvent event = new OverrideCastDenyEvent(50, nonce);
+        OverrideCommitDenyEvent event = new OverrideCommitDenyEvent(50, nonce);
         ASExpression sexp = event.toSExp();
         assertEquals("(override-commit-deny "
                 + nonce.toString() + ")", sexp.toString());
 
-        OverrideCastDenyEvent event2 = (OverrideCastDenyEvent) matcher.match(
+        OverrideCommitDenyEvent event2 = (OverrideCommitDenyEvent) matcher.match(
                 50, sexp);
         assertEquals(event.getSerial(), event2.getSerial());
         assertTrue(Arrays.equals(event.getNonce().toVerbatim(), event2.getNonce().toVerbatim()));

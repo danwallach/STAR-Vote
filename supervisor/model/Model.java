@@ -644,7 +644,7 @@ public class Model {
             public void overrideCancelConfirm(OverrideCancelConfirmEvent e) {}
             public void overrideCancelDeny(OverrideCancelDenyEvent e) {}
             public void overrideCast(OverrideCommitEvent e) {}
-            public void overrideCastDeny(OverrideCastDenyEvent e) {}
+            public void overrideCastDeny(OverrideCommitDenyEvent e) {}
 
             public void invalidPin(InvalidPinEvent e) {}
             public void ballotAccepted(BallotScanAcceptedEvent e){}

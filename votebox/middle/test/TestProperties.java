@@ -35,7 +35,7 @@ import junit.framework.TestCase;
 /**
  * This class tests the behaviors that are defined in Properties.
  * 
- * @author Kyle
+ * @author Kyle Derr
  * 
  */
 public class TestProperties extends TestCase {

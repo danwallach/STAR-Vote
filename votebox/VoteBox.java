@@ -432,7 +432,7 @@ public class VoteBox{
             }
         });
         
-        currentDriver.getView().registerForOverrideCastConfirm(new Observer() {
+        currentDriver.getView().registerForOverrideCommitConfirm(new Observer() {
             /**
              * Increment counters, and send the ballot in the confirm message.
              * Also kill VoteBox and show the inactive UI
@@ -516,7 +516,7 @@ public class VoteBox{
             }
         });
         
-        currentDriver.getView().registerForOverrideCastDeny(new Observer() {
+        currentDriver.getView().registerForOverrideCommitDeny(new Observer() {
             /**
              * Announce the deny message, and return to the page the voter was
              * previously on
@@ -526,7 +526,7 @@ public class VoteBox{
             public void update(Observable o, Object arg) {
                 if (voting && override && !finishedVoting && currentDriver != null) {
 
-                    auditorium.announce(new OverrideCastDenyEvent(mySerial, nonce));
+                    auditorium.announce(new OverrideCommitDenyEvent(mySerial, nonce));
                     override = false;
                     currentDriver.getView().drawPage(pageBeforeOverride, false);
 
@@ -622,7 +622,7 @@ public class VoteBox{
             public void overrideCancelDeny(OverrideCancelDenyEvent e) {}
             public void lastPollsOpen(LastPollsOpenEvent e) {}
             public void overrideCastConfirm(OverrideCommitConfirmEvent e) {}
-            public void overrideCastDeny(OverrideCastDenyEvent e) {}
+            public void overrideCastDeny(OverrideCommitDenyEvent e) {}
             public void pollsClosed(PollsClosedEvent e) {}
             public void supervisor(SupervisorEvent e) {}
             public void votebox(VoteBoxEvent e) {}

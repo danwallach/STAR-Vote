@@ -1916,20 +1916,26 @@ public class PsychLayoutManager extends ALayoutManager {
         return page;
     }
 
+    /**
+     * @return A page to be returned when the supervisor attempts to cancel the voting session
+     */
     @Override
     protected Page makeOverrideCancelPage() {
+
+        /* The frame all the components will be laid out on*/
         PsychLayoutPanel frame = new PsychLayoutPanel();
-        Label successTitle = new Label(getNextLayoutUID(),
-                LiteralStrings.Singleton.get("OVERRIDE_CANCEL_TITLE", language));
+
+        /* The title for the override cancel page */
+        Label successTitle = new Label(getNextLayoutUID(), LiteralStrings.Singleton.get("OVERRIDE_CANCEL_TITLE", language));
         successTitle.setBold(true);
         successTitle.setCentered(true);
         successTitle.setSize(successTitle.execute(sizeVisitor));
         frame.addTitle(successTitle);
+
+        /* Remove the left-portion of the frame */
         frame.remove(frame.west);
 
-        Label reviewInstructions = new Label(getNextLayoutUID(),
-                LiteralStrings.Singleton.get("OVERRIDE_CANCEL_INSTRUCTIONS",
-                        language), sizeVisitor);
+          /* Create a layout for the panel */
         GridBagConstraints c = new GridBagConstraints();
         c.anchor = GridBagConstraints.NORTH;
         c.fill = GridBagConstraints.VERTICAL;
@@ -1937,27 +1943,34 @@ public class PsychLayoutManager extends ALayoutManager {
         c.gridx = 0;
         c.weightx = 1;
         c.weighty = 1;
+
+        /* The label containing the instructions for the override */
+        Label reviewInstructions = new Label(getNextLayoutUID(), LiteralStrings.Singleton.get("OVERRIDE_CANCEL_INSTRUCTIONS", language), sizeVisitor);
         Spacer instspacer = new Spacer(reviewInstructions, frame.north);
         frame.north.add(instspacer, c);
 
+        /* This panel will hold the buttons and information for the override selection */
         JPanel east = new JPanel();
         east.setLayout(new GridBagLayout());
         c = new GridBagConstraints();
 
-        Button confirmBtn = new Button(getNextLayoutUID(),
-                LiteralStrings.Singleton.get("OVERRIDE_CANCEL_CONFIRM",
-                        language), "OverrideCancelConfirm");
+        /* This button will allow the user to confirm the override and cancel the voting session */
+        Button confirmBtn = new Button(getNextLayoutUID(), LiteralStrings.Singleton.get("OVERRIDE_CANCEL_CONFIRM", language), "OverrideCancelConfirm");
         confirmBtn.setIncreasedFontSize(true);
         confirmBtn.setSize(confirmBtn.execute(sizeVisitor));
         Spacer sp = new Spacer(confirmBtn, east);
         east.add(sp, c);
-        
-        Button denyBtn = new Button(getNextLayoutUID(),
-                LiteralStrings.Singleton.get("OVERRIDE_DENY",
-                        language), "OverrideCancelDeny");
+
+        /* This button will allow the user to reject the override and continue voting */
+        Button denyBtn = new Button(getNextLayoutUID(), LiteralStrings.Singleton.get("OVERRIDE_DENY", language), "OverrideCancelDeny");
         denyBtn.setIncreasedFontSize(true);
         denyBtn.setSize(denyBtn.execute(sizeVisitor));
+        sp = new Spacer(denyBtn, east);
+        c.gridy = 1;
+        c.insets = new Insets(50, 0, 0, 0);
+        east.add(sp, c);
 
+        /* Set keyboard navigation. Since there is only one column, there will be no left or right navigation. */
         reviewInstructions.setNext(confirmBtn);
         reviewInstructions.setDown(confirmBtn);
         confirmBtn.setPrevious(reviewInstructions);
@@ -1967,32 +1980,36 @@ public class PsychLayoutManager extends ALayoutManager {
         denyBtn.setPrevious(confirmBtn);
         denyBtn.setUp(confirmBtn);
 
-        sp = new Spacer(denyBtn, east);
-        c.gridy = 1;
-        c.insets = new Insets(50, 0, 0, 0);
-        east.add(sp, c);
-        
+        /* Add the button panel */
         frame.addAsEastPanel(east);
         frame.validate();
         frame.pack();
 
+        /* Create a new page with the simply background */
         Page page = new Page();
+
+        /* TODO Do we need a null check here like we have with the regular background? */
         page.getComponents().add(simpleBackground);
         page.setBackgroundLabel(simpleBackground.getUID());
 
+        /* Add the components to the page */
         for (Component co : frame.getAllComponents()) {
             Spacer s = (Spacer) co;
             s.updatePosition();
             page.getComponents().add(s.getComponent());
         }
+
         return page;
     }
 
+    /**
+     * @return a page indicating the voting session is being overridden by the supervisor with intent to commit and print the ballot
+     */
     @Override
     protected Page makeOverrideCommitPage() {
         PsychLayoutPanel frame = new PsychLayoutPanel();
         Label successTitle = new Label(getNextLayoutUID(),
-                LiteralStrings.Singleton.get("OVERRIDE_CAST_TITLE", language));
+                LiteralStrings.Singleton.get("OVERRIDE_COMMIT_TITLE", language));
         successTitle.setBold(true);
         successTitle.setCentered(true);
         successTitle.setSize(successTitle.execute(sizeVisitor));
@@ -2000,7 +2017,7 @@ public class PsychLayoutManager extends ALayoutManager {
         frame.remove(frame.west);
 
         Label reviewInstructions = new Label(getNextLayoutUID(),
-                LiteralStrings.Singleton.get("OVERRIDE_CAST_INSTRUCTIONS",
+                LiteralStrings.Singleton.get("OVERRIDE_COMMIT_INSTRUCTIONS",
                         language), sizeVisitor);
         GridBagConstraints c = new GridBagConstraints();
         c.anchor = GridBagConstraints.NORTH;
@@ -2017,8 +2034,8 @@ public class PsychLayoutManager extends ALayoutManager {
         c = new GridBagConstraints();
 
         Button confirmBtn = new Button(getNextLayoutUID(),
-                LiteralStrings.Singleton.get("OVERRIDE_CAST_CONFIRM",
-                        language), "OverrideCastConfirm");
+                LiteralStrings.Singleton.get("OVERRIDE_COMMIT_CONFIRM",
+                        language), "OverrideCommitConfirm");
         confirmBtn.setIncreasedFontSize(true);
         confirmBtn.setSize(confirmBtn.execute(sizeVisitor));
         Spacer sp = new Spacer(confirmBtn, east);
@@ -2026,7 +2043,7 @@ public class PsychLayoutManager extends ALayoutManager {
         
         Button denyBtn = new Button(getNextLayoutUID(),
                 LiteralStrings.Singleton.get("OVERRIDE_DENY",
-                        language), "OverrideCastDeny");
+                        language), "OverrideCommitDeny");
         denyBtn.setIncreasedFontSize(true);
         denyBtn.setSize(denyBtn.execute(sizeVisitor));
 

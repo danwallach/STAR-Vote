@@ -346,10 +346,10 @@ public class ViewManager implements IViewManager {
      */
     public int overrideCast() throws IncorrectTypeException {
 
-        if (!_layout.getProperties().contains(Properties.OVERRIDE_CAST_PAGE))
+        if (!_layout.getProperties().contains(Properties.OVERRIDE_COMMIT_PAGE))
             throw new BallotBoxViewException("Override Cast Page does not exist", null);
 
-        int newPage = _layout.getProperties().getInteger(Properties.OVERRIDE_CAST_PAGE);
+        int newPage = _layout.getProperties().getInteger(Properties.OVERRIDE_COMMIT_PAGE);
         int currentPage = _page;
 
         drawPage(newPage, false);
@@ -418,7 +418,7 @@ public class ViewManager implements IViewManager {
      * 
      * @param obs       the observer
      */
-    public void registerForOverrideCastConfirm(Observer obs) {
+    public void registerForOverrideCommitConfirm(Observer obs) {
         _overrideCastConfirm.addObserver(obs);
     }
 
@@ -427,7 +427,7 @@ public class ViewManager implements IViewManager {
      * 
      * @param obs       the observer
      */
-    public void registerForOverrideCastDeny(Observer obs) {
+    public void registerForOverrideCommitDeny(Observer obs) {
         _overrideCastDeny.addObserver(obs);
     }
 
