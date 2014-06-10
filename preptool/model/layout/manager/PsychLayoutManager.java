@@ -60,7 +60,7 @@ public class PsychLayoutManager extends ALayoutManager {
     /** Constant used to indicate how wide the text boxes describing a race are to be drawn */
     private static final int RACE_DESCRIPTION_WIDTH = 600;
 
-    /** Constant to indicate how high presedential labels should be */
+    /** Constant to indicate how high presidential labels should be */
     private static final int PRESIDENTIAL_RACE_LABEL_COMPONENT_HEIGHT = 40;
 
 	/** Width of each candidate or contest on the review screen (RenderButton) */
@@ -570,10 +570,10 @@ public class PsychLayoutManager extends ALayoutManager {
         /**
          * Adds a title to this frame
          *
+         *
          * @param title the title to add
-         * @return a spacer containing the added title
          */
-        protected Spacer addTitle(Label title) {
+        protected void addTitle(Label title) {
             /* Setup constraints and add title to north pane */
             GridBagConstraints constraints = new GridBagConstraints();
             constraints.gridwidth = 1;
@@ -588,8 +588,6 @@ public class PsychLayoutManager extends ALayoutManager {
             title.setSize(title.execute(sizeVisitor));
             Spacer label = new Spacer(title, north);
             north.add(label, constraints);
-            
-            return label;
         }
 
         /**
@@ -597,9 +595,9 @@ public class PsychLayoutManager extends ALayoutManager {
          *
          * @param titleText the String title
          */
-        protected Spacer addTitle(String titleText) {
+        protected void addTitle(String titleText) {
             Label title = new Label(getNextLayoutUID(), titleText, sizeVisitor);
-            return addTitle(title);
+            addTitle(title);
             
         }
 
@@ -1188,7 +1186,7 @@ public class PsychLayoutManager extends ALayoutManager {
         Layout layout = new Layout();
 
          /* If there is more than one language, add in a language selection page */
-        boolean multiLang = ballot.getLanguages().size() > 1 ? true: false;
+        boolean multiLang = ballot.getLanguages().size() > 1;
 
         if (multiLang)
             layout.getPages().add(makeLanguageSelectPage(ballot.getLanguages()));
@@ -1262,7 +1260,7 @@ public class PsychLayoutManager extends ALayoutManager {
         /* Add a success/print page for provisional voting */
         layout.getPages().add(makeProvisionalSuccessPage());
 
-        /* Set the provisional succes page in the layout */
+        /* Set the provisional success page in the layout */
         layout.setProvisionalPage(layout.getPages().size() - 1);
 
         /* Our layout is now complete */
@@ -1402,7 +1400,7 @@ public class PsychLayoutManager extends ALayoutManager {
             constraints.gridx = 0;
             constraints.weightx = 1;
             constraints.weighty = 1;
-            Spacer insetspacer;
+            Spacer instspacer;
 
             /* Determine what kind of card we have and get the appropriate instructions */
             boolean isPartyCard = card instanceof PartyCard;
@@ -1412,8 +1410,8 @@ public class PsychLayoutManager extends ALayoutManager {
                                  isPropositionCard ? getPropInstructions()  : getRaceInstructions();
 
             /* Put the instructions on a spacer and add them to the top of the card panel */
-            insetspacer = new Spacer(instructions, cardFrame.north);
-            cardFrame.north.add(insetspacer, constraints);
+            instspacer = new Spacer(instructions, cardFrame.north);
+            cardFrame.north.add(instspacer, constraints);
             cardFrame.validate();
             cardFrame.pack();
 
@@ -1593,6 +1591,7 @@ public class PsychLayoutManager extends ALayoutManager {
 
             /* If we are a review screen, tie the return button to the last seen button */
             if(jump){
+                assert tempButton != null;
                 tempButton.setNext(returnButton);
                 tempButton.setDown(returnButton);
                 returnButton.setPrevious(tempButton);
@@ -1601,6 +1600,7 @@ public class PsychLayoutManager extends ALayoutManager {
 
             /* Otherwise tie the last selection button to the previous and next buttons */
             else{
+                assert tempButton != null;
                 tempButton.setNext(nextButton);
                 tempButton.setDown(nextButton);
                 nextButton.setPrevious(tempButton);
@@ -1646,7 +1646,7 @@ public class PsychLayoutManager extends ALayoutManager {
         Label instrLabel = new Label(getNextLayoutUID(), LiteralStrings.Singleton.get("RECORD_INSTRUCTIONS", language), sizeVisitor);
         Spacer sp = new Spacer(instrLabel, east);
 
-        /* Set up the keyboard navigation. 3 columns, from PREVIOUS to INSTRuCTIONS to PRINT */
+        /* Set up the keyboard navigation. 3 columns, from PREVIOUS to INSTRUCTIONS to PRINT */
         previousButton.setNext(instrLabel);
         previousButton.setRight(instrLabel);
         instrLabel.setLeft(previousButton);
@@ -1782,7 +1782,7 @@ public class PsychLayoutManager extends ALayoutManager {
         /* Update the sidebar to reflect the current step */
         frame.addSideBar(1);
 
-        /* Add the forawrding instructions to the page */
+        /* Add the forwarding instructions to the page */
         frame.addNextButton(new Label(getNextLayoutUID(), LiteralStrings.Singleton.get("FORWARD_INSTRUCTIONS", language), sizeVisitor));
 
         /* This selections panel will hold the languages. This is effectively cribbed from CandidatesModule */
@@ -1866,6 +1866,7 @@ public class PsychLayoutManager extends ALayoutManager {
         }
 
         /* Tie up the loose ends with navigation */
+        assert tempButton != null;
         tempButton.setNext(nextButton);
         tempButton.setDown(nextButton);
         nextButton.setPrevious(tempButton);
@@ -2007,18 +2008,20 @@ public class PsychLayoutManager extends ALayoutManager {
      */
     @Override
     protected Page makeOverrideCommitPage() {
+        /* The frame that the components will be laid out on */
         PsychLayoutPanel frame = new PsychLayoutPanel();
-        Label successTitle = new Label(getNextLayoutUID(),
-                LiteralStrings.Singleton.get("OVERRIDE_COMMIT_TITLE", language));
+
+        /* The title for this page */
+        Label successTitle = new Label(getNextLayoutUID(), LiteralStrings.Singleton.get("OVERRIDE_COMMIT_TITLE", language));
         successTitle.setBold(true);
         successTitle.setCentered(true);
         successTitle.setSize(successTitle.execute(sizeVisitor));
         frame.addTitle(successTitle);
+
+        /* Remove the left side of this panel */
         frame.remove(frame.west);
 
-        Label reviewInstructions = new Label(getNextLayoutUID(),
-                LiteralStrings.Singleton.get("OVERRIDE_COMMIT_INSTRUCTIONS",
-                        language), sizeVisitor);
+        /* Create a new layout for this page */
         GridBagConstraints c = new GridBagConstraints();
         c.anchor = GridBagConstraints.NORTH;
         c.fill = GridBagConstraints.VERTICAL;
@@ -2026,27 +2029,34 @@ public class PsychLayoutManager extends ALayoutManager {
         c.gridx = 0;
         c.weightx = 1;
         c.weighty = 1;
+
+        /* The instructions for what to do on this page */
+        Label reviewInstructions = new Label(getNextLayoutUID(), LiteralStrings.Singleton.get("OVERRIDE_COMMIT_INSTRUCTIONS", language), sizeVisitor);
         Spacer instspacer = new Spacer(reviewInstructions, frame.north);
         frame.north.add(instspacer, c);
 
+        /* This will be the panel that holds the buttons for this screen */
         JPanel east = new JPanel();
         east.setLayout(new GridBagLayout());
         c = new GridBagConstraints();
 
-        Button confirmBtn = new Button(getNextLayoutUID(),
-                LiteralStrings.Singleton.get("OVERRIDE_COMMIT_CONFIRM",
-                        language), "OverrideCommitConfirm");
+        /* A button to confirm the override and commit and print the ballot */
+        Button confirmBtn = new Button(getNextLayoutUID(), LiteralStrings.Singleton.get("OVERRIDE_COMMIT_CONFIRM", language), "OverrideCommitConfirm");
         confirmBtn.setIncreasedFontSize(true);
         confirmBtn.setSize(confirmBtn.execute(sizeVisitor));
         Spacer sp = new Spacer(confirmBtn, east);
         east.add(sp, c);
-        
-        Button denyBtn = new Button(getNextLayoutUID(),
-                LiteralStrings.Singleton.get("OVERRIDE_DENY",
-                        language), "OverrideCommitDeny");
+
+        /* A button to cancel the override process and continue voting */
+        Button denyBtn = new Button(getNextLayoutUID(), LiteralStrings.Singleton.get("OVERRIDE_DENY", language), "OverrideCommitDeny");
         denyBtn.setIncreasedFontSize(true);
         denyBtn.setSize(denyBtn.execute(sizeVisitor));
+        sp = new Spacer(denyBtn, east);
+        c.gridy = 1;
+        c.insets = new Insets(50, 0, 0, 0);
+        east.add(sp, c);
 
+        /* Since there are only two buttons, toggle between them, ignoring LEFT and RIGHT */
         reviewInstructions.setNext(confirmBtn);
         reviewInstructions.setDown(confirmBtn);
         confirmBtn.setPrevious(reviewInstructions);
@@ -2056,19 +2066,19 @@ public class PsychLayoutManager extends ALayoutManager {
         denyBtn.setPrevious(confirmBtn);
         denyBtn.setUp(confirmBtn);
 
-        sp = new Spacer(denyBtn, east);
-        c.gridy = 1;
-        c.insets = new Insets(50, 0, 0, 0);
-        east.add(sp, c);
-        
+        /* Add the button panel */
         frame.addAsEastPanel(east);
         frame.validate();
         frame.pack();
 
+        /* Create a new page with the simply background */
         Page page = new Page();
+
+        /* TODO Do we need a null check here like we have with the regular background? */
         page.getComponents().add(simpleBackground);
         page.setBackgroundLabel(simpleBackground.getUID());
 
+         /* Add the components to the page */
         for (Component co : frame.getAllComponents()) {
             Spacer s = (Spacer) co;
             s.updatePosition();
@@ -2077,43 +2087,59 @@ public class PsychLayoutManager extends ALayoutManager {
         return page;
     }
 
+    /**
+     * @param ballot      the ballot, the collection of Cards
+     * @param pageTargets mapping of races (Cards) to review pages
+     * @return a review page, containing the all of the races and the voter's selection for each race
+     */
     @Override
     protected ArrayList<Page> makeReviewPage(Ballot ballot, HashMap<Integer, Integer> pageTargets) {
 
+        /* Since we could go on to several pages, we will keep track of them here */
     	ArrayList<Page> reviewPages = new ArrayList<>();
-    	int position = 0; //the current position in the list of race review things
 
-    	//inline modification of the amount of review screens
-    	int numReviewPages = 1; //starting value; increases if there is a need.
+        /* the current position in the list of race review things */
+    	int position = 0;
+
+        /* starting value since there is always at least one review page. Increases if there is a need. */
+    	int numReviewPages = 1;
+
+        /* Build all of the review pages. */
     	for ( int reviewPageNum = 0; reviewPageNum < numReviewPages; reviewPageNum++) {
-    		//set up review frame
+    		/* set up review frame */
     		PsychLayoutPanel frame = new PsychLayoutPanel();
-    		Label reviewTitle = new Label(getNextLayoutUID(), LiteralStrings.Singleton
-    				.get("REVIEW_TITLE", language));
+
+            /* The title for each page */
+    		Label reviewTitle = new Label(getNextLayoutUID(), LiteralStrings.Singleton.get("REVIEW_TITLE", language));
     		reviewTitle.setBold(true);
     		reviewTitle.setCentered(true);
     		reviewTitle.setSize(reviewTitle.execute(sizeVisitor));
     		frame.addTitle(reviewTitle);
-    		frame.addSideBar(3);
-    		
-    		if (reviewPageNum == 0) // first page
-    			frame.addPreviousButton(new Label(getNextLayoutUID(),
-    	                LiteralStrings.Singleton.get("BACK_LAST_RACE", language),
-    	                sizeVisitor));
-    		else
-    			frame.addPreviousButton(new Label(getNextLayoutUID(), LiteralStrings.Singleton
-    					.get("PREVIOUS_PAGE_BUTTON", language), sizeVisitor));
-    		if (position == ballot.getCards().size() - 1) //last page, see bottom conditional
-    			frame.addNextButton(new Label(getNextLayoutUID(),
-    	                LiteralStrings.Singleton.get("FORWARD_RECORD", language),
-    	                sizeVisitor));
-    		else
-    			frame.addNextButton(new Label(getNextLayoutUID(), LiteralStrings.Singleton
-    					.get("NEXT_PAGE_BUTTON", language), sizeVisitor));
 
+            /* Update the sidebar to the appropriate step */
+    		frame.addSideBar(3);
+
+            /* If this is the first review page, create a button that goes back to the last race */
+    		if (reviewPageNum == 0)
+    			frame.addPreviousButton(new Label(getNextLayoutUID(), LiteralStrings.Singleton.get("BACK_LAST_RACE", language), sizeVisitor));
+
+            /* Otherwise create a button that goes to the previous review page */
+    		else
+    			frame.addPreviousButton(new Label(getNextLayoutUID(), LiteralStrings.Singleton.get("PREVIOUS_PAGE_BUTTON", language), sizeVisitor));
+
+
+            /* If this is the last page, add a button that goes to the commit/print confirmation page */
+    		if (position == ballot.getCards().size() - 1) //last page, see bottom conditional
+    			frame.addNextButton(new Label(getNextLayoutUID(), LiteralStrings.Singleton.get("FORWARD_RECORD", language), sizeVisitor));
+
+            /* If its not, add a button that goes to the next review page */
+    		else
+    			frame.addNextButton(new Label(getNextLayoutUID(), LiteralStrings.Singleton.get("NEXT_PAGE_BUTTON", language), sizeVisitor));
+
+            /* This is the instructions for how the review screen works */
             Label reviewInstructions = new Label(getNextLayoutUID(), LiteralStrings.Singleton.get("REVIEW_INSTRUCTIONS", language), sizeVisitor);
 
-    		//add content as east pane
+            /* Add the selection panel as the east panel */
     		JPanel east = new JPanel();
     		east.setLayout(new GridBagLayout());
     		GridBagConstraints c = new GridBagConstraints();
@@ -2124,101 +2150,156 @@ public class PsychLayoutManager extends ALayoutManager {
     		c.fill = GridBagConstraints.HORIZONTAL;
     		int align = 0;
 
-    		//current review button number
-    		int cnt = 0; 
+            /* A counter to make sure we don't get columns that are too long */
+    		int buttonsInColumn = 0;
 
+            /* The upper bound on how many entries a column can have*/
     		int columnLength = (int)Math.ceil(ballot.getCards().size() / REVIEW_SCREEN_NUM_COLUMNS);
 
-            //Represents the button to the left of this one
-            ALayoutComponent tempButton = null;
+            /* Represents the button to the left of this one */
+            ALayoutComponent tempLeftButton = null;
 
-            //Represents the button above this one
-            ALayoutComponent temp2Button = null;
+            /* Represents the button above this one */
+            ALayoutComponent tempUpButton = null;
 
+            /* Go through all of the cards and add a review selection for all of them */
     		for (int i = position; i < ballot.getCards().size(); i++) {
 
+                /* Get the card for the current race we're creating a review entry for */
     			ACard card = ballot.getCards().get(i);
 
-    			ReviewButton rl = new ReviewButton(getNextLayoutUID(), card.getReviewTitle(language), "GoToPage", sizeVisitor);
-    			rl.setBold(true);
-    			rl.setBoxed(true);
-    			rl.setWidth(REVIEW_SCREEN_WIDTH);
-    			rl.setPageNum(pageTargets.get(position));
+                /*
+                 * The navigation here is somewhat tricky. We have a four-column setup, with instructions and
+                 * titles in a sort of meta-column:
+                 *
+                 *                                          INSTRUCTIONS
+                 *                                             TITLE
+                 *                                RACENAME 1:    \    SELECTION 1
+                 *                                RACENAME 2:    \    SELECTION 2
+                 *                                RACENAME 3:    \    SELECTION 3
+                 *                                               .
+                 *                                               .
+                 *                                               .
+                 *                                RACENAME N:    \    SELECTION N
+                 *
+                 *                   PREVIOUS PAGE                                     NEXT PAGE
+                 *
+                 * In the cyclic model, we start with PREVIOUS PAGE, then go up to INSTRUCTIONS, and then to TITLE and
+                 * next to RACENAME 1. From here, the next focused item is SELECTION 1, then RACENAME 1, and so on and
+                 * so forth, snaking down to SELECTION N, then to NEXT PAGE and back to PREVIOUS PAGE. For the "back" direction,
+                 * everything is reversed.
+                 *
+                 * In the 4-direction model, the LEFT-RIGHT navigation works in a cycle. Starting at PREVIOUS PAGE, RIGHT
+                 * would go to RACENAME N then to SELECTION N then to NEXT PAGE. Going RIGHT or LEFT from the INSTRUCTIONS
+                 * or TITLE items will go to NEXT PAGE and PREVIOUS PAGE, respectively. UP-DOWN navigation works like
+                 * two parallel rings. Starting at RACENAME 1, UP will go to TITLE, then TITLE and INSTRUCTIONS, then to
+                 * RACENAME N, and so on and so forth. To get to the other ring, LEFT or RIGHT must be selected. So, as
+                 * per our example, from RACENAME 1, RIGHT would go to SELECTION 1 (and LEFT from SELECTION 1 would go
+                 * back to RACENAME 1). From here, UP and DOWN would work like the did for RACENAME 1, only NEXT PAGE would
+                 * be eventually reached. PREVIOUS PAGE cannot be reached through UP-DOWN navigation on the right-hand
+                 * ring, and likewise, NEXT PAGE can't be reached on the left-hand ring.
+                 */
 
 
-    			ReviewButton rb = new ReviewButton(card.getUID(), card.getReviewBlankText(language), "GoToPage", sizeVisitor);
+                /* The name of the race (or proposition) that this is a review for */
+    			ReviewButton raceNameButton = new ReviewButton(getNextLayoutUID(), card.getReviewTitle(language), "GoToPage", sizeVisitor);
+    			raceNameButton.setBold(true);
+    			raceNameButton.setBoxed(true);
+    			raceNameButton.setWidth(REVIEW_SCREEN_WIDTH);
+    			raceNameButton.setPageNum(pageTargets.get(position));
 
-    			rb.setBoxed(true);
-    			rb.setWidth(REVIEW_SCREEN_WIDTH);
-    			rb.setPageNum(pageTargets.get(position));
+                /* The name of the selection the voter made and is currently reviewing */
+    			ReviewButton selectionNameButton = new ReviewButton(card.getUID(), card.getReviewBlankText(language), "GoToPage", sizeVisitor);
+    			selectionNameButton.setBoxed(true);
+    			selectionNameButton.setWidth(REVIEW_SCREEN_WIDTH);
+    			selectionNameButton.setPageNum(pageTargets.get(position));
 
-                if(temp2Button == null){
-                    reviewInstructions.setNext(rl);
-                    reviewInstructions.setRight(rl);
-                    reviewInstructions.setDown(rl);
-                    rl.setPrevious(reviewInstructions);
-                    rl.setUp(reviewInstructions);
-                    rl.setLeft(reviewInstructions);
-                    rb.setUp(reviewInstructions);
-                } else{
-                    rl.setPrevious(temp2Button);
-                    rl.setUp(tempButton);
-                    rb.setUp(temp2Button);
-                    tempButton.setDown(rl);
-                    temp2Button.setDown(rb);
-                    temp2Button.setNext(rl);
+                /* If this is the first button we're setting navigation up for, we have to add the instructions */
+                if (tempUpButton == null) {
+                    reviewInstructions.setNext(raceNameButton);
+                    reviewInstructions.setRight(raceNameButton);
+                    reviewInstructions.setDown(raceNameButton);
+                    raceNameButton.setPrevious(reviewInstructions);
+                    raceNameButton.setUp(reviewInstructions);
+                    raceNameButton.setLeft(reviewInstructions);
+                    selectionNameButton.setUp(reviewInstructions);
                 }
-                rl.setNext(rb);
-                rl.setRight(rb);
-                rl.setLeft(previousButton);
-                rb.setLeft(previousButton);
-                rb.setPrevious(rl);
-                rb.setLeft(rl);
-                rb.setRight(    nextButton);
 
+                /* Otherwise tie in the previous button to this button's navigation*/
+                else {
+                    raceNameButton.setPrevious(tempUpButton);
+                    raceNameButton.setUp(tempLeftButton);
+                    selectionNameButton.setUp(tempUpButton);
+                    tempLeftButton.setDown(raceNameButton);
+                    tempUpButton.setDown(selectionNameButton);
+                    tempUpButton.setNext(raceNameButton);
+                }
 
-    			Spacer rlSpacer = new Spacer(rl, east);
+                /* Tie up the loose ends for these two buttons*/
+                raceNameButton.setNext(selectionNameButton);
+                raceNameButton.setRight(selectionNameButton);
+                raceNameButton.setLeft(previousButton);
+                selectionNameButton.setLeft(previousButton);
+                selectionNameButton.setPrevious(raceNameButton);
+                selectionNameButton.setLeft(raceNameButton);
+                selectionNameButton.setRight(nextButton);
+
+                /* Add both new buttons to spacers, and add them to the frame */
+    			Spacer rlSpacer = new Spacer(raceNameButton, east);
     			c.gridx = align;
     			east.add(rlSpacer, c);
 
-    			Spacer rbSpacer = new Spacer(rb, east);
+    			Spacer rbSpacer = new Spacer(selectionNameButton, east);
     			c.gridx = c.gridx + 1;
     			east.add(rbSpacer, c);
 
-    			cnt++;
+                /* Increment the number of column entries (note, only by one) */
+    			buttonsInColumn++;
     			c.gridy++;
 
-    			if (cnt > columnLength) {
-    				cnt = 0;
+                /* If the column is too large, create a new one and start the counter over */
+    			if (buttonsInColumn > columnLength) {
+    				buttonsInColumn = 0;
     				align++;
     				c.gridy = 0;
     				c.anchor = GridBagConstraints.FIRST_LINE_END;
     			}
-    			position++;
-    			if (i % CARDS_PER_REVIEW_PAGE >= CARDS_PER_REVIEW_PAGE - 1) //number of races to put on each card
-    				break;
 
-                tempButton = rl;
-                temp2Button = rb;
+                /* Update our position in the ballot */
+    			position++;
+
+                /* If we have exceeded the number of races allowable on a card, stop */
+                /* TODO This seems bad. */
+    			if (i % CARDS_PER_REVIEW_PAGE >= CARDS_PER_REVIEW_PAGE - 1)	break;
+
+                /* Update the temporary buttons */
+                tempLeftButton = raceNameButton;
+                tempUpButton = selectionNameButton;
 
     		}
 
+            /* Tie up the loose ends on button navigation */
             previousButton.setUp(reviewInstructions);
             previousButton.setNext(reviewInstructions);
             reviewInstructions.setPrevious(previousButton);
             reviewInstructions.setLeft(previousButton);
             reviewInstructions.setRight(nextButton);
-            nextButton.setPrevious(temp2Button);
-            nextButton.setLeft(temp2Button);
-            nextButton.setUp(temp2Button);
+            nextButton.setPrevious(tempUpButton);
+            nextButton.setLeft(tempUpButton);
+            nextButton.setUp(tempUpButton);
 
-            temp2Button.setNext(nextButton);
-            temp2Button.setDown(nextButton);
-            tempButton.setDown(nextButton);
+            assert tempUpButton != null;
+            tempUpButton.setNext(nextButton);
+            tempUpButton.setDown(nextButton);
 
+            //noinspection ConstantConditions
+            assert tempLeftButton != null;
+            tempLeftButton.setDown(nextButton);
+
+            /* Add the button panel */
     		frame.addAsEastPanel(east);
 
-    		//add instructions
+    		/* Add instructions to the page */
     		GridBagConstraints constraints = new GridBagConstraints();
     		constraints.anchor = GridBagConstraints.NORTH;
     		constraints.fill = GridBagConstraints.VERTICAL;
@@ -2229,40 +2310,30 @@ public class PsychLayoutManager extends ALayoutManager {
     		Spacer instspacer = new Spacer(reviewInstructions, frame.north);
     		frame.north.add(instspacer, constraints);
 
+            /* Refresh the frame */
     		frame.validate();
     		frame.pack();
 
-    		//add to a Page
+    		/* Create a new page */
     		Page cardPage = new Page();
     		cardPage.getComponents().add(background);
     		cardPage.setBackgroundLabel(background.getUID());
 
-//            previousButton = returnButton;
-//            nextButton = returnButton;
-
-            // This variable is used to shift down all the race labels that come after a presidential election label.
-            //int yShift = 0;
-            //int currentIndex = 0;
+            /* Add the components to the page */
             Component[] componentsArray = frame.getAllComponents();
     		for (Component cmp : componentsArray) {
+                /* Position the components */
     			int componentHeight = cmp.getHeight();
                 Spacer s = (Spacer) cmp;
-                //System.out.println("UID: " + s.getComponent().getUID() + ". Height: " + componentHeight + " | Width: " + cmp.getWidth());
                 s.updatePosition();
-                if (componentHeight == PRESIDENTIAL_RACE_LABEL_COMPONENT_HEIGHT) // This detects either a presidential race label or a presidential race selection.
-                {
-                    // Use the old shift length.
-                    s.getComponent().setYPos(s.getComponent().getYPos()/* + yShift*/);
-                    /*if (s.getComponent().getUID().contains("B"))  // This uniquely detects presidential race selections. They always follow a label, so the latter of the two should set the yShift.
-                    {
-                        //System.out.println("UID " + s.getComponent().getUID() + " is a presidential election. Updating yShift from " + yShift + " to " + (yShift + PRESIDENTIAL_RACE_SHIFT_HEIGHT));
-                        // Update the shift length.
-                        yShift += PRESIDENTIAL_RACE_SHIFT_HEIGHT;
-                    }*/
+
+                /* If the component is a presidential race label or a presidential race selection it needs to be shifted vertically */
+                if (componentHeight == PRESIDENTIAL_RACE_LABEL_COMPONENT_HEIGHT) {
+                    s.getComponent().setYPos(s.getComponent().getYPos());
                     cardPage.getComponents().add(s.getComponent());
-                    //currentIndex++;
                     continue;
                 }
+
                 /*
                  * Shift everything down except the button labels.
                  * They are descriptions of the buttons on the current page and they should remain where they are.
@@ -2273,11 +2344,13 @@ public class PsychLayoutManager extends ALayoutManager {
                  *      No other component meets these conditions.
                  */
 
-                    cardPage.getComponents().add(s.getComponent());
-
-
+                cardPage.getComponents().add(s.getComponent());
             }
+
+            /* Add the page to the pages list */
     		reviewPages.add(cardPage);
+
+            /* Increment the count of pages */
     		if (position < ballot.getCards().size())
     			numReviewPages++;
     	}
@@ -2419,42 +2492,11 @@ public class PsychLayoutManager extends ALayoutManager {
         page.getComponents().add(simpleBackground);
         page.setBackgroundLabel(simpleBackground.getUID());
 
-        ALayoutComponent button = null;
-        ALayoutComponent tempButton = null;
-//
-//        previousButton.setNext(instrLabel);
-//        previousButton.setLeft(instrLabel);
-//        instrLabel.setPrevious(previousButton);
-//        instrLabel.setLeft(previousButton);
-//        instrLabel.setLeft(nextButton);
-
         for (Component c : frame.getAllComponents()) {
             Spacer s = (Spacer) c;
             s.updatePosition();
             page.getComponents().add(s.getComponent());
-//            button = s.getComponent();
-
-//            if(button instanceof ToggleButton){
-//                if(tempButton == null){
-//                    button.setPrevious(instrLabel);
-//                    instrLabel.setNext(button);
-//
-//                }else{
-//                    button.setPrevious(tempButton);
-//                    tempButton.setNext(button);
-//                }
-//
-//                tempButton = button;
-//
-//            }
         }
-
-        //If the temporary button is still null at this point that means the
-        //page contains no ToggleButtons
-//        if(tempButton != null){
-//            tempButton.setNext(nextButton);
-//            nextButton.setPrevious(instrLabel);
-//        }
 
         return page;
     }
