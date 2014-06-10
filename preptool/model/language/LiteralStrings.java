@@ -27,6 +27,7 @@ import java.util.HashMap;
 /**
  * A class that contains literal localized strings used by the LayoutManager, so
  * that it can output the correct strings based on the language.
+ *
  * @author Corey Shaw
  */
 public class LiteralStrings {
@@ -38,8 +39,7 @@ public class LiteralStrings {
 
     /**
      * Singleton pattern - private constructor.<br>
-     * Initalizes the hash map with all of the LocalizedStrings (later will load
-     * from files)
+     * Initializes the hash map with all of the LocalizedStrings TODO later will load from files
      */
     private LiteralStrings() {
         map = new HashMap<String, LocalizedString>();
@@ -410,6 +410,7 @@ public class LiteralStrings {
 
     /**
      * Returns the string for the given key and language
+     *
      * @param key the key for the string
      * @param lang the language
      * @return the translated string
@@ -426,6 +427,7 @@ public class LiteralStrings {
 
     /**
      * Returns the LocalizedString for the given key
+     *
      * @param key the key for the string
      * @return the LocalizedString
      */

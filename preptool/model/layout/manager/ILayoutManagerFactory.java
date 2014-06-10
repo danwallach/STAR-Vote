@@ -26,6 +26,7 @@ import preptool.model.language.Language;
 
 /**
  * A factory for making a LayoutManager with a given language
+ *
  * @author Corey Shaw
  */
 public interface ILayoutManagerFactory {
@@ -34,7 +35,7 @@ public interface ILayoutManagerFactory {
 	 * Constructs a new LayoutManager with the given language
 	 *
      * @param language the language
-     * @param numCardsPerReviewPage number of cards per review page
+     * @param numCardsPerReviewPage number of cards (races) per review page
      * @param fontSize size of font to use
      * @return the LayoutManager
 	 */

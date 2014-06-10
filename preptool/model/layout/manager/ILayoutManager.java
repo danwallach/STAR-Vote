@@ -37,12 +37,14 @@ import preptool.view.ProgressInfo;
 /**
  * Interface specifying a LayoutManager. On the highest level, the purpose of a
  * LayoutManager is to take a Ballot and produce a corresponding Layout.
+ *
  * @author Corey Shaw
  */
 public interface ILayoutManager {
 
 	/**
 	 * Creates a Layout using the information from the given Ballot.
+     *
 	 * @param ballot the ballot
 	 * @return the layout
 	 */
@@ -50,6 +52,7 @@ public interface ILayoutManager {
 
 	/**
 	 * Renders all images in a layout to disk.
+     *
 	 * @param layout the layout
 	 * @param location disk location
      * @param progressInfo a ProgressInfo object to send progress updates to
@@ -58,22 +61,23 @@ public interface ILayoutManager {
 			ProgressInfo progressInfo);
 
 	/**
-	 * Sets the unique IDs of the entire ballot
+	 * Sets the unique IDs of the every element on the ballot
+     *
 	 * @param ballot the ballot
 	 */
 	public void assignUIDsToBallot(Ballot ballot);
 
 	/**
-	 * Executes this as a visitor to get a JPanel for the card's type
+	 * Executes this as a visitor to get a JPanel for the given card's type
+     * This is what will be displayed on the page of the ballot to which the card corresponds
+     *
 	 * @param card the card
 	 * @return a JPanel with all elements laid out on it
 	 */
 	public ArrayList<JPanel> makeCardPage(ACard card);
 
 	/**
-	 * Returns an image visitor that renders an image of a component specific to
-	 * this layout configuration
-	 * @return the visitor
+	 * @return an image visitor that renders an image of a component specific to this layout configuration
 	 */
 	public abstract ILayoutComponentVisitor<Boolean, BufferedImage> getImageVisitor();
 
