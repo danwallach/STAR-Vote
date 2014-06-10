@@ -62,7 +62,7 @@ public class Controller {
     }
 
     /**
-     * The main method of the program, constructs a new Contoller
+     * The main method of the program, constructs a new Controller
      * 
      * @param args      not used
      */
