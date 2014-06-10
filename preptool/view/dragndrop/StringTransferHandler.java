@@ -56,22 +56,25 @@ public abstract class StringTransferHandler extends TransferHandler {
 
 	/**
 	 * Abstract method to export a string from the component
-	 * @param c the component
-	 * @return a String
+     *
+	 * @param c         the component
+	 * @return          a String
 	 */
 	protected abstract String exportString(JComponent c);
 
 	/**
 	 * Imports a String into a component
-	 * @param c the component
-	 * @param str the String
+     *
+	 * @param c         the component
+	 * @param str       the String
 	 */
 	protected abstract void importString(JComponent c, String str);
 
 	/**
 	 * Finishes a successful drag and drop operation
-	 * @param c the component
-	 * @param remove whether to move the data
+     *
+	 * @param c         the component
+	 * @param remove    whether to move the data
 	 */
 	protected abstract void cleanup(JComponent c, boolean remove);
 
@@ -80,6 +83,7 @@ public abstract class StringTransferHandler extends TransferHandler {
 	 */
 	@Override
     protected Transferable createTransferable(JComponent c) {
+
 		fromComponent = c;
 		sameComponent = false;
 		return new StringSelection(exportString(c));
@@ -98,17 +102,19 @@ public abstract class StringTransferHandler extends TransferHandler {
 	 */
 	@Override
     public boolean importData(JComponent c, Transferable t) {
+
+        /* Check the component to see if it came from transferable and can import */
 		if (c == fromComponent && canImport(c, t.getTransferDataFlavors())) {
+
+            /* Try tp transfer data to a String and import the string into the component */
 			try {
-				String str = (String) t
-						.getTransferData(DataFlavor.stringFlavor);
+				String str = (String) t.getTransferData(DataFlavor.stringFlavor);
 				importString(c, str);
 				sameComponent = true;
 				return true;
-			} catch (UnsupportedFlavorException ufe) {
-			} catch (IOException ioe) {
 			}
-		}
+            catch (UnsupportedFlavorException | IOException e) { e.printStackTrace(); }
+        }
 
 		return false;
 	}
@@ -118,8 +124,12 @@ public abstract class StringTransferHandler extends TransferHandler {
 	 */
 	@Override
     protected void exportDone(JComponent c, Transferable data, int action) {
+
+        /* Checks for same component and cleans up if so */
 		if (sameComponent) cleanup(c, action == MOVE);
-		fromComponent = null;
+
+        /* Reset values */
+        fromComponent = null;
 		sameComponent = false;
 	}
 
@@ -128,12 +138,19 @@ public abstract class StringTransferHandler extends TransferHandler {
 	 */
 	@Override
     public boolean canImport(JComponent c, DataFlavor[] flavors) {
-		if (c != fromComponent) return false;
-		for (int i = 0; i < flavors.length; i++) {
-			if (DataFlavor.stringFlavor.equals(flavors[i])) {
-				return true;
-			}
-		}
+
+        /* Make sure c is the from component */
+        if (c == fromComponent) {
+
+            /* Cycle through the flavors */
+            for (DataFlavor flavor : flavors) {
+
+                /* If the right one is found, return true */
+                if (DataFlavor.stringFlavor.equals(flavor))
+                    return true;
+            }
+        }
+
 		return false;
 	}
 }

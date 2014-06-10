@@ -71,16 +71,21 @@ public class TableTransferHandler extends StringTransferHandler {
      */
     @Override
     protected void importString(JComponent c, String str) {
+
         JTable target = (JTable) c;
         AbstractTableModel model = (AbstractTableModel) target.getModel();
+
+        /* Pull the selected row */
         addIndex = target.getSelectedRow();
 
+        /* Check if the indices are the same and, if so, set them to -1 and return */
         if (remIndex == addIndex) {
             remIndex = -1;
             addIndex = -1;
             return;
         }
 
+        /* Check to make sure not out of bounds, and, if so, puts it at the end */
         int max = model.getRowCount();
         if (addIndex < 0 || addIndex > max - 1)
             addIndex = max - 1;
@@ -92,17 +97,27 @@ public class TableTransferHandler extends StringTransferHandler {
      */
     @Override
     protected void cleanup(JComponent c, boolean remove) {
+
         JTable source = (JTable) c;
+
+        /* Make sure there is a origin index */
         if (remove && remIndex != -1) {
+
             AbstractTableModel model = (AbstractTableModel) source.getModel();
+
+            /* See what type of model it is and move the row */
             if (model instanceof IMovableTableModel)
-                ((IMovableTableModel) model).moveRow( remIndex, addIndex );
+                ((IMovableTableModel) model).moveRow(remIndex, addIndex);
+
             else if (model instanceof DefaultTableModel)
-                ((DefaultTableModel) model).moveRow( remIndex, remIndex,
-                    addIndex );
+                ((DefaultTableModel) model).moveRow(remIndex, remIndex, addIndex);
+
+            /* Validate and repaint */
             c.validate();
             c.repaint();
         }
+
+        /* Reset values */
         remIndex = -1;
         addIndex = -1;
     }

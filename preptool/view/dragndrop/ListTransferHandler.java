@@ -64,6 +64,7 @@ public class ListTransferHandler extends StringTransferHandler {
      */
     @Override
     protected String exportString(JComponent c) {
+
         JList list = (JList) c;
         remIndex = list.getSelectedIndex();
         addIndex = -1;
@@ -75,16 +76,21 @@ public class ListTransferHandler extends StringTransferHandler {
      */
     @Override
     protected void importString(JComponent c, String str) {
+
         JList target = (JList) c;
         DefaultListModel listModel = (DefaultListModel) target.getModel();
+
+        /* Pull the selected index */
         addIndex = target.getSelectedIndex();
 
+        /* Make sure that they are not the same and reset and return if they are */
         if (remIndex == addIndex) {
             remIndex = -1;
             addIndex = -1;
             return;
         }
 
+        /* Make sure that it's not out of bounds -- if it is, set it to maximum */
         int max = listModel.getSize();
         if (addIndex < 0 || addIndex > max - 1)
             addIndex = max - 1;
@@ -96,16 +102,29 @@ public class ListTransferHandler extends StringTransferHandler {
      */
     @Override
     protected void cleanup(JComponent c, boolean remove) {
+
+        /* Check to make sure there is an old index */
         if (remove && remIndex != -1) {
+
             JList source = (JList) c;
             DefaultListModel model = (DefaultListModel) source.getModel();
-            Object item = model.remove( remIndex );
-            model.add( addIndex, item );
+
+            /* Remove the data at the old index*/
+            Object item = model.remove(remIndex);
+
+            /* Add the item to the add index */
+            model.add(addIndex, item);
+
+            /* For each of the listeners, fire a list item moved event */
             for (ListTransferListener l : listeners)
-                l.listItemMoved( remIndex, addIndex );
-            source.setSelectedIndex( addIndex );
+                l.listItemMoved(remIndex, addIndex);
+
+            /* Set the selected index to the add index and validate */
+            source.setSelectedIndex(addIndex);
             c.validate();
         }
+
+        /* Reset the indices */
         remIndex = -1;
         addIndex = -1;
     }
@@ -113,11 +132,10 @@ public class ListTransferHandler extends StringTransferHandler {
     /**
      * Adds a transfer listener to the list
      * 
-     * @param l
-     *            the listener
+     * @param l         the listener
      */
     public void addListTransferListener(ListTransferListener l) {
-        listeners.add( l );
+        listeners.add(l);
     }
 
 }

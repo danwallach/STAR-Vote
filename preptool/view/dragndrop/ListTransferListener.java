@@ -31,8 +31,9 @@ public interface ListTransferListener {
 
 	/**
 	 * The method that is called when the item is moved
-	 * @param from old index
-	 * @param to new index
+     *
+	 * @param from      old index
+	 * @param to        new index
 	 */
 	public void listItemMoved(int from, int to);
 
