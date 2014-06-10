@@ -105,7 +105,7 @@ public class CardView extends JPanel implements IMultiLanguageEditor {
      */
     public void languageSelected(Language lang) {
         for (AModuleView mod : views)
-            mod.languageSelected( lang );
+            mod.languageSelected(lang);
     }
 
     /**
