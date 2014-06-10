@@ -790,6 +790,8 @@ public class PsychLayoutManager extends ALayoutManager {
 
         /**
          * Gets the size of the Background
+         *
+         * @see preptool.model.layout.ILayoutComponentVisitor#forBackground(preptool.model.layout.Background, Object[])
          */
         public Dimension forBackground(Background bg, Object... param) {
             return new Dimension(bg.getWidth(), bg.getHeight());
@@ -797,91 +799,117 @@ public class PsychLayoutManager extends ALayoutManager {
 
         /**
          * Calculates the size of the Button
+         *
+         * @see preptool.model.layout.ILayoutComponentVisitor#forButton(preptool.model.layout.Button, Object[])
          */
         public Dimension forButton(Button button, Object... param) {
-            int size = 1;
-            int fontsize = (size + 1) * FONT_SIZE_MULTIPLE;
+            /* The button font size will be twice the normal font size */
+            int fontsize = 2 * FONT_SIZE_MULTIPLE;
 
+            /* Increase the font size if necessary */
             if (button.isIncreasedFontSize()) {
                 fontsize += 4;
             }
 
-            return RenderingUtils.getButtonSize(button.getText(), fontsize,
-                    button.isBold());
+             /* Return the rendering utility's calculated size of the button */
+            return RenderingUtils.getButtonSize(button.getText(), fontsize, button.isBold());
         }
 
         /**
          * Calculates the size of the
+         *
+         * @see preptool.model.layout.ILayoutComponentVisitor#forLabel(preptool.model.layout.Label, Object[])
          */
         public Dimension forLabel(Label l, Object... param) {
-            int size = 1;
-            int fontsize = (size + 1) * FONT_SIZE_MULTIPLE;
+
+             /* The button font size will be twice the normal font size */
+            int fontsize = 2 * FONT_SIZE_MULTIPLE;
+
+            /* Increase the font size if necessary */
             if (l.isIncreasedFontSize()) {
                 fontsize += 4;
             }
 
-            return RenderingUtils.getLabelSize(l.getText(),
-                    l.getInstructions(), l.getDescription(), fontsize, l
-                            .getWidth(), l.isBold(), l.isCentered());
+            /* Return the rendering utility's calculated size of the label */
+            return RenderingUtils.getLabelSize(l.getText(), l.getInstructions(), l.getDescription(), fontsize, l.getWidth(), l.isBold(), l.isCentered());
         }
 
         /**
          * Calculates the size of the ReviewButton
+         *
+         * @see preptool.model.layout.ILayoutComponentVisitor#forReviewButton(preptool.model.layout.ReviewButton, Object[])
          */
         public Dimension forReviewButton(ReviewButton rb, Object... param) {
-            int size = 1;
-            int fontsize = (int) ((size + .5) * (FONT_SIZE_MULTIPLE - 2));
 
-            return RenderingUtils.getButtonSize(rb.getText(), fontsize, rb
-                    .isBold());
+            /* The button font size will be twice the normal font size */
+            int fontsize = (int) (1.5 * (FONT_SIZE_MULTIPLE - 2));
+
+            /* Increase the font size if necessary */
+            if (rb.isIncreasedFontSize()) {
+                fontsize += 4;
+            }
+
+            /* Return the rendering utility's calculated size of the button */
+            return RenderingUtils.getButtonSize(rb.getText(), fontsize, rb.isBold());
         }
 
         /**
          * Calculates the size of the ReviewLabel
+         *
+         * @see preptool.model.layout.ILayoutComponentVisitor#forReviewLabel(preptool.model.layout.ReviewLabel, Object[])
          */
         public Dimension forReviewLabel(ReviewLabel rl, Object... param) {
-            int size = 1;
-            int fontsize = (int) ((size + .5) * (FONT_SIZE_MULTIPLE - 2));
 
-            return RenderingUtils.getLabelSize(rl.getText(), "", "", fontsize,
-                    rl.getWidth(), rl.isBold(), rl.isCentered());
+            /* The button font size will be twice the normal font size */
+            int fontsize = (int) (1.5 * (FONT_SIZE_MULTIPLE - 2));
+
+            /* Return the rendering utility's calculated size of the label */
+            return RenderingUtils.getLabelSize(rl.getText(), "", "", fontsize, rl.getWidth(), rl.isBold(), rl.isCentered());
         }
 
         /**
          * Calculates the size of the ToggleButton
+         *
+         * @see preptool.model.layout.ILayoutComponentVisitor#forToggleButton(preptool.model.layout.ToggleButton, Object[])
          */
         public Dimension forToggleButton(ToggleButton tb, Object... param) {
-            int size = 1;
 
-            int fontsize = (size + 1) * FONT_SIZE_MULTIPLE;
+            /* The button font size will be twice the normal font size */
+            int fontsize = 2 * (FONT_SIZE_MULTIPLE);
+
+            /* Increase the font size if necessary */
             if (tb.isIncreasedFontSize()) {
                 fontsize += 4;
             }
 
-            return RenderingUtils
-                    .getToggleButtonSize(tb.getText(), tb.getSecondLine(), tb
-                            .getParty(), fontsize, RACE_DESCRIPTION_WIDTH, tb.isBold());
+            /* Return the rendering utility's calculated size of the button */
+            return RenderingUtils.getToggleButtonSize(tb.getText(), tb.getSecondLine(), tb.getParty(), fontsize, RACE_DESCRIPTION_WIDTH, tb.isBold());
         }
 
         /**
-         * Returns null
+         * @see preptool.model.layout.ILayoutComponentVisitor#forToggleButtonGroup(preptool.model.layout.ToggleButtonGroup, Object[])
+         *
+         * @return null
          */
-        public Dimension forToggleButtonGroup(ToggleButtonGroup tbg,
-                Object... param) {
+        public Dimension forToggleButtonGroup(ToggleButtonGroup tbg, Object... param) {
             return null;
         }
 
-		public Dimension forPrintButton(PrintButton pb, Object... param) {
-            int size = 1;
 
-            int fontsize = (size + 1) * FONT_SIZE_MULTIPLE;
+        /**
+         * @see preptool.model.layout.ILayoutComponentVisitor#forPrintButton(preptool.model.layout.PrintButton, Object[])
+         */
+        public Dimension forPrintButton(PrintButton pb, Object... param) {
+            /* The button font size will be twice the normal font size */
+            int fontsize = 2 * (FONT_SIZE_MULTIPLE);
+
+            /* Increase the font size if necessary */
             if (pb.isIncreasedFontSize()) {
                 fontsize += 4;
             }
 
-            return RenderingUtils
-                    .getToggleButtonSize(pb.getText(), pb.getSecondLine(), pb
-                            .getParty(), fontsize, RACE_DESCRIPTION_WIDTH, pb.isBold());
+            /* Return the rendering utility's calculated size of the button */
+            return RenderingUtils.getToggleButtonSize(pb.getText(), pb.getSecondLine(), pb.getParty(), fontsize, RACE_DESCRIPTION_WIDTH, pb.isBold());
 		}
     };
 
