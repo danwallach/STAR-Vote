@@ -96,133 +96,176 @@ public class LanguagesDialog extends JDialog {
     /**
      * Constructs a new LanguagesDialog
      * 
-     * @param view
-     *            the view
-     * @param languages
-     *            the languages
-     * @param selectedLanguages
-     *            the currently selected languages
+     * @param view                  the view
+     * @param languages             the languages
+     * @param selectedLanguages     the currently selected languages
      */
-    public LanguagesDialog(View view, ArrayList<Language> languages,
-            ArrayList<Language> selectedLanguages) {
-        super( view, "Languages", true );
+    public LanguagesDialog(View view, ArrayList<Language> languages, ArrayList<Language> selectedLanguages) {
+
+        /* Call super and assign languages/selected languages */
+        super(view, "Languages", true);
         this.languages = languages;
         this.selectedLanguages = selectedLanguages;
 
-        setSize( 200, 400 );
-        setLocationRelativeTo( view );
-        setLayout( new GridBagLayout() );
+        /* Set GUI */
+        setSize(200, 400);
+        setLocationRelativeTo(view);
+        setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
-        JLabel titleLabel = new JLabel( "Select Languages:" );
+        /* Create a new label and position and add it to the form */
+        JLabel titleLabel = new JLabel("Select Languages:");
         c.gridx = 0;
         c.gridy = 0;
-        c.insets = new Insets( 15, 15, 0, 15 );
+        c.insets = new Insets(15, 15, 0, 15);
         c.weightx = 1;
-        add( titleLabel, c );
+        add(titleLabel, c);
 
+        /* Initialise the scroll pane and position and add it to the form */
         initializeScrollPane();
         c.gridy = 1;
         c.weighty = 1;
         c.anchor = GridBagConstraints.FIRST_LINE_START;
         c.fill = GridBagConstraints.BOTH;
-        add( languagesScrollPane, c );
+        add(languagesScrollPane, c);
 
+        /* Initialise the button and position and add the button panel to the form */
         initializeButtons();
         c.gridy = 2;
-        c.insets = new Insets( 15, 15, 15, 15 );
+        c.insets = new Insets(15, 15, 15, 15);
         c.weighty = 0;
         c.fill = GridBagConstraints.NONE;
         c.anchor = GridBagConstraints.PAGE_END;
-        add( buttonPanel, c );
+        add(buttonPanel, c);
     }
 
     /**
      * Initializes the scroll pane containing the list of languages
      */
     private void initializeScrollPane() {
+
+        /* Create a new panel and set the layout */
         JPanel languagesPanel = new JPanel();
-        languagesPanel.setLayout( new GridBagLayout() );
+        languagesPanel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
+
+        /* Create a new group of checkboxes */
         checkBoxes = new ArrayList<JCheckBox>();
 
+        /* Set layout */
         c.ipadx = 3;
         c.ipady = 3;
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.LINE_START;
 
+        /* Create a new change listener */
         ChangeListener cl = new ChangeListener() {
+
             public void stateChanged(ChangeEvent e) {
+
                 boolean checked = false;
-                for (int i = 0; i < checkBoxes.size(); i++)
-                    if (checkBoxes.get( i ).isSelected())
+
+                /* Check to see if any checkbox is selected */
+                for (JCheckBox checkBox : checkBoxes)
+                    if (checkBox.isSelected())
                         checked = true;
-                okButton.setEnabled( checked );
+
+                /* Set enabled based on checked */
+                okButton.setEnabled(checked);
             }
         };
 
+        /* Cycle through the languages */
         for (int i = 0; i < languages.size(); i++) {
-            Language lang = languages.get( i );
+
+            /* Pull out the language */
+            Language lang = languages.get(i);
+
+            /* Create a new checkbox */
             JCheckBox checkBox = new JCheckBox();
-            checkBox.setSelected( selectedLanguages.contains( lang ) );
-            checkBox.addChangeListener( cl );
-            checkBoxes.add( checkBox );
+
+            /* Set if it is selected, add a change listener, and add the checkbox to the ArrayList */
+            checkBox.setSelected(selectedLanguages.contains(lang));
+            checkBox.addChangeListener(cl);
+            checkBoxes.add(checkBox);
+
+            /* Position and add the checkbox to the langauges panel */
             c.gridx = 0;
             c.gridy = i;
             c.weightx = 0;
-            languagesPanel.add( checkBox, c );
+            languagesPanel.add(checkBox, c);
 
-            JLabel label = new JLabel( lang.getName(), lang.getIcon(),
-                    SwingConstants.LEFT );
+            /* Create a new label and position and add it to the form */
+            JLabel label = new JLabel(lang.getName(), lang.getIcon(), SwingConstants.LEFT);
             c.gridx = 1;
             c.weightx = 1;
-            languagesPanel.add( label, c );
+            languagesPanel.add(label, c);
         }
+
+        /* Position and add a blank label to the languages panel */
         c.gridy = languages.size();
         c.weighty = 1;
-        languagesPanel.add( new JLabel( "" ), c );
+        languagesPanel.add(new JLabel(""), c);
 
-        languagesScrollPane = new JScrollPane( languagesPanel );
+        /* Create a new languages scroll pane */
+        languagesScrollPane = new JScrollPane(languagesPanel);
     }
 
     /**
      * Initializes the OK and cancel buttons
      */
     private void initializeButtons() {
+
+        /* Create a new panel */
         buttonPanel = new JPanel();
 
-        okButton = new JButton( "OK" );
+        /* Create a OK button */
+        okButton = new JButton("OK");
+
+        /* Add an action listener to the OK button */
         okButton.addActionListener( new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+
                 selectedLanguages = new ArrayList<Language>();
+
+                /* Look through the checkboxes to see what was selected and add them */
                 for (int i = 0; i < languages.size(); i++)
-                    if (checkBoxes.get( i ).isSelected())
-                        selectedLanguages.add( languages.get( i ) );
+                    if (checkBoxes.get(i).isSelected())
+                        selectedLanguages.add(languages.get(i));
+
                 okButtonWasPressed = true;
-                setVisible( false );
+                setVisible(false);
             }
         } );
-        buttonPanel.add( okButton );
 
-        cancelButton = new JButton( "Cancel" );
-        cancelButton.addActionListener( new ActionListener() {
+        /* Add the OK button to the panel */
+        buttonPanel.add(okButton);
+
+        /* Create a cancel button */
+        cancelButton = new JButton("Cancel");
+
+        /* Add an action listener to the cancel button */
+        cancelButton.addActionListener(new ActionListener() {
+
             public void actionPerformed(ActionEvent e) {
                 okButtonWasPressed = false;
-                setVisible( false );
+                setVisible(false);
             }
         } );
-        buttonPanel.add( cancelButton );
+
+        /* Add the cancel button to the panel */
+        buttonPanel.add(cancelButton);
     }
 
     /**
-     * @return the okButtonWasPressed
+     * @return      the okButtonWasPressed
      */
     public boolean okButtonWasPressed() {
         return okButtonWasPressed;
     }
 
     /**
-     * @return the selectedLanguages
+     * @return      the selectedLanguages
      */
     public ArrayList<Language> getSelectedLanguages() {
         return selectedLanguages;

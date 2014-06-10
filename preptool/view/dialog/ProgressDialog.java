@@ -90,83 +90,97 @@ public class ProgressDialog extends JDialog {
     /**
      * Constructs a new ProgressTask with the given parent frame and title
      * 
-     * @param parent
-     *            the parent frame
-     * @param title
-     *            the title of the task
+     * @param parent        the parent frame
+     * @param title         the title of the task
      */
     public ProgressDialog(JFrame parent, String title) {
-        super( parent, title, true );
-        this.setSize( 500, 250 );
-        this.setLocationRelativeTo( parent );
-        this.setLayout( new GridBagLayout() );
+
+        /* Call super and setup the GUI */
+        super(parent, title, true);
+        this.setSize(500, 250);
+        this.setLocationRelativeTo(parent);
+        this.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
-        titleLabel = new JLabel( title + "..." );
+        /* Create a new label for the title and position and add it to the form */
+        titleLabel = new JLabel(title + "...");
         c.gridx = 0;
         c.gridy = 0;
-        c.insets = new Insets( 15, 15, 15, 15 );
+        c.insets = new Insets(15, 15, 15, 15);
         c.weightx = 1;
         c.anchor = GridBagConstraints.FIRST_LINE_START;
         c.fill = GridBagConstraints.BOTH;
-        this.add( titleLabel, c );
+        this.add(titleLabel, c);
 
+        /* Create a new progress bar and position and add it to the form */
         progressBar = new JProgressBar();
         c.gridy = 1;
-        c.insets = new Insets( 0, 15, 10, 15 );
+        c.insets = new Insets(0, 15, 10, 15);
         c.weighty = 0;
-        this.add( progressBar, c );
+        this.add(progressBar, c);
 
-        subTaskLabel = new JLabel( "Initializing" );
+        /* Create a new label for the subtask and position and add it to the form */
+        subTaskLabel = new JLabel("Initializing");
         c.gridy = 2;
-        this.add( subTaskLabel, c );
+        this.add(subTaskLabel, c);
 
+        /* Create a new subtask progress bar and positoin and add it to the form */
         subProgressBar = new JProgressBar();
         c.gridy = 3;
-        this.add( subProgressBar, c );
+        this.add(subProgressBar, c);
 
-        subSubTaskLabel = new JLabel( "Initializing" );
+        /* Create a new label for subsubtask and position and add it to the form */
+        subSubTaskLabel = new JLabel("Initializing");
         c.gridy = 4;
-        this.add( subSubTaskLabel, c );
+        this.add(subSubTaskLabel, c);
 
+        /* Create a new button panel */
         JPanel buttonPanel = new JPanel();
-        cancelButton = new JButton( "Cancel" );
+
+        /* Create a new cancel button */
+        cancelButton = new JButton("Cancel");
+
+        /* Add a new action listener for the cancel button */
         cancelButton.addActionListener( new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 pInfo.cancel();
             }
         } );
-        buttonPanel.add( cancelButton );
-        okButton = new JButton( "OK" );
+
+        /* Add the cancel button to the panel */
+        buttonPanel.add(cancelButton);
+
+        /* Create a new OK button */
+        okButton = new JButton("OK");
+
+        /* Create a new action listener for the OK button and disable */
         okButton.addActionListener( new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 setVisible( false );
             }
         } );
-        okButton.setEnabled( false );
-        buttonPanel.add( okButton );
+        okButton.setEnabled(false);
 
+        /* Add the OK button to the panel */
+        buttonPanel.add(okButton);
+
+        /* Position new insets and add the button panel to the form */
         c.gridy = 5;
         c.insets = new Insets( 0, 15, 15, 15 );
         c.weighty = 1;
         c.fill = GridBagConstraints.NONE;
         c.anchor = GridBagConstraints.PAGE_END;
-        this.add( buttonPanel, c );
+        this.add(buttonPanel, c);
 
+        /* Setup for progress monitoring */
         pInfo = new ProgressInfo();
-        pInfo.addObserver( new Observer() {
+        pInfo.addObserver(new Observer() {
+
             public void update(Observable o, Object arg) {
-                if (pInfo.isFinished() ){//|| pInfo.getTaskProgress() == 100) {
-                    finished();
-                }
-                else if (pInfo.isCancelled()) {
-                    setVisible( false );
-                }
-                else {
-                    updateProgress( pInfo.getSubTaskName(), pInfo
-                            .getTaskProgress(), pInfo.getSubSubTaskName(),
-                        pInfo.getSubTaskProgress() );
-                }
+
+                if      (pInfo.isFinished())  finished();
+                else if (pInfo.isCancelled()) setVisible(false);
+                else  updateProgress(pInfo.getSubTaskName(), pInfo.getTaskProgress(), pInfo.getSubSubTaskName(), pInfo.getSubTaskProgress());
             }
         } );
     }
@@ -192,29 +206,40 @@ public class ProgressDialog extends JDialog {
     }
 
     private void finished() {
-        SwingUtilities.invokeLater( new Runnable() {
+
+        SwingUtilities.invokeLater(new Runnable() {
+
             public void run() {
-                subTaskLabel.setText( "Finished." );
-                progressBar.setValue( 100 );
-                subSubTaskLabel.setText( "Finished." );
-                subProgressBar.setValue( 100 );
-                cancelButton.setEnabled( false );
-                okButton.setEnabled( true );
+
+                /* Set the subtask label and progress bar to complete */
+                subTaskLabel.setText("Finished.");
+                progressBar.setValue(100);
+
+                /* Set the subsubtask label and progress bar to complete */
+                subSubTaskLabel.setText("Finished.");
+                subProgressBar.setValue(100);
+
+                /* Disable the cancel button and enable the OK button */
+                cancelButton.setEnabled(false);
+                okButton.setEnabled(true);
             }
         } );
     }
 
-    private void updateProgress(final String subTask,
-            final int percentComplete, final String subSubTask,
-            final int subPercentComplete) {
-        SwingUtilities.invokeLater( new Runnable() {
+    private void updateProgress(final String subTask, final int percentComplete, final String subSubTask, final int subPercentComplete) {
+
+        SwingUtilities.invokeLater(new Runnable() {
+
             public void run() {
-                subTaskLabel.setText( subTask );
-                progressBar.setValue( percentComplete );
-                subSubTaskLabel.setText( subSubTask );
-                subProgressBar.setValue( subPercentComplete );
+
+                /* Update the subtask label and progress bar */
+                subTaskLabel.setText(subTask);
+                progressBar.setValue(percentComplete);
+
+                /* Update the subsubtask label and progress bar */
+                subSubTaskLabel.setText(subSubTask);
+                subProgressBar.setValue(subPercentComplete);
             }
         } );
     }
-
 }

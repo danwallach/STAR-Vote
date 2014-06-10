@@ -141,252 +141,306 @@ public class PartiesDialog extends JDialog implements IMultiLanguageEditor {
     /**
      * Constructs a new PartiesDialog
      * 
-     * @param view
-     *            the view
-     * @param parties
-     *            the parties
-     * @param languages
-     *            the languages
-     * @param startLang
-     *            the initial language
+     * @param view              the view
+     * @param parties           the parties
+     * @param languages         the languages
+     * @param startLang         the initial language
      */
-    public PartiesDialog(View view, ArrayList<Party> parties,
-            ArrayList<Language> languages, Language startLang) {
-        super( view, "Parties", true );
+    public PartiesDialog(View view, ArrayList<Party> parties, ArrayList<Language> languages, Language startLang) {
+
+        /* Make a call to super and set parties*/
+        super(view, "Parties", true);
         this.parties = parties;
 
-        setSize( 400, 400 );
-        setLocationRelativeTo( view );
-        setLayout( new GridBagLayout() );
+        /* Setup GUI */
+        setSize(400, 400);
+        setLocationRelativeTo(view);
+        setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
-        JLabel titleLabel = new JLabel( "Edit Parties:" );
+        /* Create a new label for the title and position and add it to the form */
+        JLabel titleLabel = new JLabel("Edit Parties:");
         c.gridx = 0;
         c.gridy = 0;
-        c.insets = new Insets( 15, 15, 0, 15 );
+        c.insets = new Insets(15, 15, 0, 15);
         c.weightx = 1;
-        add( titleLabel, c );
+        add(titleLabel, c);
 
-        initializeTablePane( startLang );
+        /* Initialise the table pane and position and add it to the form */
+        initializeTablePane(startLang);
         c.gridy = 1;
         c.weighty = 1;
         c.anchor = GridBagConstraints.FIRST_LINE_START;
         c.fill = GridBagConstraints.BOTH;
-        add( partiesPanel, c );
+        add(partiesPanel, c);
 
+        /* Initialise the buttons and position and add the button panel to the form */
         initializeButtons();
         c.gridy = 2;
-        c.insets = new Insets( 15, 15, 15, 15 );
+        c.insets = new Insets(15, 15, 15, 15);
         c.weighty = 0;
         c.fill = GridBagConstraints.NONE;
         c.anchor = GridBagConstraints.PAGE_END;
-        add( buttonPanel, c );
+        add(buttonPanel, c);
 
-        languageBar = new LanguageBar( view, this, languages, startLang );
+        /* Create a new language bar and position and add it to the form */
+        languageBar = new LanguageBar(view, this, languages, startLang);
         languageBar.refreshEditorLanguage();
         c.gridy = 3;
-        c.insets = new Insets( 0, 0, 0, 0 );
+        c.insets = new Insets(0, 0, 0, 0);
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.LINE_START;
-        add( languageBar, c );
+        add(languageBar, c);
     }
 
     /**
      * Initializes the OK button
      */
     private void initializeButtons() {
+
+        /* Create a new button panel */
         buttonPanel = new JPanel();
 
-        okButton = new JButton( "OK" );
-        okButton.addActionListener( new ActionListener() {
+        /* Create an OK button */
+        okButton = new JButton("OK");
+
+        /* Add an action listener to the OK button*/
+        okButton.addActionListener(new ActionListener() {
+
             public void actionPerformed(ActionEvent e) {
+
                 okButtonWasPressed = true;
-                setVisible( false );
+                setVisible(false);
             }
         } );
-        buttonPanel.add( okButton );
+
+        /* Add the OK button to the button panel */
+        buttonPanel.add(okButton);
     }
 
     /**
      * Initializes the table panel
      */
     private void initializeTablePane(Language lang) {
+
+        /* Create a new panel and layout */
         partiesPanel = new JPanel();
-        partiesPanel.setLayout( new GridBagLayout() );
+        partiesPanel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
+        /* Create a new table listener */
         tableListener = new TableModelListener() {
+
             public void tableChanged(TableModelEvent e) {
+
+                /* If the model is moved, remove the first row and add it to the last row */
                 if (e.getType() == IMovableTableModel.MOVE) {
-                    Party p = parties.remove( e.getFirstRow() );
-                    parties.add( e.getLastRow(), p );
+                    Party p = parties.remove(e.getFirstRow());
+                    parties.add(e.getLastRow(), p);
                 }
+
                 else {
+
+                    /* Otherwise, go through the rows */
                     for (int i = e.getFirstRow(); i <= e.getLastRow(); i++) {
-                        if (e.getType() == TableModelEvent.INSERT)
-                            parties.add( i, new Party() );
+
+                        /* If it is an insert event, add a new party at the index */
+                        if (e.getType() == TableModelEvent.INSERT) parties.add(i, new Party());
+
+                        /* If an update event */
                         else if (e.getType() == TableModelEvent.UPDATE) {
-                            Party p = parties.get( i );
-                            String str = (String) partiesTableModel.getValueAt(
-                                i, 0 );
+
+                            /* Get the party and the name */
+                            Party p = parties.get(i);
+                            String str = (String) partiesTableModel.getValueAt(i, 0);
+
+                            /* If there is a name, keep the name */
                             if (str != null)
-                                p.setName( languageBar.getCurrentLanguage(),
-                                    str );
+                                p.setName(languageBar.getCurrentLanguage(), str);
+
+                            /* If there is no name, set it to an empty String */
                             else
-                                p
-                                        .setName( languageBar
-                                                .getCurrentLanguage(), "" );
-                            str = (String) partiesTableModel.getValueAt( i, 1 );
+                                p.setName(languageBar.getCurrentLanguage(), "");
+
+                            /* Pull the abbreviation */
+                            str = (String) partiesTableModel.getValueAt(i, 1);
+
+                            /* If there is an abbreviation, keep it -- otherwise, empty String */
                             if (str != null)
-                                p.setAbbrev( languageBar.getCurrentLanguage(),
-                                    str );
+                                p.setAbbrev(languageBar.getCurrentLanguage(), str);
                             else
-                                p.setAbbrev( languageBar.getCurrentLanguage(),
-                                    "" );
+                                p.setAbbrev(languageBar.getCurrentLanguage(), "");
                         }
-                        else if (e.getType() == TableModelEvent.DELETE)
-                            parties.remove( i );
+
+                        /* In a delete event, remove it */
+                        else if (e.getType() == TableModelEvent.DELETE) parties.remove(i);
                     }
                 }
             }
         };
-        partiesTableModel = new MovableTableModel( new String[] {
-                "Name", "Abbreviation"
-        }, parties.size() );
-        partiesTableModel.addTableModelListener( tableListener );
-        languageSelected( lang );
-        partiesTable = new JTable( partiesTableModel );
-        partiesTable.setDragEnabled( true );
-        partiesTable.setTransferHandler( new TableTransferHandler() );
-        partiesTable.getSelectionModel().setSelectionMode(
-            ListSelectionModel.SINGLE_SELECTION );
-        partiesTable.getSelectionModel().addListSelectionListener(
-            new ListSelectionListener() {
-                public void valueChanged(ListSelectionEvent e) {
-                    if (partiesTable.getSelectedRow() == -1) {
-                        deleteButton.setEnabled( false );
-                    }
-                    else {
-                        deleteButton.setEnabled( true );
-                    }
-                }
-            } );
+
+        /* Instantiate the table model and add a listener */
+        partiesTableModel = new MovableTableModel(new String[] {"Name", "Abbreviation"}, parties.size());
+        partiesTableModel.addTableModelListener(tableListener);
+
+        /* Set the language selected */
+        languageSelected(lang);
+
+        /* Instantiate the parties table (and some housekeeping) */
+        partiesTable = new JTable(partiesTableModel);
+        partiesTable.setDragEnabled(true);
+        partiesTable.setTransferHandler(new TableTransferHandler());
+        partiesTable.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+        /* Add a listener for the table model */
+        partiesTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent e) { deleteButton.setEnabled(partiesTable.getSelectedRow() != -1); }
+        } );
+
+        /* Create a new popup menu */
         JPopupMenu tableContextMenu = new JPopupMenu();
+
+        /* Create a new menu item for copying (and an action listener for the menu item) */
         tableCopyFromItem = new JMenuItem();
-        tableCopyFromItem.addActionListener( new ActionListener() {
+        tableCopyFromItem.addActionListener(new ActionListener() {
+
             public void actionPerformed(ActionEvent e) {
+
+                /* If something is currently selected */
                 if (partiesTable.getSelectedRow() != -1) {
-                    Party p = parties.get( partiesTable.getSelectedRow() );
-                    p.setName( languageBar.getCurrentLanguage(), p
-                            .getName( languageBar.getPrimaryLanguage() ) );
-                    p.setAbbrev( languageBar.getCurrentLanguage(), p
-                            .getAbbrev( languageBar.getPrimaryLanguage() ) );
-                    languageSelected( languageBar.getCurrentLanguage() );
+
+                    /* Get what is currently selected */
+                    Party p = parties.get(partiesTable.getSelectedRow());
+
+                    /* Set the name and the abbreviation based on the translation of the primary language */
+                    p.setName(languageBar.getCurrentLanguage(), p.getName(languageBar.getPrimaryLanguage()));
+                    p.setAbbrev(languageBar.getCurrentLanguage(), p.getAbbrev(languageBar.getPrimaryLanguage()));
+
+                    /* Set the language selected */
+                    languageSelected(languageBar.getCurrentLanguage());
                 }
             }
         } );
-        tableContextMenu.add( tableCopyFromItem );
+
+        /* Add the menu item to the menu */
+        tableContextMenu.add(tableCopyFromItem);
+
+        /* Create a new menu item for copying everything */
         tableCopyAllFromItem = new JMenuItem();
-        tableCopyAllFromItem.addActionListener( new ActionListener() {
+
+        /* Add an action listener */
+        tableCopyAllFromItem.addActionListener(new ActionListener() {
+
             public void actionPerformed(ActionEvent e) {
+
                 for (Party p : parties) {
-                    p.setName( languageBar.getCurrentLanguage(), p
-                            .getName( languageBar.getPrimaryLanguage() ) );
-                    p.setAbbrev( languageBar.getCurrentLanguage(), p
-                            .getAbbrev( languageBar.getPrimaryLanguage() ) );
+                    p.setName(languageBar.getCurrentLanguage(), p.getName(languageBar.getPrimaryLanguage()));
+                    p.setAbbrev(languageBar.getCurrentLanguage(), p.getAbbrev(languageBar.getPrimaryLanguage()));
                 }
+
                 languageSelected( languageBar.getCurrentLanguage() );
             }
         } );
-        tableContextMenu.add( tableCopyAllFromItem );
-        partiesTable.setComponentPopupMenu( tableContextMenu );
 
-        JScrollPane tableScrollPane = new JScrollPane( partiesTable );
+        /* Add the menu item to the menu */
+        tableContextMenu.add(tableCopyAllFromItem);
+
+        /* Set the component popup menu to the tableContextMenu */
+        partiesTable.setComponentPopupMenu(tableContextMenu);
+
+        /* Create a new scroll pane and position and add it to the parties panel */
+        JScrollPane tableScrollPane = new JScrollPane(partiesTable);
         c.gridx = 0;
         c.gridy = 0;
         c.fill = GridBagConstraints.BOTH;
         c.weighty = 1;
         c.weightx = 1;
-        partiesPanel.add( tableScrollPane, c );
+        partiesPanel.add(tableScrollPane, c);
 
+        /* Create a new toolbar for parties */
         partiesToolbar = new JToolBar();
-        partiesToolbar.setFloatable( false );
+        partiesToolbar.setFloatable(false);
 
-        ImageIcon icon;
-        String text;
+        /* Load the image and text (text blank because we only need image)*/
+        ImageIcon icon = new ImageIcon("rsrc/preptool/images/list-add.png");
+        String text = "";
 
-        try {
-            icon = new ImageIcon( ClassLoader.getSystemClassLoader()
-                    .getResource( "images/list-add.png" ) );
-            text = "";
-        }
-        catch (Exception e) {
-            icon = null;
-            text = "Add";
-        }
-        addButton = new JButton( new AbstractAction( text, icon ) {
-            private static final long serialVersionUID = 1L;
-
+        /* Create a new button for adding */
+        addButton = new JButton(new AbstractAction(text, icon) {
             public void actionPerformed(ActionEvent e) {
                 addButtonPressed();
-            }
-        } );
-        partiesToolbar.add( addButton );
+            } } );
 
-        try {
-            icon = new ImageIcon( ClassLoader.getSystemClassLoader()
-                    .getResource( "images/list-remove.png" ) );
-            text = "";
-        }
-        catch (Exception e) {
-            icon = null;
-            text = "Remove";
-        }
-        deleteButton = new JButton( new AbstractAction( text, icon ) {
-            private static final long serialVersionUID = 1L;
+        /* Add the button to the toolbar */
+        partiesToolbar.add(addButton);
 
-            public void actionPerformed(ActionEvent e) {
-                deleteButtonPressed();
-            }
-        } );
-        deleteButton.setEnabled( false );
-        partiesToolbar.add( deleteButton );
+        /* Load the image and text (text blank because we only need image) */
+        icon = new ImageIcon("rsrc/preptool/images/list-remove.png");
+        text = "";
 
+        /* Create a new button for deleting */
+        deleteButton = new JButton(new AbstractAction(text, icon) {
+            public void actionPerformed(ActionEvent e) { deleteButtonPressed(); } } );
+
+        /* Disable the button by default and add it to the toolbar */
+        deleteButton.setEnabled(false);
+        partiesToolbar.add(deleteButton);
+
+        /* Position and add the toolbar to the panel */
         c.gridy = 1;
         c.weighty = 0;
         c.anchor = GridBagConstraints.LAST_LINE_START;
-        partiesPanel.add( partiesToolbar, c );
+        partiesPanel.add(partiesToolbar, c);
 
-        partiesPanel.setBorder( BorderFactory.createTitledBorder( "Parties" ) );
+        /* Set the border for the panel */
+        partiesPanel.setBorder(BorderFactory.createTitledBorder("Parties"));
     }
 
     /**
      * Adds a new row to the end of the table
      */
-    public void addButtonPressed() {
-        partiesTableModel.addRow( new String[2] );
-    }
+    public void addButtonPressed() { partiesTableModel.addRow(new String[2]); }
 
     /**
      * Deletes the selected row from this table
      */
     public void deleteButtonPressed() {
+
+        /* Make sure nothing is currently being edited  */
         if (partiesTable.getEditingRow() == -1) {
-            int answer = JOptionPane.showConfirmDialog( this,
-                "Are you sure you want to delete this party?", "Delete Party",
-                JOptionPane.YES_NO_OPTION );
+
+            /* Prompt the user to be sure to delete */
+            String prompt = "Are you sure you want to delete this party?";
+            int answer = JOptionPane.showConfirmDialog(this, prompt, "Delete Party", JOptionPane.YES_NO_OPTION);
+
+            /* Check for yes */
             if (answer == JOptionPane.YES_OPTION) {
+
+                /* Get the row that is selected */
                 int idx = partiesTable.getSelectedRow();
+
+                /* Check if there are multiple rows */
                 if (partiesTableModel.getRowCount() > 1) {
+
                     int newIdx;
+
+                    /* If currently the last row is selected, the new selected will be one before */
                     if (idx == partiesTableModel.getRowCount() - 1)
                         newIdx = idx - 1;
+
+                    /* Otherwise, the new selected will be the next one */
                     else
                         newIdx = idx + 1;
+
+                    /* Clear the selection */
                     partiesTable.clearSelection();
-                    partiesTable.addRowSelectionInterval( newIdx, newIdx );
+
+                    /* Selects the new row */
+                    partiesTable.addRowSelectionInterval(newIdx, newIdx);
                 }
-                partiesTableModel.removeRow( idx );
+
+                /* Remove the row to be deleted */
+                partiesTableModel.removeRow(idx);
             }
         }
     }
@@ -402,24 +456,31 @@ public class PartiesDialog extends JDialog implements IMultiLanguageEditor {
      * Updates this dialog to show the selected language
      */
     public void languageSelected(Language lang) {
-        partiesTableModel.removeTableModelListener( tableListener );
+
+        /* Get rid of the current listener */
+        partiesTableModel.removeTableModelListener(tableListener);
+
+        /* Go through each of the parties in the model and set the values */
         for (int i = 0; i < parties.size(); i++) {
-            partiesTableModel.setValueAt( parties.get( i ).getName( lang ), i,
-                0 );
-            partiesTableModel.setValueAt( parties.get( i ).getAbbrev( lang ),
-                i, 1 );
+            partiesTableModel.setValueAt(parties.get(i).getName(lang), i, 0);
+            partiesTableModel.setValueAt(parties.get(i).getAbbrev(lang), i, 1);
         }
-        partiesTableModel.addTableModelListener( tableListener );
+
+        /* Readd the listener */
+        partiesTableModel.addTableModelListener(tableListener);
     }
 
     /**
      * Returns true if there are missing translations in the list of parties
      */
     public boolean needsTranslation(Language lang) {
-        for (int i = 0; i < parties.size(); i++)
-            if (parties.get( i ).getAbbrev( lang ).equals( "" )
-                    || parties.get( i ).getName( lang ).equals( "" ))
+
+        /* Cycle through the parties and make sure there is a translation for each */
+        for (Party party : parties)
+            if (party.getAbbrev(lang).equals("") || party.getName(lang).equals(""))
                 return true;
+
+        /* Return false if no translations needed */
         return false;
     }
 
@@ -427,10 +488,9 @@ public class PartiesDialog extends JDialog implements IMultiLanguageEditor {
      * Called when the primary language has changed
      */
     public void updatePrimaryLanguage(Language lang) {
-        tableCopyFromItem
-                .setText( "Copy selected party from " + lang.getName() );
-        tableCopyAllFromItem
-                .setText( "Copy all parties from " + lang.getName() );
+
+        tableCopyFromItem.setText("Copy selected party from " + lang.getName());
+        tableCopyAllFromItem.setText("Copy all parties from " + lang.getName());
     }
 
 }
