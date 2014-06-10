@@ -510,20 +510,41 @@ public class PsychLayoutManager extends ALayoutManager {
         protected void addSideBar(int step) {
             /* Create special constraints for teh side bar */
             GridBagConstraints constraints = new GridBagConstraints();
-            Spacer PYouAreNowOn;
-            Spacer PMakeYourChoice;
-            Spacer PReviewYourChoices;
-            Spacer PRecordYourVote;
+
+            Spacer PYouAreNowOn       = new Spacer(instructions, west);
+            Spacer PMakeYourChoice    = new Spacer(makeYourChoices, west);
+            Spacer PReviewYourChoices = new Spacer(reviewYourChoices, west);
+            Spacer PRecordYourVote    = new Spacer(recordYourVote, west);
 
             /* Select correct highlighted label for current step */
-            if (step == 1) PYouAreNowOn       = new Spacer(instructionsBold, west);
-            else           PYouAreNowOn       = new Spacer(instructions, west);
-            if (step == 2) PMakeYourChoice    = new Spacer(makeYourChoicesBold, west);
-            else           PMakeYourChoice    = new Spacer(makeYourChoices, west);
-            if (step == 3) PReviewYourChoices = new Spacer(reviewYourChoicesBold, west);
-            else           PReviewYourChoices = new Spacer(reviewYourChoices, west);
-            if (step == 4) PRecordYourVote    = new Spacer(recordYourVoteBold, west);
-            else           PRecordYourVote    = new Spacer(recordYourVote, west);
+
+            switch (step) {
+
+                case 1:
+
+                    PYouAreNowOn       = new Spacer(instructionsBold, west);
+                    break;
+
+                case 2:
+
+                    PMakeYourChoice    = new Spacer(makeYourChoicesBold, west);
+                    break;
+
+                case 3:
+
+                    PReviewYourChoices = new Spacer(reviewYourChoicesBold, west);
+                    break;
+
+                case 4:
+
+                    PRecordYourVote    = new Spacer(recordYourVoteBold, west);
+                    break;
+
+                default:
+
+                    throw new IllegalStateException("Not on any current valid step in the voting process!");
+
+            }
 
             /* Add the labels to west pane */
             constraints.gridy = 0;
@@ -532,12 +553,15 @@ public class PsychLayoutManager extends ALayoutManager {
             constraints.fill = GridBagConstraints.VERTICAL;
             constraints.gridwidth = 1;
             west.add(PYouAreNowOn, constraints);
+
             constraints.gridx = 0;
             constraints.gridy = 1;
             west.add(PMakeYourChoice, constraints);
+
             constraints.gridx = 0;
             constraints.gridy = 2;
             west.add(PReviewYourChoices, constraints);
+
             constraints.gridx = 0;
             constraints.gridy = 3;
             west.add(PRecordYourVote, constraints);
@@ -609,6 +633,8 @@ public class PsychLayoutManager extends ALayoutManager {
     	
         /**
          * Gets the image from the Background
+         *
+         * @see preptool.model.layout.ILayoutComponentVisitor#forBackground(preptool.model.layout.Background, Object[])
          */
         public BufferedImage forBackground(Background bg, Boolean... param) {
             return bg.getImage();
@@ -616,69 +642,81 @@ public class PsychLayoutManager extends ALayoutManager {
 
         /**
          * Renders a Button
+         *
+         * @see preptool.model.layout.ILayoutComponentVisitor#forButton(preptool.model.layout.Button, Object[])
          */
         public BufferedImage forButton(Button button, Boolean... param) {
-            int size = 1;
-            int fontsize = (size + 1) * FONT_SIZE_MULTIPLE;
 
+            /* Buttons will be scaled to twice the normal font size */
+            int fontsize = 2 * FONT_SIZE_MULTIPLE;
+
+            /* If the button is supposed to be of increased size, increment the font size by 4 */
             if (button.isIncreasedFontSize()) {
                 fontsize += 4;
             }
 
-            return RenderingUtils.renderButton(button.getText(), fontsize,
-                    button.isBold(), button.isBoxed(), 
-					-1, button.getBackgroundColor(), param[0]);
+            /* Now call the rendering utility to render the button */
+            return RenderingUtils.renderButton(button.getText(), fontsize, button.isBold(), button.isBoxed(), -1, button.getBackgroundColor(), param[0]);
         }
 
         /**
          * Renders a label
+         *
+         * @see preptool.model.layout.ILayoutComponentVisitor#forLabel(preptool.model.layout.Label, Object[])
          */
         public BufferedImage forLabel(Label l, Boolean... param) {
-            int size = 1;
-            int fontsize = (size + 1) * FONT_SIZE_MULTIPLE;
 
+            /* Labels will be scaled to twice the normal font size */
+            int fontsize = 2 * FONT_SIZE_MULTIPLE;
+
+             /* If the label is supposed to be of increased size, increment the font size by 4 */
             if (l.isIncreasedFontSize()) {
                 fontsize += 4;
             }
 
-            return RenderingUtils.renderLabel(l.getText(), l.getInstructions(),
-                    l.getDescription(), fontsize, l.getWidth(), l.getColor(), l
-                            .isBold(), l.isBoxed(), l.isCentered(), param[0]);
+            /* Now call the rendering utility to render the label */
+            return RenderingUtils.renderLabel(l.getText(), l.getInstructions(), l.getDescription(), fontsize, l.getWidth(),
+                                              l.getColor(), l.isBold(), l.isBoxed(), l.isCentered(), param[0]);
         }
 
         /**
          * Renders a ReviewButton
+         *
+         *  @see preptool.model.layout.ILayoutComponentVisitor#forReviewButton(preptool.model.layout.ReviewButton, Object[])
          */
         public BufferedImage forReviewButton(ReviewButton rb, Boolean... param) {
 
-            //System.out.println("PsychLayout's forReviewButton");
-            int size = 1;
-            int fontsize = (size + 1) * (FONT_SIZE_MULTIPLE - 1) - 2;
+            /* Review buttons will be scaled to twice less 4 the normal font size */
+            int fontsize = 2 * (FONT_SIZE_MULTIPLE - 1) - 2;
 
-            BufferedImage buttonImg = RenderingUtils.renderButton(
-				rb.getText(), fontsize, rb.isBold(), rb.isBoxed(),
-                    REVIEW_SCREEN_WIDTH,
-				rb.getBackgroundColor(), param[0]);
+            /* Render the button using the rendering utility */
+            BufferedImage buttonImg = RenderingUtils.renderButton(rb.getText(), fontsize, rb.isBold(), rb.isBoxed(),
+                                                                  REVIEW_SCREEN_WIDTH, rb.getBackgroundColor(), param[0]);
             
-			// render party information [dsandler]
+			/* render party information [dsandler] */
 			String aux = rb.getAuxText();
-			if (aux != null && REVIEW_SCREEN_SHOW_PARTY && !aux.equals("")) {
+
+            /* Check that we are showing the party and that there is party data to show */
+			if (REVIEW_SCREEN_SHOW_PARTY && aux != null && !aux.equals("")) {
+
+                /* If the party information is supposed to be parenthesized, do it here [ e.g. (DEM) ]*/
 				if (REVIEW_SCREEN_PARENTHESIZE_PARTY) 
 					aux = "(" + aux + ")";
 
-				Graphics2D graf = buttonImg.createGraphics();
-				graf.setRenderingHint(
-					RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-				
+                /* Now render the String. TODO Perhaps this should be in RenderingUtils? */
+				Graphics2D g = buttonImg.createGraphics();
+				g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+                /* Load the preselected font */
 				Font font = new Font(RenderingUtils.FONT_NAME, Font.PLAIN, fontsize);
-				graf.setFont(font);
-				graf.setColor(Color.BLACK);
+				g.setFont(font);
+				g.setColor(Color.BLACK);
 
-				Rectangle2D partyTextBounds = font.getStringBounds(aux,
-						new FontRenderContext(null, true, true));
+                /* Draw a bounding box around the party */
+				Rectangle2D partyTextBounds = font.getStringBounds(aux, new FontRenderContext(null, true, true));
 
-				// draw it right-aligned
-				graf.drawString(aux, (int)(buttonImg.getWidth() - partyTextBounds.getWidth() - 10), (int)(partyTextBounds.getHeight() + 8));
+				/* draw the party on the far right side (Right-aligned) */
+				g.drawString(aux, (int) (buttonImg.getWidth() - partyTextBounds.getWidth() - 10), (int) (partyTextBounds.getHeight() + 8));
 			}
 
 			return buttonImg;
@@ -686,56 +724,62 @@ public class PsychLayoutManager extends ALayoutManager {
 
         /**
          * Renders a ReviewLabel
+         *
+         *  @see preptool.model.layout.ILayoutComponentVisitor#forReviewLabel(preptool.model.layout.ReviewLabel, Object[])
          */
         public BufferedImage forReviewLabel(ReviewLabel rl, Boolean... param) {
-            //System.out.println("PsychLayout's forReviewLabel");
-            int size = 1;
-            int fontsize = (size + 1) * (FONT_SIZE_MULTIPLE - 1);
 
-            return RenderingUtils.renderLabel(rl.getText(), "", "", fontsize,
-                    //rl.getWidth(), 
-					100,
-					rl.getColor(), rl.isBold(), rl.isBoxed(), rl
-                            .isCentered(), param[0]);
+             /* Review labels will be scaled to twice less 2 the normal font size */
+            int fontsize = 2 * (FONT_SIZE_MULTIPLE - 1);
+
+            /* Return the result of the rendering utility's render of the label */
+            return RenderingUtils.renderLabel(rl.getText(), "", "", fontsize, 100, rl.getColor(), rl.isBold(), rl.isBoxed(), rl.isCentered(), param[0]);
         }
 
         /**
          * Renders a ToggleButton
+         *
+         *  @see preptool.model.layout.ILayoutComponentVisitor#forToggleButton(preptool.model.layout.ToggleButton, Object[])
          */
         public BufferedImage forToggleButton(ToggleButton tb, Boolean... param) {
-            //System.out.println("PsychLayout's forToggleButton");
-            int size = 1;
 
-            int fontsize = (size + 1) * FONT_SIZE_MULTIPLE;
+            /* The toggle button font size will be twice the normal font size */
+            int fontsize = 2 * FONT_SIZE_MULTIPLE;
+
+            /* If the button is supposed to have larger font size, make it 4 larger than twice the normal size */
             if (tb.isIncreasedFontSize()) {
                 fontsize += 4;
             }
 
-
-
-            return RenderingUtils.renderToggleButton(
-            		tb.getText(), tb.getSecondLine(), tb.getParty(), fontsize,
-            		tb.getWidth(), tb.isBold(), param[0], param[1]);
+            /* Return the rendering utility's render of the button */
+            return RenderingUtils.renderToggleButton(tb.getText(), tb.getSecondLine(), tb.getParty(), fontsize,	tb.getWidth(), tb.isBold(), param[0], param[1]);
         }
 
         /**
-         * Returns null
+         * @see preptool.model.layout.ILayoutComponentVisitor#forToggleButtonGroup(preptool.model.layout.ToggleButtonGroup, Object[])
+         *
+         * @return null
          */
-        public BufferedImage forToggleButtonGroup(ToggleButtonGroup tbg,
-                Boolean... param) {
+        public BufferedImage forToggleButtonGroup(ToggleButtonGroup tbg, Boolean... param) {
             return null;
         }
 
-		public BufferedImage forPrintButton(PrintButton pb, Boolean... param) {
 
-            int fontsize = FONT_SIZE_MULTIPLE; //effectively makes the font size 8
+        /**
+         * @see preptool.model.layout.ILayoutComponentVisitor#forPrintButton(preptool.model.layout.PrintButton, Object[])
+         */
+        public BufferedImage forPrintButton(PrintButton pb, Boolean... param) {
+
+            /* Make the font size for print buttons the normal font size */
+            int fontsize = FONT_SIZE_MULTIPLE;
+
+            /* Increase the font size if necessary */
             if (pb.isIncreasedFontSize()) {
                 fontsize += 4;
             }
 
-            return RenderingUtils.renderPrintButton( pb.getUID(),
-                    pb.getText(), pb.getSecondLine(), pb.getParty(), fontsize,
-                    281, false, true);       //Chose 281 because it suits our printing well
+            /* Render using the rendering utility. Chose 281 for the width because it suits our printing well */
+            return RenderingUtils.renderPrintButton(pb.getUID(), pb.getText(), pb.getSecondLine(), pb.getParty(), fontsize, 281, false, true);
 		}
     };
 
