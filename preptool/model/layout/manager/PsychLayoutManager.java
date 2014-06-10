@@ -919,11 +919,6 @@ public class PsychLayoutManager extends ALayoutManager {
     private Language language;
 
     /**
-     * A Common Cast Button
-    */
-    protected Button castButton;
-    
-    /**
      * A Common Commit Button
      */
     protected Button commitButton;
@@ -1018,137 +1013,132 @@ public class PsychLayoutManager extends ALayoutManager {
      * components, such as the next button.
      */
     public PsychLayoutManager(Language language, int numCardsPerReviewPage, int fontSize, boolean textToSpeech) {
+
         this.language = language;
+
         GENERATE_AUDIO = textToSpeech;
         
         CARDS_PER_REVIEW_PAGE = numCardsPerReviewPage;
+
     	FONT_SIZE_MULTIPLE = fontSize;
 
-        instructions = new Label(getNextLayoutUID(), LiteralStrings.Singleton
-                .get("SIDEBAR_INSTRUCTIONS", language));
+        /* Initialize the instructions label, which is the first element on the sidebar of the GUI */
+        instructions = new Label(getNextLayoutUID(), LiteralStrings.Singleton.get("SIDEBAR_INSTRUCTIONS", language));
         instructions.setWidth(225);
         instructions.setIncreasedFontSize(true);
         instructions.setColor(new Color(72, 72, 72));
         instructions.setSize(instructions.execute(sizeVisitor));
 
-        makeYourChoices = new Label(getNextLayoutUID(),
-                LiteralStrings.Singleton.get("SIDEBAR_MAKE_CHOICES", language));
-        makeYourChoices.setWidth(225);
-        makeYourChoices.setIncreasedFontSize(true);
-        makeYourChoices.setColor(new Color(72, 72, 72));
-        makeYourChoices.setSize(makeYourChoices.execute(sizeVisitor));
-
-        reviewYourChoices = new Label(getNextLayoutUID(),
-                LiteralStrings.Singleton
-                        .get("SIDEBAR_REVIEW_CHOICES", language));
-        reviewYourChoices.setWidth(225);
-        reviewYourChoices.setIncreasedFontSize(true);
-        reviewYourChoices.setColor(new Color(72, 72, 72));
-        reviewYourChoices.setSize(reviewYourChoices.execute(sizeVisitor));
-
-        recordYourVote = new Label(getNextLayoutUID(), LiteralStrings.Singleton
-                .get("SIDEBAR_RECORD_VOTE", language));
-        recordYourVote.setWidth(225);
-        recordYourVote.setIncreasedFontSize(true);
-        recordYourVote.setColor(new Color(72, 72, 72));
-        recordYourVote.setSize(recordYourVote.execute(sizeVisitor));
-
-        instructionsBold = new Label(getNextLayoutUID(),
-                LiteralStrings.Singleton.get(
-                        "SIDEBAR_INSTRUCTIONS_HIGHLIGHTED", language));
+        /* This is the bold version of the instructions label */
+        instructionsBold = new Label(getNextLayoutUID(),LiteralStrings.Singleton.get("SIDEBAR_INSTRUCTIONS_HIGHLIGHTED", language));
         instructionsBold.setWidth(225);
         instructionsBold.setIncreasedFontSize(true);
         instructionsBold.setColor(Color.WHITE);
         instructionsBold.setBold(false);
         instructionsBold.setSize(instructionsBold.execute(sizeVisitor));
 
-        makeYourChoicesBold = new Label(getNextLayoutUID(),
-                LiteralStrings.Singleton.get(
-                        "SIDEBAR_MAKE_CHOICES_HIGHLIGHTED", language));
+        /* Initialize the "Make your choices" label, step 2 on the side bar */
+        makeYourChoices = new Label(getNextLayoutUID(), LiteralStrings.Singleton.get("SIDEBAR_MAKE_CHOICES", language));
+        makeYourChoices.setWidth(225);
+        makeYourChoices.setIncreasedFontSize(true);
+        makeYourChoices.setColor(new Color(72, 72, 72));
+        makeYourChoices.setSize(makeYourChoices.execute(sizeVisitor));
+
+        /* This is the bold version of the choices label */
+        makeYourChoicesBold = new Label(getNextLayoutUID(),LiteralStrings.Singleton.get("SIDEBAR_MAKE_CHOICES_HIGHLIGHTED", language));
         makeYourChoicesBold.setWidth(225);
         makeYourChoicesBold.setIncreasedFontSize(true);
         makeYourChoicesBold.setColor(Color.WHITE);
         makeYourChoicesBold.setBold(false);
         makeYourChoicesBold.setSize(makeYourChoicesBold.execute(sizeVisitor));
 
-        reviewYourChoicesBold = new Label(getNextLayoutUID(),
-                LiteralStrings.Singleton.get(
-                        "SIDEBAR_REVIEW_CHOICES_HIGHLIGHTED", language));
+        /* Initialize the "Review your choices" label, step 3 on the sidebar */
+        reviewYourChoices = new Label(getNextLayoutUID(), LiteralStrings.Singleton.get("SIDEBAR_REVIEW_CHOICES", language));
+        reviewYourChoices.setWidth(225);
+        reviewYourChoices.setIncreasedFontSize(true);
+        reviewYourChoices.setColor(new Color(72, 72, 72));
+        reviewYourChoices.setSize(reviewYourChoices.execute(sizeVisitor));
+
+        /* This is the bold version of the review label */
+        reviewYourChoicesBold = new Label(getNextLayoutUID(), LiteralStrings.Singleton.get("SIDEBAR_REVIEW_CHOICES_HIGHLIGHTED", language));
         reviewYourChoicesBold.setWidth(225);
         reviewYourChoicesBold.setIncreasedFontSize(true);
         reviewYourChoicesBold.setColor(Color.WHITE);
         reviewYourChoicesBold.setBold(false);
-        reviewYourChoicesBold.setSize(reviewYourChoicesBold
-                .execute(sizeVisitor));
+        reviewYourChoicesBold.setSize(reviewYourChoicesBold.execute(sizeVisitor));
 
-        recordYourVoteBold = new Label(getNextLayoutUID(),
-                LiteralStrings.Singleton.get("SIDEBAR_RECORD_VOTE_HIGHLIGHTED",
-                        language));
+        /* Initialize the "Record your vote" label, step 4 on the sidebar */
+        recordYourVote = new Label(getNextLayoutUID(), LiteralStrings.Singleton.get("SIDEBAR_RECORD_VOTE", language));
+        recordYourVote.setWidth(225);
+        recordYourVote.setIncreasedFontSize(true);
+        recordYourVote.setColor(new Color(72, 72, 72));
+        recordYourVote.setSize(recordYourVote.execute(sizeVisitor));
+
+        /* This is the bold version of the record label */
+        recordYourVoteBold = new Label(getNextLayoutUID(), LiteralStrings.Singleton.get("SIDEBAR_RECORD_VOTE_HIGHLIGHTED", language));
         recordYourVoteBold.setWidth(225);
         recordYourVoteBold.setIncreasedFontSize(true);
         recordYourVoteBold.setColor(Color.WHITE);
         recordYourVoteBold.setBold(false);
         recordYourVoteBold.setSize(recordYourVoteBold.execute(sizeVisitor));
 
-        nextButton = new Button(getNextLayoutUID(), LiteralStrings.Singleton
-                .get("NEXT_PAGE_BUTTON", language), "NextPage");
+        /* Initialize a next button */
+        nextButton = new Button(getNextLayoutUID(), LiteralStrings.Singleton.get("NEXT_PAGE_BUTTON", language), "NextPage");
         nextButton.setIncreasedFontSize(true);
         nextButton.setSize(nextButton.execute(sizeVisitor));
 
-        previousButton = new Button(getNextLayoutUID(),
-                LiteralStrings.Singleton.get("PREVIOUS_PAGE_BUTTON", language),
-                "PreviousPage");
+        /* Initialize a previous button */
+        previousButton = new Button(getNextLayoutUID(), LiteralStrings.Singleton.get("PREVIOUS_PAGE_BUTTON", language), "PreviousPage");
         previousButton.setIncreasedFontSize(true);
         previousButton.setSize(previousButton.execute(sizeVisitor));
 
-        returnButton = new Button(getNextLayoutUID(), LiteralStrings.Singleton
-                .get("RETURN_BUTTON", language), "GoToPage");
+        /* Initialize the review screen return button */
+        returnButton = new Button(getNextLayoutUID(), LiteralStrings.Singleton.get("RETURN_BUTTON", language), "GoToPage");
         returnButton.setIncreasedFontSize(true);
         returnButton.setSize(returnButton.execute(sizeVisitor));
 
-        castButton = new Button(getNextLayoutUID(), LiteralStrings.Singleton
-                .get("CAST_BUTTON", language), "CastBallot");
-        castButton.setIncreasedFontSize(true);
-        castButton.setSize(castButton.execute(sizeVisitor));
-        
-        commitButton = new Button(getNextLayoutUID(), LiteralStrings.Singleton
-                .get("COMMIT_BUTTON", language), "CommitBallot");
+        /* Initialize the commit button */
+        commitButton = new Button(getNextLayoutUID(), LiteralStrings.Singleton.get("COMMIT_BUTTON", language), "CommitBallot");
         commitButton.setIncreasedFontSize(true);
         commitButton.setSize(commitButton.execute(sizeVisitor));
 
-        nextInfo = new Label(getNextLayoutUID(), LiteralStrings.Singleton.get(
-                "FORWARD_NEXT_RACE", language), sizeVisitor);
-        previousInfo = new Label(getNextLayoutUID(), LiteralStrings.Singleton
-                .get("BACK_PREVIOUS_RACE", language), sizeVisitor);
-        returnInfo = new Label(getNextLayoutUID(), LiteralStrings.Singleton
-                .get("RETURN_REVIEW_SCREEN", language), sizeVisitor);
-        moreCandidatesInfo = new Label(getNextLayoutUID(),
-                LiteralStrings.Singleton.get("MORE_CANDIDATES", language),
-                sizeVisitor);
+        /* Initialize the instructions label accompanying the next page button */
+        nextInfo = new Label(getNextLayoutUID(), LiteralStrings.Singleton.get("FORWARD_NEXT_RACE", language), sizeVisitor);
 
+        /* Initialize the instructions label accompanying the previous page button */
+        previousInfo = new Label(getNextLayoutUID(), LiteralStrings.Singleton.get("BACK_PREVIOUS_RACE", language), sizeVisitor);
 
+        /* Initialize the instructions label accompanying the review screen return button */
+        returnInfo = new Label(getNextLayoutUID(), LiteralStrings.Singleton.get("RETURN_REVIEW_SCREEN", language), sizeVisitor);
 
+        /* Initialize the instructions label accompanying the more candidates button */
+        moreCandidatesInfo = new Label(getNextLayoutUID(), LiteralStrings.Singleton.get("MORE_CANDIDATES", language), sizeVisitor);
+
+        /* Initialize the backgrounds */
         background = makeBackground();
         simpleBackground = makeSimpleBackground();
     }
 
 
+    /**
+     * @return the instructions label for the straight-party screen
+     */
     public Label getPartyInstructions() {
-        return new Label(getNextLayoutUID(),
-                LiteralStrings.Singleton.get("PARTY_INSTRUCTIONS", language),
-                sizeVisitor);
+        return new Label(getNextLayoutUID(), LiteralStrings.Singleton.get("PARTY_INSTRUCTIONS", language), sizeVisitor);
     }
 
+    /**
+     * @return the instruction label for a proposition
+     */
     public Label getPropInstructions() {
-        return new Label(getNextLayoutUID(),
-                        LiteralStrings.Singleton.get("PROPOSITION_INSTRUCTIONS", language),
-                        sizeVisitor);
+        return new Label(getNextLayoutUID(), LiteralStrings.Singleton.get("PROPOSITION_INSTRUCTIONS", language), sizeVisitor);
     }
 
+    /**
+     * @return the instruction label for a race, presidential or otherwise
+     */
     public Label getRaceInstructions() {
-        return new Label(getNextLayoutUID(),
-                LiteralStrings.Singleton.get("RACE_INSTRUCTIONS", language),
-                sizeVisitor);
+        return new Label(getNextLayoutUID(), LiteralStrings.Singleton.get("RACE_INSTRUCTIONS", language), sizeVisitor);
     }
 
     /**
@@ -1175,90 +1165,107 @@ public class PsychLayoutManager extends ALayoutManager {
         return sizeVisitor;
     }
 
+    /**
+     * @see preptool.model.layout.manager.ALayoutManager#makeCardPage(preptool.model.ballot.ACard)
+     */
     @Override
     public ArrayList<JPanel> makeCardPage(ACard card) {
         return card.layoutCard(this, new PsychCardLayout()).makeIntoPanels();
     }
 
     /**
-     * Makes the layout from the given ballot, as specified by the Psychology
-     * department.
+     * Makes the layout from the given ballot, as specified by the Rice University Psychology department.
+     *
+     * @see preptool.model.layout.manager.ALayoutManager#makeLayout(preptool.model.ballot.Ballot)
      */
     @Override
     public Layout makeLayout(Ballot ballot) {
+
+        /* First assign UIDs */
         assignUIDsToBallot(ballot);
+
+        /* Initialize a layout */
         Layout layout = new Layout();
-        if (ballot.getLanguages().size() > 1) {
-            layout.getPages()
-                    .add(makeLanguageSelectPage(ballot.getLanguages()));
-            layout.getPages().add(makeInstructionsPage(true));
-        } else {
-            layout.getPages().add(makeInstructionsPage(false));
-        }
+
+         /* If there is more than one language, add in a language selection page */
+        boolean multiLang = ballot.getLanguages().size() > 1 ? true: false;
+
+        if (multiLang)
+            layout.getPages().add(makeLanguageSelectPage(ballot.getLanguages()));
+
+        layout.getPages().add(makeInstructionsPage(multiLang));
+
+
+        /* Create a new page for each card in the ballot and add it to the layout */
         int cnt = 1;
         for (ACard card : ballot.getCards()) {
-            layout.getPages().addAll(
-                    makeCardLayoutPage(card, false, 0, cnt, ballot.getCards()
-                            .size()));
-            ++cnt;
+            layout.getPages().addAll(makeCardLayoutPage(card, false, 0, cnt, ballot.getCards().size()));
+            cnt++;
         }
-        //layout.getPages().add(new Page());
+
+        /* This will be where we insert the review pages*/
         int reviewPageNum = layout.getPages().size();
 
+        /* This will map each page with a race to a corresponding review page*/
         HashMap<Integer, Integer> pageTargets = new HashMap<>();
-        
+
+        /* Iterate through all of the races and create review pages */
         for (int raceN = 0; raceN < ballot.getCards().size(); raceN++) {
+
+            /* Get the race information */
         	ACard card = ballot.getCards().get(raceN);
-        	//correctly deal with boundary conditions: size = 1, size = CARDS_PER_REVIEW_PAGE or a multiple thereof
+
+        	/*
+        	 * Calculate how many review pages this card will need, and correctly deal
+        	 * with boundary conditions: size = 1, size = CARDS_PER_REVIEW_PAGE or a multiple thereof
+        	 */
         	int additionalReviewPages = (ballot.getCards().size() - 1) / CARDS_PER_REVIEW_PAGE;
-        	//there are 2 pages after the last review screen: Cast and Success 
+
+
+        	/* there are 2 pages after the last review screen: Commit and Success, plus one for this card */
         	int reviewCardNumber = raceN + 3;
 
+            /* Map the numerical identifier for this race to its last review page */
             pageTargets.put(raceN, reviewPageNum + additionalReviewPages + reviewCardNumber);
+
+            /* Calculate the first page that corresponds to this card */
             int currentReviewPage = raceN / CARDS_PER_REVIEW_PAGE;
-            layout.getPages().addAll(
-                    makeCardLayoutPage(card, true, reviewPageNum + currentReviewPage, 0, 0));
+
+            /* Generate and add this review page to the layout */
+            layout.getPages().addAll(makeCardLayoutPage(card, true, reviewPageNum + currentReviewPage, 0, 0));
         }
-        
+
+        /* Create the rest of the review pages using the mapping of pages to review pages */
         List<Page> reviewPages = makeReviewPage(ballot, pageTargets);
-        
+
+        /* Add the review pages to the layout */
         layout.getPages().addAll(reviewPageNum, reviewPages);
-        
+
+        /* Note which pages are review pages */
         for(Page reviewPage : reviewPages)
         	reviewPage.markAsReviewPage();
 
+        /* Add the commit page */
         layout.getPages().add(reviewPageNum + (ballot.getCards().size() / CARDS_PER_REVIEW_PAGE) + 1, makeCommitPage());
 
+        /* Add the success/print page */
         layout.getPages().add(reviewPageNum + (ballot.getCards().size() / CARDS_PER_REVIEW_PAGE) + 2, makeSuccessPage());
-        
+
+        /* Add in an override cancel page*/
         layout.getPages().add(makeOverrideCancelPage());
         layout.setOverrideCancelPage(layout.getPages().size()-1);
-        layout.getPages().add(makeOverrideCastPage());
-        layout.setOverrideCastPage(layout.getPages().size()-1);
-        
 
-        layout.getPages().add(makeResponsePage());
+        /* Add in an override commit page */
+        layout.getPages().add(makeOverrideCommitPage());
+        layout.setOverrideCommitPage(layout.getPages().size() - 1);
+
+        /* Add a success/print page for provisional voting */
         layout.getPages().add(makeProvisionalSuccessPage());
-        layout.setReponsePage(layout.getPages().size()-2);
+
+        /* Set the provisional succes page in the layout */
         layout.setProvisionalPage(layout.getPages().size() - 1);
 
-        
-        //LAST_LAYOUT = layout;
-        
-        //#ifdef NONE_OF_ABOVE
-        // Get the number of cards
-        int numCards = ballot.getCards().size();
-        // Add a "no-selection alert page" for each race
-//        for (int raceN = 0; raceN < numCards; raceN++) {
-//        	layout.getPages().add(makeNoSelectionPage(raceN+1));
-//        }
-//        // Add another no-selection alert page for each race-review screen
-//        for (int raceN = 0; raceN < numCards; raceN++) {
-//        	layout.getPages().add(makeNoSelectionPage(raceN+numCards+4));
-//        }
-        //#endif
-
-
+        /* Our layout is now complete */
         return layout;
     }
 
@@ -1805,7 +1812,7 @@ public class PsychLayoutManager extends ALayoutManager {
     }
 
     @Override
-    protected Page makeOverrideCastPage() {
+    protected Page makeOverrideCommitPage() {
         PsychLayoutPanel frame = new PsychLayoutPanel();
         Label successTitle = new Label(getNextLayoutUID(),
                 LiteralStrings.Singleton.get("OVERRIDE_CAST_TITLE", language));
@@ -2253,69 +2260,6 @@ public class PsychLayoutManager extends ALayoutManager {
 //        if(tempButton != null){
 //            tempButton.setNext(nextButton);
 //            nextButton.setPrevious(instrLabel);
-//        }
-
-        return page;
-    }
-    
-    private Page makeResponsePage() {
-        PsychLayoutPanel frame = new PsychLayoutPanel();
-        Label responseTitle = new Label(getNextLayoutUID(),
-                LiteralStrings.Singleton.get("RESPONSE_TITLE", language));
-        responseTitle.setBold(true);
-        responseTitle.setCentered(true);
-        responseTitle.setSize(responseTitle.execute(sizeVisitor));
-        frame.addTitle(responseTitle);
-        frame.remove(frame.west);
-
-        JPanel east = new JPanel();
-        east.setLayout(new GridBagLayout());
-        Label instrLabel = new Label(getNextLayoutUID(),
-                LiteralStrings.Singleton.get("RESPONSE", language), sizeVisitor);
-        Spacer sp = new Spacer(instrLabel, east);
-        east.add(sp);
-        frame.addAsEastPanel(east);
-
-        frame.validate();
-        frame.pack();
-
-        Page page = new Page();
-        page.getComponents().add(simpleBackground);
-        page.setBackgroundLabel(simpleBackground.getUID());
-
-//        ALayoutComponent button = null;
-//        ALayoutComponent tempButton = null;
-//
-//        previousButton.setNext(instrLabel);
-//        instrLabel.setPrevious(previousButton);
-
-
-        for (Component c : frame.getAllComponents()) {
-            Spacer s = (Spacer) c;
-            s.updatePosition();
-            page.getComponents().add(s.getComponent());
-//            button = s.getComponent();
-//
-//            if(button instanceof ToggleButton){
-//                if(tempButton == null){
-//                    button.setPrevious(instrLabel);
-//                    instrLabel.setNext(button);
-//
-//                }else{
-//                    button.setPrevious(tempButton);
-//                    tempButton.setNext(button);
-//                }
-//
-//                tempButton = button;
-//
-//            }
-        }
-
-        //If the temporary button is still null at this point that means the
-        //page contains no ToggleButtons
-//        if(tempButton != null){
-//            tempButton.setNext(nextButton);
-//            nextButton.setPrevious(tempButton);
 //        }
 
         return page;

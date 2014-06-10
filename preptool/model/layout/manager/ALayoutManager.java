@@ -139,7 +139,7 @@ public abstract class
     /**
      * @return a special page that is shown when an override-cast message is received, and asks for confirmation
      */
-    protected abstract Page makeOverrideCastPage();
+    protected abstract Page makeOverrideCommitPage();
 
     /**
      * @return a success page that informs the user that the ballot was successfully committed.

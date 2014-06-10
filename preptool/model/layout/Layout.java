@@ -93,16 +93,10 @@ public class Layout {
 	/**
      * @param overrideCastPage the overrideCastPage to set
      */
-    public void setOverrideCastPage(int overrideCastPage) {
+    public void setOverrideCommitPage(int overrideCastPage) {
         this.overrideCastPage = overrideCastPage;
     }
     
-    /**
-     * @param responsePage the responsePage number
-     */
-    public void setReponsePage(int responsePage) {
-    }
-
     /**
      * @param provisionalPage the provisionalPage number
      */

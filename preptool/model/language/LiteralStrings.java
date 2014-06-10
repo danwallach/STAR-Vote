@@ -98,11 +98,6 @@ public class LiteralStrings {
         map.put("NONE_OF_ABOVE", ls);
 
         ls = new LocalizedString();
-        ls.set(ENGLISH, "Thank you for challenging!");
-        ls.set(SPANISH, "Gracias por desafiar!");
-        map.put("RESPONSE_TITLE", ls);
-
-        ls = new LocalizedString();
         ls.set(ENGLISH, "Language Selection");
         ls.set(SPANISH, "Selección de Idioma");
         map.put("LANGUAGE_SELECT_TITLE", ls);
@@ -335,11 +330,6 @@ public class LiteralStrings {
         ls.set(ENGLISH, "\n Your provisional ballot is being printed. \n Please see a poll worker to ensure that the proper protocols are being followed for this vote. ");
         ls.set(SPANISH, "\n Se imprime su boleta provisional. \n Por favor, consulte a un trabajador electoral para asegurar que \n los protocolos adecuados se están siguiendo para esta votación.");
         map.put("PROVISIONAL", ls);
-
-        ls = new LocalizedString();
-        ls.set(ENGLISH, "\n Your vote has not been recorded. Please ask to re-authorize this booth to cast your vote. ");
-        ls.set(SPANISH, "\n Su voto no ha sido registrado. Pregunte a volver a autorizar esta cabina para emitir su voto.");
-        map.put("RESPONSE", ls);
 
         ls = new LocalizedString();
         ls.set(ENGLISH, "Yes");
