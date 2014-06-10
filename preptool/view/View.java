@@ -488,7 +488,7 @@ public class View extends JFrame {
         else if (answer == JOptionPane.NO_OPTION) {
             System.exit(0);
         }
-        /* If cancel, do nothing -- do not exit */
+        /* If cancel, do nothing -- explicitly do not exit */
         else if (answer == JOptionPane.CANCEL_OPTION) { }
     }
 
@@ -790,7 +790,7 @@ public class View extends JFrame {
      * @param l         the listener
      */
     public void removeLanguageChangeListener(LanguageChangeListener l) {
-        languageChangeListeners.remove( l );
+        languageChangeListeners.remove(l);
     }
 
     /**
@@ -801,7 +801,10 @@ public class View extends JFrame {
 
         try {
 
+            /* Open a file chooser */
         	JFileChooser fc = fileChooser;
+
+            /* Show only .bal files */
             fc.setFileFilter(new FileFilter() {
                 @Override
                 public boolean accept(File f) {
@@ -815,22 +818,30 @@ public class View extends JFrame {
                 }
             } );
 
+            /* See what was pressed */
             int answer = fc.showSaveDialog(this);
 
+            /* If approval... */
             if (answer == JFileChooser.APPROVE_OPTION) {
 
+                /* Get the file */
                 File file = fc.getSelectedFile();
 
+                /* See if the file already exists */
                 if (file.exists()) {
 
+                    /* Prompt the user to overwrite */
                     String prompt = "The file you selected already exists. Overwrite?";
                     answer = JOptionPane.showConfirmDialog(this, prompt, "Overwrite Saved Ballot", JOptionPane.YES_NO_OPTION);
 
+                    /* If yes, go ahead and save the file */
                     if (answer == JOptionPane.YES_OPTION) {
                         model.saveAs(file.getAbsolutePath());
                         return true;
                     }
                 }
+
+                /* If the file doesn't exist, go ahead and save */
                 else {
                     model.saveAs(file.getAbsolutePath());
                     return true;
@@ -838,9 +849,12 @@ public class View extends JFrame {
             }
         }
         catch (BallotSaveException e) {
+
+            /* Popup an error message if there was a problem saving the ballot */
             String error = "An error occurred while saving the ballot.\nPlease verify the directory is writable, and try again.";
             JOptionPane.showMessageDialog(this, error, "Error", JOptionPane.ERROR_MESSAGE);
         }
+
         return false;
     }
 
@@ -851,10 +865,20 @@ public class View extends JFrame {
      */
     public void setCardPane(CardView panel) {
 
+        /* Recast and handle as a JPanel */
         setCardPane((JPanel) panel);
+
+        /* Set the current view to be the panel */
         currentCardView = panel;
+
+        /* Refresh the editor language */
         languageBar.refreshEditorLanguage();
-        model.getBallot().getCards().get(cardList.getSelectedIndex()).addModuleObserver("Title", titleObserver);
+
+        /* Get the cards and pull out the selected card */
+        ACard selected = model.getBallot().getCards().get(cardList.getSelectedIndex());
+
+        /* Add an observer to the card */
+        selected.addModuleObserver("Title", titleObserver);
     }
 
     /**
@@ -863,15 +887,26 @@ public class View extends JFrame {
      * @param panel         the panel
      */
     public void setCardPane(JPanel panel) {
+
+        /* Clear out the current card view */
         currentCardView = null;
+
+        /* Clear the card panel */
         cardPanel.removeAll();
+
+        /* Set up a layout */
         GridBagConstraints c = new GridBagConstraints();
         c.weightx = 1;
         c.weighty = 1;
         c.fill = GridBagConstraints.BOTH;
-        cardPanel.add( panel, c );
-        if (previewPanel != null)
-            previewPanel.clear();
+
+        /* Add a panel to the card panel*/
+        cardPanel.add(panel, c);
+
+        /* Clear the preview panel */
+        if (previewPanel != null) previewPanel.clear();
+
+        /* Validate and repaint */
         validate();
         repaint();
     }
@@ -883,6 +918,8 @@ public class View extends JFrame {
      * @param idx           the index
      */
     public void setCardTitle(String title, int idx) {
+
+        /* Check if the title is empty and set the element accordingly */
         String set = title.equals("") ? "<untitled>" : title;
         cardListModel.setElementAt(set, idx);
     }
@@ -894,9 +931,11 @@ public class View extends JFrame {
      */
     public void showLanguageDialog() {
 
+        /* Pop up a new language dialog */
         LanguagesDialog dialog = new LanguagesDialog(this, Language.getAllLanguages(), model.getLanguages());
         dialog.setVisible(true);
 
+        /* Check if the ok button was pressed and if so, fire a languages changed event */
         if (dialog.okButtonWasPressed())
             fireLanguagesChanged(dialog.getSelectedLanguages());
     }
@@ -906,8 +945,11 @@ public class View extends JFrame {
      * allowing the user to edit the parties in the ballot
      */
     public ArrayList<Party> showPartiesDialog() {
+
+        /* Pup up a new parties dialog */
         PartiesDialog dialog = new PartiesDialog(this, model.getParties(), model.getLanguages(), languageBar.getCurrentLanguage());
         dialog.setVisible(true);
+
         return model.getParties();
     }
 
@@ -916,23 +958,29 @@ public class View extends JFrame {
      */
     private void initializeCardPanel() {
 
+        /* Create a new panel and set the border and layout */
         cardPanel = new JPanel();
         cardPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
         cardPanel.setLayout(new GridBagLayout());
 
+        /* Create a new panel, set the layout */
         noCardsPanel = new JPanel();
         noCardsPanel.setLayout(new GridBagLayout());
-        GridBagConstraints c2 = new GridBagConstraints();
 
+        /* Create a new layout and add a label to the panel */
+        GridBagConstraints c2 = new GridBagConstraints();
         c2.gridx = 0;
         c2.gridy = 0;
         noCardsPanel.add(new JLabel("This ballot is currently empty (it does not contain any races)."), c2);
 
+        /* Position and add a new label to the panel */
         c2.gridy = 1;
         noCardsPanel.add(new JLabel("To get started, click on the '+' button in the lower left corner of the screen."), c2);
 
+        /* Set the card pane to the empty panel */
         setCardPane(noCardsPanel);
 
+        /* Create a new PreviewPane */
         previewPanel = new PreviewPane(new IPreviewPaneGenerator() {
 
             public ArrayList<JPanel> getPreviewPanels() {
@@ -942,6 +990,7 @@ public class View extends JFrame {
             }
         } );
 
+        /* Set a bevel border to the panel */
         previewPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
     }
 
@@ -950,13 +999,16 @@ public class View extends JFrame {
      */
     private void initializeListPanel() {
 
+        /* Create a new panel and set the layout */
         listPanel = new JPanel();
         listPanel.setLayout(new GridBagLayout());
 
+        /* Create a new model and list */
         cardListModel = new DefaultListModel();
         cardList = new JList(cardListModel);
         cardList.setDragEnabled(true);
 
+        /* Housekeeping for the list */
         ListTransferHandler lth = new ListTransferHandler();
         lth.addListTransferListener( new ListTransferListener() {
             public void listItemMoved(int from, int to) {
@@ -972,25 +1024,29 @@ public class View extends JFrame {
             }
         });
 
+        /* Create a new scrool pane and constraints */
         JScrollPane cardListScrollPane = new JScrollPane(cardList);
         GridBagConstraints c = new GridBagConstraints();
 
+        /* Position and add the listPanel */
         c.gridx = 0;
         c.gridy = 0;
         c.gridwidth = 1;
         c.weightx = 1;
         c.weighty = 1;
         c.fill = GridBagConstraints.BOTH;
-        listPanel.add( cardListScrollPane, c );
+        listPanel.add(cardListScrollPane, c);
 
+        /* Create a new toolbar */
         listToolbar = new JToolBar();
-        listToolbar.setFloatable( false );
+        listToolbar.setFloatable(false);
 
         ImageIcon icon;
         String text;
 
+        /* Try and set the image and text */
         try {
-            icon = new ImageIcon( ClassLoader.getSystemClassLoader().getResource("images/list-add.png"));
+            icon = new ImageIcon(ClassLoader.getSystemClassLoader().getResource("images/list-add.png"));
             text = "";
         }
         catch (Exception e) {
@@ -998,6 +1054,7 @@ public class View extends JFrame {
             text = "Add";
         }
 
+        /* Create the add card button */
         addCardButton = new JButton(new AbstractAction(text, icon) {
             private static final long serialVersionUID = 1L;
 
@@ -1006,8 +1063,10 @@ public class View extends JFrame {
             }
         } );
 
+        /* Add the add card button */
         listToolbar.add(addCardButton);
 
+        /* Try and set the image and text */
         try {
             icon = new ImageIcon(ClassLoader.getSystemClassLoader().getResource("images/list-remove.png"));
             text = "";
@@ -1017,17 +1076,23 @@ public class View extends JFrame {
             text = "Remove";
         }
 
+        /* Create the delete card button */
         deleteCardButton = new JButton(new AbstractAction(text, icon) {
+
             private static final long serialVersionUID = 1L;
 
             public void actionPerformed(ActionEvent e) {
                 deleteCardButtonPressed();
             }
+
         } );
 
         deleteCardButton.setEnabled(false);
+
+        /* Add the delete button */
         listToolbar.add(deleteCardButton);
 
+        /* Try and set the image and text */
         try {
             icon = new ImageIcon(ClassLoader.getSystemClassLoader().getResource("images/go-up.png"));
             text = "";
@@ -1037,6 +1102,7 @@ public class View extends JFrame {
             text = "Up";
         }
 
+        /* Create the move up card button */
         moveUpCardButton = new JButton(new AbstractAction(text, icon) {
             private static final long serialVersionUID = 1L;
 
@@ -1046,8 +1112,11 @@ public class View extends JFrame {
         } );
 
         moveUpCardButton.setEnabled(false);
+
+        /* Add the move up card button */
         listToolbar.add(moveUpCardButton);
 
+        /* Try to set the image and text */
         try {
             icon = new ImageIcon(ClassLoader.getSystemClassLoader().getResource("images/go-down.png"));
             text = "";
@@ -1057,6 +1126,7 @@ public class View extends JFrame {
             text = "Down";
         }
 
+        /* Create the move down card button */
         moveDownCardButton = new JButton(new AbstractAction(text, icon) {
             private static final long serialVersionUID = 1L;
 
@@ -1066,6 +1136,8 @@ public class View extends JFrame {
         } );
 
         moveDownCardButton.setEnabled(false);
+
+        /* Add the move down card button */
         listToolbar.add(moveDownCardButton);
     }
 
@@ -1079,78 +1151,96 @@ public class View extends JFrame {
         /* Not all platforms use Control as the shortcut keymask */
         int shortcutKeyMask = java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 
+        /* Create a new file menu */
         JMenu fileMenu = new JMenu("File");
 
+        /* Create a "new ballot" menu item and add it to the file menu */
         JMenuItem newBallotMenuItem = new JMenuItem(newBallotButton.getAction());
         newBallotMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, shortcutKeyMask));
         fileMenu.add(newBallotMenuItem);
 
+        /* Create an "open ballot" menu item and add it to the file menu */
         JMenuItem openBallotMenuItem = new JMenuItem(openBallotButton.getAction());
         openBallotMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, shortcutKeyMask));
         fileMenu.add(openBallotMenuItem);
 
+        /* Create a "save ballot" menu item and add it to the file menu */
         JMenuItem saveBallotMenuItem = new JMenuItem(saveBallotButton.getAction());
         saveBallotMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, shortcutKeyMask));
         fileMenu.add(saveBallotMenuItem);
 
+        /* Add a separator */
         fileMenu.addSeparator();
 
+        /* Create new "export ballot" menu item and add it to the file menu */
         JMenuItem exportBallotMenuItem = new JMenuItem(exportBallotButton.getAction());
         fileMenu.add(exportBallotMenuItem);
 
+        /* Create a new "preview" menu item and add it to the file menu */
         JMenuItem previewMenuItem = new JMenuItem(previewButton.getAction());
         fileMenu.add(previewMenuItem);
 
+        /* Add a separator */
         fileMenu.addSeparator();
 
+        /* Try to load the image */
         try { icon = new ImageIcon(ClassLoader.getSystemClassLoader().getResource("images/system-log-out.png")); }
         catch (Exception e) { icon = null; }
 
+        /* Create a new "quit" menu item and add it to the file menu */
         JMenuItem quitMenuItem = new JMenuItem("Quit", icon);
-
         quitMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 exitButtonPressed();
             }
         } );
-
         quitMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, shortcutKeyMask));
         fileMenu.add(quitMenuItem);
+
+        /* Add the file menu to the menu bar */
         menuBar.add(fileMenu);
 
+        /* Create a new "edit" menu and "cut" menu item */
         JMenu editMenu = new JMenu("Edit");
         JMenuItem cutMenuItem = new JMenuItem(new DefaultEditorKit.CutAction());
         cutMenuItem.setText("Cut");
 
+        /* Try to load the image */
         try { icon = new ImageIcon(ClassLoader.getSystemClassLoader().getResource("images/edit-cut.png")); }
         catch (Exception e) { icon = null; }
 
+        /* Set the icon and try to add this to the edit menu */
         cutMenuItem.setIcon(icon);
         cutMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, shortcutKeyMask));
         editMenu.add(cutMenuItem);
 
-        JMenuItem copyMenuItem = new JMenuItem(
-                new DefaultEditorKit.CopyAction() );
-        copyMenuItem.setText( "Copy" );
+        /* Create a new "copy" menu item */
+        JMenuItem copyMenuItem = new JMenuItem(new DefaultEditorKit.CopyAction());
+        copyMenuItem.setText("Copy");
 
+        /* Try to load the image */
         try { icon = new ImageIcon(ClassLoader.getSystemClassLoader().getResource("images/edit-copy.png")); }
         catch (Exception e) { icon = null; }
 
+        /* Set the icon and add this to the edit menu */
         copyMenuItem.setIcon(icon);
         copyMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, shortcutKeyMask));
         editMenu.add(copyMenuItem);
 
+        /* Create a new "paste" menu item */
         JMenuItem pasteMenuItem = new JMenuItem(new DefaultEditorKit.PasteAction());
-
         pasteMenuItem.setText("Paste");
 
+        /* Try to load the image */
         try { icon = new ImageIcon(ClassLoader.getSystemClassLoader().getResource("images/edit-paste.png")); }
         catch (Exception e) { icon = null; }
 
+        /* Set the icon and add this to the edit menu */
         pasteMenuItem.setIcon(icon);
         pasteMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, shortcutKeyMask));
         editMenu.add(pasteMenuItem);
 
+        /* Add the edit menu to the menu bar */
         menuBar.add(editMenu);
     }
 
@@ -1159,14 +1249,19 @@ public class View extends JFrame {
      */
     private void initializePopupMenu() {
 
+        /* Create a new popup menu */
         addCardMenu = new JPopupMenu();
 
+        /* Go through each of the factories in the model */
         for (final ICardFactory fac : model.getCardFactories()) {
 
+            /* Create a new menu item based on the factory's menu items */
             final JMenuItem item = new JMenuItem(fac.getMenuString());
 
             item.addActionListener(new ActionListener() {
+
                 public void actionPerformed(ActionEvent e) {
+
                     ACard card = fac.makeCard();
 
                     int idx;
@@ -1209,14 +1304,17 @@ public class View extends JFrame {
      */
     private void initializeToolbar() {
 
+        /* Create a new toolbar */
         toolbar = new JToolBar();
         toolbar.setFloatable(false);
 
         ImageIcon icon;
 
+        /* Try to load the new icon */
         try { icon = new ImageIcon(ClassLoader.getSystemClassLoader().getResource("images/document-new.png")); }
         catch (Exception e) { icon = null; }
 
+        /* Create a "new ballot" button */
         newBallotButton = new JButton(new AbstractAction("New Ballot", icon) {
 
                     private static final long serialVersionUID = 1L;
@@ -1226,28 +1324,33 @@ public class View extends JFrame {
                     }
         } );
 
+        /* Add the "new ballot" button to the toolbar */
         toolbar.add(newBallotButton);
 
+        /* Try to load the image */
         try { icon = new ImageIcon(ClassLoader.getSystemClassLoader().getResource("images/document-open.png")); }
         catch (Exception e) { icon = null; }
 
-        openBallotButton = new JButton(
-                new AbstractAction("Open Ballot", icon) {
+        /* Create a "open ballot" button */
+        openBallotButton = new JButton(new AbstractAction("Open Ballot", icon) {
+
                     private static final long serialVersionUID = 1L;
 
                     public void actionPerformed(ActionEvent e) {
                         openBallotButtonPressed();
                     }
-                } );
+        } );
 
+        /* Add the "open ballot" button to the toolbar */
         toolbar.add(openBallotButton);
 
+        /* Try to load the image */
         try { icon = new ImageIcon(ClassLoader.getSystemClassLoader().getResource("images/document-save.png")); }
         catch (Exception e) { icon = null; }
 
-        saveBallotButton = new JButton(
+        /* Create a "save ballot" button */
+        saveBallotButton = new JButton(new AbstractAction("Save Ballot", icon) {
 
-                new AbstractAction("Save Ballot", icon) {
                     private static final long serialVersionUID = 1L;
 
                     public void actionPerformed(ActionEvent e) {
@@ -1255,11 +1358,14 @@ public class View extends JFrame {
                     }
         } );
 
+        /* Add the "save ballot" button to the toolbar */
         toolbar.add(saveBallotButton);
 
+        /* Try to load the image */
         try { icon = new ImageIcon(ClassLoader.getSystemClassLoader().getResource("images/media-flash.png")); }
         catch (Exception e) { icon = null; }
 
+        /* Create a "export" button */
         exportBallotButton = new JButton(new AbstractAction("Export to VoteBox", icon) {
 
             private static final long serialVersionUID = 1L;
@@ -1270,11 +1376,14 @@ public class View extends JFrame {
 
         } );
 
+        /* Add the "export" button to the toolbar */
         toolbar.add(exportBallotButton);
 
+        /* Try to load the image */
         try { icon = new ImageIcon(ClassLoader.getSystemClassLoader().getResource("images/system-search.png")); }
         catch (Exception e) { icon = null; }
 
+        /* Create a "preview" button */
         previewButton = new JButton(new AbstractAction("Preview in VoteBox", icon) {
 
             private static final long serialVersionUID = 1L;
@@ -1284,14 +1393,17 @@ public class View extends JFrame {
 
         } );
 
-        /* This button is annoying, so disable it */
+        /* FIXME This button is annoying, so disable it for now */
         previewButton.setEnabled(false);
 
+        /* Add the "preview" button to the toolbar */
         toolbar.add(previewButton);
-        
+
+        /* Try to load the image */
         try { icon = new ImageIcon(ClassLoader.getSystemClassLoader().getResource("images/system-options.png")); }
         catch (Exception e) { icon = null; }
 
+        /* Create a "preferences" button */
         prefButton = new JButton(new AbstractAction("Preferences", icon ) {
 
             private static final long serialVersionUID = 1L;
@@ -1302,6 +1414,7 @@ public class View extends JFrame {
 
         } );
 
+        /* Add the "preferences" button to the toolbar */
         toolbar.add(prefButton);
     }
 
@@ -1314,55 +1427,83 @@ public class View extends JFrame {
     
     private void initializePrefMenu() {
 
+        /* Setup */
     	final JFrame frame = this;
 
+        /* Create a new popup menu */
     	prefMenu = new JPopupMenu();
 
+        /* Create a new menu item for the number of races per review card */
     	final JMenuItem races = new JMenuItem("Number of Races per Review Card (Current: " + model.getCardsPerReviewPage() + ")");
 
+        /* Create a new action listener for the menu item */
     	races.addActionListener(new ActionListener() {
 
     		public void actionPerformed(ActionEvent e) {
 
+                /* Prompt the user for their preferred number of displayed races */
                 String prompt = "How many races would you like displayed on each review page?";
     			String temp = (String) JOptionPane.showInputDialog(frame, prompt, "", JOptionPane.PLAIN_MESSAGE, null, null, "10");
 
-    			if (temp != null)
-    				model.setCardsPerReviewPage(Integer.parseInt(temp));
-    			else return;
-    			
-    			races.setText("Number of Races per Review Card (Current: " + model.getCardsPerReviewPage() + ")");
+                /* Check that the response isn't null */
+    			if (temp != null) {
+
+                    /* Set the preferred number of displayed races */
+                    model.setCardsPerReviewPage(Integer.parseInt(temp));
+
+                    /* Set the text based on the change */
+                    races.setText("Number of Races per Review Card (Current: " + model.getCardsPerReviewPage() + ")");
+                }
     		}
     	} );
+
+        /* Add the races menu item to the preference menu */
     	prefMenu.add(races);
-    	
+
+        /* Create a new menu item for the font */
     	final JMenuItem font = new JMenuItem("Base Font Size (Current: " + model.getBaseFontSize()+")");
 
+        /* Create a new action listener for the menu item */
     	font.addActionListener(new ActionListener() {
 
     		public void actionPerformed(ActionEvent e) {
 
+                /* Prompt the user for their preferred font size */
                 String prompt = "Please enter your desired font size:";
     			String temp = (String)JOptionPane.showInputDialog(frame, prompt, "", JOptionPane.PLAIN_MESSAGE, null, null, "8");
 
-    			if (temp != null)
-    				model.setFontSize(Integer.parseInt(temp));
-    			else return;
-    			
-    			font.setText("Base Font Size (Current: " + model.getBaseFontSize() + ")");
+                /* Check that the response isn't null */
+    			if (temp != null) {
+
+                    /* Set the preferred font size */
+                    model.setFontSize(Integer.parseInt(temp));
+
+                    /* Set the text based on the change */
+                    font.setText("Base Font Size (Current: " + model.getBaseFontSize() + ")");
+                }
     		}
     	} );
 
+        /* Add the font menu item to the preference menu */
     	prefMenu.add(font);
 
+        /* Create a new check box menu item for using text-to-speech */
         final JCheckBoxMenuItem sound = new JCheckBoxMenuItem("Use Text-to-Speech");
+
+        /* Set text-to-speech to true */
         sound.setState(true);
         model.setTextToSpeech(true);
+
+        /* Add an action listener for the menu item */
         sound.addActionListener(new ActionListener(){
+
             public void actionPerformed(ActionEvent e) {
+
                 model.setTextToSpeech(sound.getState());
             }
         });
+
+        /* Add the text-to-speech menu item to the preference menu */
         prefMenu.add(sound);
     }
 }
