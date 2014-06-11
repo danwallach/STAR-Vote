@@ -85,7 +85,7 @@ public class BallotScannerUI extends JFrame {
      * An update method that transitions the scanner/UI between states and calls the displayScreen method of the state.
      * This should set the user info panel to contain the appropriate messages for that particular state.
      *
-     * @param transition - the type of transition to be performed by the update method.
+     * @param transition    the type of transition to be performed by the update method.
      */
     public void updateFrame(int transition){
 
