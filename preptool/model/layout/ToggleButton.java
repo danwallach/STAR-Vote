@@ -37,9 +37,10 @@ import preptool.model.language.Language;
  */
 public class ToggleButton extends ALayoutComponent {
 
-    /* Create a mapping of language name to CardElement name. */
-    /* This is used to identify names of write-in candidates. */
-    public static final HashMap<String, String> writeInNames = new HashMap<String, String>();
+    /** A mapping of language name to CardElement name used to identify names of write-in candidates */
+    public static final HashMap<String, String> writeInNames = new HashMap<>();
+
+    /* Fill in our map */
     static
     {
         writeInNames.put("English", "Write-In Candidate");
@@ -54,60 +55,50 @@ public class ToggleButton extends ALayoutComponent {
         writeInNames.put("العربية", "كتابة اسم من اختيارك");
     }
 
-	/**
-	 * The text of this ToggleButton
-	 */
+	/** The text of this ToggleButton */
 	private String text;
 
-	/**
-	 * The second line of this ToggleButton (used in Presidential Races)
-	 */
+	/** The second line of this ToggleButton (used in Presidential Races) */
 	private String secondLine = "";
 	
-	/**
-	 * The party text of this ToggleButton (used for candidates)
-	 */
+	/** The party text of this ToggleButton (used for candidates) */
 	private String party = "";
 
-	/**
-	 * Whether this ToggleButton has bold text
-	 */
+	/** Whether this ToggleButton has bold text */
 	private boolean bold;
 
-	/**
-	 * Whether this ToggleButton has increased font size
-	 */
+	/** Whether this ToggleButton has increased font size */
 	private boolean increasedFontSize;
 
 
 	/**
 	 * Constructs a new ToggleButton with given unique ID and text
-	 * @param uid the unique ID
-	 * @param t the text
+     *
+	 * @param uid       the unique ID
+	 * @param text      the text
 	 */
-	public ToggleButton(String uid, String t) {
+	public ToggleButton(String uid, String text) {
 		super(uid);
-		text = t;
+		this.text = text;
 	}
 
 	/**
 	 * Constructs a new ToggleButton with given unique ID, text, and size
 	 * visitor, which determines and sets the size.
-	 * @param uid the uniqueID
-	 * @param t the text
-	 * @param sizeVisitor the size visitor
+     *
+	 * @param uid               the uniqueID
+	 * @param t                 the text
+	 * @param sizeVisitor       the size visitor
 	 */
-	public ToggleButton(String uid, String t,
-			ILayoutComponentVisitor<Object,Dimension> sizeVisitor) {
+	public ToggleButton(String uid, String t, ILayoutComponentVisitor<Object,Dimension> sizeVisitor) {
 		this(uid, t);
 		setSize(execute(sizeVisitor));
 	}
 
 	/**
 	 * Calls the forToggleButton method in visitor
-	 * @param visitor the visitor
-	 * @param param the parameters
-	 * @return the result of the visitor
+	 *
+     * @see preptool.model.layout.ALayoutComponent#execute(ILayoutComponentVisitor, Object[])
 	 */
 	@Override
 	public <P,R> R execute(ILayoutComponentVisitor<P,R> visitor, P... param) {
@@ -115,7 +106,7 @@ public class ToggleButton extends ALayoutComponent {
 	}
 
 	/**
-	 * Returns two lines separated by a newline if necessary
+	 * @return two lines separated by a newline if necessary
 	 */
 	public String getBothLines() {
 		if (secondLine.equals(""))
@@ -191,50 +182,49 @@ public class ToggleButton extends ALayoutComponent {
 	 * @return the String representation of this ToggleButton
 	 */
 	@Override
-    public String toString() {
-		return "ToggleButton[text=" + text + ",x=" + xPos + ",y=" + yPos
-				+ ",width=" + width + ",height=" + height + "]";
-	}
+    public String toString() { return "ToggleButton[text=" + text + ",x=" + xPos + ",y=" + yPos + ",width=" + width + ",height=" + height + "]"; }
 
-    public ToggleButton clone(){
-        return new ToggleButton(getUID(), text);
-    }
+    @SuppressWarnings("CloneDoesntCallSuperClone")
+    public ToggleButton clone(){ return new ToggleButton(getUID(), text); }
 
 	/**
 	 * Converts this ToggleButton object to XML
-	 * @param doc the document
-	 * @return the element for this ToggleButton
+     *
+	 * @param doc       the document this component is a part of
+     * @return          the XML element representation for this ToggleButton
 	 */
 	@Override
 	public Element toXML(Document doc) {
+
+        /* Assume there isn't a write-in */
         Boolean isWriteIn = false;
+
         /* Check if the ToggleButton is a write-in candidate, regardless of language. */
-        for (Language language : Language.getAllLanguages())
-        {
+        for (Language language : Language.getAllLanguages()) {
+
             Boolean isValidLanguage = false;
             /* Make sure that this language is a valid language for which write-in candidates are enabled. */
-            for (String languageName : writeInNames.keySet())
-            {
-                if (language.getName().equals(languageName))
-                {
+            for (String languageName : writeInNames.keySet()) {
+                if (language.getName().equals(languageName)) {
                     isValidLanguage = true;
                     break;
                 }
             }
 
             /* If the language is valid, check the name on this ToggleButton for equality with the default write-in name. */
-            if (isValidLanguage && getText().equals(writeInNames.get(language.getName())))
-            {
+            if (isValidLanguage && getText().equals(writeInNames.get(language.getName()))) {
                 isWriteIn = true;
                 break;
             }
         }
-        if (isWriteIn)
-        {
+
+        /* If this is a write-in, specify it in the XML */
+        if (isWriteIn) {
             Element writeInToggleButtonElt = doc.createElement("WriteInToggleButton");
             addCommonAttributes(doc, writeInToggleButtonElt);
             return writeInToggleButtonElt;
         }
+
         Element toggleButtonElt = doc.createElement("ToggleButton");
 		addCommonAttributes(doc, toggleButtonElt);
 		return toggleButtonElt;

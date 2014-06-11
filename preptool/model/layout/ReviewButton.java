@@ -27,6 +27,7 @@ import java.awt.Dimension;
 
 /**
  * A special type of Button that is seen on review screens.
+ *
  * @author Corey Shaw
  */
 public class ReviewButton extends Button {
@@ -38,51 +39,46 @@ public class ReviewButton extends Button {
 	 */
 	protected String auxText;
 
-	/**
-	 * Get the auxiliary text string.  @see auxText.
-	 */
+	/** Get the auxiliary text string.  @see auxText */
 	public String getAuxText() {
 		return auxText;
 	}
 
-	/**
-	 * Set the auxiliary text string.  @see auxText.
-	 */
+	/** Set the auxiliary text string.  @see auxText */
 	public void setAuxText(String t) {
 		auxText = t;
 	}
 
 	/**
 	 * Constructs a ReviewButton with the given unique ID, text, and strategy.
-	 * @param uid the unique ID
-	 * @param text the text
-	 * @param strat the strategy
+     *
+	 * @param uid              the unique ID
+	 * @param text             the text
+	 * @param strategy         the strategy
 	 */
-	public ReviewButton(String uid, String text, String strat) {
-		super(uid, text, strat);
+	public ReviewButton(String uid, String text, String strategy) {
+		super(uid, text, strategy);
 		setBackgroundColor(Color.WHITE);
 	}
 
 	/**
 	 * Constructs a ReviewButton with the given unique ID, text, strategy, and
 	 * size visitor that determines and sets the size.
-	 * @param uid the unique ID
-	 * @param text the text
-	 * @param strat the strategy
-	 * @param sizeVisitor the size visitor
+     *
+	 * @param uid               the unique ID
+	 * @param text              the text
+	 * @param strategy          the strategy
+	 * @param sizeVisitor       the size visitor
 	 */
-	public ReviewButton(String uid, String text, String strat,
-			ILayoutComponentVisitor<Object,Dimension> sizeVisitor) {
-		this(uid, text, strat);
+	public ReviewButton(String uid, String text, String strategy, ILayoutComponentVisitor<Object,Dimension> sizeVisitor) {
+		this(uid, text, strategy);
 		setSize(execute(sizeVisitor));
 	}
 
 	/**
 	 * Calls the forReviewButton method in visitor
-	 * @param visitor the visitor
-	 * @param param the parameters
-	 * 
-	 * @return the result of the visitor
+     *
+	 * @see preptool.model.layout.ALayoutComponent#execute(ILayoutComponentVisitor, Object[])
 	 */
 	@Override
 	public <P,R> R execute(ILayoutComponentVisitor<P,R> visitor, P... param) {

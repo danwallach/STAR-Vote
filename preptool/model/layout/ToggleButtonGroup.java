@@ -34,37 +34,34 @@ import preptool.model.XMLTools;
  * A ToggleButtonGroup is a set of ToggleButtons that follow a strategy when
  * selected. For instance, a standard strategy is to only allow one ToggleButton
  * to be selected at a time; when another is clicked, the others are deselected.
- * This is analagous to a Card in the ballot, but can be used for things that
+ * This is analogous to a Card in the ballot, but can be used for things that
  * aren't in the ballot as well (such as language selection).
+ *
  * @author Corey Shaw
  */
 public class ToggleButtonGroup extends ALayoutComponent {
 
-	/**
-	 * The strategy of this ToggleButtonGroup
-	 */
+	/** The strategy of this ToggleButtonGroup */
 	private String strategy;
 
-	/**
-	 * The array of ToggleButtons in this group
-	 */
+	/** The array of ToggleButtons in this group  */
 	private ArrayList<ToggleButton> buttons;
 
 	/**
 	 * Constructs a new ToggleButtonGroup with given strategy
-	 * @param strat the strategy
+     *
+	 * @param strategy      the strategy
 	 */
-	public ToggleButtonGroup(String strat) {
+	public ToggleButtonGroup(String strategy) {
 		super("");
-		strategy = strat;
-		buttons = new ArrayList<ToggleButton>();
+		this.strategy = strategy;
+		buttons = new ArrayList<>();
 	}
 
 	/**
 	 * Calls the forToggleButtonGroup method in visitor
-	 * @param visitor the visitor
-	 * @param param the parameters
-	 * @return the result of the visitor
+     *
+	 * @see preptool.model.layout.ALayoutComponent#execute(ILayoutComponentVisitor, Object[])
 	 */
 	@Override
 	public <P,R> R execute(ILayoutComponentVisitor<P,R> visitor, P... param) {
@@ -87,18 +84,21 @@ public class ToggleButtonGroup extends ALayoutComponent {
 
 	/**
 	 * Converts this ToggleButtonGroup object to XML
-	 * @param doc the document
-	 * @return the element for this ToggleButtonGroup
+     *
+	 * @param doc       the document this component is a part of
+     * @return          the XML element representation for this ToggleButtonGroup
 	 */
 	@Override
 	public Element toXML(Document doc) {
 		Element toggleButtonGroupElt = doc.createElement("ToggleButtonGroup");
-		XMLTools.addProperty(doc, toggleButtonGroupElt, "ToggleButtonGroupStrategy",
-				"String", strategy);
+		XMLTools.addProperty(doc, toggleButtonGroupElt, "ToggleButtonGroupStrategy", "String", strategy);
+
+        /* Call each button's toXML method */
 		for (ToggleButton b : buttons) {
 			Element toggleButtonElt = b.toXML(doc);
 			toggleButtonGroupElt.appendChild(toggleButtonElt);
 		}
+
 		return toggleButtonGroupElt;
 	}
 

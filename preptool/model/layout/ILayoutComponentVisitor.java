@@ -24,74 +24,85 @@ package preptool.model.layout;
 
 /**
  * A visitor interface over the ALayoutComponent composite.
- * @param <P> the parameter type
- * @param <R> the return type
+ * 
+ * @param <P>       the parameter type
+ * @param <R>       the return type
+ *           
  * @author Corey Shaw
  */
 public interface ILayoutComponentVisitor<P,R> {
 	
 	/**
-	 * Background case
-	 * @param bg the Background
-	 * @param param parameters
-	 * @return the result
+	 * Background case  
+     * 
+	 * @param bg            the Background
+	 * @param param         parameters
+	 * @return              the result
 	 */
 	public R forBackground(Background bg, P... param);
 	
 	/**
 	 * Button case
-	 * @param b the Button
-	 * @param param parameters
-	 * @return the result
+     *
+	 * @param b             the Button
+	 * @param param         parameters
+	 * @return              the result
 	 */
 	public R forButton(Button b, P... param);
 	
 	/**
 	 * Label case
-	 * @param l the Label
-	 * @param param parameters
-	 * @return the result
+     *
+	 * @param l             the Label
+	 * @param param         parameters
+	 * @return              the result
 	 */
 	public R forLabel(Label l, P... param);
 	
 	/**
 	 * ReviewButton case
-	 * @param rb the ReviewButton
-	 * @param param parameters
-	 * @return the result
+     *
+	 * @param rb            the ReviewButton
+	 * @param param         parameters
+	 * @return              the result
 	 */
 	public R forReviewButton(ReviewButton rb, P... param);
 	
 	/**
 	 * ReviewLabel case
-	 * @param rl the ReviewLabel
-	 * @param param parameters
-	 * @return the result
+     *
+	 * @param rl            the ReviewLabel
+	 * @param param         parameters
+	 * @return              the result
 	 */
 	public R forReviewLabel(ReviewLabel rl, P... param);
 	
 	/**
 	 * ToggleButton case
-	 * @param tb the ToggleButton
-	 * @param param parameters
-	 * @return the result
+     *
+	 * @param tb            the ToggleButton
+	 * @param param         parameters
+	 * @return              the result
 	 */
 	public R forToggleButton(ToggleButton tb, P... param);
 	
 	/**
 	 * ToggleButtonGroup case
-	 * @param tbg the ToggleButtonGroup
-	 * @param param parameters
-	 * @return the result
+     *
+	 * @param tbg           the ToggleButtonGroup
+	 * @param param         parameters
+	 * @return              the result
 	 */
-	public R forToggleButtonGroup(ToggleButtonGroup tbg, P... param);
+	@SuppressWarnings("SameReturnValue")
+    public R forToggleButtonGroup(ToggleButtonGroup tbg, P... param);
 	
 	/**
 	 * PrintButton case
      * Transfers all necessary properties from a ReviewButton to a PrintButton
-	 * @param pb the PrintButton
-	 * @param param the parameters
-	 * @return the result
+     *
+	 * @param pb            the PrintButton
+	 * @param param         the parameters
+	 * @return              the result
 	 */
 	public R forPrintButton(PrintButton pb, P... param);
 

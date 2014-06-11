@@ -95,9 +95,8 @@ public class LocalizedString {
 	/**
 	 * Converts this card to a savable XML representation, to be opened later
      *
-	 * @param doc the document
-	 * @param name name to attach to the element
-	 * @return the element for this card
+	 * @param doc the document this component is a part of@param name name to attach to the element
+	 * @return          the XML element representation for this card
 	 */
 	public Element toSaveXML(Document doc, String name) {
 		Element elt = doc.createElement("LocalizedString");
