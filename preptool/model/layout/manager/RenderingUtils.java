@@ -22,14 +22,11 @@
 
 package preptool.model.layout.manager;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import printer.PrintImageUtils;
@@ -209,7 +206,7 @@ public class RenderingUtils {
 			graphs.setFont(bigBoldFont);
 
             /* Split each line into its own array, grouping words by line */
-			String[][] splitText = spliteOnNewLineAndSpace(title);
+			String[][] splitText = splitOnNewLineAndSpace(title);
 
             /* Iterated through each line and increment the height of the label by each line's height */
             for (String[] ignored : splitText)
@@ -251,7 +248,7 @@ public class RenderingUtils {
 		if (!instructions.equals("")) {
 
             /* Split each line into its own array, grouping words by line */
-			String[][] splitText = spliteOnNewLineAndSpace(instructions);
+			String[][] splitText = splitOnNewLineAndSpace(instructions);
 
             for (String[] ignored : splitText)
                 heightPos += lineHeight("line", italicFont);
@@ -265,7 +262,7 @@ public class RenderingUtils {
 			description = addInNewLines(description, font, wrappingWidth, padding);
 
 			/* Split each line into its own array, grouping words by line */
-            String[][] splitText = spliteOnNewLineAndSpace(description);
+            String[][] splitText = splitOnNewLineAndSpace(description);
 
             for (String[] ignored : splitText)
                 heightPos += lineHeight("line", italicFont);
@@ -288,15 +285,14 @@ public class RenderingUtils {
 	 * names are used the second name appears at an offset. And since this is a
 	 * togglebutton a box and possible check mark in the box are added
      *
-	 * @param text                  the text of the togglebutton
-	 * @param text2                 the second text of the toggle button - added on a second line and indented
-	 * @param party                 the party of the candidate in the toggle button - right aligned on first line of button
-	 * @param fontsize              the size of the font
-	 * @param wrappingWidth         width of the button
-	 * @param bold                  whether the button is bold
-	 * @return                      the size of the ToggleButton
+	 *
+     * @param text                  the text of the togglebutton
+     * @param text2                 the second text of the toggle button - added on a second line and indented
+     * @param fontsize              the size of the font
+     * @param bold                  whether the button is bold
+     * @return                      the size of the ToggleButton
 	 */
-	public static Dimension getToggleButtonSize(String text, String text2, String party, int fontsize, int wrappingWidth, boolean bold) {
+	public static Dimension getToggleButtonSize(String text, String text2, int fontsize, boolean bold) {
 
         /* This is the standard font we use, so we can size the button with respect to the text */
         Font font = new Font(FONT_NAME, (bold) ? Font.BOLD : Font.PLAIN, fontsize);
@@ -318,9 +314,6 @@ public class RenderingUtils {
         /* This is the upper-right hand corner of the bounding box for the text */
         int heightPos = padding + baseline;
 
-        /* This is the starting horizontal coordinate of the text's bounding box */
-        int lineWidth = padding;
-
         /* The width of the widest line */
         int maxWidth = 0;
 
@@ -329,7 +322,7 @@ public class RenderingUtils {
 			heightPos += lineHeight(text, font);
 
         /* Update the max line width so we know how wide the button is */
-        maxWidth = Math.max(lineWidth, maxWidth);
+        maxWidth = Math.max(padding, maxWidth);
 
         return new Dimension(maxWidth, heightPos + padding);
 	}
@@ -406,7 +399,7 @@ public class RenderingUtils {
             /* Update the position of the write head */
 			writePos = lineWidth;
 
-            /* Udate the line width with each new word */
+            /* Update the line width with each new word */
 			lineWidth += wordWidth;
 
 			/* If the text contains a newline, wrap to the next line */
@@ -486,13 +479,13 @@ public class RenderingUtils {
         graphs.setFont(font);
         graphs.setColor(color);
 
-        /* Find the baseline for the text that will be drawn on the button */
+        /* Find the baseline for the text that will be drawn on the label */
         int baseline = graphs.getFontMetrics().getAscent();
 
 	    /* Split the input string into words, so we can keep consistent spacing and wrap text as necessary */
         String[] titleWords = title.split(" ");
 
-        /* This is how much whitespace there will be between the text and the edge of the button */
+        /* This is how much whitespace there will be between the text and the edge of the label */
         int padding = 10;
 
         /* This is the location of the top side of the bounding box for the text */
@@ -515,7 +508,7 @@ public class RenderingUtils {
             graphs.setFont(bigBoldFont);
 
             /* Split each line into its own array, grouping words by line */
-            String[][] splitText = spliteOnNewLineAndSpace(title);
+            String[][] splitText = splitOnNewLineAndSpace(title);
 
             /* Iterated through each line and draw it */
             for (String[] text : splitText) {
@@ -594,7 +587,7 @@ public class RenderingUtils {
 		if (!instructions.equals("")) {
 
 		    /* Split each line into its own array, grouping words by line */
-            String[][] splitText = spliteOnNewLineAndSpace(instructions);
+            String[][] splitText = splitOnNewLineAndSpace(instructions);
 
               /* Iterated through each line and draw it */
             for (String[] text : splitText) {
@@ -621,7 +614,7 @@ public class RenderingUtils {
             description = addInNewLines(description, font, wrappingWidth, padding);
 
             /* Split each line into its own array, grouping words by line */
-            String[][] splitText = spliteOnNewLineAndSpace(description);
+            String[][] splitText = splitOnNewLineAndSpace(description);
 
             /* Set the font to normal */
             graphs.setFont(font);
@@ -698,9 +691,6 @@ public class RenderingUtils {
         /* This is the location of the top side of the bounding box for the text */
 		int heightPos = padding + baseline;
 
-        /* This is where the writing of the string will start */
-		int writePos = padding;
-
         /* The positioning of the check box on every button, right justified */
         int boxPos = wrappingWidth - 30;
 
@@ -720,7 +710,7 @@ public class RenderingUtils {
         graphs.setColor(Color.BLACK);
 
         /* Draw the text for the button */
-		graphs.drawString(text, writePos, heightPos);
+		graphs.drawString(text, padding, heightPos);
 
         /* Draw the checkbox on the button */
         graphs.drawString(box, boxPos, heightPos);
@@ -751,7 +741,7 @@ public class RenderingUtils {
 			heightPos += lineHeight(text, font);
 
             /* Tab over the second candidate's name */
-			graphs.drawString("        " + text2, writePos, heightPos);
+			graphs.drawString("        " + text2, padding, heightPos);
 		}
 
         /* Ensure the font color is black, and then set a thicker stroke to border the button */
@@ -768,213 +758,207 @@ public class RenderingUtils {
         return copy(wrappedImage);
 	}
 
-    public static BufferedImage renderPrintButton(String uid, String text, String text2,
-                                                  String party, int fontsize, int wrappingWidth, boolean bold,
-                                                  boolean selected) {
+    public static BufferedImage renderPrintButton(String uid, String text, String text2, String party, int fontsize, int wrappingWidth, boolean bold, boolean selected) {
 
-        //System.out.println("Image with UID: "+ uid + " Text1: " + text + " has wrapping width " + wrappingWidth);
-        //System.out.println("Wrapping Width:\tUID:\tText1:");
-        //System.out.println(wrappingWidth + "\t" + uid + "\t" + text);
-        /* This is never true.
-        if (wrappingWidth == 600 && !uid.contains("_printable"))
-            System.out.println(">>>>>>>> " + uid);
-        */
+        /* The printable buttons have their own special sizes and fonts, based on a DPI printing scale factor */
         fontsize *= DPI_SCALE_FACTOR;
-        Font font = new Font(FONT_NAME, (bold) ? Font.BOLD : Font.PLAIN,
-                fontsize);
+        Font font = new Font(FONT_NAME, (bold) ? Font.BOLD : Font.PLAIN, fontsize);
 
-        if(text.equals("NO SELECTION")){
-            selected = false;
-        }
-
-        //Scale the wrapping width
-        wrappingWidth *= DPI_SCALE_FACTOR;
-        wrappingWidth += 500; //arbitrary sizes!
-
-
-
-
+        /* We use OCRA in case we ever decide to make the printed ballots computer-readable */
         Font nf = new Font("OCR A Extended", Font.PLAIN, 12*DPI_SCALE_FACTOR);
 
+        /* If this is a no selection, the button can never be selected */
+        if(text.equals("NO SELECTION"))
+            selected = false;
 
-        String box = "\u25a1"; // box character
-        String filledSelection = "\u25a8"; // filled box character
+        /* Scale the wrapping width in accordance with the printer's DPI */
+        wrappingWidth *= DPI_SCALE_FACTOR;
 
+        /* This is an arbitrary size to make the width sufficiently wide */
+        wrappingWidth += 500;
 
+        /* Figure out the length of the text */
         int selectionLength = lineWidth(text.split(""), nf);
 
-        int imageLength = Math.max(1000, selectionLength);
-
-
-
-        BufferedImage wrappedImage = new BufferedImage(1000*DPI_SCALE_FACTOR, 1000*DPI_SCALE_FACTOR,
-                BufferedImage.TYPE_INT_ARGB);
-
-
-
-
+        /* Create an over-sized image to draw on */
+        BufferedImage wrappedImage = new BufferedImage(1000*DPI_SCALE_FACTOR, 1000*DPI_SCALE_FACTOR, BufferedImage.TYPE_INT_ARGB);
         Graphics2D graphs = wrappedImage.createGraphics();
+        graphs.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        graphs.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_ON);
-
-
+        /* Set the font and draw in black */
         graphs.setFont(nf);
-        graphs.setColor(Color.BLACK); // Could make this a variable
+        graphs.setColor(Color.BLACK);
 
-
+         /* Find the baseline for the text that will be drawn on the button */
         int baseline = graphs.getFontMetrics().getAscent()*DPI_SCALE_FACTOR;
 
-        /* Useful data attributes. */
+        /* This is how much whitespace there will be between the text and the edge of the button */
         int padding = 10*DPI_SCALE_FACTOR;
 
+        /* Calculate the width of the strings. Note we split it to put it in a one element array */
         int presidentNameLength = lineWidth(text.split("$"), nf);
         int vicePresidentNameLength = lineWidth(text2.split("$"), nf);
 
+        /* This is the location of the top side of the bounding box for the text */
         int heightPos = padding + baseline;
-        int writePos = padding;
+
+        /* The positioning of the check box on every button, right justified */
         int boxPos = wrappingWidth - SELECTION_BOX_WIDTH - DPI_SCALE_FACTOR;
+
+        /* Where the candidate's name needs to end */
         int candidateNameEndPos = boxPos - 2*DPI_SCALE_FACTOR;
 
-
+        /* This will be used to build the string we ultimately draw, dependent on secondary text and party info */
         String selection = "";
 
-        int drawPosition = 0;
+        /* This is where the drawing will start */
+        int drawPosition;
 
-        if (!text2.equals("")) {   // If the selection represents a Presidential election.
+        /* If the selection represents a Presidential election draw both parts of the text */
+        if (!text2.equals("")) {
+
+            /* If there is a party, add it to the second candidate */
             if (!party.equals("")) {
                 selection = text2 + " - " + party;
                 selectionLength = lineWidth(selection.split("$"), nf);
             }
 
+            /* Draw the string, right justified with the box (hence the weird math below) */
             graphs.drawString(text, candidateNameEndPos - (selectionLength - vicePresidentNameLength) - presidentNameLength, heightPos);
             heightPos += lineHeight(text, nf);
         }
-        else {
-            if (!party.equals("")) {
-                selection += text +  " - " + party;
-            }
-            else{
-                selection = text;
-            }
 
+        /* If there is no secondary candidate, figure out if there is a party */
+        else {
+            selection = text;
+            selection += !party.equals("") ? " - " + party : "";
         }
+
+        /* Ensure the font is correct */
         graphs.setFont(nf);
 
-        //If this is a race name and not a candidate
-        if (uid.contains("L"))
-        {
-            wrappingWidth = 250*DPI_SCALE_FACTOR + 750; //Arbitrary size!
-            Font temp = new Font(font.getFontName(), Font.BOLD, 12*DPI_SCALE_FACTOR); //Changed from: font.deriveFont(12.0f*DPI_SCALE_FACTOR);
+        /* If this is a race name and not a candidate, render it bold and then we're done */
+        if (uid.contains("L")) {
+            /* This is an arbitrary value that seems nice enough */
+            wrappingWidth = 250*DPI_SCALE_FACTOR + 750;
 
+            /* Set the font to a bold OCRA */
+            Font temp = new Font(font.getFontName(), Font.BOLD, 12*DPI_SCALE_FACTOR);
+            graphs.setFont(temp);
+
+            /* Split over lines */
             String[] split = selection.split("\n");
             text = split[0];
 
-            if(split.length > 1) //if there is a newline character, there are two titles
-                text2 = split[1];
+            /* There can only be at most 2 titles, so if the split found a newline, then there is only one more race title */
+            if(split.length > 1) text2 = split[1];
 
-            /**
+            /*
              * Since the selection is drawn using the 'temp' font, it would make sense to use the
              * 'temp' font when determining selectionLength. The font 'font' was being used before.
              */
             selectionLength = lineWidth(selection.split("$"), temp);
 
-            graphs.setFont(temp);
+            /* If the selection represents a Presidential election, draw both texts */
+            if (!text2.equals("")) {
 
-
-
-            if (!text2.equals("")) {   // If the selection represents a Presidential election.
-
-
+                /* Add a colon to the end of the race name and draw it */
                 graphs.drawString(text + ":", padding, heightPos);
+
+                /* Increment the size and prepare to draw the secondary text*/
                 heightPos += lineHeight(text, font);
                 selection = text2;
 
             }
 
-            graphs.drawString(selection, padding, heightPos); //height based on an appropriate spacing of up to a 3 digit number
+            /* Draw the text. height based on an appropriate spacing of up to a 3 digit number */
+            graphs.drawString(selection, padding, heightPos);
+
+            /* Reset the font */
             graphs.setFont(font);
 
-            /**
+            /*
              * The formula for the total width of the resulting image should contain padding because the selection text gets drawn
              * at a horizontal displacement of 'padding' from the left margin.
              */
             wrappedImage = wrappedImage.getSubimage(0, 0, Math.max(wrappingWidth,selectionLength) + padding, 2 * heightPos);
 
+            /* Trim the image on top */
+            wrappedImage = PrintImageUtils.trimImageVertically(wrappedImage, false, Integer.MAX_VALUE);
 
-
-            //Trim the image.
-            wrappedImage = PrintImageUtils.trimImageVertically(wrappedImage, false, Integer.MAX_VALUE); // Above
-            wrappedImage = PrintImageUtils.trimImageVertically(wrappedImage, true, Integer.MAX_VALUE); // Below
-            // No Left/Right trimming, because it is done in the Printer class.
-            //System.err.println("Image with UID " + uid + ":\n\tWrapping width: " + wrappingWidth + "\n\tText width: " + lineWidth(selection.split("$"), temp));
+            /* Trim the image on bottom */
+            wrappedImage = PrintImageUtils.trimImageVertically(wrappedImage, true, Integer.MAX_VALUE);
 
             return copy(wrappedImage);
 
         }
 
+        /* Get rid of all underscores and letters in UID's */
+        uid = uid.contains("_") ? uid.substring(1, uid.indexOf("_")) : uid.substring(1);
 
-        //Get rid of all underscores and letters in UID's
-        if(uid.contains("_"))
-            uid = uid.substring(1, uid.indexOf("_"));
-        else
-            uid = uid.substring(1);
-
-        graphs.drawString(uid, writePos, heightPos);
-
-
+        /* Draw the candidate's ID number onto the ballot */
+        graphs.drawString(uid, padding, heightPos);
 
         /* This is where the box is being drawn. */
-        drawBox(graphs, boxPos, (heightPos - SELECTION_BOX_HEIGHT), SELECTION_BOX_WIDTH, SELECTION_BOX_HEIGHT, selected, padding/8);
+        drawBox(graphs, boxPos, (heightPos - SELECTION_BOX_HEIGHT), selected, padding/8);
 
-
+        /* Set the font to OCRA */
         graphs.setFont(nf);
+
+        /* Set the position to draw the name and then draw it  */
         drawPosition = Math.max(0,  candidateNameEndPos - lineWidth(selection.split("$"), nf));
-        graphs.drawString(selection, drawPosition, heightPos); //height based on an appropriate spacing of up to a 3 digit number
+        graphs.drawString(selection, drawPosition, heightPos);
 
+        /* Get a wrapped version */
+        wrappedImage = wrappedImage.getSubimage(0, 0, wrappingWidth, heightPos + padding);
 
-        /*// This bottom line will be instead drawn directly in the HTML file.
-        graphs.setColor(Color.BLACK);
-        graphs.setStroke(new BasicStroke(padding / 4));
-
-        //split "1" because it gives a nice line width. It's sort of a hack...
-        graphs.drawLine(writePos + lineWidth(("1").split(""), nf), heightPos + fontsize/2, wrappingWidth*//*Math.max(wrappingWidth,selectionLength)*//*, heightPos + fontsize/2);*/
-
-        //This should automatically trim the image, sadly, it doesn't
-        wrappedImage = wrappedImage.getSubimage(0, 0, wrappingWidth/*Math.max(wrappingWidth,selectionLength)*/, heightPos + padding);
-
-
-
-        //Need to also remove whitespace above and below the image.
+        /* Trim the image on top */
         wrappedImage = PrintImageUtils.trimImageVertically(wrappedImage, false, Integer.MAX_VALUE);
-        wrappedImage = PrintImageUtils.trimImageVertically(wrappedImage, true, Integer.MAX_VALUE); // Below
 
+        /* Trim the image on bottom */
+        wrappedImage = PrintImageUtils.trimImageVertically(wrappedImage, true, Integer.MAX_VALUE);
+
+        /* I think this copies to avoid aliasing or something. TODO Figure this out */
         return copy(wrappedImage);
     }
 
 	/**
 	 * A private helper to add in tags of where new lines should be added when a
 	 * text is rendered with at given font with a set wrappingWidth and padding
-	 * @param text the text to be rendered
-	 * @param font the font to render with
-	 * @param wrappingWidth the width at which to wrap
-	 * @param padding the padding that should be on the text
-	 * @return the text with appropriate <newline> tags added in
+     *
+	 * @param text                  the text to be rendered
+	 * @param font                  the font to render with
+	 * @param wrappingWidth         the width at which to wrap
+	 * @param padding               the padding that should be on the text
+	 * @return                      the text with appropriate <newline> tags added in
 	 */
-	private static String addInNewLines(String text, Font font,
-			int wrappingWidth, int padding) {
-		String copy = new String("");
+	private static String addInNewLines(String text, Font font, int wrappingWidth, int padding) {
+
+        /* We don't want to mutate the original string */
+		String copy = "";
+
+        /* Split out all the spaces */
 		String[] splitText = text.split(" ");
+
+        /* Keep track of the line width */
 		int currentLineWidth = padding;
+
+        /* For each word, add it and see if the result is over the width requirement. If it is, put it on a newline */
 		for (String word : splitText) {
-			Rectangle2D measurement = font.getStringBounds(word + " ",
-					new FontRenderContext(new AffineTransform(), true, true));
+
+            /* Get a bounding box for the word */
+			Rectangle2D measurement = font.getStringBounds(word + " ", new FontRenderContext(new AffineTransform(), true, true));
+
+            /* Update the line width */
 			currentLineWidth += measurement.getWidth();
 
+            /* If the line is too long, split into a new line */
 			if (currentLineWidth + padding > wrappingWidth) {
 				currentLineWidth = (int) measurement.getWidth() + padding;
 				copy = copy.concat(" <newline>");
 			}
+
+            /* Stick the result, either the word or the word on a newline, onto our result */
 			copy = copy.concat(word + " ");
 		}
 		return copy;
@@ -983,30 +967,33 @@ public class RenderingUtils {
 	/**
 	 * Calculates the line height at a given font, by looking at the height of
 	 * the first word
-	 * @param line is the line
-	 * @param font is the font
-	 * @return the height
+     *
+	 * @param line      is the line
+	 * @param font      is the font
+	 * @return          the height
 	 */
 	public static int lineHeight(String line, Font font) {
-		Rectangle2D measurement = font.getStringBounds(line + " ",
-				new FontRenderContext(new AffineTransform(), true, true));
-		return (int) measurement.getHeight();
+
+        /* Draw a bounding box and then extract its height */
+		return (int) font.getStringBounds(line + " ", new FontRenderContext(new AffineTransform(), true, true)).getHeight();
 
 	}
 
 	/**
 	 * Calculates the line width at a given font
-	 * @param line is the line
-	 * @param font is the font
-	 * @return the width
+     *
+	 * @param line      is the line
+	 * @param font      is the font
+	 * @return          the width
 	 */
 	public static int lineWidth(String[] line, Font font) {
+
+        /* A counter for the width */
 		int width = 0;
-		for (String word : line) {
-			Rectangle2D measurement = font.getStringBounds(word + " ",
-					new FontRenderContext(new AffineTransform(), true, true));
-			width += measurement.getWidth();
-		}
+
+        /* Iterate over each word and get its bounding box */
+		for (String word : line)
+			width += font.getStringBounds(word + " ", new FontRenderContext(new AffineTransform(), true, true)).getWidth();
 
 		return width;
 	}
@@ -1014,180 +1001,146 @@ public class RenderingUtils {
 	/**
 	 * Splits text on new line and then on white space
      *
-	 * @param text the text to be split
-	 * @return the split text
+	 * @param text      the text to be split
+	 * @return          the split text
 	 */
-	private static String[][] spliteOnNewLineAndSpace(String text) {
+	private static String[][] splitOnNewLineAndSpace(String text) {
 
+        /* Split each line */
 		String[] splitOnNewLine = text.split("<newline>");
+
+        /* This array will group words in individual arrays by line */
 		String[][] splitText = new String[splitOnNewLine.length][0];
-		for (int x = 0; x < splitOnNewLine.length; x++) {
-			splitText[x] = splitOnNewLine[x].split(" ");
-		}
+
+        /* Split the lines on spaces */
+		for (int x = 0; x < splitOnNewLine.length; x++)
+            splitText[x] = splitOnNewLine[x].split(" ");
+
 		return splitText;
 	}
 
 	/**
 	 * Transforms an array of Strings to one string with appropriate spacing added
 	 * in between. Also trims the string to remove useless white space
-	 * @param array the array to be transformed
-	 * @return the array as a string
+     *
+	 * @param array         the array to be transformed
+	 * @return              the array as a string
 	 */
 	private static String stringArrayToString(String[] array) {
-		String currentString = new String(" ");
-		for (int x = 0; x < array.length; x++) {
-			currentString = currentString.concat(array[x] + " ");
-		}
+
+        /* Start with a blank string */
+		String currentString = " ";
+
+        /* Concatenate each string in the array to our big string */
+        for (String anArray : array) currentString = currentString.concat(anArray + " ");
+
+        /* Trim off any whitespace and return it */
 		return currentString.trim();
 
 	}
 
     /**
      * This method draws a box in a given context, with the upper left corner at the location given.
-     * @param graphicsObject - the context (graphics object) on which to draw the box
-     * @param upperLeftX - the X coordinate of the upper-left corner
-     * @param upperLeftY - the Y coordinate of the upper-left corner
-     * @param width - the width of the box
-     * @param height - the height of the box
-     * @param selected - whether or not the box should be filled in
-     * @param thickness - the line thickness of the box
+     *
+     * @param graphicsObject        the context (graphics object) on which to draw the box
+     * @param upperLeftX            the X coordinate of the upper-left corner
+     * @param upperLeftY            the Y coordinate of the upper-left corner
+     * @param selected              whether or not the box should be filled in
+     * @param thickness             the line thickness of the box
      */
-    public static void drawBox(Graphics2D graphicsObject, int upperLeftX, int upperLeftY, int width, int height, Boolean selected, int thickness)
+    public static void drawBox(Graphics2D graphicsObject, int upperLeftX, int upperLeftY, Boolean selected, int thickness)
     {
 
+        /* Set the thickness of the sides of the box */
         graphicsObject.setStroke(new BasicStroke(thickness));
-        // Drawing the empty box.
-        graphicsObject.drawRect(upperLeftX, upperLeftY, width, height);
 
-        if (selected)
-        {
-            //determines how many lines get drawn in the box
+        /* Drawing the empty box */
+        graphicsObject.drawRect(upperLeftX, upperLeftY, RenderingUtils.SELECTION_BOX_WIDTH, RenderingUtils.SELECTION_BOX_HEIGHT);
+
+        /* If this is true, the box should be shaded in */
+        if (selected) {
+
+            /* determines how many lines get drawn in the box */
             int denominator = 3;
-            float slope = (1.0f*height)/width;
 
-            ArrayList<Integer> startXs = new ArrayList<Integer> ();
-            ArrayList<Integer> startYs = new ArrayList<Integer> ();
-            ArrayList<Integer> endXs = new ArrayList<Integer> ();
-            ArrayList<Integer> endYs = new ArrayList<Integer> ();
+            /* This ensure the lines are always the same steepness proportional to the size of the box */
+            float slope = (1.0f* RenderingUtils.SELECTION_BOX_HEIGHT)/ RenderingUtils.SELECTION_BOX_WIDTH;
 
-            // Building the list of start positions for the fill lines.
+            /* These lists will keep track of the starting and ending points of each line in the box */
+            /* TODO This could probably be written using points or something... */
+            ArrayList<Integer> startXs = new ArrayList<>();
+            ArrayList<Integer> startYs = new ArrayList<>();
+            ArrayList<Integer> endXs = new ArrayList<>();
+            ArrayList<Integer> endYs = new ArrayList<>();
+
+            /* Building the list of start positions for the fill lines. */
             int offsetX = 0;
             int offsetY = 0;
-            while (offsetX < width)
-            {
-                startXs.add(new Integer(upperLeftX+offsetX));
-                startYs.add(new Integer(upperLeftY+offsetY));
-                offsetX += width/denominator;
-            }
-            while (offsetY < height)
-            {
-                startXs.add(new Integer(upperLeftX+offsetX));
-                startYs.add(new Integer(upperLeftY+offsetY));
-                offsetY += height/denominator;
+
+            /* Calculate the starting values for lines that start on the left side of the box */
+            while (offsetX < RenderingUtils.SELECTION_BOX_WIDTH) {
+                startXs.add(upperLeftX + offsetX);
+                startYs.add(upperLeftY + offsetY);
+                offsetX += RenderingUtils.SELECTION_BOX_WIDTH /denominator;
             }
 
-            // Building the list of end positions for the fill lines.
+            /* Calculate the starting points for lines that start on the top of the box */
+            while (offsetY < RenderingUtils.SELECTION_BOX_HEIGHT) {
+                startXs.add(upperLeftX + offsetX);
+                startYs.add(upperLeftY + offsetY);
+                offsetY += RenderingUtils.SELECTION_BOX_HEIGHT /denominator;
+            }
+
+            /* Building the list of end positions for the fill lines. */
             offsetX = 0;
             offsetY = 0;
-            while (offsetY < height)
-            {
-                endXs.add(new Integer(upperLeftX+offsetX));
-                endYs.add(new Integer(upperLeftY+offsetY));
-                offsetY += height/denominator;
+
+            /* Calculate the ending values for lines that end on the bottom side of the box */
+            while (offsetY < RenderingUtils.SELECTION_BOX_HEIGHT) {
+                endXs.add(upperLeftX + offsetX);
+                endYs.add(upperLeftY + offsetY);
+                offsetY += RenderingUtils.SELECTION_BOX_HEIGHT /denominator;
             }
-            while (offsetX < width)
-            {
-                int endX = new Integer(upperLeftX+offsetX);
-                int endY = new Integer(upperLeftY+offsetY);
+
+            /* Calculate the ending values for lines that end on the right side of the box */
+            while (offsetX < RenderingUtils.SELECTION_BOX_WIDTH) {
+                int endX = upperLeftX + offsetX;
+                int endY = upperLeftY + offsetY;
 
                 endXs.add(endX);
                 endYs.add(endY);
-                offsetX += width/denominator;
+                offsetX += RenderingUtils.SELECTION_BOX_WIDTH /denominator;
             }
 
 
-            // Drawing the fill lines.
-            for (int i = 0; i < startXs.size(); i++)
-            {
+            /* Draw the fill lines. */
+            for (int i = 0; i < startXs.size(); i++) {
+                /* Each point of the line is put into the arrays in order */
                 int startX = startXs.get(i);
                 int startY = startYs.get(i);
                 int endX = endXs.get(i);
                 int endY = endYs.get(i);
 
-                //Correct for overflow vertically
-                if(endY > upperLeftY + height){
-                    int newY = upperLeftY + height;
-                    int newX = Math.round((endY - newY)/slope) + endX;
+                /* Correct for overflow vertically by adjusting the ending y-values */
+                if(endY > upperLeftY + RenderingUtils.SELECTION_BOX_HEIGHT){
+                    int newY = upperLeftY + RenderingUtils.SELECTION_BOX_HEIGHT;
 
-                    endX = newX;
+                    endX = Math.round((endY - newY)/slope) + endX;
                     endY = newY;
 
                 }
-                //Correct for overflow horizontally (note that there should never be overflow in both cases)
-                else if(endX > upperLeftX + width){
-                    int newX = upperLeftX + width;
+
+                /* Correct for overflow horizontally (note that there should never be both vertical and horizontal overflow) */
+                else if(endX > upperLeftX + RenderingUtils.SELECTION_BOX_WIDTH){
+                    int newX = upperLeftX + RenderingUtils.SELECTION_BOX_WIDTH;
                     int newY = Math.round((endX - newX)/slope) + endY;
 
                     endX = newX;
                     endY = newY;
                 }
 
+                /* Draw the line through the points (startX, startY) and (endX, endY) */
                 graphicsObject.drawLine(startX, startY, endX, endY);
-            }
-        }
-    }
-
-    /**
-     * Saves images to files, to be used for write-in candidates' names.
-     */
-    public static void writeLettersToFile (String location, int fontsize)
-    {
-        // All the characters that are used in English names.
-        String ALL_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ -'";
-        // The size of the images to be created.
-        int CHARACTER_IMAGE_WIDTH = 28;
-        int CHARACTER_IMAGE_HEIGHT = 28;
-
-        // Set the font for the character.
-        Font font = new Font("Monospaced", Font.PLAIN, fontsize);
-
-        for (int idx = 0; idx < ALL_LETTERS.length(); idx++)
-        {
-            // Get a character.
-            String currentCharacter = ALL_LETTERS.substring(idx, idx+1);
-            // Create a new BufferedImage, on which to draw that character.
-            BufferedImage currentImage = new BufferedImage(CHARACTER_IMAGE_WIDTH, CHARACTER_IMAGE_HEIGHT, BufferedImage.TYPE_INT_ARGB);
-            // Create a Graphics object for the BufferedImage, to actually draw the String on the image.
-            Graphics g = currentImage.getGraphics();
-            // Draw a white background.
-            g.setColor(Color.WHITE);
-            g.fillRect(0, 0, CHARACTER_IMAGE_WIDTH, CHARACTER_IMAGE_HEIGHT);
-            // Set the colour to be used in drawing the character.
-            g.setColor(Color.BLACK);
-            // Set the font for the character.
-            g.setFont(font);
-            // Draw the character on the image's canvas.
-            g.drawString(currentCharacter, 5, CHARACTER_IMAGE_HEIGHT - 5);
-            // Create a new file, to write the image to a file.
-            // All the file names start with 'W_'.
-            // All the file names contain the character name, ending in the extension '.png'.
-            // Create the writein directory, if it does not already exist.
-            File file = new File(location, "writein");
-            if(!file.exists())
-            {
-                file.mkdirs();
-            }
-            file = new File(file, "W_" + currentCharacter + ".png");
-            // Try to write the image to the file.
-            try
-            {
-                //System.out.println("Attempting to create an image for '" + currentCharacter + "' at: " + file.getAbsolutePath());
-                ImageIO.write(currentImage, "png", file);
-            }
-            catch (IOException e)
-            {
-                System.out.println("Letter image creation failed!");
-                e.printStackTrace();
             }
         }
     }

@@ -139,7 +139,7 @@ public class NIZKsPerformanceTest {
 				if(!del.delete())
 					del.deleteOnExit();
 				continue;
-			}//if
+			}
 
 			File[] child = del.listFiles();
 
@@ -331,8 +331,6 @@ public class NIZKsPerformanceTest {
         System.out.println("tallyWithNIZKs:");
         List<Card> cards = _ballot.getCards();
 
-        //PrivateKey privateKey = _adderPublicKey.genKeyPair();
-
         ChallengeDelayedWithNIZKsTallier tallier = new ChallengeDelayedWithNIZKsTallier(_adderPublicKey, _adderPrivateKey);
 
         long elapsedTime = 0;
@@ -341,10 +339,8 @@ public class NIZKsPerformanceTest {
 
         SecureRandom r = new SecureRandom();
 
-        //To ensure that the adder caches the key
         AuthorizedToCastWithNIZKsEvent ATCE = new AuthorizedToCastWithNIZKsEvent(0, 0, ASExpression.makeVerbatim(_seeds.get(0)), "3", _ballot.toASExpression().toVerbatim(),
                 AdderKeyManipulator.generateFinalPublicKey(_adderPublicKey));
-//        AuthorizedToCastWithNIZKsEvent.getMatcher().match(0, ATCE.toSExp());
 
         for(byte[] seed : _seeds){
             System.out.println("Trial #"+_seeds.indexOf(seed));
@@ -423,7 +419,6 @@ public class NIZKsPerformanceTest {
 		test.withoutNIZKs();
 		test.withNIZKs();
 		test.decryptWithoutNIZKs();
-//		test.decryptWithNIZKs();
 		deleteTemporaryFiles();
 	}
 }

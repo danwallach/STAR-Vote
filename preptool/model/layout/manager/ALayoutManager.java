@@ -725,9 +725,6 @@ public abstract class
 			}
 		}
 
-        /* Write the letters for the write-in GUI to their respective files. */
-        /* TODO Is this still necessary? */
-        RenderingUtils.writeLettersToFile(location, FONT_SIZE_SELECTED_IMAGES + 10);
     }
 
 
