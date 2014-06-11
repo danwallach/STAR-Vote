@@ -80,6 +80,7 @@ public abstract class AAuditoriumLayer implements IAuditoriumLayer {
         _host = host;
     }
 
+
     /**
      * Get the layer instance which is a child of this layer.
      * 
