@@ -36,7 +36,6 @@ import preptool.model.layout.ALayoutComponent;
  * components for us.
  * @author Corey Shaw, ttorous
  */
-@SuppressWarnings("serial")
 public class Spacer extends JLabel {
 
 	/**
@@ -54,23 +53,25 @@ public class Spacer extends JLabel {
 	 * size to the size of the component.<br>
 	 * Warning: The size of the component must be set properly before
 	 * constructing the Spacer, or it will be initialized improperly!
-	 * @param lc the LayoutComponent this corresponds to
-	 * @param container the Container that holds this Spacer
+     *
+	 * @param lc                the LayoutComponent this corresponds to
+	 * @param container         the Container that holds this Spacer
 	 */
 	public Spacer(ALayoutComponent lc, Container container) {
+        /* Set the pertinent sizes */
 		setMinimumSize(new Dimension(lc.getWidth(), lc.getHeight()));
 		setPreferredSize(new Dimension(lc.getWidth(), lc.getHeight()));
 		setMaximumSize(new Dimension(lc.getWidth(), lc.getHeight()));
 		setSize(new Dimension(lc.getWidth(), lc.getHeight()));
 
+        /* Initialize fields and update */
 		comp = lc;
 		par = container;
 		validate();
 	}
 
 	/**
-	 * Returns the component
-	 * @return the component
+	 * @return      the component
 	 */
 	public ALayoutComponent getComponent() {
 		return comp;
@@ -79,25 +80,26 @@ public class Spacer extends JLabel {
 	/**
 	 * Returns the absolute X coordinate. Simply calling getX will not work
 	 * because this returns the relative x coordinate of the label to its
-	 * parent. This implementation assumes that the parent only goes one layer
-	 * up
-	 * @return the absolute X coordintate
+	 * parent.<br>
+     * NOTE: This implementation assumes that the parent only goes one layer up
+     *
+	 * @return      the absolute X coordinate
 	 */
 	public int getXCoordinate() {
 		return par.getX() + getX();
 	}
 
 	/**
-	 * See getXCoordinate
-	 * @return the absolute Y coordinte
+	 * @see Spacer#getXCoordinate()
+     *
+	 * @return          the absolute Y coordinate
 	 */
 	public int getYCoordinate() {
 		return par.getY() + getY();
 	}
 
 	/**
-	 * Updates the x and y coordinates of the component's position based on the
-	 * spacer's position
+	 * Updates the x and y coordinates of the component's position based on the spacer's position
 	 */
 	public void updatePosition() {
 		comp.setXPos(getXCoordinate());
