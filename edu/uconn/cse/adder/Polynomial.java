@@ -25,9 +25,9 @@ public class Polynomial {
      * Creates a new Polynomial of degree 0 with the specified parameter
      * values.
      *
-     * @param p the prime
-     * @param g the generator
-     * @param f the message base
+     * @param p     the prime
+     * @param g     the generator
+     * @param f     the message base
      */
     public Polynomial(AdderInteger p, AdderInteger g, AdderInteger f) {
         this.p = p;
@@ -41,10 +41,10 @@ public class Polynomial {
      * Creates a new Polynomial of the given degree with the specified parameter
      * values and random coefficients.
      *
-     * @param p the prime
-     * @param g the generator
-     * @param f the message base
-     * @param degree the degree
+     * @param p         the prime
+     * @param g         the generator
+     * @param f         the message base
+     * @param degree    the degree
      */
     public Polynomial(AdderInteger p, AdderInteger g, AdderInteger f,
                      int degree) {
@@ -64,10 +64,10 @@ public class Polynomial {
      * Creates a new PrivateKey with the specified parameter values and given
      * coefficients.
      *
-     * @param p      the prime
-     * @param g      the generator
-     * @param f      the message base
-     * @param coeffs the coefficients
+     * @param p         the prime
+     * @param g         the generator
+     * @param f         the message base
+     * @param coeffs    the coefficients
      */
     public Polynomial(AdderInteger p, AdderInteger g, AdderInteger f,
                       List<AdderInteger> coeffs) {
@@ -83,11 +83,11 @@ public class Polynomial {
      * Creates a new PrivateKey with the specified parameter values and given
      * coefficients.
      *
-     * @param p      the prime
-     * @param q      the sub-prime
-     * @param g      the generator
-     * @param f      the message base
-     * @param coeffs the coefficients
+     * @param p         the prime
+     * @param q         the sub-prime
+     * @param g         the generator
+     * @param f         the message base
+     * @param coeffs    the coefficients
      */
     private Polynomial(AdderInteger p, AdderInteger q, AdderInteger g,
                        AdderInteger f, List<AdderInteger> coeffs) {
@@ -102,14 +102,14 @@ public class Polynomial {
     /**
      * Evaluates the polynomial at the given point <tt>x</tt>.
      *
-     * @param  x the point at which to evaluate the polynomial
-     * @return the value of the polynomial evaluated at the given point
+     * @param  x        the point at which to evaluate the polynomial
+     * @return          the value of the polynomial evaluated at the given point
      */
     public AdderInteger evaluate(AdderInteger x) {
         AdderInteger evalSum = new AdderInteger(AdderInteger.ZERO, q);
 
         int size = coeffs.size();
-        /*for (AdderInteger c : coeffs) {*/
+
         for (int i = 0; i < size; i++) {
             AdderInteger c = coeffs.get(i);
             evalSum = evalSum.add(c.multiply(new AdderInteger(x, q).pow(i)));
@@ -127,12 +127,10 @@ public class Polynomial {
         List<AdderInteger> lagrangeCoeffs =
             new ArrayList<AdderInteger>(coeffs.size());
 
-        /*for (AdderInteger ai : coeffs) {*/
         for (Iterator it = coeffs.iterator(); it.hasNext();) {
             AdderInteger ai = (AdderInteger) it.next();
             AdderInteger numerator = new AdderInteger(AdderInteger.ONE, q);
 
-            /*for (AdderInteger aj : coeffs) {*/
             for (Iterator it2 = coeffs.iterator(); it2.hasNext();) {
                 AdderInteger aj = (AdderInteger) it2.next();
 
@@ -143,7 +141,6 @@ public class Polynomial {
 
             AdderInteger denominator = new AdderInteger(AdderInteger.ONE, q);
 
-            /*for (AdderInteger aj : coeffs) {*/
             for (Iterator it2 = coeffs.iterator(); it2.hasNext();) {
                 AdderInteger aj = (AdderInteger) it2.next();
 
@@ -270,7 +267,6 @@ public class Polynomial {
         sb.append("f");
         sb.append(f.toString());
 
-        /*for (AdderInteger c : coeffs) {*/
         for (Iterator it = coeffs.iterator(); it.hasNext();) {
             AdderInteger c = (AdderInteger) it.next();
             sb.append(" ");

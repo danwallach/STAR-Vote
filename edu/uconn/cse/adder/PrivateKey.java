@@ -28,10 +28,10 @@ public class
     /**
      * Creates a new PrivateKey with the specified parameter values.
      *
-     * @param p the prime
-     * @param g the generator
-     * @param x the private value
-     * @param f the message base
+     * @param p     the prime
+     * @param g     the generator
+     * @param x     the private value
+     * @param f     the message base
      */
     public PrivateKey(AdderInteger p, AdderInteger g, AdderInteger x,
                       AdderInteger f) {
@@ -44,9 +44,9 @@ public class
 
     /**
      * Returns the partial decryption of the given vote.
-     * @param vote the vote
+     * @param vote      the vote
      *
-     * @return the partial decryption of the given vote
+     * @return          the partial decryption of the given vote
      */
     public List<AdderInteger> partialDecrypt(Vote vote) {
         List<ElgamalCiphertext> cipherList = vote.getCipherList();
@@ -62,14 +62,14 @@ public class
 
     /**
      * Returns the full decryption of an ElgamalCiphertext
-     * @param cipher the encrypted AdderInteger
+     * @param cipher    the encrypted AdderInteger
      *
-     * @return plaintext the decryption
+     * @return          plaintext the decryption
      */
     public AdderInteger decrypt(ElgamalCiphertext cipher){
         AdderInteger plaintext = cipher.getH();
 
-        //calculate the shared secret
+        /*calculate the shared secret*/
         AdderInteger s = cipher.getG().pow(x);
 
         plaintext = plaintext.divide(s);
@@ -86,7 +86,6 @@ public class
     public PrivateKey getFinalPrivKey(List/*<ElgamalCiphertext>*/ polyList) {
         AdderInteger total = new AdderInteger(AdderInteger.ZERO, q);
 
-        /*for (ElgamalCiphertext ciphertext : polyList) {*/
         for (Iterator it = polyList.iterator(); it.hasNext();) {
             ElgamalCiphertext ciphertext = (ElgamalCiphertext) it.next();
             AdderInteger eL = ciphertext.getG();

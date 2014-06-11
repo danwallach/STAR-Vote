@@ -12,6 +12,7 @@ import java.security.NoSuchAlgorithmException;
  * @since 0.0.1
  */
 public final class Util {
+    /* TODO do we really need a default constructor*/
     /** Don't instantiate me! */
     private Util() {
 

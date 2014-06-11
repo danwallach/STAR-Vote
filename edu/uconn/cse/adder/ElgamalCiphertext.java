@@ -22,6 +22,7 @@ public class ElgamalCiphertext {
     private AdderInteger p;
     private MembershipProof proof;
 
+    /* TODO Is the positioning of the variables a concern.?*/
     // XXX: why does p come last here?
     /**
      * Creates a new ElgamalCiphertext with the specified parameter values.
@@ -139,15 +140,14 @@ public class ElgamalCiphertext {
      * Creates a <tt>ElgamalCiphertext</tt> from the string standard representation as
      * described in the {@link #toString} method.
      *
-     * @param  s a string that specifies a <tt>ElgamalCiphertext</tt>
-     * @return a <tt>ElgamalCiphertext</tt> with the specified values
+     * @param  s        a string that specifies a <tt>ElgamalCiphertext</tt>
+     * @return a        <tt>ElgamalCiphertext</tt> with the specified values
      */
     public static ElgamalCiphertext fromString(String s) {
         StringTokenizer st0 = new StringTokenizer(s, " ");
 
         try {
-            StringTokenizer st = new StringTokenizer(st0.nextToken(), "pGH",
-                                                     true);
+            StringTokenizer st = new StringTokenizer(st0.nextToken(), "pGH",true);
 
             if (!st.nextToken().equals("p")) {
                 throw new InvalidElgamalCiphertextException("expected token: `p\'");

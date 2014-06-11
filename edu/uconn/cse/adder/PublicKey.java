@@ -27,9 +27,9 @@ public class PublicKey {
     /**
      * Creates a new PublicKey with the specified parameter values.
      *
-     * @param p the prime
-     * @param g the generator
-     * @param f the message base
+     * @param p     the prime
+     * @param g     the generator
+     * @param f     the message base
      */
     public PublicKey(AdderInteger p, AdderInteger g, AdderInteger f) {
         this.p = p;
@@ -41,10 +41,10 @@ public class PublicKey {
     /**
      * Creates a new PublicKey with the specified parameter values.
      *
-     * @param p the prime
-     * @param g the generator
-     * @param h the public value
-     * @param f the message base
+     * @param p     the prime
+     * @param g     the generator
+     * @param h     the public value
+     * @param f     the message base
      */
     public PublicKey(AdderInteger p, AdderInteger g, AdderInteger h,
                      AdderInteger f) {
@@ -58,11 +58,11 @@ public class PublicKey {
     /**
      * Creates a new PublicKey with the specified parameter values.
      *
-     * @param p the prime
-     * @param q the sub-prime
-     * @param g the generator
-     * @param h the public value
-     * @param f the message base
+     * @param p     the prime
+     * @param q     the sub-prime
+     * @param g     the generator
+     * @param h     the public value
+     * @param f     the message base
      */
     private PublicKey(AdderInteger p, AdderInteger q, AdderInteger g,
                       AdderInteger h, AdderInteger f) {
@@ -76,8 +76,8 @@ public class PublicKey {
     /**
      * Creates a partial public key given the specified prime.
      *
-     * @param p the prime
-     * @return the public key
+     * @param p     the prime
+     * @return      the public key
      */
    public static PublicKey makePartialKey(AdderInteger p) {
         AdderInteger t;
@@ -103,8 +103,8 @@ public class PublicKey {
     /**
      * Creates a partial public key with the given length in bits.
      *
-     * @param length the length of the key to generate in bits
-     * @return the public key
+     * @param length        the length of the key to generate in bits
+     * @return              the public key
      */
     public static PublicKey makePartialKey(int length) {
         return makePartialKey(AdderInteger.safePrime(length));
@@ -113,7 +113,7 @@ public class PublicKey {
     /**
      * Creates the corresponding private key of this public key.
      *
-     * @return the private key
+     * @return      the private key
      */
     public PrivateKey genKeyPair() {
         AdderInteger x = AdderInteger.random(q);
@@ -191,7 +191,7 @@ public class PublicKey {
         AdderInteger mPlusOne = new AdderInteger(m.add(AdderInteger.ONE), p);
         AdderInteger bigH = h.pow(r).multiply(mPlusOne.pow(AdderInteger.TWO));
 
-        //XXX:  This is a VoteBox related change.  We need to keep r around, but not send it over the wire
+        /*TODO  This is a VoteBox related change.  We need to keep r around, but not send it over the wire*/
         ElgamalCiphertext ciphertext = new ElgamalCiphertext(bigG, bigH, r, p);
 
         return ciphertext;

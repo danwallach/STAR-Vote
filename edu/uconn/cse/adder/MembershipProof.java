@@ -27,8 +27,7 @@ public class MembershipProof {
 	private List<AdderInteger> cList;
 
 	/**
-	 * Constructs a new <code>MembershipProof</code> object with the specified
-	 * prime.
+	 * Constructs a new <code>MembershipProof</code> object with the specified prime.
 	 */
 	public MembershipProof() {
 		yList = new ArrayList<AdderInteger>();
@@ -41,12 +40,12 @@ public class MembershipProof {
 	 * Constructs a new <code>MembershipProof</code> object with the specified
 	 * prime.
 	 *
-	 * @param p the prime
-	 * @param q the sub-prime
-	 * @param yList the y list
-	 * @param zList the z list
-	 * @param sList the s list
-	 * @param cList the c list
+	 * @param p         the prime
+	 * @param q         the sub-prime
+	 * @param yList     the y list
+	 * @param zList     the z list
+	 * @param sList     the s list
+	 * @param cList     the c list
 	 */
 	private MembershipProof(AdderInteger p, AdderInteger q,
 			List<AdderInteger> yList,
@@ -62,13 +61,13 @@ public class MembershipProof {
 	}
 
 	/**
-	 * Computes the actual proof given the ciphertext, public key, value,
+	 * Computes the actual proof given the cipher text, public key, value,
 	 * and domain.
 	 *
-	 * @param ciphertext the ciphertext
-	 * @param pubKey the public key
-	 * @param value the value
-	 * @param domain the domain
+	 * @param ciphertext    the cipher text
+	 * @param pubKey        the public key
+	 * @param value         the value
+	 * @param domain        the domain
 	 */
 	public void compute(ElgamalCiphertext ciphertext, PublicKey pubKey,
 			AdderInteger value,
@@ -143,10 +142,10 @@ public class MembershipProof {
 	 * Verifies the given ciphertext given the ciphertext, public key, and
 	 * domain.
 	 *
-	 * @param ciphertext the ciphertext
-	 * @param pubKey the public key
-	 * @param domain the domain
-	 * @return true if the proof is valid
+	 * @param ciphertext    the ciphertext
+	 * @param pubKey        the public key
+	 * @param domain        the domain
+	 * @return              true if the proof is valid
 	 */
 	public boolean verify(ElgamalCiphertext ciphertext, PublicKey pubKey,
 			List/*<AdderInteger>*/ domain) {
@@ -193,8 +192,8 @@ public class MembershipProof {
 	 * Creates a <tt>MembershipProof</tt> from the string standard representation
 	 * as described in the {@link #toString} method.
 	 *
-	 * @param  s a string that specifies a <tt>MembershipProof</tt>
-	 * @return a <tt>MembershipProof</tt> with the specified values
+	 * @param  s        a string that specifies a <tt>MembershipProof</tt>
+	 * @return a        <tt>MembershipProof</tt> with the specified values
 	 */
 	public static MembershipProof fromString(String s) {
 		StringTokenizer st = new StringTokenizer(s, "pyzsc", true);
@@ -284,28 +283,24 @@ public class MembershipProof {
 		sb.append("p");
 		sb.append(p);
 
-		/*for (AdderInteger y : yList) {*/
 		for (Iterator it = yList.iterator(); it.hasNext();) {
 			AdderInteger y = (AdderInteger) it.next();
 			sb.append("y");
 			sb.append(y);
 		}
 
-		/*for (AdderInteger z : zList) {*/
 		for (Iterator it = zList.iterator(); it.hasNext();) {
 			AdderInteger z = (AdderInteger) it.next();
 			sb.append("z");
 			sb.append(z);
 		}
 
-		/*for (AdderInteger s : sList) {*/
 		for (Iterator it = sList.iterator(); it.hasNext();) {
 			AdderInteger s = (AdderInteger) it.next();
 			sb.append("s");
 			sb.append(s);
 		}
 
-		/*for (AdderInteger c : cList) {*/
 		for (Iterator it = cList.iterator(); it.hasNext();) {
 			AdderInteger c1 = (AdderInteger) it.next();
 			sb.append("c");
@@ -348,8 +343,8 @@ public class MembershipProof {
 	/**
      * Method for interop with VoteBox's S-Expression system.
      * 
-     * @param ase - S-Expression representation of a MembershipProof
-     * @return the MembershipProof equivalent of ase
+     * @param ase    S-Expression representation of a MembershipProof
+     * @return       the MembershipProof equivalent of ase
      */
 	public static MembershipProof fromASE(ASExpression ase){
 		ListExpression exp = (ListExpression)ase;

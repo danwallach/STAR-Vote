@@ -64,7 +64,6 @@ public class Election {
 
         Vote total = new Vote(initList);
 
-        /*for (Vote vote : votes) {*/
         for (Iterator it = votes.iterator(); it.hasNext();) {
             Vote vote2 = (Vote) it.next();
             total = vote2.multiply(total);
@@ -89,7 +88,6 @@ public class Election {
                     List<AdderInteger> coeffs, Vote sum,
                     PublicKey masterKey) {
 
-        //System.err.println("INPUTS TO getFinalSum:\n\tpartialSums: " + partialSums + "\n\tcoeffs: " + coeffs + "\n\tsum: " + sum + "\n\tmasterKey: " + masterKey);
         AdderInteger p = masterKey.getP();
         AdderInteger q = masterKey.getQ();
         AdderInteger g = masterKey.getG();
@@ -127,26 +125,21 @@ public class Election {
 
             int numVotes = votes.size();
 
-//            System.out.println("Looping " + (numVotes + 1) + " times to look for result");
-
             for (int k = 0; k <= numVotes; k++) {
                 j = new AdderInteger(k, q);
 
                 System.out.println("DOES " + f.pow(j) + " equal " + target + "?");
 
                 if (f.pow(j).equals(target)) {
-//                    System.out.println("GOT RESULT!!!");
                     gotResult = true;
                     break;
                 }
             }
 
             if (gotResult) {
-//                System.out.println("Adding result: " + j);
                 results.add(j);
                 gotResult = false;
             } else {
-//                System.out.println("THROWING EXCEPTION!!!");
                 throw new SearchSpaceExhaustedException("Error searching for "
                                                         + target);
             }
