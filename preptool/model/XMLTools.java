@@ -49,99 +49,148 @@ public class XMLTools {
 
 	/**
 	 * Adds a property element
-	 * @param doc the document
-	 * @param elt the element to add the property to
-	 * @param name name of the property
-	 * @param type type of the property
-	 * @param value value of the property
+     *
+	 * @param doc       the document
+	 * @param elt       the element to add the property to
+	 * @param name      name of the property
+	 * @param type      type of the property
+	 * @param value     value of the property
 	 */
-	public static void addProperty(Document doc, Element elt, String name,
-			String type, Object value) {
+	public static void addProperty(Document doc, Element elt, String name, String type, Object value) {
+
+        /* Create an element for properties */
 		Element propElt = doc.createElement("Property");
+
+        /* Set name, type, and value attributes */
 		propElt.setAttribute("name", name);
 		propElt.setAttribute("type", type);
 		propElt.setAttribute("value", value.toString());
+
+        /* Add the property to the element */
 		elt.appendChild(propElt);
 	}
     
     /**
      * Adds a list property element
-     * @param doc the document
-     * @param elt the element to add the property to
-     * @param name name of the property
-     * @param type type of the property
-     * @param values values of the property
+     *
+     * @param doc       the document
+     * @param elt       the element to add the property to
+     * @param name      name of the property
+     * @param type      type of the property
+     * @param values    values of the property
      */
-    public static void addListProperty(Document doc, Element elt, String name,
-            String type, Object[] values) {
+    public static void addListProperty(Document doc, Element elt, String name, String type, Object[] values) {
+
+        /* Create an element for ListProperty */
         Element propElt = doc.createElement("ListProperty");
+
+        /* Set name and type attributes */
         propElt.setAttribute("name", name);
         propElt.setAttribute("type", type);
+
+        /* Go through each of the values and add it to the document as its ListElement */
         for (Object val: values) {
             Element listElt = doc.createElement("ListElement");
             listElt.setAttribute("value", val.toString());
             propElt.appendChild(listElt);
         }
+
+        /* Add the property to the element */
         elt.appendChild(propElt);
     }
 
 	/**
 	 * Constructs a new document
-	 * @return the new document
+     *
+	 * @return      the new document
 	 */
 	public static Document createDocument() throws ParserConfigurationException {
-		return DocumentBuilderFactory.newInstance().newDocumentBuilder()
-				.newDocument();
+		return DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
 	}
 
 	/**
 	 * Writes an XML tree to disk
-	 * @param rootElt the root element
-	 * @param file path of the file to write to
+     *
+	 * @param rootElt       the root element
+	 * @param file          path of the file to write to
 	 */
-	public static void writeXML(Element rootElt, String file)
-			throws IllegalArgumentException, TransformerFactoryConfigurationError, TransformerException {
+	public static void writeXML(Element rootElt, String file) throws IllegalArgumentException, TransformerFactoryConfigurationError, TransformerException {
+
+        /* Normalise the root element */
 		rootElt.normalize();
+
+        /* Create a new transformer */
 		Transformer xformer = TransformerFactory.newInstance().newTransformer();
+
+        /* Set indents as the output property */
 		xformer.setOutputProperty("indent", "yes");
+
+        /* Make a new DOMSource from the root element and StreamResult linked to a file for output */
 		DOMSource d = new DOMSource(rootElt);
 		StreamResult r = new StreamResult(new File(file));
+
+        /* Output the transformed root into the file */
 		xformer.transform(d, r);
 	}
 
 	/**
 	 * Returns a HashMap of all of the properties of an element
-	 * @param elt the element
-	 * @return a HashMap of the properties
+     *
+	 * @param elt       the element
+	 * @return          a HashMap of the properties
 	 */
 	public static HashMap<String, Object> getProperties(Element elt) {
+
 		HashMap<String, Object> properties = new HashMap<String, Object>();
+
+        /* Pull the property elements from the element */
 		NodeList list = elt.getElementsByTagName("Property");
-		for (int i = 0; i < list.getLength(); i++) {
+
+        /* Go through the list */
+        for (int i = 0; i < list.getLength(); i++) {
+
+            /* Cast each item as a Element */
 			Element prop = (Element) list.item(i);
-			if (prop.getAttribute("type").equals("String"))
-				properties.put(prop.getAttribute("name"), prop
-						.getAttribute("value"));
-			if (prop.getAttribute("type").equals("Integer"))
-				properties.put(prop.getAttribute("name"), Integer.parseInt(prop
-						.getAttribute("value")));
-			if (prop.getAttribute("type").equals("Boolean"))
-				properties.put(prop.getAttribute("name"), Boolean
-						.parseBoolean(prop.getAttribute("value")));
+
+            /* Predefine attribute Strings */
+            String type  = prop.getAttribute("type");
+            String value = prop.getAttribute("value");
+            String name  = prop.getAttribute("name");
+
+            /* Figure out what type it is and put its value and name into the HashMap */
+            switch (type) {
+
+                case "String" : properties.put(name, value);
+                                break;
+
+                case "Integer": properties.put(name, Integer.parseInt(value));
+                                break;
+
+                case "Boolean": properties.put(name, Boolean.parseBoolean(value));
+                                break;
+            }
 		}
+
+        /* Return the HashMap */
 		return properties;
 	}
 
 	/**
 	 * Reads an XML tree from disk into a document
-	 * @param file path of the file
-	 * @return the document
+     *
+	 * @param file      path of the file
+	 * @return          the document
 	 */
-	public static Document readXML(String file)
-			throws ParserConfigurationException, SAXException, IOException {
-		DocumentBuilder builder = DocumentBuilderFactory.newInstance()
-				.newDocumentBuilder();
-		return builder.parse(new File(file));
+	public static Document readXML(String file) throws ParserConfigurationException, SAXException, IOException {
+
+        /* Create a new DocumentBuilder */
+		DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+
+        /* Create the file */
+        File toParse = new File(file);
+
+        /* Return the Document returned by parsing the file */
+		return builder.parse(toParse);
 	}
 
 }
