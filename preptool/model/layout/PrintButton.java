@@ -10,35 +10,26 @@ import java.awt.*;
  */
 public class PrintButton extends Button {
 
-    /**
-     * The text of this PrintButton
-     */
+    /** The text of this PrintButton  */
     private String text;
 
-    /**
-     * The second line of this PrintButton (used in Presidential Races)
-     */
+    /** The second line of this PrintButton (used in Presidential Races)  */
     private String secondLine = "";
 
-    /**
-     * The party text of this PrintButton (used for candidates)
-     */
+    /** The party text of this PrintButton (used for candidates) */
     private String party = "";
 
-    /**
-     * Whether this PrintButton has bold text
-     */
+    /** Whether this PrintButton has bold text */
     private boolean bold;
 
-    /**
-     * Whether this PrintButton has increased font size
-     */
+    /** Whether this PrintButton has increased font size */
     private boolean increasedFontSize;
 
     /**
-     * Constructs a PrintButton with the given unique ID, text, and strategy.
-     * @param uid the unique ID
-     * @param text the text
+     * Constructs a PrintButton
+     *
+     * @param uid       the unique ID
+     * @param text      the text
      */
     public PrintButton(String uid, String text) {
         super(uid, text);
@@ -49,12 +40,12 @@ public class PrintButton extends Button {
     /**
      * Constructs a PrintButton with the given unique ID, text, strategy, and
      * size visitor that determines and sets the size.
-     * @param uid the unique ID
-     * @param text the text
-     * @param sizeVisitor the size visitor
+     *
+     * @param uid       the unique ID
+     * @param text      the text
+     * @param sizeVisitor       the size visitor
      */
-    public PrintButton(String uid, String text,
-                        ILayoutComponentVisitor<Object,Dimension> sizeVisitor) {
+    public PrintButton(String uid, String text, ILayoutComponentVisitor<Object,Dimension> sizeVisitor) {
         this(uid, text);
         this.text = text;
         setSize(execute(sizeVisitor));
@@ -62,25 +53,14 @@ public class PrintButton extends Button {
     
     /**
      * Calls the forPrintButton method in visitor
-     * @param visitor the visitor
-     * @param param the parameters
      *
-     * @return the result of the visitor
+     * @see preptool.model.layout.ALayoutComponent#execute(ILayoutComponentVisitor, Object[])
      */
     @Override
     public <P,R> R execute(ILayoutComponentVisitor<P,R> visitor, P... param) {
         return visitor.forPrintButton(this, param);
     }
 
-    /**
-     * Returns two lines separated by a newline if necessary
-     */
-    public String getBothLines() {
-        if (secondLine.equals(""))
-            return text;
-        else
-            return text + " \n " + secondLine;
-    }
 
     /**
      * @return the party
@@ -160,6 +140,4 @@ public class PrintButton extends Button {
         return "PrintButton[text=" + text + ",x=" + xPos + ",y=" + yPos
                 + ",width=" + width + ",height=" + height + "]";
     }
-
-
 }

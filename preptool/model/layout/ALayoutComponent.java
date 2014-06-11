@@ -35,6 +35,7 @@ import preptool.model.XMLTools;
  * that is anything that can be laid out and displayed on the screen, including
  * labels, buttons, and toggle buttons. An ALayoutComponent records its size and
  * position, and the relative position of other ALayoutComponents on the page.
+ *
  * @author Corey Shaw
  */
 public abstract class ALayoutComponent implements Cloneable {
@@ -96,7 +97,8 @@ public abstract class ALayoutComponent implements Cloneable {
 	
 	/**
 	 * Creates a new ALayoutComponent with the given unique ID
-	 * @param uniqueID the unique ID
+     *
+	 * @param uniqueID      the unique ID
 	 */
 	public ALayoutComponent(String uniqueID) {
 		super();
@@ -107,62 +109,62 @@ public abstract class ALayoutComponent implements Cloneable {
 	 * Clones this component, keeping the same parameters (including UID)<br>
 	 * Used so that two of the same component can be on the same page, but in
 	 * different locations
+     *
+     * @return      a clone of the Spacer
 	 */
-	@Override
+    @SuppressWarnings("CloneDoesntDeclareCloneNotSupportedException")
     public ALayoutComponent clone() {
-		try {
-			return (ALayoutComponent)super.clone();
-		} catch (CloneNotSupportedException e) {
-			e.printStackTrace();
-		}
+		try { return (ALayoutComponent)super.clone(); }
+        catch (CloneNotSupportedException e) { e.printStackTrace(); }
 		return null;
 	}
 	
 	/**
 	 * Executes an ILayoutComponentVisitor on this component.
-	 * @param visitor the visitor
-	 * @param param the parameters
-	 * @return the result of the visitor
+     *
+	 * @param visitor       the visitor
+	 * @param param         the parameters
+	 * @return              the result of the visitor
 	 */
 	public abstract <P,R> R execute(ILayoutComponentVisitor<P,R> visitor, P... param);
 
 	/**
-	 * @return the down
+	 * @return the component linked to this one in the "down" direction
 	 */
 	public ALayoutComponent getDown() {
 		return down;
 	}
 
 	/**
-	 * @return the height
+	 * @return the height of this component
 	 */
 	public int getHeight() {
 		return height;
 	}
 
 	/**
-	 * @return the left
+	 * @return the component linked to this one in the "left" direction
 	 */
 	public ALayoutComponent getLeft() {
 		return left;
 	}
 
 	/**
-	 * @return the next
+	 * @return the "next" component linked to this one
 	 */
 	public ALayoutComponent getNext() {
 		return next;
 	}
 
 	/**
-	 * @return the previous
+	 * @return the "previous component linked to this one
 	 */
 	public ALayoutComponent getPrevious() {
 		return previous;
 	}
 
 	/**
-	 * @return the right
+	 * @return the component linked to this one in the "right" direction
 	 */
 	public ALayoutComponent getRight() {
 		return right;
@@ -176,7 +178,7 @@ public abstract class ALayoutComponent implements Cloneable {
 	}
 
 	/**
-	 * @return the up
+	 * @return the component linked to this one in the "up" direction
 	 */
 	public ALayoutComponent getUp() {
 		return up;
@@ -190,21 +192,21 @@ public abstract class ALayoutComponent implements Cloneable {
 	}
 
 	/**
-	 * @return the xPos
+	 * @return the x position
 	 */
 	public int getXPos() {
 		return xPos;
 	}
 
 	/**
-	 * @return the yPos
+	 * @return the y position
 	 */
 	public int getYPos() {
 		return yPos;
 	}
 
 	/**
-	 * @param down the down to set
+	 * @param down the component linked to this one in the "down" direction to set
 	 */
 	public void setDown(ALayoutComponent down) {
 		this.down = down;
@@ -218,35 +220,35 @@ public abstract class ALayoutComponent implements Cloneable {
 	}
 
 	/**
-	 * @param left the left to set
+	 * @param left the component linked to this one in the "down" direction to set
 	 */
 	public void setLeft(ALayoutComponent left) {
 		this.left = left;
 	}
 
 	/**
-	 * @param next the next to set
+	 * @param next the "next" component linked to this one in
 	 */
 	public void setNext(ALayoutComponent next) {
 		this.next = next;
 	}
 
 	/**
-	 * @param previous the previous to set
+	 * @param previous the "previous" component linked to this one in
 	 */
 	public void setPrevious(ALayoutComponent previous) {
 		this.previous = previous;
 	}
 
 	/**
-	 * @param right the right to set
+	 * @param right the component linked to this one in the "right" direction to set
 	 */
 	public void setRight(ALayoutComponent right) {
 		this.right = right;
 	}
 
 	/**
-	 * @param dim the size to set
+	 * @param dim the dimension to set
 	 */
 	public void setSize(Dimension dim) {
 		width = dim.width;
@@ -254,7 +256,7 @@ public abstract class ALayoutComponent implements Cloneable {
 	}
 
 	/**
-	 * @param up the up to set
+	 * @param up the component linked to this one in the "up" direction to set
 	 */
 	public void setUp(ALayoutComponent up) {
 		this.up = up;
@@ -268,14 +270,14 @@ public abstract class ALayoutComponent implements Cloneable {
 	}
 
 	/**
-	 * @param pos the xPos to set
+	 * @param pos the x-position to set
 	 */
 	public void setXPos(int pos) {
 		xPos = pos;
 	}
 
 	/**
-	 * @param pos the yPos to set
+	 * @param pos the y-position to set
 	 */
 	public void setYPos(int pos) {
 		yPos = pos;
@@ -286,14 +288,15 @@ public abstract class ALayoutComponent implements Cloneable {
 	 */
 	@Override
 	public String toString() {
-		return super.toString() + "[x=" + xPos + ",y=" + yPos + ",width="
-		+ width + ",height=" + height + "]";
+		return super.toString() + "[x = " + xPos + ", y = " + yPos + ", width = "
+		+ width + ", height = " + height + "]";
 	}
 	
 	/**
 	 * Converts this ALayoutComponent object to XML
-	 * @param doc the document
-	 * @return the element for this ALayoutComponent
+     *
+	 * @param doc       the document this component is part of
+	 * @return          the XML representation of this ALayoutComponent
 	 */
 	public abstract Element toXML(Document doc);
 
@@ -301,27 +304,22 @@ public abstract class ALayoutComponent implements Cloneable {
 	 * Helper method for generating XML: Adds the unique ID, x, and y
 	 * attributes, and adds properties for up, down, left, right, next, and
 	 * previous.
-	 * @param doc the document
-	 * @param compElt the element of the component
+     *
+	 * @param doc           the document this component is part of
+	 * @param compElt       the XML representation of this ALayoutComponent
 	 */
 	protected void addCommonAttributes(Document doc, Element compElt) {
 
 		compElt.setAttribute("uid", uniqueID);
 		compElt.setAttribute("x", Integer.toString(xPos));
 		compElt.setAttribute("y", Integer.toString(yPos));
-		if (up != null)
-			XMLTools.addProperty(doc, compElt, "Up", "String", up.getUID());
-		if (down != null)
-			XMLTools.addProperty(doc, compElt, "Down", "String", down.getUID());
-		if (left != null)
-			XMLTools.addProperty(doc, compElt, "Left", "String", left.getUID());
-		if (right != null)
-			XMLTools.addProperty(doc, compElt, "Right", "String", right.getUID());
-		if (next != null)
-			XMLTools.addProperty(doc, compElt, "Next", "String", next.getUID());
-		if (previous != null){
-			XMLTools.addProperty(doc, compElt, "Previous", "String", previous.getUID());
-        }
+		if (up != null)         XMLTools.addProperty(doc, compElt, "Up",       "String", up.getUID());
+		if (down != null)       XMLTools.addProperty(doc, compElt, "Down",     "String", down.getUID());
+		if (left != null)       XMLTools.addProperty(doc, compElt, "Left",     "String", left.getUID());
+		if (right != null)      XMLTools.addProperty(doc, compElt, "Right",    "String", right.getUID());
+		if (next != null)       XMLTools.addProperty(doc, compElt, "Next",     "String", next.getUID());
+		if (previous != null)   XMLTools.addProperty(doc, compElt, "Previous", "String", previous.getUID());
+
 	}
 
 }

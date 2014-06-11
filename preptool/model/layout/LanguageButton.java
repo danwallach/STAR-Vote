@@ -22,8 +22,6 @@
 
 package preptool.model.layout;
 
-import java.awt.Dimension;
-
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -34,6 +32,7 @@ import preptool.model.language.Language;
 /**
  * A LanguageButton is a ToggleButton that specifies a language selection
  * on the ballot, thus it must have a Language.
+ *
  * @author Corey Shaw
  */
 public class LanguageButton extends ToggleButton {
@@ -41,21 +40,13 @@ public class LanguageButton extends ToggleButton {
     Language language;
 
     /**
-     * @param uid
-     * @param t
-     * @param sizeVisitor
+     * Constructor
+     *
+     * @param uid       The unique ID
+     * @param text      The text for this button
      */
-    public LanguageButton(String uid, String t,
-            ILayoutComponentVisitor<Object, Dimension> sizeVisitor) {
-        super(uid, t, sizeVisitor);
-    }
-
-    /**
-     * @param uid
-     * @param t
-     */
-    public LanguageButton(String uid, String t) {
-        super(uid, t);
+    public LanguageButton(String uid, String text) {
+        super(uid, text);
     }
 
     /**
@@ -71,8 +62,13 @@ public class LanguageButton extends ToggleButton {
     public void setLanguage(Language language) {
         this.language = language;
     }
-    
-    @Override
+
+    /**
+     * Converts this LanguageButton object to XML
+     *
+     * @param doc       the document this component is a part of
+     * @return          the XML element representation for this LanguageButton
+     */
     public Element toXML(Document doc) {
         Element buttonElt = super.toXML(doc);
         XMLTools.addProperty(doc, buttonElt, "Language", "String", language.getShortName());

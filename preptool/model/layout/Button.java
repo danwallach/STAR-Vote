@@ -33,67 +33,51 @@ import preptool.model.XMLTools;
 
 /**
  * A Button is a component that executes an action in VoteBox when clicked.
+ *
  * @author Corey Shaw
  */
 public class Button extends ALayoutComponent {
 
-	/**
-	 * The text on this button
-	 */
+	/** The text on this button */
 	private String text;
 
-	/**
-	 * The strategy of this button when clicked
-	 */
+	/** The strategy of this button when clicked */
 	private String strategy;
 
-	/**
-	 * Page to go to when clicked
-	 */
+	/** Page to go to when clicked */
 	private int pageNum;
 
-	/**
-	 * Whether this button is bold
-	 */
+	/** Whether this button is bold */
 	private boolean bold;
 
-	/**
-	 * Whether this button is boxed
-	 */
+	/** Whether this button is boxed */
 	private boolean boxed = true;
 
-	/**
-	 * Whether this button has an increased font size
-	 */
+	/** Whether this button has an increased font size */
 	private boolean increasedFontSize;
 
-	/**
-	 * The background color of this button
-	 */
+	/** The background color of this button */
 	private Color backgroundColor = new Color(225, 227, 235);
-	
-	/**
-	 * The UID of the card containing this button (the 'parent' card).
-	 */
-	private String parentCardUID;
 
 	/**
 	 * Constructs a new Button with given unique ID, text, and strategy
-	 * @param uid the uniqueID
-	 * @param text the text
-	 * @param strat the ButtonStrategy
+     *
+	 * @param uid           the uniqueID
+	 * @param text          the text on the button
+	 * @param strategy      the ButtonStrategy
 	 */
-	public Button(String uid, String text, String strat) {
+	public Button(String uid, String text, String strategy) {
 		super(uid);
 		this.text = text;
-		strategy = strat;
+		this.strategy = strategy;
 	}
 
     /**
      * Constructor which only takes in a uid and text, this button will have no strategy
      * Note that this is only implemented by PrintButton, a button which is never shown or interacted with
-     * @param uid
-     * @param text the text on the button
+     *
+     * @param uid       the uniqueID
+     * @param text      the text on the button
      */
     public Button(String uid, String text){
         super(uid);
@@ -104,22 +88,22 @@ public class Button extends ALayoutComponent {
 	/**
 	 * Constructs a new Button with given unique ID, text, strategy, and size
 	 * visitor, which determines and sets the size.
-	 * @param uid the unique ID
-	 * @param text the text
-	 * @param strat the ButtonStrategy
-	 * @param sizeVisitor the size visitor
+     *
+	 * @param uid               the unique ID
+	 * @param text              the text
+	 * @param strategy             the ButtonStrategy
+	 * @param sizeVisitor       the size visitor
 	 */
-	public Button(String uid, String text, String strat,
+	public Button(String uid, String text, String strategy,
 			ILayoutComponentVisitor<Object,Dimension> sizeVisitor) {
-		this(uid, text, strat);
+		this(uid, text, strategy);
 		setSize(execute(sizeVisitor));
 	}
 
 	/**
 	 * Calls the forButton method in visitor
-	 * @param visitor the visitor
-	 * @param param the parameters
-	 * @return the result of the visitor
+     *
+	 * @see preptool.model.layout.ALayoutComponent#execute(ILayoutComponentVisitor, Object[])
 	 */
 	@Override
 	public <P,R> R execute(ILayoutComponentVisitor<P,R> visitor, P... param) {
@@ -218,16 +202,10 @@ public class Button extends ALayoutComponent {
 	}
 	
 	/**
-	 * @param parentUID the UID to set
-	 */
-	public void setParentCardUID(String parentUID) {
-		this.parentCardUID = parentUID;
-	}
-
-	/**
 	 * Converts this Button object to XML
-	 * @param doc the document
-	 * @return the element for this Button
+     *
+	 * @param doc       the document this component is a part of
+     * @return          the XML element representation for this Button
 	 */
 	@Override
     public Element toXML(Document doc) {
@@ -240,17 +218,6 @@ public class Button extends ALayoutComponent {
 			XMLTools.addProperty(doc, buttonElt, "PageNumber", "Integer", Integer.toString(pageNum));
 		}
 		
-		if (strategy.equals("NextPageRequireSelection") || strategy.equals("GoToPageRequireSelection")) {
-        	// This should point to the 'no selection' page corresponding
-			// to the current race. For now, the output has to be manually
-			// changed from "-1" to the correct page number
-            //TODO Figure out where a no selection page come in to play
-			XMLTools.addProperty(
-					doc, buttonElt, "NoSelectionPageNumber", "Integer", Integer.toString(pageNum));
-			// Provides the UID of the parent card 
-			XMLTools.addProperty(
-					doc, buttonElt, "ParentCard", "String", parentCardUID);
-		}
 		return buttonElt;
 	}
 

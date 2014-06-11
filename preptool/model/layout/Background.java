@@ -29,19 +29,19 @@ import org.w3c.dom.Element;
 
 /**
  * A component that represents the background image of a page
+ *
  * @author Corey Shaw
  */
 public class Background extends ALayoutComponent {
 
-	/**
-	 * The image
-	 */
+	/** The image representation of this background */
 	private BufferedImage image;
 
 	/**
 	 * Constructs a new Background with given unique ID and image
-	 * @param uid the unique ID
-	 * @param img the image
+     *
+	 * @param uid       the unique ID
+	 * @param img       the image
 	 */
 	public Background(String uid, BufferedImage img) {
 		super(uid);
@@ -51,34 +51,31 @@ public class Background extends ALayoutComponent {
 	}
 
 	/**
-	 * Calls the forBackground method in visitor
-	 * @param visitor the visitor
-	 * @param param list of parameters to pass to the appropriate visitor method
-	 * @return the result of the visitor
+	 * @see preptool.model.layout.ALayoutComponent#execute(ILayoutComponentVisitor, Object[])
 	 */
-	@Override
 	public <P,R> R execute(ILayoutComponentVisitor<P,R> visitor, P... param) {
 		return visitor.forBackground(this, param);
 	}
 
 	/**
-	 * @return the image
+	 * @return      the image
 	 */
 	public BufferedImage getImage() {
 		return image;
 	}
 
 	/**
-	 * @param image the image to set
+	 * @param image         the image to set
 	 */
 	public void setImage(BufferedImage image) {
 		this.image = image;
 	}
 
 	/**
-	 * Converts this Background object to XML (same as a  )
-	 * @param doc the document
-	 * @return the element for this Background
+	 * Converts this Background object to XML (same as a Label)
+     *
+	 * @param doc       the document this is part of
+	 * @return          the XML element representation for this Background
 	 */
 	@Override
 	public Element toXML(Document doc) {

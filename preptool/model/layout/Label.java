@@ -228,7 +228,7 @@ public class Label extends ALayoutComponent {
 	}
 
 	/**
-	 * @return a String represnetation of this label
+	 * @return a String representation of this label
 	 */
 	@Override
 	public String toString() {
@@ -238,8 +238,7 @@ public class Label extends ALayoutComponent {
 
 	/**
 	 * Converts this Label object to XML
-	 * @param doc the document
-	 * @return the element for this Label
+	 * @param doc the document this component is a part of@return          the XML element representation for this Label
 	 */
 	@Override
 	public Element toXML(Document doc) {

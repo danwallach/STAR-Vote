@@ -22,41 +22,27 @@
 
 package preptool.model.layout;
 
-import java.awt.Dimension;
-
 /**
  * A special type of Label that is seen on review screens.
+ *
  * @author Corey Shaw
  */
 public class ReviewLabel extends Label {
 
 	/**
 	 * Constructs a ReviewLabel with the given unique ID, text, and strategy.
-	 * @param uid the unique ID
-	 * @param text the text
+     *
+	 * @param uid       the unique ID
+	 * @param text      the text
 	 */
 	public ReviewLabel(String uid, String text) {
 		super(uid, text);
 	}
 
 	/**
-	 * Constructs a ReviewButton with the given unique ID, text, strategy, and
-	 * size visitor that determines and sets the size.
-	 * @param uid the unique ID
-	 * @param text the text
-	 * @param sizeVisitor the size visitor
-	 */
-	public ReviewLabel(String uid, String text,
-			ILayoutComponentVisitor<Object,Dimension> sizeVisitor) {
-		this(uid, text);
-		setSize(execute(sizeVisitor));
-	}
-
-	/**
 	 * Calls the forReviewButton method in visitor
-	 * @param visitor the visitor
-	 * @param param the parameters
-	 * @return the result of the visitor
+     *
+	 * @see preptool.model.layout.ALayoutComponent#execute(ILayoutComponentVisitor, Object[])
 	 */
 	@Override
 	public <P,R> R execute(ILayoutComponentVisitor<P,R> visitor, P... param) {

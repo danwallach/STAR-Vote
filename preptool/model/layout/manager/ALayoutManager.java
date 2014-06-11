@@ -26,7 +26,6 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -65,8 +64,7 @@ import printer.PrintImageUtils;
  *
  * @author Corey Shaw, Dan Sandler
  */
-public abstract class
-        ALayoutManager implements ILayoutManager {
+public abstract class ALayoutManager implements ILayoutManager {
 
 	/** 
 	 * Use a thread pool when exporting images to speed up ballot export on
@@ -107,8 +105,7 @@ public abstract class
      * @param pageTargets mapping of races (Cards) to review pages
      * @return the review page
      */
-    protected abstract ArrayList<Page> makeReviewPage(Ballot ballot,
-            HashMap<Integer, Integer> pageTargets);
+    protected abstract ArrayList<Page> makeReviewPage(Ballot ballot, HashMap<Integer, Integer> pageTargets);
 
     /**
      * Makes an introductory page with instructions on how to use VoteBox.
@@ -200,8 +197,8 @@ public abstract class
     public void renderAllImagesToDisk(final Layout layout, final String location,
             ProgressInfo progressInfo) {
 
-        /* Keeps tabe on which UIDs have been generated and written to the disk */
-        final HashSet<String> uids = new HashSet<String>();
+        /* Keeps tabs on which UIDs have been generated and written to the disk */
+        final HashSet<String> uids = new HashSet<>();
 
         /* An easy reference for the shortname of the current language */
         final String langShortName = getLanguage().getShortName();
@@ -214,7 +211,7 @@ public abstract class
         ArrayList<Language> langs = Language.getAllLanguages();
 
         /* A reference list for the names of all supported languages */
-        final ArrayList<String> langNames = new ArrayList<String>(langs.size());
+        final ArrayList<String> langNames = new ArrayList<>(langs.size());
 
         for(Language lang: langs)
            langNames.add(lang.getName());
@@ -317,6 +314,7 @@ public abstract class
             /**
              * @see preptool.model.layout.ILayoutComponentVisitor#forReviewButton(preptool.model.layout.ReviewButton, Object[])
              */
+            @SuppressWarnings("ResultOfMethodCallIgnored")
             public Void forReviewButton(ReviewButton rb, Object... param) {
 
                 /* get the UID for the button */
@@ -512,7 +510,8 @@ public abstract class
             /**
              * @see preptool.model.layout.ILayoutComponentVisitor#forPrintButton(preptool.model.layout.PrintButton, Object[])
              */
-			public Void forPrintButton(PrintButton pb, Object... param) {
+			@SuppressWarnings("ResultOfMethodCallIgnored")
+            public Void forPrintButton(PrintButton pb, Object... param) {
                 /* Since not all uids are of equal length/don't have underscores, normalize them */
                 String uid = pb.getUID();
                 String uuid;
@@ -583,12 +582,12 @@ public abstract class
                 }
 
                 /* This will hold a stream for each line of text of length 100 characters */
-                ArrayList<InputStream> streams = new ArrayList<InputStream>();
+                ArrayList<InputStream> streams = new ArrayList<>();
 
                 /* Google can only translate strings of less than 100 characters, se we need to break up as naturally as possible */
                 String[] strings = text.split("\n");
 
-                ArrayList<String> lines = new ArrayList<String>();
+                ArrayList<String> lines = new ArrayList<>();
 
                 String line = "";
 
@@ -615,7 +614,7 @@ public abstract class
                         /* Since we can have international characters, we use UTF-8 encoding */
                         line = java.net.URLEncoder.encode(s, "UTF-8");
 
-                        /* This is the perscribed google url */
+                        /* This is the prescribed google url */
                         URL url = new URL("http://translate.google.com/translate_tts?tl=" + langShortName + "&q="+line);
 
                         /* Open an HTTP connection to the specified URL */
@@ -624,7 +623,7 @@ public abstract class
                         /* This fools the connection into thinking we're just a web-browser */
                         urlConn.setRequestProperty("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.36 Safari/537.36");
 
-                        /* Strean the mp3 return file into a buffer, and then stick the buffer in our list */
+                        /* Stream the mp3 return file into a buffer, and then stick the buffer in our list */
                         InputStream audioSrc = urlConn.getInputStream();
                         streams.add(audioSrc);
                     }

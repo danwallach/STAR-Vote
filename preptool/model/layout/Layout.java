@@ -34,32 +34,28 @@ import preptool.model.XMLTools;
  * The Layout class encapsulates all of the information that sizes and positions
  * items in the ballot. It contains a list of pages, that each contain a number
  * of components that VoteBox can display.
+ *
  * @author Corey Shaw
  */
 public class Layout {
 
-	/**
-	 * An array of pages contained within this layout
-	 */
+	/** An array of pages contained within this layout */
 	private ArrayList<Page> pages;
     
-    /**
-     * The page number of the override-cancel page
-     */
+    /** The page number of the override-cancel page */
     private int overrideCancelPage;
     
-    /**
-     * The page number of the override-cast page
-     */
+    /** The page number of the override-cast page */
     private int overrideCastPage;
 
+    /** The page number of the provisional success page */
     private int provisionalPage;
 
     /**
 	 * Constructs a blank layout with an empty list of Pages
 	 */
 	public Layout() {
-		pages = new ArrayList<Page>();
+		pages = new ArrayList<>();
 	}
 
     /**
@@ -107,8 +103,9 @@ public class Layout {
 
 	/**
 	 * Converts this Layout object to XML
-	 * @param doc the document
-	 * @return the element for this Layout
+     *
+	 * @param doc       the document this component is a part of
+     * @return          the XML element representation for this Layout
 	 */
 	public Element toXML(Document doc) {
 		Element layoutElt = doc.createElement("Layout");

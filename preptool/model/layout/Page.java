@@ -34,35 +34,28 @@ import preptool.model.XMLTools;
  * A Page represents what a user would see on the screen at any point during
  * voting. Each Page contains a list of ALayoutComponents, which keep track of
  * their size and location, and can be rendered on the screen.
+ *
  * @author Corey Shaw
  */
 public class Page {
 
-	/**
-	 * Indicates whether or not a page is a review screen.
-	 */
+	/** Indicates whether or not a page is a review screen. */
 	private boolean isReviewPage = false;
 	
-	/**
-	 * The array of components on this Page
-	 */
+	/** The array of components on this Page */
 	private ArrayList<ALayoutComponent> components;
 
-	/**
-	 * The title component on this Page
-	 */
+	/** The title component on this Page */
 	private ALayoutComponent title;
 	
-	/**
-	 * Unique ID of the background label (if any)
-	 */
+	/**  Unique ID of the background label (if any)  */
 	private String backgroundLabel = "";
 
 	/**
 	 * Constructs a blank page with an empty list of components.
 	 */
 	public Page() {
-		components = new ArrayList<ALayoutComponent>();
+		components = new ArrayList<>();
 	}
 
 	/**
@@ -89,15 +82,16 @@ public class Page {
 	/**
 	 * @return a String for this Page
 	 */
-	@Override
+    @Override
 	public String toString() {
 		return super.toString() + "[ " + components + "]";
 	}
 
 	/**
 	 * Converts this Page object to XML
-	 * @param doc the document
-	 * @return the element for this Page
+     *
+	 * @param doc       the document this component is a part of
+     * @return          the XML element representation for this Page
 	 */
 	public Element toXML(Document doc) {
 		Element pageElt = doc.createElement("Page");
@@ -115,15 +109,22 @@ public class Page {
 		return pageElt;
 	}
 
-	public void markAsReviewPage() {
-		isReviewPage = true;
-	}
-	
-	public void setTitle(ALayoutComponent title){
+    /**
+     * Sets this page as a review page
+     */
+	public void markAsReviewPage() { isReviewPage = true; }
+
+    /**
+     * @param title set the title of this page
+     */
+    public void setTitle(ALayoutComponent title){
 		this.title = title;
 	}
-	
-	public ALayoutComponent getTitle(){
+
+    /**
+     * @return this page's title
+     */
+    public ALayoutComponent getTitle(){
 		return title;
 	}
 }
