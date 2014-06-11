@@ -33,7 +33,7 @@ package verifier;
  * the plugin as it sees fit.
  * 
  * @see verifier.Verifier
- * @author kyle
+ * @author Kyle Derr
  * 
  */
 public interface IVerifierPlugin {
@@ -41,12 +41,10 @@ public interface IVerifierPlugin {
     /**
      * This method will be called from the verifier once after the plugin is
      * constructed.
-     * 
-     * @param verifier
-     *            This is the verifier instance that is constructing this
-     *            plugin.
-     * @throws PluginException
-     *             This method throws if the plugin encountered problems.
+     *
+     * @param verifier      the verifier instance that is constructing this plugin
+     *
+     * @throws PluginException if the plugin encountered problems.
      */
     public abstract void init(Verifier verifier) throws PluginException;
 }

@@ -60,13 +60,17 @@ public class Party extends JLabel {
 	 * Constructs a new Party.
 	 */
 	public Party() {
-		name = new LocalizedString();
-		abbrev = new LocalizedString();
+
+        /* Initialise the fields */
+		clear();
 	}
 
     public Party(String name, String abbrev) {
+
+        /* Initialise the fields */
         this();
 
+        /* Set the name and abbreviations */
         setName(Language.getLanguageForName("English"), name);
         setAbbrev(Language.getLanguageForName("English"), abbrev);
     }
@@ -85,57 +89,63 @@ public class Party extends JLabel {
 	 */
 	@Override
 	public boolean equals(Object obj) {
+
+        /* Return false if not a Party */
 		if (!(obj instanceof Party)) return false;
-		Party rhs = (Party) obj;
+
+        /* Now we know it is, so go ahead and cast it */
+        Party rhs = (Party) obj;
+
+        /* Return the evaluation of the names and abbreviations are the same */
 		return name.equals(rhs.name) && abbrev.equals(rhs.abbrev);
 	}
 
 	/**
-	 * @return the abbrev
+	 * @return      the abbrev
 	 */
 	public String getAbbrev(Language lang) {
 		return abbrev.get(lang);
 	}
 
 	/**
-	 * @return the name
+	 * @return      the name
 	 */
 	public String getName(Language lang) {
 		return name.get(lang);
 	}
 
     /**
-     * @return
+     * @return      the edit party constant
      */
     public static Party getEditParty() {
         return EDIT_PARTY;
     }
 
     /**
-	 * @param lang the language of this abbreviation
-	 * @param abbrev the abbreviation to set
+	 * @param lang      the language of this abbreviation
+	 * @param abbrev    the abbreviation to set
 	 */
 	public void setAbbrev(Language lang, String abbrev) {
 		this.abbrev.set(lang, abbrev);
 	}
 
 	/**
-	 * @param abbrev the abbreviation to set
+	 * @param abbrev    the abbreviation to set
 	 */
 	public void setAbbrev(LocalizedString abbrev) {
 		this.abbrev = abbrev;
 	}
 
 	/**
-	 * @param lang the language this name is in
-	 * @param name the name to set
+	 * @param lang      the language this name is in
+	 * @param name      the name to set
 	 */
 	public void setName(Language lang, String name) {
 		this.name.set(lang, name);
 	}
 
 	/**
-	 * @param name the name to set
+	 * @param name      the name to set
 	 */
 	public void setName(LocalizedString name) {
 		this.name = name;
@@ -143,35 +153,66 @@ public class Party extends JLabel {
 
 	/**
 	 * Converts this party to a savable XML representation, to be opened later
-	 * @param doc the document
-	 * @return the element for this Party
+     *
+	 * @param doc       the document
+	 * @return          the element for this Party
 	 */
 	public Element toSaveXML(Document doc) {
+
+        /* Create a party element for the document */
 		Element elt = doc.createElement("Party");
+
+        /* Add the name and abbreviation to the party element */
 		elt.appendChild(name.toSaveXML(doc, "Name"));
 		elt.appendChild(abbrev.toSaveXML(doc, "Abbrev"));
+
+        /* Return the party element */
 		return elt;
 	}
 
 	/**
 	 * Parses XML into a Party object
-	 * @param elt the element
-	 * @return the Party
+     *
+	 * @param elt       the element
+	 * @return          the Party
 	 */
 	public static Party parseXML(Element elt) {
+
+        /* Make sure the element being loaded is a party */
 		assert elt.getTagName().equals("Party");
+
 		Party party = new Party();
 
+        /* Gets a list of all the parties (by searching for LocalizedStrings) */
 		NodeList list = elt.getElementsByTagName("LocalizedString");
+
+
+        /* Go through the list */
 		for (int i = 0; i < list.getLength(); i++) {
+
+            /* Pull the item out */
 			Element child = (Element) list.item(i);
-			if (child.getAttribute("name").equals("Name"))
-				party.setName(LocalizedString.parseXML(child));
-			if (child.getAttribute("name").equals("Abbrev"))
-				party.setAbbrev(LocalizedString.parseXML(child));
+
+            /* Get its name */
+            String name = child.getAttribute("name");
+
+            /* Set up booleans */
+            Boolean isName = name.equals("Name");
+            Boolean isAbbrev = name.equals("Abbrev");
+
+            /* See if it is "Name" or "Abbrev" */
+            if(isName || isAbbrev) {
+
+                /* If it is, parse the XML */
+                LocalizedString parsedName = LocalizedString.parseXML(child);
+
+                /* Set name or abbreviation accordingly*/
+                if (isName)   party.setName(parsedName);
+                if (isAbbrev) party.setAbbrev(parsedName);
+            }
 		}
 
+        /* Return the party */
 		return party;
 	}
-
 }
