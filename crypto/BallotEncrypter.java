@@ -81,8 +81,9 @@ public class BallotEncrypter {
 
         List<AdderInteger> keyParts = new ArrayList<AdderInteger>();
 
-        /*In order to fool Adder into encrypting our key properly, we break it into parts
-        Which represent "votes" that will be encrypted using existing ElGamal*/
+        /* In order to fool Adder into encrypting our key properly, we break it into parts
+        Which represent "votes" that will be encrypted using existing ElGamal */
+
         for(int i = 0; i < 16; i++){
             keyParts.add(new AdderInteger(new BigInteger(Arrays.copyOfRange(writeInKey, i, i + 1))));
         }
@@ -96,7 +97,7 @@ public class BallotEncrypter {
                 String id = vote.get(0).toString();
                 ballotMap.put(id, vote);
         }
-        /*Iterate over the race groups and then map it with the corresponding parent raceid*/
+        /* Iterate over the race groups and then map it with the corresponding parent race id */
         for(List<String> group : raceGroups){
                 List<ASExpression> races = new ArrayList<ASExpression>();
                 for(String raceId : group)
@@ -531,7 +532,7 @@ public class BallotEncrypter {
 
 
 
-        /*Randomly generate a key for write-in encryption, will be sent over the wire, encrypted*/
+        /* Randomly generate a key for write-in encryption, will be sent over the wire, encrypted */
         byte[] writeInKey = new byte[16];
 
         for (int i = 0; i < 16; i++)
@@ -541,8 +542,8 @@ public class BallotEncrypter {
         System.out.println("The write in key is: " + Arrays.toString(writeInKey));
         List<AdderInteger> keyParts = new ArrayList<AdderInteger>();
 
-        /*In order to fool Adder into encrypting our key properly, we break it into parts
-        Which represent "votes" that will be encrypted using existing ElGamal*/
+        /* In order to fool Adder into encrypting our key properly, we break it into parts
+        Which represent "votes" that will be encrypted using existing ElGamal */
 
         for(int i = 0; i < 16; i++){
             keyParts.add(new AdderInteger(new BigInteger(Arrays.copyOfRange(writeInKey, i, i + 1))));

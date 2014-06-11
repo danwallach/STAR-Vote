@@ -15,8 +15,9 @@ import edu.uconn.cse.adder.PublicKey;
 public class AdderKeyGenerator {
 
 	/**
-	 * @param args - args.length should == 1 and args[0] should be a path to the destination directory
+	 * @param args   args.length should == 1 and args[0] should be a path to the destination directory
 	 */
+
 	public static void main(String[] args) throws Exception{
 		if(args.length != 1){
 			System.out.println("Usage: java "+AdderKeyGenerator.class.getName()+" [destination directory]");
