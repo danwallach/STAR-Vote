@@ -33,7 +33,7 @@ package verifier;
  * the plugin as it sees fit.
  * 
  * @see verifier.Verifier
- * @author kyle
+ * @author Kyle Derr
  * 
  */
 public interface IVerifierPlugin {

@@ -72,8 +72,6 @@ public class Page {
 		return backgroundLabel;
 	}
 
-	
-	
 	/**
 	 * @return the list of components
 	 */
