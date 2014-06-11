@@ -31,7 +31,9 @@ import preptool.controller.exception.BallotSaveException;
 import preptool.model.ballot.*;
 import preptool.model.ballot.module.AModule;
 import preptool.model.language.Language;
+import preptool.model.layout.ALayoutComponent;
 import preptool.model.layout.Layout;
+import preptool.model.layout.Page;
 import preptool.model.layout.manager.ILayoutManager;
 import preptool.model.layout.manager.ILayoutManagerFactory;
 import preptool.model.layout.manager.PsychLayoutManager;
@@ -70,33 +72,33 @@ public class Model {
     
     private int cardsPerReviewPage = 10;
     private int fontSize = 8;
+
     private boolean textToSpeech = false;
 
     /**
      * Creates a new Model with a blank Ballot and using the PsychLayoutManager.
      */
     public Model() {
+
+        /* Create a blank ballot */
         newBallot();
 
+        /* Create a new layout manager factory that uses PsychLayoutManager */
         managerFactory = new ILayoutManagerFactory() {
-            public ILayoutManager makeLayoutManager(Language language,
-                                                    int numCardsPerReviewPage, int fontSize, boolean textToSpeech) {
-                return new PsychLayoutManager( language,
-                		numCardsPerReviewPage, fontSize, textToSpeech);
+
+            public ILayoutManager makeLayoutManager(Language language, int numCardsPerReviewPage, int fontSize, boolean textToSpeech) {
+                return new PsychLayoutManager(language, numCardsPerReviewPage, fontSize, textToSpeech);
             }
         };
 
-        cardFactories = new ICardFactory[] {
-                PartyCard.FACTORY, RaceCard.FACTORY, PresidentialRaceCard.FACTORY,
-                PropositionCard.FACTORY
-        };
+        /* Create a new card factory */
+        cardFactories = new ICardFactory[] { PartyCard.FACTORY, RaceCard.FACTORY, PresidentialRaceCard.FACTORY, PropositionCard.FACTORY };
     }
 
     /**
      * Adds the given card to the ballot
      * 
-     * @param newCard
-     *            the card to add
+     * @param newCard       the card to add
      */
     public void addCard(ACard newCard) {
         getBallot().getCards().add( newCard );
@@ -105,37 +107,52 @@ public class Model {
     /**
      * Adds the card to the front of the ballot
      *
-     * @param newCard
-     *             the card to add
+     * @param newCard       the card to add
      */
     public void addCardAtFront(ACard newCard){
         getBallot().getCards().add(0, newCard);
     }
 
     /**
-     * Adds the directory to a ZIP file
+     * Recursively adds the directory to a ZIP file
      */
-    private void addDirectoryToZip(ZipOutputStream out, File dir, String path)
-            throws IOException {
+    private void addDirectoryToZip(ZipOutputStream out, File dir, String path) throws IOException {
+
         byte[] buf = new byte[1024];
+
+        /* Get the list of files in the directory */
         File[] children = dir.listFiles();
+
+        /* Go through all the files */
         for (File f : children) {
+
+            /* Check if the file is a directory */
             if (f.isDirectory()) {
-                out.putNextEntry( new ZipEntry( path + f.getName() + '/' ) );
+
+                /* Take the directory and enter it as a new ZipEntry */
+                out.putNextEntry(new ZipEntry(path + f.getName() + '/'));
                 out.closeEntry();
-                addDirectoryToZip( out, f, path + f.getName() + '/' );
+
+                /* Re-call the function with the path of the directory */
+                addDirectoryToZip(out, f, path + f.getName() + '/');
             }
+
+            /* When the file isn't a directory */
             else {
-                FileInputStream in = new FileInputStream( f );
-                out.putNextEntry( new ZipEntry( path + f.getName() ) );
 
-                // Transfer bytes from the file to the ZIP file
+                /* Create a new input stream */
+                FileInputStream in = new FileInputStream(f);
+
+                /* Enter the file as a new ZipEntry */
+                out.putNextEntry(new ZipEntry(path + f.getName()));
+
                 int len;
-                while ((len = in.read( buf )) > 0) {
-                    out.write( buf, 0, len );
-                }
 
-                // Complete the entry
+                /* Transfer bytes from the file to the ZIP file */
+                while ((len = in.read(buf)) > 0)
+                    out.write(buf, 0, len);
+
+                /* Complete the entry */
                 out.closeEntry();
                 in.close();
                 f.deleteOnExit();
@@ -148,125 +165,142 @@ public class Model {
      * returns a list of Strings with their names so they can be displayed as a
      * list in a dialog
      * 
-     * @return list of names of cards missing translations
+     * @return          list of names of cards missing translations
      */
     public String[] checkTranslations() {
+
         ArrayList<String> cardsNeeded = new ArrayList<String>();
-        for (ACard card : getBallot().getCards()) {
+        Language primaryLanguage = getLanguages().get(0);
+
+        /* Get the cards */
+        ArrayList<ACard> cards = getBallot().getCards();
+
+        /* Look through all the cards */
+        for (ACard card : cards) {
+
             boolean res = false;
+
+            /* See if any cards need translations */
             for (Language lang : getLanguages())
-                res |= card.needsTranslation( lang );
-            if (res)
-                cardsNeeded.add( card.getTitle( getLanguages().get( 0 ) ) );
+                res |= card.needsTranslation(lang);
+
+            /* Get the name of the current card */
+            String title = card.getTitle(primaryLanguage);
+
+            /* If so, then add the card language to the cardsNeeded */
+            if (res) cardsNeeded.add(title);
         }
-        return cardsNeeded.toArray( new String[cardsNeeded.size()] );
+
+        /* Return the cardsNeeded ArrayList<String> as a String[] */
+        String[] asString = new String[cardsNeeded.size()];
+        return cardsNeeded.toArray(asString);
     }
 
     /**
      * Deletes the card at index idx from the ballot
      * 
-     * @param idx
-     *            the index
+     * @param idx       the index
      */
     public void deleteCard(int idx) {
-        getBallot().getCards().remove( idx );
+
+        /* Get the cards */
+        ArrayList<ACard> cards = getBallot().getCards();
+
+        /* Remove the card at the index */
+        cards.remove(idx);
     }
 
     /**
      * Exports the ballot to VoteBox.
      * 
-     * @param view
-     *            the main view of the program
-     * @param path
-     *            the path to export to
+     * @param view      the main view of the program
+     * @param path      the path to export to
      */
     public void export(View view, final String path) {
-        export( view, path, null, false );
+        export(view, path, null, false);
     }
 
     /**
      * Exports the ballot to VoteBox
      * 
-     * @param view
-     *            the main view of the program
-     * @param path
-     *            the path to export to
-     * @param whenDone
-     *            Runnable to execute when the export is done
-     * @param hideWhenFinished
-     *            whether to hide the progress dialog when finished exporting
+     * @param view                  the main view of the program
+     * @param path                  the path to export to
+     * @param whenDone              Runnable to execute when the export is done
+     * @param hideWhenFinished      whether to hide the progress dialog when finished exporting
      */
-    public void export(View view, final String path, final Runnable whenDone,
-            final boolean hideWhenFinished) {
-        final ProgressDialog dialog = new ProgressDialog( view,
-                "Exporting Ballot to VoteBox" );
+    public void export(View view, final String path, final Runnable whenDone, final boolean hideWhenFinished) {
+
+        /* Open a progress dialogue */
+        final ProgressDialog dialog = new ProgressDialog(view, "Exporting Ballot to VoteBox");
 
         new Thread() {
+
             @Override
             public void run() {
+
                 try {
+
+                    /* Refresh the progress dialogue */
                     ProgressInfo info = dialog.getProgressInfo();
                     dialog.showDialog();
 
                     int c = 0;
-                    info.setNumTasks( getLanguages().size() );
+
+                    /* Set the number of tasks based on number of languages */
+                    info.setNumTasks(getLanguages().size());
+
+                    /* Go through each language */
                     for (Language lang : getLanguages()) {
-                        final String taskName = "Exporting " + lang.getName()
-                                + " Ballot";
 
-                        info.setCurrentTask( taskName, c );
-                        info.setProgress( "Laying out Ballot", 0 );
-                        ILayoutManager manager = getManagerFactory()
-                                .makeLayoutManager( lang, cardsPerReviewPage,
-                                		fontSize, textToSpeech);
+                        final String taskName = "Exporting " + lang.getName() + " Ballot";
 
-                        Layout layout = manager.makeLayout( getBallot() );
+                        /* Set the current task */
+                        info.setCurrentTask(taskName, c);
+                        info.setProgress("Laying out Ballot", 0);
 
-                        info.setProgress( "Writing Ballot XML", 0 );
+                        /* Create a new layout manager */
+                        ILayoutManager manager = getManagerFactory().makeLayoutManager(lang, cardsPerReviewPage,fontSize, textToSpeech);
+
+                        /* Create a new Layout for the Ballot */
+                        Layout layout = manager.makeLayout(getBallot());
+
+                        /* Write the Ballot XML */
+                        info.setProgress("Writing Ballot XML", 0);
                         Document doc = XMLTools.createDocument();
-                        XMLTools.writeXML( getBallot().toXML( doc ), path
-                                + "/ballot.xml" );
+                        XMLTools.writeXML(getBallot().toXML(doc), path + "/ballot.xml");
 
-                        info.setProgress( "Writing Layout XML", 0 );
+                        /* Write the Layout XML */
+                        info.setProgress("Writing Layout XML", 0);
                         doc = XMLTools.createDocument();
-                        XMLTools.writeXML( layout.toXML( doc ), path
-                                + "/layout_1_" + lang.getShortName() + ".xml" );
+                        XMLTools.writeXML(layout.toXML(doc), path + "/layout_1_" + lang.getShortName() + ".xml");
 
-                        manager.renderAllImagesToDisk( layout,
-                            path + "/media/", info );
-                        BufferedWriter out = new BufferedWriter(
-                                new FileWriter( path + "/ballotbox.cfg" ) );
-                        out.write( "/ballot.xml" );
+                        /* Render all the images */
+                        manager.renderAllImagesToDisk(layout, path + "/media/", info);
+
+                        /* Write the configuration file */
+                        BufferedWriter out = new BufferedWriter(new FileWriter(path + "/ballotbox.cfg"));
+
+                        /* XML Housekeeping */
+                        out.write("/ballot.xml");
                         out.newLine();
-                        out.write( "/layout" );
+                        out.write("/layout");
                         out.close();
 
-                        ++c;
+                        /* Increment for the next task */
+                        c++;
                     }
+
+                    /* Tasks completed */
                     info.finished();
-                    if (hideWhenFinished)
-                        dialog.setVisible( false );
-                    if (whenDone != null)
-                        whenDone.run();
+
+                    /* If supposed to hide when finished, then set the dialogue invisible */
+                    if (hideWhenFinished) dialog.setVisible(false);
+
+                    /* If there is a Runnable to execute when complete, run it now */
+                    if (whenDone != null) whenDone.run();
                 }
-                catch (TransformerConfigurationException e) {
-                    throw new BallotExportException( e );
-                }
-                catch (IllegalArgumentException e) {
-                    throw new BallotExportException( e );
-                }
-                catch (ParserConfigurationException e) {
-                    throw new BallotExportException( e );
-                }
-                catch (TransformerFactoryConfigurationError e) {
-                    throw new BallotExportException( e );
-                }
-                catch (TransformerException e) {
-                    throw new BallotExportException( e );
-                }
-                catch (IOException e) {
-                    throw new BallotExportException( e );
-                }
+                catch (TransformerFactoryConfigurationError | IllegalArgumentException | ParserConfigurationException |
+                       TransformerException | IOException e) { throw new BallotExportException(e); }
             }
         }.start();
     }
@@ -274,149 +308,174 @@ public class Model {
     /**
      * Exports the ballot to VoteBox as a ZIP file.
      * 
-     * @param view
-     *            the main view of the program
-     * @param path
-     *            the path to export to
+     * @param view      the main view of the program
+     * @param path      the path to export to
      */
     public void exportAsZip(View view, final String path) {
-        exportAsZip( view, path, null, false );
+        exportAsZip(view, path, null, false);
     }
 
     /**
      * Exports the ballot to VoteBox as a ZIP file
      * 
-     * @param view
-     *            the main view of the program
-     * @param path
-     *            the path to export to
-     * @param whenDone
-     *            Runnable to execute when the export is done
-     * @param hideWhenFinished
-     *            whether to hide the progress dialog when finished exporting
+     * @param view                  the main view of the program
+     * @param path                  the path to export to
+     * @param whenDone              Runnable to execute when the export is done
+     * @param hideWhenFinished      whether to hide the progress dialog when finished exporting
      */
-    public void exportAsZip(View view, final String path,
-            final Runnable whenDone, final boolean hideWhenFinished) {
-        final ProgressDialog dialog = new ProgressDialog( view,
-                "Exporting Ballot to VoteBox" );
+    public void exportAsZip(View view, final String path, final Runnable whenDone, final boolean hideWhenFinished) {
+
+        /* Open a progress dialogue */
+        final ProgressDialog dialog = new ProgressDialog(view, "Exporting Ballot to VoteBox");
 
         new Thread() {
+
             @Override
             public void run() {
+
                 try {
-                    File tempDir = File.createTempFile( "votebox", "" );
+
+                    /* Create a temporary file */
+                    File tempDir = File.createTempFile("votebox", "");
+
+                    /* Delete the file and create a directory */
                     tempDir.delete();
                     tempDir.mkdir();
 
                     String zipFile = path;
-                    if (!zipFile.substring( zipFile.length() - 4 ).equals(
-                        ".zip" ))
+
+                    /* Extract the path from the filepath */
+                    String fileExtension = zipFile.substring(zipFile.length() - 4);
+
+                    Boolean isZip = fileExtension.equals(".zip");
+
+                    /* See if the file is a zip and, if not, make it one */
+                    if (!isZip)
                         zipFile = zipFile + ".zip";
 
+                    /* Update the progress dialogue */
                     ProgressInfo info = dialog.getProgressInfo();
                     dialog.showDialog();
 
                     int c = 0;
-                    info.setNumTasks( getLanguages().size() );
+
+                    /* Set the number of tasks to complete based on the size of the set of languages */
+                    info.setNumTasks(getLanguages().size());
+
+                    /* Go through each language in the language set */
                     for (Language lang : getLanguages()) {
-                        final String taskName = "Exporting " + lang.getName()
-                                + " Ballot";
 
-                        info.setCurrentTask( taskName, c );
-                        info.setProgress( "Laying out Ballot", 0 );
-                        ILayoutManager manager = getManagerFactory()
-                                .makeLayoutManager( lang, cardsPerReviewPage,
-                                		fontSize, textToSpeech);
+                        final String taskName = "Exporting " + lang.getName() + " Ballot";
 
-                        Layout layout = manager.makeLayout( getBallot() );
+                        /* Set the current task and progress */
+                        info.setCurrentTask(taskName, c);
+                        info.setProgress("Laying out Ballot", 0);
+
+                        /* Create a new layout manager */
+                        ILayoutManager manager = getManagerFactory().makeLayoutManager(lang, cardsPerReviewPage, fontSize, textToSpeech);
+
+                        /* Create a new Layout for the Ballot */
+                        Layout layout = manager.makeLayout(getBallot());
                         
-                        //write to each Card the titleLabelID in the Layout
-                        //we start on a different page based on whether or not
-                        //there is a language select screen
-                        int startPage = getLanguages().size() > 1 ? 2 : 1;
+                        /* Set the start page based on the number of langauges */
+                        int curPage = getLanguages().size() > 1 ? 2 : 1;
+
+                        /* Go through each card in the card collection */
                         for (ACard card : getBallot().getCards()){
-                        	//the title label is always the second component, 
-                        	//after the background
-                        	card.setTitleID(layout.getPages().get(startPage++)
-                        			.getComponents().get(1).getUID());
+
+                            /* Get the current page */
+                            ArrayList<Page> pages = layout.getPages();
+                            Page currentPage = pages.get(curPage);
+
+                            /* Get the current page's title */
+                            ALayoutComponent title = currentPage.getComponents().get(1);
+
+                            /* Set the title ID for the current page */
+                            card.setTitleID(title.getUID());
+
+                            /* Move to the next page */
+                            curPage++;
                         }
 
-                        info.setProgress( "Writing Ballot XML", 0 );
+                        /* Write the Ballot XML */
+                        info.setProgress("Writing Ballot XML", 0);
                         Document doc = XMLTools.createDocument();
-                        XMLTools.writeXML( getBallot().toXML( doc ), tempDir
-                                + "/ballot.xml" );
+                        XMLTools.writeXML(getBallot().toXML(doc), tempDir + "/ballot.xml");
 
-                        info.setProgress( "Writing Layout XML", 0 );
+                        /* Write the Layout XML */
+                        info.setProgress("Writing Layout XML", 0);
                         doc = XMLTools.createDocument();
-                        XMLTools.writeXML( layout.toXML( doc ), tempDir
-                                + "/layout_1_" + lang.getShortName() + ".xml" );
+                        XMLTools.writeXML(layout.toXML(doc), tempDir + "/layout_1_" + lang.getShortName() + ".xml");
 
-                        manager.renderAllImagesToDisk( layout, tempDir
-                                + "/media/", info );
+                        /* Render the images */
+                        manager.renderAllImagesToDisk(layout, tempDir + "/media/", info);
 
-                        BufferedWriter out = new BufferedWriter(
-                                new FileWriter( tempDir + "/ballotbox.cfg" ) );
-                        out.write( "/ballot.xml" );
+                        /* Write the configuration file */
+                        BufferedWriter out = new BufferedWriter(new FileWriter(tempDir + "/ballotbox.cfg"));
+
+                        /* XML housekeeping */
+                        out.write("/ballot.xml");
                         out.newLine();
-                        out.write( "/layout" );
+                        out.write("/layout");
                         out.close();
 
-                        ++c;
+                        /* Move to the next task */
+                        c++;
                     }
 
-                    // Create the ZIP file
-                    info.setCurrentTask( "Adding Files to ZIP Archive", c );
-                    ZipOutputStream out = new ZipOutputStream(
-                            new FileOutputStream( zipFile ) );
-                    addDirectoryToZip( out, tempDir, "" );
+                    /* Create the zip file */
+                    info.setCurrentTask("Adding Files to ZIP Archive", c);
+                    ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zipFile));
+                    addDirectoryToZip(out, tempDir, "");
                     out.close();
 
-                    info.setCurrentTask( "Cleaning up Temporary Files", c );
+                    /* Clean up temp files */
+                    info.setCurrentTask("Cleaning up Temporary Files", c);
                     Stack<File> dirStack = new Stack<File>();
-                    dirStack.add( tempDir );
+                    dirStack.add(tempDir);
+
+                    /* Check that there is still something on the stack */
                     while (!dirStack.isEmpty()) {
+
+                        /* Pop the file off the stack */
                         File file = dirStack.pop();
+
+                        /* Mark it for deletion */
                         file.deleteOnExit();
+
+                        /* Get its children files */
                         File[] children = file.listFiles();
+
+                        /* Go through each child */
                         for (File f : children) {
-                            if (f.isDirectory())
-                                dirStack.add( f );
-                            else
-                                f.deleteOnExit();
+
+                            /* Check if the child is a directory and, if so, add them to the stack */
+                            if (f.isDirectory()) dirStack.add(f);
+
+                            /* Otherwise, go ahead and mark for deletion */
+                            else f.deleteOnExit();
                         }
+
+                        /* If the stack is too deep, get out of there */
                         if (dirStack.size() > 100)
                             return;
                     }
 
+                    /* All tasks completed */
                     info.finished();
-                    if (hideWhenFinished)
-                        dialog.setVisible( false );
-                    if (whenDone != null)
-                        whenDone.run();
+
+                    /* If the dialogue is to be hidden after completion, set to invisible */
+                    if (hideWhenFinished) dialog.setVisible(false);
+
+                    /* If there is a Runnable to execute after completion, go ahead and run it now */
+                    if (whenDone != null) whenDone.run();
                 }
-                catch (TransformerConfigurationException e) {
-                    throw new BallotExportException( e );
-                }
-                catch (IllegalArgumentException e) {
-                    throw new BallotExportException( e );
-                }
-                catch (ParserConfigurationException e) {
-                    throw new BallotExportException( e );
-                }
-                catch (TransformerFactoryConfigurationError e) {
-                    throw new BallotExportException( e );
-                }
-                catch (TransformerException e) {
-                    throw new BallotExportException( e );
-                }
-                catch (IOException e) {
-                    throw new BallotExportException( e );
-                }
+                catch (IllegalArgumentException | ParserConfigurationException | TransformerFactoryConfigurationError |
+                       TransformerException | IOException e) { throw new BallotExportException(e); }
+
             }
         }.start();
     }
-
-
 
     /**
      * @return the ballot
@@ -435,60 +494,79 @@ public class Model {
     /**
      * Returns the list of modules for the card at the given index
      * 
-     * @param idx
-     *            the index
-     * @return the list of modules
+     * @param idx       the index
+     * @return          the list of modules
      */
     public ArrayList<AModule> getCardModules(int idx) {
-        return getBallot().getCards().get( idx ).getModules();
+        return getBallot().getCards().get(idx).getModules();
     }
 
     /**
      * Returns the title of the card at the given index, in the primary language
      * 
-     * @param idx
-     *            the index
-     * @return the title in the primary language
+     * @param idx       the index
+     * @return          the title in the primary language
      */
     public String getCardTitle(int idx) {
-        return getBallot().getCards().get( idx ).getTitle(
-            getLanguages().get( 0 ) );
+
+        /* Get the cards */
+        ArrayList<ACard> cards = getBallot().getCards();
+
+        /* Get the current card */
+        ACard currentCard = cards.get(idx);
+
+        /* Get the primary language */
+        Language primaryLanguage = getLanguages().get(0);
+
+        /* Return the title of the card in the primary language */
+        return currentCard.getTitle(primaryLanguage);
     }
 
     /**
      * Returns a type name of the card at index idx
      * 
-     * @param idx
-     *            the index
-     * @return the type as a string
+     * @param idx       the index
+     * @return          the type as a string
      */
     public String getCardType(int idx) {
-        return getBallot().getCards().get( idx ).getType();
+
+        /* Get the cards */
+        ArrayList<ACard> cards = getBallot().getCards();
+
+        /* Get the current card */
+        ACard currentCard = cards.get(idx);
+
+        /* Return the type of the current card */
+        return currentCard.getType();
     }
 
     /**
-     * @return the list of languages in the ballot
+     * @return          the list of languages in the ballot
      */
     public ArrayList<Language> getLanguages() {
         return getBallot().getLanguages();
     }
 
     /**
-     * @return the layout manager
+     * @return          the layout manager
      */
     public ILayoutManagerFactory getManagerFactory() {
         return managerFactory;
     }
 
     /**
-     * @return the number of cards in the ballot
+     * @return          the number of cards in the ballot
      */
     public int getNumCards() {
-        return getBallot().getCards().size();
+
+        /* Get the cards */
+        ArrayList<ACard> cards = getBallot().getCards();
+
+        return cards.size();
     }
 
     /**
-     * @return the list of parties in the ballot
+     * @return          the list of parties in the ballot
      */
     public ArrayList<Party> getParties() {
         return getBallot().getParties();
@@ -497,95 +575,118 @@ public class Model {
     /**
      * Moves a card from oldIdx to newIdx in the ballot
      * 
-     * @param oldIdx
-     *            the old index
-     * @param newIdx
-     *            the new index
+     * @param oldIdx    the old index
+     * @param newIdx    the new index
      */
     public void moveCard(int oldIdx, int newIdx) {
-        ACard card = getBallot().getCards().remove( oldIdx );
-        getBallot().getCards().add( newIdx, card );
+
+        /* Get the cards */
+        ArrayList<ACard> cards = getBallot().getCards();
+
+        /* Get the removed card */
+        ACard removedCard = cards.remove(oldIdx);
+
+        /* Add the removed card to the preferred location */
+        cards.add(newIdx, removedCard);
     }
 
     /**
      * Starts a new ballot
      */
     public void newBallot() {
+
+        /* Create a new Ballot */
         ballot = new Ballot();
-        getBallot().getLanguages().add( Language.getAllLanguages().get( 0 ) );
+
+        /* Get the current languages of the ballot */
+        ArrayList<Language> ballotLanguages = getBallot().getLanguages();
+
+        /* Get the primary language */
+        Language primaryLanguage = Language.getAllLanguages().get(0);
+
+        /* Add the primary language to the ballot */
+        ballotLanguages.add(primaryLanguage);
     }
 
     /**
      * Opens and loads a ballot from an XML file
      * 
-     * @param file
-     *            the file to open from
+     * @param filepath      the file to open from
      */
-    public void open(String file) {
+    public void open(String filepath) {
+
+        /* Try to read and parse the XML file */
         try {
-            Document doc = XMLTools.readXML( file );
-            ballot = Ballot.parseXML( doc.getDocumentElement() );
+            Document doc = XMLTools.readXML(filepath);
+            ballot = Ballot.parseXML(doc.getDocumentElement());
         }
-        catch (ParserConfigurationException e) {
-            throw new BallotOpenException( e );
-        }
-        catch (SAXException e) {
-            throw new BallotOpenException( e );
-        }
-        catch (IOException e) {
-            throw new BallotOpenException( e );
-        }
+        catch (ParserConfigurationException | SAXException | IOException e) { throw new BallotOpenException(e); }
     }
 
     /**
      * Previews the entire ballot in VoteBox, by exporting to a temporary
      * directory and then launching VoteBox
      * 
-     * @param view
-     *            the main view
+     * @param view      the main view
      */
     public void previewBallot(final View view) {
+
         try {
 
+            /* Create a temporary directory */
+            final File tempDir = File.createTempFile("votebox", "");
 
-            final File tempDir = File.createTempFile( "votebox", "" );
+            /* Delete and then make a directory */
             tempDir.delete();
             tempDir.mkdir();
-            Runnable whenDone = new Runnable() {
-                public void run() {
-                    // Run in VoteBox
-                    votebox.middle.datacollection.DataLogger.init( new File(
-                            tempDir, "log" ) );
-                    new votebox.middle.driver.Driver(
-                            tempDir.getAbsolutePath(),
-                            new votebox.middle.view.AWTViewFactory( true, false ), false)
-                            .run();
 
-                    // Delete temporary directories
+            /* Create a new Runnable */
+            Runnable whenDone = new Runnable() {
+
+                public void run() {
+
+                    /* Run datalogger in VoteBox */
+                    votebox.middle.datacollection.DataLogger.init(new File(tempDir, "log"));
+
+                    new votebox.middle.driver.Driver(tempDir.getAbsolutePath(), new votebox.middle.view.AWTViewFactory(true, false), false).run();
+
+                    /* Delete temporary directories */
                     Stack<File> dirStack = new Stack<File>();
-                    dirStack.add( tempDir );
+                    dirStack.add(tempDir);
+
+                    /* While the stack still has something */
                     while (!dirStack.isEmpty()) {
+
+                        /* Pop the file off the stack */
                         File file = dirStack.pop();
+
+                        /* Mark for deletion */
                         file.deleteOnExit();
+
+                        /* Get its children files */
                         File[] children = file.listFiles();
+
+                        /* Go through each child */
                         for (File f : children) {
-                            if (f.isDirectory())
-                                dirStack.add( f );
-                            else
-                                f.deleteOnExit();
+
+                            /* See if it's a directory and, if so, add it to the stack*/
+                            if (f.isDirectory()) dirStack.add(f);
+
+                            /* Otherwise, go ahead and mark for deletion */
+                            else f.deleteOnExit();
                         }
-                        if (dirStack.size() > 100)
-                            return;
+
+                        /* If the stack is way too deep, get out of there */
+                        if (dirStack.size() > 100) return;
                     }
                 }
             };
 
-            export( view, tempDir.getAbsolutePath(), whenDone, true );
+            /* Export to votebox */
+            export(view, tempDir.getAbsolutePath(), whenDone, true);
 
         }
-        catch (IOException e) {
-            throw new BallotPreviewException( e );
-        }
+        catch (IOException e) { throw new BallotPreviewException(e); }
     }
 
     /**
@@ -593,30 +694,47 @@ public class Model {
      * panel, it is because the card is on multiple pages.<br>
      * All rendering is done in a separate thread.
      * 
-     * @param idx
-     *            the index of the card to preview
-     * @param language
-     *            the language to preview it in
-     * @return a list of rendered panels that can be displayed
+     * @param idx           the index of the card to preview
+     * @param language      the language to preview it in
+     * @return              a list of rendered panels that can be displayed
      */
     public ArrayList<JPanel> previewCard(int idx, Language language) {
-        final ILayoutManager manager = getManagerFactory().makeLayoutManager(
-            language, cardsPerReviewPage, fontSize, false);
-        final ArrayList<JPanel> panels = manager.makeCardPage( getBallot()
-                .getCards().get( idx ) );
+
+        /* Create a new layout manager */
+        final ILayoutManager manager = getManagerFactory().makeLayoutManager(language, cardsPerReviewPage, fontSize, false);
+
+        ArrayList<ACard> cards = getBallot().getCards();
+        ACard currentCard = cards.get(idx);
+
+        /* Get the list of panels for the card page */
+        final ArrayList<JPanel> panels = manager.makeCardPage(currentCard);
+
         new Thread() {
+
             public void run() {
+
+                /* Go through each of the panels */
                 for (JPanel panel : panels) {
+
+                    /* Go through each of the components on the panel */
                     for (Component comp : panel.getComponents()) {
+
+                        /* Check for a spacer */
                         if (comp instanceof Spacer) {
+
+                            /* Cast it to a spacer and grab an image */
                             final Spacer spacer = (Spacer) comp;
-                            final BufferedImage image = spacer.getComponent()
-                                    .execute( manager.getImageVisitor(), false, false );
+                            final BufferedImage image = spacer.getComponent().execute(manager.getImageVisitor(), false, false);
+
                             if (image != null) {
-                                SwingUtilities.invokeLater( new Runnable() {
+
+                                /* Set up a new Runnable */
+                                SwingUtilities.invokeLater(new Runnable() {
+
                                     public void run() {
-                                        spacer.setIcon( new ImageIcon( image ) );
+                                        spacer.setIcon(new ImageIcon(image));
                                     }
+
                                 } );
                             }
                         }
@@ -624,53 +742,48 @@ public class Model {
                 }
             }
         }.start();
+
         return panels;
     }
 
     /**
      * Saves the ballot as an XML file
      * 
-     * @param file
-     *            the file to save to
+     * @param filepath      the file to save to
      */
-    public void saveAs(String file) {
+    public void saveAs(String filepath) {
+
         try {
-            if (!file.substring( file.length() - 4 ).equals( ".bal" ))
-                file = file + ".bal";
+
+            /* Extract the file extension */
+            String fileExtension = filepath.substring(filepath.length() - 4);
+            Boolean isBallotFile = fileExtension.equals(".bal");
+
+            /* See if the file is a ballot file and, if not, add the file extension */
+            if (!isBallotFile)
+                filepath += ".bal";
+
+            /* Write the ballot to an XML file */
             Document doc = XMLTools.createDocument();
-            XMLTools.writeXML( getBallot().toSaveXML( doc ), file );
+            XMLTools.writeXML(getBallot().toSaveXML(doc), filepath);
         }
-        catch (TransformerConfigurationException e) {
-            throw new BallotSaveException( e );
-        }
-        catch (IllegalArgumentException e) {
-            throw new BallotSaveException( e );
-        }
-        catch (ParserConfigurationException e) {
-            throw new BallotSaveException( e );
-        }
-        catch (TransformerFactoryConfigurationError e) {
-            throw new BallotSaveException( e );
-        }
-        catch (TransformerException e) {
-            throw new BallotSaveException( e );
-        }
+        catch (IllegalArgumentException | ParserConfigurationException | TransformerException |
+               TransformerFactoryConfigurationError e) { throw new BallotSaveException(e); }
     }
 
     /**
      * Sets the list of languages
      * 
-     * @param languages
-     *            the new list of languages
+     * @param languages         the new list of languages
      */
     public void setLanguages(ArrayList<Language> languages) {
-        getBallot().setLanguages( languages );
+        getBallot().setLanguages(languages);
     }
     
     /**
      * Sets the properties of the layout
      * 
-     * @param numCardsPerReviewPage the number of races shown on one review page
+     * @param numCardsPerReviewPage     the number of races shown on one review page
      */
     public void setCardsPerReviewPage(int numCardsPerReviewPage){
     	cardsPerReviewPage = numCardsPerReviewPage;
@@ -679,33 +792,40 @@ public class Model {
     /**
      * Sets the properties of the layout
      * 
-     * @param fontSizeMultiplier the font size multiplier
+     * @param fontSizeMultiplier        the font size multiplier
      */
     public void setFontSize(int fontSizeMultiplier){
     	fontSize = fontSizeMultiplier;
     }
 
+    /**
+     * Sets text-to-speech status
+     *
+     * @param textToSpeech      whether text-to-speech is enabled
+     */
     public void setTextToSpeech(boolean textToSpeech) {
         this.textToSpeech = textToSpeech;
     }
 
     /**
-     * @return Number of cards/items found per review page
+     * @return      Number of cards/items found per review page
      */
 	public int getCardsPerReviewPage() {
 		return cardsPerReviewPage;
 	}
 
 	/**
-	 * @return Current base font size.
+	 * @return      Current base font size.
 	 */
 	public int getBaseFontSize() {
 		return fontSize;
 	}
 
+    /**
+     * @return      whether text-to-speech is enabled
+     */
     public boolean getTextToSpeech(){
         return textToSpeech;
     }
-
 
 }
