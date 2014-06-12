@@ -22,9 +22,7 @@
 
 package crypto;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
+import java.io.*;
 
 import sexpression.ASExpression;
 
@@ -32,86 +30,88 @@ import auditorium.Key;
 
 /**
  * Used to generate ElGamal public/private key pairs.<BR>
- * Usage:
- *   java crypto.ElGamalKeyGenerator [generator string] [number of keys] [output directory]
- * @author Montrose
+ * Usage:    java crypto.ElGamalKeyGenerator [generator string] [number of keys] [output directory]
+ *
+ * @author Kevin Montrose
  *
  */
 public class ElGamalKeyGenerator {
 
 	/**
-	 * @param args
-     *              generator string | number of keys | output directory
+	 * @param args      generator string | number of keys | output directory
 	 */
 	public static void main(String[] args) {
-		if(args.length != 3){
-			System.out.println("Usage:");
-			System.out.println("\tjava crypto.ElGamalKeyGenerator [generator string] [number of keys] [output directory]");
+
+        /* Ensure there is correct number of arguments */
+		if (args.length != 3) {
+			System.err.println("Usage:");
+			System.err.println("\tjava crypto.ElGamalKeyGenerator [generator string] [number of keys] [output directory]");
 			System.exit(0);
-		}//if
+		}
+
+        /* Set a default limit value */
+		int numKeys = -1;
 		
-		int limit = -1;
-		
-		try{
-            /*The Number of keys to be generated must be integer*/
-			limit = Integer.parseInt(args[1]);
-		}catch(Exception e){
+		try {
+            /* The Number of keys to be generated must be an integer */
+			numKeys = Integer.parseInt(args[1]);
+		}
+        catch (Exception e) {
 			System.out.println("Expected integer for [number of keys], found \""+args[1]+"\".");
-			System.out.println("\tError: "+e.getMessage());
+            e.printStackTrace();
 			System.exit(0);
-		}//catch
+		}
 		
 		File dir = null;
 
-        /*Create directory with output path in args[2] if it already does not exist */
 
-		try{
-			dir = new File(args[2]);
-			if(!dir.exists())
-				dir.mkdirs();
-		}catch(Exception e){
+		try {
+            /* Create directory with output path in args[2] if it already does not exist */
+            dir = new File(args[2]);
+			if(!dir.exists()) dir.mkdirs();
+		}
+        catch (Exception e) {
 			System.out.println("Expected path for [output directory], found \""+args[2]+"\".");
 			System.out.println("\tError: "+e.getMessage());
 			System.exit(0);
-		}//catch
+		}
 
+        /* Iterate over the number of keys to be generated  */
+		for (int i = 0; i < numKeys; i++) {
 
-         /* Generate ElGamal Private and Public key Pair(s).*/
-		for(int i = 0; i < limit; i++){
-			Pair<Key> keys = ElGamalCrypto.SINGLETON.generate(args[0]);
+            /* Generate ElGamal Private and Public key Pair. */
+            Pair<Key> keys = ElGamalCrypto.SINGLETON.generate(args[0]);
 			Key publicKey = keys.get1();
 			Key privateKey = keys.get2();
 
-            /*Here we parse the keys inro an s-expression*/
-
+            /* Here we parse the keys into an s-expression */
 			ASExpression pub = publicKey.toASE();
 			ASExpression priv = privateKey.toASE();
 
+             /*The generated pair of public and private keys are stored
+            in the <index>public.key and <index>private.key respectively. */
+			File pubFile = new File(dir, i+"public.key");
+			File privFile = new File(dir, i+"private.key");
 
-			File pubFile = new File(dir, i+"-public.key");
-			File privFile = new File(dir, i+"-private.key");
-
-            /*The generated pair of public and private keys are stored
-            in the <index>-public.key and <index>-private.key respectively. */
 
 			try{
 				OutputStream out = new FileOutputStream(pubFile);
-                /* Convert the s-expression into Rivest Verbatim format and then write it to the <index>-public.key */
+                /* Convert the s-expression into Rivest Verbatim format and then write it to the <index>public.key */
 				out.write(pub.toVerbatim());
 				out.flush();
 				out.close();
 
 				out = new FileOutputStream(privFile);
-                /* Convert the s-expression into Rivest Verbatim format and then write it to the <index>-private.key */
+                /* Convert the s-expression into Rivest Verbatim format and then write it to the <index>private.key */
 				out.write(priv.toVerbatim());
 				out.flush();
 				out.close();
-			}catch(Exception e){
-				System.out.println("Encountered error writing key files.");
-				System.out.println("\tError: "+e.getMessage());
-				System.exit(0);
-			}//catch
-		}//for
-	}
 
+			} catch (IOException e) {
+                System.err.println("Encountered error writing key files.");
+                e.printStackTrace();
+                System.exit(0);
+            }
+        }
+	}
 }

@@ -32,17 +32,17 @@ package crypto;
  * 
  */
 public class Pair<T> {
-    // Actual pair values
+    /** The first elment of the pair */
     private T _elem1;
+
+    /** The second elment of the pair */
     private T _elem2;
 
     /**
      * Construct a new Pair.
      * 
-     * @param elem1
-     *            Initialize the tuple with this int in element 1
-     * @param elem2
-     *            Initialize the tuple with this int in element 2
+     * @param elem1     Initialize the tuple with this int in element 1
+     * @param elem2     Initialize the tuple with this int in element 2
      */
     public Pair(T elem1, T elem2) {
         _elem1 = elem1;
@@ -50,14 +50,14 @@ public class Pair<T> {
     }
 
     /**
-     * @return This method returns the first element
+     * @return      The first element
      */
     public T get1() {
         return _elem1;
     }
 
     /**
-     * @return This method returns the second element.
+     * @return      The second element.
      */
     public T get2() {
         return _elem2;
@@ -101,9 +101,12 @@ public class Pair<T> {
             return false;
         return true;
     }
-    
+
+    /**
+     * @see Object#toString()
+     */
     @Override
     public String toString(){
     	return "<" + _elem1 + "," + _elem2 + ">";
-    }//toString
+    }
 }

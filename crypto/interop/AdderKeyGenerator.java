@@ -67,11 +67,11 @@ public class AdderKeyGenerator {
         /* Writes the private key to the 'private.adder.key' file. */
 		privOut.write(privKey.toASE().toVerbatim());
 
-        // clear out the file pointer buffers
+        /* clear out the file pointer buffers */
 		pubOut.flush();
 		privOut.flush();
 
-        // close the file
+        /* close the file */
 		pubOut.close();
 		privOut.close();
 		

@@ -77,7 +77,8 @@ public class AdderKeyManipulator {
 	 * @return the new PrivateKey
 	 */
 	public static PrivateKey generateFinalPrivateKey(PublicKey publicKey, PrivateKey privateKey){
-		//Generate the final private key
+
+		/* Generate the final private key */
 		List<ElgamalCiphertext> ciphertexts = new ArrayList<ElgamalCiphertext>();
         ElgamalCiphertext ciphertext = publicKey.encryptPoly(_poly.evaluate(new AdderInteger(0, publicKey.getQ())));
 		ciphertexts.add(ciphertext);
