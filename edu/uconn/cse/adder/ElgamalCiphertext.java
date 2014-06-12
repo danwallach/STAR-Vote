@@ -16,14 +16,22 @@ import sexpression.StringExpression;
  * @since 0.0.1
  */
 public class ElgamalCiphertext {
+
+    /* A generator for the ElGamal keys, is the generator of the group mod p */
     private AdderInteger g;
+
+    /* The public key component gained by taking g^r, for some private random value r */
     private AdderInteger h;
+
+    /* The random value used as a private key */
     private AdderInteger r;
+
+    /* The prime modulus (order) for group G over which all computations are performed */
     private AdderInteger p;
+
+    /* A proof of the membership of an element to group G */
     private MembershipProof proof;
 
-    /* TODO Is the positioning of the variables a concern.?*/
-    // XXX: why does p come last here?
     /**
      * Creates a new ElgamalCiphertext with the specified parameter values.
      *
@@ -38,7 +46,6 @@ public class ElgamalCiphertext {
         this.r = AdderInteger.ZERO;
     }
 
-    // XXX: now why is r here in that position?
     /**
      * Creates a new ElgamalCiphertext with the specified parameter values.
      *
@@ -147,7 +154,7 @@ public class ElgamalCiphertext {
         StringTokenizer st0 = new StringTokenizer(s, " ");
 
         try {
-            StringTokenizer st = new StringTokenizer(st0.nextToken(), "pGH",true);
+            StringTokenizer st = new StringTokenizer(st0.nextToken(), "pGH", true);
 
             if (!st.nextToken().equals("p")) {
                 throw new InvalidElgamalCiphertextException("expected token: `p\'");
