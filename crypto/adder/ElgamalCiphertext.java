@@ -17,19 +17,19 @@ import sexpression.StringExpression;
  */
 public class ElgamalCiphertext {
 
-    /* A generator for the ElGamal keys, is the generator of the group mod p */
+    /** A generator for the ElGamal keys, is the generator of the group mod p */
     private AdderInteger g;
 
-    /* The public key component gained by taking g^r, for some private random value r */
+    /** The public key component gained by taking g^r, for some private random value r */
     private AdderInteger h;
 
-    /* The random value used as a private key */
+    /** The random value used as a private key */
     private AdderInteger r;
 
-    /* The prime modulus (order) for group G over which all computations are performed */
+    /** The prime modulus (order) for group G over which all computations are performed */
     private AdderInteger p;
 
-    /* A proof of the membership of an element to group G */
+    /** A proof of the membership of an element to group G */
     private MembershipProof proof;
 
     /**
