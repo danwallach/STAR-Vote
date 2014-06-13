@@ -347,12 +347,12 @@ public class BallotEncrypter {
 
     	  Adder encrypt is of m (public initial g, p, h) [inferred from code]
     	                    m = {0, 1}
-    	                    g' = g^r
-    	                    h' = (h^r) * f^m
+    	                    g' = g^r = g^y
+    	                    h' = h^r * f^m = h^y * m'
 
     	  Quick decrypt (given r) [puzzled out by Kevin Montrose]
     	                    confirm g^r = g'
-    	                    m' = (h' / (h^r))
+    	                    m' = (h' / (h^r)) = h' / h^y
     	                    if(m' == f) m = 1
     	                    if(m' == 1) m = 0
 

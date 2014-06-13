@@ -509,15 +509,11 @@ public class AdderInteger implements Comparable {
      *                  AdderInteger's value.
      */
     public boolean equals(Object x) {
-        if (x == this) {
-            return true;
-        }
 
-        if (!(x instanceof AdderInteger)) {
-            return false;
-        }
+        Boolean isThis = (x==this);
+        Boolean isAdderIntegerAndEqual = (x instanceof AdderInteger) && val.equals(((AdderInteger) x).val);
 
-        return val.equals(((AdderInteger) x).val);
+        return isThis || isAdderIntegerAndEqual;
     }
 
    /**
@@ -581,17 +577,22 @@ public class AdderInteger implements Comparable {
      * @return          the S-Expression equivalent of this AdderInteger
      */
     public static AdderInteger fromASE(ASExpression ase){
+
     	ListExpression list = (ListExpression)ase;
-    	
+
+        /* Check to make sure that the list expression is a well-formed AdderInteger ListExpression */
     	if(list.size() != 3)
     		throw new RuntimeException("Not an adder-integer");
     	
     	if(!list.get(0).toString().equals("adder-integer"))
     		throw new RuntimeException("Not an adder-integer");
-    	
+
+
+        /* Pull out the value and modulus */
     	BigInteger v = new BigInteger(list.get(1).toString());
     	BigInteger m = new BigInteger(list.get(2).toString());
-    	
+
+        /* Check if the modulus is zero -- if so, return and construct with the value, otherwise specify the modulus */
     	if(!m.equals(BigInteger.ZERO))
     		return new AdderInteger(v, m);
     	
