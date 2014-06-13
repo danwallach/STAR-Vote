@@ -60,8 +60,8 @@ Seq[Any](format.raw/*1.19*/("""
 }
                 /*
                     -- GENERATED --
-                    DATE: Wed May 21 16:19:19 CDT 2014
-                    SOURCE: /home/mdb12/STAR-Vote/web-server/app/views/admin.scala.html
+                    DATE: Thu Jun 05 14:41:40 CDT 2014
+                    SOURCE: /home/mdb12/Workspace/STAR-Vote/web-server/app/views/admin.scala.html
                     HASH: 95dc322941a3b54124f4e35968b55bbb5158c055
                     MATRIX: 774->1|885->18|922->21|957->48|996->50|1211->231|1238->250|1276->251|1412->351|1441->358|1536->422|1720->575
                     LINES: 26->1|29->1|31->3|31->3|31->3|36->8|36->8|36->8|40->12|40->12|44->16|50->22
