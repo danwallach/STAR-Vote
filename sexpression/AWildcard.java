@@ -22,6 +22,4 @@
 
 package sexpression;
 
-public abstract class AWildcard extends ASExpression {
-
-}
+public abstract class AWildcard extends ASExpression {}

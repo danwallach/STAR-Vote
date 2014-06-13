@@ -5,7 +5,6 @@ package supervisor.model;
  */
 public class TapMachine extends AMachine {
 
-
     /**
      * Constructs a new supervisor machine
      * @param serial the serial number of the ballotScanner
@@ -13,6 +12,4 @@ public class TapMachine extends AMachine {
     public TapMachine(int serial) {
         super(serial);
     }
-
-
 }

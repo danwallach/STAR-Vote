@@ -51,11 +51,9 @@ public class ElGamalKeyGenerator {
 
         /* Set a default limit value */
 		int numKeys = -1;
-		
-		try {
-            /* The Number of keys to be generated must be an integer */
-			numKeys = Integer.parseInt(args[1]);
-		}
+
+        /* Parse the first argument as the number of keys, expecting an integer */
+		try { numKeys = Integer.parseInt(args[1]); }
         catch (Exception e) {
 			System.out.println("Expected integer for [number of keys], found \""+args[1]+"\".");
             e.printStackTrace();
@@ -64,9 +62,8 @@ public class ElGamalKeyGenerator {
 		
 		File dir = null;
 
-
+        /* Create directory with output path in args[2] if it already does not exist */
 		try {
-            /* Create directory with output path in args[2] if it already does not exist */
             dir = new File(args[2]);
 			if(!dir.exists()) dir.mkdirs();
 		}
@@ -88,26 +85,30 @@ public class ElGamalKeyGenerator {
 			ASExpression pub = publicKey.toASE();
 			ASExpression priv = privateKey.toASE();
 
-             /*The generated pair of public and private keys are stored
-            in the <index>public.key and <index>private.key respectively. */
+            /* The generated pair of public and private keys are stored in the <index>public.key and <index>private.key respectively. */
 			File pubFile = new File(dir, i+"public.key");
 			File privFile = new File(dir, i+"private.key");
 
 
-			try{
-				OutputStream out = new FileOutputStream(pubFile);
+			try {
+
+                /* Create a new output stream for the public key file */
+                OutputStream out = new FileOutputStream(pubFile);
+
                 /* Convert the s-expression into Rivest Verbatim format and then write it to the <index>public.key */
 				out.write(pub.toVerbatim());
 				out.flush();
 				out.close();
 
+                /* Create a new output stream for the private key file*/
 				out = new FileOutputStream(privFile);
+
                 /* Convert the s-expression into Rivest Verbatim format and then write it to the <index>private.key */
 				out.write(priv.toVerbatim());
 				out.flush();
 				out.close();
-
-			} catch (IOException e) {
+			}
+            catch (IOException e) {
                 System.err.println("Encountered error writing key files.");
                 e.printStackTrace();
                 System.exit(0);
