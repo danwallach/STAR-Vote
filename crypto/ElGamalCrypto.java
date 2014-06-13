@@ -36,9 +36,9 @@ import auditorium.Key;
  * @author dwallach
  * 
  */
-
 public class ElGamalCrypto {
 
+    /** Singleton pattern */
     public static final ElGamalCrypto SINGLETON = new ElGamalCrypto();
 
     /* This generator and modulus were generated through Modulus.main() and
@@ -46,33 +46,61 @@ public class ElGamalCrypto {
     (derived from mod/2) - this will be used to get the additive property out
     of doing multiplication.*/
 
+    /** Generator for a group over which the exponential ElGamal operations will be performed */
     private static final String GENERATOR_STRING = "2016433053757341104328548369260225448420178492488839339195079012913740203550581367917603578255836416301659447919134003412324535550203014660828445101581073366209571738168074363709988319601925328131931318253630428729995428849722161812181697865734851328186930582450521842890975960480674438455535966317209024008129126238043911181175493403751902643934946891633427176473184689859908734305925529262343808427749985844869145540026953651663690952752846237422048321944844544";
+
+    /** Modulus (order) over which the exponential ElGamal operations will be performed */
     private static final String MOD_STRING = "4008068760601560176181090811191269958616134140815365887701703622467302386397406595276102404102599183050725940409230956564362213996772507892182603738589047156399535390756432494533344022585855134419330844861393164590002967760368498512584631894520092843017130932721913480603013976030676448835771942383177369284649842316969774775111437516174141766494812679525434402192524629913006391105583246025610804250839276542776846098833535690824388875515507421677606470210284503";
+
+    /** This is a static member of our group used for fast look-ups for re-encryption */
     private static final String MEMBER_STRING = "2004034380300780088090545405595634979308067070407682943850851811233651193198703297638051202051299591525362970204615478282181106998386253946091301869294523578199767695378216247266672011292927567209665422430696582295001483880184249256292315947260046421508565466360956740301506988015338224417885971191588684642324921158484887387555718758087070883247406339762717201096262314956503195552791623012805402125419638271388423049416767845412194437757753710838803235105142251";
+
+    /** This is a midway point between 1024 and 2048, used as a reasonable size for an ElGamal key and cipher size */
     private static final int NUM_PRIME_BITS = 1536;
+
+    /** A default confidence interval for determining the primality of a number, giving a confidence interval very near one */
     private static final int PRIME_CONFIDENCE = 80;
 
     /* These annotations will go in generated public and private ElGamal keys.*/
+    /** An annotation denoting that the key generated with this string is to be a private key  */
     private static final String PRIVATE_ANNOTATION = "ElGamalPrivate";
+
+    /** An annotation denoting that the key generated with this string is to be a public key  */
     private static final String PUBLIC_ANNOTATION = "ElGamalPublic";
 
+    /** A size for a look-up table for re-encryption */
     private static final int TABLE_SIZE = 0;
 
-    /* Member fields*/
-    private final Modulus _modulusCls;
-    private final BigInteger _mod;
-    private final BigInteger _gen;
-    private final BigInteger _member;
-    private final HashMap<BigInteger, BigInteger> _map;
-    private final ArrayList<BigInteger> _lastRandom;
+    /** A modulus field for encryption using the Modulus class */
+    private final Modulus modulusCls;
 
+    /** A numerical version of the modulus data stored in modulusCls */
+    private final BigInteger mod;
+
+    /** A numerical version of the generator stored in modulusCls */
+    private final BigInteger gen;
+
+    /** A member of the group we are using for encryption */
+    private final BigInteger member;
+
+    /** A map so that members of the group can be found for reuse */
+    private final HashMap<BigInteger, BigInteger> reencryptionLookupMap = new HashMap<>();
+
+    /** A reference to the last generated random values to be used for reencryption (for either testing, verification, or piecemeal */
+    private final ArrayList<BigInteger> lastRandom = new ArrayList<>();
+
+    /**
+     * Constructor using the default values stored in the constants above
+     */
     private ElGamalCrypto() {
-        _modulusCls = new Modulus(NUM_PRIME_BITS, PRIME_CONFIDENCE,GENERATOR_STRING, MOD_STRING);
-        _mod = _modulusCls.getModulus();
-        _gen = _modulusCls.getGenerator();
-        _member = new BigInteger(MEMBER_STRING);
-        _map = new HashMap<BigInteger, BigInteger>();
-        _lastRandom = new ArrayList<BigInteger>();
+
+        /* Instantiate the group using the Modulus class, and then extract the necessary data from the class */
+        modulusCls = new Modulus(NUM_PRIME_BITS, PRIME_CONFIDENCE,GENERATOR_STRING, MOD_STRING);
+        mod = modulusCls.getModulus();
+        gen = modulusCls.getGenerator();
+
+        /* Initialize the look-up member */
+        member = new BigInteger(MEMBER_STRING);
 
     }
 
@@ -85,9 +113,10 @@ public class ElGamalCrypto {
      * @return      This method returns a new key pair where the keys are arranged(public,private)
      */
     public Pair<Key> generate(String id) {
-        Key privateKey = new Key(id, PRIVATE_ANNOTATION, _mod, _modulusCls.getRandomValue());
-        Key publicKey = new Key(id, PUBLIC_ANNOTATION, _mod, _gen.modPow(privateKey.getKey(), _mod));
-        return new Pair<Key>(publicKey, privateKey);
+        Key privateKey = new Key(id, PRIVATE_ANNOTATION, mod, modulusCls.getRandomValue());
+        Key publicKey = new Key(id, PUBLIC_ANNOTATION, mod, gen.modPow(privateKey.getKey(), mod));
+
+        return new Pair<>(publicKey, privateKey);
     }
 
     /**
@@ -98,30 +127,33 @@ public class ElGamalCrypto {
      * @return              This method returns an ElGamal cipher Pair.
      */
     public Pair<BigInteger> encrypt(Key key, BigInteger plainText) {
-        if (plainText.compareTo(_mod) >= 0)
-            throw new RuntimeException(
-                    "Plaintext cannot be larger than modulus");
+        if (plainText.compareTo(mod) >= 0) throw new RuntimeException("Plaintext cannot be larger than modulus");
 
-        BigInteger rnd = _modulusCls.getRandomValue();
-        System.out.println("Random: " + rnd);
-        BigInteger c1 = _gen.modPow(rnd, _mod);
-        BigInteger c2 = _member.modPow(plainText, _mod).multiply(
-                key.getKey().modPow(rnd, _mod)).mod(_mod);
-        _lastRandom.add(rnd);
-        return new Pair<BigInteger>(c1, c2);
+        /* Generate a random value */
+        BigInteger rnd = modulusCls.getRandomValue();
+
+        /* Map the random value into the group and compute g^y, i.e. the first part of the ElGamal ciphertext  */
+        BigInteger c1 = gen.modPow(rnd, mod);
+
+        /* Using the random value, compute m' * s, the encryption of the plaintext m, where m' is m mapped into the group */
+        BigInteger c2 = member.modPow(plainText, mod).multiply(key.getKey().modPow(rnd, mod)).mod(mod);
+
+        /* Keep the random value around */
+        lastRandom.add(rnd);
+
+        /* Return the ElGamal ciphertext */
+        return new Pair<>(c1, c2);
     }
 
     /**
-     * Perform a normal decryption.
+     * Perform a normal decryption by computing the inverse of the cipher using the shared secret key.
      *
      * @param key           Decrypt with this key. (should be generated by generate())
      * @param cipherText    Decrypt this cipher (should be generated by encrypt())
      * @return              This method returns the
      */
     public BigInteger decrypt(Key key, Pair<BigInteger> cipherText) {
-        return lookup(cipherText.get2().multiply(
-                cipherText.get1().modPow(key.getKey(), _mod).modInverse(_mod))
-                .mod(_mod));
+        return lookup(cipherText.get2().multiply(cipherText.get1().modPow(key.getKey(), mod).modInverse(mod)).mod(mod));
     }
 
     /**
@@ -133,20 +165,17 @@ public class ElGamalCrypto {
      * @param publickey     public counterpart of the private key used for encrypt
      * @return              the plain text
      */
-    public BigInteger decrypt(BigInteger r, Key publickey,
-            Pair<BigInteger> cipherText) {
-        return lookup(cipherText.get2().multiply(
-                publickey.getKey().modPow(r, _mod).modInverse(_mod)).mod(_mod));
+    public BigInteger decrypt(BigInteger r, Key publickey, Pair<BigInteger> cipherText) {
+        return lookup(cipherText.get2().multiply(publickey.getKey().modPow(r, mod).modInverse(mod)).mod(mod));
     }
 
     private BigInteger lookup(BigInteger i) {
-        if (_map.containsKey(i)){
-            return _map.get(i);
-        }
+        if (reencryptionLookupMap.containsKey(i)) return reencryptionLookupMap.get(i);
+
         else
             for (int lcv = TABLE_SIZE; true; lcv++) {
                 BigInteger blcv = new BigInteger(Integer.toString(lcv));
-                if (_member.modPow(blcv, _mod).equals(i))
+                if (member.modPow(blcv, mod).equals(i))
                     return blcv;
             }
     }
@@ -154,14 +183,14 @@ public class ElGamalCrypto {
      * @return This method returns the most recent randomness used by the encrypt method.
      */
     public List<BigInteger> getRecentRandomness() {
-        return new ArrayList<BigInteger>(_lastRandom);
+        return new ArrayList<>(lastRandom);
     }
 
     /**
      * Forget about the most recent randomness used by the encrypt method.
      */
     public void clearRecentRandomness() {
-        _lastRandom.clear();
+        lastRandom.clear();
     }
 
     /**
@@ -169,7 +198,7 @@ public class ElGamalCrypto {
      * arguments. mult(encrypt(a), encrypt(b)) = encrypt(a * b)
      */
     public Pair<BigInteger> mult(Pair<BigInteger> a, Pair<BigInteger> b) {
-        return new Pair<BigInteger>(a.get1().multiply(b.get1()).mod(_mod), a
-                .get2().multiply(b.get2()).mod(_mod));
+        return new Pair<>(a.get1().multiply(b.get1()).mod(mod), a
+                .get2().multiply(b.get2()).mod(mod));
     }
 }

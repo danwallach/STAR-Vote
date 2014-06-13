@@ -49,17 +49,32 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 
+/**
+ * This class is the main interface between STAR-Vote operations and our crypto library.
+ * All cryptographic operations on ballots are performed using this class, with few exceptions
+ * which rely on the bare-metal of the Adder ElGamal code to homorphically tally and decrypt election
+ * results. However, note that these operations are made possible by the encryption performed in this class,
+ * so in reality even uses of the Adder library outside of this class are coupled with this.
+ */
 public class BallotEncrypter {
 
+    /** Since we never need to instantiate this class multiple times, we can use the singleton pattern */
     public static final BallotEncrypter SINGLETON = new BallotEncrypter();
 
-    private List<BigInteger> _randomList;
-    private ListExpression _recentBallot;
-    
-    private List<List<AdderInteger>> _adderRandom;
+    /** This will hold a list of all the random values used in encrypt each vote, for use with a piecemeal encrypter */
+    private List<BigInteger> randomList;
 
-    private BallotEncrypter() {
-    }
+    /** This is a record of the previously encrypted ballot, for use with a piecemeal encrypter */
+    private ListExpression recentBallot;
+
+    /** This expounds upon @see randomList */
+    private List<List<AdderInteger>> adderRandom;
+
+
+    /**
+     * An empty private constructor to complete the singleton pattern
+     */
+    private BallotEncrypter() { }
 
     /**
      * Takes an unencrypted ballot and encrypts it, while also generating a set of NIZKs to prove it is well formed.
@@ -74,14 +89,13 @@ public class BallotEncrypter {
      * @return               a ListExpression in the form (((vote [vote]) (vote-ids ([id1], [id2], ...)) (proof [proof]) (public-key [key])) ...)
      */
     public ListExpression encryptWithProof(ListExpression ballot, List<List<String>> raceGroups, PublicKey pubKey){
-        _adderRandom = new ArrayList<>();
-        List<ASExpression> subBallots = new ArrayList<>();
+        adderRandom = new ArrayList<List<AdderInteger>>();
+        List<ASExpression> subBallots = new ArrayList<ASExpression>();
 
 
         /* Randomly generate a key for write-in encryption, will be sent over the wire, encrypted */
         byte[] writeInKey = new byte[16];
 
-        /* Create a random write-in key (16 byte length) */
         for (int i = 0; i < 16; i++)
             writeInKey[i] = (byte) (Math.random() * 16);
 
@@ -142,9 +156,9 @@ public class BallotEncrypter {
         subBallots.add(encryptedKey.toASE());
 
         /* Convert this list into a ListExpression and set the most recent ballot to this */
-        _recentBallot = new ListExpression(subBallots);
+        recentBallot = new ListExpression(subBallots);
 
-        return _recentBallot;
+        return recentBallot;
     }
     
     /**
@@ -184,18 +198,14 @@ public class BallotEncrypter {
 //
 //            }
 
-            /* Add this counter to the value ArrayList */
     		value.add(new AdderInteger(selection));
 
-            /* Pull out the candidate ID from the race vote record and add it to the list of candidate IDs */
             ASExpression candidateID = choice.get(0);
             valueIds.add(candidateID);
         }
 
-        /* Create the public key that will be the last to be used in the election */
         PublicKey finalPubKey = AdderKeyManipulator.generateFinalPublicKey(pubKey);
 
-        /* Encrypt the list of counter values */
         Vote vote = finalPubKey.encrypt(value);
 
         /* Important data from the ElGamal Encryption */
@@ -208,7 +218,7 @@ public class BallotEncrypter {
 			subRandom.add(cipher.getR());
 
 		/* Add this list of random values for the subBallot to the entire ballot list. */
-		_adderRandom.add(subRandom);
+		adderRandom.add(subRandom);
 
         /* Checking the encrypted subBallots against the proofs*/
 		VoteProof proof = new VoteProof();
@@ -311,15 +321,15 @@ public class BallotEncrypter {
         }
 
         /* Set the entire ballot encryption */
-        _recentBallot = new ListExpression(encryptedpairs);
+        recentBallot = new ListExpression(encryptedpairs);
 
         /* Save the R values for fast decryption later */
-        _randomList = ElGamalCrypto.SINGLETON.getRecentRandomness();
+        randomList = ElGamalCrypto.SINGLETON.getRecentRandomness();
 
         /* Reset the encrypter */
         ElGamalCrypto.SINGLETON.clearRecentRandomness();
 
-        return _recentBallot;
+        return recentBallot;
     }
     
     /**
@@ -557,8 +567,8 @@ public class BallotEncrypter {
     public ListExpression getRecentRandom() {
         ArrayList<ASExpression> pairs = new ArrayList<>();
 
-        Iterator<ASExpression> ballotitr = _recentBallot.iterator();
-        Iterator<BigInteger> ritr = _randomList.iterator();
+        Iterator<ASExpression> ballotitr = recentBallot.iterator();
+        Iterator<BigInteger> ritr = randomList.iterator();
 
         while (ballotitr.hasNext()) {
             ListExpression ballotpair = (ListExpression) ballotitr.next();
@@ -576,7 +586,7 @@ public class BallotEncrypter {
      * @return      The random list used in the last call to encryptWithProof(...).
      */
     public List<List<AdderInteger>> getRecentAdderRandom(){
-    	return _adderRandom;
+    	return adderRandom;
     }
     
     /**
@@ -585,7 +595,7 @@ public class BallotEncrypter {
      * @return      The most recent encryption.
      */
     public ListExpression getRecentEncryptedBallot() {
-        return _recentBallot;
+        return recentBallot;
     }
 
     /**
@@ -593,9 +603,9 @@ public class BallotEncrypter {
      */
 
     public void clear() {
-        _recentBallot = null;
-        _randomList = null;
-        _adderRandom = new ArrayList<>();
+        recentBallot = null;
+        randomList = null;
+        adderRandom = new ArrayList<>();
     }
 
     /**

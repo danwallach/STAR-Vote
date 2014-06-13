@@ -12,11 +12,9 @@ import java.security.NoSuchAlgorithmException;
  * @since 0.0.1
  */
 public final class Util {
-    /* TODO do we really need a default constructor*/
-    /** Don't instantiate me! */
-    private Util() {
 
-    }
+    /** Don't instantiate me! */
+    private Util() { }
 
     /**
      * Convert a byte array into the corresponding string.
@@ -59,7 +57,7 @@ public final class Util {
     }
 
     /**
-     * Determines whether the given character is a hexidecimal digit.
+     * Determines whether the given character is a hexadecimal digit.
      *
      * @param c the character
      * @return <tt>true</tt> if the given character is a valid digit

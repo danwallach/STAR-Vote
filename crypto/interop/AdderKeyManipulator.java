@@ -10,7 +10,11 @@ import edu.uconn.cse.adder.PrivateKey;
 import edu.uconn.cse.adder.PublicKey;
 
 public class AdderKeyManipulator {
+
+    /** A cached key that will let us compare the public key that is used throughout the election process */
 	private static PublicKey _cachedKey = null;
+
+    /** A LaGrange polynomial for the Exponential-ElGamal homomorphic process. */
 	private static Polynomial _poly = null;
 	
 	/**
@@ -61,8 +65,7 @@ public class AdderKeyManipulator {
 		AdderInteger f = pubKey.getF();
 		AdderInteger finalH = new AdderInteger(AdderInteger.ONE, p);
 		
-		AdderInteger gvalue = g.pow((_poly).
-                evaluate(new AdderInteger(AdderInteger.ZERO, q)));
+		AdderInteger gvalue = g.pow((_poly).evaluate(new AdderInteger(AdderInteger.ZERO, q)));
 		finalH = finalH.multiply(gvalue);
 		
 		_cachedKey = new PublicKey(p, g, finalH, f);
