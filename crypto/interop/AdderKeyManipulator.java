@@ -3,11 +3,11 @@ package crypto.interop;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.uconn.cse.adder.AdderInteger;
-import edu.uconn.cse.adder.ElgamalCiphertext;
-import edu.uconn.cse.adder.Polynomial;
-import edu.uconn.cse.adder.PrivateKey;
-import edu.uconn.cse.adder.PublicKey;
+import crypto.adder.AdderInteger;
+import crypto.adder.ElgamalCiphertext;
+import crypto.adder.Polynomial;
+import crypto.adder.PrivateKey;
+import crypto.adder.PublicKey;
 
 public class AdderKeyManipulator {
 

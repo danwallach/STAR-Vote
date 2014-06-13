@@ -10,8 +10,8 @@ import java.util.Map;
 import auditorium.Key;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
-import edu.uconn.cse.adder.AdderInteger;
-import edu.uconn.cse.adder.PublicKey;
+import crypto.adder.AdderInteger;
+import crypto.adder.PublicKey;
 
 /**
  * Wrapper around BallotEncrypter to allow for concealing

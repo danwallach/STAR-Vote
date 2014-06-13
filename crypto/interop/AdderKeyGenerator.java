@@ -3,8 +3,8 @@ package crypto.interop;
 import java.io.File;
 import java.io.FileOutputStream;
 
-import edu.uconn.cse.adder.PrivateKey;
-import edu.uconn.cse.adder.PublicKey;
+import crypto.adder.PrivateKey;
+import crypto.adder.PublicKey;
 
 /**
  * Using this class, specify a destination directory, you can generate a single public/private key-pair

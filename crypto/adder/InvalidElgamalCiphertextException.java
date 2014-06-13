@@ -1,4 +1,4 @@
-package edu.uconn.cse.adder;
+package crypto.adder;
 
 /**
  * Thrown by the <tt>fromString</tt> method of a <code>ElgamalCiphertext</code>

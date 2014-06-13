@@ -9,12 +9,12 @@ import java.util.Map;
 
 import auditorium.Bugout;
 
-import edu.uconn.cse.adder.AdderInteger;
-import edu.uconn.cse.adder.Election;
-import edu.uconn.cse.adder.PrivateKey;
-import edu.uconn.cse.adder.PublicKey;
-import edu.uconn.cse.adder.Vote;
-import edu.uconn.cse.adder.VoteProof;
+import crypto.adder.AdderInteger;
+import crypto.adder.Election;
+import crypto.adder.PrivateKey;
+import crypto.adder.PublicKey;
+import crypto.adder.Vote;
+import crypto.adder.VoteProof;
 
 import sexpression.ASExpression;
 import sexpression.ListExpression;

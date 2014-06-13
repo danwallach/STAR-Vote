@@ -20,8 +20,8 @@ import votebox.middle.ballot.SelectableCardElement;
 import votebox.middle.driver.*;
 import auditorium.Key;
 import auditorium.SimpleKeyStore;
-import edu.uconn.cse.adder.AdderInteger;
-import edu.uconn.cse.adder.PublicKey;
+import crypto.adder.AdderInteger;
+import crypto.adder.PublicKey;
 import votebox.middle.view.IView;
 
 public class PiecemealEncrypterTest {

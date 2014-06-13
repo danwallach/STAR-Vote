@@ -1,4 +1,4 @@
-package edu.uconn.cse.adder;
+package crypto.adder;
 
 /**
  * Thrown by the <tt>getFinalSum</tt> method of a <code>Election</code>

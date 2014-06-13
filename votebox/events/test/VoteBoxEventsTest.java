@@ -25,7 +25,7 @@ package votebox.events.test;
 import auditorium.IKeyStore;
 import auditorium.SimpleKeyStore;
 import crypto.interop.AdderKeyManipulator;
-import edu.uconn.cse.adder.PublicKey;
+import crypto.adder.PublicKey;
 import junit.framework.TestCase;
 import sexpression.ASExpression;
 import sexpression.StringExpression;

@@ -1,7 +1,7 @@
 package supervisor.model;
 
-import edu.uconn.cse.adder.PrivateKey;
-import edu.uconn.cse.adder.PublicKey;
+import crypto.adder.PrivateKey;
+import crypto.adder.PublicKey;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.StringExpression;

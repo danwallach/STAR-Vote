@@ -27,13 +27,13 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
-import edu.uconn.cse.adder.AdderInteger;
-import edu.uconn.cse.adder.Election;
-import edu.uconn.cse.adder.ElgamalCiphertext;
-import edu.uconn.cse.adder.PrivateKey;
-import edu.uconn.cse.adder.PublicKey;
-import edu.uconn.cse.adder.Vote;
-import edu.uconn.cse.adder.VoteProof;
+import crypto.adder.AdderInteger;
+import crypto.adder.Election;
+import crypto.adder.ElgamalCiphertext;
+import crypto.adder.PrivateKey;
+import crypto.adder.PublicKey;
+import crypto.adder.Vote;
+import crypto.adder.VoteProof;
 
 import auditorium.Bugout;
 import auditorium.Key;

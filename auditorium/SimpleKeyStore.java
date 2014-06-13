@@ -31,8 +31,8 @@ import java.util.HashMap;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import edu.uconn.cse.adder.PrivateKey;
-import edu.uconn.cse.adder.PublicKey;
+import crypto.adder.PrivateKey;
+import crypto.adder.PublicKey;
 
 import sexpression.*;
 import sexpression.stream.*;

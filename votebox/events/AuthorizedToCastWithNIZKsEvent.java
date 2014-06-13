@@ -1,6 +1,6 @@
 package votebox.events;
 
-import edu.uconn.cse.adder.PublicKey;
+import crypto.adder.PublicKey;
 
 import sexpression.*;
 import crypto.interop.AdderKeyManipulator;
