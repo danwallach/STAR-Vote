@@ -44,6 +44,7 @@ public class
 
     /**
      * Returns the partial decryption of the given vote.
+     *
      * @param vote      the vote
      *
      * @return          the partial decryption of the given vote
@@ -52,8 +53,8 @@ public class
         List<ElgamalCiphertext> cipherList = vote.getCipherList();
         List<AdderInteger> resultList = new ArrayList<AdderInteger>(cipherList.size());
 
-        for (Iterator it = cipherList.iterator(); it.hasNext();) {
-            AdderInteger bigG = ((ElgamalCiphertext) it.next()).getG();
+        for (ElgamalCiphertext ciphertext : cipherList) {
+            AdderInteger bigG = (ciphertext).getG();
             resultList.add(bigG.pow(x));
         }
 
