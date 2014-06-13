@@ -41,7 +41,7 @@ public class ElGamalCrypto {
 
     public static final ElGamalCrypto SINGLETON = new ElGamalCrypto();
 
-    /* this generator and modulus were generated through Modulus.main() and
+    /* This generator and modulus were generated through Modulus.main() and
     consumed 7 minutes of CPU on a 2GHz Core 2 Duo iMac. random member
     (derived from mod/2) - this will be used to get the additive property out
     of doing multiplication.*/

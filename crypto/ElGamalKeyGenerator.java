@@ -89,7 +89,6 @@ public class ElGamalKeyGenerator {
 			File pubFile = new File(dir, i+"public.key");
 			File privFile = new File(dir, i+"private.key");
 
-
 			try {
 
                 /* Create a new output stream for the public key file */
