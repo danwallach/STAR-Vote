@@ -16,7 +16,7 @@ import sexpression.StringExpression;
  * @version $LastChangedRevision$ $LastChangedDate$
  * @since 0.0.1
  */
-public class AdderInteger implements Comparable/*<AdderInteger>*/ {
+public class AdderInteger implements Comparable {
     /**
      * The AdderInteger constant zero.
      */
@@ -31,7 +31,7 @@ public class AdderInteger implements Comparable/*<AdderInteger>*/ {
     public static final AdderInteger TWO = new AdderInteger("2");
 
     private BigInteger val;
-    private BigInteger m;
+    private BigInteger mod;
     private static final Context CTX = new Context();
 
 
@@ -40,7 +40,7 @@ public class AdderInteger implements Comparable/*<AdderInteger>*/ {
      */
     public AdderInteger() {
         this.val = BigInteger.ZERO;
-        this.m = BigInteger.ZERO;
+        this.mod = BigInteger.ZERO;
     }
 
     /**
@@ -50,7 +50,7 @@ public class AdderInteger implements Comparable/*<AdderInteger>*/ {
      */
     public AdderInteger(AdderInteger b) {
         this.val = b.val;
-        this.m = b.m;
+        this.mod = b.mod;
     }
 
     /**
@@ -62,8 +62,8 @@ public class AdderInteger implements Comparable/*<AdderInteger>*/ {
      * @see            BigInteger
      */
     public AdderInteger(int val) {
-        this.val = new BigInteger(Integer.toString(val));
-        this.m = BigInteger.ZERO;
+        this.val = new BigInteger(val + "");
+        this.mod = BigInteger.ZERO;
     }
 
     /**
@@ -77,7 +77,7 @@ public class AdderInteger implements Comparable/*<AdderInteger>*/ {
      */
     public AdderInteger(String val, int base) {
         this.val = new BigInteger(val, base);
-        this.m = BigInteger.ZERO;
+        this.mod = BigInteger.ZERO;
     }
 
     /**
@@ -86,14 +86,13 @@ public class AdderInteger implements Comparable/*<AdderInteger>*/ {
      * consists of the same format as BigInteger.
      *
      * @param val      String representation of AdderInteger
-     * @param m        the modulus
+     * @param mod      the modulus
      * @see            BigInteger
      */
 
-    /* TODO need to test that it works the way it should*/
-    public AdderInteger(BigInteger val, BigInteger m) {
-        this.m = m;
-        this.val = val.mod(m);
+    public AdderInteger(BigInteger val, BigInteger mod) {
+        this.mod = mod;
+        this.val = val.mod(mod);
     }
 
     /**
@@ -102,13 +101,13 @@ public class AdderInteger implements Comparable/*<AdderInteger>*/ {
      * representation consists of the same format as BigInteger.
      *
      * @param val      String representation of AdderInteger
-     * @param m        the modulus
+     * @param mod      the modulus
      * @param base     base to be used in interpreting <tt>val</tt>
      * @see            BigInteger
      */
-    public AdderInteger(String val, AdderInteger m, int base) {
-        this.val = new BigInteger(val, base).mod(m.val);
-        this.m = m.val;
+    public AdderInteger(String val, AdderInteger mod, int base) {
+        this.val = new BigInteger(val, base).mod(mod.val);
+        this.mod = mod.val;
     }
 
     /**
@@ -117,18 +116,17 @@ public class AdderInteger implements Comparable/*<AdderInteger>*/ {
      * and then into a BigInteger.
      *
      * @param val      int representation of AdderInteger
-     * @param m        the modulus
+     * @param mod      the modulus
      * @see            BigInteger
      */
-    public AdderInteger(int val, int m) {
+    public AdderInteger(int val, int mod) {
 
         /* Integer converted into string first and then to BigInteger*/
-        BigInteger v = new BigInteger(Integer.toString(val));
-        BigInteger mv = new BigInteger(Integer.toString(m));
+        BigInteger v = new BigInteger(val + "");
+        BigInteger mv = new BigInteger(mod + "");
 
-        this.val = v;
-        this.m = mv;
-        this.val = this.val.mod(mv);
+        this.mod = mv;
+        this.val = v.mod(mv);
     }
 
 
@@ -142,7 +140,7 @@ public class AdderInteger implements Comparable/*<AdderInteger>*/ {
      */
     public AdderInteger(BigInteger val) {
         this.val = val;
-        this.m = BigInteger.ZERO;
+        this.mod = BigInteger.ZERO;
     }
 
     /**
@@ -163,11 +161,11 @@ public class AdderInteger implements Comparable/*<AdderInteger>*/ {
      * format as BigInteger.
      *
      * @param val       decimal String representation of BigInteger.
-     * @param m         the modulus
+     * @param mod       the modulus
      * @see             BigInteger
      */
-    public AdderInteger(int val, AdderInteger m) {
-        this(Integer.toString(val), m, 10);
+    public AdderInteger(int val, AdderInteger mod) {
+        this(val + "", mod, 10);
     }
 
     /**
@@ -176,11 +174,11 @@ public class AdderInteger implements Comparable/*<AdderInteger>*/ {
      * consists of consists of the same format as BigInteger.
      *
      * @param val       decimal String representation of BigInteger
-     * @param m         the modulus
+     * @param mod       the modulus
      * @see             BigInteger
      */
-    public AdderInteger(String val, AdderInteger m) {
-        this(val, m, 10);
+    public AdderInteger(String val, AdderInteger mod) {
+        this(val, mod, 10);
     }
 
     /**
@@ -189,21 +187,21 @@ public class AdderInteger implements Comparable/*<AdderInteger>*/ {
      * consists of consists of the same format as BigInteger.
      *
      * @param val       decimal String representation of BigInteger
-     * @param m         the modulus
+     * @param mod       the modulus
      */
-    public AdderInteger(String val, String m) {
-        this(val, new AdderInteger(m));
+    public AdderInteger(String val, String mod) {
+        this(val, new AdderInteger(mod));
     }
 
     /**
      * Copies the the given AdderInteger and modulus into this AdderInteger.
      *
      * @param b         AdderInteger to be copied
-     * @param m         the modulus
+     * @param mod       the modulus
      * @see             #toString()
      */
-    public AdderInteger(AdderInteger b, AdderInteger m) {
-        this(b.toString(), m);
+    public AdderInteger(AdderInteger b, AdderInteger mod) {
+        this(b.toString(), mod);
     }
 
 
@@ -215,7 +213,8 @@ public class AdderInteger implements Comparable/*<AdderInteger>*/ {
      * @return          <tt>true</tt> if divisible by the given AdderInteger
      */
     public boolean isDivisible(AdderInteger b) {
-        return val.remainder(b.val).equals(BigInteger.ZERO);
+        BigInteger mod = val.remainder(b.val);
+        return mod.equals(BigInteger.ZERO);
     }
 
     /**
@@ -233,7 +232,7 @@ public class AdderInteger implements Comparable/*<AdderInteger>*/ {
      * @return          the modulus
      */
     public AdderInteger getModulus() {
-        return new AdderInteger(m);
+        return new AdderInteger(mod);
     }
 
     /**
@@ -247,16 +246,16 @@ public class AdderInteger implements Comparable/*<AdderInteger>*/ {
      * @return          the new AdderInteger
      */
     public static AdderInteger random(AdderInteger n) {
-        BigInteger t;
 
-        do {
-            t = new BigInteger(n.val.bitLength(), CTX.getRandom());
-        } while (t.compareTo(n.val) >= 0);
+        BigInteger t = n.val;
+
+        while (t.compareTo(n.val) >= 0)
+            t = new BigInteger (n.val.bitLength(), CTX.getRandom());
+
 
         AdderInteger c = new AdderInteger();
 
-        c.m = n.val;
-
+        c.mod = n.val;
         c.val = t;
 
         return c;
@@ -328,6 +327,7 @@ public class AdderInteger implements Comparable/*<AdderInteger>*/ {
      * @see                 BigInteger#bitLength()
      */
     public static AdderInteger safePrime(int bitLength) {
+
         final BigInteger two = new BigInteger("2");
         BigInteger p;
         BigInteger q;
@@ -341,115 +341,105 @@ public class AdderInteger implements Comparable/*<AdderInteger>*/ {
     }
 
     /**
-     * Returns an AdderInteger whose value is <tt>(-this)</tt>.
-     *
-     * @return          <tt>-this</tt>
+     * @return          <tt>The additive inverse of val</tt>
      */
     public AdderInteger negate() {
+
         AdderInteger c = new AdderInteger();
 
-        if (!m.equals(BigInteger.ZERO)) {
-            c.val = m.subtract(val);
-        } else {
-            c.val = val.negate();
-        }
+        c.val = !mod.equals(BigInteger.ZERO) ? mod.subtract(val) : val.negate();
 
         return c;
     }
 
     /**
-     * Returns an AdderInteger whose value is <tt>(this + val)</tt>.
+     * @see BigInteger#add(BigInteger)
      *
      * @param  b        value to be added to this AdderInteger
-     * @return          <tt>this + val</tt>
+     * @return          Returns an AdderInteger whose value is <tt>this.val + b.val</tt>
      */
     public AdderInteger add(AdderInteger b) {
+
         AdderInteger c = new AdderInteger();
 
-        c.m = m;
-
+        c.mod = mod;
         c.val = val.add(b.val);
 
-        if (!m.equals(BigInteger.ZERO)) {
-            c.val = c.val.mod(c.m);
-        }
+        if (!mod.equals(BigInteger.ZERO))
+            c.val = c.val.mod(c.mod);
 
         return c;
     }
 
     /**
-     * Returns an AdderInteger whose value is <tt>(this - val)</tt>.
+     * @see BigInteger#subtract(BigInteger)
      *
-     * @param  b        value to be subtracted to this AdderInteger
-     * @return          <tt>this - val</tt>
+     * @param  b        value to be subtracted from this AdderInteger
+     * @return          Returns an AdderInteger whose value is <tt>this.val - b.val</tt>
      */
     public AdderInteger subtract(AdderInteger b) {
+
         AdderInteger c = new AdderInteger();
 
-        c.m = m;
-
-        if (!m.equals(BigInteger.ZERO)) {
-            c.val = val.add((b.negate()).val);
-        } else {
-            c.val = val.subtract(b.val);
-        }
+        c.mod = mod;
+        c.val = !mod.equals(BigInteger.ZERO) ? val.add((b.negate()).val) : val.subtract(b.val);
 
         return c;
     }
 
     /**
-     * Returns an AdderInteger whose value is <tt>(this * val)</tt>.
+     * @see BigInteger#multiply(BigInteger)
      *
-     * @param  b        value to be multiplied by this AdderInteger
-     * @return          <tt>this * val</tt>
+     * @param  b        value to be multiplied with this AdderInteger
+     * @return          Returns an AdderInteger whose value is <tt>this.val * b.val</tt>
      */
     public AdderInteger multiply(AdderInteger b) {
         AdderInteger c = new AdderInteger();
 
-        c.m = m;
-
+        c.mod = mod;
         c.val = val.multiply(b.val);
 
-        if (!m.equals(BigInteger.ZERO)) {
-            c.val = c.val.mod(c.m);
-        }
+        if (!mod.equals(BigInteger.ZERO))
+            c.val = c.val.mod(c.mod);
 
         return c;
     }
 
     /**
-     * Returns an AdderInteger whose value is <tt>(this / val)</tt>.
+     * @see BigInteger#divide(BigInteger)
      *
-     * @param  b        value to be divided
-     * @return          <tt>this / val</tt>
+     * @param  b        value to be divided into this AdderInteger
+     * @return          Returns an AdderInteger whose value is <tt>this.val / b.val</tt>
      */
+
     public AdderInteger divide(AdderInteger b) {
+
         AdderInteger c = new AdderInteger();
 
-        c.m = m;
+        c.mod = mod;
 
-        if (!m.equals(BigInteger.ZERO)) {
-            BigInteger bInv = b.val.modInverse(m);
+        if (!mod.equals(BigInteger.ZERO)) {
+
+            BigInteger bInv = b.val.modInverse(mod);
+
             c.val = val.multiply(bInv);
-            c.val = c.val.mod(c.m);
-        } else {
-            c.val = val.divide(b.val);
+            c.val = c.val.mod(c.mod);
         }
+        else  c.val = val.divide(b.val);
 
         return c;
     }
 
     /**
-     * Returns an AdderInteger whose value is <tt>(this mod m</tt>).
+     * @see BigInteger#mod(BigInteger)
      *
-     * @param  m        the modulus.
-     * @return          <tt>this mod m</tt>
+     * @param  m        value to be modded into this AdderInteger
+     * @return          Returns an AdderInteger whose value is <tt>this.val % m.val</tt>
      */
     public AdderInteger mod(AdderInteger m) {
         AdderInteger c = new AdderInteger();
 
-        c.m = this.m;
-
+        c.mod = this.mod;
         c.val = val.mod(m.val);
 
         return c;
@@ -462,16 +452,13 @@ public class AdderInteger implements Comparable/*<AdderInteger>*/ {
      * @param  exponent     exponent to which this AdderInteger is to be raised.
      * @return              <tt>this<sup>exponent</sup></tt>
      */
+
     public AdderInteger pow(AdderInteger exponent) {
         AdderInteger c = new AdderInteger();
 
-        c.m = m;
+        c.mod = mod;
 
-        if (!m.equals(BigInteger.ZERO)) {
-            c.val = val.modPow(exponent.val, c.m);
-        } else {
-            c.val = val.pow(exponent.val.intValue());
-        }
+        c.val = !mod.equals(BigInteger.ZERO) ? val.modPow(exponent.val, c.mod) : val.pow(exponent.val.intValue());
 
         return c;
     }
@@ -510,7 +497,7 @@ public class AdderInteger implements Comparable/*<AdderInteger>*/ {
      * @return          hash code for this AdderInteger
      */
     public int hashCode() {
-        return val.hashCode() | m.hashCode();
+        return val.hashCode() | mod.hashCode();
     }
 
     /**
