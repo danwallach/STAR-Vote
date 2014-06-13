@@ -78,11 +78,17 @@ public class Election {
     /**
      * Gets the final sum given the partial sums, the coefficients, the vote
      * representing the sum, and the master public key.
-     * TODO make this less stupid List<List<>>
-     * @param  partialSums      the partial sums
+     * TODO make this less stupid List<List<>> and LaGrange coefficients
+     *
+     * @param  partialSums      the partial sums (the list of products of the encrypted
+     *                          votes' h^y values wrapped in an additional list)
+     *
      * @param  coeffs           the coefficients
+     *
      * @param  sum              the sum
+     *
      * @param  masterKey        the master public key
+     *
      * @return                  the final vote tally
      */
     public List<AdderInteger> getFinalSum(List<List<AdderInteger>> partialSums, List<AdderInteger> coeffs, Vote sum, PublicKey masterKey) {
@@ -109,7 +115,7 @@ public class Election {
         List<AdderInteger> productList  = new ArrayList<>();
         List<AdderInteger> results      = new ArrayList<>();
 
-        /* For each cipher (i.e. for each race) */
+        /* For each cipher (i.e. for each candidate) */
         for (int i = 0; i < csize; i++) {
 
             /* Adding a one to the product list so that we don't get a null pointer or zero later */
@@ -121,10 +127,10 @@ public class Election {
                 /* Get out the ith product */
                 AdderInteger pli =  productList.get(i);
 
-                /* Pull out the jth partial sum (cast to List), which is the first encrypted result for the race */
+                /* Pull out the list partial sum (cast to List) */
                 List ps = (List) partialSums.get(j);
 
-                /* Pull out the ith ciphertext and the jth LaGrange coefficient */
+                /* Pull out the ith partial sum (equals h^y) and the jth LaGrange coefficient */
                 AdderInteger psi = (AdderInteger) ps.get(i);
                 AdderInteger lcj = lagrangeCoeffs.get(j);
 
@@ -135,10 +141,10 @@ public class Election {
                 productList.set(i, product);
             }
 
-            /* Get the public value from the ith ciphertext (bigH = h' = h^y * f^m) (bigG = g^y) */
+            /* Get the public value from the ith ciphertext (encrypted sum for ith candidate) (bigH = h' = h^y * f^m) (bigG = g^y) */
             AdderInteger bigH = (cipherList.get(i)).getH();
 
-            /* Divide h' / (h^y * f^n) = f^(m-n), where n = total number of votes for a candidate */
+            /* Divide h' / h^y = f^m, where m = total number of votes for a candidate */
             AdderInteger target = bigH.divide(productList.get(i));
 
             /* Indicates if we have successfully resolved the ciphertext */
@@ -167,7 +173,6 @@ public class Election {
             /* Keep track of found result, otherwise error */
             if (gotResult) results.add(j);
             else throw new SearchSpaceExhaustedException("Error searching for " + target);
-
         }
 
         return results;

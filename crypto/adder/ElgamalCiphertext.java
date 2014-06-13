@@ -54,8 +54,8 @@ public class ElgamalCiphertext {
      * @param h the public value
      * @param r the private random value
      */
-    public ElgamalCiphertext(AdderInteger g, AdderInteger h, AdderInteger r,
-                AdderInteger p) {
+    public ElgamalCiphertext(AdderInteger g, AdderInteger h, AdderInteger r, AdderInteger p) {
+
         this.p = p;
         this.g = new AdderInteger(g, p);
         this.h = new AdderInteger(h, p);
@@ -68,22 +68,25 @@ public class ElgamalCiphertext {
      * @return the short hash
      */
     public String shortHash() {
+
         String str = toString();
         int idx = str.indexOf(" ");
 
-        if (idx != -1) {
+        if (idx != -1)
             str = str.substring(0, idx);
-        }
 
         return Util.sha1(str).substring(0, 5);
     }
 
     ElgamalCiphertext multiply(ElgamalCiphertext ciphertext) {
+
+        /* Get the requisite numbers and multiply */
         AdderInteger p = this.getP();
         AdderInteger g = this.getG().multiply(ciphertext.getG());
         AdderInteger h = this.getH().multiply(ciphertext.getH());
         AdderInteger r = this.getR().add(ciphertext.getR());
 
+        /* Create a new ciphertext */
         ElgamalCiphertext newCiphertext = new ElgamalCiphertext(g, h, r, p);
 
         return newCiphertext;
@@ -151,63 +154,70 @@ public class ElgamalCiphertext {
      * @return a        <tt>ElgamalCiphertext</tt> with the specified values
      */
     public static ElgamalCiphertext fromString(String s) {
+
+        /* Set up the StringTokenizer */
         StringTokenizer st0 = new StringTokenizer(s, " ");
 
         try {
+
+            /* Set up another StringTokenizer for regex-ing 'p', 'G', and 'H' */
             StringTokenizer st = new StringTokenizer(st0.nextToken(), "pGH", true);
 
-            if (!st.nextToken().equals("p")) {
+            /* Error if not 'p' */
+            if (!st.nextToken().equals("p"))
                 throw new InvalidElgamalCiphertextException("expected token: `p\'");
-            }
 
+            /* Get p */
             AdderInteger p = new AdderInteger(st.nextToken());
 
-            if (!st.nextToken().equals("G")) {
+            /* Error if not 'G' */
+            if (!st.nextToken().equals("G"))
                 throw new InvalidElgamalCiphertextException("expected token: `G\'");
-            }
 
+            /* Get g */
             AdderInteger g = new AdderInteger(st.nextToken(), p);
 
-            if (!st.nextToken().equals("H")) {
+            /* Error if not 'H' */
+            if (!st.nextToken().equals("H"))
                 throw new InvalidElgamalCiphertextException("expected token: `H\'");
-            }
 
+            /* Get h */
             AdderInteger h = new AdderInteger(st.nextToken(), p);
 
-            if (st.hasMoreTokens()) {
+            /* Error if too many tokens */
+            if (st.hasMoreTokens())
                 throw new InvalidElgamalCiphertextException("too many tokens");
-            }
 
+            /* Create a new vote from g, h, p */
             ElgamalCiphertext vote = new ElgamalCiphertext(g, h, p);
 
-            if (st0.hasMoreTokens()) {
-                try {
-                    vote.setProof(MembershipProof.fromString(st0.nextToken()));
-                } catch (InvalidMembershipProofException ibpe) {
-                    throw new InvalidElgamalCiphertextException(ibpe.getMessage());
-                }
-            }
+            /* If there are more tokens for the other one, look for the vote proof */
+            if (st0.hasMoreTokens())
+                try { vote.setProof(MembershipProof.fromString(st0.nextToken())); }
+                catch (InvalidMembershipProofException ibpe) { throw new InvalidElgamalCiphertextException(ibpe.getMessage()); }
 
-            if (st0.hasMoreTokens()) {
+            /* Error if there are still more tokens */
+            if (st0.hasMoreTokens())
                 throw new InvalidElgamalCiphertextException("too many tokens");
-            }
 
             return vote;
-        } catch (NoSuchElementException nsee) {
-            throw new InvalidElgamalCiphertextException(nsee.getMessage());
-        } catch (NumberFormatException nfe) {
-            throw new InvalidElgamalCiphertextException(nfe.getMessage());
+
         }
+        catch (NoSuchElementException | NumberFormatException nsee) { throw new InvalidElgamalCiphertextException(nsee.getMessage()); }
     }
 
     /**
      * Returns a <code>String</code> object representing this
      * <code>ElgamalCiphertext</code>.
-     * @return the string representation of this vote
+     *
+     * @return      the string representation of this vote
      */
     public String toString() {
+
+        /* Create a new StringBuffer */
         StringBuffer sb = new StringBuffer(4096);
 
+        /* Build the pGH String representing ciphertext */
         sb.append("p");
         sb.append(p);
         sb.append("G");
@@ -215,6 +225,7 @@ public class ElgamalCiphertext {
         sb.append("H");
         sb.append(h);
 
+        /* Add the proof if it exists */
         if (proof != null) {
             sb.append(" ");
             sb.append(proof.toString());
@@ -226,47 +237,50 @@ public class ElgamalCiphertext {
     /**
      * Method for interop with VoteBox's S-Expression system.
      * 
-     * @return the S-Expression equivalent of this AdderInteger
+     * @return      the S-Expression equivalent of this AdderInteger
      */
-    public ASExpression toASE(){
-    	if(proof == null)
-    	return new ListExpression(StringExpression.makeString("elgamal-ciphertext"), 
-    			p.toASE(), 
-    			g.toASE(),
-    			h.toASE());
-    	
-    	return new ListExpression(StringExpression.makeString("elgamal-ciphertext"), 
-    			p.toASE(), 
-    			g.toASE(),
-    			h.toASE(),
-    			proof.toASE());
+    public ASExpression toASE() {
+
+        StringExpression label = StringExpression.makeString("elgamal-ciphertext");
+
+        /* TODO check if this can be simplified to just proofString = proof == null ? "" : proof.toASE() */
+        return (proof == null) ? new ListExpression(label, p.toASE(), g.toASE(), h.toASE()) :
+    	                         new ListExpression(label, p.toASE(), g.toASE(), h.toASE(), proof.toASE());
     }
     
     /**
      * Method for interop with VoteBox's S-Expression system.
      * 
-     * @param ase - S-Expression representation of an ElgamalCiphertext
-     * @return the ElgamalCiphertext equivalent of ase
+     * @param ASE       S-Expression representation of an ElgamalCiphertext
+     * @return          the ElgamalCiphertext equivalent of ase
      */
-    public static ElgamalCiphertext fromASE(ASExpression ase){
-    	ListExpression list = (ListExpression)ase;
-    	
+    public static ElgamalCiphertext fromASE(ASExpression ASE){
+
+        /* Cast ASE to a ListExpression */
+    	ListExpression list = (ListExpression)ASE;
+
+        /* Check the size of the ListExpression */
     	if(list.size() != 4 && list.size() != 5)
     		throw new RuntimeException("Not an elgamal-ciphertext");
-    	
+
+        /* Check the label of the ListExpression */
     	if(!list.get(0).toString().equals("elgamal-ciphertext"))
     		throw new RuntimeException("Not an elgamal-ciphertext");
-    	
+
+        /* Extract the numbers */
     	AdderInteger p = AdderInteger.fromASE(list.get(1));
     	AdderInteger g = AdderInteger.fromASE(list.get(2));
     	AdderInteger h = AdderInteger.fromASE(list.get(3));
     	MembershipProof proof = null;
-    	
+
+        /* Expect a proof if of size 5 -- then extract it */
     	if(list.size() == 5)
     		proof = MembershipProof.fromASE(list.get(4));
-    	
+
+        /* Create a new ciphertext from the numbers */
     	ElgamalCiphertext text = new ElgamalCiphertext(g,h,p);
-    	
+
+        /* Set the proof if we got one */
     	if(proof != null)
     		text.setProof(proof);
     	

@@ -18,6 +18,7 @@ import sexpression.StringExpression;
  * @since 0.0.1
  */
 public class MembershipProof {
+
 	private AdderInteger p;
 	private AdderInteger q;
 	private AdderInteger c;
@@ -30,28 +31,27 @@ public class MembershipProof {
 	 * Constructs a new <code>MembershipProof</code> object with the specified prime.
 	 */
 	public MembershipProof() {
-		yList = new ArrayList<AdderInteger>();
-		zList = new ArrayList<AdderInteger>();
-		sList = new ArrayList<AdderInteger>();
-		cList = new ArrayList<AdderInteger>();
+
+		yList = new ArrayList<>();
+		zList = new ArrayList<>();
+		sList = new ArrayList<>();
+		cList = new ArrayList<>();
 	}
 
 	/**
 	 * Constructs a new <code>MembershipProof</code> object with the specified
 	 * prime.
 	 *
-	 * @param p         the prime
-	 * @param q         the sub-prime
-	 * @param yList     the y list
-	 * @param zList     the z list
-	 * @param sList     the s list
-	 * @param cList     the c list
+	 * @param p             the prime
+	 * @param q             the sub-prime
+	 * @param yList         the y list
+	 * @param zList         the z list
+	 * @param sList         the s list
+	 * @param cList         the c list
 	 */
-	private MembershipProof(AdderInteger p, AdderInteger q,
-			List<AdderInteger> yList,
-			List<AdderInteger> zList,
-			List<AdderInteger> sList,
-			List<AdderInteger> cList) {
+	private MembershipProof(AdderInteger p, AdderInteger q, List<AdderInteger> yList, List<AdderInteger> zList,
+                            List<AdderInteger> sList, List<AdderInteger> cList) {
+
 		this.p = p;
 		this.q = q;
 		this.yList = yList;
@@ -64,29 +64,34 @@ public class MembershipProof {
 	 * Computes the actual proof given the cipher text, public key, value,
 	 * and domain.
 	 *
-	 * @param ciphertext    the cipher text
+	 * @param ciphertext    the cipher text (member of the domain)
 	 * @param pubKey        the public key
-	 * @param value         the value
-	 * @param domain        the domain
+	 * @param value         the number of different
+	 * @param domain        the domain (possible ciphertext values)
 	 */
-	public void compute(ElgamalCiphertext ciphertext, PublicKey pubKey,
-			AdderInteger value,
-			List/*<AdderInteger>*/ domain) {
+	public void compute(ElgamalCiphertext ciphertext, PublicKey pubKey, AdderInteger value, List domain) {
+
+        /* Get p and q */
 		this.p = pubKey.getP();
 		this.q = pubKey.getQ();
 
+        /* Get g, h, and f */
 		AdderInteger g = new AdderInteger(pubKey.getG(), this.p);
 		AdderInteger h = pubKey.getH();
 		AdderInteger f = pubKey.getF();
 
+        /* Get bigG, bigH, and r */
 		AdderInteger bigG = ciphertext.getG();
 		AdderInteger bigH = ciphertext.getH();
 		AdderInteger r = ciphertext.getR();
 
+        /* Generate t */
 		AdderInteger t = AdderInteger.random(q);
 
+        /* Create a StringBuffer for holding information to create a String */
 		StringBuffer sb = new StringBuffer(4096);
 
+        /* Append all the numbers */
 		sb.append(g);
 		sb.append(h);
 		sb.append(bigG);
@@ -94,18 +99,24 @@ public class MembershipProof {
 
 		int indexInDomain = 0;
 
+        /* Iterate over the domain */
 		for (int i = 0; i < domain.size(); i++) {
+
 			AdderInteger y;
 			AdderInteger z;
 			AdderInteger d = (AdderInteger) domain.get(i);
 
+            /* See if the value is this particular member of the domain */
 			if (d.equals(value)) {
+
 				sList.add(AdderInteger.ZERO);
 				cList.add(AdderInteger.ZERO);
 				y = g.pow(t);
 				z = h.pow(t);
 				indexInDomain = i;
-			} else {
+			}
+            else {
+
 				sList.add(AdderInteger.random(q));
 				cList.add(AdderInteger.random(q));
 				AdderInteger s = sList.get(i);
@@ -129,10 +140,8 @@ public class MembershipProof {
 		this.c = new AdderInteger(cHash, q, 16).mod(q);
 		AdderInteger realC = new AdderInteger(this.c, q);
 
-		for (int i = 0; i < cList.size(); i++) {
-			AdderInteger fakeC = cList.get(i);
-			realC = realC.subtract(fakeC);
-		}
+        for (AdderInteger fakeC : cList)
+            realC = realC.subtract(fakeC);
 
 		sList.set(indexInDomain, realC.multiply(r).add(t));
 		cList.set(indexInDomain, realC);
@@ -265,12 +274,9 @@ public class MembershipProof {
 			}
 
 			return new MembershipProof(p, q, yList, zList, sList, cList);
-		} catch (NoSuchElementException nsee) {
-			throw new InvalidMembershipProofException(nsee.getMessage());
-		} catch (NumberFormatException nfe) {
-			throw new InvalidMembershipProofException(nfe.getMessage());
 		}
-	}
+        catch (NoSuchElementException | NumberFormatException nsee) { throw new InvalidMembershipProofException(nsee.getMessage()); }
+    }
 
 	/**
 	 * Returns a <code>String</code> object representing this
@@ -278,34 +284,31 @@ public class MembershipProof {
 	 * @return the string representation of this proof
 	 */
 	public String toString() {
-		StringBuffer sb = new StringBuffer(4096);
+
+		StringBuilder sb = new StringBuilder(4096);
 
 		sb.append("p");
 		sb.append(p);
 
-		for (Iterator it = yList.iterator(); it.hasNext();) {
-			AdderInteger y = (AdderInteger) it.next();
-			sb.append("y");
-			sb.append(y);
-		}
+        for (AdderInteger y : yList) {
+            sb.append("y");
+            sb.append(y);
+        }
 
-		for (Iterator it = zList.iterator(); it.hasNext();) {
-			AdderInteger z = (AdderInteger) it.next();
-			sb.append("z");
-			sb.append(z);
-		}
+        for (AdderInteger z : zList) {
+            sb.append("z");
+            sb.append(z);
+        }
 
-		for (Iterator it = sList.iterator(); it.hasNext();) {
-			AdderInteger s = (AdderInteger) it.next();
-			sb.append("s");
-			sb.append(s);
-		}
+        for (AdderInteger s : sList) {
+            sb.append("s");
+            sb.append(s);
+        }
 
-		for (Iterator it = cList.iterator(); it.hasNext();) {
-			AdderInteger c1 = (AdderInteger) it.next();
-			sb.append("c");
-			sb.append(c1);
-		}
+        for (AdderInteger c1 : cList) {
+            sb.append("c");
+            sb.append(c1);
+        }
 
 		return sb.toString();
 	}
@@ -354,10 +357,10 @@ public class MembershipProof {
 		
 		AdderInteger p = AdderInteger.fromASE(exp.get(1));
 		
-		List<AdderInteger> yList = new ArrayList<AdderInteger>();
-		List<AdderInteger> zList = new ArrayList<AdderInteger>();
-		List<AdderInteger> sList = new ArrayList<AdderInteger>();
-		List<AdderInteger> cList = new ArrayList<AdderInteger>();
+		List<AdderInteger> yList = new ArrayList<>();
+		List<AdderInteger> zList = new ArrayList<>();
+		List<AdderInteger> sList = new ArrayList<>();
+		List<AdderInteger> cList = new ArrayList<>();
 		
 		ListExpression yListE = (ListExpression)exp.get(2);
 		ListExpression zListE = (ListExpression)exp.get(3);
