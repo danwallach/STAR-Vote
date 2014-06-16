@@ -786,13 +786,14 @@ public class VoteBox{
                             try {
                             /* Show provisional success page */
                                 currentDriver.getView().drawPage(currentDriver.getView().getCurrentLayout().getProperties().getInteger(Properties.PROVISIONAL_SUCCESS_PAGE), false);
-                            } catch (IncorrectTypeException e1) {
-                                e1.printStackTrace();
                             }
+                            catch (IncorrectTypeException e1) { e1.printStackTrace(); }
 
-                        } else {
+                        }
+                        else
                             currentDriver.getView().nextPage();
-                        } /* Show printing page */
+
+                        /* Show printing page */
 
                         BallotEncrypter.SINGLETON.clear();
                         nonce = null;
@@ -801,7 +802,7 @@ public class VoteBox{
                         committedBallot = false;
                         broadcastStatus();
 
-                    /* Create a timer to kill the runtime after 5 seconds */
+                        /* Create a timer to kill the runtime after 5 seconds */
                         killVBTimer = new Timer(_constants.getViewRestartTimeout(), new ActionListener() {
                             public void actionPerformed(ActionEvent arg0) {
 
@@ -855,8 +856,9 @@ public class VoteBox{
              * @see votebox.events.OverrideCancelEvent
              */
             public void overrideCancel(OverrideCancelEvent e) {
-                if (mySerial == e.getTargetSerial()
-                        && Arrays.equals(e.getNonce().toVerbatim(), nonce.toVerbatim())) {
+
+                if (mySerial == e.getTargetSerial() && Arrays.equals(e.getNonce().toVerbatim(), nonce.toVerbatim())) {
+
                     try {
                         
                         /* Make sure voting is in progress */
@@ -963,7 +965,7 @@ public class VoteBox{
              */
             public void pollStatus(PollStatusEvent pollStatusEvent) {
 
-                /* Check if machine is voting, sitting with polls opened, and has not yet been prompted */
+                /* Check if machine is voting, sitting with polls opened */
                 if(!voting && pollStatusEvent.getPollStatus() == 1)
                     promptForPin("Enter Authorization PIN");
             }
@@ -1082,8 +1084,12 @@ public class VoteBox{
         /* Add a listener for the OK button so that when it gets clicked, it validates the pin. */
         pinGUI.okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
+
+                /* Validate the PIN and kill the current prompt */
                 validatePin(pinGUI.getPin());
                 pinGUI.stop();
+
+                /* Tell VoteBox that the PIN is currently not being prompted */
                 promptingForPin = false;
             }
         });
@@ -1094,15 +1100,20 @@ public class VoteBox{
             public void keyPressed(KeyEvent arg0) {
                 if(arg0.getKeyCode() == KeyEvent.VK_ENTER)
                 {
+                    /* Validate the PIN and kill the current prompt */
                     validatePin(pinGUI.getPin());
                     pinGUI.stop();
+
+                    /* Tell VoteBox that the PIN is currently not being prompted */
                     promptingForPin = false;
                 }
             }
         });
 
+        /* Start up the PIN prompt */
         pinGUI.start();
 
+        /* Tell VoteBox that the PIN is currently being prompted */
         promptingForPin = true;
     }
 
