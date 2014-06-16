@@ -156,7 +156,7 @@ public class VoteBox{
             throw new RuntimeException("Unknown view implementation defined in configuration");
         }
 
-        /* Make sure no PIN prompt pops up */
+        /* Make sure this boolean is set properly */
         promptingForPin = false;
 
         /* Destroys any previous commits */
@@ -404,7 +404,8 @@ public class VoteBox{
 
                             promptForPin("Enter Voting Authentication PIN");
 
-                        } else { /* TODO runtime exception */
+                        }
+                        else { /* TODO runtime exception */
                             throw new RuntimeException("Received an override-cancel-confirm event at the incorrect time");
                         }
                     }
@@ -813,7 +814,7 @@ public class VoteBox{
                                 killVBTimer = null;
 
                             /* Prompt for PIN for next voting session */
-                                promptForPin("Enter Voting Authentication PIN");
+                            promptForPin("Enter Voting Authentication PIN");
                             }
                         });
 
@@ -961,18 +962,18 @@ public class VoteBox{
              * @see votebox.events.PollStatusEvent
              */
             public void pollStatus(PollStatusEvent pollStatusEvent) {
+
+                /* Check if machine is voting, sitting with polls opened, and has not yet been prompted */
                 if(!voting && pollStatusEvent.getPollStatus() == 1)
                     promptForPin("Enter Authorization PIN");
             }
-
-    
 
             /**
              * This indicates that the ballot was successfully printed and the voting session can safely end
              * @see votebox.events.BallotPrintSuccessEvent
              */
             public void ballotPrintSuccess(BallotPrintSuccessEvent e){
-                if (e.getBID() == bid && Arrays.equals(e.getNonce().toVerbatim(), nonce.toVerbatim())) {
+                if (e.getBID().equals(bid) && Arrays.equals(e.getNonce().toVerbatim(), nonce.toVerbatim())) {
 
                     /* This should never happen... */
                     if (!finishedVoting)
@@ -982,8 +983,6 @@ public class VoteBox{
 
                 }
             }
-
- 
 
             /**
              * Used as an intermittent poll on the status of this booth through auditorium
@@ -996,7 +995,6 @@ public class VoteBox{
                 try { Thread.sleep(100); }
                 catch (InterruptedException e) { e.printStackTrace(); }
             }
-
 
             /**
              * Handler for ProvisionalAuthorizeEvent from supervisor. Generates ballot file path and stores ballot
@@ -1086,6 +1084,7 @@ public class VoteBox{
             public void actionPerformed(ActionEvent arg0) {
                 validatePin(pinGUI.getPin());
                 pinGUI.stop();
+                promptingForPin = false;
             }
         });
 
@@ -1097,13 +1096,14 @@ public class VoteBox{
                 {
                     validatePin(pinGUI.getPin());
                     pinGUI.stop();
+                    promptingForPin = false;
                 }
             }
         });
 
         pinGUI.start();
 
-        promptingForPin = false;
+        promptingForPin = true;
     }
 
     /**

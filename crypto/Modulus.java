@@ -31,10 +31,10 @@ import java.util.Random;
   */
 public class Modulus {
 
-    /* half-way between 1024 and 2048*/
+    /* Half-way between 1024 and 2048*/
     public static final int DEFAULT_PRIME_BITS = 1536;
 
-    /* when testing a prime number, test to confidence 1-1/(2^PrimeConfidence)*/
+    /* When testing a prime number, test to confidence 1-1/(2^PrimeConfidence) */
     public static final int DEFAULT_PRIME_CONFIDENCE = 64;
 
     private static BigInteger one = BigInteger.ONE;
@@ -56,20 +56,20 @@ public class Modulus {
         this.numPrimeBits = numPrimeBits;
         this.primeConfidence = primeConfidence;
 
-        /* Iterate until a appropriately sized probable prime is found */
-        for (;;) {
+        /* Iterate until an appropriately sized probable prime is found */
+        while (true) {
 
-            /* p is a random big integer of size numPrimeBits*/
+            /* p is a random big integer of size numPrimeBits */
             BigInteger p = new BigInteger(numPrimeBits, primeConfidence,randomBits);
 
-            /*q is a guess of a prime number based on p*/
+            /* q is a guess of a prime number based on p */
             BigInteger q = p.multiply(two).add(one);
 
             /* If p is a probable prime within our confidence interval */
             if (q.isProbablePrime(primeConfidence)) {
 
-               /* Iterate until we find a group of order q with generator g where g^2 < q  */
-                for (;;) {
+               /* Iterate until we find a group of order q with generator g where g^2 < q */
+                while (true) {
 
                     /* pick a random generator for our group */
                     BigInteger g = new BigInteger(numPrimeBits / 2, randomBits);
