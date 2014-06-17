@@ -13,7 +13,7 @@ import java.awt.event.ActionListener;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-public class BallotScanner{
+public class  BallotScanner{
 
     private final AuditoriumParams _constants;
 
@@ -170,7 +170,7 @@ public class BallotScanner{
                 while(true){
                     /* Check for new input from barcode scanner */
                     try{
-                        lastFoundBID = scanner.nextInt()+"";
+                        lastFoundBID = scanner.nextLine();
                     } catch (InputMismatchException e){ lastFoundBID = "-1"; }
 
                     /* TODO add a getter for frame.state, maybe verifyState() method */
