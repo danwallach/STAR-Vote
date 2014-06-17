@@ -108,6 +108,9 @@ public class Model {
     /** A map of all committed ballot ID's to their encrypted ballot representations */
     private HashMap<String, ASExpression> committedBids;
 
+    /** Keeps track of the last heard polls open event so that new machines can be updated when they come online */
+    private PollsOpenEvent lastPollsOpenHeard;
+
     /**
      * Equivalent to Model(-1, params);
      * 
@@ -776,6 +779,9 @@ public class Model {
              */
             /* TODO Figure out when this is used */
             public void lastPollsOpen(LastPollsOpenEvent e) {
+                if(e.getPollsOpenMsg() == null)
+                    return;
+
                 PollsOpenEvent e2 = e.getPollsOpenMsg();
                 if (e2.getKeyword().equals(keyword))
                     setArePollsOpen(true);
@@ -838,6 +844,7 @@ public class Model {
              * Handler for the polls-open event. Sets the polls to open.
              */
             public void pollsOpen(PollsOpenEvent e){
+                lastPollsOpenHeard = e;
                 setArePollsOpen(true);
             }
 
@@ -848,11 +855,10 @@ public class Model {
              */
             public void pollsOpenQ(PollsOpenQEvent e) {
                 if (e.getSerial() != mySerial) {
-                    System.out.println("Recieved a polls open query!");
                     /* TODO: Search the log and extract an appropriate polls-open message */
                     /* It appears this method isn't really implemented. TODO Fix that */
 
-                    ASExpression res = null;
+                  /*  ASExpression res = null;
                     if (res != null && res != NoMatch.SINGLETON) {
                         VoteBoxEventMatcher matcher = new VoteBoxEventMatcher(
                                 PollsOpenEvent.getMatcher());
@@ -862,7 +868,10 @@ public class Model {
                                 && event.getKeyword().equals(e.getKeyword()))
                             auditorium.announce(new LastPollsOpenEvent(
                                     mySerial, event));
-                    }
+                    }*/
+
+                    if(arePollsOpen())
+                        auditorium.announce(new LastPollsOpenEvent(mySerial, lastPollsOpenHeard));
                 }
             }
 
