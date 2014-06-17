@@ -174,7 +174,6 @@ public class BallotScanner{
                     } catch (InputMismatchException e){ lastFoundBID = "-1"; }
 
                     /* TODO add a getter for frame.state, maybe verifyState() method */
-
                     String frameStateName   = frame.state.getStateName();
                     String promptStateName  = PromptState.SINGLETON.getStateName();
 
