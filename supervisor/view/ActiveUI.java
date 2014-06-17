@@ -22,22 +22,22 @@
 
 package supervisor.view;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.io.File;
-import java.math.BigInteger;
-import java.text.DateFormat;
-import java.util.*;
+import printer.Printer;
+import supervisor.model.AMachine;
+import supervisor.model.Model;
+import supervisor.model.TapMachine;
 
 import javax.swing.*;
 import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileFilter;
-
-import printer.Printer;
-import supervisor.model.AMachine;
-import supervisor.model.Model;
-import supervisor.model.TapMachine;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.math.BigInteger;
+import java.text.DateFormat;
+import java.util.*;
 
 /**
  * The view that is shown on a supervisor that is active - consists of
@@ -378,7 +378,7 @@ public class ActiveUI extends JPanel {
                  */
                 final JFrame frame = new JFrame("Spoil a ballot");
                 frame.setPreferredSize(new Dimension(400, 200));
-                frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+                frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
                 frame.setBounds(100, 100, 368, 153);
                 JPanel contentPane = new JPanel();
                 contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
