@@ -378,7 +378,7 @@ public class ActiveUI extends JPanel {
                  */
                 final JFrame frame = new JFrame("Spoil a ballot");
                 frame.setPreferredSize(new Dimension(400, 200));
-                frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+                frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
                 frame.setBounds(100, 100, 368, 153);
                 JPanel contentPane = new JPanel();
                 contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
