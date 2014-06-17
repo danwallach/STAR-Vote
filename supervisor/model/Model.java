@@ -848,6 +848,7 @@ public class Model {
              */
             public void pollsOpenQ(PollsOpenQEvent e) {
                 if (e.getSerial() != mySerial) {
+                    System.out.println("Recieved a polls open query!");
                     /* TODO: Search the log and extract an appropriate polls-open message */
                     /* It appears this method isn't really implemented. TODO Fix that */
 
