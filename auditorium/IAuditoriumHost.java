@@ -28,7 +28,7 @@ import sexpression.ASExpression;
  * Abstraction of the interface between a layer and its AuditoriumHost. This is
  * done so that testing is easier.
  * 
- * @author kyle
+ * @author Kyle Derr
  * 
  */
 public interface IAuditoriumHost {

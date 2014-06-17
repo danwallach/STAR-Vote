@@ -37,7 +37,7 @@ import auditorium.IncorrectFormatException;
 /**
  * This is a JUnit test of the auditorium.HostPointer class.
  * 
- * @author kyle
+ * @author Kyle Derr
  * 
  */
 public class HostPointerTest {

@@ -28,7 +28,7 @@ import sexpression.*;
  * This class represents the auditorium signature data structure. Its format is
  * (signature [signer-id] [sigdata] {payload}).
  * 
- * @author kyle
+ * @author Kyle Derr
  * 
  */
 public class Signature {

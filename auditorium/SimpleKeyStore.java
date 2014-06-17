@@ -50,7 +50,7 @@ import sexpression.stream.*;
  * 
  * @see auditorium.Key
  * @see auditorium.Cert
- * @author kyle
+ * @author Kyle Derr
  * 
  */
 public class SimpleKeyStore implements IKeyStore {

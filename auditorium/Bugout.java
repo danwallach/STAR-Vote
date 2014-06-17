@@ -29,7 +29,7 @@ import java.io.PrintWriter;
  * This class contains debugging output messages (which might, someday, get
  * turned into logs).
  * 
- * @author kyle
+ * @author Kyle Derr
  * 
  */
 public class Bugout {

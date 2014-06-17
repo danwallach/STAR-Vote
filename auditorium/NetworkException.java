@@ -25,7 +25,7 @@ package auditorium;
 /**
  * This is thrown if auditorium has encountered a recoverable error.
  * 
- * @author kyle
+ * @author Kyle Derr
  * 
  */
 public class NetworkException extends Exception {

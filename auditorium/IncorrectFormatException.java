@@ -28,7 +28,7 @@ import sexpression.ASExpression;
  * This exception is thrown when Auditorium expects an s-expression to be
  * formatted a particular way, but it isn't.
  * 
- * @author kyle
+ * @author Kyle Derr
  * 
  */
 public class IncorrectFormatException extends Exception {

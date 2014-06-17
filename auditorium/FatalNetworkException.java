@@ -25,7 +25,7 @@ package auditorium;
 /**
  * This is thrown if Auditorium has found an unrecoverable error.
  * 
- * @author kyle
+ * @author Kyle Derr
  */
 public class FatalNetworkException extends RuntimeException {
 

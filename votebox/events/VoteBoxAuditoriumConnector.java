@@ -42,7 +42,8 @@ import auditorium.AuditoriumHost.Pair;
  * the application.
  * 
  * @author Corey Shaw
- */ /* TODO Revise these comments */
+ */
+
 public class VoteBoxAuditoriumConnector {
 
     /** A reference to the network */
@@ -56,37 +57,53 @@ public class VoteBoxAuditoriumConnector {
 
     /**
      * Constructs a new VoteBoxAuditoriumConnector with the given serial number
-     * and matcher rules to check against incoming announcements.
+     * and matcher rules to check against incoming announcements. The connector will
+     * initially only listen for join and leave events.
      * 
-     * @param serial this machine's serial number
-     * @param params parameters for configuring the connector
-     * @param rules the matchers for messages this machine needs
+     * @param serial        this machine's serial number
+     * @param params        parameters for configuring the connector
+     * @param rules         the matchers for messages this machine needs
      * @throws NetworkException
      */
-    public VoteBoxAuditoriumConnector(int serial, 
-			IAuditoriumParams params,
-			MatcherRule... rules)
-            throws NetworkException
-	{
+    public VoteBoxAuditoriumConnector(int serial, IAuditoriumParams params, MatcherRule... rules) throws NetworkException {
+
+        /* Initialize the event notifier */
         notifier = new VoteBoxEventNotifier();
+
+        /* Initialize the network  with the provided serial number and parameters*/
         auditorium = new AuditoriumHost( Integer.toString( serial ), params );
+
+        /* Initialize the message matcher */
         matcher = new VoteBoxEventMatcher( rules );
 
+        /* Register the network to listen for and handle join events */
         auditorium.registerForJoined( new Observer() {
             public void update(Observable o, Object arg) {
+
+                /* The arguments to this method will be the host that broadcast the join event */
                 HostPointer host = (HostPointer) arg;
-                notifier.joined( new JoinEvent( Integer.parseInt( host
-                        .getNodeId() ) ) );
+
+                /* Trigger the observers for the join event */
+                notifier.joined(new JoinEvent(Integer.parseInt( host.getNodeId())));
             }
         } );
+
+        /* Register the network to listen for and handle join events */
         auditorium.registerForLeft( new Observer() {
             public void update(Observable o, Object arg) {
+
+                /* The arguments to this method will be the host that broadcast the join event */
                 HostPointer host = (HostPointer) arg;
-                notifier.left( new LeaveEvent( Integer.parseInt( host
-                        .getNodeId() ) ) );
+
+                /* Trigger the observers for the leave event */
+                notifier.left( new LeaveEvent(Integer.parseInt(host.getNodeId())));
             }
         } );
+
+        /* Start the network */
         auditorium.start();
+
+        /* Start the event handler thread */
         initEventThread();
     }
 
@@ -113,38 +130,44 @@ public class VoteBoxAuditoriumConnector {
      * Attempts to connect to an auditorium, and if no hosts are discovered,
      * will wait a number of seconds and then try again
      * 
-     * @param delay the wait time in between repeats
-     * @param repeats the number of repeats (-1 to repeat forever)
+     * @param delay         the wait time in between attempts to attempt connecting
+     * @param repeats       the number of repeats (-1 to repeat forever)
      * @throws NetworkException
      */
     @SuppressWarnings("EmptyCatchBlock")
-    public void connect(final int delay, final int repeats)
-            throws NetworkException {
+    public void connect(final int delay, final int repeats) throws NetworkException {
+
+        /* Obtain the list of host pointers */
         HostPointer[] hosts = auditorium.discover();
 
+        /* Iterate through each host pointer and attempt to join the network via that host */
         for (HostPointer host : hosts) {
+
+            /* Only join hosts that aren't ourselves */
             if (!host.getNodeId().equals( auditorium.getNodeId() )) {
                 try {
-                    auditorium.join( host );
-                    notifier.joined( new JoinEvent( Integer.parseInt( host
-                            .getNodeId() ) ) );
+                    /* try to join. This will throw an error if it fails */
+                    auditorium.join(host);
+
+                    /* Now we've successfully joined, notify the observers */
+                    notifier.joined(new JoinEvent(Integer.parseInt(host.getNodeId())));
                 }
+
+                /* If we catch an error, don't do anything, just go on to the next host */
                 catch (NetworkException e) {}
             }
         }
 
         /* Repeat if necessary */
         if (hosts.length == 0 && repeats > 0 && delay > 0) {
+
+            /* This timer will attempt to connect to the host based on the number of tries and interval specified. */
+            /* TODO This functionality is never used, so should we change it? */
             Timer timer = new Timer( delay * 1000, new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    try {
-                        connect( delay, repeats - 1 );
-                    }
+                    try { connect( delay, repeats - 1 ); }
                     catch (NetworkException e1) {
-                    	/*
-                    	 * NetworkException represents a recoverable error
-                    	 * so just note it and continue
-                    	 */
+                    	/* NetworkException represents a recoverable error so just note it and continue */
                         System.out.println("Recoverable error occurred: "+e1.getMessage());
                         e1.printStackTrace(System.err);
                     }
@@ -167,7 +190,7 @@ public class VoteBoxAuditoriumConnector {
      */
     public void announce(IAnnounceEvent e) {
         auditorium.announce( e.toSExp() );
-        e.fire( notifier );
+        e.fire(notifier);
     }
 
     /**
@@ -176,24 +199,21 @@ public class VoteBoxAuditoriumConnector {
      */
     private void initEventThread() {
         new Thread() {
+
             @Override
             public void run() {
-                boolean running = true;
-                while (running) {
+                while (true) {
                     try {
-                        Pair announce = auditorium.listen();
-                        IAnnounceEvent event = matcher.match( Integer
-                                .parseInt( announce.from.getNodeId() ),
-                            announce.message );
-                        
-                        if (event != null){
-                            event.fire( notifier );
-                        }
 
+                        Pair announce = auditorium.listen();
+                        IAnnounceEvent event = matcher.match(Integer.parseInt( announce.from.getNodeId()), announce.message);
+                        
+                        if (event != null) event.fire(notifier);
                     }
+
                     catch (ReleasedQueueException e) {
-                        running = false;
                         e.printStackTrace();
+                        break;
                     }
                 }
             }

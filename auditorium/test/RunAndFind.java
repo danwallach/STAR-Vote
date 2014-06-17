@@ -29,7 +29,7 @@ import auditorium.HostPointer;
 /**
  * Start an auditorium host, run discovery, join everyone you find.
  * 
- * @author kyle
+ * @author Kyle Derr
  * 
  */
 public class RunAndFind {

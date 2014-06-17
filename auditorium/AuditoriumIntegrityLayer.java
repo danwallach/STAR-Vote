@@ -27,7 +27,7 @@ import sexpression.*;
 /**
  * This layer handles signatures.
  * 
- * @author kyle
+ * @author Kyle Derr
  * 
  */
 public class AuditoriumIntegrityLayer extends AAuditoriumLayer {

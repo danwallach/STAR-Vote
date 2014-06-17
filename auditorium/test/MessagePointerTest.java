@@ -40,7 +40,7 @@ import auditorium.MessagePointer;
 /**
  * These tests cover the MessagePointer class.
  * 
- * @author kyle
+ * @author Kyle Derr
  * 
  */
 public class MessagePointerTest {

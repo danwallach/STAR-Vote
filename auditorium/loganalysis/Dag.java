@@ -41,7 +41,7 @@ import sexpression.stream.*;
  * Builds a representation of the dag of logs based on the auditorium file
  * format. The dag doesn't actually contain the messages, only pointers to them.
  * 
- * @author kyle
+ * @author Kyle Derr
  * 
  */
 public class Dag {

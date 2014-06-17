@@ -33,7 +33,7 @@ import sexpression.stream.*;
  * of Message instances. This type of socket can only send and receive entire
  * auditorium messages.
  * 
- * @author kyle
+ * @author Kyle Derr
  * 
  */
 public class MessageSocket {

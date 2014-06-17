@@ -27,7 +27,7 @@ import sexpression.ASExpression;
 /**
  * This base class is extended by all auditorium layers.
  * 
- * @author kyle
+ * @author Kyle Derr
  * 
  */
 public abstract class AAuditoriumLayer implements IAuditoriumLayer {

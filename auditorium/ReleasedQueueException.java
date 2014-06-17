@@ -25,7 +25,7 @@ package auditorium;
 /**
  * This is thrown when a queue has determined it cannot get any more input.
  * 
- * @author kyle
+ * @author Kyle Derr
  * 
  */
 public class ReleasedQueueException extends Exception {

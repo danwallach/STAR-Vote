@@ -40,7 +40,7 @@ import sexpression.*;
  * 
  * @see auditorium.Signature
  * @see auditorium.Key
- * @author kyle
+ * @author Kyle Derr
  */
 public class Cert {
 

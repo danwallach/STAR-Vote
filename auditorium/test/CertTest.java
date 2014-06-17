@@ -33,7 +33,7 @@ import auditorium.*;
 /**
  * This class offers JUnit testing of the auditorium.Cert class.
  * 
- * @author kyle
+ * @author Kyle Derr
  * 
  */
 public class CertTest {

@@ -26,7 +26,7 @@ package auditorium;
  * These are configuration constants that auditorium needs. Pass an instance of
  * this to an {@link AuditoriumHost} when you construct it.
  * 
- * @author kyle
+ * @author Kyle Derr
  * @see auditorium.AuditoriumHost
  */
 public interface IAuditoriumParams {

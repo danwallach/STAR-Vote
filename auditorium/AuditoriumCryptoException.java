@@ -27,7 +27,7 @@ package auditorium;
  * It's existence is due to the fact that there are so *many* freaking
  * exceptions that can happen in the crypto layer.
  * 
- * @author kyle
+ * @author Kyle Derr
  * 
  */
 public class AuditoriumCryptoException extends Exception {

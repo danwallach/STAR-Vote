@@ -27,7 +27,7 @@
  ******************************************************************************
  *                                                                            *
  *              (c) Copyright 2003 Laszlo Szathmary 
- *              (modified summer 2007 by derrley -- now it doesn't have to
+ *              (modified summer 2007 by Kyle Derr Derr -- now it doesn't have to
  *              load the image to memory...what was this guy thinking.)
  *                                                                            *
  * This program is free software; you can redistribute it and/or modify it    *
@@ -195,7 +195,7 @@ public class GraphViz {
 
     /**
      * Copied and pasted get_img_stream to turn it into something that writes
-     * the file directly. -derrley.
+     * the file directly. -Kyle Derr Derr.
      * 
      * @param path
      *            File to save graph to
@@ -300,7 +300,7 @@ public class GraphViz {
     }
 
     /**
-     * Added by derrley -- why should you have to pass a string containing the
+     * Added by Kyle Derr Derr -- why should you have to pass a string containing the
      * source? OOP!
      * 
      * @return This method returns a file handle to the temp file where the

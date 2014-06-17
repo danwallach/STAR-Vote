@@ -50,7 +50,7 @@ import sexpression.ASExpression;
  * as well.<br>
  * <br>
  * 
- * @author kyle
+ * @author Kyle Derr
  * 
  */
 public interface IAuditoriumLayer {

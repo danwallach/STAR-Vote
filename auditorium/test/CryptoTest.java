@@ -34,7 +34,7 @@ import sexpression.*;
  * of the generation scripts in /keys/. Make sure you have run them and
  * generated at least 10 key pairs, plus the CA, before you run this test.
  * 
- * @author kyle
+ * @author Kyle Derr
  * 
  */
 public class CryptoTest {

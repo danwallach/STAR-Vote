@@ -26,7 +26,7 @@ package auditorium;
  * The auditorium integrity layer intefaces with an instance of this type in
  * order to access keys that are stored somehow.
  * 
- * @author kyle
+ * @author Kyle Derr
  * 
  */
 public interface IKeyStore {

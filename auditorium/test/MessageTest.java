@@ -38,7 +38,7 @@ import auditorium.Message;
 /**
  * JUnit test of the auditorium.Message class.
  * 
- * @author kyle
+ * @author Kyle Derr
  * 
  */
 public class MessageTest {

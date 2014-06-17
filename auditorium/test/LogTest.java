@@ -36,7 +36,7 @@ import auditorium.*;
 /**
  * Tests for the Log class.
  * 
- * @author kyle
+ * @author Kyle Derr
  * 
  */
 public class LogTest {

@@ -25,7 +25,7 @@ package auditorium;
 /**
  * The layer that has been requested by name cannot be found.
  * 
- * @author kyle
+ * @author Kyle Derr
  */
 public class LayerNotFoundException extends Exception {
 

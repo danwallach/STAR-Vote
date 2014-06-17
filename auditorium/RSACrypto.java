@@ -33,7 +33,7 @@ import sexpression.*;
 /**
  * Crypto primitives used in auditorium are wrapped here.
  * 
- * @author kyle
+ * @author Kyle Derr
  * 
  */
 public class RSACrypto {

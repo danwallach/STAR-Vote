@@ -42,7 +42,7 @@ import sexpression.*;
  * </tt>
  * 
  * @see sexpression
- * @author kyle
+ * @author Kyle Derr
  *
  * This class has now been extended to support ECDH keys as well, with an
  * overloaded constructor that can handle not taking in a modulus. The key

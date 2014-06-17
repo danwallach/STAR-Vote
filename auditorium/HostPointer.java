@@ -28,7 +28,7 @@ import sexpression.*;
  * An instance of this class simply wraps an ID, IP and port together. This
  * class represents a data structure in the auditorium format.
  * 
- * @author kyle
+ * @author Kyle Derr
  * 
  */
 public class HostPointer {

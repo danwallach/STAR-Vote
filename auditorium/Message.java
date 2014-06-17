@@ -28,7 +28,7 @@ import sexpression.*;
  * An instance of this class represents an auditorium wire message. Messages on
  * the wire are of the form ([name] [host] [sequence] [datum]).
  * 
- * @author kyle
+ * @author Kyle Derr
  * 
  */
 public class Message {

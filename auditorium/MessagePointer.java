@@ -28,7 +28,7 @@ import sexpression.*;
  * This class represents the ptr auditorium data structure. Its format is (ptr
  * [nodeid] [sequence num] [hash]).
  * 
- * @author kyle
+ * @author Kyle Derr
  * 
  */
 public class MessagePointer {

@@ -48,7 +48,7 @@ public class TestParams implements IAuditoriumParams {
     public static final int LISTEN_PORT = 9700;
     public static final int JOIN_TIMEOUT = 1000;
     public static final String BROADCAST_ADDRESS = "255.255.255.255";
-    public static final String LOG_LOCATION = "/local/derrley/log.out";
+    public static final String LOG_LOCATION = "/local/Kyle Derr Derr/log.out";
     public static final String KEYS_DIRECTORY = "/keys/";
     public static final String RULE_FILE = "rules";
     public static final boolean ENCRYPTION_ENABLED = false;

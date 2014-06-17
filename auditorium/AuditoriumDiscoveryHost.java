@@ -51,7 +51,7 @@ import sexpression.stream.*;
  * For more information about the format of discovery messages, see the <a
  * href="https://sys.cs.rice.edu/votebox/trac/">project wiki</a>
  * 
- * @author kyle
+ * @author Kyle Derr
  * 
  */
 public class AuditoriumDiscoveryHost {

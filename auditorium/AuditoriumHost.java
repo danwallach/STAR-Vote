@@ -60,7 +60,7 @@ import sexpression.*;
  * classes are not thread safe. This is done to simplify matters.
  * 
  * 
- * @author kyle
+ * @author Kyle Derr
  * 
  */
 public class AuditoriumHost implements IAuditoriumHost {
@@ -100,7 +100,7 @@ public class AuditoriumHost implements IAuditoriumHost {
      * Messages that get passed to the application layer are wrapped with a
      * pointer to the host that they came from.
      * 
-     * @author kyle
+     * @author Kyle Derr
      */
     public static class Pair {
         public final HostPointer from;

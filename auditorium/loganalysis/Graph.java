@@ -36,7 +36,7 @@ import auditorium.*;
  * generated visual DAG, and the stat file gives you some interesting
  * statistics.
  * 
- * @author kyle
+ * @author Kyle Derr
  * 
  */
 public class Graph {

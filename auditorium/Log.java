@@ -38,7 +38,7 @@ import java.util.List;
  * (This is useful for helping the temporal layer decide what messages should be
  * pointed to when said messages are being constructed.)
  * 
- * @author derrley
+ * @author Kyle Derr Derr
  */
 public class Log {
 

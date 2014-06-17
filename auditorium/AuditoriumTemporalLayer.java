@@ -32,7 +32,7 @@ import sexpression.*;
  * on the wire. This is where the entanglement happens.<br>
  * <br>
  * 
- * @author kyle
+ * @author Kyle Derr
  * 
  */
 public class AuditoriumTemporalLayer extends AAuditoriumLayer {

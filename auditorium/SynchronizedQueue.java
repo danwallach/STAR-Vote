@@ -37,7 +37,7 @@ import java.util.Queue;
  * A call to pop(), when the queue is empty, will block until something gets
  * placed in the queue.
  * 
- * @author Kyle
+ * @author Kyle Derr
  * 
  */
 public class SynchronizedQueue<T> {

@@ -38,7 +38,7 @@ import sexpression.stream.*;
  * generate a set of keys, all signed by the same CA key (which it will also
  * generate).
  * 
- * @author kyle
+ * @author Kyle Derr
  * 
  */
 public class Generator {
