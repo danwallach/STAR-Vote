@@ -361,6 +361,7 @@ public class ActiveUI extends JPanel {
         c.ipady = 50;
         c.gridy = 3;
         electionInfoPanel.add(pinButton, c);
+        pinButton.setEnabled(false);
 
         /*
          * Set up the spoil ballot button, which will launch a dialog for BID input (to be done by keyboard
@@ -443,6 +444,7 @@ public class ActiveUI extends JPanel {
         c.ipady = 50;
         c.gridy = 4;
         electionInfoPanel.add(spoilButton, c);
+        spoilButton.setEnabled(false);
 
         /*
          * Set up the polls open/close button, which calls a method that informs
@@ -461,9 +463,13 @@ public class ActiveUI extends JPanel {
                 if (model.arePollsOpen()) {
                     pollsOpenLbl.setText("Polls currently open");
                     pollsControlButton.setText("Close Polls Now");
+                    spoilButton.setEnabled(true);
+                    pinButton.setEnabled(true);
                 } else {
                     pollsOpenLbl.setText("Polls currently closed");
                     pollsControlButton.setText("Open Polls Now");
+                    spoilButton.setEnabled(false);
+                    pinButton.setEnabled(false);
                 }
                 updateAllMachineViews();
             }
@@ -504,13 +510,12 @@ public class ActiveUI extends JPanel {
              * Using the results, throw up the results precinct by precinct.
              * @see supervisor.view.TallyResultsFrame
              */
-            for(String precinct : tally.keySet()){
+            for(String precinct : tally.keySet())
                 new TallyResultsFrame(this, tally.get(precinct), precinctsToBallots.get(precinct));
-            }
-
         }
+
         /* If the polls are not open, open them */
-        else model.openPolls();
+        else  model.openPolls();
     }
 
 }
