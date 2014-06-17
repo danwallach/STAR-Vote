@@ -835,8 +835,6 @@ public class VoteBox{
                 if(e.getSerial()==superSerial) superOnline = true;
             }
 
-           
-
             /**
              * Decrement the number of connections when a machine leaves the network
              * @see votebox.events.LeaveEvent

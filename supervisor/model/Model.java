@@ -50,7 +50,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * The main model of the Supervisor in the model-view-controller. Contains the status of the machines, and of
  * the election in general. Manages nearly all administrative functions of the election, including accepting machines
- * onto the network, generating and traking voters and pins, authorizing machines, opening and closing elections, and
+ * onto the network, generating and tracking voters and pins, authorizing machines, opening and closing elections, and
  * much more. Also contains a link to Auditorium, for broadcasting (and hearing) messages on the network.
  * 
  * @author Corey Shaw
@@ -138,7 +138,7 @@ public class Model {
     	if(mySerial == -1)
     		throw new RuntimeException("Expected serial number in configuration file if not on command line");
 
-        /* Initialize all of the fields to their defualts */
+        /* Initialize all of the fields to their defaults */
         machines = new TreeSet<AMachine>();
         machinesChangedObs = new ObservableEvent();
         activatedObs = new ObservableEvent();
@@ -184,8 +184,7 @@ public class Model {
                 IAnnounceEvent s = null;
 
                 /* If the machine is a supervisor, figure out if it is active */
-                if (m instanceof SupervisorMachine)
-                {
+                if (m instanceof SupervisorMachine) {
                     SupervisorMachine ma = (SupervisorMachine) m;
 
                     /* Set the dummy status event to reflect if the machine is active or not */
@@ -196,8 +195,7 @@ public class Model {
                 }
 
                 /* If the machine is a votebox, figure out if it is idle or voting */
-                else if (m instanceof VoteBoxBooth)
-                {
+                else if (m instanceof VoteBoxBooth) {
                     VoteBoxBooth ma = (VoteBoxBooth) m;
                     if (ma.getStatus() == VoteBoxBooth.READY)
                         s = new VoteBoxEvent(0, ma.getLabel(), "ready", ma
@@ -218,8 +216,7 @@ public class Model {
                 }
 
                 /* If the machine is a ballot scanner, figure out if it is active or inactive */
-                else if(m instanceof BallotScannerMachine)
-                {
+                else if(m instanceof BallotScannerMachine) {
                         BallotScannerMachine ma = (BallotScannerMachine)m;
                         if(ma.getStatus() == BallotScannerMachine.ACTIVE)
                         {
@@ -265,9 +262,7 @@ public class Model {
 
         /* Now label any machines that haven't been labeled yet by announcing to them their new label */
         for (AMachine machine : unlabeled)
-        {
             auditorium.announce(new AssignLabelEvent(mySerial, machine.getSerial(), ++maxlabel));
-        }
 
         /*
          * If the polls aren't marked open yet, we don't know if they are open or not.
@@ -667,22 +662,24 @@ public class Model {
             /* TODO Make it so multiple supervisors can be active at once */
             public void activated(ActivatedEvent e) {
 
-                /* Iteratate through all the machines and set the supervisors to inactive if they aren't this one */
+                /* Iterate through all the machines and set the supervisors to inactive if they aren't this one */
                 for (AMachine m : machines) {
                     if (m instanceof SupervisorMachine) {
-                        if (m.getSerial() == e.getSerial())
+                        /*if (m.getSerial() == e.getSerial())*/
                             m.setStatus(SupervisorMachine.ACTIVE);
-                        else
-                            m.setStatus(SupervisorMachine.INACTIVE);
+                        /*else
+                            m.setStatus(SupervisorMachine.INACTIVE);*/
                     }
                 }
 
                 /* Set this Supervisor to active */
-                if (e.getSerial() == mySerial)
-                    setActivated(true);
+                /*if (e.getSerial() == mySerial)*/
+
+                setActivated(true);
 
                 /* If we're not the supervisor who sent the message, deactivate ourselves */
-                else {
+                /* TODO This should fix the multiple supervisors problem. Test it. */
+                /*else {
                     setActivated(false);
                     boolean found = false;
                     for (StatusEvent ae : e.getStatuses()) {
@@ -696,6 +693,7 @@ public class Model {
                     }
                     if (!found) broadcastStatus();
                 }
+                */
             }
 
             /**
@@ -758,9 +756,7 @@ public class Model {
 
                 /* If the machine is found in the list of machines, update its state */
                 AMachine m = getMachineForSerial(e.getSerial());
-                if (m != null ) {
-                    m.setOnline(true);
-                }
+                if (m != null ) m.setOnline(true);
 
                 /*
                  * If we didn't find the machine, it can still connect, and it will be handled when the
@@ -769,6 +765,9 @@ public class Model {
                 numConnected++;
                 setConnected(true);
                 machinesChangedObs.notifyObservers();
+
+                /* Announce an event to notify the new machine who is on the network */
+                auditorium.announce(new SupervisorEvent(mySerial, new Date().getTime(),  isActivated ? "active" : "inactive"));
             }
 
             /**
@@ -973,7 +972,7 @@ public class Model {
                 /* Grab the machine's mini-model */
                 AMachine m = getMachineForSerial(e.getSerial());
 
-                /* Check that the sender of the messgae was actually a Supervisor */
+                /* Check that the sender of the message was actually a Supervisor */
                 if (m != null && !(m instanceof SupervisorMachine))
                     throw new IllegalStateException(
                             "Machine "
@@ -994,8 +993,8 @@ public class Model {
                 /* Check the activation status of this machine. If it is active, deactivate THIS machine */
                 if (e.getStatus().equals("active")) {
                     sup.setStatus(SupervisorMachine.ACTIVE);
-                    if (e.getSerial() != mySerial)
-                        setActivated(false);
+                    /*if (e.getSerial() != mySerial)
+                        setActivated(false);*/
                 } else if (e.getStatus().equals("inactive"))
                     sup.setStatus(SupervisorMachine.INACTIVE);
                 else
