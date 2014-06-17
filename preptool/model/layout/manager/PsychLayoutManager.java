@@ -881,7 +881,7 @@ public class PsychLayoutManager extends ALayoutManager {
             }
 
             /* Return the rendering utility's calculated size of the button */
-            return RenderingUtils.getToggleButtonSize(tb.getText(), tb.getSecondLine(), fontsize, tb.isBold());
+            return RenderingUtils.getToggleButtonSize(tb.getText(), tb.getSecondLine(), RACE_DESCRIPTION_WIDTH, fontsize, tb.isBold());
         }
 
         /**
@@ -907,7 +907,7 @@ public class PsychLayoutManager extends ALayoutManager {
             }
 
             /* Return the rendering utility's calculated size of the button */
-            return RenderingUtils.getToggleButtonSize(pb.getText(), pb.getSecondLine(), fontsize, pb.isBold());
+            return RenderingUtils.getToggleButtonSize(pb.getText(), pb.getSecondLine(), RACE_DESCRIPTION_WIDTH, fontsize, pb.isBold());
 		}
     };
 

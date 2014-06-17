@@ -288,11 +288,12 @@ public class RenderingUtils {
 	 *
      * @param text                  the text of the togglebutton
      * @param text2                 the second text of the toggle button - added on a second line and indented
+     * @param wrappingWidth         the width for the image that represents the button
      * @param fontsize              the size of the font
      * @param bold                  whether the button is bold
      * @return                      the size of the ToggleButton
 	 */
-	public static Dimension getToggleButtonSize(String text, String text2, int fontsize, boolean bold) {
+	public static Dimension getToggleButtonSize(String text, String text2, int wrappingWidth, int fontsize, boolean bold) {
 
         /* This is the standard font we use, so we can size the button with respect to the text */
         Font font = new Font(FONT_NAME, (bold) ? Font.BOLD : Font.PLAIN, fontsize);
@@ -314,17 +315,11 @@ public class RenderingUtils {
         /* This is the upper-right hand corner of the bounding box for the text */
         int heightPos = padding + baseline;
 
-        /* The width of the widest line */
-        int maxWidth = 0;
-
         /* If this button has secondary text (i.e. it's a presidential race) account for it */
         if (!text2.equals(""))
 			heightPos += lineHeight(text, font);
 
-        /* Update the max line width so we know how wide the button is */
-        maxWidth = Math.max(padding, maxWidth);
-
-        return new Dimension(maxWidth, heightPos + padding);
+        return new Dimension(wrappingWidth, heightPos + padding);
 	}
 
 	/**
@@ -593,7 +588,7 @@ public class RenderingUtils {
             for (String[] text : splitText) {
 
                 /* Calculate the margin */
-                int margin = (wrappingWidth - 2 * padding - lineWidth(text, bigBoldFont)) / 2;
+                int margin = (wrappingWidth - 2 * padding - lineWidth(text, italicFont)) / 2;
 
                 /* Instructions are italicized */
                 graphs.setFont(italicFont);
