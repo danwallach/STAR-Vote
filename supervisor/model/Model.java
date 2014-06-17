@@ -777,7 +777,6 @@ public class Model {
              * Handler for the last-polls-open message. If the keywords match,
              * set the polls to open (without sending a message).
              */
-            /* TODO Figure out when this is used */
             public void lastPollsOpen(LastPollsOpenEvent e) {
                 if(e.getPollsOpenMsg() == null)
                     return;
@@ -814,7 +813,7 @@ public class Model {
             /**
              * Handler for the override-cast-confirm event. Similar to
              * cast-ballot, but no received reply is sent.
-             */
+             */ /* TODO Is this okay?*/
             public void overrideCastConfirm(OverrideCommitConfirmEvent e) {
                 //AMachine m = getMachineForSerial(e.getSerial());
                 //if (m != null && m instanceof BallotScannerMachine) {
@@ -855,8 +854,8 @@ public class Model {
              */
             public void pollsOpenQ(PollsOpenQEvent e) {
                 if (e.getSerial() != mySerial) {
+                    /* XXX: This code should do what the following says, but it involves a lot of heavy lifting. */
                     /* TODO: Search the log and extract an appropriate polls-open message */
-                    /* It appears this method isn't really implemented. TODO Fix that */
 
                   /*  ASExpression res = null;
                     if (res != null && res != NoMatch.SINGLETON) {
