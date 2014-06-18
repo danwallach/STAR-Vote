@@ -8,7 +8,6 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.oned.Code128Writer;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
@@ -18,7 +17,7 @@ import java.util.HashMap;
 /**
  * A class which provides image manipulation support for printing
  *
- * @author Matt Bernhard, Mircea Berechet
+ * @author Matt Bernhard, Mircea Berechet, Arghya Chatterjee
  */
 public class PrintImageUtils {
 
@@ -179,36 +178,56 @@ public class PrintImageUtils {
 
         try {
 
+            /* Create an one dimensional pixel array to store the image pixels */
             int[] pix = new int[image.getWidth() * image.getHeight()];
 
             PixelGrabber grab = new PixelGrabber(image, 0, 0, image.getWidth(), image.getHeight(), pix, 0, image.getWidth());
+
 
             if(!grab.grabPixels()) return image;
 
             int lastClearColumn = 0;
 
-            /* TODO fix goto crap */
-            out:
-            for (int x = 1; x < image.getWidth(); x++) {
-                for (int y = 0; y < image.getHeight(); y++) {
+
+            int x=1;
+            int y;
+
+            /* Image is transparent*/
+            int alpha=0;
+
+            /* Image is white (RGB) */
+            int red =255;
+            int green = 255;
+            int blue =255;
+
+            /* Iterate over the width of the image */
+            while(x<image.getWidth()) {
+
+                /* Reset the height counter */
+                y=0;
+
+                /* Check whether the image is transparent or white if yes perform the trim operation until the entire height of the image */
+                while(y<image.getHeight() && ((alpha == 0)||(red == 255 && green == 255 && blue == 255))) {
+
                     int i = y*image.getWidth() + x;
                     int pixel = pix[i];
-
-                    int alpha = (pixel >> 24) & 0xff;
-                    int red   = (pixel >> 16) & 0xff;
-                    int green = (pixel >>  8) & 0xff;
-                    int blue  = (pixel      ) & 0xff;
-
-                    if(alpha == 0) continue;
-                    if(red == 255 && green == 255 && blue == 255) continue;
-
-                    break out;
+                    alpha = (pixel >> 24) & 0xff;
+                    red   = (pixel >> 16) & 0xff;
+                    green = (pixel >>  8) & 0xff;
+                    blue  = (pixel      ) & 0xff;
+                    y++;
                 }
-                lastClearColumn = x;
+
+                /* Executed only when the entire column has been checked*/
+                if(y == image.getHeight())
+                    lastClearColumn=x;
+                x++;
             }
 
-            int trimmable = Math.min(lastClearColumn, maxToTrim);
 
+
+            int trimmable = Math.min(lastClearColumn, maxToTrim);
+            /* Trim the image horizontally */
             return image.getSubimage(trimmable, 0, image.getWidth() - trimmable, image.getHeight());
         }
         catch (InterruptedException e) { return image; }
@@ -226,6 +245,7 @@ public class PrintImageUtils {
 
         try {
 
+             /* Create an one dimensional pixel array to store the image pixels */
             int[] pix = new int[image.getWidth() * image.getHeight()];
 
             PixelGrabber grab = new PixelGrabber(image, 0, 0, image.getWidth(), image.getHeight(), pix, 0, image.getWidth());
@@ -234,29 +254,44 @@ public class PrintImageUtils {
 
             int lastClearRow = 0;
 
-            /* TODO fix goto crap */
-            out:
-            for(int y = 1; y < image.getHeight(); y++){
-                for(int x = 0; x < image.getWidth(); x++){
+            int x;
+            int y=1;
+
+            /* Image is transparent*/
+            int alpha=0;
+
+            /* Image is white (RGB) */
+            int red =255;
+            int green = 255;
+            int blue =255;
+
+            /* Iterate over the height of the image */
+            while(y<image.getHeight()) {
+
+                /* Reset the width counter */
+                x = 0;
+
+                /* Check whether the image is transparent or white if yes perform the trim operation until the entire width of the image */
+                while(x<image.getWidth() && ((alpha == 0)||(red == 255 && green == 255 && blue == 255))) {
 
                     int i = y*image.getWidth() + x;
                     int pixel = pix[i];
-
-                    int alpha = (pixel >> 24) & 0xff;
-                    int red   = (pixel >> 16) & 0xff;
-                    int green = (pixel >>  8) & 0xff;
-                    int blue  = (pixel      ) & 0xff;
-
-                    if(alpha == 0) continue;
-                    if(red == 255 && green == 255 && blue == 255) continue;
-
-                    break out;
+                    alpha = (pixel >> 24) & 0xff;
+                    red   = (pixel >> 16) & 0xff;
+                    green = (pixel >>  8) & 0xff;
+                    blue  = (pixel      ) & 0xff;
+                    x++;
                 }
-                lastClearRow = y;
+
+                /* Executed only when the entire row has been checked*/
+                if(x == image.getWidth())
+                    lastClearRow=y;
+                y++;
             }
 
             int trimmable = Math.min(lastClearRow, maxToTrim);
 
+            /* Trim the image vertically */
             return image.getSubimage(0, trimmable, image.getWidth(), image.getHeight() - trimmable);
         }
         catch (InterruptedException e) { return image; }
