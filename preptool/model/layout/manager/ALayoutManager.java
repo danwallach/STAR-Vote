@@ -234,8 +234,15 @@ public abstract class ALayoutManager implements ILayoutManager {
                         /* Using our visitor, generate an image that we can write out */
                         BufferedImage img = bg.execute(getImageVisitor());
 
+                        /* Create a subdirectory for this image */
+                        File path = new File(location + File.separator + bg.getUID() + File.separator + bg.getUID() + "_" + langShortName + ".png");
+
+                        /* Create the directory, if it isn't there */
+                        //noinspection ResultOfMethodCallIgnored
+                        path.mkdirs();
+
                         /* Write out the image in the specified format, e.g. /media/L71_1_en.png */
-                        ImageIO.write(img, "png", new File(location + bg.getUID() + "_1_" + langShortName + ".png"));
+                        ImageIO.write(img, "png", path);
 
                     } catch (IOException e) {
                         /* If we encounter an error, we need to stop since we shouldn't output incomplete ballots */
@@ -257,14 +264,26 @@ public abstract class ALayoutManager implements ILayoutManager {
                         /* Using our visitor, generate an image that we can write out */
                         BufferedImage img = b.execute(getImageVisitor(), false);
 
-                        /* Write out the image in the specified format, e.g. /media/B18_1_en.png */
-                        ImageIO.write(img, "png", new File(location + b.getUID() + "_1_" + langShortName + ".png"));
+                        /* Create a subdirectory for this image */
+                        File path = new File(location + File.separator + b.getUID() + File.separator + b.getUID() + "_" + langShortName + ".png");
+
+                        /* Create the directory, if it isn't there */
+                        //noinspection ResultOfMethodCallIgnored
+                        path.mkdirs();
+
+                        /* Write out the image in the specified format, e.g. /media/B18/B18_en.png */
+                        ImageIO.write(img, "png", path);
 
                         /* This will  return a focused image, i.e. one with an orange background */
                         BufferedImage focused = b.execute(getImageVisitor(), true);
 
-                        /* e.g. /media/B18_focused_1_en.png */
-                        ImageIO.write(focused, "png", new File(location  + b.getUID() + "_focused_1_" + langShortName + ".png"));
+                        path = new File(location + File.separator + b.getUID() + File.separator + b.getUID() + "_focused_" + langShortName + ".png");
+
+                        //noinspection ResultOfMethodCallIgnored
+                        path.mkdirs();
+
+                        /* e.g. /media/B18/B18_focused_en.png */
+                        ImageIO.write(focused, "png", path);
 
                     } catch (IOException e) {
                         /* If we encounter an error, we need to stop since we shouldn't output incomplete ballots */
@@ -287,13 +306,29 @@ public abstract class ALayoutManager implements ILayoutManager {
                     try {
                         /* Using our visitor, generate an image that we can write out */
                         BufferedImage img = l.execute(getImageVisitor(), false);
-                        /* Write out the image in the specified format, e.g. /media/L18_1_en.png */
-                        ImageIO.write(img, "png", new File(location + l.getUID() + "_1_" + langShortName + ".png"));
+
+                        /* Create a subdirectory for this image */
+                        File path = new File(location + File.separator + l.getUID() + File.separator + l.getUID() + "_" + langShortName + ".png");
+
+                        /* Create the directory, if it isn't there */
+                        //noinspection ResultOfMethodCallIgnored
+                        path.mkdirs();
+
+                        /* Write out the image in the specified format, e.g. /media/L18/L18_en.png */
+                        ImageIO.write(img, "png", path);
 
                         /* Write out the image in the specified format, e.g. /media/L18_1_en.png */
                         BufferedImage focused = l.execute(getImageVisitor(), true);
+
+                        /* Create a subdirectory for this image */
+                        path = new File(location + File.separator + l.getUID() + File.separator + l.getUID() + "_focused_" + langShortName + ".png");
+
+                        /* Create the directory, if it isn't there */
+                        //noinspection ResultOfMethodCallIgnored
+                        path.mkdirs();
+
                         /* e.g. /media/L18_focused_1_en.png */
-                        ImageIO.write(focused, "png", new File(location + l.getUID() + "_focused_1_" + langShortName + ".png"));
+                        ImageIO.write(focused, "png", path);
 
                     }catch (IOException e) {
                         /* If we encounter an error, we need to stop since we shouldn't output incomplete ballots */

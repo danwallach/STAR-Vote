@@ -140,10 +140,6 @@ public class PrintImageUtils {
      */
     public static BufferedImage flipImageVertically(BufferedImage image) {
 
-        JOptionPane.showMessageDialog(null, "Image flipping", "Image flipping", JOptionPane.INFORMATION_MESSAGE, new ImageIcon(image));
-
-        System.out.println("Image.getHeight results: " + image.getHeight());
-
         /* Create a new clean image of the same size/type */
         BufferedImage flipped = new BufferedImage(image.getWidth(), image.getHeight(), image.getType());
 
@@ -165,8 +161,6 @@ public class PrintImageUtils {
 
         /* Now dispose of the graphic */
         g.dispose();
-
-        JOptionPane.showMessageDialog(null, "Flipped image", "Flipped image", JOptionPane.INFORMATION_MESSAGE, new ImageIcon(flipped));
 
         /* Return the flipped image */
         return flipped;
