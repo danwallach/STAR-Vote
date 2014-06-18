@@ -423,7 +423,7 @@ public abstract class ALayoutManager implements ILayoutManager {
                     BufferedImage focusedReview = rb.execute(getImageVisitor(), true);
 
                     /* Create a subdirectory for this image */
-                    path = new File(location + File.separator + uuid + File.separator + uuid + "_review_focused_" + langShortName + ".png");
+                    path = new File(location + File.separator + uuid + File.separator + uuid + "_focused_" + langShortName + ".png");
 
                     /* Create the directory, if it isn't there */
                     //noinspection ResultOfMethodCallIgnored
