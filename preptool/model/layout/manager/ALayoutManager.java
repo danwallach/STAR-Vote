@@ -77,16 +77,6 @@ public abstract class ALayoutManager implements ILayoutManager {
      */
     public static Boolean GENERATE_AUDIO = true;
 
-    /**
-     * Constant used when determining the font size
-     */
-    private static final int FONT_SIZE_SELECTED_IMAGES = 20;
-
-    /**
-     * Width to be used when rendering "_selected_" images.
-     */
-    private static final int WIDTH_SELECTED_IMAGES = 600;
-
 	/**
      * @see preptool.model.layout.manager.ILayoutManager#makeLayout(preptool.model.ballot.Ballot)
      */
@@ -205,7 +195,8 @@ public abstract class ALayoutManager implements ILayoutManager {
 
         /* Open a file for the destination of the images */
         File path = new File(location);
-        if (!path.exists()) path.mkdirs();
+        if (!path.exists()) //noinspection ResultOfMethodCallIgnored
+            path.mkdirs();
 
         /* A reference list of all supported languages */
         ArrayList<Language> langs = Language.getAllLanguages();
@@ -317,7 +308,7 @@ public abstract class ALayoutManager implements ILayoutManager {
                         /* Write out the image in the specified format, e.g. /media/L18/L18_en.png */
                         ImageIO.write(img, "png", path);
 
-                        /* Write out the image in the specified format, e.g. /media/L18_1_en.png */
+                        /* Create a focused version of this image */
                         BufferedImage focused = l.execute(getImageVisitor(), true);
 
                         /* Create a subdirectory for this image */
@@ -327,7 +318,7 @@ public abstract class ALayoutManager implements ILayoutManager {
                         //noinspection ResultOfMethodCallIgnored
                         path.mkdirs();
 
-                        /* e.g. /media/L18_focused_1_en.png */
+                        /* e.g. /media/L18/L18_focused_en.png */
                         ImageIO.write(focused, "png", path);
 
                     }catch (IOException e) {
@@ -356,12 +347,12 @@ public abstract class ALayoutManager implements ILayoutManager {
                 String uid = rb.getUID();
                 String uuid;
 
-                /* If the UID had an underscore, get rid of it */
-                /* TODO Why would there be underscores in the uid? */
+                /* If the UID had an underscore, get rid of it, since review buttons have uid "B1_review */
                 if(uid.contains("_"))
                     uuid = uid.substring(0, uid.indexOf('_'));
                 else
                     uuid = uid;
+
 
                 /* Here we render the printable representation of the button */
 
@@ -390,32 +381,39 @@ public abstract class ALayoutManager implements ILayoutManager {
 
                     /* TODO The following line may be unnecessary */
                     pb.setText(rb.getText());
+
                     /* Execute the PrintButton's visitor */
                     pb.execute(this);
                 }
 
-                /* Render the ReviewButton */
-                BufferedImage image = rb.execute(getImageVisitor(), false);
 
-                /* Render the ReviewButton's focused version */
-                BufferedImage focusedReview = rb.execute(getImageVisitor(), true);
-
-                /* We will put the review buttons in the vvpat subfolder of the ballot .zip */
-                File file = new File(location);
-                file = new File(file, "vvpat");
-                if(!file.exists())
-                    file.mkdirs();
-
-                /* Keep a reference to the file we're about to write so it can be manipulated */
-                file = new File(file, uuid+"_review_"+langShortName+".png");
                 try{
-                    /* TODO Figure out if all of these are used... */
-                    ImageIO.write(image,         "png", new File(location + uid + "_1_" +          langShortName + ".png"));
-                    ImageIO.write(image,         "png", new File(location + uid + "_" +            langShortName + ".png"));
-                    ImageIO.write(focusedReview, "png", new File(location + uid +  "_focused_1_" + langShortName + ".png"));
 
-                    /* Trim one image TODO why?*/
-                    ImageIO.write(PrintImageUtils.trimImageHorizontally(image, true, 1000), "png", file);
+                    /* Render the ReviewButton */
+                    BufferedImage image = rb.execute(getImageVisitor(), false);
+
+                    /* Create a subdirectory for this image */
+                    File path = new File(location + File.separator + uuid + File.separator + uuid + "_review_" + langShortName + ".png");
+
+                    /* Create the directory, if it isn't there */
+                    //noinspection ResultOfMethodCallIgnored
+                    path.mkdirs();
+
+                    /* Trim the review screen image */
+                    ImageIO.write(PrintImageUtils.trimImageHorizontally(image, true, 1000), "png", path);
+
+                    /* Render the ReviewButton's focused version */
+                    BufferedImage focusedReview = rb.execute(getImageVisitor(), true);
+
+                    /* Create a subdirectory for this image */
+                    path = new File(location + File.separator + uuid + File.separator + uuid + "_review_focused_" + langShortName + ".png");
+
+                    /* Create the directory, if it isn't there */
+                    //noinspection ResultOfMethodCallIgnored
+                    path.mkdirs();
+                    ImageIO.write(focusedReview, "png", path);
+
+
                 }
                 catch (IOException ie){
                     throw new RuntimeException(ie);
@@ -442,13 +440,29 @@ public abstract class ALayoutManager implements ILayoutManager {
 
                         /* Generate the buffered image using the visitor and then write out the image */
                         BufferedImage img = rl.execute(getImageVisitor(), false);
-                        /* e.g. /media/L74_1_en.png */
-                        ImageIO.write(img, "png", new File(location + rl.getUID() + "_1_" + langShortName + ".png"));
+
+                        /* Create a subdirectory for this image */
+                        File path = new File(location + File.separator + rl.getUID() + File.separator + rl.getUID() + "_" + langShortName + ".png");
+
+                        /* Create the directory, if it isn't there */
+                        //noinspection ResultOfMethodCallIgnored
+                        path.mkdirs();
+
+                        /* e.g. /media/L74/L74_en.png */
+                        ImageIO.write(img, "png", path);
 
                         /* Generate the focused version, and write it out */
                         BufferedImage focused = rl.execute(getImageVisitor(), true);
+
+                        /* Create a subdirectory for this image */
+                        path = new File(location + File.separator + rl.getUID() + File.separator + rl.getUID() + "_focused_" + langShortName + ".png");
+
+                        /* Create the directory, if it isn't there */
+                        //noinspection ResultOfMethodCallIgnored
+                        path.mkdirs();
+
                         /* e.g. /media/L74_focused_1_en.png */
-                        ImageIO.write(focused, "png", new File(location + rl.getUID() + "_focused_1_" + langShortName + ".png"));
+                        ImageIO.write(focused, "png", path);
 
                     } catch (IOException e) {
                         throw new RuntimeException(e);
@@ -466,6 +480,7 @@ public abstract class ALayoutManager implements ILayoutManager {
             /**
              * @see preptool.model.layout.ILayoutComponentVisitor#forToggleButton(preptool.model.layout.ToggleButton, Object[])
              */
+            @SuppressWarnings("ResultOfMethodCallIgnored")
             public Void forToggleButton(ToggleButton tb, Object... param) {
                 if (!uids.contains(tb.getUID())) {
                     try {
@@ -479,15 +494,29 @@ public abstract class ALayoutManager implements ILayoutManager {
                          *
                          *  Generate and write out images for each state
                          */
-                        BufferedImage img               = tb.execute(getImageVisitor(), false, false);
-                        BufferedImage focusedTb         = tb.execute(getImageVisitor(), false, true);
-                        BufferedImage selectedTb        = tb.execute(getImageVisitor(), true, false);
-                        BufferedImage focusedSelectedTb = tb.execute(getImageVisitor(), true, true);
+                        BufferedImage img = tb.execute(getImageVisitor(), false, false);
+                        File path = new File(location + File.separator + tb.getUID() + File.separator + tb.getUID() + "_" + langShortName + ".png");
+                        path.mkdirs();
+                        ImageIO.write(img, "png", path);
 
-                        ImageIO.write(img,               "png", new File(location + tb.getUID() + "_1_" +                 langShortName + ".png"));
-                        ImageIO.write(focusedTb,         "png", new File(location+  tb.getUID() + "_focused_1_" +         langShortName + ".png"));
-                        ImageIO.write(selectedTb,        "png", new File(location + tb.getUID() + "_selected_1_" +        langShortName + ".png"));
-                        ImageIO.write(focusedSelectedTb, "png", new File(location + tb.getUID() + "_focusedSelected_1_" + langShortName + ".png"));
+
+                        BufferedImage focusedTb = tb.execute(getImageVisitor(), false, true);
+                        path = new File(location + File.separator + tb.getUID() + File.separator + tb.getUID() + "_focused_" + langShortName + ".png");
+                        path.mkdirs();
+                        ImageIO.write(focusedTb, "png", path);
+
+
+                        BufferedImage selectedTb = tb.execute(getImageVisitor(), true, false);
+                        path = new File(location + File.separator + tb.getUID() + File.separator + tb.getUID() + "_selected_" + langShortName + ".png");
+                        path.mkdirs();
+                        ImageIO.write(selectedTb, "png", path);
+
+
+                        BufferedImage focusedSelectedTb = tb.execute(getImageVisitor(), true, true);
+                        path = new File(location + File.separator + tb.getUID() + File.separator + tb.getUID() + "_focusedSelected_" + langShortName + ".png");
+                        path.mkdirs();
+                        ImageIO.write(focusedSelectedTb, "png", path);
+
 
                         /* Construct a review screen version of this button */
                         ReviewButton review = new ReviewButton(tb.getUID() + "_review", tb.getBothLines(), "GoToPage", getSizeVisitor());
@@ -545,7 +574,6 @@ public abstract class ALayoutManager implements ILayoutManager {
             /**
              * @see preptool.model.layout.ILayoutComponentVisitor#forPrintButton(preptool.model.layout.PrintButton, Object[])
              */
-			@SuppressWarnings("ResultOfMethodCallIgnored")
             public Void forPrintButton(PrintButton pb, Object... param) {
                 /* Since not all uids are of equal length/don't have underscores, normalize them */
                 String uid = pb.getUID();
@@ -562,32 +590,18 @@ public abstract class ALayoutManager implements ILayoutManager {
                         /* Execute the renderer for this button */
                         BufferedImage img = pb.execute(getImageVisitor());
 
-                        /* Write the button out TODO Figure out this _1_ business */
-                        ImageIO.write(img, "png", new File(location + uid + "_1_" + langShortName + ".png"));
-                        ImageIO.write(img, "png", new File(location + uid + "_" +   langShortName + ".png"));
-
-                        /* Set up a VVPAT folder to write printables to */
-                        File file = new File(location);
-                        file = new File(file, "vvpat");
-                        if(!file.exists())
-                            file.mkdirs();
-
-                        /* If this is a user selected button, create a selected image */
-                        if (pb.getUID().contains("B")) {
-                            /* Manually render the button here */
-                            BufferedImage selectedImg = RenderingUtils.renderToggleButton(pb.getText(), pb.getSecondLine(), pb.getParty(),
-                                    FONT_SIZE_SELECTED_IMAGES, WIDTH_SELECTED_IMAGES, pb.isBold(), !(pb.getText().equals("NO SELECTION")), false);
-
-                            /* Write out the button */
-                            File selectedFile = new File (file, uuid + "_selected_" + langShortName + ".png");
-                            ImageIO.write(selectedImg, "png", selectedFile);
-                        }
+                        File path;
 
                         /* TODO I'm not sure what we're checking here, I think this code always executes... */
                         if(!langNames.contains(pb.getText())){
                             /* Create a file for the printable and then write it */
-                            file = new File(file, uuid+"_printable_"+langShortName+".png");
-                            ImageIO.write(img, "png", file);
+                            path = new File(location + File.separator + uuid + File.separator +uuid + "_printable_" + langShortName + ".png");
+
+                            /* Create the directory, if it isn't there */
+                            //noinspection ResultOfMethodCallIgnored
+                            path.mkdirs();
+
+                            ImageIO.write(img, "png", path);
                         }
 
 
@@ -663,8 +677,17 @@ public abstract class ALayoutManager implements ILayoutManager {
                         streams.add(audioSrc);
                     }
 
+                    File path;
+
+                    if(uid.contains("Selected") || uid.contains("Deselected"))
+                        path = new File(location  + uid + "_" + langShortName + ".mp3");
+                    else if (uid.contains("_"))
+                        path = new File(location + uid.substring(0, uid.indexOf("_")) + File.separator+ uid + "_" + langShortName + ".mp3");
+                    else
+                        path = new File(location + uid + File.separator + uid + "_" + langShortName + ".mp3");
+
                     /* This is our output stream for our final mp3*/
-                    OutputStream outstream = new FileOutputStream(new File(location  + uid + "_" + langShortName + ".mp3"));
+                    OutputStream outstream = new FileOutputStream(path);
 
                     /* For each mp3, stream the data into the output. Note that by the mp3 protocol, we can just append one stream to another */
                     for(InputStream stream : streams){
