@@ -98,89 +98,17 @@ public class Language {
 		if (allLanguages != null) return allLanguages;
 
 		allLanguages = new ArrayList<Language>();
-		ImageIcon icon;
 
-        /* TODO Is there a better way to do this? Also, shouldn't it be done in the constructor? */
-
-		try {
-			icon = new ImageIcon(ClassLoader.getSystemClassLoader()
-					.getResource("images/en.png"));
-		} catch (Exception e) {
-			icon = null;
-		}
-		allLanguages.add(new Language("English", "en", icon));
-
-		try {
-			icon = new ImageIcon(ClassLoader.getSystemClassLoader()
-					.getResource("images/es.png"));
-		} catch (Exception e) {
-			icon = null;
-		}
-		allLanguages.add(new Language("Español", "es", icon));
-
-		try {
-			icon = new ImageIcon(ClassLoader.getSystemClassLoader()
-					.getResource("images/fr.png"));
-		} catch (Exception e) {
-			icon = null;
-		}
-		allLanguages.add(new Language("Français", "fr", icon));
-
-		try {
-			icon = new ImageIcon(ClassLoader.getSystemClassLoader()
-					.getResource("images/de.png"));
-		} catch (Exception e) {
-			icon = null;
-		}
-		allLanguages.add(new Language("Deutsch", "de", icon));
-
-		try {
-			icon = new ImageIcon(ClassLoader.getSystemClassLoader()
-					.getResource("images/it.png"));
-		} catch (Exception e) {
-			icon = null;
-		}
-		allLanguages.add(new Language("Italiano", "it", icon));
-
-		try {
-			icon = new ImageIcon(ClassLoader.getSystemClassLoader()
-					.getResource("images/ru.png"));
-		} catch (Exception e) {
-			icon = null;
-		}
-		allLanguages.add(new Language("Русский", "ru", icon));
-
-		try {
-			icon = new ImageIcon(ClassLoader.getSystemClassLoader()
-					.getResource("images/zh.png"));
-		} catch (Exception e) {
-			icon = null;
-		}
-		allLanguages.add(new Language("中文", "zh", icon));
-
-		try {
-			icon = new ImageIcon(ClassLoader.getSystemClassLoader()
-					.getResource("images/jp.png"));
-		} catch (Exception e) {
-			icon = null;
-		}
-		allLanguages.add(new Language("日本語", "jp", icon));
-
-		try {
-			icon = new ImageIcon(ClassLoader.getSystemClassLoader()
-					.getResource("images/kr.png"));
-		} catch (Exception e) {
-			icon = null;
-		}
-		allLanguages.add(new Language("한국말", "kr", icon));
-
-		try {
-			icon = new ImageIcon(ClassLoader.getSystemClassLoader()
-					.getResource("images/sa.png"));
-		} catch (Exception e) {
-			icon = null;
-		}
-		allLanguages.add(new Language("العربية", "sa", icon));
+		allLanguages.add(new Language("English", "en", new ImageIcon("images/en.png")));
+		allLanguages.add(new Language("Español", "es", new ImageIcon("images/es.png")));
+		allLanguages.add(new Language("Français", "fr", new ImageIcon("images/fr.png")));
+		allLanguages.add(new Language("Deutsch", "de", new ImageIcon("images/de.png")));
+		allLanguages.add(new Language("Italiano", "it", new ImageIcon("images/it.png")));
+		allLanguages.add(new Language("Русский", "ru", new ImageIcon("images/ru.png")));
+		allLanguages.add(new Language("中文", "zh", new ImageIcon("images/zh.png")));
+		allLanguages.add(new Language("日本語", "jp", new ImageIcon("images/jp.png")));
+		allLanguages.add(new Language("한국말", "kr", new ImageIcon("images/kr.png")));
+		allLanguages.add(new Language("العربية", "sa", new ImageIcon("images/sa.png")));
 
 		return allLanguages;
 	}
