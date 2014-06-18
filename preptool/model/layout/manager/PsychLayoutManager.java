@@ -772,9 +772,8 @@ public class PsychLayoutManager extends ALayoutManager {
             int fontsize = FONT_SIZE_MULTIPLE;
 
             /* Increase the font size if necessary */
-            if (pb.isIncreasedFontSize()) {
+            if (pb.isIncreasedFontSize())
                 fontsize += 4;
-            }
 
             /* Render using the rendering utility. Chose 281 for the width because it suits our printing well */
             return RenderingUtils.renderPrintButton(pb.getUID(), pb.getText(), pb.getSecondLine(), pb.getParty(), fontsize, 281, false, true);

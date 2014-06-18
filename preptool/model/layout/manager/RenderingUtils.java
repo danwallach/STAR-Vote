@@ -907,11 +907,11 @@ public class RenderingUtils {
         /* Get a wrapped version */
         wrappedImage = wrappedImage.getSubimage(0, 0, wrappingWidth, heightPos + padding);
 
-        /* Trim the image on top */
-        wrappedImage = PrintImageUtils.trimImageVertically(wrappedImage, false, Integer.MAX_VALUE);
-
         /* Trim the image on bottom */
         wrappedImage = PrintImageUtils.trimImageVertically(wrappedImage, true, Integer.MAX_VALUE);
+
+        /* Trim the image on top */
+        wrappedImage = PrintImageUtils.trimImageVertically(wrappedImage, false, Integer.MAX_VALUE);
 
         /* I think this copies to avoid aliasing or something. TODO Figure this out */
         return copy(wrappedImage);
