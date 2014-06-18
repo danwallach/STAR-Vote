@@ -406,7 +406,7 @@ public class Button extends FocusableLabel {
     @Override
     public IViewImage getReviewImage() {
         if (_reviewImage == null)
-            _reviewImage = _factory.makeImage(imagePath(_vars, getUniqueID() + "_review_", _viewManager.getSize(), _viewManager.getLanguage()), false);
+            _reviewImage = _factory.makeImage(imagePath(_vars, getUniqueID() + "_review_", _viewManager.getLanguage()), false);
 
         return _reviewImage;
     }
@@ -458,7 +458,7 @@ public class Button extends FocusableLabel {
             if (getUniqueID().contains("B"))
                 _defaultImage = _factory.makeImage(imageToggleButtonPath(_vars, getUniqueID() + "_review", _viewManager.getLanguage()), false);
             else
-                _defaultImage = _factory.makeImage( imagePath( _vars, getUniqueID(), _viewManager.getSize(), _viewManager.getLanguage() ), false);
+                _defaultImage = _factory.makeImage( imagePath( _vars, getUniqueID(), _viewManager.getLanguage() ), false);
         }
 
         return _defaultImage;
@@ -472,7 +472,7 @@ public class Button extends FocusableLabel {
     public IViewImage getFocusedImage() {
 
         if (_focusedImage == null)
-            _focusedImage = _factory.makeImage(imagePath(_vars, getUniqueID() + "_focused", _viewManager.getSize(),_viewManager.getLanguage()), false);
+            _focusedImage = _factory.makeImage(imagePath(_vars, getUniqueID() + "_focused", _viewManager.getLanguage()), false);
 
         return _focusedImage;
     }

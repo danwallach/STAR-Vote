@@ -250,6 +250,8 @@ public abstract class ALayoutManager implements ILayoutManager {
              * @see preptool.model.layout.ILayoutComponentVisitor#forButton(preptool.model.layout.Button, Object[])
              */
             public Void forButton(Button b, Object... param) {
+                System.out.println("Button:" + b.getUID());
+
                 if (!uids.contains(b.getUID())) {
                     try {
                         /* Using our visitor, generate an image that we can write out */
@@ -293,6 +295,9 @@ public abstract class ALayoutManager implements ILayoutManager {
              * @see preptool.model.layout.ILayoutComponentVisitor#forLabel(preptool.model.layout.Label, Object[])
              */
             public Void forLabel(Label l, Object... param) {
+
+                System.out.println("Label: " + l.getUID());
+
                 if (!uids.contains(l.getUID())) {
                     try {
                         /* Using our visitor, generate an image that we can write out */
@@ -342,6 +347,8 @@ public abstract class ALayoutManager implements ILayoutManager {
              */
             @SuppressWarnings("ResultOfMethodCallIgnored")
             public Void forReviewButton(ReviewButton rb, Object... param) {
+
+                System.out.println("Review button: " + rb.getUID());
 
                 /* get the UID for the button */
                 String uid = rb.getUID();
@@ -393,7 +400,17 @@ public abstract class ALayoutManager implements ILayoutManager {
                     BufferedImage image = rb.execute(getImageVisitor(), false);
 
                     /* Create a subdirectory for this image */
-                    File path = new File(location + File.separator + uuid + File.separator + uuid + "_review_" + langShortName + ".png");
+                    File path = new File(location + File.separator + uuid + File.separator + uuid + "_" + langShortName + ".png");
+
+                    /* Create the directory, if it isn't there */
+                    //noinspection ResultOfMethodCallIgnored
+                    path.mkdirs();
+
+                    /* Trim the review screen image */
+                    ImageIO.write(PrintImageUtils.trimImageHorizontally(image, true, 1000), "png", path);
+
+                    /* Create a subdirectory for this image */
+                    path = new File(location + File.separator + uuid + File.separator + uuid + "_review_" + langShortName + ".png");
 
                     /* Create the directory, if it isn't there */
                     //noinspection ResultOfMethodCallIgnored
@@ -438,6 +455,8 @@ public abstract class ALayoutManager implements ILayoutManager {
                 if (!uids.contains(rl.getUID())) {
                     try {
 
+                        System.out.println("Review label: " + rl.getUID());
+
                         /* Generate the buffered image using the visitor and then write out the image */
                         BufferedImage img = rl.execute(getImageVisitor(), false);
 
@@ -461,7 +480,7 @@ public abstract class ALayoutManager implements ILayoutManager {
                         //noinspection ResultOfMethodCallIgnored
                         path.mkdirs();
 
-                        /* e.g. /media/L74_focused_1_en.png */
+                        /* e.g. /media/L74_focused_en.png */
                         ImageIO.write(focused, "png", path);
 
                     } catch (IOException e) {
@@ -483,6 +502,8 @@ public abstract class ALayoutManager implements ILayoutManager {
             @SuppressWarnings("ResultOfMethodCallIgnored")
             public Void forToggleButton(ToggleButton tb, Object... param) {
                 if (!uids.contains(tb.getUID())) {
+                    System.out.println("Toggle button: " + tb.getUID());
+
                     try {
 
                         /* Toggle buttons have four states:
@@ -575,6 +596,8 @@ public abstract class ALayoutManager implements ILayoutManager {
              * @see preptool.model.layout.ILayoutComponentVisitor#forPrintButton(preptool.model.layout.PrintButton, Object[])
              */
             public Void forPrintButton(PrintButton pb, Object... param) {
+                System.out.println("Print button:"  + pb.getUID());
+
                 /* Since not all uids are of equal length/don't have underscores, normalize them */
                 String uid = pb.getUID();
                 String uuid;

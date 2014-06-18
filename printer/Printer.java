@@ -165,9 +165,9 @@ public class Printer{
         Boolean useTwoColumns = true;
         Boolean printerFriendly = true;
 
-        String pathToVVPATFolder = cleanFilePath + fileChar + "media" + fileChar + "vvpat" + fileChar;
-        String barcodeFileNameNoExtension = pathToVVPATFolder + "Barcode";
-        String lineSeparatorFileName = pathToVVPATFolder + "LineSeparator.png";
+        String path = cleanFilePath + fileChar + "media" + fileChar;
+        String barcodeFileNameNoExtension = path + "Barcode";
+        String lineSeparatorFileName = path + "LineSeparator.png";
 
         /* Generate a barcode of the BID */
         /* Do it here so we can use height of the barcode for laying out other components on the printout */
@@ -214,7 +214,7 @@ public class Printer{
         }
 
         /* Generate the HTML file with the properties set above. */
-        HTMLPrinter.generateHTMLFile(htmlFileName, useTwoColumns, printerFriendly, pathToVVPATFolder, _constants, bid, barcodeFileNameNoExtension, lineSeparatorFileName, columnsToPrint);
+        HTMLPrinter.generateHTMLFile(htmlFileName, useTwoColumns, printerFriendly, path, _constants, bid, barcodeFileNameNoExtension, lineSeparatorFileName, columnsToPrint);
 
         /* Get the file that is to be read for commands and its parameter separator string. */
         String filename = _printerConstants.getCommandsFileFilename();

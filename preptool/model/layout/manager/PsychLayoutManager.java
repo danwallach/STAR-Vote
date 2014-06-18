@@ -616,12 +616,12 @@ public class PsychLayoutManager extends ALayoutManager {
     /**
      * Width of the VoteBox window
      */
-    private static final int WINDOW_WIDTH = 1600;
+    private static final int WINDOW_WIDTH = 1024;
 
     /**
      * Height of the VoteBox window
      */
-    private static final int WINDOW_HEIGHT = 900;
+    private static final int WINDOW_HEIGHT = 768;
 
 
     /**

@@ -37,7 +37,7 @@ public class WriteInToggleButton extends ToggleButton {
      */
     public IViewImage getSelectedImage() {
 
-        String imgPath = imagePath(_vars, getUniqueID() + "_selected", _viewManager.getSize(), _viewManager.getLanguage());
+        String imgPath = imagePath(_vars, getUniqueID() + "_selected", _viewManager.getLanguage());
         _selectedImage = _factory.makeImage(imgPath, true);
 
         return _selectedImage;
@@ -50,7 +50,7 @@ public class WriteInToggleButton extends ToggleButton {
      */
     public IViewImage getFocusedSelectedImage() {
 
-        String imgPath = imagePath(_vars, getUniqueID() + "_focusedSelected", _viewManager.getSize(), _viewManager.getLanguage());
+        String imgPath = imagePath(_vars, getUniqueID() + "_focusedSelected", _viewManager.getLanguage());
         _focusedSelectedImage = _factory.makeImage(imgPath, false);
 
         return _focusedSelectedImage;

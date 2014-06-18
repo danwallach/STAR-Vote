@@ -33,6 +33,8 @@ import votebox.middle.view.IViewManager;
 import votebox.middle.view.MeaninglessMethodException;
 import votebox.middle.view.RenderPage;
 
+import java.io.File;
+
 /**
  * This is the simplest implementation of an IDrawable. Labels are simply window
  * decoration. Labels cannot be interacted with by the voter.
@@ -215,7 +217,14 @@ public class Label implements IDrawable {
      * @return          the path to the image.
      */
     protected String imagePath(IBallotVars vars, String uid, int size, String lang) {
-        return vars.getBallotPath() + "/media/" + uid + "_" + size + "_" + lang + ".png";
+        String folder;
+
+        if(uid.contains("_"))
+            folder = uid.substring(0, uid.indexOf("_"));
+        else
+            folder = uid;
+
+        return vars.getBallotPath() + File.separator + "media" + File.separator + folder + File.separator + uid + "_" + lang + ".png";
     }
 
     /**
@@ -229,7 +238,14 @@ public class Label implements IDrawable {
      * @return          the path to the image.
      */
     protected String imageToggleButtonPath (IBallotVars vars, String uid, String lang) {
-        return vars.getBallotPath() + "/media/vvpat/" + uid + "_" + lang + ".png";
+        String folder;
+
+        if(uid.contains("_"))
+            folder = uid.substring(0, uid.indexOf("_"));
+        else
+            folder = uid;
+
+        return vars.getBallotPath() + File.separator + "media" + File.separator + folder + File.separator + uid + "_" + lang + ".png";
     }
 
     /**
