@@ -193,10 +193,12 @@ public class HTMLPrinter {
             Boolean isSelectionImage = false; // Used to leave an empty line after every selectionImage
             for (String imageName : left_column)
             {
-                // Load in the image.
-                writer.write("<img src = \"" + pathToBallotVVPATFolder + imageName + "\" alt = \"Image did not load properly\" width = \"" + TWO_COLUMNS_COLUMN_SIZE + "\">\n");
+                String folder = imageName.contains("_") ? imageName.substring(0, imageName.indexOf("_")) : imageName;
 
-                System.out.println(">>>>>? " + pathToBallotVVPATFolder + imageName);
+                // Load in the image.
+                writer.write("<img src = \"" + pathToBallotVVPATFolder + folder + File.separator + imageName + "\" alt = \"Image did not load properly\" width = \"" + TWO_COLUMNS_COLUMN_SIZE + "\">\n");
+
+                System.out.println(">>>>>? " + pathToBallotVVPATFolder + folder + File.separator + imageName);
                 // Leave an empty line after selection images.
                 if (isSelectionImage)
                 {

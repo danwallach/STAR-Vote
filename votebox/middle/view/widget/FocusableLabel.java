@@ -261,6 +261,8 @@ public class FocusableLabel implements IFocusable {
 
         if(uid.contains("_"))
             folder = uid.substring(0, uid.indexOf("_"));
+        else if(uid.contains("Selected") || uid.contains("Deselected"))
+            folder = "";
         else
             folder = uid;
 

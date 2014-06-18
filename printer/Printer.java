@@ -165,7 +165,7 @@ public class Printer{
         Boolean useTwoColumns = true;
         Boolean printerFriendly = true;
 
-        String path = cleanFilePath + fileChar + "media" + fileChar;
+        String path = cleanFilePath +  "media" + fileChar;
         String barcodeFileNameNoExtension = path + "Barcode";
         String lineSeparatorFileName = path + "LineSeparator.png";
 
@@ -191,6 +191,9 @@ public class Printer{
         ArrayList<ArrayList<String>> columnsToPrint = new ArrayList<ArrayList<String>>();
         ArrayList<String> currentColumn = new ArrayList<String>();
 
+        /* Add at least 1 columns to print */
+        columnsToPrint.add(currentColumn);
+
         int i = 0;
 
         /* For each of the selections */
@@ -205,8 +208,9 @@ public class Printer{
             /* Add each column to columnsToPrint */
             if (i % 46 == 0) {
 
-                columnsToPrint.add(currentColumn);
+                /* Since the reference of the new column is added before things are added to it, columnsToPrint will always have a spot for the last column */
                 currentColumn = new ArrayList<String>();
+                columnsToPrint.add(currentColumn);
 
                 /* TODO this is for two columns stopping */
                 if (i==92) break;
