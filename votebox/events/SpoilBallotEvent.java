@@ -1,6 +1,7 @@
 package votebox.events;
 
 import sexpression.*;
+import sexpression.stream.InvalidVerbatimStreamException;
 
 /**
  * This is an event that gets fired when the supervisor spoils a voter's ballot
@@ -23,11 +24,13 @@ public class SpoilBallotEvent extends ABallotEvent {
             if(res != NoMatch.SINGLETON) {
                 ListExpression list = (ListExpression) sexp;
 
-                String bid = list.get(1).toString();
+                ASExpression nonce = list.get(1);
 
-                ASExpression nonce = list.get(2);
+                String bid = list.get(2).toString();
 
-                return new SpoilBallotEvent(serial, bid, nonce);
+                byte[] ballot = list.get(3).toVerbatim();
+
+                return new SpoilBallotEvent(serial, nonce, bid, ballot);
             }
 
             return null;
@@ -40,10 +43,11 @@ public class SpoilBallotEvent extends ABallotEvent {
      *
      * @param serial the serial number of the sender
      * @param bid the ballot to be spoiled
+     * @param ballot the encrypted copy of the ballot being spoiled
      * @param nonce  the nonce of the ballot
      */
-    public SpoilBallotEvent(int serial, String bid, ASExpression nonce) {
-        super(serial, bid, nonce);
+    public SpoilBallotEvent(int serial, ASExpression nonce, String bid,  byte[] ballot) {
+        super(serial, nonce, bid, ballot);
     }
 
     /** @return the matcher rule */
@@ -62,7 +66,10 @@ public class SpoilBallotEvent extends ABallotEvent {
      * @see votebox.events.IAnnounceEvent#toSExp()
      */
     public ASExpression toSExp() {
-        return new ListExpression(StringExpression.makeString("spoil-ballot"),
-                StringExpression.make(getBID()), getNonce());
+        try {
+            return new ListExpression(StringExpression.makeString("spoil-ballot"), getNonce(), StringExpression.make(getBID()), ASExpression.makeVerbatim(getBallot()));
+        } catch (InvalidVerbatimStreamException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -14,7 +14,6 @@ public abstract class ABallotEvent extends AAnnounceEvent{
     /** The serialized ballot that the authorized machine will used to vote on */
     private byte[] ballot;
 
-
     /** A nonce associated with the authorized session */
     private ASExpression nonce;
 

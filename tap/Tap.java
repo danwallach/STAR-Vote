@@ -108,12 +108,12 @@ public class Tap {
     protected void dumpBallotList(ArrayList<String> ballotList){
 
         HttpClient client = new DefaultHttpClient();
-        HttpPost post = new HttpPost("http://starvote.cs.rice.edu/3FF968A3B47CT34C");
 
-        try {
+            HttpPost post = new HttpPost("http://starvote.cs.rice.edu/3FF968A3B47CT34C");
 
-            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+            try {
 
+                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
             /* For each of the ballotStrings... */
             for (String ballotString : ballotList) {
 
