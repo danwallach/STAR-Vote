@@ -196,15 +196,13 @@ public class BallotStore {
         return new ListExpression(new ListExpression(ballotIDs), new ListExpression(precincts), new ListExpression(hashes), new ListExpression(decryptedBallots));
     }
 
-// --Commented out by Inspection START (5/27/14, 3:25 PM):
-//    /**
-//     * @return List of unconfirmed (not Cast) ballots so far in the system
-//     */
-//    /* TODO is this used? */
-//    public static List<ASExpression> getUnconfirmedBallots() {
-//        return new ArrayList<ASExpression>(unconfirmedBallots.values());
-//    }
-// --Commented out by Inspection STOP (5/27/14, 3:25 PM)
+    /**
+     * @param bid the bid of the ballot to get
+     * @return the ballot with the corresponding bid
+     */
+    public static ASExpression getUnconfirmedBallotByBID(String bid) {
+        return unconfirmedBallots.get(bid);
+    }
 
     /**
      * Creates a hash for voting session and saves BID and Machine ID (MID) for hash chain checking later

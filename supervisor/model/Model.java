@@ -105,7 +105,7 @@ public class Model {
     /** The configuration parameters for this machine */
     private IAuditoriumParams auditoriumParams;
 
-    /** A map of all committed ballot ID's to their encrypted ballot representations */
+    /** A map of all committed ballot ID's to their nonce values */
     private HashMap<String, ASExpression> committedBids;
 
     /** Keeps track of the last heard polls open event so that new machines can be updated when they come online */
@@ -1435,7 +1435,7 @@ public class Model {
             ASExpression nonce = committedBids.remove(bid);
 
             /* Announce that a ballot was spoiled */
-            auditorium.announce(new SpoilBallotEvent(mySerial, bid, nonce));
+            auditorium.announce(new SpoilBallotEvent(mySerial, nonce, bid, BallotStore.getUnconfirmedBallotByBID(bid).toVerbatim()));
             return true;
         }
         else

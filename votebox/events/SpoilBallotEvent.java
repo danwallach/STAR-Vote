@@ -16,7 +16,7 @@ public class SpoilBallotEvent extends ABallotEvent {
      */
     private static MatcherRule MATCHER = new MatcherRule() {
         private ASExpression pattern = new ListExpression(StringExpression.makeString("spoil-ballot"),
-                StringWildcard.SINGLETON, StringWildcard.SINGLETON);
+                StringWildcard.SINGLETON, StringWildcard.SINGLETON, Wildcard.SINGLETON);
 
         public IAnnounceEvent match(int serial, ASExpression sexp) {
             ASExpression res = pattern.match(sexp);

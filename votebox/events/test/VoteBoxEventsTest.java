@@ -28,7 +28,9 @@ import crypto.interop.AdderKeyManipulator;
 import crypto.adder.PublicKey;
 import junit.framework.TestCase;
 import sexpression.ASExpression;
+import sexpression.ListExpression;
 import sexpression.StringExpression;
+import sexpression.stream.InvalidVerbatimStreamException;
 import votebox.events.*;
 
 import java.util.ArrayList;
@@ -623,11 +625,17 @@ public class VoteBoxEventsTest extends TestCase {
     public void testSpoilBallot(){
         ASExpression nonce = getBlob();
 
-        SpoilBallotEvent event = new SpoilBallotEvent(0, "123456789", nonce);
+        byte[] ballot = getBlob().toVerbatim();
+
+        SpoilBallotEvent event = new SpoilBallotEvent(0, nonce, "123456789", ballot);
 
         ASExpression sexp = event.toSExp();
 
-        assertEquals("(spoil-ballot 123456789 " + nonce + ")", sexp.toString());
+        try {
+            assertEquals("(spoil-ballot " + nonce + " 123456789 " + ASExpression.makeVerbatim(ballot) + ")", sexp.toString());
+        } catch (InvalidVerbatimStreamException e) {
+            e.printStackTrace();
+        }
 
         SpoilBallotEvent event2 = (SpoilBallotEvent)matcher.match(0, sexp);
 
