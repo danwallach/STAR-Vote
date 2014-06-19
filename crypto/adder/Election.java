@@ -78,7 +78,7 @@ public class Election {
     /**
      * Gets the final sum given the partial sums, the coefficients, the vote
      * representing the sum, and the master public key.
-     * TODO make this less stupid List<List<>> and LaGrange coefficients
+     * TODO make this less stupid List<List<>> and LaGrange coefficients.
      *
      * @param  partialSums      the partial sums (the list of products of the encrypted
      *                          votes' h^y values wrapped in an additional list)
