@@ -56,7 +56,7 @@ public class AWTView extends AView {
 
 	private Rectangle   _bounds;
 	private DisplayMode _returnMode;
-	private boolean     _windowed;
+	private boolean _isWindowed;
 
 	private volatile Frame _frame               = new Frame();
 	private volatile BufferedImage _bufferImg   = new BufferedImage(WINDOW_WIDTH, WINDOW_HEIGHT, BufferedImage.TYPE_INT_ARGB);
@@ -71,23 +71,23 @@ public class AWTView extends AView {
      */
     private boolean focusEnabled = false;
 
-    public boolean isWindowed() { return _windowed; }
+    public boolean isWindowed() { return _isWindowed; }
 
     /**
      * Constructor for the view
      *
-     * @param windowed      whether or not the view is windowed
+     * @param isWindowed    whether or not the view is windowed
      * @param allowScaling  whether or not to allow scaling
      * @param baseWidth     the base width setting
      * @param baseHeight    the base height setting
      */
-    public AWTView(boolean windowed, boolean allowScaling, int baseWidth, int baseHeight){
+    public AWTView(boolean isWindowed, boolean allowScaling, int baseWidth, int baseHeight){
 
 		super();
 
-		_windowed = windowed;
+		_isWindowed = isWindowed;
 
-		if (windowed){
+		if (isWindowed){
 			_yoffset = 10;
 			_scaleX = 1.0;
 			_scaleY = 1.0;
@@ -152,7 +152,7 @@ public class AWTView extends AView {
 		GraphicsDevice dev = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 
 		try {
-			if (!_windowed)
+			if (!_isWindowed)
 				dev.setDisplayMode(_returnMode);
 
 			_frame.setVisible(false);
@@ -167,6 +167,7 @@ public class AWTView extends AView {
 	 * @see votebox.middle.view.IView#invalidate(votebox.middle.view.IDrawable)
 	 */
 	public synchronized void invalidate(IDrawable drawable) {
+
 		deliver(EventType.BEGIN_PAGE_REDRAW, InputEvent.NONE);
 
 		try {
@@ -222,7 +223,7 @@ public class AWTView extends AView {
 				if (redrawset.contains(id))
 					graphics.drawImage((Image)id.getImage().getImage(), id.getX(), id.getY() + _yoffset, null);
 
-			if(buffering)
+			if (buffering)
 				_frame.getGraphics().drawImage(_bufferImg.getScaledInstance((int)(WINDOW_WIDTH * _scaleX), (int)(WINDOW_HEIGHT * _scaleY), Image.SCALE_SMOOTH), 0, 0, null);
 		}
 		catch (ClassCastException e) { throw new BallotBoxViewException("Problem while invalidating. ", e); }
@@ -242,7 +243,7 @@ public class AWTView extends AView {
 		_bounds = dev.getDefaultConfiguration().getBounds();
 		_returnMode = dev.getDisplayMode();
 
-		if (_windowed) {
+		if (_isWindowed) {
 
             _frame = new Frame(dev.getDefaultConfiguration()) {
 
@@ -270,7 +271,7 @@ public class AWTView extends AView {
 				public void paint(Graphics g) {
 
 					for (IDrawable d : _currentDrawables)
-						try { outer.invalidate( d ); }
+						try { outer.invalidate(d); }
 					    catch (BallotBoxViewException e) { e.printStackTrace(); }
 
 				}
@@ -278,21 +279,21 @@ public class AWTView extends AView {
 			};
 
 			_frame.setUndecorated(true);
-			_frame.setIgnoreRepaint( true );
+			_frame.setIgnoreRepaint(false);
 
 			try {
-
-				dev.setFullScreenWindow( _frame );
+                //dev.getBestConfiguration()
+				dev.setFullScreenWindow(_frame);
 
 				DisplayMode[] modes = dev.getDisplayModes();
 
 				DisplayMode bestMatch = modes[0];
 
                 /* Look for the best display mode */
-				for(DisplayMode mode : modes){
+				for (DisplayMode mode : modes) {
 
                     /* If a perfect match is found, use it */
-					if(mode.getWidth() == WINDOW_WIDTH && mode.getHeight() == WINDOW_HEIGHT){
+					if (mode.getWidth() == WINDOW_WIDTH && mode.getHeight() == WINDOW_HEIGHT) {
 						bestMatch = mode;
 						break;
 					}
@@ -309,7 +310,7 @@ public class AWTView extends AView {
 					_scaleX = 1.0;
 					_scaleY = 1.0;
 				}
-			}
+			} /* finally? */
 			catch (Exception e) { System.err.println("Failed attempt to fullscreen AWTView @ 1024x768 ["+e.getMessage()+"]"); }
 		}
 
@@ -376,7 +377,7 @@ public class AWTView extends AView {
 
 		} );
 
-		_frame.addMouseListener( new MouseAdapter() {
+		_frame.addMouseListener(new MouseAdapter() {
 
 			private IDrawable __drawable = null;
 
@@ -406,7 +407,7 @@ public class AWTView extends AView {
     /**
      * Gets the frame for use by the write-in GUI
      *
-     * @return the frame
+     * @return      the frame
      */
     public Frame getFrame(){
         return _frame;

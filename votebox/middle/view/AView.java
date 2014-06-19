@@ -38,12 +38,12 @@ public abstract class AView implements IView, Runnable{
     protected IDrawable _background;
 
     private Thread _eventDispatcher         = new Thread(this);
-    private List<Object[]> _pendingEvents   = new ArrayList<Object[]>();
+    private List<Object[]> _pendingEvents   = new ArrayList<>();
     
     protected AView() {
-        _hitboxMap = new HashMap<IDrawable, Rectangle>();
-        _currentDrawables = new LinkedList<IDrawable>();
-        _handlers = new HashMap<EventType, IEventHandler>();
+        _hitboxMap = new HashMap<>();
+        _currentDrawables = new LinkedList<>();
+        _handlers = new HashMap<>();
 
         _eventDispatcher.start();
     }
@@ -124,10 +124,10 @@ public abstract class AView implements IView, Runnable{
     		synchronized(_pendingEvents){
 
     			while(_pendingEvents.size() == 0)
-					try { _pendingEvents.wait();
-					} catch (InterruptedException e) { e.printStackTrace(); }
+					try { _pendingEvents.wait(); }
+                    catch (InterruptedException e) { e.printStackTrace(); }
     			
-    			while(_pendingEvents.size() > 0){
+    			while (_pendingEvents.size() > 0) {
 
     				Object[] params     = _pendingEvents.remove(0);
     				EventType type      = (EventType)params[0];

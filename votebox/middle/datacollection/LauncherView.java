@@ -604,7 +604,7 @@ public class LauncherView extends JFrame {
 
 		if (debugCheckBox == null) debugCheckBox = new JCheckBox();
 
-        debugCheckBox.setSelected(true);
+        //debugCheckBox.setSelected(true);
 
 		return debugCheckBox;
 	}
