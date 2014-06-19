@@ -42,7 +42,9 @@ public class BallotStore {
     private static ArrayList<ASExpression> castBIDs = new ArrayList<ASExpression>();
 
     /** Map of all ballots that have been committed but not cast, mapped by BID to raw SExpression representation */
-    private static HashMap<String, ASExpression> unconfirmedBallots = new HashMap<String, ASExpression>();
+    private static HashMap<String, ASExpression> committedBallots = new HashMap<String, ASExpression>();
+
+    private static HashMap<String, ASExpression> challengedBallots = new HashMap<>();
 
     /** Map of every BID to its corresponding precinct, and therefore the ballot style */
     private static HashMap<String, String> precinctMap = new HashMap<String, String>();
@@ -95,7 +97,7 @@ public class BallotStore {
      * @param ballot ballot wrapper class encapsulating hashed ballot and r-values
      */
     public static void addBallot(String ballotID, ASExpression ballot) {
-        unconfirmedBallots.put(ballotID, ballot);
+        committedBallots.put(ballotID, ballot);
     }
 
 
@@ -108,10 +110,10 @@ public class BallotStore {
      */
     public static ASExpression castCommittedBallot(String ballotID){
         /* The ballot must have previously been committed to be case */
-        if(unconfirmedBallots.containsKey(ballotID)){
-            castNonces.add(unconfirmedBallots.get(ballotID));
+        if(committedBallots.containsKey(ballotID)){
+            castNonces.add(committedBallots.get(ballotID));
             castBIDs.add(ListExpression.make(ballotID));
-            return unconfirmedBallots.remove(ballotID);
+            return committedBallots.remove(ballotID);
         }else{
             throw new RuntimeException("Ballot was cast before it was committed");
         }
@@ -173,10 +175,13 @@ public class BallotStore {
         List<ASExpression> ballotIDs = new ArrayList<ASExpression>();
         List<ASExpression> precincts = new ArrayList<ASExpression>();
 
+        /* Move any non-cast ballots on to the challenged list */
+        challengedBallots.putAll(committedBallots);
+
         /* For every uncast ballot, decrypt and tally it */
-        for (String ballotID : unconfirmedBallots.keySet()) {
+        for (String ballotID : committedBallots.keySet()) {
             /* First "cast" the vote */
-            tallier.recordVotes(unconfirmedBallots.get(ballotID).toVerbatim(), StringExpression.make(ballotID));
+            tallier.recordVotes(committedBallots.get(ballotID).toVerbatim(), StringExpression.make(ballotID));
 
             /* Now decrypt all "cast" votes */
             Map<String, BigInteger> ballotMap = tallier.getReport();
@@ -188,7 +193,7 @@ public class BallotStore {
             }
 
             /* Add the ballot to a hash chain that is used for challenged ballots */
-            hashes.add(unconfirmedBallots.get(ballotID));
+            hashes.add(committedBallots.get(ballotID));
             decryptedBallots.add(new ListExpression(decryptedVotes));
             ballotIDs.add(ListExpression.make(ballotID));
             precincts.add(ListExpression.make(getPrecinct(ballotID)));
@@ -197,11 +202,16 @@ public class BallotStore {
     }
 
     /**
-     * @param bid the bid of the ballot to get
+     * @param bid the bid of the ballot to spoil
      * @return the ballot with the corresponding bid
      */
-    public static ASExpression getUnconfirmedBallotByBID(String bid) {
-        return unconfirmedBallots.get(bid);
+    public static ASExpression spoilBallot(String bid) {
+
+        /* Move this ballot to the challenge list */
+        challengedBallots.put(bid, committedBallots.get(bid));
+
+        /* Spoil the ballot by removing it from the list of unconfirmed (committed) ballots*/
+        return committedBallots.remove(bid);
     }
 
     /**

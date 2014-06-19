@@ -30,7 +30,6 @@ import crypto.interop.AdderKeyManipulator;
 import crypto.adder.PrivateKey;
 import crypto.adder.PublicKey;
 import sexpression.ASExpression;
-import sexpression.NoMatch;
 import sexpression.StringExpression;
 import sexpression.stream.Base64;
 import supervisor.model.tallier.ChallengeDelayedTallier;
@@ -1434,7 +1433,7 @@ public class Model {
             ASExpression nonce = committedBids.remove(bid);
 
             /* Announce that a ballot was spoiled */
-            auditorium.announce(new SpoilBallotEvent(mySerial, nonce, bid, BallotStore.getUnconfirmedBallotByBID(bid).toVerbatim()));
+            auditorium.announce(new SpoilBallotEvent(mySerial, nonce, bid, BallotStore.spoilBallot(bid).toVerbatim()));
             return true;
         }
         else
