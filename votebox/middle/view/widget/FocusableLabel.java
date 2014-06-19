@@ -31,6 +31,7 @@ import votebox.middle.driver.IAdapter;
 import votebox.middle.view.*;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 
 /**
@@ -128,8 +129,8 @@ public class FocusableLabel implements IFocusable {
      */
     public IViewImage getReviewImage() {
 
-        _reviewImage = _factory.makeImage(imagePath(_vars, _uniqueID + "_review", _viewManager.getSize(),
-                                                    _viewManager.getLanguage()), false);
+        _reviewImage = _factory.makeImage(imagePath(_vars, _uniqueID + "_review",
+                _viewManager.getLanguage()), false);
 
         return _reviewImage;
     }
@@ -139,8 +140,8 @@ public class FocusableLabel implements IFocusable {
      */
     public IViewImage getFocusedReviewImage(){
 
-        _focusedReviewImage = _factory.makeImage(imagePath(_vars, _uniqueID + "_review_focused", _viewManager.getSize(),
-                                                           _viewManager.getLanguage()), false);
+        _focusedReviewImage = _factory.makeImage(imagePath(_vars, _uniqueID + "_review_focused",
+                _viewManager.getLanguage()), false);
 
         return _focusedReviewImage;
 
@@ -233,12 +234,18 @@ public class FocusableLabel implements IFocusable {
      * 
      * @param vars      the vars object that has the ballot bath.
      * @param uid       the image's unique id
-     * @param size      the image's size index
      * @param lang      the image's language abbreviation.
      * @return          the path to the image.
      */
-    protected String imagePath(IBallotVars vars, String uid, int size, String lang) {
-        return vars.getBallotPath() + "/media/" + uid + "_" + size + "_" + lang + ".png";
+    protected String imagePath(IBallotVars vars, String uid, String lang) {
+        String folder;
+
+        if(uid.contains("_"))
+            folder = uid.substring(0, uid.indexOf("_"));
+        else
+            folder = uid;
+
+        return vars.getBallotPath() + File.separator + "media" + File.separator + folder + File.separator + uid + "_" + lang + ".png";
     }
 
     /**
@@ -250,7 +257,16 @@ public class FocusableLabel implements IFocusable {
      * @return          the path to the image
      */
     protected String soundPath(IBallotVars vars, String uid, String lang) {
-        return vars.getBallotPath() + "/media/" + uid + "_" + lang + ".mp3";
+        String folder;
+
+        if(uid.contains("_"))
+            folder = uid.substring(0, uid.indexOf("_"));
+        else if(uid.contains("Selected") || uid.contains("Deselected"))
+            folder = "";
+        else
+            folder = uid;
+
+        return vars.getBallotPath() + File.separator + "media" + File.separator + folder + File.separator + uid + "_" + lang + ".mp3";
     }
 
     /**
@@ -264,7 +280,14 @@ public class FocusableLabel implements IFocusable {
      * @return          the path to the image.
      */
     protected String imageToggleButtonPath (IBallotVars vars, String uid, String lang) {
-        return vars.getBallotPath() + "/media/vvpat/" + uid + "_" + lang + ".png";
+        String folder;
+
+        if(uid.contains("_"))
+            folder = uid.substring(0, uid.indexOf("_"));
+        else
+            folder = uid;
+
+        return vars.getBallotPath() + File.separator + "media" + File.separator + folder + File.separator + uid + "_" + lang + ".png";
     }
 
     /* NO OPS */
@@ -340,7 +363,7 @@ public class FocusableLabel implements IFocusable {
      */
     public IViewImage getDefaultImage() {
 
-            _defaultImage = _factory.makeImage(imagePath(_vars, getUniqueID(), _viewManager.getSize(), _viewManager.getLanguage()), false);
+            _defaultImage = _factory.makeImage(imagePath(_vars, getUniqueID(), _viewManager.getLanguage()), false);
 
         return _defaultImage;
     }
@@ -354,7 +377,7 @@ public class FocusableLabel implements IFocusable {
      */
     public IViewImage getFocusedImage() {
 
-            _focusedImage = _factory.makeImage(imagePath(_vars, getUniqueID() + "_focused", _viewManager.getSize(), _viewManager.getLanguage()), false);
+            _focusedImage = _factory.makeImage(imagePath(_vars, getUniqueID() + "_focused", _viewManager.getLanguage()), false);
 
         return _focusedImage;
     }

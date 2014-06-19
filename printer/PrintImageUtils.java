@@ -140,7 +140,6 @@ public class PrintImageUtils {
      */
     public static BufferedImage flipImageVertically(BufferedImage image) {
 
-
         /* Create a new clean image of the same size/type */
         BufferedImage flipped = new BufferedImage(image.getWidth(), image.getHeight(), image.getType());
 

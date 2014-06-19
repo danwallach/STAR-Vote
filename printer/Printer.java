@@ -165,9 +165,9 @@ public class Printer{
         Boolean useTwoColumns = true;
         Boolean printerFriendly = true;
 
-        String pathToVVPATFolder = cleanFilePath + fileChar + "media" + fileChar + "vvpat" + fileChar;
-        String barcodeFileNameNoExtension = pathToVVPATFolder + "Barcode";
-        String lineSeparatorFileName = pathToVVPATFolder + "LineSeparator.png";
+        String path = cleanFilePath +  "media" + fileChar;
+        String barcodeFileNameNoExtension = path + "Barcode";
+        String lineSeparatorFileName = path + "LineSeparator.png";
 
         /* Generate a barcode of the BID */
         /* Do it here so we can use height of the barcode for laying out other components on the printout */
@@ -191,6 +191,9 @@ public class Printer{
         ArrayList<ArrayList<String>> columnsToPrint = new ArrayList<ArrayList<String>>();
         ArrayList<String> currentColumn = new ArrayList<String>();
 
+        /* Add at least 1 columns to print */
+        columnsToPrint.add(currentColumn);
+
         int i = 0;
 
         /* For each of the selections */
@@ -205,8 +208,9 @@ public class Printer{
             /* Add each column to columnsToPrint */
             if (i % 46 == 0) {
 
+                /* Since the reference of the new column is added before things are added to it, columnsToPrint will always have a spot for the last column */
+                currentColumn = new ArrayList<>();
                 columnsToPrint.add(currentColumn);
-                currentColumn = new ArrayList<String>();
 
                 /* TODO this is for two columns stopping */
                 if (i==92) break;
@@ -214,7 +218,7 @@ public class Printer{
         }
 
         /* Generate the HTML file with the properties set above. */
-        HTMLPrinter.generateHTMLFile(htmlFileName, useTwoColumns, printerFriendly, pathToVVPATFolder, _constants, bid, barcodeFileNameNoExtension, lineSeparatorFileName, columnsToPrint);
+        HTMLPrinter.generateHTMLFile(htmlFileName, useTwoColumns, printerFriendly, path, _constants, bid, barcodeFileNameNoExtension, lineSeparatorFileName, columnsToPrint);
 
         /* Get the file that is to be read for commands and its parameter separator string. */
         String filename = _printerConstants.getCommandsFileFilename();

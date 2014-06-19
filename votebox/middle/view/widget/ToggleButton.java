@@ -287,7 +287,7 @@ public class ToggleButton extends FocusableLabel {
      */
     public IViewImage getDefaultImage() {
 
-        String imgPath = imagePath(_vars, getUniqueID(), _viewManager.getSize(), _viewManager.getLanguage());
+        String imgPath = imagePath(_vars, getUniqueID(), _viewManager.getLanguage());
         _defaultImage = _factory.makeImage(imgPath, false);
 
         return _defaultImage;
@@ -300,7 +300,7 @@ public class ToggleButton extends FocusableLabel {
      */
     public IViewImage getSelectedImage() {
 
-        String imgPath = imagePath(_vars, getUniqueID() + "_selected", _viewManager.getSize(), _viewManager.getLanguage());
+        String imgPath = imagePath(_vars, getUniqueID() + "_selected", _viewManager.getLanguage());
         _selectedImage = _factory.makeImage(imgPath, false);
 
         return _selectedImage;
@@ -313,7 +313,7 @@ public class ToggleButton extends FocusableLabel {
      */
     public IViewImage getFocusedImage() {
 
-        String imgPath = imagePath(_vars, getUniqueID() + "_focused", _viewManager.getSize(), _viewManager.getLanguage());
+        String imgPath = imagePath(_vars, getUniqueID() + "_focused", _viewManager.getLanguage());
        _focusedImage = _factory.makeImage(imgPath, false);
 
         return _focusedImage;
@@ -326,7 +326,7 @@ public class ToggleButton extends FocusableLabel {
      */
     public IViewImage getFocusedSelectedImage() {
 
-        String imgPath = imagePath(_vars, getUniqueID() + "_focusedSelected", _viewManager.getSize(), _viewManager.getLanguage());
+        String imgPath = imagePath(_vars, getUniqueID() + "_focusedSelected", _viewManager.getLanguage());
         _focusedSelectedImage = _factory.makeImage(imgPath, false);
 
         return _focusedSelectedImage;

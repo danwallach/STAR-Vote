@@ -89,11 +89,13 @@ public class BallotImageHelper {
 				ZipEntry entry = entries.nextElement();
 
                 /* Make sure it's the type of file we want */
-				if (entry.getName().endsWith(".png") && entry.getName().contains("vvpat/")) {
+				if (entry.getName().endsWith(".png") && entry.getName().contains("_printable_")) {
 
                     /* Get the name and largest substring we care about */
 					String id = entry.getName();
-					id = id.substring(id.lastIndexOf("vvpat/")+ 6);
+
+                    /* Strip off any path information */
+                    id = id.substring(id.lastIndexOf("/") + 1);
 
                     /* This way we only look at the images generated for the printer */
 					int sub = id.indexOf("_printable_");

@@ -362,6 +362,7 @@ public class View extends JFrame {
 
         /* Set up a new file chooser */
         fileChooser = new JFileChooser();
+        fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
     }
 
     /**
@@ -696,7 +697,7 @@ public class View extends JFrame {
             if (answer == JOptionPane.YES_OPTION) {
 
                 /* Open a new file chooser */
-                JFileChooser fc = new JFileChooser();
+                JFileChooser fc = fileChooser;
 
                 /* Only show .bal files */
                 fc.setFileFilter(new FileFilter() {

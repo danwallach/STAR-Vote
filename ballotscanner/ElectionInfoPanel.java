@@ -52,7 +52,7 @@ public class ElectionInfoPanel extends JPanel {
         setBorder(BorderFactory.createEtchedBorder());
 
         /* Find the logo file and wrap it as a Java File */
-        File file = getFile("images/logo.png");
+        File file = getFile("images" + File.separator + "logo.png");
 
         /* Read in the file to a BufferedImage */
         try{
@@ -128,7 +128,7 @@ public class ElectionInfoPanel extends JPanel {
 
         String fileOutName = fileName;
 
-        if(fileName.contains("images/"))
+        if(fileName.contains("images" + File.separator))
             fileOutName = fileName.substring(7);
 
         File file = new File(fileOutName);
@@ -154,7 +154,7 @@ public class ElectionInfoPanel extends JPanel {
 
                     JarEntry jEntry;
 
-                    if(fileName.startsWith("/"))
+                    if(fileName.startsWith(File.separator))
                         jEntry = vbJar.getJarEntry(fileName.substring(1));
                     else{
                         jEntry = vbJar.getJarEntry(fileName);
@@ -194,7 +194,7 @@ public class ElectionInfoPanel extends JPanel {
         try{
             File rootFile = new File(fileName.replace('/', File.separatorChar));
 
-            if(!rootFile.exists() && fileName.startsWith("/"))
+            if(!rootFile.exists() && fileName.startsWith(File.separator))
                 rootFile = new File(fileName.substring(1).replace('/', File.separatorChar));
 
             in = new FileInputStream(rootFile);
