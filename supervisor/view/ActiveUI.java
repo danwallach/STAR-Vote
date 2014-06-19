@@ -284,8 +284,8 @@ public class ActiveUI extends JPanel {
                     File selected = ballotLocChooser.getSelectedFile();
                     String ballot = selected.getName();
 
-                    /* By convention, the precint identifier is the last 3 characters of the zip file's name,
-                     * not incliding the .zip file extension.
+                    /* By convention, the precinct identifier is the last 3 characters of the zip file's name,
+                     * not including the .zip file extension.
                      *
                      * E.g., the precinct for ballot_003.zip would be "003", while the precinct
                      * for ballot.zip would be "lot" (which would be pretty silly

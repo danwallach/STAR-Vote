@@ -209,7 +209,7 @@ public class Printer{
             if (i % 46 == 0) {
 
                 /* Since the reference of the new column is added before things are added to it, columnsToPrint will always have a spot for the last column */
-                currentColumn = new ArrayList<String>();
+                currentColumn = new ArrayList<>();
                 columnsToPrint.add(currentColumn);
 
                 /* TODO this is for two columns stopping */

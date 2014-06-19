@@ -1153,14 +1153,14 @@ public class VoteBox{
         for (Language language : Language.getAllLanguages())
         {
             try
-            {
-                ImageIO.write(writeInToggleButton,                  "png",  new File(filePath + uid             + "_1_"                 + language.getShortName()                                               + ".png"));
-                ImageIO.write(focusedWriteInToggleButton,           "png",  new File(filePath + uid             + "_focused_1_"         + language.getShortName()                                               + ".png"));
-                ImageIO.write(selectedWriteInToggleButton,          "png",  new File(filePath + uid             + "_selected_1_"        + language.getShortName()                                               + ".png"));
-                ImageIO.write(focusedSelectedWriteInToggleButton,   "png",  new File(filePath + uid             + "_focusedSelected_1_" + language.getShortName()                                               + ".png"));
-                ImageIO.write(reviewButton,                         "png",  new File(filePath + fileSeparator   + "vvpat"               + fileSeparator + uid + "_review_"          + language.getShortName()   + ".png"));
-                ImageIO.write(focusedReviewButton,                  "png",  new File(filePath + fileSeparator   + "vvpat"               + fileSeparator + uid + "_review_focused_"  + language.getShortName()   + ".png"));
-                ImageIO.write(printable, "png", new File(filePath + fileSeparator + "vvpat" + fileSeparator + uid + "_printable_" + language.getShortName() + ".png"));
+            {   /* FIXME Fix this! */
+                ImageIO.write(writeInToggleButton,                  "png", new File(filePath + uid + File.separator + uid + "_"                 + language.getShortName() + ".png"));
+                ImageIO.write(focusedWriteInToggleButton,           "png", new File(filePath + uid + File.separator + uid  + "_focused_"        + language.getShortName() + ".png"));
+                ImageIO.write(selectedWriteInToggleButton,          "png", new File(filePath + uid + File.separator + uid + "_selected_"        + language.getShortName() + ".png"));
+                ImageIO.write(focusedSelectedWriteInToggleButton,   "png", new File(filePath + uid + File.separator + uid + "_focusedSelected_" + language.getShortName() + ".png"));
+                ImageIO.write(reviewButton,                         "png", new File(filePath + uid + File.separator + uid + "_review_"          + language.getShortName() + ".png"));
+                ImageIO.write(focusedReviewButton,                  "png", new File(filePath + uid + File.separator + uid + "_review_focused_"  + language.getShortName() + ".png"));
+                ImageIO.write(printable,                            "png", new File(filePath + uid + File.separator + uid + "_printable_"       + language.getShortName() + ".png"));
             }
             catch (IOException e)
             {

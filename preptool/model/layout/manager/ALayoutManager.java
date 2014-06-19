@@ -400,17 +400,7 @@ public abstract class ALayoutManager implements ILayoutManager {
                     BufferedImage image = rb.execute(getImageVisitor(), false);
 
                     /* Create a subdirectory for this image */
-                    File path = new File(location + File.separator + uuid + File.separator + uuid + "_" + langShortName + ".png");
-
-                    /* Create the directory, if it isn't there */
-                    //noinspection ResultOfMethodCallIgnored
-                    path.mkdirs();
-
-                    /* Trim the review screen image */
-                    ImageIO.write(PrintImageUtils.trimImageHorizontally(image, true, 1000), "png", path);
-
-                    /* Create a subdirectory for this image */
-                    path = new File(location + File.separator + uuid + File.separator + uuid + "_review_" + langShortName + ".png");
+                    File path = new File(location + File.separator + uuid + File.separator + uid + "_" + langShortName + ".png");
 
                     /* Create the directory, if it isn't there */
                     //noinspection ResultOfMethodCallIgnored
@@ -423,7 +413,7 @@ public abstract class ALayoutManager implements ILayoutManager {
                     BufferedImage focusedReview = rb.execute(getImageVisitor(), true);
 
                     /* Create a subdirectory for this image */
-                    path = new File(location + File.separator + uuid + File.separator + uuid + "_focused_" + langShortName + ".png");
+                    path = new File(location + File.separator + uuid + File.separator + uid + "_focused_" + langShortName + ".png");
 
                     /* Create the directory, if it isn't there */
                     //noinspection ResultOfMethodCallIgnored
