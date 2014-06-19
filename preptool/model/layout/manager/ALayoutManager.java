@@ -91,56 +91,55 @@ public abstract class ALayoutManager implements ILayoutManager {
      * Makes a review page that shows all of the cards on the screen and allows
      * the user to go back and change his response.
      *
-     * @param ballot the ballot, the collection of Cards
-     * @param pageTargets mapping of races (Cards) to review pages
-     * @return the review page
+     * @param ballot                the ballot, the collection of Cards
+     * @param pageTargets           mapping of races (Cards) to review pages
+     * @return                      the review page
      */
     protected abstract ArrayList<Page> makeReviewPage(Ballot ballot, HashMap<Integer, Integer> pageTargets);
 
     /**
      * Makes an introductory page with instructions on how to use VoteBox.
      *
-     * @param hasLanguageSelect  whether the ballot will have a language selection page
-     * @return the instructions page
+     * @param hasLanguageSelect     whether the ballot will have a language selection page
+     * @return                      the instructions page
      */
     protected abstract Page makeInstructionsPage(boolean hasLanguageSelect);
 
     /**
      * Makes a commit ballot page that asks the user for confirmation.
      *
-     * @return the cast ballot page
+     * @return                      the cast ballot page
      */
     protected abstract Page makeCommitPage();
 
     /**
-     * @param languages a list of the languages available
-     * @return a language selection page that gives the user an option of different languages
+     * @param languages             a list of the languages available
+     * @return                      a language selection page that gives the user an option of different languages
      */
     protected abstract Page makeLanguageSelectPage(ArrayList<Language> languages);
     
     /**
-     * @return a special page that is shown when an override-cancel message is received, and asks for confirmation
+     * @return                      a special page that is shown when an override-cancel message is received, and asks for confirmation
      */
     protected abstract Page makeOverrideCancelPage();
     
     /**
-     * @return a special page that is shown when an override-cast message is received, and asks for confirmation
+     * @return                      a special page that is shown when an override-cast message is received, and asks for confirmation
      */
     protected abstract Page makeOverrideCommitPage();
 
     /**
-     * @return a success page that informs the user that the ballot was successfully committed.
+     * @return                      a success page that informs the user that the ballot was successfully committed.
      */
     protected abstract Page makeSuccessPage();
 
     /**
-     * @return a size visitor that determines the size of a component specific to this layout configuration
+     * @return                      a size visitor that determines the size of a component specific to this layout configuration
      */
     public abstract ILayoutComponentVisitor<Object, Dimension> getSizeVisitor();
 
     /**
-     * @return an image visitor that renders an image of a component specific to
-     * this layout configuration
+     * @return                      an image visitor that renders an image of a component specific to this layout configuration
      */
     public abstract ILayoutComponentVisitor<Boolean, BufferedImage> getImageVisitor();
 
@@ -155,14 +154,14 @@ public abstract class ALayoutManager implements ILayoutManager {
     private int nextBUID = 1;
 
     /**
-     * @return the next unique ID with an L in front (for Layout), and increments the counter
+     * @return                      the next unique ID with an L in front (for Layout), and increments the counter
      */
     public String getNextLayoutUID() {
         return "L" + nextLUID++;
     }
 
     /**
-     * @return the next unique ID with a B in front (for Ballot), and increments the counter
+     * @return                      the next unique ID with a B in front (for Ballot), and increments the counter
      */
     public String getNextBallotUID() {
         return "B" + nextBUID++;
@@ -171,7 +170,7 @@ public abstract class ALayoutManager implements ILayoutManager {
     /**
      * Sets the unique IDs of the entire ballot
      *
-     * @param ballot the ballot
+     * @param ballot                the ballot
      */
     public final void assignUIDsToBallot(Ballot ballot) {
         ballot.assignUIDsToBallot(this);
@@ -180,12 +179,11 @@ public abstract class ALayoutManager implements ILayoutManager {
     /**
      * Renders all images in a Layout to the disk, ignoring duplicates.
      *
-     * @param layout the layout holding images
-     * @param location the path to output the images to
-     * @param progressInfo used to indicate the status of the rendering
+     * @param layout                the layout holding images
+     * @param location              the path to output the images to
+     * @param progressInfo          used to indicate the status of the rendering
      */
-    public void renderAllImagesToDisk(final Layout layout, final String location,
-            ProgressInfo progressInfo) {
+    public void renderAllImagesToDisk(final Layout layout, final String location, ProgressInfo progressInfo) {
 
         /* Keeps tabs on which UIDs have been generated and written to the disk */
         final HashSet<String> uids = new HashSet<>();
@@ -219,8 +217,10 @@ public abstract class ALayoutManager implements ILayoutManager {
              * @see preptool.model.layout.ILayoutComponentVisitor#forBackground(preptool.model.layout.Background, Object[])
              */
             public Void forBackground(Background bg, Object... param) {
+
                 /* This is how we avoid duplicates */
                 if (!uids.contains(bg.getUID())) {
+
                     try {
                         /* Using our visitor, generate an image that we can write out */
                         BufferedImage img = bg.execute(getImageVisitor());
@@ -235,10 +235,10 @@ public abstract class ALayoutManager implements ILayoutManager {
                         /* Write out the image in the specified format, e.g. /media/L71_1_en.png */
                         ImageIO.write(img, "png", path);
 
-                    } catch (IOException e) {
-                        /* If we encounter an error, we need to stop since we shouldn't output incomplete ballots */
-                        throw new RuntimeException(e);
                     }
+                    /* If we encounter an error, we need to stop since we shouldn't output incomplete ballots */
+                    catch (IOException e) { throw new RuntimeException(e); }
+
                     uids.add(bg.getUID());
                 }
 
@@ -250,10 +250,13 @@ public abstract class ALayoutManager implements ILayoutManager {
              * @see preptool.model.layout.ILayoutComponentVisitor#forButton(preptool.model.layout.Button, Object[])
              */
             public Void forButton(Button b, Object... param) {
+
                 System.out.println("Button:" + b.getUID());
 
                 if (!uids.contains(b.getUID())) {
+
                     try {
+
                         /* Using our visitor, generate an image that we can write out */
                         BufferedImage img = b.execute(getImageVisitor(), false);
 
@@ -278,16 +281,17 @@ public abstract class ALayoutManager implements ILayoutManager {
                         /* e.g. /media/B18/B18_focused_en.png */
                         ImageIO.write(focused, "png", path);
 
-                    } catch (IOException e) {
-                        /* If we encounter an error, we need to stop since we shouldn't output incomplete ballots */
-                        throw new RuntimeException(e);
                     }
+                    /* If we encounter an error, we need to stop since we shouldn't output incomplete ballots */
+                    catch (IOException e) { throw new RuntimeException(e); }
+
                     uids.add(b.getUID());
 
                     /* If we are supposed to generate audio, do it here for this button*/
                     if(GENERATE_AUDIO)
                         forAudio(b.getUID(), b.getText());
                 }
+
                 return null;
             }
 
@@ -299,7 +303,9 @@ public abstract class ALayoutManager implements ILayoutManager {
                 System.out.println("Label: " + l.getUID());
 
                 if (!uids.contains(l.getUID())) {
+
                     try {
+
                         /* Using our visitor, generate an image that we can write out */
                         BufferedImage img = l.execute(getImageVisitor(), false);
 
@@ -326,10 +332,10 @@ public abstract class ALayoutManager implements ILayoutManager {
                         /* e.g. /media/L18/L18_focused_en.png */
                         ImageIO.write(focused, "png", path);
 
-                    }catch (IOException e) {
-                        /* If we encounter an error, we need to stop since we shouldn't output incomplete ballots */
-                        throw new RuntimeException(e);
                     }
+                    /* If we encounter an error, we need to stop since we shouldn't output incomplete ballots */
+                    catch (IOException e) { throw new RuntimeException(e); }
+
                     uids.add(l.getUID());
 
                     /*
@@ -339,6 +345,7 @@ public abstract class ALayoutManager implements ILayoutManager {
                     if(GENERATE_AUDIO)
                         forAudio(l.getUID(), l.getText() + ", " + l.getDescription());
                 }
+
                 return null;
             }
 
@@ -352,19 +359,15 @@ public abstract class ALayoutManager implements ILayoutManager {
 
                 /* get the UID for the button */
                 String uid = rb.getUID();
-                String uuid;
 
                 /* If the UID had an underscore, get rid of it, since review buttons have uid "B1_review */
-                if(uid.contains("_"))
-                    uuid = uid.substring(0, uid.indexOf('_'));
-                else
-                    uuid = uid;
-
+                String uuid = uid.contains("_") ? uid.substring(0, uid.indexOf('_')) : uid;
 
                 /* Here we render the printable representation of the button */
 
                 /* We only want to reformat candidates as no selection, not races, etc. */
-                if(rb.getUID().contains("B")){
+                if (rb.getUID().contains("B")) {
+
                     /* Here is some logic for replacing the "NONE" of the voting review screen with a printable "NO SELECTION */
                     PrintButton pb = new PrintButton(rb.getUID(), (rb.getText().contains("None")) ? "NO SELECTION" : rb.getText(), getSizeVisitor());
 
@@ -378,8 +381,8 @@ public abstract class ALayoutManager implements ILayoutManager {
                 }
 
                 /* If the UID of the object begins with L, it cannot be a no selection, but it can contain the word "None" */
-                if(rb.getUID().contains("L"))
-                {
+                if (rb.getUID().contains("L")) {
+
                     PrintButton pb = new PrintButton(rb.getUID(), rb.getText(), getSizeVisitor());
 
                     pb.setBold(rb.isBold());
@@ -394,7 +397,7 @@ public abstract class ALayoutManager implements ILayoutManager {
                 }
 
 
-                try{
+                try {
 
                     /* Render the ReviewButton */
                     BufferedImage image = rb.execute(getImageVisitor(), false);
