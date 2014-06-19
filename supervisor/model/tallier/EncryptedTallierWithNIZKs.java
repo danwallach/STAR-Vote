@@ -1,7 +1,6 @@
 package supervisor.model.tallier;
 
 import java.io.ByteArrayInputStream;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,7 +8,6 @@ import java.util.Map;
 
 import auditorium.Bugout;
 
-import crypto.adder.AdderInteger;
 import crypto.adder.Election;
 import crypto.adder.PrivateKey;
 import crypto.adder.PublicKey;
@@ -70,12 +68,13 @@ public class EncryptedTallierWithNIZKs implements ITallier {
      * @see ITallier#getReport()
      */
 	@SuppressWarnings("unchecked")
-	public Map<String, BigInteger> getReport() {
+	public ArrayList<ASExpression> getReport() {
+
         /* Ensure the private key is still valid before decryption */
 		_finalPrivateKey = AdderKeyManipulator.generateFinalPrivateKey(_publicKey, _privateKey);
 
-        /* this map will house the final results after they've been decrypted */
-		Map<String, BigInteger> report = new HashMap<String, BigInteger>();
+        /* this Arraylist will house the homomorphically tallied votes */
+		ArrayList<ASExpression> results = new ArrayList<>();
 
         /* For each race group (analogous to each race), decrypt the sums */
 		for(String group : _results.keySet()){
@@ -86,41 +85,44 @@ public class EncryptedTallierWithNIZKs implements ITallier {
             /* From the election, we can get the sum of cipher texts */
 			Vote cipherSum = election.sumVotes();
 
-            /*
-             * As per the Adder decryption process, partially decrypt the ciphertext to generate some necessary
-             * information for the final decryption.
-             */
-			List<AdderInteger> partialSum = _finalPrivateKey.partialDecrypt(cipherSum);
+            results.add(cipherSum.toASE());
 
-            /* This is a LaGrange coefficient used as part of the decryption computations */
-			AdderInteger coeff = new AdderInteger(0);
-
-            /* This is a list of partially computed sums that are used in the decryption computations */
-			List<List<AdderInteger>> partialSums = new ArrayList<List<AdderInteger>>();
-
-            /* Add our local partial sum to the list of partial sums */
-			partialSums.add(partialSum);
-
-            /*
-             * Add the coefficients to a list. This is largely due to the way the Adder code is written, and has little
-             * to do with the actual mathematics of the decryption.
-             */
-			List<AdderInteger> coeffs = new ArrayList<AdderInteger>();
-			coeffs.add(coeff);
-
-            /* Rely on the Adder election class to perform the final decryption of the election sums */
-			List<AdderInteger> results = election.getFinalSum(partialSums, coeffs, cipherSum, _finalPublicKey);
-
-            /* Split off the results by candidate ID*/
-			String[] ids = group.split(",");
-
-            /* For each candidate in the race, put the decrypted sums in the results map */
-			for(int i = 0; i < ids.length; i++)
-				report.put(ids[i], results.get(i).bigintValue());
+//            /*
+//             * As per the Adder decryption process, partially decrypt the ciphertext to generate some necessary
+//             * information for the final decryption.
+//             */
+//			List<AdderInteger> partialSum = _finalPrivateKey.partialDecrypt(cipherSum);
+//
+//            /* This is a LaGrange coefficient used as part of the decryption computations */
+//			AdderInteger coeff = new AdderInteger(0);
+//
+//            /* This is a list of partially computed sums that are used in the decryption computations */
+//			List<List<AdderInteger>> partialSums = new ArrayList<List<AdderInteger>>();
+//
+//            /* Add our local partial sum to the list of partial sums */
+//			partialSums.add(partialSum);
+//
+//            /*
+//             * Add the coefficients to a list. This is largely due to the way the Adder code is written, and has little
+//             * to do with the actual mathematics of the decryption.
+//             */
+//			List<AdderInteger> coeffs = new ArrayList<AdderInteger>();
+//			coeffs.add(coeff);
+//
+//            /* Rely on the Adder election class to perform the final decryption of the election sums */
+//			List<AdderInteger> results = election.getFinalSum(partialSums, coeffs, cipherSum, _finalPublicKey);
+//
+//            /* Split off the results by candidate ID*/
+//			String[] ids = group.split(",");
+//
+//            /* For each candidate in the race, put the decrypted sums in the results map */
+//			for(int i = 0; i < ids.length; i++)
+//				report.put(ids[i], results.get(i).bigintValue());
 		}
 
-		return report;
-	}
+//		return report;
+	    return results;
+    }
 
     /**
      * @see supervisor.model.tallier.ITallier#recordVotes(byte[], sexpression.ASExpression)

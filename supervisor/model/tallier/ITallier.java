@@ -42,7 +42,7 @@ public interface ITallier {
 	 * 
 	 * @return the report as a map of Candidate to votes received.
 	 */
-	public Map<String, BigInteger> getReport();
+	public java.util.ArrayList<ASExpression> getReport();
 	
 	/**
 	 * Records the votes from the given ballot, as an S-Expression in byte array

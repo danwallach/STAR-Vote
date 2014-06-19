@@ -70,7 +70,7 @@ public class EncryptedTallier implements ITallier {
      *
      * @see ITallier#getReport()
 	 */
-	public Map<String, BigInteger> getReport() {
+	public java.util.ArrayList<ASExpression> getReport() {
 
         /* This map will store the final results */
 		Map<String, BigInteger> results = new HashMap<String, BigInteger>();

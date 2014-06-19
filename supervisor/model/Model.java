@@ -369,26 +369,10 @@ public class Model {
      * 
      * @return the output from the tally
      */
-    public Map<String, Map<String, BigInteger>> closePolls() {
+    public void closePolls() {
+
         /* Announce that the polls are closing */
         auditorium.announce(new PollsClosedEvent(mySerial, new Date().getTime()));
-
-        /* The results will be a hash map of hash maps of strings to integers */
-        HashMap<String, Map<String, BigInteger>> results = new HashMap<>();
-
-        /* Iterate through all of the talliers, telling them to tabulate results, and then store them */
-        for(String t : talliers.keySet()){
-            results.put(t, talliers.get(t).getReport());
-        }
-
-        /* Upload all of the cast ballot ID's and nonces to the server */
-        auditorium.announce(new CastBallotUploadEvent(mySerial, BallotStore.getCastNonces()));
-
-        /* Decrypt and upload all of the challenged ballot BID's and plaintexts to the server */
-        auditorium.announce(new ChallengedBallotUploadEvent(mySerial, BallotStore.getDecryptedBallots((PublicKey) auditoriumParams.getKeyStore().loadAdderKey("public"),
-                (PrivateKey) auditoriumParams.getKeyStore().loadAdderKey("private"))));
-
-        return results;
     }
 
     /**
@@ -827,6 +811,7 @@ public class Model {
              * Handler for the polls-closed event. Sets the polls to closed.
              */
             public void pollsClosed(PollsClosedEvent e) {
+
                 /* Set the polls closed variable */
                 setArePollsOpen(false);
 
@@ -837,6 +822,20 @@ public class Model {
                 if(BallotStore.isHashChainCompromised()){
                     JOptionPane.showMessageDialog(null, "ERROR: The hash chain is incomplete, votes may have been removed or tampered with!");
                 }
+
+                /* The results will be a hash map of hash maps of strings to integers */
+                Map<String, List<ASExpression>> results = new HashMap<>();
+
+                /* Iterate through all of the talliers, telling them to collect all the votes */
+                for (String t : talliers.keySet())
+                    results.put(t, talliers.get(t).getReport());
+
+                /* Upload all of the cast ballot ID's and nonces to the server */ /* TODO what are arguments */
+                auditorium.announce(new CastBallotUploadEvent(mySerial, BallotStore.getCastNonces()));
+
+                /* Upload all of the challenged ballot BID's and plaintexts to the server */ /* TODO add getChallengedBallots() method */
+                auditorium.announce(new ChallengedBallotUploadEvent(mySerial, BallotStore.getChallengedBallots()));
+
             }
 
             /**

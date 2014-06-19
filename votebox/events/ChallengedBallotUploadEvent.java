@@ -54,7 +54,7 @@ public class ChallengedBallotUploadEvent extends AAnnounceEvent {
      *
      * @return A list of Strings representing list expressing of ballot IDs, precincts, encryptedBallots, and
      *         decryptedBallots
-     */ /* TODO Rather than cram all the ballots in 1 ASE, put each one as an ASE in a ListExpression */
+     */ /* TODO Rather than cram all the ballots in 1 ASE, put each one as an ASE in a ListExpression and don't decrypt */
     public ArrayList<String> getDumpList() {
         ListExpression ballotList = (ListExpression) challengedBallots;
         ArrayList<String> dumpList = new ArrayList<>();
