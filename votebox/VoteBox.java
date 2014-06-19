@@ -1153,7 +1153,7 @@ public class VoteBox{
         for (Language language : Language.getAllLanguages())
         {
             try
-            {   /* FIXME Fix this! */
+            {
                 ImageIO.write(writeInToggleButton,                  "png", new File(filePath + uid + File.separator + uid + "_"                 + language.getShortName() + ".png"));
                 ImageIO.write(focusedWriteInToggleButton,           "png", new File(filePath + uid + File.separator + uid  + "_focused_"        + language.getShortName() + ".png"));
                 ImageIO.write(selectedWriteInToggleButton,          "png", new File(filePath + uid + File.separator + uid + "_selected_"        + language.getShortName() + ".png"));
