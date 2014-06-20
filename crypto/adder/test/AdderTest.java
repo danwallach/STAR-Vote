@@ -59,7 +59,7 @@ public class AdderTest extends TestCase {
             = new HashMap<Integer, Integer>/*<Integer, Integer>*/(numVoters);
 
         for (int choice = 0; choice < numChoices; choice++) {
-             voteMap.put(new Integer(choice), new Integer(0));
+             voteMap.put(choice, 0);
         }
 
         System.out.println("Creating an election with " + maxVoters
@@ -96,7 +96,7 @@ public class AdderTest extends TestCase {
                 ciphertexts.add(ciphertext);
             }
 
-            polyMap.put(new Integer(i), ciphertexts);
+            polyMap.put(i, ciphertexts);
         }
 
         List<PrivateKey>/*<PrivateKey>*/ finprivKeys
@@ -106,7 +106,7 @@ public class AdderTest extends TestCase {
         for (int i = 0; i < numAuths; i++) {
             PrivateKey authFinPrivKey
                 = (privKeys.get(i))
-                  .getFinalPrivKey(polyMap.get(new Integer(i)));
+                  .getFinalPrivKey(polyMap.get(i));
             finprivKeys.add(authFinPrivKey);
             AdderInteger gvalue
                 = g.pow((polys.get(i)).
@@ -160,22 +160,12 @@ public class AdderTest extends TestCase {
 
         System.out.println("cipherSum = " + cipherSum);
 
-        List<List<AdderInteger>>/*<AdderInteger>*/ partialSums
-            = new ArrayList<List<AdderInteger>>/*<AdderInteger>*/(numAuths);
-        List<AdderInteger>/*<AdderInteger>*/ coeffs
-            = new ArrayList<AdderInteger>/*<AdderInteger>*/(numAuths);
 
-        for (int i = 0; i < numAuths; i++) {
-            List<AdderInteger>/*<AdderInteger>*/ partial
-                = (finprivKeys.get(i)).partialDecrypt(cipherSum);
-            partialSums.add(partial);
-            coeffs.add(new AdderInteger(i));
-        }
+        List<AdderInteger>/*<AdderInteger>*/ partial
+            = (finprivKeys.get(0)).partialDecrypt(cipherSum);
 
         assertEquals(numVoters, election.getVotes().size());
         assertEquals(numChoices, numChoices);
-        assertEquals(numAuths, partialSums.size());
-        assertEquals(numAuths, coeffs.size());
 
         System.out.println("Election performed with " + numChoices
                            + " / " + maxChoices + " choices and "
@@ -186,7 +176,7 @@ public class AdderTest extends TestCase {
 
         try {
             List<AdderInteger>/*<AdderInteger>*/ results =
-                election.getFinalSum(partialSums, coeffs, cipherSum, finalPubKey);
+                election.getFinalSum(partial, cipherSum, finalPubKey);
             System.out.println("Got " + results.size() + " results");
             
             System.out.println("++++++\nResult\n++++++\n");
@@ -194,12 +184,11 @@ public class AdderTest extends TestCase {
             int i = 0;
 
             /*for (AdderInteger result : results) {*/
-            for (Iterator<AdderInteger> it = results.iterator(); it.hasNext();) {
-                AdderInteger result = it.next();
+            for (AdderInteger result : results) {
                 int realResult
-                    = (voteMap.get(new Integer(i))).intValue();
+                        = voteMap.get(i);
                 System.out.println("o Choice " + i + ": " + result + "|"
-                                   + realResult);
+                        + realResult);
                 //assertEquals(AdderInteger.ZERO, result.getModulus());
                 i++;
             }

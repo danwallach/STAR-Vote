@@ -372,16 +372,11 @@ public class BallotEncrypter {
         /* TODO make this LESS STUPID..! */
 
         /* Manipulate the data type for getFinalSum() */
-		List<List<AdderInteger>> partialSums = new ArrayList<>();
-		partialSums.add(partialSum);
-
-        /* Manipulate the data type for getFinalSum() */
         AdderInteger coeff = new AdderInteger(0);
-		List<AdderInteger> coeffs = new ArrayList<>();
-		coeffs.add(coeff);
 
         /*  Add and completely decrypt to get the final sums */
-        return election.getFinalSum(partialSums, coeffs, cipherSum, finalPublicKey);
+//        return election.getFinalSum(partialSum, coeff, cipherSum, finalPublicKey);
+        return null;
     }
     
     /**
