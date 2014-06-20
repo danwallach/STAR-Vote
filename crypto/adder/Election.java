@@ -91,7 +91,7 @@ public class Election {
      *
      * @return                  the final vote tally
      */
-    public List<AdderInteger> getFinalSum(List<List<AdderInteger>> partialSums, List<AdderInteger> coeffs, Vote sum, PublicKey masterKey) {
+    public List<AdderInteger> getFinalSum(List<AdderInteger> partialSums, Vote sum, PublicKey masterKey) {
 
         /* Get relevant key data */
         AdderInteger p = masterKey.getP();
@@ -99,12 +99,8 @@ public class Election {
         AdderInteger g = masterKey.getG();
         AdderInteger f = masterKey.getF();
 
-        /* Build a LaGrange polynomial */
-        Polynomial poly = new Polynomial(p, g, f, coeffs);
-        List<AdderInteger> lagrangeCoeffs = poly.lagrange();
-
-        /* Get the number of LaGrange coefficients (==1)*/
-        int lsize = lagrangeCoeffs.size();
+        List<AdderInteger> coeffs = new ArrayList<AdderInteger>();
+        coeffs.add(AdderInteger.ZERO);
 
         /* Extract the ciphertexts */
         List<ElgamalCiphertext> cipherList = sum.getCipherList();
@@ -112,40 +108,21 @@ public class Election {
         /* Figure out how many ciphertexts there are */
         int csize = cipherList.size();
 
-        List<AdderInteger> productList  = new ArrayList<>();
         List<AdderInteger> results      = new ArrayList<>();
 
         /* For each cipher (i.e. for each candidate) */
         for (int i = 0; i < csize; i++) {
 
-            /* Adding a one to the product list so that we don't get a null pointer or zero later */
-            productList.add(new AdderInteger(AdderInteger.ONE, p));
 
-            /* Iterate over the LaGrange coefficients */
-            for (int j = 0; j < lsize; j++) {
+            /* Pull out the ith partial sum (equals h^y) */
+            AdderInteger product = partialSums.get(i);
 
-                /* Get out the ith product */
-                AdderInteger pli =  productList.get(i);
-
-                /* Pull out the list partial sum (cast to List) */
-                List ps = (List) partialSums.get(j);
-
-                /* Pull out the ith partial sum (equals h^y) and the jth LaGrange coefficient */
-                AdderInteger psi = (AdderInteger) ps.get(i);
-                AdderInteger lcj = lagrangeCoeffs.get(j);
-
-                /* Multiply these together */
-                AdderInteger product = psi.pow(lcj).multiply(pli);
-
-                /* Store the updated product back in the list */
-                productList.set(i, product);
-            }
 
             /* Get the public value from the ith ciphertext (encrypted sum for ith candidate) (bigH = h' = h^y * f^m) (bigG = g^y) */
             AdderInteger bigH = (cipherList.get(i)).getH();
 
             /* Divide h' / h^y = f^m, where m = total number of votes for a candidate */
-            AdderInteger target = bigH.divide(productList.get(i));
+            AdderInteger target = bigH.divide(product);
 
             /* Indicates if we have successfully resolved the ciphertext */
             boolean gotResult = false;
