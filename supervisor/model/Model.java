@@ -414,6 +414,7 @@ public class Model {
      * @return the machine
      */
     public AMachine getMachineForSerial(int serial){
+
         for (AMachine m : machines)
             if (m.getSerial() == serial)
                 return m;
@@ -617,9 +618,8 @@ public class Model {
                     ProvisionalCommitEvent.getMatcher(), ProvisionalAuthorizeEvent.getMatcher(),
                     TapMachineEvent.getMatcher());
 
-        } catch (NetworkException e1) {
-            throw new RuntimeException(e1);
         }
+        catch (NetworkException e1) { throw new RuntimeException(e1); }
 
         /* This is what listens for all the events and reacts to them as they are heard */
         auditorium.addListener(new VoteBoxEventListener() {
@@ -691,8 +691,10 @@ public class Model {
              * Handler for the assign-label message. Sets that machine's label.
              */
             public void assignLabel(AssignLabelEvent e) {
+
                 /* Find the mini-model of the machine */
                 AMachine m = getMachineForSerial(e.getTargetSerial());
+
                 if (m != null) {
                     /* If we find the machine, set its label to the label specified */
                     m.setLabel(e.getLabel());
@@ -744,7 +746,7 @@ public class Model {
 //                    String precinct = BallotStore.getPrecinctByBID(e.getBID().toString());
 //                    talliers.get(precinct).confirmed(e.getNonce());
 //                }
-            }
+            }}
 
             /**
              * Handler for a joined event. When a new machine joins, check and
@@ -774,10 +776,12 @@ public class Model {
              * set the polls to open (without sending a message).
              */
             public void lastPollsOpen(LastPollsOpenEvent e) {
+
                 if(e.getPollsOpenMsg() == null)
                     return;
 
                 PollsOpenEvent e2 = e.getPollsOpenMsg();
+
                 if (e2.getKeyword().equals(keyword))
                     setArePollsOpen(true);
             }
@@ -837,7 +841,7 @@ public class Model {
                 }
 
                 /* Announce that this Supervisor is going to start sending ballots to Tap */
-                auditorium.announce(new StartedUploadEvent(mySerial));
+                auditorium.announce(new StartUploadEvent(mySerial));
 
                 /* Go through all the precincts about which this Supervisor knows */
                 for (Map.Entry<String, Precinct> m : precincts.entrySet()) {
@@ -911,10 +915,7 @@ public class Model {
                  * probably with serial numbers. Bugout.
                  */
                 if (m != null && !(m instanceof BallotScannerMachine))
-                    throw new IllegalStateException(
-                            "Machine "
-                                    + e.getSerial()
-                                    + " is not a ballotScanner, but broadcast ballotScanner message");
+                    throw new IllegalStateException("Machine " + e.getSerial() + " is not a ballotScanner, but broadcast ballotScanner message");
 
                 /* Now we're sure that the machine is a ballot scanner, enforce its type */
                 BallotScannerMachine bsm = (BallotScannerMachine) m;
@@ -998,10 +999,7 @@ public class Model {
 
                 /* Check that the sender of the message was actually a Supervisor */
                 if (m != null && !(m instanceof SupervisorMachine))
-                    throw new IllegalStateException(
-                            "Machine "
-                                    + e.getSerial()
-                                    + " is not a supervisor, but broadcasted supervisor message");
+                    throw new IllegalStateException("Machine " + e.getSerial() + " is not a supervisor, but broadcasted supervisor message");
 
                 /* If the machine hasn't been seen before, add it to the list of machines and initialize it*/
                 if (m == null) {
@@ -1014,14 +1012,19 @@ public class Model {
                 /* Now we can enforce the type */
                 SupervisorMachine sup = (SupervisorMachine) m;
 
+                String status = e.getStatus();
+
                 /* Check the activation status of this machine. If it is active, deactivate THIS machine */
-                if (e.getStatus().equals("active")) {
-                    sup.setStatus(SupervisorMachine.ACTIVE);
-                } else if (e.getStatus().equals("inactive"))
-                    sup.setStatus(SupervisorMachine.INACTIVE);
-                else
-                    throw new IllegalStateException(
-                            "Invalid Supervisor Status: " + e.getStatus());
+                switch (status) {
+                    case "active":
+                        sup.setStatus(SupervisorMachine.ACTIVE);
+                        break;
+                    case "inactive":
+                        sup.setStatus(SupervisorMachine.INACTIVE);
+                        break;
+                    default:
+                        throw new IllegalStateException( "Invalid Supervisor Status: " + e.getStatus());
+                }
 
                 /* Set the mini-model to show as online */
                 sup.setOnline(true);
@@ -1056,16 +1059,22 @@ public class Model {
                 /* Enforce the machine's type */
                 VoteBoxBooth booth = (VoteBoxBooth) m;
 
+                String status = e.getStatus();
+
                 /* Set the status of the machine */
-                if (e.getStatus().equals("ready"))
-                    booth.setStatus(VoteBoxBooth.READY);
-                else if (e.getStatus().equals("in-use"))
-                    booth.setStatus(VoteBoxBooth.IN_USE);
-                else if (e.getStatus().equals("provisional-in-use"))
-                    booth.setStatus(VoteBoxBooth.PROVISIONAL);
-                else
-                    throw new IllegalStateException("Invalid VoteBox Status: "
-                            + e.getStatus());
+                switch (status) {
+                    case "ready":
+                        booth.setStatus(VoteBoxBooth.READY);
+                        break;
+                    case "in-use":
+                        booth.setStatus(VoteBoxBooth.IN_USE);
+                        break;
+                    case "provisional-in-use":
+                        booth.setStatus(VoteBoxBooth.PROVISIONAL);
+                        break;
+                    default:
+                        throw new IllegalStateException("Invalid VoteBox Status: " + e.getStatus());
+                }
 
                 /* Set the parameters for the machine */
                 booth.setBattery(e.getBattery());
@@ -1473,10 +1482,7 @@ public class Model {
     public boolean spoilBallot(String bid) {
 
         ASExpression nonce;
-        ASExpression ballot;
-        boolean isFound = false;
-
-
+        Ballot ballot;
         Precinct p = getPrecinctWithBID(bid);
 
         if (p != null) {
@@ -1484,7 +1490,7 @@ public class Model {
             ballot = p.spoilBallot(bid);
 
             /* Announce that a ballot was spoiled */
-            auditorium.announce(new SpoilBallotEvent(mySerial, nonce, bid, ballot.toVerbatim()));
+            auditorium.announce(new SpoilBallotEvent(mySerial, nonce, bid, ballot.toListExpression().toVerbatim()));
 
             return true;
         }
@@ -1499,6 +1505,8 @@ public class Model {
         /* If we have the ballot, remove it */
         for (Map.Entry<String,Precinct> m : precincts.entrySet())
             if (m.getValue().hasBID(bid)) return m.getValue();
+
+        return null;
     }
 
     /**
