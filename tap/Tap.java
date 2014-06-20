@@ -213,13 +213,11 @@ public class Tap {
 
 
             public void pollsClosed(PollsClosedEvent e) {
-                /* TODO? _auditorium.announce(new CastBallotUploadEvent(_mySerial, BallotStore.getCastNonces())); */
             }
 
             public void uploadCastBallots(CastBallotUploadEvent e) {
                 System.out.println("TAP: Uploading Cast Ballots");
                 dumpBallotList(e.getDumpList());
-                /* TODO? _auditorium.announce(new ChallengedBallotUploadEvent(_mySerial, BallotStore.getDecryptedBallots(publicKey, privateKey))); */
             }
             public void uploadChallengedBallots(ChallengedBallotUploadEvent e) {
                 System.out.println("TAP: Uploading Challenged Ballots");

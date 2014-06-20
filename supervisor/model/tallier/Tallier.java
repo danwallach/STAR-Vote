@@ -63,7 +63,7 @@ public class Tallier implements ITallier{
 	/**
 	 * @see supervisor.model.tallier.ITallier#getReport()
 	 */
-	public Map<String, BigInteger> getReport() {
+	public java.util.ArrayList<ASExpression> getReport() {
 		Map<String, BigInteger> results = new HashMap<String, BigInteger>();
 
         /*
