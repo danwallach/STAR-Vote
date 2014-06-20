@@ -123,10 +123,12 @@ public class BallotStore {
      * @return all nonces of cast ballots
      */
     public static ListExpression getCastNonces() {
+
         List<ASExpression> precincts = new ArrayList<ASExpression>();
-        for(ASExpression bid: castBIDs){
+
+        for (ASExpression bid: castBIDs)
             precincts.add(ListExpression.make(precinctMap.get(bid.toString())));
-        }
+
         return new ListExpression(new ListExpression(castBIDs), new ListExpression(precincts), new ListExpression(castNonces));
     }
 
@@ -350,7 +352,8 @@ public class BallotStore {
      * @param precinct the precinct (i.e. ballot style) for this voting session
      * @return a provisional PIN
      */
-    public static String generateProvisionalPin(String precinct){
+    public static String generateProvisionalPin(String precinct) {
+
         String provisionalPin = decimalFormat.format(rand.nextInt(10000));
 
         while(ballotByPin.containsKey(provisionalPin))

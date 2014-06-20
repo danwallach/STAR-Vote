@@ -31,7 +31,7 @@ public class Precinct {
     private String ballotFile;
 
     /** Three digit precinct code. */
-    private String precinctID;
+    private final String precinctID;
 
     /** An object used to homomorphically tally ballots. */
     private ITallier tallier;
@@ -102,6 +102,9 @@ public class Precinct {
 
     public ListExpression getChallengedBallots(){}
 
+    public String getPrecinctID() {
+        return precinctID;
+    }
 
 
 }
