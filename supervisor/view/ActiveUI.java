@@ -299,7 +299,7 @@ public class ActiveUI extends JPanel {
                     precinctsToBallots.put(precinct, selected.getAbsolutePath());
 
                     /* Add the ballot to the model */
-                    model.addBallot(ballotLocChooser.getSelectedFile());
+                    model.addPrecinct(ballotLocChooser.getSelectedFile());
                 }
             }
         });

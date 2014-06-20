@@ -30,8 +30,10 @@ import crypto.interop.AdderKeyManipulator;
 import crypto.adder.PrivateKey;
 import crypto.adder.PublicKey;
 import sexpression.ASExpression;
+import sexpression.ListExpression;
 import sexpression.StringExpression;
 import sexpression.stream.Base64;
+import supervisor.Supervisor;
 import supervisor.model.tallier.ChallengeDelayedTallier;
 import supervisor.model.tallier.ChallengeDelayedWithNIZKsTallier;
 import supervisor.model.tallier.ITallier;
@@ -106,6 +108,9 @@ public class Model {
 
     /** A map of all committed ballot ID's to their nonce values */
     private HashMap<String, ASExpression> committedBids;
+
+    /** A List of all of the the Precincts for which this Supervisor has a ballot style */
+    private TreeMap<String, Precinct> precincts;
 
     /** Keeps track of the last heard polls open event so that new machines can be updated when they come online */
     private PollsOpenEvent lastPollsOpenHeard;
@@ -409,6 +414,7 @@ public class Model {
      * @return the machine
      */
     public AMachine getMachineForSerial(int serial){
+
         for (AMachine m : machines)
             if (m.getSerial() == serial)
                 return m;
@@ -612,9 +618,8 @@ public class Model {
                     ProvisionalCommitEvent.getMatcher(), ProvisionalAuthorizeEvent.getMatcher(),
                     TapMachineEvent.getMatcher());
 
-        } catch (NetworkException e1) {
-            throw new RuntimeException(e1);
         }
+        catch (NetworkException e1) { throw new RuntimeException(e1); }
 
         /* This is what listens for all the events and reacts to them as they are heard */
         auditorium.addListener(new VoteBoxEventListener() {
@@ -689,8 +694,10 @@ public class Model {
              * Handler for the assign-label message. Sets that machine's label.
              */
             public void assignLabel(AssignLabelEvent e) {
+
                 /* Find the mini-model of the machine */
                 AMachine m = getMachineForSerial(e.getTargetSerial());
+
                 if (m != null) {
                     /* If we find the machine, set its label to the label specified */
                     m.setLabel(e.getLabel());
@@ -723,6 +730,14 @@ public class Model {
              * stores the votes in the tallier.
              */
             public void castCommittedBallot(CastCommittedBallotEvent e) {
+
+                AMachine m = getMachineForSerial(e.getSerial());
+
+                if (m != null && m instanceof SupervisorMachine) {
+                    getPrecinctWithBID(e.getBID()).castBallot(e.getBID());
+
+
+
                 /* TODO eliminate this */
 //            	AMachine m = getMachineForSerial(e.getSerial());
 //                if (m != null && m instanceof BallotScannerMachine) {
@@ -734,7 +749,7 @@ public class Model {
 //                    String precinct = BallotStore.getPrecinctByBID(e.getBID().toString());
 //                    talliers.get(precinct).confirmed(e.getNonce());
 //                }
-            }
+            }}
 
             /**
              * Handler for a joined event. When a new machine joins, check and
@@ -764,10 +779,12 @@ public class Model {
              * set the polls to open (without sending a message).
              */
             public void lastPollsOpen(LastPollsOpenEvent e) {
+
                 if(e.getPollsOpenMsg() == null)
                     return;
 
                 PollsOpenEvent e2 = e.getPollsOpenMsg();
+
                 if (e2.getKeyword().equals(keyword))
                     setArePollsOpen(true);
             }
@@ -818,26 +835,31 @@ public class Model {
                 setArePollsOpen(false);
 
                 /* Close the hash chain for this polling session */
-                BallotStore.closeHashChain();
+                closeHashChain(); /* Formerly BallotStore*/
+
 
                 /* Check the hash chain for consistency */
-                if(BallotStore.isHashChainCompromised()){
+                if(isHashChainCompromised()){
                     JOptionPane.showMessageDialog(null, "ERROR: The hash chain is incomplete, votes may have been removed or tampered with!");
                 }
 
-                /* The results will be a hash map of hash maps of strings to integers */
-                Map<String, List<ASExpression>> results = new HashMap<>();
+                /* Announce that this Supervisor is going to start sending ballots to Tap */
+                auditorium.announce(new StartUploadEvent(mySerial));
 
-                /* Iterate through all of the talliers, telling them to collect all the votes */
-                for (String t : talliers.keySet())
-                    results.put(t, talliers.get(t).getReport());
+                /* Go through all the precincts about which this Supervisor knows */
+                for (Map.Entry<String, Precinct> m : precincts.entrySet()) {
 
-                /* Upload all of the cast ballot ID's and nonces to the server */ /* TODO what are arguments */
-                auditorium.announce(new CastBallotUploadEvent(mySerial, BallotStore.getCastNonces()));
+                    Precinct p = m.getValue();
 
-                /* Upload all of the challenged ballot BID's and plaintexts to the server */ /* TODO add getChallengedBallots() method */
-                auditorium.announce(new ChallengedBallotUploadEvent(mySerial, BallotStore.getChallengedBallots()));
+                    /* Send all of the cast ballots to Tap */
+                    auditorium.announce(new CastBallotUploadEvent(mySerial, p.getCastBallotTotal().toListExpression(p.getPrecinctID())));
 
+                    /* Send all of the challenged ballots to Tap */
+                   auditorium.announce(new ChallengedBallotUploadEvent(mySerial, p.getChallengedBallots()));
+                }
+
+                /* Announce that this Supervisor has completed sending ballots to Tap */
+                auditorium.announce(new CompletedUploadEvent(mySerial));
             }
 
             /**
@@ -896,10 +918,7 @@ public class Model {
                  * probably with serial numbers. Bugout.
                  */
                 if (m != null && !(m instanceof BallotScannerMachine))
-                    throw new IllegalStateException(
-                            "Machine "
-                                    + e.getSerial()
-                                    + " is not a ballotScanner, but broadcast ballotScanner message");
+                    throw new IllegalStateException("Machine " + e.getSerial() + " is not a ballotScanner, but broadcast ballotScanner message");
 
                 /* Now we're sure that the machine is a ballot scanner, enforce its type */
                 BallotScannerMachine bsm = (BallotScannerMachine) m;
@@ -983,10 +1002,7 @@ public class Model {
 
                 /* Check that the sender of the message was actually a Supervisor */
                 if (m != null && !(m instanceof SupervisorMachine))
-                    throw new IllegalStateException(
-                            "Machine "
-                                    + e.getSerial()
-                                    + " is not a supervisor, but broadcasted supervisor message");
+                    throw new IllegalStateException("Machine " + e.getSerial() + " is not a supervisor, but broadcasted supervisor message");
 
                 /* If the machine hasn't been seen before, add it to the list of machines and initialize it*/
                 if (m == null) {
@@ -999,14 +1015,19 @@ public class Model {
                 /* Now we can enforce the type */
                 SupervisorMachine sup = (SupervisorMachine) m;
 
+                String status = e.getStatus();
+
                 /* Check the activation status of this machine. If it is active, deactivate THIS machine */
-                if (e.getStatus().equals("active")) {
-                    sup.setStatus(SupervisorMachine.ACTIVE);
-                } else if (e.getStatus().equals("inactive"))
-                    sup.setStatus(SupervisorMachine.INACTIVE);
-                else
-                    throw new IllegalStateException(
-                            "Invalid Supervisor Status: " + e.getStatus());
+                switch (status) {
+                    case "active":
+                        sup.setStatus(SupervisorMachine.ACTIVE);
+                        break;
+                    case "inactive":
+                        sup.setStatus(SupervisorMachine.INACTIVE);
+                        break;
+                    default:
+                        throw new IllegalStateException( "Invalid Supervisor Status: " + e.getStatus());
+                }
 
                 /* Set the mini-model to show as online */
                 sup.setOnline(true);
@@ -1041,16 +1062,22 @@ public class Model {
                 /* Enforce the machine's type */
                 VoteBoxBooth booth = (VoteBoxBooth) m;
 
+                String status = e.getStatus();
+
                 /* Set the status of the machine */
-                if (e.getStatus().equals("ready"))
-                    booth.setStatus(VoteBoxBooth.READY);
-                else if (e.getStatus().equals("in-use"))
-                    booth.setStatus(VoteBoxBooth.IN_USE);
-                else if (e.getStatus().equals("provisional-in-use"))
-                    booth.setStatus(VoteBoxBooth.PROVISIONAL);
-                else
-                    throw new IllegalStateException("Invalid VoteBox Status: "
-                            + e.getStatus());
+                switch (status) {
+                    case "ready":
+                        booth.setStatus(VoteBoxBooth.READY);
+                        break;
+                    case "in-use":
+                        booth.setStatus(VoteBoxBooth.IN_USE);
+                        break;
+                    case "provisional-in-use":
+                        booth.setStatus(VoteBoxBooth.PROVISIONAL);
+                        break;
+                    default:
+                        throw new IllegalStateException("Invalid VoteBox Status: " + e.getStatus());
+                }
 
                 /* Set the parameters for the machine */
                 booth.setBattery(e.getBattery());
@@ -1115,11 +1142,14 @@ public class Model {
              * It should not yet be tallied.
              */
             public void commitBallot(CommitBallotEvent e) {
+
+
                 /* Get the mini-model for the machine that committed the ballot */
             	AMachine m = getMachineForSerial(e.getSerial());
 
                 /* Ensure that the machine committing the booth is actually a votebox */
                 if (m != null && m instanceof VoteBoxBooth) {
+
                     /* Enforce the machine's type */
                     VoteBoxBooth booth = (VoteBoxBooth) m;
 
@@ -1128,18 +1158,30 @@ public class Model {
                     booth.setProtectedCount(booth.getProtectedCount() + 1);
 
                     /* Put the committed ballot in the ballot store, in all the proper places */
+                    Precinct thisPrecinct = precincts.get(e.getPrecinct());
+
+                    try {
+
+                        ASExpression ballot = ASExpression.makeVerbatim(e.getBallot());
+
+                        thisPrecinct.commitBallot(e.getBID(), e.getNonce(),  ballot);
+
+                    } catch(Exception e1) {}
+
+
+                    /* ------------------------------- TO BE REPLACED ---------------------------------------------- */
                     BallotStore.addBallot(e.getBID(), StringExpression.makeString(e.getBallot()));
                     BallotStore.mapPrecinct(e.getBID(), e.getPrecinct());
                     BallotStore.setPrecinctByBID(e.getBID(), e.getPrecinct());
                     BallotStore.testMapPrint();
 
                     /* Announce that the ballot was received, so it's logged */
-                    auditorium.announce(new BallotReceivedEvent(mySerial, e.getSerial(),
-                            e.getNonce(), e.getBID(), e.getPrecinct()));
+                    auditorium.announce(new BallotReceivedEvent(mySerial, e.getSerial(), e.getNonce(), e.getBID(), e.getPrecinct()));
 
                     /* Add the vote to the tallier and list of committed BID's */
                     String precinct = BallotStore.getPrecinctByBID(e.getBID());
                     talliers.get(precinct).recordVotes(e.getBallot(), e.getNonce());
+
                     String bid = e.getBID();
                     committedBids.put(bid, e.getNonce());
 
@@ -1164,9 +1206,7 @@ public class Model {
                     booth.setProtectedCount(booth.getProtectedCount() + 1);
 
                     /* Announce that the provisional ballot was received */
-                    auditorium.announce(new BallotReceivedEvent(mySerial, e
-                            .getSerial(), e.getNonce(), e.getBID(),
-                            BallotStore.getPrecinctByBallot(e.getBID())));
+                    auditorium.announce(new BallotReceivedEvent(mySerial, e.getSerial(), e.getNonce(), e.getBID(), getPrecinctWithBID(e.getBID())));
                 }
             }
 
@@ -1207,7 +1247,7 @@ public class Model {
                 // Test ballot stuff... TODO: Might want to implement a way to rapidly cast votes without going through multiple VoteBox sessions.
                 /*readTestBallot();
                 committedBids.put("711567939", testNonce);
-                BallotStore.addBallot("711567939", testBallot);
+                BallotStore.addPrecinct("711567939", testBallot);
                 bManager.setPrecinctByBID("711567939", "007");
                 talliers.get("007").recordVotes(testBallot.toVerbatim(), testNonce);*/
 
@@ -1223,11 +1263,14 @@ public class Model {
                     ASExpression nonce = committedBids.remove(bid);
 
                     /* Tell the ballot store to cast the ballot */
+                    getPrecinctWithBID(e.getBID()).castCommittedBallot(e.getBID());
+
                     ASExpression ballot = BallotStore.castCommittedBallot(e.getBID());
 
                     /* Get the precinct information */
                     String precinct = BallotStore.getPrecinctByBID(e.getBID());
-                        talliers.get(precinct).confirmed(nonce);
+
+                    talliers.get(precinct).confirmed(nonce);
 
                     /* Cast the ballot based on the kind of encryption this election is using */
                     if(auditoriumParams.getCastBallotEncryptionEnabled()){
@@ -1272,6 +1315,8 @@ public class Model {
                 /* This only works if the polls are open */
                 if(arePollsOpen()) {
                     /* Get the ballot style that the PIN was issued for */
+                    String ballot = precincts.get(precinctIDs.get(e.getPin())).getBallotStyle();
+
                     String ballot = BallotStore.getBallotByPin(e.getPin());
 
                     /* Check that there is a record of this PIN and ballot style */
@@ -1342,7 +1387,8 @@ public class Model {
             /* Connect to the network and announce this machine's status */
             auditorium.connect();
             auditorium.announce(getStatus());
-        } catch (NetworkException e1) {
+        }
+        catch (NetworkException e1) {
         	/* NetworkException represents a recoverable error so just note it and continue */
             System.out.println("Recoverable error occurred: "+e1.getMessage());
             e1.printStackTrace(System.err);
@@ -1373,16 +1419,19 @@ public class Model {
      * Introduces a new ballot to the BallotStore for use in the election. Extracts precinct name and creates a mapping
      * between them
      *
-     * @param fileIn java File object referencing a new ballot to be handled by this STAR-Vote election
+     * @param ballotFile        java File object referencing a new ballot to be handled by this STAR-Vote election
      */
-    public void addBallot(File fileIn) {
+    public void addPrecinct (File ballotFile) {
         /* Get the file name */
-        String fileName = fileIn.getName();
+        String fileName = ballotFile.getName();
 
-        try{
+        try {
             /* Pare off the precinct information */
-            String precinct = fileName.substring(fileName.length()-7,fileName.length()-4);
+            String precinctID = fileName.substring(fileName.length()-7,fileName.length()-4);
 
+            Precinct precinct = new Precinct(precinctID, ballotFile, publicKey, privateKey);
+
+            /* --------------------------------------- PRECINCT CODE -------------------------------------------*/
             ITallier tallier = null;
                 try {
                     /*
@@ -1417,7 +1466,9 @@ public class Model {
                 throw new RuntimeException("Tallier was not properly initialized for precinct " + precinct);
 
             /* Add the ballot to the ballot store */
-            BallotStore.addBallot(precinct, fileIn.getAbsolutePath());
+            BallotStore.addBallot(precinct, ballotFile.getAbsolutePath());
+
+            precincts.put(precinctID, precinct);
 
         }
         /* If we get an exception on the file, show a dialog indicating as much. This is good error handling, methinks */
@@ -1428,55 +1479,76 @@ public class Model {
 
     /**
      * Will spoil ballot by removing it from the committedBids structure, return true if a bid was removed
-     * @param bid the ID of the ballot to be removed
-     * @return whether or not a bid was actually spoiled
+     *
+     * @param bid       the ID of the ballot to be removed
+     * @return          whether or not a bid was actually spoiled
      */
-    public boolean spoilBallot(String bid){
-        /* If we have the ballot, remove it */
-        if(committedBids.containsKey(bid)){
-            ASExpression nonce = committedBids.remove(bid);
+    public boolean spoilBallot(String bid) {
+
+        ASExpression nonce;
+        Ballot ballot;
+        Precinct p = getPrecinctWithBID(bid);
+
+        if (p != null) {
+            nonce = p.getNonce(bid);
+            ballot = p.spoilBallot(bid);
 
             /* Announce that a ballot was spoiled */
-            auditorium.announce(new SpoilBallotEvent(mySerial, nonce, bid, BallotStore.spoilBallot(bid).toVerbatim()));
+            auditorium.announce(new SpoilBallotEvent(mySerial, nonce, bid, ballot.toListExpression().toVerbatim()));
+
             return true;
         }
-        else
-            return false;
+        else return false;
+
+
 
     }
 
+    private Precinct getPrecinctWithBID(String bid) {
+
+        /* If we have the ballot, remove it */
+        for (Map.Entry<String,Precinct> m : precincts.entrySet())
+            if (m.getValue().hasBID(bid)) return m.getValue();
+
+        return null;
+    }
+
     /**
-     * this method is used to generate a pin to be stored and used by a voter
+     * this method is used to generate a PIN to be stored and used by a voter
      *
-     * @param precinct 3-digit precinct number
-     * @return new pin as String
+     * @param precinct      3-digit precinct number
+     * @return              new 5-digit pin as String
      */
-    public String generatePin(String precinct){
+    public String generatePin(String precinct) {
+
+        /* TODO set up PIN guts here from BallotStore */
         return BallotStore.generatePin(precinct);
     }
 
     /**
      * same as generatePin but for provisional ballots
      *
-     * @param precinct 3-digit precinct number
-     * @return a new PIN
+     * @param precinct      3-digit precinct number
+     * @return              a new 5-digit PIN
      */
-    public String generateProvisionalPin(String precinct){
+    public String generateProvisionalPin(String precinct) {
+
+        /* TODO set up PIN guts here from BallotStore */
         return BallotStore.generateProvisionalPin(precinct);
     }
 
     /**
-     *  @return array of precincts
+     * @return          list of precincts
      */
-    public String[] getSelections(){
-        return BallotStore.getPrecincts();
+    public Set<Map.Entry<String,Precinct>> getSelections(){
+        return precincts.entrySet();
     }
 
     /**
-     * @return first precinct in the ballot manager's precinct list
+     * @return          first precinct in the ballot manager's precinct list
      */
-    public String getInitialSelection(){
-        return BallotStore.getInitialPrecinct();
+    public Precinct getInitialSelection(){
+        return precincts.firstEntry().getValue();
     }
 
     /**
