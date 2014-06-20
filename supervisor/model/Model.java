@@ -638,6 +638,9 @@ public class Model {
             public void pollMachines(PollMachinesEvent e) {}
             public void spoilBallot(SpoilBallotEvent e) {}
             public void announceProvisionalBallot(ProvisionalBallotEvent e) {}
+            public void startUpload(StartUploadEvent startUploadEvent) {}
+            public void completedUpload(CompletedUploadEvent completedUploadEvent) {}
+
 
             /**
              * Handler for the activated message. Sets all other supervisors
@@ -1194,6 +1197,7 @@ public class Model {
                     machinesChangedObs.notifyObservers();
                 }
             }
+
 
             /**
              * Handler for the BallotScannerEvent. Receives ballot ID from scan event and fires appropriate events in response,

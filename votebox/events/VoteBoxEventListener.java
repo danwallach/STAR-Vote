@@ -280,4 +280,14 @@ public interface VoteBoxEventListener {
      * Initialization event of a Tap Machine
      */
     public void tapMachine(TapMachineEvent tapMachineEvent);
+
+    /**
+     * @param startUploadEvent the supervisor is now uploading ballots
+     */
+    public void startUpload(StartUploadEvent startUploadEvent);
+
+    /**
+     * @param completedUploadEvent the supervisor has finished uploading ballots
+     */
+    void completedUpload(CompletedUploadEvent completedUploadEvent);
 }

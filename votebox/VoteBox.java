@@ -636,8 +636,9 @@ public class VoteBox{
             public void spoilBallot(SpoilBallotEvent spoilBallotEvent) {}
             public void announceProvisionalBallot(ProvisionalBallotEvent e) {}
             public void provisionalCommitBallot(ProvisionalCommitEvent provisionalCommitEvent) {}
-
             public void tapMachine(TapMachineEvent tapMachineEvent) {}
+            public void startUpload(StartUploadEvent startUploadEvent) {}
+            public void completedUpload(CompletedUploadEvent completedUploadEvent) {}
             public void ballotScanned(BallotScannedEvent e) {}
             public void ballotScanner(BallotScannerEvent e) {}
             public void ballotAccepted(BallotScanAcceptedEvent e){}

@@ -262,8 +262,9 @@ public class  BallotScanner{
             public void announceProvisionalBallot(ProvisionalBallotEvent provisionalBallotEvent) {}
             public void provisionalAuthorizedToCast(ProvisionalAuthorizeEvent provisionalAuthorizeEvent) {}
             public void provisionalCommitBallot(ProvisionalCommitEvent provisionalCommitEvent) {}
-
             public void tapMachine(TapMachineEvent tapMachineEvent) {}
+            public void startUpload(StartUploadEvent startUploadEvent) {}
+            public void completedUpload(CompletedUploadEvent completedUploadEvent) {}
             public void ballotPrinting(BallotPrintingEvent ballotPrintingEvent) {}
             public void pinEntered(PINEnteredEvent event) {}
             public void invalidPin(InvalidPinEvent event) {}

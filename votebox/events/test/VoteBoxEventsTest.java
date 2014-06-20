@@ -351,6 +351,18 @@ public class VoteBoxEventsTest extends TestCase {
         checkBallotEvent(event, event2);
     }
 
+    public void testCompletedUpload() {
+        CompletedUploadEvent event = new CompletedUploadEvent(0);
+
+        ASExpression sexp = event.toSExp();
+
+        CompletedUploadEvent event2 = (CompletedUploadEvent) matcher.match(0, sexp);
+
+        assertEquals("(completed-upload)", sexp.toString());
+
+        assertEquals(event.getSerial(), event2.getSerial());
+    }
+
     public void testEncryptedCastBallotEvent(){
         ASExpression nonce = getBlob();
         byte[] ballot = getBlob().toVerbatim();
@@ -651,6 +663,18 @@ public class VoteBoxEventsTest extends TestCase {
         assertEquals("(start-scanner)", sexp.toString());
 
         StartScannerEvent event2 = (StartScannerEvent)matcher.match(0, sexp);
+
+        assertEquals(event.getSerial(), event2.getSerial());
+    }
+
+    public void testStartUpload() {
+        StartUploadEvent event = new StartUploadEvent(0);
+
+        ASExpression sexp = event.toSExp();
+
+        StartUploadEvent event2 = (StartUploadEvent) matcher.match(0, sexp);
+
+        assertEquals("(start-upload)", sexp.toString());
 
         assertEquals(event.getSerial(), event2.getSerial());
     }
