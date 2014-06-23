@@ -64,7 +64,7 @@ public class Model {
     private VoteBoxAuditoriumConnector auditorium;
 
     /** The serial number used by this machine in all network communication */
-    private int mySerial;
+    private final int mySerial;
 
     /** Whether or not this machine is active */
     private boolean isActivated;
@@ -100,7 +100,7 @@ public class Model {
     private Timer statusTimer;
 
     /** The configuration parameters for this machine */
-    private IAuditoriumParams auditoriumParams;
+    private final IAuditoriumParams auditoriumParams;
 
     /** A map of all committed ballot ID's to their nonce values */
     private HashMap<String, ASExpression> committedBids;
@@ -115,7 +115,7 @@ public class Model {
     private PollsOpenEvent lastPollsOpenHeard;
 
     /** Maps every PIN to a time stamp so that the PIN can expire */
-    private static Map<String, PinTimeStamp> timeStamp = new HashMap<String, PinTimeStamp>();
+    private static Map<String, PinTimeStamp> timeStamp = new HashMap<>();
 
     /** A decimal formatter for generating PINs */
     private static DecimalFormat PINFormat = new DecimalFormat("00000");
@@ -132,7 +132,7 @@ public class Model {
     private static DecimalFormat serialFormat = new DecimalFormat("00");
 
     /** initial value passed to hash function to act as a previous node in the chain */
-    private static String initialLastHash  = "00000000000000000000000000000000";
+    private static final String initialLastHash  = "00000000000000000000000000000000";
 
     /** Inizialize the hash chain with an initial value that can be traced back to the start of the election */
     private static String lastHash = initialLastHash;
@@ -141,10 +141,10 @@ public class Model {
     private static Random rand = new Random();
 
     /** BID to hash values for chaining */
-    private static HashMap<String, String> HashToBID = new HashMap<String, String>();
+    private static HashMap<String, String> HashToBID = new HashMap<>();
 
     /** Machine ID numbers to hash values for chaining */
-    private static HashMap<String, String> HashToMID = new HashMap<String, String>();
+    private static HashMap<String, String> HashToMID = new HashMap<>();
 
 /* --------------------------------------------------------------------------------------------------------- */
 /* --------------------------------------------------------------------------------------------------------- */
@@ -312,8 +312,7 @@ public class Model {
     /**
      * Sends a StartScannerEvent.
      */
-    public void sendStartScannerEvent ()
-    {
+    public void sendStartScannerEvent () {
         auditorium.announce(new StartScannerEvent(mySerial));
     }
 
@@ -336,13 +335,13 @@ public class Model {
         File file = new File(ballotLocation);
 
         /* Pare off the precinct information TODO wth is happening here */
-        String precinct = BallotStore.getPrecinctByBallot(ballotLocation);
+        Precinct p = getPrecinctWithBallot(ballotLocation);
 
         /* Create a hash chain record of this ballot and voting session */
-        String ballotHash = BallotStore.createBallotHash(otherSerial);
+        String ballotHash = createBallotHash(otherSerial);
 
         /* Map the ballot's hash and its precinct in the ballot store */
-        BallotStore.mapPrecinct(ballotHash, precinct);
+        BallotStore.mapPrecinct(ballotHash, p.getPrecinctID());
 
         /* Serialize the ballot to send over the network */
         FileInputStream fin = new FileInputStream(file);
@@ -361,12 +360,12 @@ public class Model {
          * configuration file. This is a parameter of the election, but will typically always be NIZK enabled.
          */
         if (!this.auditoriumParams.getEnableNIZKs()) {
-            auditorium.announce(new AuthorizedToCastEvent(mySerial, otherSerial, ASENonce, precinct, ballot));
+            auditorium.announce(new AuthorizedToCastEvent(mySerial, otherSerial, ASENonce, p.getPrecinctID(), ballot));
 
         }
         else {
             /* For NIZKs to work, we have to establish the public key before the voting can start */
-            auditorium.announce(new AuthorizedToCastWithNIZKsEvent(mySerial, otherSerial, ASENonce, precinct, ballot,
+            auditorium.announce(new AuthorizedToCastWithNIZKsEvent(mySerial, otherSerial, ASENonce, p.getPrecinctID(), ballot,
                     AdderKeyManipulator.generateFinalPublicKey((PublicKey)auditoriumParams.getKeyStore().loadAdderKey("public"))));
         }
     }
@@ -413,7 +412,7 @@ public class Model {
     /**
      * Gets the index in the list of machines of the machine with the given serial
      * 
-     * @param serial
+     * @param serial        the serial number of the machine
      * @return              the index
      */
     /* TODO Is this necessary? */
@@ -578,11 +577,11 @@ public class Model {
 
     /**
      * Sets this supervisor's active status and notifies the observers
-     * 
+     *
      * @param activated         the new active status
      */
     public void setActivated(boolean activated) {
-        this.isActivated = activated;
+        this.isActivated = true;
         activatedObs.notifyObservers();
     }
 
@@ -1543,9 +1542,18 @@ public class Model {
 
     private Precinct getPrecinctWithBID(String bid) {
 
-        /* If we have the ballot, remove it */
+        /* If we have the ballot, return it */
         for (Map.Entry<String,Precinct> m : precincts.entrySet())
             if (m.getValue().hasBID(bid)) return m.getValue();
+
+        return null;
+    }
+
+    private Precinct getPrecinctWithBallot(String ballotFile){
+
+        /* If we have the ballotFile, remove it */
+        for (Map.Entry<String,Precinct> m : precincts.entrySet())
+            if (m.getValue().getBallotFile().equals(ballotFile)) return m.getValue();
 
         return null;
     }
@@ -1607,12 +1615,42 @@ public class Model {
     }
 
     /**
+     * Creates a hash for voting session and saves BID and Machine ID (MID) for hash chain checking later
+     *
+     * @param serialNumber the serial number of the machine
+     * @return the resulting hash
+     */
+    public static String createBallotHash(int serialNumber){
+        /* We will concatenate all the elements to hash together */
+        String elementsToBeHashed = "";
+
+        /* This is a random number to let each hash instance to be unique */
+        int ballotUniqueness = rand.nextInt(Integer.MAX_VALUE);
+
+        /* Concatenate formatted version of the serial number, uniqueness number, and the last hash */
+        elementsToBeHashed += uniquenessFormat.format(ballotUniqueness) + serialFormat.format(serialNumber) + lastHash;
+
+        /* Now hash the concatenated information */
+        String hash = hashWithSHA256(elementsToBeHashed);
+
+        /* put the newly created hash in the necessary lists. */
+        HashToBID.put(lastHash, uniquenessFormat.format(ballotUniqueness));
+        HashToMID.put(lastHash, serialFormat.format(serialNumber));
+
+        /* Update the last hash */
+        lastHash = hash;
+
+        /* return this hash */
+        return hash;
+    }
+
+    /**
      * A wrapper for the raw SHA256 hashing function provided in the Java libraries
      *
      * @param toBeHashed        a string to be hashed
      * @return                  the result of hashing the string with the SHA256 algorithm
      */
-    public static String hashWithSHA256(String toBeHashed){
+    private static String hashWithSHA256(String toBeHashed){
 
         String hash = "";
         MessageDigest digest = null;
@@ -1651,7 +1689,7 @@ public class Model {
      *
      * @return true if the hash chain is valid, false if it has been compromised.
      */
-    public static Boolean isHashChainCompromised(){
+    private static Boolean isHashChainCompromised(){
 
         /* Todo could this be recursive? */
         String previousHash = initialLastHash;
@@ -1678,7 +1716,7 @@ public class Model {
     /**
      * Adds flag to hash chain signalling end of chain
      */
-    public static void closeHashChain(){
+    private static void closeHashChain(){
         HashToBID.put(lastHash, "0000000000");
     }
 

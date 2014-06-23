@@ -52,7 +52,7 @@ public class Precinct {
         allBallots = new HashMap<>();
         committed  = new HashMap<>();
         cast       = new ArrayList<>();
-        spoiled = new ArrayList<>();
+        spoiled    = new ArrayList<>();
 
         tallier = new ChallengeDelayedWithNIZKsTallier(publicKey, privateKey);
     }
