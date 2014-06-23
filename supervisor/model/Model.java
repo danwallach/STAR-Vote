@@ -42,7 +42,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * The main model of the Supervisor in the model-view-controller. Contains the status of the machines, and of
@@ -89,9 +88,6 @@ public class Model {
 
     /** The election keyword */  /* TODO Implement this */
     private String keyword;
-
-    /** A string representing the absolute path to the current ballot file */
-    private String ballotLocation;
 
     /** A timer to update various parts of the system with */
     private Timer statusTimer;
@@ -185,9 +181,6 @@ public class Model {
         connectedObs = new ObservableEvent();
         pollsOpenObs = new ObservableEvent();
         keyword = "";
-
-        /* This is not a real ballot, but it's a placeholder 'til the file chooser is invoked */
-        ballotLocation = "ballot.zip";
 
         committedBids = new HashMap<>();
 
@@ -319,7 +312,7 @@ public class Model {
      *
      * @throws IOException if the ballot cannot be serialized correctly
      */
-    public void authorize(int otherSerial) throws IOException {
+    public void authorize(int otherSerial, String ballotFile) throws IOException {
 
         /* Build a nonce to associate with this ballot and voting session */
         byte[] nonce = new byte[256];
@@ -328,10 +321,10 @@ public class Model {
             nonce[i] = (byte) (Math.random() * 256);
 
         /* Open the ballot */
-        File file = new File(ballotLocation);
+        File file = new File(ballotFile);
 
         /* Pare off the precinct information */
-        Precinct p = getPrecinctWithBallot(ballotLocation);
+        Precinct p = getPrecinctWithBallot(ballotFile);
 
         /* Create a hash chain record of this ballot and voting session */
         String ballotHash = createBallotHash(otherSerial);
@@ -373,7 +366,7 @@ public class Model {
      *
      * @throws IOException if the ballot cannot be serialized correctly
      */
-    private void provisionalAuthorize(int targetSerial) throws IOException{
+    private void provisionalAuthorize(int targetSerial, String ballotFile) throws IOException{
 
         /* Generate a nonce for this ballot */
         byte[] nonce = new byte[256];
@@ -382,7 +375,7 @@ public class Model {
             nonce[i] = (byte) (Math.random() * 256);
 
         /* Load and serialize the ballot */
-        File file = new File(ballotLocation);
+        File file = new File(ballotFile);
         FileInputStream fin = new FileInputStream(file);
 
         byte[] ballot = new byte[(int) file.length()];
@@ -577,15 +570,6 @@ public class Model {
     public void setActivated(boolean activated) {
         this.isActivated = activated;
         activatedObs.notifyObservers();
-    }
-
-    /**
-     * Sets this supervisor's ballot location
-     * 
-     * @param newLoc            the ballot location
-     */
-    public void setBallotLocation(String newLoc) {
-        ballotLocation = newLoc;
     }
 
     /**
@@ -838,11 +822,14 @@ public class Model {
 
                     Precinct p = m.getValue();
 
+                    /* Challenge all the committed ballots */
+                    p.closePolls();
+
                     /* Send all of the cast ballots to Tap */
                     auditorium.announce(new CastBallotUploadEvent(mySerial, p.getCastBallotTotal().toListExpression(p.getPrecinctID())));
 
                     /* Send all of the challenged ballots to Tap */
-                   auditorium.announce(new ChallengedBallotUploadEvent(mySerial, p.getSpoiledBallots()));
+                   auditorium.announce(new ChallengedBallotUploadEvent(mySerial, p.getChallengedBallots()));
                 }
 
                 /* Announce that this Supervisor has completed sending ballots to Tap */
@@ -1315,20 +1302,17 @@ public class Model {
                     /* Check that there is a record of this PIN and ballot style */
                     if (isValidPIN) {
 
-                        String PID    = usePIN(PIN);
-                        String ballot = precincts.get(PID).getBallotFile();
-
-                        //String ballot = BallotStore.getBallotByPin(e.getPin());
+                        String PID = usePIN(PIN);
+                        String ballotFile = precincts.get(PID).getBallotFile();
 
                         try {
-                            setBallotLocation(ballot);
 
                             /* If the ballot is provisional, authorize provisionally */
                             if(PID.contains("provisional"))
-                                provisionalAuthorize(e.getSerial());
+                                provisionalAuthorize(e.getSerial(), ballotFile);
 
                             /* Otherwise authorize a normal voting session */
-                            else authorize(e.getSerial());
+                            else authorize(e.getSerial(), ballotFile);
                         }
                         catch(IOException ex) {
                             /* TODO Better error handling here */
@@ -1348,6 +1332,7 @@ public class Model {
              * Handler for PollStatusEvent
              */
             public void pollStatus(PollStatusEvent pollStatusEvent) {
+
                 /* Set the polls open flag accordingly */
                 arePollsOpen = pollStatusEvent.getPollStatus()==1;
 
@@ -1373,6 +1358,7 @@ public class Model {
              * that machine's voting session.
              */
             public void provisionalAuthorizedToCast(ProvisionalAuthorizeEvent e) {
+
                 AMachine m = getMachineForSerial(e.getTargetSerial());
 
                 if (m != null && m instanceof VoteBoxBooth)
@@ -1420,10 +1406,12 @@ public class Model {
      * @param ballotFile        java File object referencing a new ballot to be handled by this STAR-Vote election
      */
     public void addPrecinct (File ballotFile) {
+
         /* Get the file name */
         String fileName = ballotFile.getName();
 
         try {
+
             /* Pare off the precinct information */
             String precinctID = fileName.substring(fileName.length()-7,fileName.length()-4);
 
@@ -1474,9 +1462,7 @@ public class Model {
 
         }
         /* If we get an exception on the file, show a dialog indicating as much. This is good error handling, methinks */
-        catch(NumberFormatException e){
-            JOptionPane.showMessageDialog(null, "Please choose a valid ballot");
-        }
+        catch(NumberFormatException e){ JOptionPane.showMessageDialog(null, "Please choose a valid ballot"); }
     }
 
     /**
@@ -1493,7 +1479,7 @@ public class Model {
 
         if (p != null) {
             nonce = p.getNonce(bid);
-            ballot = p.spoilBallot(bid);
+            ballot = p.challengeBallot(bid);
 
             /* Announce that a ballot was spoiled */
             auditorium.announce(new SpoilBallotEvent(mySerial, nonce, bid, ballot.toListExpression().toVerbatim()));
@@ -1503,6 +1489,11 @@ public class Model {
         else return false;
     }
 
+    /**
+     *
+     * @param bid
+     * @return
+     */
     private Precinct getPrecinctWithBID(String bid) {
 
         /* If we have the ballot, return it */
@@ -1512,6 +1503,11 @@ public class Model {
         return null;
     }
 
+    /**
+     *
+     * @param ballotFile
+     * @return
+     */
     private Precinct getPrecinctWithBallot(String ballotFile){
 
         /* If we have the ballotFile, remove it */
@@ -1592,6 +1588,10 @@ public class Model {
     public Precinct getInitialSelection(){
         return precincts.firstEntry().getValue();
     }
+
+    /* ----------------------------------------------------------------------------- */
+    /* ----------------------------- HashChain CODE -------------------------------- */
+    /* ----------------------------------------------------------------------------- */
 
     /**
      * Creates a hash for voting session and saves BID and Machine ID (MID) for hash chain checking later
@@ -1698,6 +1698,10 @@ public class Model {
     private static void closeHashChain(){
         HashToBID.put(lastHash, "0000000000");
     }
+
+    /* ----------------------------------------------------------------------------- */
+    /* ----------------------------------------------------------------------------- */
+    /* ----------------------------------------------------------------------------- */
 
     /**
      * A test method for reading a testBallot from file

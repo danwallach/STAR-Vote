@@ -98,7 +98,7 @@ public class ActiveUI extends JPanel {
     private JFileChooser ballotLocChooser;
 
     /** Keeps track of which ballot styles go with which precincts */
-    private HashMap<String, String> precinctsToBallots = new HashMap<String, String>();
+    private HashMap<String, String> precinctsToBallots = new HashMap<>();
 
     /** Displays the connection status of Tap, the data diode */
     private TapView tapView;
@@ -331,30 +331,24 @@ public class ActiveUI extends JPanel {
                     String precinct = "" + JOptionPane.showInputDialog(fthis, "Please choose a precinct", " Pin Generator",
                             JOptionPane.QUESTION_MESSAGE, null, model.getPrecinctIDs(), model.getInitialSelection());
 
-                    String pin;
+                    String PIN;
 
                     /* If a selection was made, process it */
                     if(!precinct.equals("null")){
                         /* If the selection was for a provisional ballot, generate the appropriate authorization PIN */
-                        if(precinct.contains("provisional"))
-                            pin  = model.generateProvisionalPIN(precinct);
-                        /* Otherwise generate a normal PIN */
-                        else
-                            pin = model.generatePIN(precinct);
+                        PIN = precinct.contains("provisional") ? model.generateProvisionalPIN(precinct) : model.generatePIN(precinct);
 
-                        /* Print the PIN to a printer connected to the Sueprvisor machine, if there is one */
+                        /* Print the PIN to a printer connected to the Supervisor machine, if there is one */
                         Printer printer = new Printer();
-                        printer.printPin(pin);
+                        printer.printPin(PIN);
 
                         /* Show a dialog containing the PIN */
-                        JOptionPane.showMessageDialog(fthis, "Your pin is: " + pin);
+                        JOptionPane.showMessageDialog(fthis, "Your pin is: " + PIN);
                     }
 
                 }
                 /* If a ballot has not be selected already, do not allow PIN generation */
-                else {
-                    JOptionPane.showMessageDialog(fthis, "Please select at least one ballot before generating a pin");
-                }
+                else JOptionPane.showMessageDialog(fthis, "Please select at least one ballot before generating a pin");
             }
         });
 
@@ -402,7 +396,7 @@ public class ActiveUI extends JPanel {
                 /*
                  * Add a button to submit the BID for spoiling. This will pass the input BID to the
                  * model so that it can be checked for and removed from the list of committed ballots.
-                 * If the ballot is there, the @Supervisor.model.Model#spoilBallot(String) method will
+                 * If the ballot is there, the @Supervisor.model.Model#challengeBallot(String) method will
                  * return true if the ballot is successfully spoiled, or false if the ballot is not found.
                  */
                 final JButton btnSubmitId = new JButton("Submit ID");
