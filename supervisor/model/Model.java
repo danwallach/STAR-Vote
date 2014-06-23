@@ -31,7 +31,6 @@ import sexpression.ASExpression;
 import sexpression.StringExpression;
 import sexpression.stream.Base64;
 import supervisor.model.Machine.*;
-import supervisor.model.tallier.ITallier;
 import votebox.events.*;
 
 import javax.swing.*;
@@ -93,9 +92,6 @@ public class Model {
 
     /** A string representing the absolute path to the current ballot file */
     private String ballotLocation;
-
-    /** A mapping of precinct names to their talliers that is thread-safe */
-    private ConcurrentHashMap<String, ITallier> talliers;
 
     /** A timer to update various parts of the system with */
     private Timer statusTimer;
@@ -193,7 +189,6 @@ public class Model {
         /* This is not a real ballot, but it's a placeholder 'til the file chooser is invoked */
         ballotLocation = "ballot.zip";
 
-        talliers = new ConcurrentHashMap<>();
         committedBids = new HashMap<>();
 
         precinctIDs = new HashMap<>();
@@ -580,7 +575,7 @@ public class Model {
      * @param activated         the new active status
      */
     public void setActivated(boolean activated) {
-        this.isActivated = true;
+        this.isActivated = activated;
         activatedObs.notifyObservers();
     }
 
@@ -1307,18 +1302,23 @@ public class Model {
              */
             public synchronized void pinEntered(PINEnteredEvent e){
 
+                String PIN = e.getPin();
+
                 /* This only works if the polls are open */
                 if(arePollsOpen()) {
 
 
                     /* Get the ballot style that the PIN was issued for */
-                    String PID    = precinctIDs.get(e.getPin());
-                    String ballot = precincts.get(PID).getBallotFile();
 
-                    //String ballot = BallotStore.getBallotByPin(e.getPin());
+                    boolean isValidPIN = validatePIN(PIN);
 
                     /* Check that there is a record of this PIN and ballot style */
-                    if (ballot != null) {
+                    if (isValidPIN) {
+
+                        String PID    = usePIN(PIN);
+                        String ballot = precincts.get(PID).getBallotFile();
+
+                        //String ballot = BallotStore.getBallotByPin(e.getPin());
 
                         try {
                             setBallotLocation(ballot);
@@ -1521,13 +1521,17 @@ public class Model {
         return null;
     }
 
+    /* ----------------------------------------------------------------------------- */
+    /* --------------------------- PINValidator CODE ------------------------------- */
+    /* ----------------------------------------------------------------------------- */
+
     /**
      * this method is used to generate a PIN to be stored and used by a voter
      *
      * @param precinctID      3-digit precinct number
      * @return              new 5-digit pin as String
      */
-    public String generatePin(String precinctID) {
+    public String generatePIN(String precinctID) {
 
         /* TODO Review this code */
         String PIN = PINFormat.format(rand.nextInt(100000));
@@ -1544,12 +1548,12 @@ public class Model {
     }
 
     /**
-     * same as generatePin but for provisional ballots
+     * same as generatePIN but for provisional ballots
      *
      * @param precinctID      3-digit precinct number
      * @return              a new 5-digit PIN
      */
-    public String generateProvisionalPin(String precinctID) {
+    public String generateProvisionalPIN(String precinctID) {
 
         String provisionalPIN = PINFormat.format(rand.nextInt(10000));
 
@@ -1562,6 +1566,18 @@ public class Model {
 
         return provisionalPIN;
     }
+
+    private boolean validatePIN(String PIN){
+        return precinctIDs.containsKey(PIN) && timeStamp.get(PIN).isValid();
+    }
+
+    private String usePIN(String PIN){
+        return precinctIDs.remove(PIN);
+    }
+
+    /* ----------------------------------------------------------------------------- */
+    /* ----------------------------------------------------------------------------- */
+    /* ----------------------------------------------------------------------------- */
 
     /**
      * @return          Set of entries of mappings of PIDs to Precincts
@@ -1583,7 +1599,7 @@ public class Model {
      * @param serialNumber the serial number of the machine
      * @return the resulting hash
      */
-    public static String createBallotHash(int serialNumber){
+    private static String createBallotHash(int serialNumber){
         /* We will concatenate all the elements to hash together */
         String elementsToBeHashed = "";
 
