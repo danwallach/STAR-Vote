@@ -44,7 +44,7 @@ public class Precinct {
      * @param precinctID    Three digit precinct code
      * @param ballotFile    The zip file containing the ballot style
      */
-    public Precinct(String precinctID,String ballotFile, PublicKey publicKey, PrivateKey privateKey){
+    public Precinct(String precinctID, String ballotFile, PublicKey publicKey, PrivateKey privateKey){
 
         this.precinctID = precinctID;
         this.ballotFile = ballotFile;
@@ -54,7 +54,7 @@ public class Precinct {
         cast       = new ArrayList<>();
         challenged = new ArrayList<>();
 
-        tallier = new ChallengeDelayedWithNIZKsTallier(publicKey,privateKey);
+        tallier = new ChallengeDelayedWithNIZKsTallier(publicKey, privateKey);
     }
 
     /**
@@ -123,6 +123,7 @@ public class Precinct {
      *                  cast in this precinct
      */
     public Ballot getCastBallotTotal(){
+        return cast.get(0);
     }
 
     /**
@@ -150,4 +151,7 @@ public class Precinct {
         return ballotFile;
     }
 
+    public Ballot getBallot(String bid) {
+        return allBallots.get(bid);
+    }
 }

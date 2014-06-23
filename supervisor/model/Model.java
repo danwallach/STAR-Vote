@@ -110,7 +110,7 @@ public class Model {
     private HashMap<String, ASExpression> committedBids;
 
     /** A Map of Precinct IDs to Precincts */
-    private Map<String, Precinct> precincts;
+    private TreeMap<String, Precinct> precincts;
 
     /** A Map of PINs to Precinct IDs */
     private Map<String, String> precinctIDs;
@@ -484,7 +484,7 @@ public class Model {
     /**
      * Sends an override-cancel request to a VoteBox booth
      * 
-     * @param targetSerial the serial number of the booth
+     * @param targetSerial      the serial number of the booth
      */
     public void overrideCancel(int targetSerial) {
         /* Get the nonce for the voting session at that machine */
@@ -497,7 +497,7 @@ public class Model {
     /**
      * Sends an override-commit request to a VoteBox booth
      * 
-     * @param targetSerial the serial number of the booth
+     * @param targetSerial      the serial number of the booth
      */
     public void overrideCommit(int targetSerial) {
         /* Get the nonce for the booth to override */
@@ -510,7 +510,7 @@ public class Model {
     /**
      * Register to be notified when this supervisor's active status changes
      * 
-     * @param obs the observer
+     * @param obs               the observer
      */
     public void registerForActivated(Observer obs) {
         activatedObs.addObserver(obs);
@@ -519,7 +519,7 @@ public class Model {
     /**
      * Register to be notified when this supervisor's connected status changes
      * 
-     * @param obs the observer
+     * @param obs               the observer
      */
     public void registerForConnected(Observer obs) {
         connectedObs.addObserver(obs);
@@ -528,7 +528,7 @@ public class Model {
     /**
      * Register to be notified when the list of machines changes
      * 
-     * @param obs the observer
+     * @param obs               the observer
      */
     public void registerForMachinesChanged(Observer obs) {
         machinesChangedObs.addObserver(obs);
@@ -537,7 +537,7 @@ public class Model {
     /**
      * Register to be notified when the polls open status changes
      * 
-     * @param obs the observer
+     * @param obs               the observer
      */
     public void registerForPollsOpen(Observer obs) {
         pollsOpenObs.addObserver(obs);
@@ -546,7 +546,7 @@ public class Model {
     /**
      * Sets this supervisor's active status and notifies the observers
      * 
-     * @param activated the new active status
+     * @param activated         the new active status
      */
     public void setActivated(boolean activated) {
         this.isActivated = activated;
@@ -556,7 +556,7 @@ public class Model {
     /**
      * Sets this supervisor's ballot location
      * 
-     * @param newLoc the ballot location
+     * @param newLoc            the ballot location
      */
     public void setBallotLocation(String newLoc) {
         ballotLocation = newLoc;
@@ -565,7 +565,7 @@ public class Model {
     /**
      * Sets this supervisor's connected status
      * 
-     * @param connected the connected to set
+     * @param connected         the connected to set
      */
     @SuppressWarnings("SameParameterValue")
     public void setConnected(boolean connected) {
@@ -576,7 +576,7 @@ public class Model {
     /**
      * Sets the election keyword
      * 
-     * @param keyword the keyword to set
+     * @param keyword           the keyword to set
      */
     /* TODO Is this necessary? */
     public void setKeyword(String keyword) {
@@ -586,7 +586,7 @@ public class Model {
     /**
      * Sets this supervisor's polls open status and notifies the observers
      * 
-     * @param arePollsOpen the polls' status
+     * @param arePollsOpen      the polls' status
      */
     public void setArePollsOpen(boolean arePollsOpen) {
         this.arePollsOpen = arePollsOpen;
@@ -673,15 +673,20 @@ public class Model {
                 /*else {
                     setActivated(false);
                     boolean found = false;
+
                     for (StatusEvent ae : e.getStatuses()) {
+
                         if (ae.getTargetSerial() == mySerial) {
-                            SupervisorEvent se = (SupervisorEvent) ae
-                                    .getStatus();
+
+                            SupervisorEvent se = (SupervisorEvent) ae.getStatus();
+
                             if (!se.getStatus().equals("inactive"))
                                 broadcastStatus();
+
                             found = true;
                         }
                     }
+
                     if (!found) broadcastStatus();
                 }
                 */
@@ -699,7 +704,7 @@ public class Model {
                     /* If we find the machine, set its label to the label specified */
                     m.setLabel(e.getLabel());
 
-                    /* reload the machine to update it in the UI*/
+                    /* reload the machine to update it in the UI */
                     machines.remove(m);
                     machines.add(m);
 
@@ -731,9 +736,9 @@ public class Model {
                 AMachine m = getMachineForSerial(e.getSerial());
 
                 if (m != null && m instanceof SupervisorMachine) {
-                    getPrecinctWithBID(e.getBID()).castBallot(e.getBID());
-
-
+                    /* TODO null check? */
+                    Precinct p = getPrecinctWithBID(e.getBID());
+                    p.castBallot(e.getBID());
 
                 /* TODO eliminate this */
 //            	AMachine m = getMachineForSerial(e.getSerial());
@@ -797,13 +802,12 @@ public class Model {
              * the network, giving you two active supervisors.
              */
             public void left(LeaveEvent e) {
+
                 /* Get the machine and set its online status to offline */
                 AMachine m = getMachineForSerial(e.getSerial());
-                if (m != null) {
-                    m.setOnline(false);
-                }else{
-                    throw new RuntimeException("WARNING: Machine left without having been registered");
-                }
+
+                if (m != null) m.setOnline(false);
+                else throw new RuntimeException("WARNING: Machine left without having been registered");
 
                 /* Decrement the number of connected machines and then notify the observers */
                 numConnected--;
@@ -836,9 +840,8 @@ public class Model {
 
 
                 /* Check the hash chain for consistency */
-                if(isHashChainCompromised()){
+                if(isHashChainCompromised())
                     JOptionPane.showMessageDialog(null, "ERROR: The hash chain is incomplete, votes may have been removed or tampered with!");
-                }
 
                 /* Announce that this Supervisor is going to start sending ballots to Tap */
                 auditorium.announce(new StartUploadEvent(mySerial));
@@ -1163,24 +1166,23 @@ public class Model {
 
                         thisPrecinct.commitBallot(e.getBID(), e.getNonce(),  ballot);
 
-                    } catch(Exception e1) {}
-
-
-                    /* ------------------------------- TO BE REPLACED ---------------------------------------------- */
-                    BallotStore.addBallot(e.getBID(), StringExpression.makeString(e.getBallot()));
-                    BallotStore.mapPrecinct(e.getBID(), e.getPrecinct());
-                    BallotStore.setPrecinctByBID(e.getBID(), e.getPrecinct());
-                    BallotStore.testMapPrint();
+                    } catch(Exception ex) { ex.printStackTrace(); }
 
                     /* Announce that the ballot was received, so it's logged */
                     auditorium.announce(new BallotReceivedEvent(mySerial, e.getSerial(), e.getNonce(), e.getBID(), e.getPrecinct()));
 
-                    /* Add the vote to the tallier and list of committed BID's */
-                    String precinct = BallotStore.getPrecinctByBID(e.getBID());
-                    talliers.get(precinct).recordVotes(e.getBallot(), e.getNonce());
+                    /* ------------------------------- TO BE REPLACED ---------------------------------------------- */
+//                    BallotStore.addBallot(e.getBID(), StringExpression.makeString(e.getBallot()));
+//                    BallotStore.mapPrecinct(e.getBID(), e.getPrecinct());
+//                    BallotStore.setPrecinctByBID(e.getBID(), e.getPrecinct());
+//                    BallotStore.testMapPrint();
 
-                    String bid = e.getBID();
-                    committedBids.put(bid, e.getNonce());
+                      /* Add the vote to the tallier and list of committed BID's */
+//                    String precinct = BallotStore.getPrecinctByBID(e.getBID());
+//                    talliers.get(precinct).recordVotes(e.getBallot(), e.getNonce());
+
+//                    String bid = e.getBID();
+//                    committedBids.put(bid, e.getNonce());
 
                 }
                 /* TODO Should we report if a non-votebox attempts to commit? */
@@ -1202,8 +1204,10 @@ public class Model {
                     booth.setPublicCount(booth.getPublicCount() + 1);
                     booth.setProtectedCount(booth.getProtectedCount() + 1);
 
+                    Precinct thisPrecinct = getPrecinctWithBID(e.getBID());
+
                     /* Announce that the provisional ballot was received */
-                    auditorium.announce(new BallotReceivedEvent(mySerial, e.getSerial(), e.getNonce(), e.getBID(), getPrecinctWithBID(e.getBID())));
+                    auditorium.announce(new BallotReceivedEvent(mySerial, e.getSerial(), e.getNonce(), e.getBID(), thisPrecinct.getPrecinctID()));
                 }
             }
 
@@ -1214,16 +1218,16 @@ public class Model {
             public void tapMachine(TapMachineEvent tapMachineEvent) {
                 /* Get the mini-model and check that it's a TapMachine */
                 AMachine m = getMachineForSerial(tapMachineEvent.getSerial());
-                if(m != null && !(m instanceof TapMachine)){
-                    throw new IllegalStateException("Machine " +
-                                                   tapMachineEvent.getSerial() +
-                                                   " is not a Tap but broadcasted TapMachineEvent");
-                }
+
+                if (m != null && !(m instanceof TapMachine))
+                    throw new IllegalStateException("Machine " + tapMachineEvent.getSerial() + " is not a Tap but broadcasted TapMachineEvent");
 
                 /* If the machine doesn't exist yet, add and initialize it */
-                else if(m == null){
+                else if (m == null) {
+
                     TapMachine tap = new TapMachine(tapMachineEvent.getSerial());
                     tap.setOnline(true);
+
                     machines.add(tap);
                     machinesChangedObs.notifyObservers();
                 }
@@ -1255,52 +1259,51 @@ public class Model {
                 int serial = e.getSerial();
 
                 /* If the ballot was actually committed, handle it */
-                if (committedBids.containsKey(bid)){
-                    /* First move it out of the committed list */
-                    ASExpression nonce = committedBids.remove(bid);
+                Precinct p = getPrecinctWithBID(bid);
 
-                    /* Tell the ballot store to cast the ballot */
-                    getPrecinctWithBID(e.getBID()).castCommittedBallot(e.getBID());
+                /* First move it out of the committed list */
+                ASExpression nonce = committedBids.remove(bid);
 
-                    ASExpression ballot = BallotStore.castCommittedBallot(e.getBID());
+                /* Tell the ballot store to cast the ballot */
+                boolean wasCast = p.castBallot(bid);
 
-                    /* Get the precinct information */
-                    String precinct = BallotStore.getPrecinctByBID(e.getBID());
+//                    ASExpression ballot = BallotStore.castCommittedBallot(e.getBID());
 
-                    talliers.get(precinct).confirmed(nonce);
+//                    /* Get the precinct information */
+//                    String precinct = BallotStore.getPrecinctByBID(e.getBID());
 
-                    /* Cast the ballot based on the kind of encryption this election is using */
-                    if(auditoriumParams.getCastBallotEncryptionEnabled()){
-                        /* Cast the ballot depending on if NIZKs are turned on */
-                        if(auditoriumParams.getEnableNIZKs()){
-                            /* Announce that the ballot is being cast, encrypted with NIZKs */
-                            System.out.println("announcing an EncryptedCastBallotWithNIZKsEvent");
-                            auditorium.announce(new EncryptedCastBallotWithNIZKsEvent(serial, nonce, ballot.toVerbatim(),e.getBID()));
-                        } else{
-                            /* Announce that the ballot is being cast, encrypted */
-                            System.out.println("announcing an EncryptedCastBallotEvent");
-                            auditorium.announce(new EncryptedCastBallotEvent(serial, nonce, ballot.toVerbatim(), e.getBID()));
-                        }
-                    }
-                    else{
-                        /* Announce that the ballot is being cast */
-                        System.out.println("Announcing a CastCommittedBallotEvent");
-                        auditorium.announce(new CastCommittedBallotEvent(serial, nonce, e.getBID()));
-                    // that should trigger my own castBallot listener.
-                    }
+//                    talliers.get(precinct).confirmed(nonce);
+
+
+                if (wasCast) auditorium.announce(new EncryptedCastBallotWithNIZKsEvent(serial, nonce, e.getBallot(), bid));
+                else throw new RuntimeException("Found the precinct with the bid, but couldn't cast the ballot...");
+
+
+                      /* Cast the ballot based on the kind of encryption this election is using */
+//                    if(auditoriumParams.getCastBallotEncryptionEnabled()){
+                          /* Cast the ballot depending on if NIZKs are turned on */
+//                        if(auditoriumParams.getEnableNIZKs()){
+                              /* Announce that the ballot is being cast, encrypted with NIZKs */
+//                            System.out.println("announcing an EncryptedCastBallotWithNIZKsEvent");
+//                            auditorium.announce(new EncryptedCastBallotWithNIZKsEvent(serial, nonce, ballot.toVerbatim(),e.getBID()));
+//                        } else{
+                              /* Announce that the ballot is being cast, encrypted */
+//                            System.out.println("announcing an EncryptedCastBallotEvent");
+//                            auditorium.announce(new EncryptedCastBallotEvent(serial, nonce, ballot.toVerbatim(), e.getBID()));
+//                        }
+//                    }
+//                    else{
+                          /* Announce that the ballot is being cast */
+//                        System.out.println("Announcing a CastCommittedBallotEvent");
+//                        auditorium.announce(new CastCommittedBallotEvent(serial, nonce, e.getBID()));
+                          /* that should trigger my own castBallot listener. */
+//                    }
 
                     /* Now tell the ballot scanner that this ballot was accepted */
                     System.out.println("Sending scan confirmation!");
                     System.out.println("BID: " + bid);
-                    auditorium.announce(new BallotScanAcceptedEvent(mySerial, bid));
-                } else {
-                    /* IF anything went wrong, tell the ballot scanner that the ballot was rejected */
-                    System.err.println("Got inside the else clause");
-                    System.out.println("Sending scan rejection!");
-                    System.out.println("BID: " + bid);
-                    auditorium.announce(new BallotScanRejectedEvent(mySerial, bid));
-                }
 
+                    auditorium.announce(new BallotScanAcceptedEvent(mySerial, bid));
             }
 
             /**
@@ -1314,24 +1317,23 @@ public class Model {
 
 
                     /* Get the ballot style that the PIN was issued for */
-
                     String PID    = precinctIDs.get(e.getPin());
-                    String ballot = precincts.get(PID).getBallotStyle();
+                    String ballot = precincts.get(PID).getBallotFile();
 
-                    String ballot = BallotStore.getBallotByPin(e.getPin());
+                    //String ballot = BallotStore.getBallotByPin(e.getPin());
 
                     /* Check that there is a record of this PIN and ballot style */
-                    if(ballot!=null){
+                    if (ballot != null) {
+
                         try {
                             setBallotLocation(ballot);
 
                             /* If the ballot is provisional, authorize provisionally */
-                            if(BallotStore.getPrecinctByBallot(ballot).contains("provisional"))
+                            if(PID.contains("provisional"))
                                 provisionalAuthorize(e.getSerial());
 
                             /* Otherwise authorize a normal voting session */
-                            else
-                                authorize(e.getSerial());
+                            else authorize(e.getSerial());
                         }
                         catch(IOException ex) {
                             /* TODO Better error handling here */
@@ -1340,8 +1342,7 @@ public class Model {
                     }
 
                     /* If there isn't, announce that a bad PIN was entered */
-                    else
-                        auditorium.announce(new InvalidPinEvent(mySerial, e.getSerial()));
+                    else auditorium.announce(new InvalidPinEvent(mySerial, e.getSerial()));
                 }
 
                 /* TODO provide error handling if the polls aren't open? */
@@ -1378,9 +1379,10 @@ public class Model {
              */
             public void provisionalAuthorizedToCast(ProvisionalAuthorizeEvent e) {
                 AMachine m = getMachineForSerial(e.getTargetSerial());
-                if (m != null && m instanceof VoteBoxBooth) {
+
+                if (m != null && m instanceof VoteBoxBooth)
                     ((VoteBoxBooth) m).setNonce(e.getNonce().toVerbatim());
-                }
+
             }
         });
 
@@ -1430,44 +1432,48 @@ public class Model {
             /* Pare off the precinct information */
             String precinctID = fileName.substring(fileName.length()-7,fileName.length()-4);
 
-            Precinct precinct = new Precinct(precinctID, ballotFile, publicKey, privateKey);
+            PrivateKey privateKey = (PrivateKey) auditoriumParams.getKeyStore().loadAdderKey("private");
+            PublicKey publicKey   = (PublicKey)  auditoriumParams.getKeyStore().loadAdderKey("public");
 
-            /* --------------------------------------- PRECINCT CODE -------------------------------------------*/
-            ITallier tallier = null;
-                try {
-                    /*
-                     * Determine which kind of tallier to initialize for this ballot, depending on
-                     * NIZKs and encryption
-                     */
-                    if(!auditoriumParams.getEnableNIZKs()){
-                        /* Loading privateKey well in advance so the whole affair is "fail-fast" */
-                        /* We use our own keys here, since we don't need NIZKs */
-                        Key privateKey = auditoriumParams.getKeyStore().loadKey(mySerial + "-private");
+            Precinct precinct = new Precinct(precinctID, ballotFile.getAbsolutePath(), publicKey, privateKey);
 
-                        tallier = new ChallengeDelayedTallier(privateKey);
-                    }else{
-                        /* For NIZKs we use the Adder notion of keys */
-                        PrivateKey privateKey = (PrivateKey)auditoriumParams.getKeyStore().loadAdderKey("private");
-                        PublicKey publicKey = (PublicKey) auditoriumParams.getKeyStore().loadAdderKey("public");
+//            ITallier tallier = null;
+//                try {
+//                    /*
+//                     * Determine which kind of tallier to initialize for this ballot, depending on
+//                     * NIZKs and encryption
+//                     */
+//                    if(!auditoriumParams.getEnableNIZKs()){
+//                        /* Loading privateKey well in advance so the whole affair is "fail-fast" */
+//                        /* We use our own keys here, since we don't need NIZKs */
+//                        Key privateKey = auditoriumParams.getKeyStore().loadKey(mySerial + "-private");
+//
+//                        tallier = new ChallengeDelayedTallier(privateKey);
+//                    }else{
+//                        /* For NIZKs we use the Adder notion of keys */
+//                        PrivateKey privateKey = (PrivateKey)auditoriumParams.getKeyStore().loadAdderKey("private");
+//                        PublicKey publicKey = (PublicKey) auditoriumParams.getKeyStore().loadAdderKey("public");
+//
+//                        tallier = new ChallengeDelayedWithNIZKsTallier(publicKey, privateKey);
+//                    }
+//                } catch (AuditoriumCryptoException e1) {
+//                    System.err.println("Crypto error encountered: "+e1.getMessage());
+//                    e1.printStackTrace();
+//                }
 
-                        tallier = new ChallengeDelayedWithNIZKsTallier(publicKey, privateKey);
-                    }
-                } catch (AuditoriumCryptoException e1) {
-                    System.err.println("Crypto error encountered: "+e1.getMessage());
-                    e1.printStackTrace();
-                }
+        /* --------------------------------------- PRECINCT CODE -------------------------------------------*/
 
-            /* If we haven't seen this tallier before, add it to the map of talliers to precincts */
-            /* TODO Make sure that this works like it should */
-            if(tallier != null && !talliers.containsValue(tallier))
-                talliers.put(precinct, tallier);
-
-            /* If the tallier is null or already in the map of talliers, we've done something wrong */
-            else
-                throw new RuntimeException("Tallier was not properly initialized for precinct " + precinct);
-
-            /* Add the ballot to the ballot store */
-            BallotStore.addBallot(precinct, ballotFile.getAbsolutePath());
+//            /* If we haven't seen this tallier before, add it to the map of talliers to precincts */
+//            /* TODO Make sure that this works like it should */
+//            if(tallier != null && !talliers.containsValue(tallier))
+//                talliers.put(precinct, tallier);
+//
+//            /* If the tallier is null or already in the map of talliers, we've done something wrong */
+//            else
+//                throw new RuntimeException("Tallier was not properly initialized for precinct " + precinct);
+//
+//            /* Add the ballot to the ballot store */
+//            BallotStore.addBallot(precinct, ballotFile.getAbsolutePath());
 
             precincts.put(precinctID, precinct);
 
@@ -1500,9 +1506,6 @@ public class Model {
             return true;
         }
         else return false;
-
-
-
     }
 
     private Precinct getPrecinctWithBID(String bid) {
@@ -1529,17 +1532,27 @@ public class Model {
     /**
      * same as generatePin but for provisional ballots
      *
-     * @param precinct      3-digit precinct number
+     * @param precinctID      3-digit precinct number
      * @return              a new 5-digit PIN
      */
-    public String generateProvisionalPin(String precinct) {
+    public String generateProvisionalPin(String precinctID) {
 
-        /* TODO set up PIN guts here from BallotStore */
-        return BallotStore.generateProvisionalPin(precinct);
+        /* TODO Review this code */
+        String PIN = decimalFormat.format(rand.nextInt(100000));
+
+        /* Ensure that we don't use a PIN that is already active */
+        while(precinctIDs.containsKey(PIN))
+            PIN = decimalFormat.format(rand.nextInt(100000));
+
+        /* create a new time stamp on this pin */
+        timeStamp.put(PIN, new PinTimeStamp());
+        precinctIDs.put(PIN, precinctID);
+
+        return PIN;
     }
 
     /**
-     * @return          list of precincts
+     * @return          Set of entries of mappings of PIDs to Precincts
      */
     public Set<Map.Entry<String,Precinct>> getSelections(){
         return precincts.entrySet();
@@ -1553,38 +1566,79 @@ public class Model {
     }
 
     /**
+     * Goes through all of the ballots in the voting session checking that all ballot's hashes
+     * are computed from the previous ballot's hash and that ballot's machineID and BID, proving if any
+     * are missing in the chain
+     *
+     * @return true if the hash chain is valid, false if it has been compromised.
+     */
+    public static Boolean isHashChainCompromised(){
+
+        /* Todo could this be recursive? */
+        String previousHash = initialLastHash;
+        String elementsToBeHashed;
+
+        if (!HashToBID.containsKey(previousHash))
+            return true;
+
+        /* Compute the hash chain from beginning to end using the stored ballot info to reconstruct the chain */
+        while (!HashToBID.get(previousHash).equals("0000000000")) {
+
+            elementsToBeHashed = HashToBID.get(previousHash) + HashToMID.get(previousHash) + previousHash;
+            previousHash = hashWithSHA256(elementsToBeHashed);
+
+            /* If the hash that was computed was not the expected hash, we have a problem. */
+            if(!HashToBID.containsKey(previousHash))
+                return true;
+
+        }
+
+        return false;
+    }
+
+    /**
+     * Adds flag to hash chain signalling end of chain
+     */
+    public static void closeHashChain(){
+        HashToBID.put(lastHash, "0000000000");
+    }
+
+    /**
      * A test method for reading a testBallot from file
      */
     public void readTestBallot(){
-        // Open the files.
+
+        /* Open the files. */
         String testBallotFilename = "BallotSExpression.out";
         File file1 = new File ("CurrentSession" + testBallotFilename);
         String testNonceFilename = "NonceByteArray.out";
         File file2 = new File (testNonceFilename);
 
-        // Create the readers.
+        /* Create the readers. */
         BufferedReader reader1;
         BufferedReader reader2;
-        try
-        {
+
+        try {
             reader1 = new BufferedReader(new FileReader(file1.getAbsoluteFile()));
+
             String ballotString = "";
             String currentLine;
+
             while((currentLine = reader1.readLine()) != null)
-            {
                 ballotString += currentLine;
-            }
+
             reader1.close();
             ASExpression ballot = StringExpression.make(ballotString);
 
             reader2 = new BufferedReader(new FileReader(file2.getAbsoluteFile()));
             String nonceString = "";
+
             while((currentLine = reader2.readLine()) != null)
-            {
                 nonceString += currentLine;
-            }
+
             reader2.close();
             nonceString = nonceString.substring(1, nonceString.length()-1);
+
             byte[] nonce = Base64.decode(nonceString);
             ASExpression testNonce = StringExpression.makeString(nonce);
 
@@ -1592,8 +1646,7 @@ public class Model {
             System.out.println("============================");
             System.out.println(testNonce);
         }
-        catch (IOException e)
-        {
+        catch (IOException e) {
             System.out.println("Unable to read from files.");
             e.printStackTrace();
         }
