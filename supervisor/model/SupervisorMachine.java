@@ -57,4 +57,6 @@ public class SupervisorMachine extends AMachine {
         return currentMachine;
     }
 
+    public boolean isActive()   { return getStatus() == ACTIVE; }
+    public boolean isInactive() { return getStatus() == INACTIVE; }
 }

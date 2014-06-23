@@ -86,4 +86,7 @@ public class BallotScannerMachine extends AMachine {
         this.publicCount = publicCount;
         obs.notifyObservers();
     }
+
+    public boolean isActive()   { return getStatus() == ACTIVE; }
+    public boolean isInactive() { return getStatus() == INACTIVE; }
 }
