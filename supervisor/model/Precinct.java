@@ -18,14 +18,6 @@ import java.util.Map;
  * Created by arghyac on 6/20/14.
  */
 public class Precinct {
-    /** List of ballots that have been committed but not cast or challenged.*/
-    private List<Ballot> committed ;
-
-    /** List of ballots that have been cast, not committed or challenged.*/
-    private List<Ballot> cast ;
-
-    /** List of ballots that have been challenged but not cast or committed.*/
-    private List<Ballot> challenged ;
 
     /** File path to the ballot style. */
     private String ballotFile;
@@ -33,12 +25,20 @@ public class Precinct {
     /** Three digit precinct code. */
     private final String precinctID;
 
-    /** An object used to homomorphically tally ballots. */
-    private ITallier tallier;
-
     /** Map of all the bids to the corresponding ballot. */
     private Map<String,Ballot> allBallots;
 
+    /** Map of bids to ballots that have been committed but not cast or challenged.*/
+    private Map<String, Ballot> committed;
+
+    /** List of ballots that have been cast, not committed or challenged.*/
+    private List<Ballot> cast;
+
+    /** List of ballots that have been challenged but not cast or committed.*/
+    private List<Ballot> challenged;
+
+    /** An object used to homomorphically tally ballots. */
+    private ITallier tallier;
 
     /**
      * @param precinctID    Three digit precinct code
@@ -48,11 +48,13 @@ public class Precinct {
 
         this.precinctID = precinctID;
         this.ballotFile = ballotFile;
-        committed = new ArrayList<>();
-        cast = new ArrayList<>();
+
+        allBallots = new HashMap<>();
+        committed  = new HashMap<>();
+        cast       = new ArrayList<>();
         challenged = new ArrayList<>();
+
         tallier = new ChallengeDelayedWithNIZKsTallier(publicKey,privateKey);
-        allBallots =new HashMap<>();
     }
 
     /**
@@ -68,14 +70,19 @@ public class Precinct {
      * @return          Returns the nonce as ASExpressions
      */
     public ASExpression getNonce(String bid){
-        allBallots.get(bid).getNonce();
+        return allBallots.get(bid).getNonce();
     }
 
     /**
+     * TODO is this necessary with challengeBallot()?
      * @param bid       Ballot Identification Number
      * @return
      */
-    public Ballot spoilBallot(String bid){ }
+    public Ballot spoilBallot(String bid){
+
+        challengeBallot(bid);
+        return allBallots.get(bid);
+    }
 
     /**
      * @param bid       Ballot Identification Number
@@ -83,28 +90,64 @@ public class Precinct {
      * @param ballot    Ballot as an ASExpression
      */
     public void commitBallot(String bid, ASExpression nonce, ASExpression ballot){
+        committed.put(bid, new Ballot(bid, ballot, nonce));
     }
 
     /**
      * @param bid       Ballot Identification Number
-     * @return
+     * @return          true if the BID was a committed ballot and was successfully
+     *                  cast, false otherwise
      */
     public boolean castBallot(String bid){
+
+        Ballot toCast = committed.remove(bid);
+
+        return toCast != null && cast.add(toCast);
     }
 
     /**
      * @param bid       Ballot Identification Number
-     * @return
+     * @return          true if the BID was a committed ballot and was successfully
+     *                  challenged, false otherwise
      */
-    public boolean challengeBallot(String bid){}
+    public boolean challengeBallot(String bid){
 
-    public Ballot getCastBallotTotal(){}
+        Ballot toChallenge = committed.remove(bid);
 
-    public ListExpression getChallengedBallots(){}
+        return toChallenge != null && challenged.add(toChallenge);
+    }
 
-    public String getPrecinctID() {
+    /**
+     *
+     * @return          a Ballot representing the sum total of all of the votes
+     *                  cast in this precinct
+     */
+    public Ballot getCastBallotTotal(){
+    }
+
+    /**
+     *
+     * @return          the list of challenged Ballots as a ListExpression of
+     *                  ListExpressions
+     */
+    public ListExpression getChallengedBallots(){
+
+        List<ASExpression> ballotList = new ArrayList<>();
+
+        /* Add each challenged ballot to the List of ListExpressions */
+        for(Ballot b : challenged)
+            ballotList.add(b.toListExpression());
+
+        /* Construct a ListExpression from the List and return */
+        return new ListExpression(ballotList);
+    }
+
+    public String getPrecinctID(){
         return precinctID;
     }
 
+    public String getBallotFile(){
+        return ballotFile;
+    }
 
 }

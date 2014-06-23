@@ -182,6 +182,7 @@ public class BallotStore {
 
         /* For every uncast ballot, decrypt and tally it */
         for (String ballotID : committedBallots.keySet()) {
+
             /* First "cast" the vote */
             tallier.recordVotes(committedBallots.get(ballotID).toVerbatim(), StringExpression.make(ballotID));
 
@@ -398,9 +399,9 @@ public class BallotStore {
      * @return the precinct for the provided ballot
      */
     public static String getPrecinctByBallot(String ballot){
-        if(precinctByBallot.containsKey(ballot)){
+
+        if(precinctByBallot.containsKey(ballot))
             return precinctByBallot.get(ballot);
-        }
 
         return null;
     }
@@ -434,9 +435,9 @@ public class BallotStore {
      * @return the precinct corresponding to the ballot ID'd by bID
      */
     public static String getPrecinctByBID(String bID){
-        if(precinctByBID.containsKey(bID)){
+
+        if(precinctByBID.containsKey(bID))
             return precinctByBID.get(bID);
-        }
 
         return null;
     }

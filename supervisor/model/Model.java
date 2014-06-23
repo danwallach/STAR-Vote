@@ -109,8 +109,11 @@ public class Model {
     /** A map of all committed ballot ID's to their nonce values */
     private HashMap<String, ASExpression> committedBids;
 
-    /** A List of all of the the Precincts for which this Supervisor has a ballot style */
-    private TreeMap<String, Precinct> precincts;
+    /** A Map of Precinct IDs to Precincts */
+    private Map<String, Precinct> precincts;
+
+    /** A Map of PINs to Precinct IDs */
+    private Map<String, String> precinctIDs;
 
     /** Keeps track of the last heard polls open event so that new machines can be updated when they come online */
     private PollsOpenEvent lastPollsOpenHeard;
@@ -159,6 +162,9 @@ public class Model {
         talliers = new ConcurrentHashMap<>();
         committedBids = new HashMap<>();
 
+        precinctIDs = new HashMap<>();
+        precincts   = new TreeMap<>();
+
         /* This is the heartbeat timer, it announces a status event every 5 minutes */
         statusTimer = new Timer(300000, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -177,7 +183,7 @@ public class Model {
     public void activate() {
         /* Lists that will temporarily house statuses and machines before they are added to their proper lists */
         ArrayList<StatusEvent> statuses = new ArrayList<>();
-        ArrayList<AMachine> unlabeled = new ArrayList<>();
+        ArrayList<AMachine> unlabeled   = new ArrayList<>();
 
         /* This will be used to label unlabeled machines, based on the highest label yet seen */
         int maxLabel = 0;
@@ -195,23 +201,17 @@ public class Model {
                     SupervisorMachine ma = (SupervisorMachine) m;
 
                     /* Set the dummy status event to reflect if the machine is active or not */
-                    if (ma.getStatus() == SupervisorMachine.ACTIVE)
-                        s = new SupervisorEvent(0, 0, "active");
-                    else if (ma.getStatus() == SupervisorMachine.INACTIVE)
-                        s = new SupervisorEvent(0, 0, "inactive");
+                    if (ma.isActive())        s = new SupervisorEvent(0, 0, "active");
+                    else if (ma.isInactive()) s = new SupervisorEvent(0, 0, "inactive");
                 }
 
                 /* If the machine is a votebox, figure out if it is idle or voting */
                 else if (m instanceof VoteBoxBooth) {
+
                     VoteBoxBooth ma = (VoteBoxBooth) m;
-                    if (ma.getStatus() == VoteBoxBooth.READY)
-                        s = new VoteBoxEvent(0, ma.getLabel(), "ready", ma
-                                .getBattery(), ma.getProtectedCount(), ma
-                                .getPublicCount());
-                    else if (ma.getStatus() == VoteBoxBooth.IN_USE)
-                        s = new VoteBoxEvent(0, ma.getLabel(), "in-use", ma
-                                .getBattery(), ma.getProtectedCount(), ma
-                                .getPublicCount());
+
+                    if (ma.isReady())       s = new VoteBoxEvent(0, ma.getLabel(), "ready",  ma.getBattery(), ma.getProtectedCount(), ma.getPublicCount());
+                    else if (ma.isInUse())  s = new VoteBoxEvent(0, ma.getLabel(), "in-use", ma.getBattery(), ma.getProtectedCount(), ma.getPublicCount());
 
                     /* If the machine is not labeled add it to the list of machines to label */
                     if (ma.getLabel() == 0)
@@ -223,28 +223,22 @@ public class Model {
                 }
 
                 /* If the machine is a ballot scanner, figure out if it is active or inactive */
-                else if(m instanceof BallotScannerMachine) {
-                        BallotScannerMachine ma = (BallotScannerMachine)m;
-                        if(ma.getStatus() == BallotScannerMachine.ACTIVE)
-                        {
-                            s = new BallotScannerEvent(ma.getSerial(), ma.getLabel(), "active",
-                                    ma.getBattery(), ma.getProtectedCount(), ma.getPublicCount());
-                        }
-                        else if(ma.getStatus() == BallotScannerMachine.INACTIVE)
-                        {
-                            s = new BallotScannerEvent(ma.getSerial(), ma.getLabel(), "inactive",
-                                    ma.getBattery(), ma.getProtectedCount(), ma.getPublicCount());
-                        }
+                else if (m instanceof BallotScannerMachine) {
+
+                    BallotScannerMachine ma = (BallotScannerMachine)m;
+
+                    if (ma.isActive())        s = new BallotScannerEvent(ma.getSerial(), ma.getLabel(),   "active", ma.getBattery(), ma.getProtectedCount(), ma.getPublicCount());
+                    else if (ma.isInactive()) s = new BallotScannerEvent(ma.getSerial(), ma.getLabel(), "inactive", ma.getBattery(), ma.getProtectedCount(), ma.getPublicCount());
+
 
                     /* As with Voteboxes, figure out the label info for this machine */
-                        if (ma.getLabel() == 0)
-                            unlabeled.add(ma);
-                        else if (ma.getLabel() > maxLabel)
-                            maxLabel = ma.getLabel();
+                    if (ma.getLabel() == 0)            unlabeled.add(ma);
+                    else if (ma.getLabel() > maxLabel) maxLabel = ma.getLabel();
                 }
 
                 /* If the machine is a tap, note it */
                 else if(m instanceof  TapMachine){
+
                     TapMachine machine = (TapMachine)m;
 
                     s = new TapMachineEvent(machine.getSerial());
@@ -287,26 +281,28 @@ public class Model {
      */
     public void sendStartScannerEvent ()
     {
-        auditorium.announce(new StartScannerEvent( mySerial ));
+        auditorium.announce(new StartScannerEvent(mySerial));
     }
-
 
     /**
      * Authorizes a VoteBox booth to vote with a specific ballot style
      * 
-     * @param otherSerial the serial number of the booth
+     * @param otherSerial       the serial number of the booth
+     *
      * @throws IOException if the ballot cannot be serialized correctly
      */
     public void authorize(int otherSerial) throws IOException {
+
         /* Build a nonce to associate with this ballot and voting session */
         byte[] nonce = new byte[256];
+
         for (int i = 0; i < 256; i++)
             nonce[i] = (byte) (Math.random() * 256);
 
         /* Open the ballot */
         File file = new File(ballotLocation);
 
-        /* Pare off the precinct information */
+        /* Pare off the precinct information TODO wth is happening here */
         String precinct = BallotStore.getPrecinctByBallot(ballotLocation);
 
         /* Create a hash chain record of this ballot and voting session */
@@ -331,13 +327,13 @@ public class Model {
          * Announce that we're authorizing a voting booth, depending on the crypto requirements specified in this machine's
          * configuration file. This is a parameter of the election, but will typically always be NIZK enabled.
          */
-        if(!this.auditoriumParams.getEnableNIZKs()){
-            auditorium.announce(new AuthorizedToCastEvent(mySerial, otherSerial, ASENonce,
-                    precinct, ballot));
-        }else{
+        if (!this.auditoriumParams.getEnableNIZKs()) {
+            auditorium.announce(new AuthorizedToCastEvent(mySerial, otherSerial, ASENonce, precinct, ballot));
+
+        }
+        else {
             /* For NIZKs to work, we have to establish the public key before the voting can start */
-            auditorium.announce(new AuthorizedToCastWithNIZKsEvent(mySerial, otherSerial,
-                    ASENonce, precinct, ballot,
+            auditorium.announce(new AuthorizedToCastWithNIZKsEvent(mySerial, otherSerial, ASENonce, precinct, ballot,
                     AdderKeyManipulator.generateFinalPublicKey((PublicKey)auditoriumParams.getKeyStore().loadAdderKey("public"))));
         }
     }
@@ -345,18 +341,22 @@ public class Model {
     /**
      * Authorizes a VoteBox booth for a provisional voting session
      *
-     * @param targetSerial the serial number of the booth being provisionally authorized
+     * @param targetSerial      the serial number of the booth being provisionally authorized
+     *
      * @throws IOException if the ballot cannot be serialized correctly
      */
     private void provisionalAuthorize(int targetSerial) throws IOException{
+
         /* Generate a nonce for this ballot */
         byte[] nonce = new byte[256];
+
         for (int i = 0; i < 256; i++)
             nonce[i] = (byte) (Math.random() * 256);
 
         /* Load and serialize the ballot */
         File file = new File(ballotLocation);
         FileInputStream fin = new FileInputStream(file);
+
         byte[] ballot = new byte[(int) file.length()];
         int error = fin.read(ballot);
 
@@ -370,8 +370,6 @@ public class Model {
 
     /**
      * Closes the polls
-     * 
-     * @return the output from the tally
      */
     public void closePolls() {
 
@@ -380,20 +378,19 @@ public class Model {
     }
 
     /**
-     * Gets the index in the list of machines of the machine with the given
-     * serial
+     * Gets the index in the list of machines of the machine with the given serial
      * 
      * @param serial
-     * @return the index
+     * @return              the index
      */
     /* TODO Is this necessary? */
     public int getIndexForSerial(int serial) {
         int i = 0;
+
         for (AMachine m : machines)
-            if (m.getSerial() == serial)
-                return i;
-            else
-                ++i;
+            if (m.getSerial() == serial) return i;
+            else i++;
+
         return -1;
     }
 
@@ -410,14 +407,15 @@ public class Model {
     /**
      * Gets an AMachine from the list of machines by its serial number
      * 
-     * @param serial the serial for the machine to retrieve
-     * @return the machine
+     * @param serial        the serial for the machine to retrieve
+     * @return              the machine
      */
     public AMachine getMachineForSerial(int serial){
 
         for (AMachine m : machines)
             if (m.getSerial() == serial)
                 return m;
+
         return null;
     }
 
@@ -449,10 +447,10 @@ public class Model {
      *         broadcasts)
      */
     public SupervisorEvent getStatus() {
-        String active = isActivated() ? "active" : "inactive";
+
+        String active = isActivated ? "active" : "inactive";
 
         return new SupervisorEvent(mySerial, new Date().getTime(), active);
-
     }
 
     /**
@@ -480,8 +478,7 @@ public class Model {
      * Opens the polls by announcing a PollsOpenEvent.
      */
     public void openPolls() {
-        auditorium.announce(new PollsOpenEvent(mySerial, new Date().getTime(),
-                keyword));
+        auditorium.announce(new PollsOpenEvent(mySerial, new Date().getTime(), keyword));
     }
 
     /**
@@ -1314,8 +1311,12 @@ public class Model {
 
                 /* This only works if the polls are open */
                 if(arePollsOpen()) {
+
+
                     /* Get the ballot style that the PIN was issued for */
-                    String ballot = precincts.get(precinctIDs.get(e.getPin())).getBallotStyle();
+
+                    String PID    = precinctIDs.get(e.getPin());
+                    String ballot = precincts.get(PID).getBallotStyle();
 
                     String ballot = BallotStore.getBallotByPin(e.getPin());
 
