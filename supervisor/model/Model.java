@@ -22,20 +22,14 @@
 
 package supervisor.model;
 
-import auditorium.AuditoriumCryptoException;
 import auditorium.IAuditoriumParams;
-import auditorium.Key;
 import auditorium.NetworkException;
-import crypto.interop.AdderKeyManipulator;
 import crypto.adder.PrivateKey;
 import crypto.adder.PublicKey;
+import crypto.interop.AdderKeyManipulator;
 import sexpression.ASExpression;
-import sexpression.ListExpression;
 import sexpression.StringExpression;
 import sexpression.stream.Base64;
-import supervisor.Supervisor;
-import supervisor.model.tallier.ChallengeDelayedTallier;
-import supervisor.model.tallier.ChallengeDelayedWithNIZKsTallier;
 import supervisor.model.tallier.ITallier;
 import votebox.events.*;
 
@@ -44,7 +38,9 @@ import javax.swing.Timer;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
-import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -117,6 +113,43 @@ public class Model {
 
     /** Keeps track of the last heard polls open event so that new machines can be updated when they come online */
     private PollsOpenEvent lastPollsOpenHeard;
+
+    /** Maps every PIN to a time stamp so that the PIN can expire */
+    private static Map<String, PinTimeStamp> timeStamp = new HashMap<String, PinTimeStamp>();
+
+    /** A decimal formatter for generating PINs */
+    private static DecimalFormat PINFormat = new DecimalFormat("00000");
+
+
+/* --------------------------------------------------------------------------------------------------------- */
+/* ---------------------------------------- HASHING STUFF TO ADD ------------------------------------------- */
+/* --------------------------------------------------------------------------------------------------------- */
+
+    /** A formatter for the hash codes */
+    private static DecimalFormat uniquenessFormat = new DecimalFormat("0000000000");
+
+    /** A formatter for hashed serials */
+    private static DecimalFormat serialFormat = new DecimalFormat("00");
+
+    /** initial value passed to hash function to act as a previous node in the chain */
+    private static String initialLastHash  = "00000000000000000000000000000000";
+
+    /** Inizialize the hash chain with an initial value that can be traced back to the start of the election */
+    private static String lastHash = initialLastHash;
+
+    /** A random generator for generating PINs and hashing */
+    private static Random rand = new Random();
+
+    /** BID to hash values for chaining */
+    private static HashMap<String, String> HashToBID = new HashMap<String, String>();
+
+    /** Machine ID numbers to hash values for chaining */
+    private static HashMap<String, String> HashToMID = new HashMap<String, String>();
+
+/* --------------------------------------------------------------------------------------------------------- */
+/* --------------------------------------------------------------------------------------------------------- */
+/* --------------------------------------------------------------------------------------------------------- */
+
 
     /**
      * Equivalent to Model(-1, params);
@@ -855,7 +888,7 @@ public class Model {
                     auditorium.announce(new CastBallotUploadEvent(mySerial, p.getCastBallotTotal().toListExpression(p.getPrecinctID())));
 
                     /* Send all of the challenged ballots to Tap */
-                   auditorium.announce(new ChallengedBallotUploadEvent(mySerial, p.getChallengedBallots()));
+                   auditorium.announce(new ChallengedBallotUploadEvent(mySerial, p.getSpoiledBallots()));
                 }
 
                 /* Announce that this Supervisor has completed sending ballots to Tap */
@@ -1520,13 +1553,23 @@ public class Model {
     /**
      * this method is used to generate a PIN to be stored and used by a voter
      *
-     * @param precinct      3-digit precinct number
+     * @param precinctID      3-digit precinct number
      * @return              new 5-digit pin as String
      */
-    public String generatePin(String precinct) {
+    public String generatePin(String precinctID) {
 
-        /* TODO set up PIN guts here from BallotStore */
-        return BallotStore.generatePin(precinct);
+        /* TODO Review this code */
+        String PIN = PINFormat.format(rand.nextInt(100000));
+
+        /* Ensure that we don't use a PIN that is already active */
+        while(precinctIDs.containsKey(PIN))
+            PIN = PINFormat.format(rand.nextInt(100000));
+
+        /* create a new time stamp on this pin */
+        timeStamp.put(PIN, new PinTimeStamp());
+        precinctIDs.put(PIN, precinctID);
+
+        return PIN;
     }
 
     /**
@@ -1537,25 +1580,23 @@ public class Model {
      */
     public String generateProvisionalPin(String precinctID) {
 
-        /* TODO Review this code */
-        String PIN = decimalFormat.format(rand.nextInt(100000));
+        String provisionalPIN = PINFormat.format(rand.nextInt(10000));
 
-        /* Ensure that we don't use a PIN that is already active */
-        while(precinctIDs.containsKey(PIN))
-            PIN = decimalFormat.format(rand.nextInt(100000));
+        while(precinctIDs.containsKey(provisionalPIN))
+            provisionalPIN = PINFormat.format(rand.nextInt(10000));
 
-        /* create a new time stamp on this pin */
-        timeStamp.put(PIN, new PinTimeStamp());
-        precinctIDs.put(PIN, precinctID);
+        /* Generate a new time stamp for this PIN so it can expire */
+        timeStamp.put(provisionalPIN, new PinTimeStamp());
+        precinctIDs.put(provisionalPIN, precinctID);
 
-        return PIN;
+        return provisionalPIN;
     }
 
     /**
      * @return          Set of entries of mappings of PIDs to Precincts
      */
-    public Set<Map.Entry<String,Precinct>> getSelections(){
-        return precincts.entrySet();
+    public String[] getPrecinctIDs(){
+        return (String[]) precincts.keySet().toArray();
     }
 
     /**
@@ -1563,6 +1604,44 @@ public class Model {
      */
     public Precinct getInitialSelection(){
         return precincts.firstEntry().getValue();
+    }
+
+    /**
+     * A wrapper for the raw SHA256 hashing function provided in the Java libraries
+     *
+     * @param toBeHashed        a string to be hashed
+     * @return                  the result of hashing the string with the SHA256 algorithm
+     */
+    public static String hashWithSHA256(String toBeHashed){
+
+        String hash = "";
+        MessageDigest digest = null;
+
+        try { digest = MessageDigest.getInstance("SHA-256"); }
+        catch (NoSuchAlgorithmException e) { e.printStackTrace(); }
+
+        try {
+
+            /* Hash the bytes of the input string, encoded in UTF-8 */
+            assert(digest != null);
+            digest.update(toBeHashed.getBytes("UTF-8"));
+
+            /* Get the results of the hash */
+            byte[] arrOut = digest.digest();
+
+            /* Now convert the hashed value back into a string */
+            StringBuilder sb = new StringBuilder();
+
+            /* TODO Explain why this masks and offsets */
+            for (byte anArrOut : arrOut)
+                sb.append(Integer.toString((anArrOut & 0xff) + 0x100, 16).substring(1));
+
+            hash = sb.toString();
+
+        }
+        catch (UnsupportedEncodingException e) { e.printStackTrace(); }
+
+        return hash;
     }
 
     /**

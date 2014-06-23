@@ -28,14 +28,14 @@ public class Precinct {
     /** Map of all the bids to the corresponding ballot. */
     private Map<String,Ballot> allBallots;
 
-    /** Map of bids to ballots that have been committed but not cast or challenged.*/
+    /** Map of bids to ballots that have been committed but not cast or spoiled.*/
     private Map<String, Ballot> committed;
 
-    /** List of ballots that have been cast, not committed or challenged.*/
+    /** List of ballots that have been cast, not committed or spoiled.*/
     private List<Ballot> cast;
 
-    /** List of ballots that have been challenged but not cast or committed.*/
-    private List<Ballot> challenged;
+    /** List of ballots that have been spoiled but not cast or committed.*/
+    private List<Ballot> spoiled;
 
     /** An object used to homomorphically tally ballots. */
     private ITallier tallier;
@@ -52,7 +52,7 @@ public class Precinct {
         allBallots = new HashMap<>();
         committed  = new HashMap<>();
         cast       = new ArrayList<>();
-        challenged = new ArrayList<>();
+        spoiled = new ArrayList<>();
 
         tallier = new ChallengeDelayedWithNIZKsTallier(publicKey, privateKey);
     }
@@ -74,14 +74,16 @@ public class Precinct {
     }
 
     /**
-     * TODO is this necessary with challengeBallot()?
      * @param bid       Ballot Identification Number
      * @return
      */
     public Ballot spoilBallot(String bid){
 
-        challengeBallot(bid);
-        return allBallots.get(bid);
+        Ballot toSpoil = committed.remove(bid);
+
+        if(toSpoil != null) spoiled.add(toSpoil);
+
+        return toSpoil;
     }
 
     /**
@@ -106,18 +108,6 @@ public class Precinct {
     }
 
     /**
-     * @param bid       Ballot Identification Number
-     * @return          true if the BID was a committed ballot and was successfully
-     *                  challenged, false otherwise
-     */
-    public boolean challengeBallot(String bid){
-
-        Ballot toChallenge = committed.remove(bid);
-
-        return toChallenge != null && challenged.add(toChallenge);
-    }
-
-    /**
      *
      * @return          a Ballot representing the sum total of all of the votes
      *                  cast in this precinct
@@ -128,15 +118,15 @@ public class Precinct {
 
     /**
      *
-     * @return          the list of challenged Ballots as a ListExpression of
+     * @return          the list of spoiled Ballots as a ListExpression of
      *                  ListExpressions
      */
-    public ListExpression getChallengedBallots(){
+    public ListExpression getSpoiledBallots(){
 
         List<ASExpression> ballotList = new ArrayList<>();
 
-        /* Add each challenged ballot to the List of ListExpressions */
-        for(Ballot b : challenged)
+        /* Add each spoiled ballot to the List of ListExpressions */
+        for(Ballot b : spoiled)
             ballotList.add(b.toListExpression());
 
         /* Construct a ListExpression from the List and return */

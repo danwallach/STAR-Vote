@@ -28,16 +28,17 @@ import supervisor.model.Model;
 import supervisor.model.TapMachine;
 
 import javax.swing.*;
-import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.math.BigInteger;
 import java.text.DateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  * The view that is shown on a supervisor that is active - consists of
@@ -322,13 +323,13 @@ public class ActiveUI extends JPanel {
         pinButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 /* If a ballot has been selected, allow PIN generation */
-                if (model.getSelections().length > 0) {
+                if (model.getPrecinctIDs().length > 0) {
 
                     /* This dialog allows for the selection of a ballot
                      * style and ballot type (i.e. provisional or not)
                      */
                     String precinct = "" + JOptionPane.showInputDialog(fthis, "Please choose a precinct", " Pin Generator",
-                            JOptionPane.QUESTION_MESSAGE, null, model.getSelections(), model.getInitialSelection());
+                            JOptionPane.QUESTION_MESSAGE, null, model.getPrecinctIDs(), model.getInitialSelection());
 
                     String pin;
 
@@ -503,15 +504,10 @@ public class ActiveUI extends JPanel {
 
         /* If the polls are open, pressing the button will close the polls */
         if (model.arePollsOpen()) {
-            /* Closing the polls will return a map of election results by precinct */
-            Map<String, Map<String, BigInteger>> tally = model.closePolls();
 
-            /*
-             * Using the results, throw up the results precinct by precinct.
-             * @see supervisor.view.TallyResultsFrame
-             */
-            for(String precinct : tally.keySet())
-                new TallyResultsFrame(this, tally.get(precinct), precinctsToBallots.get(precinct));
+            /* Closing the polls */
+           model.closePolls();
+
         }
 
         /* If the polls are not open, open them */

@@ -1,15 +1,9 @@
 package supervisor.model;
 
-import crypto.adder.PrivateKey;
-import crypto.adder.PublicKey;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
-import sexpression.StringExpression;
-import supervisor.model.tallier.EncryptedTallierWithNIZKs;
-import supervisor.model.tallier.ITallier;
 
 import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
@@ -36,18 +30,18 @@ public class BallotStore {
      * A list of the nonce values associated with all ballots that have been cast, i.e. that have been scanned
      * and deposited in the ballot box
      */
-    private static ArrayList<ASExpression> castNonces = new ArrayList<ASExpression>();
+    private static ArrayList<ASExpression> castNonces = new ArrayList<>();
 
     /** A list of all cast ballot ID's associated with ballots that have been cast */
-    private static ArrayList<ASExpression> castBIDs = new ArrayList<ASExpression>();
+    private static ArrayList<ASExpression> castBIDs = new ArrayList<>();
 
     /** Map of all ballots that have been committed but not cast, mapped by BID to raw SExpression representation */
-    private static HashMap<String, ASExpression> committedBallots = new HashMap<String, ASExpression>();
+    private static HashMap<String, ASExpression> committedBallots = new HashMap<>();
 
     private static HashMap<String, ASExpression> challengedBallots = new HashMap<>();
 
     /** Map of every BID to its corresponding precinct, and therefore the ballot style */
-    private static HashMap<String, String> precinctMap = new HashMap<String, String>();
+    private static HashMap<String, String> precinctMap = new HashMap<>();
 
     /* TODO Provide better documentation and examination of the hash chain code? */
     /** initial value passed to hash function to act as a previous node in the chain */
@@ -66,25 +60,25 @@ public class BallotStore {
     private static DecimalFormat serialFormat = new DecimalFormat("00");
 
     /** BID to hash values for chaining */
-    private static HashMap<String, String> HashToBID = new HashMap<String, String>();
+    private static HashMap<String, String> HashToBID = new HashMap<>();
 
     /** Machine ID numbers to hash values for chaining */
-    private static HashMap<String, String> HashToMID = new HashMap<String, String>();
+    private static HashMap<String, String> HashToMID = new HashMap<>();
 
     /** Maps every PIN to a time stamp so that the PIN can expire */
-    private static Map<String, PinTimeStamp> timeStamp = new HashMap<String, PinTimeStamp>();
+    private static Map<String, PinTimeStamp> timeStamp = new HashMap<>();
 
     /** Holds all active PINs and corresponding ballots */
-    private static Map<String, String> ballotByPin = new HashMap<String, String>();
+    private static Map<String, String> ballotByPin = new HashMap<>();
 
     /** Holds all precincts and corresponding ballot location */
-    private static Map<String, String> ballotByPrecinct = new HashMap<String, String>();
+    private static Map<String, String> ballotByPrecinct = new HashMap<>();
 
     /** An inverse mapping of ballotByPrecinct, maps precincts to ballots */
-    private static Map<String, String> precinctByBallot = new HashMap<String, String>();
+    private static Map<String, String> precinctByBallot = new HashMap<>();
 
     /** Maps precincts to their corresponding BID's */
-    private static Map<String, String> precinctByBID = new HashMap<String, String>();
+    private static Map<String, String> precinctByBID = new HashMap<>();
 
     /** A decimal formatter for generating PINs */
     private static DecimalFormat decimalFormat = new DecimalFormat("00000");
@@ -124,7 +118,7 @@ public class BallotStore {
      */
     public static ListExpression getCastNonces() {
 
-        List<ASExpression> precincts = new ArrayList<ASExpression>();
+        List<ASExpression> precincts = new ArrayList<>();
 
         for (ASExpression bid: castBIDs)
             precincts.add(ListExpression.make(precinctMap.get(bid.toString())));
@@ -161,48 +155,48 @@ public class BallotStore {
 //    }
 // --Commented out by Inspection STOP (5/27/14, 3:25 PM)
 
-    /**
+    /*
      * Decrypts and returns unconfirmed (challenged) ballots
      *
      * @param privateKey supervisor key
      * @return ListExpression of hashed ballots and decrypted ballots
      */
     /* TODO Move this to the webserver? */
-    public static ListExpression getDecryptedBallots(PublicKey publicKey, PrivateKey privateKey) {
-        /* Create a spoof tallier so we can decrypt with all the necessary NIZK proofs */
-        ITallier tallier = new EncryptedTallierWithNIZKs(publicKey, privateKey);
-
-        List<ASExpression> hashes = new ArrayList<ASExpression>();
-        List<ASExpression> decryptedBallots = new ArrayList<ASExpression>();
-        List<ASExpression> ballotIDs = new ArrayList<ASExpression>();
-        List<ASExpression> precincts = new ArrayList<ASExpression>();
-
-        /* Move any non-cast ballots on to the challenged list */
-        challengedBallots.putAll(committedBallots);
-
-        /* For every uncast ballot, decrypt and tally it */
-        for (String ballotID : committedBallots.keySet()) {
-
-            /* First "cast" the vote */
-            tallier.recordVotes(committedBallots.get(ballotID).toVerbatim(), StringExpression.make(ballotID));
-
-            /* Now decrypt all "cast" votes */
-            Map<String, BigInteger> ballotMap = tallier.getReport();
-            ArrayList<ASExpression> decryptedVotes = new ArrayList<ASExpression>();
-
-            /* add the newly decrypted ballot to the list of plaintext challenged ballots */
-            for (Map.Entry<String, BigInteger> entry : ballotMap.entrySet()) {
-                decryptedVotes.add(new ListExpression(ListExpression.make(entry.getKey()), ListExpression.make(entry.getValue().toString())));
-            }
-
-            /* Add the ballot to a hash chain that is used for challenged ballots */
-            hashes.add(committedBallots.get(ballotID));
-            decryptedBallots.add(new ListExpression(decryptedVotes));
-            ballotIDs.add(ListExpression.make(ballotID));
-            precincts.add(ListExpression.make(getPrecinct(ballotID)));
-        }
-        return new ListExpression(new ListExpression(ballotIDs), new ListExpression(precincts), new ListExpression(hashes), new ListExpression(decryptedBallots));
-    }
+//    public static ListExpression getDecryptedBallots(PublicKey publicKey, PrivateKey privateKey) {
+//        /* Create a spoof tallier so we can decrypt with all the necessary NIZK proofs */
+//        ITallier tallier = new EncryptedTallierWithNIZKs(publicKey, privateKey);
+//
+//        List<ASExpression> hashes = new ArrayList<ASExpression>();
+//        List<ASExpression> decryptedBallots = new ArrayList<ASExpression>();
+//        List<ASExpression> ballotIDs = new ArrayList<ASExpression>();
+//        List<ASExpression> precincts = new ArrayList<ASExpression>();
+//
+//        /* Move any non-cast ballots on to the challenged list */
+//        challengedBallots.putAll(committedBallots);
+//
+//        /* For every uncast ballot, decrypt and tally it */
+//        for (String ballotID : committedBallots.keySet()) {
+//
+//            /* First "cast" the vote */
+//            tallier.recordVotes(committedBallots.get(ballotID).toVerbatim(), StringExpression.make(ballotID));
+//
+//            /* Now decrypt all "cast" votes */
+//            Map<String, BigInteger> ballotMap = tallier.getReport();
+//            ArrayList<ASExpression> decryptedVotes = new ArrayList<ASExpression>();
+//
+//            /* add the newly decrypted ballot to the list of plaintext challenged ballots */
+//            for (Map.Entry<String, BigInteger> entry : ballotMap.entrySet()) {
+//                decryptedVotes.add(new ListExpression(ListExpression.make(entry.getKey()), ListExpression.make(entry.getValue().toString())));
+//            }
+//
+//            /* Add the ballot to a hash chain that is used for challenged ballots */
+//            hashes.add(committedBallots.get(ballotID));
+//            decryptedBallots.add(new ListExpression(decryptedVotes));
+//            ballotIDs.add(ListExpression.make(ballotID));
+//            precincts.add(ListExpression.make(getPrecinct(ballotID)));
+//        }
+//        return new ListExpression(new ListExpression(ballotIDs), new ListExpression(precincts), new ListExpression(hashes), new ListExpression(decryptedBallots));
+//    }
 
     /**
      * @param bid the bid of the ballot to spoil
