@@ -335,7 +335,7 @@ public class Model {
         /* Open the ballot */
         File file = new File(ballotLocation);
 
-        /* Pare off the precinct information TODO wth is happening here */
+        /* Pare off the precinct information */
         Precinct p = getPrecinctWithBallot(ballotLocation);
 
         /* Create a hash chain record of this ballot and voting session */
