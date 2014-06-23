@@ -20,7 +20,9 @@
   * ACCESS OR USE OF THE SOFTWARE.
  */
 
-package supervisor.model;
+package supervisor.model.Machine;
+
+import supervisor.model.ObservableEvent;
 
 import java.util.Observer;
 

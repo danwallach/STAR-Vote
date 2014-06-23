@@ -45,7 +45,7 @@ import javax.swing.JPanel;
 import javax.swing.border.BevelBorder;
 
 import supervisor.model.Model;
-import supervisor.model.VoteBoxBooth;
+import supervisor.model.Machine.VoteBoxBooth;
 
 /**
  * The view of a VoteBox booth on the network. Shows information such as the

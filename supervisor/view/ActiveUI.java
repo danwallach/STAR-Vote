@@ -23,9 +23,9 @@
 package supervisor.view;
 
 import printer.Printer;
-import supervisor.model.AMachine;
+import supervisor.model.Machine.AMachine;
 import supervisor.model.Model;
-import supervisor.model.TapMachine;
+import supervisor.model.Machine.TapMachine;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

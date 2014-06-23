@@ -35,7 +35,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.border.BevelBorder;
 
-import supervisor.model.SupervisorMachine;
+import supervisor.model.Machine.SupervisorMachine;
 
 /**
  * The view for another supervisor on the network.

@@ -1,4 +1,4 @@
-package supervisor.model;
+package supervisor.model.Machine;
 
 
 /**

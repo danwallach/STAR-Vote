@@ -20,7 +20,7 @@
   * ACCESS OR USE OF THE SOFTWARE.
  */
 
-package supervisor.model;
+package supervisor.model.Machine;
 
 /**
  * The model of a VoteBox booth on the network

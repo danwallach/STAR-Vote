@@ -30,6 +30,7 @@ import crypto.interop.AdderKeyManipulator;
 import sexpression.ASExpression;
 import sexpression.StringExpression;
 import sexpression.stream.Base64;
+import supervisor.model.Machine.*;
 import supervisor.model.tallier.ITallier;
 import votebox.events.*;
 
@@ -87,7 +88,7 @@ public class Model {
     /** The number of machines that are connected to this one */
     private int numConnected;
 
-    /** The election keyword */  /* TODO Is this useful? */
+    /** The election keyword */  /* TODO Implement this */
     private String keyword;
 
     /** A string representing the absolute path to the current ballot file */
@@ -416,7 +417,6 @@ public class Model {
      * @param serial
      * @return              the index
      */
-    /* TODO Is this necessary? */
     public int getIndexForSerial(int serial) {
         int i = 0;
 
@@ -432,7 +432,6 @@ public class Model {
      * 
      * @return the keyword
      */
-    /* TODO is this necessary */
     public String getKeyword() {
         return keyword;
     }
@@ -611,7 +610,6 @@ public class Model {
      * 
      * @param keyword           the keyword to set
      */
-    /* TODO Is this necessary? */
     public void setKeyword(String keyword) {
         this.keyword = keyword;
     }
@@ -683,7 +681,6 @@ public class Model {
              * checks to see if this machine's status is listed, and responds
              * with it if not.
              */
-            /* TODO Make it so multiple supervisors can be active at once */
             public void activated(ActivatedEvent e) {
 
                 /* Iterate through all the machines and set the supervisors to inactive if they aren't this one */
@@ -696,33 +693,7 @@ public class Model {
                     }
                 }
 
-                /* Set this Supervisor to active */
-                /*if (e.getSerial() == mySerial)*/
-
                 setActivated(true);
-
-                /* If we're not the supervisor who sent the message, deactivate ourselves */
-                /* TODO This should fix the multiple supervisors problem. Test it. */
-                /*else {
-                    setActivated(false);
-                    boolean found = false;
-
-                    for (StatusEvent ae : e.getStatuses()) {
-
-                        if (ae.getTargetSerial() == mySerial) {
-
-                            SupervisorEvent se = (SupervisorEvent) ae.getStatus();
-
-                            if (!se.getStatus().equals("inactive"))
-                                broadcastStatus();
-
-                            found = true;
-                        }
-                    }
-
-                    if (!found) broadcastStatus();
-                }
-                */
             }
 
             /**
@@ -772,19 +743,8 @@ public class Model {
                     /* TODO null check? */
                     Precinct p = getPrecinctWithBID(e.getBID());
                     p.castBallot(e.getBID());
-
-                /* TODO eliminate this */
-//            	AMachine m = getMachineForSerial(e.getSerial());
-//                if (m != null && m instanceof BallotScannerMachine) {
-//                    auditorium.announce(new BallotCountedEvent(mySerial, e
-//                            .getSerial(), ((StringExpression) e.getNonce())
-//                            .getBytes(), "", ""));
-//
-//
-//                    String precinct = BallotStore.getPrecinctByBID(e.getBID().toString());
-//                    talliers.get(precinct).confirmed(e.getNonce());
-//                }
-            }}
+                }
+            }
 
             /**
              * Handler for a joined event. When a new machine joins, check and
@@ -993,7 +953,6 @@ public class Model {
                 }
 
                 /* Now update the corrected label information */
-                /* TODO is this redundant? */
                 if (e.getLabel() > 0)
                     bsm.setLabel(e.getLabel());
                 else {
@@ -1139,7 +1098,6 @@ public class Model {
                 	}
                 }
 
-                /* TODO Ensure this isn't redundant */
                 /* Set the local machine's label */
                 if (e.getLabel() > 0)
                     booth.setLabel(e.getLabel());
@@ -1285,7 +1243,12 @@ public class Model {
                 bManager.setPrecinctByBID("711567939", "007");
                 talliers.get("007").recordVotes(testBallot.toVerbatim(), testNonce);*/
 
-                /* TODO ensure that a ballot scanner sent this */
+                /* Ensure that a ballot scanner sent this */
+                if(!(getMachineForSerial(e.getSerial()) instanceof BallotScannerMachine)) {
+                    System.err.println("A machine other than a ballot scanner attempted to broadcast a ballot scanned event! ");
+                    return;
+                }
+
 
                 /* Get the ballot information from the event */
                 String bid = e.getBID();

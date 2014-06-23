@@ -25,6 +25,10 @@ package supervisor.view;
 import java.util.HashMap;
 
 import supervisor.model.*;
+import supervisor.model.Machine.AMachine;
+import supervisor.model.Machine.BallotScannerMachine;
+import supervisor.model.Machine.SupervisorMachine;
+import supervisor.model.Machine.VoteBoxBooth;
 
 /**
  * The MachineViewGenerator is a sort of "cache" that only allows you to create
