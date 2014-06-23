@@ -13,9 +13,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * The Precinct class is a data structure to hold encrypted ballots , ballot style and handle manipulation of the ballots.
+ * The Precinct class is a data structure to hold encrypted ballots and ballot style and handle manipulation of the ballots.
  *
- * Created by arghyac on 6/20/14.
+ * Created by Matthew Kindy II on 6/20/14.
  */
 public class Precinct {
 

@@ -122,6 +122,7 @@ public class VoteBoxBooth extends AMachine {
         obs.notifyObservers();
     }
 
-    public boolean isReady()   { return getStatus() == READY; }
-    public boolean isInUse() { return getStatus() == IN_USE; }
+    public boolean isReady()       { return getStatus() == READY; }
+    public boolean isInUse()       { return getStatus() == IN_USE; }
+    public boolean isProvisional() { return getStatus() == PROVISIONAL; }
 }

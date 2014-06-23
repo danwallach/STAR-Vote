@@ -335,8 +335,9 @@ public class ActiveUI extends JPanel {
 
                     /* If a selection was made, process it */
                     if(!precinct.equals("null")){
-                        /* If the selection was for a provisional ballot, generate the appropriate authorization PIN */
-                        PIN = precinct.contains("provisional") ? model.generateProvisionalPIN(precinct) : model.generatePIN(precinct);
+
+                        /* Generate the authorisation PIN */
+                        PIN = model.generatePIN(precinct);
 
                         /* Print the PIN to a printer connected to the Supervisor machine, if there is one */
                         Printer printer = new Printer();

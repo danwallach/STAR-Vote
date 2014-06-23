@@ -101,17 +101,14 @@ public class Model {
     /** A Map of Precinct IDs to Precincts */
     private TreeMap<String, Precinct> precincts;
 
-    /** A Map of PINs to Precinct IDs */
-    private Map<String, String> precinctIDs;
+
 
     /** Keeps track of the last heard polls open event so that new machines can be updated when they come online */
     private PollsOpenEvent lastPollsOpenHeard;
 
-    /** Maps every PIN to a time stamp so that the PIN can expire */
-    private static Map<String, PinTimeStamp> timeStamp = new HashMap<>();
+    private PINValidator pinValidator = PINValidator.SINGLETON;
 
-    /** A decimal formatter for generating PINs */
-    private static DecimalFormat PINFormat = new DecimalFormat("00000");
+
 
 
 /* --------------------------------------------------------------------------------------------------------- */
@@ -129,9 +126,6 @@ public class Model {
 
     /** Inizialize the hash chain with an initial value that can be traced back to the start of the election */
     private static String lastHash = initialLastHash;
-
-    /** A random generator for generating PINs and hashing */
-    private static Random rand = new Random();
 
     /** BID to hash values for chaining */
     private static HashMap<String, String> HashToBID = new HashMap<>();
@@ -183,9 +177,7 @@ public class Model {
         keyword = "";
 
         committedBids = new HashMap<>();
-
-        precinctIDs = new HashMap<>();
-        precincts   = new TreeMap<>();
+        precincts = new TreeMap<>();
 
         /* This is the heartbeat timer, it announces a status event every 5 minutes */
         statusTimer = new Timer(300000, new ActionListener() {
@@ -329,8 +321,7 @@ public class Model {
         /* Create a hash chain record of this ballot and voting session */
         String ballotHash = createBallotHash(otherSerial);
 
-        /* Map the ballot's hash and its precinct in the ballot store */
-        BallotStore.mapPrecinct(ballotHash, p.getPrecinctID());
+        /* TODO? map ballotHash to Precinct for better logging perhaps? */
 
         /* Serialize the ballot to send over the network */
         FileInputStream fin = new FileInputStream(file);
@@ -1120,7 +1111,7 @@ public class Model {
             	AMachine m = getMachineForSerial(e.getSerial());
 
                 /* Ensure that the machine committing the booth is actually a votebox */
-                if (m != null && m instanceof VoteBoxBooth) {
+                if (m != null && m instanceof VoteBoxBooth && !((VoteBoxBooth) m).isProvisional() ) {
 
                     /* Enforce the machine's type */
                     VoteBoxBooth booth = (VoteBoxBooth) m;
@@ -1137,8 +1128,8 @@ public class Model {
                         ASExpression ballot = ASExpression.makeVerbatim(e.getBallot());
 
                         thisPrecinct.commitBallot(e.getBID(), e.getNonce(),  ballot);
-
-                    } catch(Exception ex) { ex.printStackTrace(); }
+                    }
+                    catch(Exception ex) { ex.printStackTrace(); }
 
                     /* Announce that the ballot was received, so it's logged */
                     auditorium.announce(new BallotReceivedEvent(mySerial, e.getSerial(), e.getNonce(), e.getBID(), e.getPrecinct()));
@@ -1157,6 +1148,9 @@ public class Model {
 //                    committedBids.put(bid, e.getNonce());
 
                 }
+                /* TODO Log and don't count this -- inform the user with a popup */
+                else throw new RuntimeException("Bad commit attempt: Machine only authorised provisionally.");
+
                 /* TODO Should we report if a non-votebox attempts to commit? */
             }
 
@@ -1168,7 +1162,7 @@ public class Model {
                 AMachine m = getMachineForSerial(e.getSerial());
 
                 /* Check that it's a votebox */
-                if (m != null && m instanceof VoteBoxBooth) {
+                if (m != null && m instanceof VoteBoxBooth && ((VoteBoxBooth) m).isProvisional()) {
                     /* Enforce the type */
                     VoteBoxBooth booth = (VoteBoxBooth) m;
 
@@ -1181,6 +1175,10 @@ public class Model {
                     /* Announce that the provisional ballot was received */
                     auditorium.announce(new BallotReceivedEvent(mySerial, e.getSerial(), e.getNonce(), e.getBID(), thisPrecinct.getPrecinctID()));
                 }
+                /* TODO Log and disregard, popup to inform the user */
+                else throw new RuntimeException("Bad commit attempt: Machine not authorised provisionally.");
+
+
             }
 
             /**
@@ -1297,12 +1295,12 @@ public class Model {
 
                     /* Get the ballot style that the PIN was issued for */
 
-                    boolean isValidPIN = validatePIN(PIN);
+                    boolean isValidPIN = pinValidator.validatePIN(PIN);
 
                     /* Check that there is a record of this PIN and ballot style */
                     if (isValidPIN) {
 
-                        String PID = usePIN(PIN);
+                        String PID = pinValidator.usePIN(PIN);
                         String ballotFile = precincts.get(PID).getBallotFile();
 
                         try {
@@ -1517,64 +1515,6 @@ public class Model {
         return null;
     }
 
-    /* ----------------------------------------------------------------------------- */
-    /* --------------------------- PINValidator CODE ------------------------------- */
-    /* ----------------------------------------------------------------------------- */
-
-    /**
-     * this method is used to generate a PIN to be stored and used by a voter
-     *
-     * @param precinctID      3-digit precinct number
-     * @return              new 5-digit pin as String
-     */
-    public String generatePIN(String precinctID) {
-
-        /* TODO Review this code */
-        String PIN = PINFormat.format(rand.nextInt(100000));
-
-        /* Ensure that we don't use a PIN that is already active */
-        while(precinctIDs.containsKey(PIN))
-            PIN = PINFormat.format(rand.nextInt(100000));
-
-        /* create a new time stamp on this pin */
-        timeStamp.put(PIN, new PinTimeStamp());
-        precinctIDs.put(PIN, precinctID);
-
-        return PIN;
-    }
-
-    /**
-     * same as generatePIN but for provisional ballots
-     *
-     * @param precinctID      3-digit precinct number
-     * @return              a new 5-digit PIN
-     */
-    public String generateProvisionalPIN(String precinctID) {
-
-        String provisionalPIN = PINFormat.format(rand.nextInt(10000));
-
-        while(precinctIDs.containsKey(provisionalPIN))
-            provisionalPIN = PINFormat.format(rand.nextInt(10000));
-
-        /* Generate a new time stamp for this PIN so it can expire */
-        timeStamp.put(provisionalPIN, new PinTimeStamp());
-        precinctIDs.put(provisionalPIN, precinctID);
-
-        return provisionalPIN;
-    }
-
-    private boolean validatePIN(String PIN){
-        return precinctIDs.containsKey(PIN) && timeStamp.get(PIN).isValid();
-    }
-
-    private String usePIN(String PIN){
-        return precinctIDs.remove(PIN);
-    }
-
-    /* ----------------------------------------------------------------------------- */
-    /* ----------------------------------------------------------------------------- */
-    /* ----------------------------------------------------------------------------- */
-
     /**
      * @return          Set of entries of mappings of PIDs to Precincts
      */
@@ -1589,6 +1529,16 @@ public class Model {
         return precincts.firstEntry().getValue();
     }
 
+    /**
+     * this method is used to generate a PIN to be stored and used by a voter
+     *
+     * @param precinctID        3-digit precinct number
+     * @return                  new 5-digit pin as String
+     */
+    public String generatePIN(String precinctID){
+        return pinValidator.generatePIN(precinctID);
+    }
+
     /* ----------------------------------------------------------------------------- */
     /* ----------------------------- HashChain CODE -------------------------------- */
     /* ----------------------------------------------------------------------------- */
@@ -1599,7 +1549,10 @@ public class Model {
      * @param serialNumber the serial number of the machine
      * @return the resulting hash
      */
-    private static String createBallotHash(int serialNumber){
+    private String createBallotHash(int serialNumber){
+
+        Random rand = new Random();
+
         /* We will concatenate all the elements to hash together */
         String elementsToBeHashed = "";
 
