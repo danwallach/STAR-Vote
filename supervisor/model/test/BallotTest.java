@@ -21,17 +21,6 @@ public class BallotTest extends TestCase {
         super.setUp();
     }
 
-    public void compareListExpressions(ListExpression l1, ListExpression l2){
-
-        assertEquals(l1.size(), l2.size());
-
-        for(int i = 0; i < l1.size(); i++) {
-            assertEquals(l1.get(i), l2.get(i));
-        }
-
-    }
-
-
     /**
      * @return a random SExpression
      */
@@ -57,7 +46,7 @@ public class BallotTest extends TestCase {
         ListExpression l = new ListExpression(StringExpression.make("0"), bal, nonce);
 
 
-        compareListExpressions(l, ballot.toListExpression());
+        assert(l.equals(ballot.toListExpression()));
     }
 
     /**
@@ -73,7 +62,6 @@ public class BallotTest extends TestCase {
 
         ListExpression l = new ListExpression(StringExpression.make(precinct), StringExpression.make("0"), bal, nonce);
 
-
-        compareListExpressions(l, ballot.toListExpression(precinct));
+        assert(l.equals(ballot.toListExpression(precinct)));
     }
 }
