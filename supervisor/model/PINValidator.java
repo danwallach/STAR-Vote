@@ -6,6 +6,10 @@ import java.util.Map;
 import java.util.Random;
 
 /**
+ * The PINValidator class is a data structure to hold time-sensitive PINs and relate
+ * them to specific precinct IDs so that the holder of a specific PIN (a voter) will
+ * receive the proper ballot if and only if they use a valid PIN before it expires.
+ *
  * Created by Matthew Kindy II on 6/23/2014.
  */
 public class PINValidator {
@@ -37,7 +41,7 @@ public class PINValidator {
      * this method is used to generate a PIN to be stored and used by a voter
      *
      * @param precinctID      3-digit precinct number
-     * @return              new 5-digit pin as String
+     * @return                new 5-digit pin as String
      */
     public String generatePIN(String precinctID) {
         return generatePIN(precinctID, DEFAULT_LIFE_TIME);
@@ -69,8 +73,8 @@ public class PINValidator {
     /**
      * Checks that this PIN is a valid PIN.
      *
-     * @param PIN       5-digit pin to be validated
-     * @return          true if the PIN exists and has not yet expired, false otherwise
+     * @param PIN           5-digit pin to be validated
+     * @return              true if the PIN exists and has not yet expired, false otherwise
      */
     public boolean validatePIN(String PIN){
 
@@ -82,15 +86,16 @@ public class PINValidator {
     }
 
     /**
-     * Use a PIN to get the precinctID. After use, a PIN is removed. This method
-     * should only be called AFTER a separate call to validatePIN() so that the
-     * result of validatePIN() can be explicitly known, although this method behaves
-     * correctly if this is not done.
+     * Use a PIN to get the precinctID. After use, a PIN is removed. This method should
+     * only be called AFTER a separate call to validatePIN() so that the result of
+     * validatePIN() can be explicitly known, although this method behaves correctly if
+     * this is not done.
      *
-     * @param PIN       5-digit pin to be validated
-     * @return          the 3-digit precinct ID corresponding to that PIN or null
-     *                  if this method was used without prior validation of PIN and
-     *                  PIN was invalid at the time of calling.
+     * @param PIN           5-digit pin to be validated
+     *
+     * @return              the 3-digit precinct ID corresponding to that PIN or null
+     *                      if this method was used without prior validation of PIN and
+     *                      PIN was invalid at the time of calling.
      */
     public String usePIN(String PIN){
 

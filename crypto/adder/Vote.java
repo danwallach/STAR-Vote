@@ -9,6 +9,7 @@ import sexpression.ListExpression;
 import sexpression.StringExpression;
 
 public class Vote {
+
     private List<ElgamalCiphertext> cipherList;
 
     public Vote() {
@@ -24,14 +25,12 @@ public class Vote {
     }
 
     Vote multiply(Vote vote) {
-        List<ElgamalCiphertext> vec
-            = new ArrayList<ElgamalCiphertext>(this.getCipherList().size());
+
+        List<ElgamalCiphertext> vec = new ArrayList<ElgamalCiphertext>(this.getCipherList().size());
 
         for (int i = 0; i < this.getCipherList().size(); i++) {
-            ElgamalCiphertext ciphertext1
-                = this.getCipherList().get(i);
-            ElgamalCiphertext ciphertext2
-                = vote.getCipherList().get(i);
+            ElgamalCiphertext ciphertext1 = this.getCipherList().get(i);
+            ElgamalCiphertext ciphertext2 = vote.getCipherList().get(i);
             vec.add(ciphertext1.multiply(ciphertext2));
         }
 
@@ -39,21 +38,21 @@ public class Vote {
     }
 
     public String shortHash() {
+
         //TODO I'm not sure if this actually works...but it's never used so...
         String str = toString();
         int idx = str.indexOf(" ");
 
-        if (idx != -1) {
+        if (idx != -1)
             str = str.substring(0, idx);
-        }
 
         return Util.sha1(str).substring(0, 5);
     }
 
     public static Vote fromString(String s) {
+
         StringTokenizer st = new StringTokenizer(s, " ");
-        List<ElgamalCiphertext> cList
-            = new ArrayList<ElgamalCiphertext>(25); // XXX: what size?
+        List<ElgamalCiphertext> cList = new ArrayList<ElgamalCiphertext>(25); // XXX: what size?
 
         while (st.hasMoreTokens()) {
             String s2 = st.nextToken();
@@ -61,22 +60,18 @@ public class Vote {
             try {
                 ElgamalCiphertext ciphertext = ElgamalCiphertext.fromString(s2);
                 cList.add(ciphertext);
-            } catch (InvalidElgamalCiphertextException iece) {
-                throw new InvalidVoteException(iece.getMessage());
             }
+            catch (InvalidElgamalCiphertextException iece) { throw new InvalidVoteException(iece.getMessage()); }
         }
 
-        Vote vote = new Vote(cList);
-
-        return vote;
+        return new Vote(cList);
     }
 
     public String toString() {
+
         StringBuffer sb = new StringBuffer(4096);
 
-        for (int i = 0; i < cipherList.size(); i++) {
-            ElgamalCiphertext ciphertext
-                = cipherList.get(i);
+        for (ElgamalCiphertext ciphertext : cipherList) {
             sb.append(ciphertext.toString());
             sb.append(" ");
         }
@@ -90,7 +85,9 @@ public class Vote {
      * @return the S-Expression equivalent of this Vote
      */
     public ASExpression toASE(){
+
     	List<ASExpression> cList = new ArrayList<ASExpression>();
+
     	for(ElgamalCiphertext text : cipherList)
     		cList.add(text.toASE());
     	
@@ -104,12 +101,15 @@ public class Vote {
      * @return the Vote equivalent of ase
      */
     public static Vote fromASE(ASExpression ase){
+
     	ListExpression exp = (ListExpression)ase;
+
     	if(!(exp.get(0)).toString().equals("vote"))
     		throw new RuntimeException("Not vote");
     	
     	ListExpression cListE = (ListExpression)exp.get(1);
     	List<ElgamalCiphertext> cList = new ArrayList<ElgamalCiphertext>();
+
     	for(int i = 0; i < cListE.size(); i++)
     		cList.add(ElgamalCiphertext.fromASE(cListE.get(i)));
     	

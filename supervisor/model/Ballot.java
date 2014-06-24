@@ -17,7 +17,14 @@ public class Ballot {
     /** The identifier for this ballot */
     private final String bid;
 
-    /** A representation of the ballot (document of voter intent) as an ASExpression */
+    /** A representation of the ballot (document of voter intent) as an ASExpression
+     *
+     *                |------------ This is a Vote as an ASExpression -------------| (missing the public-key)
+     * (ballot bid (  ((vote [vote]) (vote-ids ([id1], [id2], ...)) (proof [proof]))
+     *                ((vote [vote]) (vote-ids ([id1], [id2], ...)) (proof [proof]))
+     *                ((vote [vote]) (vote-ids ([id1], [id2], ...)) (proof [proof]))...  ) (public-key [key]) nonce)
+     *
+     * */
     private final ASExpression ballot;
 
     /** The nonce associated with the voting session when this ballot was committed */
@@ -26,9 +33,9 @@ public class Ballot {
     /**
      * Constructor for a ballot, takes in all of the parameters the supervisor receives on committing a ballot.
      *
-     * @param bid the ballot identifier
-     * @param ballot the record of voter intent
-     * @param nonce the nonce associated with the Votebox voting session
+     * @param bid               the ballot identifier
+     * @param ballot            the record of voter intent
+     * @param nonce             the nonce associated with the Votebox voting session
      */
     public Ballot(String bid, ASExpression ballot, ASExpression nonce){
         this.bid = bid;
