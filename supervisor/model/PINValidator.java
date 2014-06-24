@@ -67,7 +67,7 @@ public class PINValidator {
     }
 
     /**
-     * Checks that this PIN is a valid PIN
+     * Checks that this PIN is a valid PIN.
      *
      * @param PIN       5-digit pin to be validated
      * @return          true if the PIN exists and has not yet expired, false otherwise

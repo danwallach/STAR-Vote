@@ -58,6 +58,8 @@ public class Precinct {
     }
 
     /**
+     * Checks if this precinct own this BID
+     *
      * @param bid       Ballot Identification Number
      * @return          True if it has the ballot, False otherwise
      */
@@ -66,6 +68,8 @@ public class Precinct {
     }
 
     /**
+     * Gets the nonce of the Ballot with this bid
+     *
      * @param bid       Ballot Identification Number
      * @return          Returns the nonce as ASExpressions
      */
@@ -74,19 +78,27 @@ public class Precinct {
     }
 
     /**
+     * Challenges a Ballot, moving it from committed to challenged
+     * and returns the challenged Ballot.
+     *
      * @param bid       Ballot Identification Number
      * @return          the ballot that was challenged
      */
     public Ballot challengeBallot(String bid){
 
+        /* Remove the Ballot from committed */
         Ballot toChallenge = committed.remove(bid);
 
+        /* Add the Ballot to challenged */
         if(toChallenge != null) challenged.add(toChallenge);
 
+        /* Return the ballot that was challenged */
         return toChallenge;
     }
 
     /**
+     * Commits a new Ballot given the bid, nonce, and ballot contents as an ASExpression
+     *
      * @param bid       Ballot Identification Number
      * @param nonce     Nonce for the ballot
      * @param ballot    Ballot as an ASExpression
@@ -102,8 +114,10 @@ public class Precinct {
      */
     public boolean castBallot(String bid){
 
+        /* Remove the Ballot from committed */
         Ballot toCast = committed.remove(bid);
 
+        /* Add it to cast and check */
         return toCast != null && cast.add(toCast);
     }
 
@@ -112,11 +126,13 @@ public class Precinct {
      */
     public void closePolls() {
 
+        /* Challenge each committed Ballot */
         for(String bid : committed.keySet())
             challengeBallot(bid);
     }
 
     /**
+     * TODO: Homomorphically tallies all the cast Ballots into one "master" Ballot
      *
      * @return          a Ballot representing the sum total of all of the votes
      *                  cast in this precinct
@@ -126,6 +142,8 @@ public class Precinct {
     }
 
     /**
+     * Constructs and returns a new ListExpression of each of the challenged ballots
+     * as ListExpressions.
      *
      * @return          the list of challenged Ballots as a ListExpression of
      *                  ListExpressions
