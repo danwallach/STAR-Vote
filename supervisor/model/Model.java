@@ -24,7 +24,6 @@ package supervisor.model;
 
 import auditorium.IAuditoriumParams;
 import auditorium.NetworkException;
-import crypto.adder.PrivateKey;
 import crypto.adder.PublicKey;
 import crypto.interop.AdderKeyManipulator;
 import sexpression.ASExpression;
@@ -123,10 +122,10 @@ public class Model {
     private static String lastHash = initialLastHash;
 
     /** BID to hash values for chaining */
-    private static HashMap<String, String> HashToBID = new HashMap<>();
+    private HashMap<String, String> HashToBID = new HashMap<>();
 
     /** machine ID numbers to hash values for chaining */
-    private static HashMap<String, String> HashToMID = new HashMap<>();
+    private HashMap<String, String> HashToMID = new HashMap<>();
 
 /* --------------------------------------------------------------------------------------------------------- */
 /* --------------------------------------------------------------------------------------------------------- */
@@ -1534,7 +1533,7 @@ public class Model {
      *
      * @return true if the hash chain is valid, false if it has been compromised.
      */
-    private static Boolean isHashChainCompromised(){
+    private Boolean isHashChainCompromised(){
 
         /* Todo could this be recursive? */
         String previousHash = initialLastHash;
@@ -1561,7 +1560,7 @@ public class Model {
     /**
      * Adds flag to hash chain signalling end of chain
      */
-    private static void closeHashChain(){
+    private void closeHashChain(){
         HashToBID.put(lastHash, "0000000000");
     }
 
