@@ -108,11 +108,8 @@ public class Model {
 
     private PINValidator pinValidator = PINValidator.SINGLETON;
 
-
-
-
 /* --------------------------------------------------------------------------------------------------------- */
-/* ---------------------------------------- HASHING STUFF TO ADD ------------------------------------------- */
+/* ------------------------------------------- HASHING FIELDS ---------------------------------------------- */
 /* --------------------------------------------------------------------------------------------------------- */
 
     /** A formatter for the hash codes */
@@ -889,13 +886,9 @@ public class Model {
                 BallotScannerMachine bsm = (BallotScannerMachine) m;
 
                 /* Figure out and set the activated status of the machine */
-                if(e.getStatus().equals("active")) {
-                    bsm.setStatus(BallotScannerMachine.ACTIVE);
-                } else if (e.getStatus().equals("inactive"))
-                    bsm.setStatus(BallotScannerMachine.INACTIVE);
-                else
-                    throw new IllegalStateException("Invalid BallotScanner Status: "
-                            + e.getStatus());
+                if(e.getStatus().equals("active"))         bsm.setStatus(BallotScannerMachine.ACTIVE);
+                else if (e.getStatus().equals("inactive")) bsm.setStatus(BallotScannerMachine.INACTIVE);
+                else throw new IllegalStateException("Invalid BallotScanner Status: " + e.getStatus());
 
                 /* Set the battery and counts appropriately */
                 bsm.setBattery(e.getBattery());
@@ -906,16 +899,19 @@ public class Model {
                 bsm.setOnline(true);
 
                 /* Check to see if this ballot scanner has a conflicting label */
-                if (e.getLabel() > 0){
+                if (e.getLabel() > 0) {
+
                     /* Look at every known machine's labels */
-                    for(AMachine machine : machines){
-                        if(machine.getLabel() == e.getLabel() && machine != m){
+                    for (AMachine machine : machines) {
+
+                        if (machine.getLabel() == e.getLabel() && machine != m) {
+
                             /* If there is a conflict, relabel this (the event generator) machine. */
                             int maxLabel = 0;
-                            for(AMachine ma : machines){
-                                if(ma instanceof BallotScannerMachine)
+
+                            for (AMachine ma : machines)
+                                if (ma instanceof BallotScannerMachine)
                                     maxLabel = Math.max(maxLabel, ma.getLabel());
-                            }
 
                             /* Announce the new label */
                             auditorium.announce(new AssignLabelEvent(mySerial, e.getSerial(), maxLabel + 1));
@@ -925,39 +921,43 @@ public class Model {
                 }
 
                 /* Now update the corrected label information */
+
+                /* If the event has the label, go ahead and set it to that */
                 if (e.getLabel() > 0)
                     bsm.setLabel(e.getLabel());
-                else {
-                    if (isActivated) {
-                        /* If the scanner wasn't labeled, label it now */
-                        if (bsm.getLabel() > 0)
-                        {
-                            auditorium.announce(new AssignLabelEvent(mySerial, e.getSerial(), bsm.getLabel()));
-                        }
-                        else {
-                            int maxLabel = 0;
-                            for (AMachine ma : machines) {
-                                if (ma instanceof BallotScannerMachine && ma.getLabel() > maxLabel)
-                                {
-                                    maxLabel = ma.getLabel();
-                                }
-                            }
-                            auditorium.announce(new AssignLabelEvent(mySerial, e
-                                    .getSerial(), maxLabel + 1));
-                        }
-                        auditorium.announce(new PollStatusEvent(mySerial, e.getSerial(), arePollsOpen ? 1:0 ));
 
+                /* If not, check if it's activated and give it a label */
+                else if (isActivated) {
+
+                    /* If the scanner was labelled, assign it that label */
+                    if (bsm.getLabel() > 0)
+                        auditorium.announce(new AssignLabelEvent(mySerial, e.getSerial(), bsm.getLabel()));
+
+                    /* Otherwise... */
+                    else {
+
+                        int maxLabel = 0;
+
+                        /* Find the highest label */
+                        for (AMachine ma : machines)
+                            if (ma instanceof BallotScannerMachine && ma.getLabel() > maxLabel)
+                                maxLabel = ma.getLabel();
+
+                        /* And assign it a label one greater */
+                        auditorium.announce(new AssignLabelEvent(mySerial, e.getSerial(), maxLabel + 1));
                     }
+
+                    /* Get the poll status */
+                    auditorium.announce(new PollStatusEvent(mySerial, e.getSerial(), arePollsOpen ? 1:0));
                 }
             }
-
-
 
             /**
              * Handler for a supervisor (status) event. Adds the machine if it
              * hasn't been seen, and updates its status if it has.
              */
             public void supervisor(SupervisorEvent e) {
+
                 /* On getting one of these, poll all of the machines */
                 auditorium.announce(new PollMachinesEvent(mySerial, new Date().getTime(), keyword));
 
@@ -968,10 +968,9 @@ public class Model {
                 if (m != null && !(m instanceof SupervisorMachine))
                     throw new IllegalStateException("machine " + e.getSerial() + " is not a supervisor, but broadcasted supervisor message");
 
-                /* If the machine hasn't been seen before, add it to the list of machines and initialize it*/
+                /* If the machine hasn't been seen before, add it to the list of machines and initialize it */
                 if (m == null) {
-                    m = new SupervisorMachine(e.getSerial(),
-                            e.getSerial() == mySerial);
+                    m = new SupervisorMachine(e.getSerial(), e.getSerial() == mySerial);
                     machines.add(m);
                     machinesChangedObs.notifyObservers();
                 }
@@ -981,7 +980,7 @@ public class Model {
 
                 String status = e.getStatus();
 
-                /* Check the activation status of this machine. If it is active, deactivate THIS machine */
+                /* Check and set the activation status of this machine. */
                 switch (status) {
                     case "active":
                         sup.setStatus(SupervisorMachine.ACTIVE);
@@ -1005,15 +1004,13 @@ public class Model {
              * number.
              */
             public void votebox(VoteBoxEvent e) {
+
                 /* Get the mini model */
                 AMachine m = getMachineForSerial(e.getSerial());
 
                 /* If this isn't a votebox, bugout */
                 if (m != null && !(m instanceof VoteBoxBooth))
-                    throw new IllegalStateException(
-                            "machine "
-                                    + e.getSerial()
-                                    + " is not a booth, but broadcasted votebox message");
+                    throw new IllegalStateException("machine " + e.getSerial() + " is not a booth, but broadcasted votebox message");
 
                 /* If we haven't seen this machine before, initialize and add it */
                 if (m == null) {
@@ -1053,15 +1050,19 @@ public class Model {
                 
                 /* Check to see if this votebox has a conflicting label */
                 if (e.getLabel() > 0){
-                	for(AMachine machine : machines){
-                		if(machine.getLabel() == e.getLabel() && machine != m){
-                			/* If there is a conflict, relabel this (the event generator) machine. */
-                			int maxLabel = 0;
-                			for(AMachine ma : machines){
+
+                    /* Cycle through the machines and find the machine with the event label */
+                	for (AMachine machine : machines) {
+
+                		/* If there is a conflict, relabel this (the event generator) machine. */
+                		if (machine.getLabel() == e.getLabel() && machine != m) {
+
+                            int maxLabel = 0;
+
+                            for (AMachine ma : machines)
                 				if(ma instanceof VoteBoxBooth)
                 					maxLabel = Math.max(maxLabel, ma.getLabel());
-                			}
-                			
+
                                 auditorium.announce(new AssignLabelEvent(mySerial, e.getSerial(), maxLabel + 1));
 
                             /* Now that we've fixed the label, we're done */
@@ -1076,26 +1077,27 @@ public class Model {
 
                 /* If the machine doesn't have a label, give it one */
                 else {
+
                     if (isActivated) {
+
+                        /* Announce the new label */
                         if (booth.getLabel() > 0)
-                            /* Announce the new label */
-                            auditorium.announce(new AssignLabelEvent(mySerial, e
-                                    .getSerial(), booth.getLabel()));
+                            auditorium.announce(new AssignLabelEvent(mySerial, e.getSerial(), booth.getLabel()));
+
                         else {
+
                             int maxLabel = 0;
-                            for (AMachine ma : machines) {
-                                if (ma instanceof VoteBoxBooth
-                                        && ma.getLabel() > maxLabel)
+
+                            for (AMachine ma : machines)
+                                if (ma instanceof VoteBoxBooth && ma.getLabel() > maxLabel)
                                     maxLabel = ma.getLabel();
-                            }
 
                             /* Announce the new label */
-                            auditorium.announce(new AssignLabelEvent(mySerial, e
-                                    .getSerial(), maxLabel + 1));
+                            auditorium.announce(new AssignLabelEvent(mySerial, e.getSerial(), maxLabel + 1));
                         }
 
                         /* Announce the status of the newly added machine */
-                        auditorium.announce(new PollStatusEvent(mySerial, e.getSerial(), arePollsOpen ? 1:0 ));
+                        auditorium.announce(new PollStatusEvent(mySerial, e.getSerial(), arePollsOpen ? 1:0));
                     }
                 }
             }
@@ -1105,7 +1107,6 @@ public class Model {
              * It should not yet be tallied.
              */
             public void commitBallot(CommitBallotEvent e) {
-
 
                 /* Get the mini-model for the machine that committed the ballot */
             	AMachine m = getMachineForSerial(e.getSerial());
@@ -1133,21 +1134,8 @@ public class Model {
 
                     /* Announce that the ballot was received, so it's logged */
                     auditorium.announce(new BallotReceivedEvent(mySerial, e.getSerial(), e.getNonce(), e.getBID(), e.getPrecinct()));
-
-                    /* ------------------------------- TO BE REPLACED ---------------------------------------------- */
-//                    BallotStore.addBallot(e.getBID(), StringExpression.makeString(e.getBallot()));
-//                    BallotStore.mapPrecinct(e.getBID(), e.getPrecinct());
-//                    BallotStore.setPrecinctByBID(e.getBID(), e.getPrecinct());
-//                    BallotStore.testMapPrint();
-
-                      /* Add the vote to the tallier and list of committed BID's */
-//                    String precinct = BallotStore.getPrecinctByBID(e.getBID());
-//                    talliers.get(precinct).recordVotes(e.getBallot(), e.getNonce());
-
-//                    String bid = e.getBID();
-//                    committedBids.put(bid, e.getNonce());
-
                 }
+
                 /* TODO Log and don't count this -- inform the user with a popup */
                 else throw new RuntimeException("Bad commit attempt: machine only authorised provisionally.");
 
@@ -1158,6 +1146,7 @@ public class Model {
              * Handler for the ProvisionalCommitEvent. Receives ballot as it would with a normal ballot
              */
             public void provisionalCommitBallot(ProvisionalCommitEvent e) {
+
                 /* Get the machine's mini-model */
                 AMachine m = getMachineForSerial(e.getSerial());
 
@@ -1175,10 +1164,9 @@ public class Model {
                     /* Announce that the provisional ballot was received */
                     auditorium.announce(new BallotReceivedEvent(mySerial, e.getSerial(), e.getNonce(), e.getBID(), thisPrecinct.getPrecinctID()));
                 }
+
                 /* TODO Log and disregard, popup to inform the user */
                 else throw new RuntimeException("Bad commit attempt: machine not authorised provisionally.");
-
-
             }
 
             /**
@@ -1186,6 +1174,7 @@ public class Model {
              * instance of a TapMachine to it's list of machines for further reference.
              */
             public void tapMachine(TapMachineEvent tapMachineEvent) {
+
                 /* Get the mini-model and check that it's a TapMachine */
                 AMachine m = getMachineForSerial(tapMachineEvent.getSerial());
 
@@ -1209,12 +1198,12 @@ public class Model {
                 }
             }
 
-
             /**
              * Handler for the BallotScannerEvent. Receives ballot ID from scan event and fires appropriate events in response,
              * namely an EncryptedBastBallotWithNIZKsEvent and a BallotScanAccepted/BallotScanRejected events as needed.
              */
             public void ballotScanned(BallotScannedEvent e) {
+
                 // Test ballot stuff... TODO: Might want to implement a way to rapidly cast votes without going through multiple VoteBox sessions.
                 /*readTestBallot();
                 committedBids.put("711567939", testNonce);
@@ -1227,7 +1216,6 @@ public class Model {
                     System.err.println("A machine other than a ballot scanner attempted to broadcast a ballot scanned event! ");
                     return;
                 }
-
 
                 /* Get the ballot information from the event */
                 String bid = e.getBID();
@@ -1242,43 +1230,14 @@ public class Model {
                 /* Tell the ballot store to cast the ballot */
                 boolean wasCast = p.castBallot(bid);
 
-//                    ASExpression ballot = BallotStore.castCommittedBallot(e.getBID());
-
-//                    /* Get the precinct information */
-//                    String precinct = BallotStore.getPrecinctByBID(e.getBID());
-
-//                    talliers.get(precinct).confirmed(nonce);
-
-
                 if (wasCast) auditorium.announce(new EncryptedCastBallotWithNIZKsEvent(serial, nonce, e.getBallot(), bid));
                 else throw new RuntimeException("Found the precinct with the bid, but couldn't cast the ballot...");
 
+                /* Now tell the ballot scanner that this ballot was accepted */
+                System.out.println("Sending scan confirmation!");
+                System.out.println("BID: " + bid);
 
-                      /* Cast the ballot based on the kind of encryption this election is using */
-//                    if(auditoriumParams.getCastBallotEncryptionEnabled()){
-                          /* Cast the ballot depending on if NIZKs are turned on */
-//                        if(auditoriumParams.getEnableNIZKs()){
-                              /* Announce that the ballot is being cast, encrypted with NIZKs */
-//                            System.out.println("announcing an EncryptedCastBallotWithNIZKsEvent");
-//                            auditorium.announce(new EncryptedCastBallotWithNIZKsEvent(serial, nonce, ballot.toVerbatim(),e.getBID()));
-//                        } else{
-                              /* Announce that the ballot is being cast, encrypted */
-//                            System.out.println("announcing an EncryptedCastBallotEvent");
-//                            auditorium.announce(new EncryptedCastBallotEvent(serial, nonce, ballot.toVerbatim(), e.getBID()));
-//                        }
-//                    }
-//                    else{
-                          /* Announce that the ballot is being cast */
-//                        System.out.println("Announcing a CastCommittedBallotEvent");
-//                        auditorium.announce(new CastCommittedBallotEvent(serial, nonce, e.getBID()));
-                          /* that should trigger my own castBallot listener. */
-//                    }
-
-                    /* Now tell the ballot scanner that this ballot was accepted */
-                    System.out.println("Sending scan confirmation!");
-                    System.out.println("BID: " + bid);
-
-                    auditorium.announce(new BallotScanAcceptedEvent(mySerial, bid));
+                auditorium.announce(new BallotScanAcceptedEvent(mySerial, bid));
             }
 
             /**
@@ -1292,14 +1251,13 @@ public class Model {
                 /* This only works if the polls are open */
                 if(arePollsOpen()) {
 
-
-                    /* Get the ballot style that the PIN was issued for */
-
+                    /* Validate the PIN */
                     boolean isValidPIN = pinValidator.validatePIN(PIN);
 
                     /* Check that there is a record of this PIN and ballot style */
                     if (isValidPIN) {
 
+                        /* Get the precinct and then ballot style for this PIN */
                         String PID = pinValidator.usePIN(PIN);
                         String ballotFile = precincts.get(PID).getBallotFile();
 
@@ -1324,7 +1282,6 @@ public class Model {
 
                 /* TODO provide error handling if the polls aren't open? */
             }
-
 
             /**
              * Handler for PollStatusEvent
@@ -1380,8 +1337,6 @@ public class Model {
         statusTimer.start();
     }
 
-
-
     /**
      * Broadcasts this supervisor's status, and resets the status timer
      */
@@ -1413,51 +1368,11 @@ public class Model {
             /* Pare off the precinct information */
             String precinctID = fileName.substring(fileName.length()-7,fileName.length()-4);
 
-            PrivateKey privateKey = (PrivateKey) auditoriumParams.getKeyStore().loadAdderKey("private");
-            PublicKey publicKey   = (PublicKey)  auditoriumParams.getKeyStore().loadAdderKey("public");
+            PublicKey publicKey = (PublicKey) auditoriumParams.getKeyStore().loadAdderKey("public");
 
-            Precinct precinct = new Precinct(precinctID, ballotFile.getAbsolutePath(), publicKey, privateKey);
-
-//            ITallier tallier = null;
-//                try {
-//                    /*
-//                     * Determine which kind of tallier to initialize for this ballot, depending on
-//                     * NIZKs and encryption
-//                     */
-//                    if(!auditoriumParams.getEnableNIZKs()){
-//                        /* Loading privateKey well in advance so the whole affair is "fail-fast" */
-//                        /* We use our own keys here, since we don't need NIZKs */
-//                        Key privateKey = auditoriumParams.getKeyStore().loadKey(mySerial + "-private");
-//
-//                        tallier = new ChallengeDelayedTallier(privateKey);
-//                    }else{
-//                        /* For NIZKs we use the Adder notion of keys */
-//                        PrivateKey privateKey = (PrivateKey)auditoriumParams.getKeyStore().loadAdderKey("private");
-//                        PublicKey publicKey = (PublicKey) auditoriumParams.getKeyStore().loadAdderKey("public");
-//
-//                        tallier = new ChallengeDelayedWithNIZKsTallier(publicKey, privateKey);
-//                    }
-//                } catch (AuditoriumCryptoException e1) {
-//                    System.err.println("Crypto error encountered: "+e1.getMessage());
-//                    e1.printStackTrace();
-//                }
-
-        /* --------------------------------------- PRECINCT CODE -------------------------------------------*/
-
-//            /* If we haven't seen this tallier before, add it to the map of talliers to precincts */
-//            /* TODO Make sure that this works like it should */
-//            if(tallier != null && !talliers.containsValue(tallier))
-//                talliers.put(precinct, tallier);
-//
-//            /* If the tallier is null or already in the map of talliers, we've done something wrong */
-//            else
-//                throw new RuntimeException("Tallier was not properly initialized for precinct " + precinct);
-//
-//            /* Add the ballot to the ballot store */
-//            BallotStore.addBallot(precinct, ballotFile.getAbsolutePath());
+            Precinct precinct = new Precinct(precinctID, ballotFile.getAbsolutePath(), publicKey);
 
             precincts.put(precinctID, precinct);
-
         }
         /* If we get an exception on the file, show a dialog indicating as much. This is good error handling, methinks */
         catch(NumberFormatException e){ JOptionPane.showMessageDialog(null, "Please choose a valid ballot"); }
