@@ -35,7 +35,7 @@ public class EncryptedTallierWithNIZKs implements ITallier {
     /** The final public key, to ensure that the public key remains the same throughout the election process */
     protected PublicKey _finalPublicKey = null;
 
-    /** The final private key, to ensure that the same private key is used througout the election */
+    /** The final private key, to ensure that the same private key is used throughout the election */
     protected PrivateKey _finalPrivateKey = null;
 
 	/** The results of the election are stored by race ID in this map */

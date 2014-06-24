@@ -38,23 +38,22 @@ public class Precinct {
     private List<Ballot> challenged;
 
     /** An object used to homomorphically tally ballots. */
-    private ITallier tallier;
+    private PublicKey publicKey;
 
     /**
      * @param precinctID    Three digit precinct code
      * @param ballotFile    The zip file containing the ballot style
      */
-    public Precinct(String precinctID, String ballotFile, PublicKey publicKey, PrivateKey privateKey){
+    public Precinct(String precinctID, String ballotFile, PublicKey publicKey){
 
         this.precinctID = precinctID;
         this.ballotFile = ballotFile;
+        this.publicKey = publicKey;
 
         allBallots = new HashMap<>();
         committed  = new HashMap<>();
         cast       = new ArrayList<>();
         challenged = new ArrayList<>();
-
-        tallier = new ChallengeDelayedWithNIZKsTallier(publicKey, privateKey);
     }
 
     /**

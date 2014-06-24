@@ -61,13 +61,14 @@ public class MembershipProof {
 	}
 
 	/**
-	 * Computes the actual proof given the cipher text, public key, value,
-	 * and domain.
-	 *
-	 * @param ciphertext    the cipher text (member of the domain)
-	 * @param pubKey        the public key
-	 * @param value         the number of different
-	 * @param domain        the domain (possible ciphertext values)
+	 * Computes the proof as detailed above by forming one proof for each
+     * element of the domain. All but one of the proofs (the one corresponding
+     * to \em value) will be fake.
+     *
+	 * @param ciphertext    the ciphertext that the proof is being performed on.
+	 * @param pubKey        the public key used to encrypt the message.
+	 * @param value         the plaintext value of the ciphertext.
+	 * @param domain        the domain of possible values of the plaintext.
 	 */
 	public void compute(ElgamalCiphertext ciphertext, PublicKey pubKey, AdderInteger value, List domain) {
 

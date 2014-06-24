@@ -101,8 +101,6 @@ public class Model {
     /** A Map of Precinct IDs to Precincts */
     private TreeMap<String, Precinct> precincts;
 
-
-
     /** Keeps track of the last heard polls open event so that new machines can be updated when they come online */
     private PollsOpenEvent lastPollsOpenHeard;
 

@@ -83,8 +83,6 @@ public class Election {
      * @param  partialSums      the partial sums (the list of products of the encrypted
      *                          votes' h^y values wrapped in an additional list)
      *
-     * @param  coeffs           the coefficients
-     *
      * @param  sum              the sum
      *
      * @param  masterKey        the master public key

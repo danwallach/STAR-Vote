@@ -23,6 +23,25 @@ public class VoteProof {
         this.proofList = proofList;
     }
 
+    /**
+     * Computes a proof of vote validity.
+     *
+     * First, this function proves that each ciphertext encrypts a
+     * 0-1 value.  To do this, a proof is generated for each
+     * ciphertext in the vote, with a domain of \f$\{0, 1\}\f$.
+     * Then, all of the ciphertexts are multiplied together and a
+     * final proof is computed over the product of the
+     * ciphertexts, with a domain of \f$\{\mathit{minimum},\ldots,
+     * \mathit{maximum}\}\f$.
+     *
+     * @param vote the vote the proof will be computed over.
+     * @param pubKey
+     * @param choices the vector of \em true/ \em false plaintext choices.
+     * @param min
+     * @param max
+     *
+     * @see MembershipProof#compute(ElgamalCiphertext, PublicKey, AdderInteger, List)
+     */
     public void compute(Vote vote, PublicKey pubKey,
                         List<AdderInteger> choices, int min, int max) {
         this.p = pubKey.getP();

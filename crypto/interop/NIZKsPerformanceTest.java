@@ -30,10 +30,7 @@ import votebox.middle.view.IView;
 import java.io.File;
 import java.math.BigInteger;
 import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 public class NIZKsPerformanceTest {
@@ -150,15 +147,13 @@ public class NIZKsPerformanceTest {
 					continue;
 				}
 
-				for(File c : child)
-					toDelete.add(c);
+                Collections.addAll(toDelete, child);
 			
 				toDelete.add(del);
 			}else{
 				if(!del.delete())
 					del.deleteOnExit();
-				continue;
-			}
+            }
 		}
 	}
 
@@ -290,8 +285,9 @@ public class NIZKsPerformanceTest {
 			ListExpression expected  = (ListExpression)p.first;
 			ListExpression encrypted = (ListExpression)((Pair)p.second).first;
 			List<List<AdderInteger>> random = (List<List<AdderInteger>>)((Pair)p.second).second;
-			
-			long start = System.currentTimeMillis();
+
+            System.out.println(encrypted);
+            long start = System.currentTimeMillis();
 			ListExpression decrypted = BallotEncrypter.SINGLETON.adderDecrypt(encrypted, random);
 			long stop = System .currentTimeMillis();
 			
@@ -335,9 +331,11 @@ public class NIZKsPerformanceTest {
 
         long elapsedTime = 0;
 
-        HashMap<String, ASExpression> map = new HashMap();
+        HashMap<String, ASExpression> map = new HashMap<>();
 
         SecureRandom r = new SecureRandom();
+
+        System.out.println(_ballot.toASExpression());
 
         AuthorizedToCastWithNIZKsEvent ATCE = new AuthorizedToCastWithNIZKsEvent(0, 0, ASExpression.makeVerbatim(_seeds.get(0)), "3", _ballot.toASExpression().toVerbatim(),
                 AdderKeyManipulator.generateFinalPublicKey(_adderPublicKey));
@@ -364,6 +362,8 @@ public class NIZKsPerformanceTest {
             List<List<String>> groups = _ballot.getRaceGroups();
 
             ListExpression encBallot = BallotEncrypter.SINGLETON.encryptWithProof(exp, groups, AdderKeyManipulator.generateFinalPublicKey(_adderPublicKey));
+
+            System.out.println(encBallot);
 
             ASExpression nonce = StringExpression.makeString(seed);
             String bid = (r.nextInt() + "");

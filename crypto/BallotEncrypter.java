@@ -167,7 +167,7 @@ public class BallotEncrypter {
      * @param subBallot         This is the pre-encrypt ballot in the form ((race-id counter) ...)
      * @param pubKey            this is an Adder-style public key
      * @param writeInKey        the key used to encrypt the writeIn
-     * @return                  An ListExpression of the form ((vote [vote]) (vote-ids ([id1], [id2], ...)) (proof [proof]) (public-key [key]))
+     * @return                  A ListExpression of the form ((vote [vote]) (vote-ids ([id1], [id2], ...)) (proof [proof]) (public-key [key]))
      */
     @SuppressWarnings("unchecked")
     private ListExpression encryptSubBallotWithProof(ListExpression subBallot, PublicKey pubKey, byte[] writeInKey){
