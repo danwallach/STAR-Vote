@@ -30,7 +30,7 @@ import crypto.interop.AdderKeyManipulator;
 import sexpression.ASExpression;
 import sexpression.StringExpression;
 import sexpression.stream.Base64;
-import supervisor.model.Machine.*;
+import supervisor.model.machine.*;
 import votebox.events.*;
 
 import javax.swing.*;
@@ -130,7 +130,7 @@ public class Model {
     /** BID to hash values for chaining */
     private static HashMap<String, String> HashToBID = new HashMap<>();
 
-    /** Machine ID numbers to hash values for chaining */
+    /** machine ID numbers to hash values for chaining */
     private static HashMap<String, String> HashToMID = new HashMap<>();
 
 /* --------------------------------------------------------------------------------------------------------- */
@@ -769,7 +769,7 @@ public class Model {
                 AMachine m = getMachineForSerial(e.getSerial());
 
                 if (m != null) m.setOnline(false);
-                else throw new RuntimeException("WARNING: Machine left without having been registered");
+                else throw new RuntimeException("WARNING: machine left without having been registered");
 
                 /* Decrement the number of connected machines and then notify the observers */
                 numConnected--;
@@ -883,7 +883,7 @@ public class Model {
                  * probably with serial numbers. Bugout.
                  */
                 if (m != null && !(m instanceof BallotScannerMachine))
-                    throw new IllegalStateException("Machine " + e.getSerial() + " is not a ballotScanner, but broadcast ballotScanner message");
+                    throw new IllegalStateException("machine " + e.getSerial() + " is not a ballotScanner, but broadcast ballotScanner message");
 
                 /* Now we're sure that the machine is a ballot scanner, enforce its type */
                 BallotScannerMachine bsm = (BallotScannerMachine) m;
@@ -966,7 +966,7 @@ public class Model {
 
                 /* Check that the sender of the message was actually a Supervisor */
                 if (m != null && !(m instanceof SupervisorMachine))
-                    throw new IllegalStateException("Machine " + e.getSerial() + " is not a supervisor, but broadcasted supervisor message");
+                    throw new IllegalStateException("machine " + e.getSerial() + " is not a supervisor, but broadcasted supervisor message");
 
                 /* If the machine hasn't been seen before, add it to the list of machines and initialize it*/
                 if (m == null) {
@@ -1011,7 +1011,7 @@ public class Model {
                 /* If this isn't a votebox, bugout */
                 if (m != null && !(m instanceof VoteBoxBooth))
                     throw new IllegalStateException(
-                            "Machine "
+                            "machine "
                                     + e.getSerial()
                                     + " is not a booth, but broadcasted votebox message");
 
@@ -1149,7 +1149,7 @@ public class Model {
 
                 }
                 /* TODO Log and don't count this -- inform the user with a popup */
-                else throw new RuntimeException("Bad commit attempt: Machine only authorised provisionally.");
+                else throw new RuntimeException("Bad commit attempt: machine only authorised provisionally.");
 
                 /* TODO Should we report if a non-votebox attempts to commit? */
             }
@@ -1176,7 +1176,7 @@ public class Model {
                     auditorium.announce(new BallotReceivedEvent(mySerial, e.getSerial(), e.getNonce(), e.getBID(), thisPrecinct.getPrecinctID()));
                 }
                 /* TODO Log and disregard, popup to inform the user */
-                else throw new RuntimeException("Bad commit attempt: Machine not authorised provisionally.");
+                else throw new RuntimeException("Bad commit attempt: machine not authorised provisionally.");
 
 
             }
@@ -1190,7 +1190,7 @@ public class Model {
                 AMachine m = getMachineForSerial(tapMachineEvent.getSerial());
 
                 if (m != null && !(m instanceof TapMachine))
-                    throw new IllegalStateException("Machine " + tapMachineEvent.getSerial() + " is not a Tap but broadcasted TapMachineEvent");
+                    throw new IllegalStateException("machine " + tapMachineEvent.getSerial() + " is not a Tap but broadcasted TapMachineEvent");
 
                 /* If the machine doesn't exist yet, add and initialize it */
                 else if (m == null) {
@@ -1544,7 +1544,7 @@ public class Model {
     /* ----------------------------------------------------------------------------- */
 
     /**
-     * Creates a hash for voting session and saves BID and Machine ID (MID) for hash chain checking later
+     * Creates a hash for voting session and saves BID and machine ID (MID) for hash chain checking later
      *
      * @param serialNumber the serial number of the machine
      * @return the resulting hash

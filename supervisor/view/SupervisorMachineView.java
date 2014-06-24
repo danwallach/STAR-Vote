@@ -35,7 +35,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.border.BevelBorder;
 
-import supervisor.model.Machine.SupervisorMachine;
+import supervisor.model.machine.SupervisorMachine;
 
 /**
  * The view for another supervisor on the network.
@@ -137,7 +137,7 @@ public class SupervisorMachineView extends AMachineView {
         /* If this is the Supervisor in charge, set the label accordingly */
         /* TODO Get rid of this? */
         if (machine.isCurrentMachine())
-            currentLabel.setText("(Current Machine)");
+            currentLabel.setText("(Current machine)");
         else
             currentLabel.setText("");
 

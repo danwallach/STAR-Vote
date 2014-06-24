@@ -25,10 +25,7 @@ package supervisor.model.tallier;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 import sexpression.*;
 import sexpression.stream.*;
@@ -64,7 +61,8 @@ public class Tallier implements ITallier{
 	 * @see supervisor.model.tallier.ITallier#getReport()
 	 */
 	public java.util.ArrayList<ASExpression> getReport() {
-		Map<String, BigInteger> results = new HashMap<String, BigInteger>();
+        /* this Arraylist will house the homomorphically tallied votes */
+        ArrayList<ASExpression> results = new ArrayList<>();
 
         /*
          * Build the map to be returned by counting each candidate's
@@ -72,7 +70,7 @@ public class Tallier implements ITallier{
          */
 		for(Map<String, Integer> race : votes.values()){
 			for(String candidate : race.keySet())
-				results.put(candidate, new BigInteger(""+race.get(candidate)));
+				results.add(new ListExpression(candidate, (new BigInteger("" + race.get(candidate))).toString()));
 		}
 
 		return results;

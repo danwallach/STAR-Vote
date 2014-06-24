@@ -277,7 +277,7 @@ public interface VoteBoxEventListener {
     public void provisionalCommitBallot(ProvisionalCommitEvent provisionalCommitEvent);
 
     /**
-     * Initialization event of a Tap Machine
+     * Initialization event of a Tap machine
      */
     public void tapMachine(TapMachineEvent tapMachineEvent);
 

@@ -20,7 +20,7 @@
   * ACCESS OR USE OF THE SOFTWARE.
  */
 
-package supervisor.model.Machine;
+package supervisor.model.machine;
 
 /**
  * The model of a supervisor machine on the network.

@@ -45,7 +45,7 @@ import javax.swing.JPanel;
 import javax.swing.border.BevelBorder;
 
 import supervisor.model.Model;
-import supervisor.model.Machine.VoteBoxBooth;
+import supervisor.model.machine.VoteBoxBooth;
 
 /**
  * The view of a VoteBox booth on the network. Shows information such as the
@@ -343,7 +343,7 @@ public class VoteBoxBoothView extends AMachineView {
                     overrideButton.removeAll();
                     overrideButton.add(new MyJLabel("Waiting"));
                     repaint();
-                    model.authorize(machine.getSerial());
+                    model.authorize(machine.getSerial(), view.getCurrentBallot());
                 } catch (IOException e) {
                     System.err.println("Error encountered while authorizing <"+e.getMessage()+">");
                     e.printStackTrace();

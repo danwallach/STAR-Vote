@@ -75,7 +75,7 @@ public class Precinct {
 
     /**
      * @param bid       Ballot Identification Number
-     * @return
+     * @return          the ballot that was challenged
      */
     public Ballot challengeBallot(String bid){
 
@@ -108,7 +108,7 @@ public class Precinct {
     }
 
     /**
-     *
+     * Moves all of the non-cast (i.e. committed) ballots into the challenged list.
      */
     public void closePolls() {
 

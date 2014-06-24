@@ -20,7 +20,7 @@
   * ACCESS OR USE OF THE SOFTWARE.
  */
 
-package supervisor.model.Machine;
+package supervisor.model.machine;
 
 import supervisor.model.ObservableEvent;
 

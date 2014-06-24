@@ -78,6 +78,12 @@ public class VoteBoxEventNotifier implements VoteBoxEventListener {
             l.castCommittedBallot(e);
     }
 
+    @Override
+    public void completedUpload(CompletedUploadEvent e) {
+        for(VoteBoxEventListener l : listeners)
+            l.completedUpload(e);
+    }
+
     public void joined(JoinEvent e) {
         System.out.println("Joined!");
         for (VoteBoxEventListener l : listeners)
@@ -250,6 +256,12 @@ public class VoteBoxEventNotifier implements VoteBoxEventListener {
             l.provisionalAuthorizedToCast(e);
     }
 
+    @Override
+    public void startUpload(StartUploadEvent e) {
+        for(VoteBoxEventListener l : listeners)
+            l.startUpload(e);
+    }
+
     public void provisionalCommitBallot(ProvisionalCommitEvent e) {
         for(VoteBoxEventListener l : listeners)
             l.provisionalCommitBallot(e);
@@ -259,5 +271,7 @@ public class VoteBoxEventNotifier implements VoteBoxEventListener {
         for (VoteBoxEventListener l : listeners)
             l.tapMachine(e);
     }
+
+
 
 }

@@ -1,4 +1,4 @@
-package supervisor.model.Machine;
+package supervisor.model.machine;
 
 /**
  * @author Matt Bernhard

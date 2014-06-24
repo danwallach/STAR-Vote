@@ -1,8 +1,8 @@
-package supervisor.model.Machine;
+package supervisor.model.machine;
 
 
 /**
- * Concrete Machine representation for a BallotScanner's mini-model
+ * Concrete machine representation for a BallotScanner's mini-model
  */
 public class BallotScannerMachine extends AMachine {
 

@@ -1,6 +1,6 @@
 package supervisor.view;
 
-import supervisor.model.Machine.TapMachine;
+import supervisor.model.machine.TapMachine;
 
 import javax.swing.*;
 import java.awt.*;

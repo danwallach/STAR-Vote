@@ -23,9 +23,9 @@
 package supervisor.view;
 
 import printer.Printer;
-import supervisor.model.Machine.AMachine;
+import supervisor.model.machine.AMachine;
 import supervisor.model.Model;
-import supervisor.model.Machine.TapMachine;
+import supervisor.model.machine.TapMachine;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -509,4 +509,7 @@ public class ActiveUI extends JPanel {
         else  model.openPolls();
     }
 
+    public String getCurrentBallot() {
+        return ballotLocChooser.getSelectedFile().getAbsolutePath();
+    }
 }

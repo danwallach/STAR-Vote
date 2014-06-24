@@ -392,7 +392,7 @@ public class NIZKsPerformanceTest {
 
         }
 
-        Map<String, BigInteger> report = null;
+        List<ASExpression> report = null;
         try{
             for(String string : map.keySet())   {
                 tallier.confirmed(map.get(string));
@@ -400,8 +400,8 @@ public class NIZKsPerformanceTest {
             }
 
             report = tallier.getReport();
-            for(String s : report.keySet()){
-                System.out.println(s + " : " + report.get(s));
+            for(ASExpression s : report){
+                System.out.println(s + " : " + s);
             }
         }catch (SearchSpaceExhaustedException e){
             System.out.println("ERROR");

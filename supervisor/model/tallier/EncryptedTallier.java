@@ -28,6 +28,7 @@ package supervisor.model.tallier;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -72,8 +73,8 @@ public class EncryptedTallier implements ITallier {
 	 */
 	public java.util.ArrayList<ASExpression> getReport() {
 
-        /* This map will store the final results */
-		Map<String, BigInteger> results = new HashMap<String, BigInteger>();
+        /* this Arraylist will house the homomorphically tallied votes */
+        ArrayList<ASExpression> results = new ArrayList<>();
 
         /* For each canidate, retrieve the encrypted vote totals */
 		for(String candidate : _votes.keySet()){
@@ -83,7 +84,7 @@ public class EncryptedTallier implements ITallier {
 
             /* Decrypt the total, and store the results to be returned */
 			BigInteger decryptedValue = ElGamalCrypto.SINGLETON.decrypt(_privateKey, value);
-			results.put(candidate, decryptedValue);
+			results.add(new ListExpression(candidate, decryptedValue.toString()));
 		}
 		
 		return results;

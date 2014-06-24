@@ -12,6 +12,10 @@ public class PINValidator {
 
     public static PINValidator SINGLETON = new PINValidator();
 
+
+    /** The default lifespan for a PIN, in seconds */
+    private static final int DEFAULT_LIFE_TIME = 180;
+
     /** Maps every PIN to a time stamp so that the PIN can expire */
     private static Map<String, PinTimeStamp> timeStamp = new HashMap<>();
 
@@ -36,6 +40,17 @@ public class PINValidator {
      * @return              new 5-digit pin as String
      */
     public String generatePIN(String precinctID) {
+        return generatePIN(precinctID, DEFAULT_LIFE_TIME);
+    }
+
+    /**
+     * this method is used to generate a PIN to be stored and used by a voter
+     *
+     * @param precinctID      3-digit precinct number
+     * @param lifespan        the life time, in seconds, of the PIN
+     * @return                new 5-digit pin as String
+     */
+    public String generatePIN(String precinctID, int lifespan) {
 
         /* TODO Review this code */
         String PIN = PINFormat.format(rand.nextInt(100000));
@@ -45,17 +60,26 @@ public class PINValidator {
             PIN = PINFormat.format(rand.nextInt(100000));
 
         /* create a new time stamp on this pin */
-        timeStamp.put(PIN, new PinTimeStamp());
+        timeStamp.put(PIN, new PinTimeStamp(lifespan));
         precinctIDs.put(PIN, precinctID);
 
         return PIN;
     }
 
     public boolean validatePIN(String PIN){
+        System.out.println(PIN + ": " + precinctIDs.containsKey(PIN) + " | " + timeStamp.get(PIN).isValid());
         return precinctIDs.containsKey(PIN) && timeStamp.get(PIN).isValid();
     }
 
     public String usePIN(String PIN){
         return precinctIDs.remove(PIN);
+    }
+
+
+    /**
+     * Clears the random and map of PINs
+     */
+    public void clear() {
+        SINGLETON = new PINValidator();
     }
 }

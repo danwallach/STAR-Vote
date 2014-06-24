@@ -40,7 +40,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import supervisor.model.*;
-import supervisor.model.Machine.*;
+import supervisor.model.machine.*;
 
 /**
  * The view that is shown on an inactive supervisor - only shows the number of

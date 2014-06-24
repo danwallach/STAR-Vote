@@ -1,6 +1,6 @@
 package supervisor.view;
 
-import supervisor.model.Machine.BallotScannerMachine;
+import supervisor.model.machine.BallotScannerMachine;
 import supervisor.model.Model;
 
 import javax.swing.*;

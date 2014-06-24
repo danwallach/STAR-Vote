@@ -6,8 +6,6 @@ package supervisor.model;
  */
 class PinTimeStamp{
 
-    /** The default lifespan for a PIN, in seconds */
-    private static final int DEFAULT_LIFE_TIME = 180;
 
     /** The time that this PIN came into the world */
     private long startTime;
@@ -20,17 +18,9 @@ class PinTimeStamp{
      *
      * @param lt the lifespan of the PIN in seconds
      */
-    @SuppressWarnings("SameParameterValue")
     public PinTimeStamp(int lt){
         startTime = System.currentTimeMillis();
         lifeTimeInSeconds = lt;
-    }
-
-    /**
-     * Default constructor, uses the defualt lifespan
-     */
-    public PinTimeStamp(){
-        this(DEFAULT_LIFE_TIME);
     }
 
     /**
