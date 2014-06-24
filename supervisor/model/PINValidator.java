@@ -52,33 +52,55 @@ public class PINValidator {
      */
     public String generatePIN(String precinctID, int lifespan) {
 
-        /* TODO Review this code */
+        /* Generate a random PIN */
         String PIN = PINFormat.format(rand.nextInt(100000));
 
         /* Ensure that we don't use a PIN that is already active */
         while(precinctIDs.containsKey(PIN))
             PIN = PINFormat.format(rand.nextInt(100000));
 
-        /* create a new time stamp on this pin */
+        /* Create a new time stamp on this pin */
         timeStamp.put(PIN, new PinTimeStamp(lifespan));
         precinctIDs.put(PIN, precinctID);
 
         return PIN;
     }
 
+    /**
+     * Checks that this PIN is a valid PIN
+     *
+     * @param PIN       5-digit pin to be validated
+     * @return          true if the PIN exists and has not yet expired, false otherwise
+     */
     public boolean validatePIN(String PIN){
+
         System.out.println(PIN + ": " + precinctIDs.containsKey(PIN) + " | " + timeStamp.get(PIN).isValid());
 
-        if(!timeStamp.get(PIN).isValid())
+        /* Check the timestamp of the PIN */
+        if(timeStamp.get(PIN) == null || !timeStamp.get(PIN).isValid())
             precinctIDs.remove(PIN);
 
         return precinctIDs.containsKey(PIN);
     }
 
+    /**
+     * Use a PIN to get the precinctID. After use, a PIN is removed. This method
+     * should only be called AFTER a separate call to validatePIN() so that the
+     * result of validatePIN() can be explicitly known, although this method behaves
+     * correctly if this is not done.
+     *
+     * @param PIN       5-digit pin to be validated
+     * @return          the 3-digit precinct ID corresponding to that PIN or null
+     *                  if this method was used without prior validation of PIN and
+     *                  PIN was invalid at the time of calling.
+     */
     public String usePIN(String PIN){
+
+        /* Check for expiration and that the PIN exists */
+        validatePIN(PIN);
+
         return precinctIDs.remove(PIN);
     }
-
 
     /**
      * Clears the random and map of PINs
