@@ -74,8 +74,6 @@ public class PINValidator {
      */
     public boolean validatePIN(String PIN){
 
-        System.out.println(PIN + ": " + precinctIDs.containsKey(PIN) + " | " + timeStamp.get(PIN).isValid());
-
         /* Check the timestamp of the PIN */
         if(timeStamp.get(PIN) == null || !timeStamp.get(PIN).isValid())
             precinctIDs.remove(PIN);

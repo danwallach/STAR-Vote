@@ -12,4 +12,6 @@ public class PrecinctTest extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
     }
+
+    public void test(){}
 }
