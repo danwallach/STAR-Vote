@@ -375,10 +375,15 @@ public class Model {
     /**
      * Closes the polls
      */
-    public void closePolls() {
+    public boolean closePolls() {
 
-        /* Announce that the polls are closing */
-        auditorium.announce(new PollsClosedEvent(mySerial, new Date().getTime()));
+        boolean canClose = isActiveVotingSession();
+
+        if(!canClose)
+            /* Announce that the polls are closing */
+            auditorium.announce(new PollsClosedEvent(mySerial, new Date().getTime()));
+
+        return !canClose;
     }
 
     /**
@@ -1447,6 +1452,20 @@ public class Model {
      */
     public String generatePIN(String precinctID){
         return pinValidator.generatePIN(precinctID);
+    }
+
+    /**
+     * Checks if any of the VoteBoxes are currently in a voting session
+     *
+     * @return      true if there is an active voting session, false otherwise
+     */
+    public boolean isActiveVotingSession(){
+
+        for (AMachine machine : machines)
+            if(machine instanceof VoteBoxBooth && ((VoteBoxBooth) machine).isInUse())
+                return true;
+
+        return false;
     }
 
     /* ----------------------------------------------------------------------------- */
