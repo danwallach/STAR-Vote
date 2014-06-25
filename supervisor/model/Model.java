@@ -37,9 +37,6 @@ import javax.swing.Timer;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.text.DecimalFormat;
 import java.util.*;
 
 /**
@@ -105,32 +102,8 @@ public class Model {
 
     private PINValidator pinValidator = PINValidator.SINGLETON;
 
-/* --------------------------------------------------------------------------------------------------------- */
-/* ------------------------------------------- HASHING FIELDS ---------------------------------------------- */
-/* --------------------------------------------------------------------------------------------------------- */
-
-    /** A formatter for the hash codes */
-    private static DecimalFormat uniquenessFormat = new DecimalFormat("0000000000");
-
-    /** A formatter for hashed serials */
-    private static DecimalFormat serialFormat = new DecimalFormat("00");
-
-    /** initial value passed to hash function to act as a previous node in the chain */
-    private static final String initialLastHash  = "00000000000000000000000000000000";
-
-    /** Inizialize the hash chain with an initial value that can be traced back to the start of the election */
-    private static String lastHash = initialLastHash;
-
-    /** BID to hash values for chaining */
-    private HashMap<String, String> HashToBID = new HashMap<>();
-
-    /** machine ID numbers to hash values for chaining */
-    private HashMap<String, String> HashToMID = new HashMap<>();
-
-/* --------------------------------------------------------------------------------------------------------- */
-/* --------------------------------------------------------------------------------------------------------- */
-/* --------------------------------------------------------------------------------------------------------- */
-
+    /** An object that maintains a hash chain record of voting */
+    private HashChain hashChain;
 
     /**
      * Equivalent to Model(-1, params);
@@ -181,6 +154,8 @@ public class Model {
                 }
             }
         });
+
+        hashChain = new HashChain();
     }
 
     /**
@@ -311,9 +286,6 @@ public class Model {
 
         /* Pare off the precinct information */
         Precinct p = getPrecinctWithBallot(ballotFile);
-
-        /* Create a hash chain record of this ballot and voting session */
-        String ballotHash = hashBallot(otherSerial);
 
         /* Serialize the ballot to send over the network */
         FileInputStream fin = new FileInputStream(file);
@@ -795,11 +767,11 @@ public class Model {
                 setArePollsOpen(false);
 
                 /* Close the hash chain for this polling session */
-                closeHashChain(); /* Formerly BallotStore*/
+                hashChain.closeHashChain();
 
 
                 /* Check the hash chain for consistency */
-                if(isHashChainCompromised())
+                if(hashChain.isHashChainCompromised())
                     JOptionPane.showMessageDialog(null, "ERROR: The hash chain is incomplete, votes may have been removed or tampered with!");
 
                 /* Announce that this Supervisor is going to start sending ballots to Tap */
@@ -1131,6 +1103,9 @@ public class Model {
                         thisPrecinct.commitBallot(e.getBID(), ballot);
                     }
                     catch(Exception ex) { ex.printStackTrace(); }
+
+                    /* Create a hash chain record of this ballot and voting session */
+                    String ballotHash = hashChain.hashBallot(e.getSerial());
 
                     /* Announce that the ballot was received, so it's logged */
                     auditorium.announce(new BallotReceivedEvent(mySerial, e.getSerial(), e.getNonce(), e.getBID(), e.getPrecinct()));
@@ -1468,122 +1443,6 @@ public class Model {
         return false;
     }
 
-    /* ----------------------------------------------------------------------------- */
-    /* ----------------------------- HashChain CODE -------------------------------- */
-    /* ----------------------------------------------------------------------------- */
-
-    /**
-     * Creates a hash for voting session and saves BID and machine ID (MID) for hash chain checking later
-     *
-     * @param serialNumber      the serial number of the machine
-     * @return                  the resulting hash
-     */
-    private String hashBallot(int serialNumber){
-
-        Random rand = new Random();
-
-        /* We will concatenate all the elements to hash together */
-        String elementsToBeHashed = "";
-
-        /* This is a random number to let each hash instance to be unique */
-        int ballotUniqueness = rand.nextInt(Integer.MAX_VALUE);
-
-        /* Concatenate formatted version of the serial number, uniqueness number, and the last hash */
-        elementsToBeHashed += uniquenessFormat.format(ballotUniqueness) + serialFormat.format(serialNumber) + lastHash;
-
-        /* Now hash the concatenated information */
-        String hash = hashWithSHA256(elementsToBeHashed);
-
-        /* put the newly created hash in the necessary lists. */
-        HashToBID.put(lastHash, uniquenessFormat.format(ballotUniqueness));
-        HashToMID.put(lastHash, serialFormat.format(serialNumber));
-
-        /* Update the last hash */
-        lastHash = hash;
-
-        /* return this hash */
-        return hash;
-    }
-
-    /**
-     * A wrapper for the raw SHA256 hashing function provided in the Java libraries
-     *
-     * @param toBeHashed        a string to be hashed
-     * @return                  the result of hashing the string with the SHA256 algorithm
-     */
-    private String hashWithSHA256(String toBeHashed){
-
-        String hash = "";
-        MessageDigest digest = null;
-
-        try { digest = MessageDigest.getInstance("SHA-256"); }
-        catch (NoSuchAlgorithmException e) { e.printStackTrace(); }
-
-        try {
-
-            /* Hash the bytes of the input string, encoded in UTF-8 */
-            assert(digest != null);
-            digest.update(toBeHashed.getBytes("UTF-8"));
-
-            /* Get the results of the hash */
-            byte[] arrOut = digest.digest();
-
-            /* Now convert the hashed value back into a string */
-            StringBuilder sb = new StringBuilder();
-
-            /* TODO Explain why this masks and offsets */
-            for (byte anArrOut : arrOut)
-                sb.append(Integer.toString((anArrOut & 0xff) + 0x100, 16).substring(1));
-
-            hash = sb.toString();
-
-        }
-        catch (UnsupportedEncodingException e) { e.printStackTrace(); }
-
-        return hash;
-    }
-
-    /**
-     * Goes through all of the ballots in the voting session checking that all ballot's hashes
-     * are computed from the previous ballot's hash and that ballot's machineID and BID, proving if any
-     * are missing in the chain
-     *
-     * @return true if the hash chain is valid, false if it has been compromised.
-     */
-    private Boolean isHashChainCompromised(){
-
-        /* Todo could this be recursive? */
-        String previousHash = initialLastHash;
-        String elementsToBeHashed;
-
-        if (!HashToBID.containsKey(previousHash))
-            return true;
-
-        /* Compute the hash chain from beginning to end using the stored ballot info to reconstruct the chain */
-        while (!HashToBID.get(previousHash).equals("0000000000")) {
-
-            elementsToBeHashed = HashToBID.get(previousHash) + HashToMID.get(previousHash) + previousHash;
-            previousHash = hashWithSHA256(elementsToBeHashed);
-
-            /* If the hash that was computed was not the expected hash, we have a problem. */
-            if(!HashToBID.containsKey(previousHash))
-                return true;
-
-        }
-
-        return false;
-    }
-
-    /**
-     * Adds flag to hash chain signalling end of chain
-     */
-    private void closeHashChain(){
-        HashToBID.put(lastHash, "0000000000");
-    }
-
-    /* ----------------------------------------------------------------------------- */
-    /* ----------------------------------------------------------------------------- */
-    /* ----------------------------------------------------------------------------- */
 
     /**
      * A test method for reading a testBallot from file
