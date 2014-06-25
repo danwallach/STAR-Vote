@@ -8,17 +8,28 @@ import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.StringExpression;
 
+
+/**
+ * Proof of ciphertext vector vote validity.
+ *
+ * To show the validity of a vote, two statements must be proved:
+ * - Each ciphertext in the vote encrypts a 0-1 value.
+ * - The total number of 1s in the vote is within the required range.
+ */
 public class VoteProof {
+
     private AdderInteger p;
     private List<MembershipProof> proofList;
     private MembershipProof sumProof;
 
+    /**
+     * Default constructor.
+     */
     public VoteProof() {
 
     }
 
-    private VoteProof(MembershipProof sumProof,
-                      List<MembershipProof> proofList) {
+    private VoteProof(MembershipProof sumProof, List<MembershipProof> proofList) {
         this.sumProof = sumProof;
         this.proofList = proofList;
     }
@@ -34,48 +45,44 @@ public class VoteProof {
      * ciphertexts, with a domain of \f$\{\mathit{minimum},\ldots,
      * \mathit{maximum}\}\f$.
      *
-     * @param vote the vote the proof will be computed over.
-     * @param pubKey
-     * @param choices the vector of \em true/ \em false plaintext choices.
-     * @param min
-     * @param max
+     * @param vote          the vote the proof will be computed over.
+     * @param pubKey        the public key used to encrypt the vote.
+     * @param choices       the vector of \em true/ \em false plaintext choices.
+     * @param min           the minimum number of candidates required to be selected.
+     * @param max           the maximum number of candidates required to be selected.
      *
      * @see MembershipProof#compute(ElgamalCiphertext, PublicKey, AdderInteger, List)
      */
-    public void compute(Vote vote, PublicKey pubKey,
-                        List<AdderInteger> choices, int min, int max) {
+    public void compute(Vote vote, PublicKey pubKey, List<AdderInteger> choices, int min, int max) {
+
         this.p = pubKey.getP();
         List<ElgamalCiphertext> cipherList = vote.getCipherList();
-        List<AdderInteger> cipherDomain
-            = new ArrayList<AdderInteger>(2);
+        List<AdderInteger> cipherDomain = new ArrayList<>(2);
 
         cipherDomain.add(AdderInteger.ZERO);
         cipherDomain.add(AdderInteger.ONE);
 
-        ElgamalCiphertext sumCipher
-            = new ElgamalCiphertext(AdderInteger.ONE, AdderInteger.ONE, p);
+        ElgamalCiphertext sumCipher = new ElgamalCiphertext(AdderInteger.ONE, AdderInteger.ONE, p);
 
         int numChoices = 0;
         int size = cipherList.size();
-        this.proofList = new ArrayList<MembershipProof>(size);
+        this.proofList = new ArrayList<>(size);
 
         for (int i = 0; i < size; i++) {
             MembershipProof proof = new MembershipProof();
-            ElgamalCiphertext ciphertext
-                = cipherList.get(i);
+            ElgamalCiphertext ciphertext = cipherList.get(i);
             AdderInteger choice = choices.get(i);
             proof.compute(ciphertext, pubKey, choice, cipherDomain);
             this.proofList.add(proof);
 
             sumCipher = sumCipher.multiply(ciphertext);
 
-            if (choice.equals(AdderInteger.ONE)) {
+            if (choice.equals(AdderInteger.ONE))
                 numChoices++;
-            }
         }
 
         List<AdderInteger> totalDomain
-            = new ArrayList<AdderInteger>(max + 1);
+            = new ArrayList<>(max + 1);
 
         for (int j = min; j <= max; j++) {
             totalDomain.add(new AdderInteger(j));
@@ -85,12 +92,22 @@ public class VoteProof {
         this.sumProof.compute(sumCipher, pubKey, new AdderInteger(numChoices), totalDomain);
     }
 
-
+    /**
+     * Verifies the proof.
+     *
+     * @param vote          the vote the proof is computed over.
+     * @param pubKey        the public key used to encrypt the vote.
+     * @param min           the minimum number of candidates required to be selected.
+     * @param max           the maximum number of candidates required to be selected.
+     * @return              \b true if the proof is valid, \b false otherwise.
+     *
+     * @see MembershipProof#verify(ElgamalCiphertext, PublicKey, java.util.List)
+     */
     public boolean verify(Vote vote, PublicKey pubKey, int min, int max) {
         this.p = pubKey.getP();
         List<ElgamalCiphertext> cipherList = vote.getCipherList();
         List<AdderInteger> cipherDomain
-            = new ArrayList<AdderInteger>(2);
+            = new ArrayList<>(2);
 
         cipherDomain.add(AdderInteger.ZERO);
         cipherDomain.add(AdderInteger.ONE);
@@ -118,17 +135,22 @@ public class VoteProof {
             totalDomain.add(new AdderInteger(j));
         }
 
-        if (!this.sumProof.verify(sumCipher, pubKey, totalDomain)) {
-            return false;
-        }
+        return this.sumProof.verify(sumCipher, pubKey, totalDomain);
 
-        return true;
     }
 
+    /**
+     * Constructs a VoteProof from a string.
+     *
+     * @param s             the string representation of a proof.
+     * @return              the VoteProof constructed from the string
+     *
+     * @see MembershipProof#fromString(String)
+     */
     public static VoteProof fromString(String s) {
         StringTokenizer st = new StringTokenizer(s, " ");
         List<MembershipProof> pList
-            = new ArrayList<MembershipProof>(25); // XXX: what size? 
+            = new ArrayList<>(25); // XXX: what size?
         MembershipProof sumProof = MembershipProof.fromString(st.nextToken());
 
         while (st.hasMoreTokens()) {
@@ -142,13 +164,24 @@ public class VoteProof {
         return voteProof;
     }
 
+    /**
+     * Returns a string representation of the proof. The string is
+     * in the form \f$\mathcal{P} \parallel P_1 \parallel \cdots
+     * \parallel P_c\f$, where \f$\mathcal{P}\f$ is the proof that
+     * the vote encrypts the proper number of choices, and
+     * \f$P_i\f$ is the proof that the \f$i\f$ th candidate is a 0
+     * or 1.
+     *
+     * @return the string representation of the proof.
+     *
+     * @see MembershipProof::str
+     */
     public String toString() {
         StringBuffer sb = new StringBuffer(4096);
 
         sb.append(sumProof.toString());
 
-        for (int i = 0; i < proofList.size(); i++) {
-            MembershipProof proof = proofList.get(i);
+        for (MembershipProof proof : proofList) {
             sb.append(" ");
             sb.append(proof.toString());
         }

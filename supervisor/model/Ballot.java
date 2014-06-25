@@ -98,7 +98,4 @@ public class Ballot {
         return new ListExpression(elements);
     }
 
-
-
-
 }
