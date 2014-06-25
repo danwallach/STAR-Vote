@@ -84,7 +84,6 @@ public abstract class ASExpression {
      * @return This method returns the s-expression which represents the given
      *         stream of bytes.
      * @throws InvalidVerbatimStreamException
-     * @throws
      * @see sexpression.stream.ASEInputStreamReader
      */
     public static ASExpression makeVerbatim(byte[] bytes)

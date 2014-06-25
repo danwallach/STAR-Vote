@@ -37,6 +37,7 @@ public class SupervisorTallier {
             try {
                 /* Check that the ballot is well-formed */
                 ListExpression ballot = bal.toListExpression();
+                List<Vote> votes = bal.getVotes();
 
                 /* Iterate through each of the races on the ballot */
                 for (int i = 0; i < ballot.size(); i++) {
@@ -60,11 +61,11 @@ public class SupervisorTallier {
 
                     /* Now that we know the vote is valid, read it in as an Adder Vote object */
                     Vote vote = Vote.fromASE(voteE.get(1));
-                    List<String> voteIds = new ArrayList<>();
+                    List<ASExpression> voteIds = new ArrayList<>();
 
                     /* Add the candidates to a list */
                     for (int j = 0; j < voteIdsE.get(1).size(); j++)
-                        voteIds.add(((ListExpression) voteIdsE.get(1)).get(j).toString());
+                        voteIds.add(((ListExpression) voteIdsE.get(1)).get(j));
 
                     /* Compute the validity proof */
                     VoteProof voteProof = VoteProof.fromASE(proofE.get(1));
@@ -90,7 +91,7 @@ public class SupervisorTallier {
 
                     /* If we haven't seen this specific election before, initialize it */
                     if (election == null)
-                        election = new Election(publicKey.getP());
+                        election = new Election(publicKey.getP(), voteIds);
 
                     /* This will homomorphically tally the vote */
                     election.castVote(vote);
@@ -163,8 +164,8 @@ public class SupervisorTallier {
      * @param voteIds a list of strings representing vote identifiers
      * @return a string representation of the list of voteIDs
      */
-    private static String makeId(List<String> voteIds){
-        String str = voteIds.get(0);
+    private static String makeId(List<ASExpression> voteIds){
+        String str = voteIds.get(0).toString();
         for(int i = 1; i < voteIds.size(); i++)
             str+=","+voteIds.get(i);
 

@@ -1,6 +1,7 @@
 package crypto.adder;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -17,7 +18,14 @@ import sexpression.StringExpression;
  */
 public class Vote {
 
+    /** This vote's list of cipher texts, i.e. its encrypted selections */
     private List<ElgamalCiphertext> cipherList;
+
+    /** The proof representing the validity of this vote */
+    private VoteProof proof;
+
+    /** List of the race ID's of the possible choices in this race */
+    private List<ASExpression> choices;
 
     /**
      * Default constructor. Use when you want to load a vote from
@@ -30,8 +38,21 @@ public class Vote {
     /**
      * Initializes a vote from a vector of ciphertexts.
      */
-    public Vote(List<ElgamalCiphertext> cipherList) {
+    public Vote(List<ElgamalCiphertext> cipherList, List<ASExpression> choices) {
         this.cipherList = cipherList;
+
+        this.choices = choices;
+
+        proof = new VoteProof();
+    }
+
+    /**
+     * Initializes a vote from a vector of ciphertexts.
+     */
+    public Vote(List<ElgamalCiphertext> cipherList, List<ASExpression> choices, VoteProof proof) {
+        this.cipherList = cipherList;
+        this.choices = choices;
+        this.proof = proof;
     }
 
     /**
@@ -43,6 +64,21 @@ public class Vote {
     }
 
     /**
+     * @return the proof for this vote
+     */
+    public VoteProof getProof() {
+        return proof;
+    }
+
+    public void compute(PublicKey publicKey) {
+        List<AdderInteger> choices = new ArrayList<>();
+        choices.add(AdderInteger.ZERO);
+        choices.add(AdderInteger.ONE);
+
+        proof.compute(this, publicKey, choices, 0, cipherList.size());
+    }
+
+    /**
      * Multiplies this and another Vote component-wise and returns the result
      *
      * @param vote      the Vote to multiply against
@@ -50,7 +86,7 @@ public class Vote {
      */
     Vote multiply(Vote vote) {
 
-        List<ElgamalCiphertext> vec = new ArrayList<>(this.getCipherList().size());
+        List<ElgamalCiphertext> vec = new ArrayList<>();
 
         for (int i = 0; i < this.getCipherList().size(); i++) {
             ElgamalCiphertext ciphertext1 = this.getCipherList().get(i);
@@ -58,24 +94,7 @@ public class Vote {
             vec.add(ciphertext1.multiply(ciphertext2));
         }
 
-        return new Vote(vec);
-    }
-
-    /**
-     *
-     * @return
-     * @see ElgamalCiphertext#shortHash()
-     */
-    public String shortHash() {
-
-        //TODO I'm not sure if this actually works...but it's never used so...
-        String str = toString();
-        int idx = str.indexOf(" ");
-
-        if (idx != -1)
-            str = str.substring(0, idx);
-
-        return Util.sha1(str).substring(0, 5);
+        return new Vote(vec, choices);
     }
 
    /**
@@ -100,7 +119,8 @@ public class Vote {
             catch (InvalidElgamalCiphertextException iece) { throw new InvalidVoteException(iece.getMessage()); }
         }
 
-        return new Vote(cList);
+        /* TODO Maybe implement this constructor properly */
+        return new Vote(cList, null);
     }
 
     /**
@@ -113,6 +133,8 @@ public class Vote {
      * @see crypto.adder.ElgamalCiphertext#toString()
      */
     public String toString() {
+
+        /* TODO update this to involve race ids */
 
         StringBuilder sb = new StringBuilder(4096);
 
@@ -137,12 +159,18 @@ public class Vote {
 
     	for(ElgamalCiphertext text : cipherList)
     		cList.add(text.toASE());
+
+        ListExpression vote = new ListExpression(StringExpression.makeString("vote"), new ListExpression(cList));
+
+        ListExpression choicesExp = new ListExpression(StringExpression.makeString("vote-ids"), new ListExpression(choices));
     	
-    	return new ListExpression(StringExpression.makeString("vote"), new ListExpression(cList));
+    	return new ListExpression(vote, choicesExp, proof.toASE());
     }
     
     /**
      * Method for interop with VoteBox's S-Expression system.
+     *
+     * Expecting an ASE of the form ((vote [vote...])(vote-ids [ids...])(vote-proof [proofs...]))
      * 
      * @param ase       S-Expression representation of a Vote
      * @return          the Vote equivalent of ase
@@ -153,15 +181,30 @@ public class Vote {
 
     	ListExpression exp = (ListExpression)ase;
 
-    	if(!(exp.get(0)).toString().equals("vote"))
-    		throw new RuntimeException("Not vote");
-    	
-    	ListExpression cListE = (ListExpression)exp.get(1);
-    	List<ElgamalCiphertext> cList = new ArrayList<>();
 
-    	for(int i = 0; i < cListE.size(); i++)
-    		cList.add(ElgamalCiphertext.fromASE(cListE.get(i)));
-    	
-    	return new Vote(cList);
+    	ListExpression voteExp = (ListExpression) exp.get(0);
+        ListExpression choiceExp = (ListExpression) exp.get(1);
+        ListExpression proofExp = (ListExpression) exp.get(2);
+
+        List<ElgamalCiphertext> vote = new ArrayList<>();
+        List<ASExpression> choices = new ArrayList<>();
+
+        if(!(voteExp.get(0)).toString().equals("vote"))
+            throw new RuntimeException("Not vote");
+
+        ListExpression votesE = (ListExpression) voteExp.get(1);
+
+        for(int i = 0; i < votesE.size(); i++)
+            vote.add(ElgamalCiphertext.fromASE(votesE.get(i)));
+
+        if(!(choiceExp.get(0)).toString().equals("vote-ids"))
+            throw new RuntimeException("Not vote ids!");
+
+        ListExpression choiceList = (ListExpression) choiceExp.get(1);
+
+        for(ASExpression choice : choiceList)
+            choices.add(choice);
+
+    	return new Vote(vote, choices, VoteProof.fromASE(proofExp));
     }
 }

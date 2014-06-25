@@ -194,6 +194,7 @@ public class VoteProof {
      */
     public ASExpression toASE(){
     	List<ASExpression> proofListL = new ArrayList<>();
+
     	for(MembershipProof proof : proofList)
     		proofListL.add(proof.toASE());
     	

@@ -180,21 +180,21 @@ public class PublicKey {
     /**
      * Encrypts a vote from a vector of AdderIntegers.
      *
-     * @param choices       the choices
+     * @param selections       the choices
      * @return              the encrypted vote
      */
-    public Vote encrypt(List<AdderInteger> choices) {
+    public Vote encrypt(List<AdderInteger> selections, List<ASExpression> choices) {
 
-        List<ElgamalCiphertext> voteList = new ArrayList<>(choices.size());
+        List<ElgamalCiphertext> voteList = new ArrayList<>(selections.size());
 
         Iterator it;
 
-        for (it = choices.iterator(); it.hasNext();) {
+        for (it = selections.iterator(); it.hasNext();) {
             AdderInteger choice = (AdderInteger) it.next();
             voteList.add(encrypt(choice));
         }
 
-        return new Vote(voteList);
+        return new Vote(voteList, choices);
     }
 
     /**

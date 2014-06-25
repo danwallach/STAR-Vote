@@ -53,7 +53,7 @@ public class VoteTest extends TestCase {
 
         List<ElgamalCiphertext> cipherList = new ArrayList<>(1);
         cipherList.add(ciphertext1);
-        Vote vote1 = new Vote(cipherList);
+        Vote vote1 = new Vote(cipherList, null);
 
         assertEquals(new AdderInteger("123"),
                      vote1.getCipherList().get(0).getP());
@@ -73,7 +73,7 @@ public class VoteTest extends TestCase {
                                     new AdderInteger("123"));
         cipherList.clear();
         cipherList.add(ciphertext2);
-        Vote vote2 = new Vote(cipherList);
+        Vote vote2 = new Vote(cipherList, null);
 
         assertEquals("p123G12H0",
                      vote2.getCipherList().get(0).toString());
@@ -85,7 +85,7 @@ public class VoteTest extends TestCase {
                                     new AdderInteger("123"));
         cipherList.clear();
         cipherList.add(ciphertext3);
-        Vote vote3 = new Vote(cipherList);
+        Vote vote3 = new Vote(cipherList, null);
 
         assertEquals("3b589",
                      vote3.getCipherList().get(0).shortHash());

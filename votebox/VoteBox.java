@@ -270,8 +270,8 @@ public class VoteBox{
 
                         else {
 
-                            ASExpression encBallot = BallotEncrypter.SINGLETON.encryptWithProof(ballot, (List<List<String>>) arg[1],
-                                    (PublicKey) _constants.getKeyStore().loadAdderKey("public"));
+                            ASExpression encBallot = BallotEncrypter.SINGLETON.encryptWithProof(bid, ballot,
+                                    (List<List<String>>) arg[1], (PublicKey) _constants.getKeyStore().loadAdderKey("public"), nonce);
 
                             auditorium.announce(new CommitBallotEvent(mySerial, nonce,
                                     encBallot.toVerbatim(), bid, precinct));
@@ -470,8 +470,8 @@ public class VoteBox{
 
                         } else {
 
-                            ASExpression encBallot = BallotEncrypter.SINGLETON.encryptWithProof(ballot, (List<List<String>>) arg[1],
-                                    (PublicKey) _constants.getKeyStore().loadAdderKey("public"));
+                            ASExpression encBallot = BallotEncrypter.SINGLETON.encryptWithProof(bid, ballot,
+                                    (List<List<String>>) arg[1], (PublicKey) _constants.getKeyStore().loadAdderKey("public"), nonce);
 
 
                             auditorium.announce(new CommitBallotEvent(mySerial,

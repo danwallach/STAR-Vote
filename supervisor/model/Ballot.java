@@ -34,6 +34,7 @@ public class Ballot {
     /** The nonce associated with the voting session when this ballot was committed */
     private final ASExpression nonce;
 
+
     /** public key used with the encryption of the ballot */
     private PublicKey publicKey;
 
@@ -62,7 +63,7 @@ public class Ballot {
     /**
      * @return the ballot as an array of votes
      */
-    public List<Vote> getBallot() {
+    public List<Vote> getVotes() {
         return ballot;
     }
 
@@ -84,7 +85,7 @@ public class Ballot {
     /**
      * @return a ListExpression representation of the ballot
      */
-    public ListExpression getBallotASE(){
+    public ListExpression getVoteASE(){
         ArrayList<ASExpression> votes = new ArrayList<>();
 
         for(Vote v : ballot)
@@ -103,7 +104,7 @@ public class Ballot {
 
         elements.add(StringExpression.makeString("ballot"));
         elements.add(StringExpression.makeString(bid));
-        elements.add(getBallotASE());
+        elements.add(getVoteASE());
         elements.add(nonce);
         elements.add(publicKey.toASE());
 
@@ -113,6 +114,8 @@ public class Ballot {
 
     /**
      * Method for interop with VoteBox's S-Expression system.
+     *
+     * Expecting an ase of the form (ballot bid (((vote [vote]) (vote-ids ([id1], [id2], ...)) (proof [proof]))...) (public-key [key]) nonce)
      *
      * @param ase       S-Expression representation of a ballot
      * @return          the Vote equivalent of ase
