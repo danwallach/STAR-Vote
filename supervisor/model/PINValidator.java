@@ -16,7 +16,6 @@ public class PINValidator {
 
     public static PINValidator SINGLETON = new PINValidator();
 
-
     /** The default lifespan for a PIN, in seconds */
     private static final int DEFAULT_LIFE_TIME = 180;
 
@@ -82,6 +81,7 @@ public class PINValidator {
         if(timeStamp.get(PIN) == null || !timeStamp.get(PIN).isValid())
             precinctIDs.remove(PIN);
 
+        /* Check if the PIN exists */
         return precinctIDs.containsKey(PIN);
     }
 
