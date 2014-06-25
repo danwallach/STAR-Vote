@@ -809,7 +809,7 @@ public class Model {
                     p.closePolls();
 
                     /* Send all of the cast ballots to Tap */
-                    auditorium.announce(new CastBallotUploadEvent(mySerial, p.getCastBallotTotal().toListExpression(p.getPrecinctID())));
+                    auditorium.announce(new CastBallotUploadEvent(mySerial, p.getCastBallotTotal().toListExpression()));
 
                     /* Send all of the challenged ballots to Tap */
                    auditorium.announce(new ChallengedBallotUploadEvent(mySerial, p.getChallengedBallots()));
@@ -1123,7 +1123,7 @@ public class Model {
 
                         ASExpression ballot = ASExpression.makeVerbatim(e.getBallot());
 
-                        thisPrecinct.commitBallot(e.getBID(), e.getNonce(),  ballot);
+                        thisPrecinct.commitBallot(e.getBID(), ballot);
                     }
                     catch(Exception ex) { ex.printStackTrace(); }
 

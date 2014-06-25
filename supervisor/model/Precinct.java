@@ -99,11 +99,10 @@ public class Precinct {
      * Commits a new Ballot given the bid, nonce, and ballot contents as an ASExpression
      *
      * @param bid       Ballot Identification Number
-     * @param nonce     Nonce for the ballot
      * @param ballot    Ballot as an ASExpression
      */
-    public void commitBallot(String bid, ASExpression nonce, ASExpression ballot){
-        committed.put(bid, new Ballot(bid, ballot, nonce));
+    public void commitBallot(String bid, ASExpression ballot){
+        committed.put(bid, Ballot.fromASE(ballot));
     }
 
     /**

@@ -139,7 +139,8 @@ public class SupervisorTallier {
         ASExpression nonce = StringExpression.makeString(voteList.getSHA256());
 
 
-        return new Ballot(precinctID, voteList, nonce);
+        //return new Ballot(precinctID, votes, nonce);
+        return null;
 
     }
 

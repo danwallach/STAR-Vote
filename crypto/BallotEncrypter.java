@@ -86,7 +86,7 @@ public class BallotEncrypter {
      *
      * @param pubKey         the Adder PublicKey to use to encrypt the ballot and generate the NIZKs
      *
-     * @return               a ListExpression in the form (((vote [vote]) (vote-ids ([id1], [id2], ...)) (proof [proof]) (public-key [key])) ...)
+     * @return               a ListExpression in the form (((vote [vote]) (vote-ids ([id1], [id2], ...)) (proof [proof])) ... (public-key [key]))
      */
     public ListExpression encryptWithProof(ListExpression ballot, List<List<String>> raceGroups, PublicKey pubKey){
         adderRandom = new ArrayList<List<AdderInteger>>();
@@ -155,8 +155,14 @@ public class BallotEncrypter {
         /* Add the s-expression of the encrypted write-in key to the list of encrypted sub-ballots */
         subBallots.add(encryptedKey.toASE());
 
+
+
         /* Convert this list into a ListExpression and set the most recent ballot to this */
-        recentBallot = new ListExpression(subBallots);
+        ListExpression votes = new ListExpression(subBallots);
+
+        ListExpression keyExp = new ListExpression(StringExpression.makeString("public-key"), AdderKeyManipulator.generateFinalPublicKey(pubKey).toASE());
+
+        recentBallot = new ListExpression(StringExpression.makeString("ballot"), votes, keyExp);
 
         return recentBallot;
     }
@@ -235,9 +241,8 @@ public class BallotEncrypter {
 		ListExpression vList  = new ListExpression(StringExpression.makeString("vote"),outASE);
 		ListExpression idList = new ListExpression(StringExpression.makeString("vote-ids"),new ListExpression(valueIds));
 		ListExpression pList  = new ListExpression(StringExpression.makeString("proof"),	proof.toASE());
-		ListExpression kList  = new ListExpression(StringExpression.makeString("public-key"),finalPubKey.toASE());
 
-        return new ListExpression(vList, idList, pList, kList);
+        return new ListExpression(vList, idList, pList);
     }
 
     /**
