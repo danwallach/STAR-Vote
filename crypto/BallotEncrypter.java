@@ -214,7 +214,7 @@ public class BallotEncrypter {
 
         PublicKey finalPubKey = AdderKeyManipulator.generateFinalPublicKey(pubKey);
 
-        Vote vote = finalPubKey.encrypt(value);
+        Vote vote = finalPubKey.encrypt(value, valueIds);
 
         /* Important data from the ElGamal Encryption */
         List<ElgamalCiphertext> ciphers = vote.getCipherList();

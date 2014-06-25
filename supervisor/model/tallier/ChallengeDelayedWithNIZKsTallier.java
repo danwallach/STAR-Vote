@@ -93,9 +93,9 @@ public class ChallengeDelayedWithNIZKsTallier extends EncryptedTallierWithNIZKs 
 
                 //Vote vote = Vote.fromString(voteE.get(1).toString());
                 Vote vote = Vote.fromASE(voteE.get(0));
-                List<String> voteIds = new ArrayList<>();
+                List<ASExpression> voteIds = new ArrayList<>();
                 for(int j = 0; j < voteIdsE.get(1).size(); j++)
-                    voteIds.add(((ListExpression)voteIdsE.get(1)).get(j).toString());
+                    voteIds.add(((ListExpression)voteIdsE.get(1)).get(j));
 
                 //VoteProof voteProof = VoteProof.fromString(proofE.get(1).toString());
                 VoteProof voteProof = VoteProof.fromASE(proofE.get(1));
@@ -118,7 +118,7 @@ public class ChallengeDelayedWithNIZKsTallier extends EncryptedTallierWithNIZKs 
                 Election election = _results.get(subElectionId);
 
                 if(election == null)
-                    election = new Election(_publicKey.getP());
+                    election = new Election(_publicKey.getP(), voteIds);
 
                 election.castVote(vote);
 

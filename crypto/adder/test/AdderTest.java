@@ -64,7 +64,7 @@ public class AdderTest extends TestCase {
         System.out.println("Creating an election with " + maxVoters
                            + " maximum voters and " + numChoices + " choices");
         
-        Election election = new Election(p);
+        Election election = new Election(p, null);
 
         System.out.println("Authorities start");
 
@@ -139,8 +139,9 @@ public class AdderTest extends TestCase {
 
             System.out.println("Vote " + (i + 1) + " cast for " + choice);
            
-            System.out.println("Encrypting vote " + (i + 1)); 
-            Vote vote = finalPubKey.encrypt(choices);
+            System.out.println("Encrypting vote " + (i + 1));
+            /* TODO Fix this null? */
+            Vote vote = finalPubKey.encrypt(choices, null);
             System.out.println("Proving vote " + (i + 1));
             VoteProof proof = new VoteProof();
             proof.compute(vote, finalPubKey, choices, 1, 1);

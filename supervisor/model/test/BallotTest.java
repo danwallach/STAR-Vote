@@ -56,10 +56,16 @@ public class BallotTest extends TestCase {
         ctexts.add(publicKey.encryptPoly(AdderInteger.ZERO));
         ctexts.add(publicKey.encryptPoly(AdderInteger.ONE));
 
-        Vote vote = new Vote(ctexts);
+        List<ASExpression> choices = new ArrayList<>();
+        choices.add(StringExpression.makeString("B0"));
+        choices.add(StringExpression.makeString("B1"));
+
+        Vote vote = new Vote(ctexts, choices);
 
         List<Vote> votes = new ArrayList<>();
         votes.add(vote);
+
+        vote.compute(publicKey);
 
         ballot = new Ballot("0", votes, nonce, publicKey);
 
@@ -80,7 +86,12 @@ public class BallotTest extends TestCase {
         ctexts.add(publicKey.encryptPoly(AdderInteger.ZERO));
         ctexts.add(publicKey.encryptPoly(AdderInteger.ONE));
 
-        Vote vote = new Vote(ctexts);
+        List<ASExpression> choices = new ArrayList<>();
+        choices.add(StringExpression.makeString("B0"));
+        choices.add(StringExpression.makeString("B1"));
+
+        Vote vote = new Vote(ctexts, choices);
+        vote.compute(publicKey);
 
         List<Vote> votes = new ArrayList<>();
         votes.add(vote);
@@ -89,11 +100,9 @@ public class BallotTest extends TestCase {
 
         ListExpression l = ballot.toListExpression();
 
-        System.out.println(l);
-
         Ballot newBallot = Ballot.fromASE(l);
 
-        assertEquals(ballot.toListExpression().toString(), newBallot.toListExpression().toString());
+        assertEquals(newBallot.toListExpression(), ballot.toListExpression());
     }
 
 
