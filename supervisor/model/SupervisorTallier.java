@@ -37,6 +37,7 @@ public class SupervisorTallier {
             try {
                 /* Check that the ballot is well-formed */
                 ListExpression ballot = bal.toListExpression();
+                List<Vote> votes = bal.getVotes();
 
                 /* Iterate through each of the races on the ballot */
                 for (int i = 0; i < ballot.size(); i++) {

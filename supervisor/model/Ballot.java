@@ -62,7 +62,7 @@ public class Ballot {
     /**
      * @return the ballot as an array of votes
      */
-    public List<Vote> getBallot() {
+    public List<Vote> getVotes() {
         return ballot;
     }
 

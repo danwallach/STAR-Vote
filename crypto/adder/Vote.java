@@ -17,7 +17,11 @@ import sexpression.StringExpression;
  */
 public class Vote {
 
+    /** This vote's list of cipher texts, i.e. its encrypted selections */
     private List<ElgamalCiphertext> cipherList;
+
+    /** The proof representing the validity of this vote */
+    private VoteProof proof;
 
     /**
      * Default constructor. Use when you want to load a vote from
@@ -32,6 +36,8 @@ public class Vote {
      */
     public Vote(List<ElgamalCiphertext> cipherList) {
         this.cipherList = cipherList;
+
+        proof = new VoteProof();
     }
 
     /**
@@ -43,6 +49,21 @@ public class Vote {
     }
 
     /**
+     * @return the proof
+     */
+    public VoteProof getProof() {
+        return proof;
+    }
+
+    public void compute(PublicKey publicKey) {
+        List<AdderInteger> choices = new ArrayList<>();
+        choices.add(AdderInteger.ZERO);
+        choices.add(AdderInteger.ONE);
+
+        proof.compute(this, publicKey, choices, 0, cipherList.size());
+    }
+
+    /**
      * Multiplies this and another Vote component-wise and returns the result
      *
      * @param vote      the Vote to multiply against
@@ -50,7 +71,7 @@ public class Vote {
      */
     Vote multiply(Vote vote) {
 
-        List<ElgamalCiphertext> vec = new ArrayList<>(this.getCipherList().size());
+        List<ElgamalCiphertext> vec = new ArrayList<>();
 
         for (int i = 0; i < this.getCipherList().size(); i++) {
             ElgamalCiphertext ciphertext1 = this.getCipherList().get(i);
@@ -59,23 +80,6 @@ public class Vote {
         }
 
         return new Vote(vec);
-    }
-
-    /**
-     *
-     * @return
-     * @see ElgamalCiphertext#shortHash()
-     */
-    public String shortHash() {
-
-        //TODO I'm not sure if this actually works...but it's never used so...
-        String str = toString();
-        int idx = str.indexOf(" ");
-
-        if (idx != -1)
-            str = str.substring(0, idx);
-
-        return Util.sha1(str).substring(0, 5);
     }
 
    /**
