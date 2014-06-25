@@ -313,9 +313,7 @@ public class Model {
         Precinct p = getPrecinctWithBallot(ballotFile);
 
         /* Create a hash chain record of this ballot and voting session */
-        String ballotHash = createBallotHash(otherSerial);
-
-        /* TODO? map ballotHash to Precinct for better logging perhaps? */
+        String ballotHash = hashBallot(otherSerial);
 
         /* Serialize the ballot to send over the network */
         FileInputStream fin = new FileInputStream(file);
@@ -1458,10 +1456,10 @@ public class Model {
     /**
      * Creates a hash for voting session and saves BID and machine ID (MID) for hash chain checking later
      *
-     * @param serialNumber the serial number of the machine
-     * @return the resulting hash
+     * @param serialNumber      the serial number of the machine
+     * @return                  the resulting hash
      */
-    private String createBallotHash(int serialNumber){
+    private String hashBallot(int serialNumber){
 
         Random rand = new Random();
 
@@ -1494,7 +1492,7 @@ public class Model {
      * @param toBeHashed        a string to be hashed
      * @return                  the result of hashing the string with the SHA256 algorithm
      */
-    private static String hashWithSHA256(String toBeHashed){
+    private String hashWithSHA256(String toBeHashed){
 
         String hash = "";
         MessageDigest digest = null;

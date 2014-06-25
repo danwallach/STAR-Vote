@@ -102,6 +102,7 @@ public class PINValidator {
         /* Check for expiration and that the PIN exists */
         validatePIN(PIN);
 
+        /* Return the precinct ID and remove the PIN */
         return precinctIDs.remove(PIN);
     }
 
