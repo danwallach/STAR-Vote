@@ -53,7 +53,7 @@ public class Polynomial {
         this.g = g;
         this.f = f;
         this.degree = degree;
-        coeffs = new ArrayList<AdderInteger>(degree + 1);
+        coeffs = new ArrayList<>(degree + 1);
 
         for (int i = 0; i <= degree; i++) {
             coeffs.add(AdderInteger.random(q));
@@ -125,7 +125,7 @@ public class Polynomial {
      */
     public List<AdderInteger> lagrange() {
         List<AdderInteger> lagrangeCoeffs =
-            new ArrayList<AdderInteger>(coeffs.size());
+            new ArrayList<>(coeffs.size());
 
         for (Iterator it = coeffs.iterator(); it.hasNext();) {
             AdderInteger ai = (AdderInteger) it.next();
@@ -238,7 +238,7 @@ public class Polynomial {
                 throw new InvalidPolynomialException("too many tokens");
             }
 
-            List<AdderInteger> coeffs = new ArrayList<AdderInteger>();
+            List<AdderInteger> coeffs = new ArrayList<>();
 
             while (st0.hasMoreTokens()) {
                 coeffs.add(new AdderInteger(st0.nextToken(), q));

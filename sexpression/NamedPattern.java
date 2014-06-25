@@ -64,7 +64,7 @@ public class NamedPattern extends ASExpression {
      */
     @Override
     public HashMap<String, ASExpression> namedMatch(ASExpression target) {
-        HashMap<String, ASExpression> map = new HashMap<String, ASExpression>();
+        HashMap<String, ASExpression> map = new HashMap<>();
         if (_pattern.match( target ) == NoMatch.SINGLETON)
             return NamedNoMatch.SINGLETON;
 

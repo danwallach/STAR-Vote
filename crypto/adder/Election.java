@@ -1,7 +1,6 @@
 package crypto.adder;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -97,7 +96,7 @@ public class Election {
         AdderInteger g = masterKey.getG();
         AdderInteger f = masterKey.getF();
 
-        List<AdderInteger> coeffs = new ArrayList<AdderInteger>();
+        List<AdderInteger> coeffs = new ArrayList<>();
         coeffs.add(AdderInteger.ZERO);
 
         /* Extract the ciphertexts */

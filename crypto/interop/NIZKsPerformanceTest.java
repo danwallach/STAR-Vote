@@ -28,7 +28,6 @@ import votebox.middle.driver.*;
 import votebox.middle.view.IView;
 
 import java.io.File;
-import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.*;
 
@@ -58,15 +57,15 @@ public class NIZKsPerformanceTest {
 	private static PublicKey _adderPublicKey = null;
     private static PrivateKey _adderPrivateKey = null;
 	
-	private static List<Pair> _toDecryptWithoutNIZKs = new ArrayList<Pair>();
-	private static List<Pair> _toDecryptWithNIZKs = new ArrayList<Pair>();
+	private static List<Pair> _toDecryptWithoutNIZKs = new ArrayList<>();
+	private static List<Pair> _toDecryptWithNIZKs = new ArrayList<>();
 
     SecureRandom r = new SecureRandom();
 
 	protected static void generateRandom(){
 		assert _seeds == null;
 
-		_seeds = new ArrayList<byte[]>();
+		_seeds = new ArrayList<>();
 
 		SecureRandom r = new SecureRandom();
 		for(int i = 0; i < TRIAL_COUNT; i++){
@@ -123,7 +122,7 @@ public class NIZKsPerformanceTest {
 
 	@AfterClass
 	public static void deleteTemporaryFiles() throws Exception{
-		List<File> toDelete = new ArrayList<File>();
+		List<File> toDelete = new ArrayList<>();
 		toDelete.add(_folderPath);
 
 		while(toDelete.size() > 0){
@@ -293,7 +292,7 @@ public class NIZKsPerformanceTest {
 			
 			Assert.assertEquals("Decrypted size does not match expected size", expected.size(), decrypted.size());
 			
-			Map<String, Integer> tempMap = new HashMap<String, Integer>();
+			Map<String, Integer> tempMap = new HashMap<>();
 			
 			for(int i = 0; i < expected.size(); i++){
 				ListExpression expectedRacePair = (ListExpression)expected.get(i);
@@ -392,7 +391,7 @@ public class NIZKsPerformanceTest {
 
         }
 
-        List<ASExpression> report = null;
+        List<ASExpression> report;
         try{
             for(String string : map.keySet())   {
                 tallier.confirmed(map.get(string));

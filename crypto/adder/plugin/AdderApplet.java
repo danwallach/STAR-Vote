@@ -102,10 +102,10 @@ public class AdderApplet extends Applet {
             Boolean ret = (Boolean) AccessController.
             doPrivileged(new PrivilegedExceptionAction/*<Boolean>*/() {
                 public /*Boolean*/Object run() {
-                    return Boolean.valueOf(Plugin.createKeyPair(user,
-                                                                procedure,
-                                                                key,
-                                                                secure));
+                    return Plugin.createKeyPair(user,
+                            procedure,
+                            key,
+                            secure);
                 }
             });
 
@@ -192,8 +192,8 @@ public class AdderApplet extends Applet {
         Boolean ret = (Boolean) AccessController.
         doPrivileged(new PrivilegedAction/*<Boolean>*/() {
             public /*Boolean*/Object run() {
-                return Boolean.valueOf(Plugin.writePrivKey(user, procedure,
-                                                           key));
+                return Plugin.writePrivKey(user, procedure,
+                        key);
             }
         });
 
@@ -231,8 +231,8 @@ public class AdderApplet extends Applet {
         Boolean ret = (Boolean) AccessController.
         doPrivileged(new PrivilegedAction/*<Boolean>*/() {
             public /*Boolean*/Object run() {
-                return Boolean.valueOf(Plugin.writePrivKey2(user, procedure,
-                                                            key));
+                return Plugin.writePrivKey2(user, procedure,
+                        key);
             }
         });
 
@@ -253,9 +253,9 @@ public class AdderApplet extends Applet {
             Boolean ret = (Boolean) AccessController.
             doPrivileged(new PrivilegedExceptionAction/*<Boolean>*/() {
                 public /*Boolean*/Object run() {
-                    return Boolean.valueOf(Plugin.computeSecretKey(user,
-                                                                   procedure,
-                                                                   keys));
+                    return Plugin.computeSecretKey(user,
+                            procedure,
+                            keys);
                 }
             });
 

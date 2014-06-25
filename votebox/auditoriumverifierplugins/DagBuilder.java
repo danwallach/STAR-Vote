@@ -61,9 +61,9 @@ public class DagBuilder {
     private HashMap<Expression, Expression> _msgToPtr;
 
     public DagBuilder() {
-        _predecessors = new HashMap<Expression, ArrayList<Expression>>();
-        _ptrToMsg = new HashMap<Expression, Expression>();
-        _msgToPtr = new HashMap<Expression, Expression>();
+        _predecessors = new HashMap<>();
+        _ptrToMsg = new HashMap<>();
+        _msgToPtr = new HashMap<>();
     }
 
     /**
@@ -93,7 +93,7 @@ public class DagBuilder {
 
             ListExpression matchlist = (ListExpression) matchresult;
 
-            ArrayList<Expression> ptrlst = new ArrayList<Expression>();
+            ArrayList<Expression> ptrlst = new ArrayList<>();
 
             /* Creating ASE that represents a message */
             for (ASExpression ptrexp : (ListExpression) matchlist.get(3))

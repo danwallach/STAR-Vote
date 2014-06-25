@@ -45,7 +45,7 @@ public class LocalizedString {
 	 * Constructs a LocalizedString with no translations
 	 */
 	public LocalizedString() {
-		map = new HashMap<Language, String>();
+		map = new HashMap<>();
 	}
 
 	/**

@@ -329,7 +329,7 @@ public class Driver {
 			return;
 		}
 		
-		final List<String> choices = new ArrayList<String>();
+		final List<String> choices = new ArrayList<>();
 
         /* Get each of the ballots */
 		for(int i = 0; i < ballot.size(); i++){
@@ -356,7 +356,7 @@ public class Driver {
             totalSize += choiceToImage.get(choice).getHeight(null);
 		
 		final int fTotalSize = totalSize;
-		final List<String> printedChoices = new ArrayList<String>();
+		final List<String> printedChoices = new ArrayList<>();
 
         /* Set up the ballot for printing TODO comment this anonymous class */
 		Printable printedBallot = new Printable(){
@@ -547,7 +547,7 @@ public class Driver {
      */
 	public static void deleteRecursivelyOnExit(String dir) {
 
-		Stack<File> dirStack = new Stack<File>();
+		Stack<File> dirStack = new Stack<>();
         dirStack.add( new File(dir) );
 
         /* While there's still something on the directory stack... */

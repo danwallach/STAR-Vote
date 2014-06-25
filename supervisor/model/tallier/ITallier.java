@@ -24,9 +24,6 @@ package supervisor.model.tallier;
 
 import sexpression.ASExpression;
 
-import java.math.BigInteger;
-import java.util.Map;
-
 /**
  * Interface for all Tallier implementations.
  * 

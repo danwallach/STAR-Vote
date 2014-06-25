@@ -44,8 +44,7 @@ public abstract class PrimFactory extends ASTFactory {
 	}
 
 	/**
-	 * @see verifier.ast.ASTFactory#make(sexpression.ListExpression,
-	 *      verifier.ast.ASTParser)
+	 * @see verifier.ast.ASTFactory#make(sexpression.ASExpression, sexpression.ListExpression, ASTParser)
 	 */
 	@Override
 	public AST make(ASExpression from, ListExpression matchresult,
@@ -61,7 +60,7 @@ public abstract class PrimFactory extends ASTFactory {
 	 */
 	@Override
 	public String getPattern() {
-		StringBuffer buff = new StringBuffer();
+		StringBuilder buff = new StringBuilder();
 		buff.append('(');
 		buff.append(getName());
 		for (int lcv = 0; lcv < _args; lcv++) {

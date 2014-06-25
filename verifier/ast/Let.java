@@ -123,7 +123,7 @@ public class Let extends AST {
 	public Value eval(ActivationRecord environment) {
 		ActivationRecord env;
 		if (_record == null) {
-			HashMap<String, Value> extension = new HashMap<String, Value>();
+			HashMap<String, Value> extension = new HashMap<>();
 			for (int lcv = 0; lcv < _bindings.length; lcv++)
 				extension
 						.put(_variables[lcv], _bindings[lcv].eval(environment));

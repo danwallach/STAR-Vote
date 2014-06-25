@@ -138,10 +138,10 @@ public class TallyResultsFrame extends JFrame{
     private JTree createFancyTreeTable(Map<String, BigInteger> results, Map<String, Image> candidateImgMap, Map<String, Image> titleImgMap) {
 
         /* The underlying structure of the sub-sub-JTrees, a map of maps of results to JTables */
-        final Map<Map<String, BigInteger>, JTable> modelToView = new HashMap<Map<String, BigInteger>, JTable>();
+        final Map<Map<String, BigInteger>, JTable> modelToView = new HashMap<>();
 
         /* The structure of the sub-JTree, a map of images to a list of names of title headers */
-        final Map<Image, java.util.List<String>> titleToRaces = new HashMap<Image, java.util.List<String>>();
+        final Map<Image, java.util.List<String>> titleToRaces = new HashMap<>();
 
         /* invisible root node of tree */
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("root", true);
@@ -152,7 +152,7 @@ public class TallyResultsFrame extends JFrame{
          */
         for(Image title : titleImgMap.values()){
             /*First build an array of all the raceids that are race titles */
-            java.util.List<String> raceIds = new ArrayList<String>();
+            java.util.List<String> raceIds = new ArrayList<>();
             for(String raceId : titleImgMap.keySet()){
                 if(titleImgMap.get(raceId) == title)
                     raceIds.add(raceId);
@@ -169,7 +169,7 @@ public class TallyResultsFrame extends JFrame{
         for(Image titleImg : titleToRaces.keySet()){
             /* Create a new tree node for each title image */
             DefaultMutableTreeNode title = new DefaultMutableTreeNode(titleImg, true);
-            Map<String, BigInteger> subResults = new HashMap<String, BigInteger>();
+            Map<String, BigInteger> subResults = new HashMap<>();
 
             /* Get all of the results for that title image's corresponding race */
             for(String raceId : titleToRaces.get(titleImg))
@@ -340,8 +340,8 @@ public class TallyResultsFrame extends JFrame{
             sum += results.get(race).intValue();
 
             /* This is mostly debugging info, I think. TODO Remove it */
-            if(race.equals("B" + minRaceId(new ArrayList<String>(results.keySet())))){
-                System.out.println(new ArrayList<String>(results.keySet()));
+            if(race.equals("B" + minRaceId(new ArrayList<>(results.keySet())))){
+                System.out.println(new ArrayList<>(results.keySet()));
                 System.out.println(race);
                 continue;
             }
@@ -588,7 +588,7 @@ public class TallyResultsFrame extends JFrame{
     private Map<String, Image> loadBallotRaces(String ballot, java.util.List<String> languages) {
         try {
             /* Since the ballot is a zip file, we will treat it accordingly */
-            Map<String, Image> racesToImageMap = new HashMap<String, Image>();
+            Map<String, Image> racesToImageMap = new HashMap<>();
 
             ZipFile file = new ZipFile(ballot);
 
@@ -747,7 +747,7 @@ public class TallyResultsFrame extends JFrame{
      * @param args command line args
      */
     public static void main(String[] args){
-        Map<String, BigInteger> resMap = new TreeMap<String, BigInteger>();
+        Map<String, BigInteger> resMap = new TreeMap<>();
         resMap.put("B1", new BigInteger("1"));
         resMap.put("B2", new BigInteger("2"));
         resMap.put("B3", new BigInteger("3"));

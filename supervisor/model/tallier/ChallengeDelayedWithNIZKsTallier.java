@@ -20,7 +20,7 @@ import crypto.interop.AdderKeyManipulator;
 public class ChallengeDelayedWithNIZKsTallier extends EncryptedTallierWithNIZKs {
     private List<String> writeIns;
 
-	private Map<ASExpression, byte[]> _pendingVotes = new HashMap<ASExpression, byte[]>();
+	private Map<ASExpression, byte[]> _pendingVotes = new HashMap<>();
 
     /**
      * Constructor.
@@ -92,7 +92,7 @@ public class ChallengeDelayedWithNIZKsTallier extends EncryptedTallierWithNIZKs 
 				
 				//Vote vote = Vote.fromString(voteE.get(1).toString());
 				Vote vote = Vote.fromASE(voteE.get(1));
-				List<String> voteIds = new ArrayList<String>();
+				List<String> voteIds = new ArrayList<>();
 				for(int j = 0; j < voteIdsE.get(1).size(); j++)
 					voteIds.add(((ListExpression)voteIdsE.get(1)).get(j).toString());
 				

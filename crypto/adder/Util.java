@@ -23,10 +23,10 @@ public final class Util {
      * @return the string representation of this byte array
      */
     public static String byteArrayToHexString(byte[] b) {
-        StringBuffer sb = new StringBuffer(b.length * 2);
+        StringBuilder sb = new StringBuilder(b.length * 2);
 
-        for (int i = 0; i < b.length; i++) {
-            int j = (b[i] & 0xff);
+        for (byte aB : b) {
+            int j = (aB & 0xff);
 
             if (j < 16) {
                 sb.append('0');
@@ -49,10 +49,8 @@ public final class Util {
             return byteArrayToHexString(MessageDigest
                                         .getInstance("SHA")
                                         .digest(s.getBytes("US-ASCII")));
-        } catch (NoSuchAlgorithmException nsae) {
+        } catch (NoSuchAlgorithmException | UnsupportedEncodingException nsae) {
             throw new RuntimeException(nsae);
-        } catch (UnsupportedEncodingException uee) {
-            throw new RuntimeException(uee);
         }
     }
 

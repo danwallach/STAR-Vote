@@ -150,7 +150,7 @@ public class RaceCard extends ACard {
         ArrayList<CardElement> cardElements = candidatesModule.getData();
 
         /* For each candidate, extract a String representation and put it in our list */
-        ArrayList<String> dataStrings = new ArrayList<String>();
+        ArrayList<String> dataStrings = new ArrayList<>();
         for(CardElement ce : cardElements){
             dataStrings.add(ce.getName(language, 0));
         }
@@ -166,7 +166,7 @@ public class RaceCard extends ACard {
         Element cardElt = super.toXML(doc);
 
         /* We will build an array of XML entries recursively */
-        List<String> ids = new ArrayList<String>();
+        List<String> ids = new ArrayList<>();
 
         /* We will artificially insert a no selection option, with the same UID as the card itself */
         int id = Integer.parseInt(this.getUID().substring(1)) ;

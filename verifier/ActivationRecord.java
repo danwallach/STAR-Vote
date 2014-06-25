@@ -74,7 +74,7 @@ public class ActivationRecord {
 		@Override
 		public HashMap<String, Value> extensions() {
 			// Don't include the END bindings -- bindings is used
-			return new HashMap<String, Value>();
+			return new HashMap<>();
 		}
 	};
 
@@ -95,7 +95,7 @@ public class ActivationRecord {
 	 */
 	public ActivationRecord(ASExpression ase) {
 		_previous = END;
-		_mappings = new HashMap<String, Value>();
+		_mappings = new HashMap<>();
 
 		for (ASExpression binding : (ListExpression) ase)
 			_mappings.put(((ListExpression) binding).get(0).toString(),
@@ -109,7 +109,7 @@ public class ActivationRecord {
 	 */
 	public ASExpression toASE() {
 		HashMap<String, Value> map = extensions();
-		ArrayList<ASExpression> list = new ArrayList<ASExpression>(map.size());
+		ArrayList<ASExpression> list = new ArrayList<>(map.size());
 		for (String s : map.keySet())
 			list.add(new ListExpression(StringExpression.make(s), map.get(s)
 					.toASE()));
@@ -195,7 +195,7 @@ public class ActivationRecord {
 	 */
 	@Override
 	public String toString() {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		for (String s : _mappings.keySet())
 			sb.append("{" + s + " : " + _mappings.get(s) + "}");
 		return _previous.toString() + sb.toString();

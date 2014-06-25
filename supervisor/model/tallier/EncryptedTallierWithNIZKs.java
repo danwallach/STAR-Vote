@@ -39,7 +39,7 @@ public class EncryptedTallierWithNIZKs implements ITallier {
     protected PrivateKey _finalPrivateKey = null;
 
 	/** The results of the election are stored by race ID in this map */
-	protected Map<String, Election> _results = new HashMap<String, Election>();
+	protected Map<String, Election> _results = new HashMap<>();
 	
 	/**
 	 * Constructor.
@@ -172,7 +172,7 @@ public class EncryptedTallierWithNIZKs implements ITallier {
 
                 /* Now that we know the vote is valid, read it in as an Adder Vote object */
 				Vote vote = Vote.fromASE(voteE.get(1));
-				List<String> voteIds = new ArrayList<String>();
+				List<String> voteIds = new ArrayList<>();
 
                 /* Add the candidates to a list */
 				for(int j = 0; j < voteIdsE.get(1).size(); j++)

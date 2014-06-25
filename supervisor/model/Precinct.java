@@ -1,11 +1,8 @@
 package supervisor.model;
 
-import crypto.adder.PrivateKey;
 import crypto.adder.PublicKey;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
-import supervisor.model.tallier.ChallengeDelayedWithNIZKsTallier;
-import supervisor.model.tallier.ITallier;
 
 import java.util.ArrayList;
 import java.util.HashMap;

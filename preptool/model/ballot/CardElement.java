@@ -45,7 +45,7 @@ import java.util.HashMap;
 public class CardElement {
 
     /** A mapping of language name to CardElement name, used to identify names of write-in candidates. */
-    public static final HashMap<String, String> writeInNames = new HashMap<String, String>();
+    public static final HashMap<String, String> writeInNames = new HashMap<>();
 
     /* Populate the map of write-in translations */
     static

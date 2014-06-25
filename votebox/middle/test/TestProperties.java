@@ -181,8 +181,8 @@ public class TestProperties extends TestCase {
 
         Properties p = new Properties();
 
-        ArrayList<String> stringlist = new ArrayList<String>();
-        ArrayList<String> intlist = new ArrayList<String>();
+        ArrayList<String> stringlist = new ArrayList<>();
+        ArrayList<String> intlist = new ArrayList<>();
 
         stringlist.add("Hello");
         stringlist.add("World");

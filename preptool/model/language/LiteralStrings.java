@@ -42,9 +42,9 @@ public class LiteralStrings {
      * Initializes the hash map with all of the LocalizedStrings TODO later will load from files
      */
     private LiteralStrings() {
-        map = new HashMap<String, LocalizedString>();
+        map = new HashMap<>();
 
-        HashMap<String, Language> langs = new HashMap<String, Language>();
+        HashMap<String, Language> langs = new HashMap<>();
         for (Language lang: Language.getAllLanguages())
             langs.put(lang.getName(), lang);
         Language ENGLISH = langs.get("English");

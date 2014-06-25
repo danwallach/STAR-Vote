@@ -134,9 +134,7 @@ public class PublicKey {
         AdderInteger bigG = g.pow(r);
         AdderInteger bigH = h.pow(r).multiply(f.pow(m));
 
-        ElgamalCiphertext ciphertext = new ElgamalCiphertext(bigG, bigH, r, p);
-
-        return ciphertext;
+        return new ElgamalCiphertext(bigG, bigH, r, p);
     }
 
     /**
@@ -152,9 +150,7 @@ public class PublicKey {
         AdderInteger bigG = g.pow(r);
         AdderInteger bigH = h.pow(r).multiply(m);
 
-        ElgamalCiphertext ciphertext = new ElgamalCiphertext(bigG, bigH, r, p);
-
-        return ciphertext;
+        return new ElgamalCiphertext(bigG, bigH, r, p);
     }
     /**
      * Encrypts the given choice given the base.
@@ -174,9 +170,7 @@ public class PublicKey {
             voteList.add(encrypt(choice));
         }
 
-        Vote vote = new Vote(voteList);
-
-        return vote;
+        return new Vote(voteList);
     }
 
     /**
@@ -192,9 +186,8 @@ public class PublicKey {
         AdderInteger bigH = h.pow(r).multiply(mPlusOne.pow(AdderInteger.TWO));
 
         /*TODO  This is a VoteBox related change.  We need to keep r around, but not send it over the wire*/
-        ElgamalCiphertext ciphertext = new ElgamalCiphertext(bigG, bigH, r, p);
 
-        return ciphertext;
+        return new ElgamalCiphertext(bigG, bigH, r, p);
     }
 
 

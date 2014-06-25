@@ -13,15 +13,15 @@ public class CompletedUploadEvent extends AAnnounceEvent {
      * Matcher for the StartUploadEvent message
      */
     private static MatcherRule MATCHER = new MatcherRule() {
-        private ASExpression pattern = new ListExpression(StringExpression
-                .makeString("completed-upload"));
+
+        private ASExpression pattern = new ListExpression(StringExpression.makeString("completed-upload"));
 
         public IAnnounceEvent match(int serial, ASExpression sexp) {
-            ASExpression res = pattern.match( sexp );
-            if (res != NoMatch.SINGLETON) {
 
+            ASExpression res = pattern.match(sexp);
+
+            if (res != NoMatch.SINGLETON)
                 return new CompletedUploadEvent(serial);
-            }
 
             return null;
         }
@@ -37,7 +37,7 @@ public class CompletedUploadEvent extends AAnnounceEvent {
     /**
      * @return a MatcherRule for parsing this event type.
      */
-    public MatcherRule getMatcher(){ return MATCHER; }
+    public static MatcherRule getMatcher(){ return MATCHER; }
 
     /**
      * Fires this event on a listener

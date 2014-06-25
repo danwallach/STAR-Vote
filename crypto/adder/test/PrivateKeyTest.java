@@ -67,56 +67,56 @@ public class PrivateKeyTest extends TestCase {
         try {
             PrivateKey.fromString("pgxf");
             fail();
-        } catch (InvalidPrivateKeyException ipke) {
+        } catch (InvalidPrivateKeyException ignored) {
 
         }
 
         try {
             PrivateKey.fromString("x123g123x123f123");
             fail();
-        } catch (InvalidPrivateKeyException ipke) {
+        } catch (InvalidPrivateKeyException ignored) {
 
         }
 
         try {
             PrivateKey.fromString("p123x123x123f123");
             fail();
-        } catch (InvalidPrivateKeyException ipke) {
+        } catch (InvalidPrivateKeyException ignored) {
 
         }
 
         try {
             PrivateKey.fromString("p123g123g123f123");
             fail();
-        } catch (InvalidPrivateKeyException ipke) {
+        } catch (InvalidPrivateKeyException ignored) {
 
         }
 
         try {
             PrivateKey.fromString("p123g123x123x123");
             fail();
-        } catch (InvalidPrivateKeyException ipke) {
+        } catch (InvalidPrivateKeyException ignored) {
 
         }
 
         try {
             PrivateKey.fromString("p123g123x123f123p123");
             fail();
-        } catch (InvalidPrivateKeyException ipke) {
+        } catch (InvalidPrivateKeyException ignored) {
 
         }
 
         try {
             PrivateKey.fromString("p123g123x123f12a");
             fail();
-        } catch (InvalidPrivateKeyException ipke) {
+        } catch (InvalidPrivateKeyException ignored) {
 
         }
 
         try {
             PrivateKey.fromString("p123g123x123p123");
             fail();
-        } catch (InvalidPrivateKeyException ipke) {
+        } catch (InvalidPrivateKeyException ignored) {
 
         }
 
@@ -139,9 +139,7 @@ public class PrivateKeyTest extends TestCase {
             List/*<AdderInteger>*/ list2 = new ArrayList/*<AdderInteger>*/(1);
             list2.add(new  AdderInteger("695327169426"));
             assertEquals(list2, privateKey4.partialDecrypt(vote2));
-        } catch (InvalidPrivateKeyException ipke) {
-            fail();
-        } catch (InvalidVoteException ive) {
+        } catch (InvalidPrivateKeyException | InvalidVoteException ipke) {
             fail();
         }
 
@@ -189,9 +187,7 @@ public class PrivateKeyTest extends TestCase {
                           authFinPrivKey1.toString());
             assertEquals("p553417232063g15044079079x182873233170f419757826339",
                          authFinPrivKey2.toString());
-        } catch (InvalidPrivateKeyException ipke) {
-            fail();
-        } catch (InvalidVoteException ive) {
+        } catch (InvalidPrivateKeyException | InvalidVoteException ipke) {
             fail();
         }
     }

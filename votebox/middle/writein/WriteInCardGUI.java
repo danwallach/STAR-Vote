@@ -316,7 +316,7 @@ public class WriteInCardGUI extends Panel {
 		/* 3. Add the buttons to the container. */
 
 		/* ROW 1 */
-        ArrayList<JButton> firstRow = new ArrayList<JButton> ();
+        ArrayList<JButton> firstRow = new ArrayList<>();
 		/*qButton = new JButton("Q") {
 			@Override
 		    public void paintComponent (Graphics g) {
@@ -336,7 +336,7 @@ public class WriteInCardGUI extends Panel {
         pButton = new JButton("P");pButton.setFont(DEFAULT_KEY_FONT);firstRow.add(pButton);
 
 		/* ROW 2 */
-        ArrayList<JButton> secondRow = new ArrayList<JButton> ();
+        ArrayList<JButton> secondRow = new ArrayList<>();
         aButton = new JButton("A");aButton.setFont(DEFAULT_KEY_FONT);secondRow.add(aButton);
         sButton = new JButton("S");sButton.setFont(DEFAULT_KEY_FONT);secondRow.add(sButton);
         dButton = new JButton("D");dButton.setFont(DEFAULT_KEY_FONT);secondRow.add(dButton);
@@ -348,7 +348,7 @@ public class WriteInCardGUI extends Panel {
         lButton = new JButton("L");lButton.setFont(DEFAULT_KEY_FONT);secondRow.add(lButton);
 
 		/* ROW 3 */
-        ArrayList<JButton> thirdRow = new ArrayList<JButton> ();
+        ArrayList<JButton> thirdRow = new ArrayList<>();
         zButton = new JButton("Z");zButton.setFont(DEFAULT_KEY_FONT);thirdRow.add(zButton);
         xButton = new JButton("X");xButton.setFont(DEFAULT_KEY_FONT);thirdRow.add(xButton);
         cButton = new JButton("C");cButton.setFont(DEFAULT_KEY_FONT);thirdRow.add(cButton);

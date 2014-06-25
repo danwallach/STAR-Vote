@@ -36,17 +36,16 @@ public abstract class PQuantifierFactory extends ASTFactory {
 	}
 
 	/**
-	 * @see verifier.ast.ASTFactory#make(sexpression.ListExpression,
-	 *      verifier.ast.ASTParser)
+	 * @see verifier.ast.ASTFactory#make(sexpression.ASExpression, sexpression.ListExpression, ASTParser)
 	 */
 	@Override
 	public AST make(ASExpression from, ListExpression matchresult,
 			ASTParser parser) {
-		ArrayList<Binding<AST, ActivationRecord>> bindings = new ArrayList<Binding<AST, ActivationRecord>>();
+		ArrayList<Binding<AST, ActivationRecord>> bindings = new ArrayList<>();
 		ListExpression list = (ListExpression) matchresult.get(4);
 		for (ASExpression ase : list) {
 			ListExpression binding = (ListExpression) ase;
-			bindings.add(new Binding<AST, ActivationRecord>(parser
+			bindings.add(new Binding<>(parser
 					.parse(binding.get(0)),
 					new ActivationRecord(binding.get(1))));
 		}

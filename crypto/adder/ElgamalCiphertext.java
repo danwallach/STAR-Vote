@@ -87,9 +87,8 @@ public class ElgamalCiphertext {
         AdderInteger r = this.getR().add(ciphertext.getR());
 
         /* Create a new ciphertext */
-        ElgamalCiphertext newCiphertext = new ElgamalCiphertext(g, h, r, p);
 
-        return newCiphertext;
+        return new ElgamalCiphertext(g, h, r, p);
     }
 
     /**
@@ -215,7 +214,7 @@ public class ElgamalCiphertext {
     public String toString() {
 
         /* Create a new StringBuffer */
-        StringBuffer sb = new StringBuffer(4096);
+        StringBuilder sb = new StringBuilder(4096);
 
         /* Build the pGH String representing ciphertext */
         sb.append("p");

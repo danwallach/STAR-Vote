@@ -70,7 +70,7 @@ public class LSpawn extends AST {
 	public Value eval(ActivationRecord environment) {
 		Future f = new Future();
 
-		if (POOL.running() == false)
+		if (!POOL.running())
 			POOL.start();
 
 		POOL.run(new LocalTask(f, _body, environment));

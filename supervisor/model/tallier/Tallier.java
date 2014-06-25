@@ -54,7 +54,7 @@ public class Tallier implements ITallier{
 	 * Constructs a new Tallier with its counts zeroed out
 	 */
 	public Tallier() {
-		votes = new TreeMap<String, HashMap<String, Integer>>();
+		votes = new TreeMap<>();
 	}
 
 	/**
@@ -123,7 +123,7 @@ public class Tallier implements ITallier{
 
                         /* If we haven't seen this race before, add it to the map of results */
 						if (raceVals == null) {
-							raceVals = new HashMap<String, Integer>();
+							raceVals = new HashMap<>();
 							votes.put(race, raceVals);
 						}
 

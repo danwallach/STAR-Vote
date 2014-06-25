@@ -67,8 +67,8 @@ public class SimpleKeyStore implements IKeyStore {
 	 */
 	public SimpleKeyStore(String dir) {
 		_dir = dir;
-		_keyCache  = new HashMap<String,Key>();
-		_certCache = new HashMap<String,Cert>();
+		_keyCache  = new HashMap<>();
+		_certCache = new HashMap<>();
 	}
 
 	/**
@@ -242,9 +242,8 @@ public class SimpleKeyStore implements IKeyStore {
 				
 				if(in != null)
 					return in;
-			}catch(Exception e){
-				continue;
-			}//catch
+			}catch(Exception ignored){
+            }//catch
 		}//for
 
 		//If that fails, check the working directory

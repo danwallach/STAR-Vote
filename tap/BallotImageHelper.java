@@ -76,7 +76,7 @@ public class BallotImageHelper {
 	 */
 	public static Map<String, Image> loadImagesForVVPAT(String ballotPath){
 
-		Map<String, Image> vvpatMap = new HashMap<String, Image>();
+		Map<String, Image> vvpatMap = new HashMap<>();
 
 		try {
 
@@ -124,7 +124,7 @@ public class BallotImageHelper {
 	 */
 	public static Map<String, Image> loadBallotTitles(String ballotPath) {
 
-        Map<String, Image> titleMap = new HashMap<String, Image>();
+        Map<String, Image> titleMap = new HashMap<>();
 
 		try {
 

@@ -85,4 +85,4 @@ public class MemoryHole {
 		}
 		return sum / n;
 	}
-};
+}

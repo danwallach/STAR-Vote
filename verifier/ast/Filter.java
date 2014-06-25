@@ -62,7 +62,7 @@ public class Filter extends AST {
 		final Value set = _set.eval(environment);
 		final Value pattern = _pattern.eval(environment);
 
-		final ArrayList<Expression> lst = new ArrayList<Expression>();
+		final ArrayList<Expression> lst = new ArrayList<>();
 		set.execute(new AValueVisitor() {
 
 			@Override
@@ -88,7 +88,7 @@ public class Filter extends AST {
 
 		});
 
-		return new SetValue(lst.toArray(new Expression[0]));
+		return new SetValue(lst.toArray(new Expression[lst.size()]));
 	}
 
 }

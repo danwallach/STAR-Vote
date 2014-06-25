@@ -96,7 +96,7 @@ public class StringExpression extends ASExpression {
 
             StringExpression retval = new StringExpression(bytes);
             _interned.put(new BytesBox(ASExpression.computeSHA1(bytes)),
-                    new WeakReference<StringExpression>(retval));
+                    new WeakReference<>(retval));
             return retval;
         }
 
@@ -185,7 +185,7 @@ public class StringExpression extends ASExpression {
     public synchronized HashMap<String, ASExpression> namedMatch(
             ASExpression target) {
         if (this == target)
-            return new HashMap<String, ASExpression>();
+            return new HashMap<>();
         return NamedNoMatch.SINGLETON;
     }
 

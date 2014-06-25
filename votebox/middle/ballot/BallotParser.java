@@ -89,7 +89,7 @@ public class BallotParser {
      */
     public Ballot getBallot(IBallotVars vars) throws BallotParserException {
 
-        _elements = new HashMap<String, SelectableCardElement>();
+        _elements = new HashMap<>();
 
         /* Crete a new document */
         Document document;
@@ -123,7 +123,7 @@ public class BallotParser {
     private Ballot parseBallot(Node node) throws BallotParserException {
 
         NodeList children = node.getChildNodes();
-        ArrayList<Card> cards = new ArrayList<Card>();
+        ArrayList<Card> cards = new ArrayList<>();
         Properties properties = new Properties();
 
         /* Look through children items and parse */
@@ -150,7 +150,7 @@ public class BallotParser {
             }
         }
 
-        List<List<String>> raceGroups = new ArrayList<List<String>>();
+        List<List<String>> raceGroups = new ArrayList<>();
 
         for(Card card : cards){
 
@@ -181,7 +181,7 @@ public class BallotParser {
     private Card parseCard(Node node) throws BallotParserException {
 
         NodeList children = node.getChildNodes();
-        ArrayList<SelectableCardElement> elements = new ArrayList<SelectableCardElement>();
+        ArrayList<SelectableCardElement> elements = new ArrayList<>();
         Properties properties = new Properties();
 
         boolean hasWriteIn = false;
@@ -373,7 +373,7 @@ public class BallotParser {
         String type = nodeAttributes.getNamedItem( "type" ).getNodeValue();
 
         NodeList children = node.getChildNodes();
-        ArrayList<String> elts = new ArrayList<String>();
+        ArrayList<String> elts = new ArrayList<>();
 
         for (int lcv = 0; lcv < children.getLength(); lcv++) {
 

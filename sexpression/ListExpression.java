@@ -69,7 +69,7 @@ public class ListExpression extends ASExpression implements
      *            this SExpressionList.
      */
     public ListExpression(List<ASExpression> list) {
-        _list = list.toArray(new ASExpression[0]);
+        _list = list.toArray(new ASExpression[list.size()]);
     }
 
     /**
@@ -94,8 +94,7 @@ public class ListExpression extends ASExpression implements
      *         containing the provided elements.
      */
     public ListExpression(String... elts) {
-        ASExpression[] list = new ASExpression[elts.length];
-        _list = list;
+        _list = new ASExpression[elts.length];
         for (int lcv = 0; lcv < elts.length; lcv++)
             _list[lcv] = StringExpression.makeString( elts[lcv] );
     }
@@ -142,7 +141,7 @@ public class ListExpression extends ASExpression implements
             return NoMatch.SINGLETON;
 
         ASExpression thiselt, targetelt;
-        ArrayList<ASExpression> matchList = new ArrayList<ASExpression>();
+        ArrayList<ASExpression> matchList = new ArrayList<>();
         for (int lcv = 0; lcv < _list.length; lcv++) {
             thiselt = _list[lcv];
             targetelt = targetlist[lcv];
@@ -156,8 +155,7 @@ public class ListExpression extends ASExpression implements
 
         }
 
-        ListExpression ret = new ListExpression( matchList );
-        return ret;
+        return new ListExpression( matchList );
     }
 
     /**
@@ -172,7 +170,7 @@ public class ListExpression extends ASExpression implements
             return NamedNoMatch.SINGLETON;
 
         ASExpression thiselt, targetelt;
-        HashMap<String, ASExpression> matchList = new HashMap<String, ASExpression>();
+        HashMap<String, ASExpression> matchList = new HashMap<>();
         for (int lcv = 0; lcv < _list.length; lcv++) {
             thiselt = _list[lcv];
             targetelt = targetlist[lcv];

@@ -38,7 +38,7 @@ public class StartUploadEvent extends AAnnounceEvent {
     /**
      * @return a MatcherRule for parsing this event type.
      */
-    public MatcherRule getMatcher(){ return MATCHER; }
+    public static MatcherRule getMatcher(){ return MATCHER; }
 
     /**
      * Fires this event on a listener

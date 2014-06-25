@@ -296,7 +296,7 @@ public class RenderPage {
      * @return a list of all the unique ids of elements on this page
      */
     public List<String> getUniqueIDs(){
-    	List<String> ret = new ArrayList<String>();
+    	List<String> ret = new ArrayList<>();
     	
     	for(IDrawable child : _children)
     		ret.add(child.getUniqueID());

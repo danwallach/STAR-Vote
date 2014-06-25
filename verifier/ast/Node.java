@@ -82,16 +82,14 @@ public class Node extends AST {
 						t.setOutbound(s.getOutputStream());
 						_pool.run(t);
 					}
-				} catch (EOFException e) {}
+				} catch (EOFException ignored) {}
 				System.err.println();
 
-			} catch (SocketException e) {} catch (IOException e) {
-				throw new RuntimeException(e);
-			} catch (InvalidVerbatimStreamException e) {
+			} catch (SocketException ignored) {} catch (IOException | InvalidVerbatimStreamException e) {
 				throw new RuntimeException(e);
 			}
 
-		} catch (IOException e) {
+        } catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 		_pool.stop();

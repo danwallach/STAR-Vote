@@ -82,7 +82,7 @@ public class Verifier {
 	 *         interface.
 	 */
 	public static HashMap<String, ASTFactory> getPrimitives() {
-		HashMap<String, ASTFactory> factories = new HashMap<String, ASTFactory>();
+		HashMap<String, ASTFactory> factories = new HashMap<>();
 
 		factories.put(And.FACTORY.getName(), And.FACTORY);
 		factories.put(Assert.FACTORY.getName(), Assert.FACTORY);
@@ -132,7 +132,7 @@ public class Verifier {
 	 *            looking for include "rule", "config", "out".
 	 */
 	public static void main(String[] args) throws Exception {
-		HashMap<String, String> argmap = new HashMap<String, String>();
+		HashMap<String, String> argmap = new HashMap<>();
 
 		argmap = parseArgs(args);
 
@@ -195,7 +195,7 @@ public class Verifier {
 	 *         collection of '[var]=[val]' assignments from the command line.
 	 */
 	public static HashMap<String, String> parseArgs(String[] args) {
-		HashMap<String, String> bindings = new HashMap<String, String>();
+		HashMap<String, String> bindings = new HashMap<>();
 		for (String s : args) {
 			String[] binding = s.split("=");
 			if (binding.length != 2)
@@ -234,7 +234,7 @@ public class Verifier {
 	 * constructor or the Verifier(args) version.
 	 */
 	public Verifier() {
-		_args = new HashMap<String, String>();
+		_args = new HashMap<>();
 		_factories = getPrimitives();
 	}
 

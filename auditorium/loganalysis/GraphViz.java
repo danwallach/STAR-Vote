@@ -121,7 +121,7 @@ public class GraphViz {
      * Adds a string to the graph's source (with newline).
      */
     public void addln(String line) {
-        graph.append( line + "\n" );
+        graph.append(line + "\n");
     }
 
     /**
@@ -140,13 +140,13 @@ public class GraphViz {
      */
     public byte[] getGraph(String dot_source) {
         File dot;
-        byte[] img_stream = null;
+        byte[] img_stream;
 
         try {
             dot = writeDotSourceToFile( dot_source );
             if (dot != null) {
                 img_stream = get_img_stream( dot );
-                if (dot.delete() == false)
+                if (!dot.delete())
                     System.err.println( "Warning: " + dot.getAbsolutePath()
                             + " could not be deleted!" );
                 return img_stream;
@@ -255,7 +255,7 @@ public class GraphViz {
             if (in != null)
                 in.close();
 
-            if (img.delete() == false)
+            if (!img.delete())
                 System.err.println( "Warning: " + img.getAbsolutePath()
                         + " could not be deleted!" );
         }

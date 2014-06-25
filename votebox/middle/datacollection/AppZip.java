@@ -22,7 +22,7 @@ public class AppZip
 
     public AppZip(File source){
         SOURCE_FOLDER = source.getAbsolutePath();
-        fileList = new ArrayList<String>();
+        fileList = new ArrayList<>();
     }
 
     /**

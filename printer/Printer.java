@@ -139,7 +139,7 @@ public class Printer{
 
         ArrayList<RaceTitlePair> actualRaceNameImagePairs = getRaceNameImagePairs(choiceToImage);
 
-        final List<String> choices = new ArrayList<String>();
+        final List<String> choices = new ArrayList<>();
 
         ArrayList<ChoicePair> reformedBallot = reformBallot(ballot);
 
@@ -188,8 +188,8 @@ public class Printer{
         catch (IOException e) { System.err.println("Could not write barcode image to a file."); }
 
         /* HTML Printing: Each column is an ArrayList of Strings. Each image is represented by its file name. */
-        ArrayList<ArrayList<String>> columnsToPrint = new ArrayList<ArrayList<String>>();
-        ArrayList<String> currentColumn = new ArrayList<String>();
+        ArrayList<ArrayList<String>> columnsToPrint = new ArrayList<>();
+        ArrayList<String> currentColumn = new ArrayList<>();
 
         /* Add at least 1 columns to print */
         columnsToPrint.add(currentColumn);
@@ -293,7 +293,7 @@ public class Printer{
     protected ArrayList<RaceTitlePair> getRaceNameImagePairs(Map<String, Image> imageMap) {
 
         /* This ArrayList will hold all the numeric IDs that correspond to race labels. */
-        ArrayList<Integer> raceNumericIDs = new ArrayList<Integer> ();
+        ArrayList<Integer> raceNumericIDs = new ArrayList<>();
 
         /*
           Go through the image mapping and whenever a UID starts with "L", add the following number to raceNumericIDs.
@@ -304,7 +304,7 @@ public class Printer{
                 raceNumericIDs.add(new Integer(UID.substring(1)));
 
         /* Now sort them by number */
-        ArrayList<RaceTitlePair> sortedRaceNameImagePairs = new ArrayList<RaceTitlePair> ();
+        ArrayList<RaceTitlePair> sortedRaceNameImagePairs = new ArrayList<>();
         Integer[] sortedRaceNumIDArray = raceNumericIDs.toArray(new Integer[raceNumericIDs.size()]);
         Arrays.sort(sortedRaceNumIDArray);
 
@@ -330,7 +330,7 @@ public class Printer{
      */
     protected ArrayList<ChoicePair> reformBallot(ListExpression rawBallot) {
 
-        ArrayList<ChoicePair> reformedBallot = new ArrayList<ChoicePair>();
+        ArrayList<ChoicePair> reformedBallot = new ArrayList<>();
 
         /* Cycle through each race in the List of all races */
         for (List<String> currentRace : _races) {

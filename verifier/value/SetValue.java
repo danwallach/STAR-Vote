@@ -23,6 +23,7 @@
 package verifier.value;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 
 import sexpression.*;
@@ -46,10 +47,9 @@ public class SetValue extends Value {
 	public SetValue(Expression[] elts) {
 		super(false);
 		_list = elts;
-		_set = new HashSet<Expression>();
+		_set = new HashSet<>();
 
-		for (Expression e : elts)
-			_set.add(e);
+        Collections.addAll(_set, elts);
 	}
 
 	/**

@@ -584,7 +584,7 @@ public class CandidatesModule extends AModule {
             TableColumn column = candidatesTable.getColumnModel().getColumn(columns);
 
             /* Create a new dropdown to put the parties on */
-            final JComboBox<Party> dropDown = new JComboBox<Party>();
+            final JComboBox<Party> dropDown = new JComboBox<>();
             //noinspection unchecked
             dropDown.setRenderer( new PartyRenderer() );
 
@@ -864,7 +864,7 @@ public class CandidatesModule extends AModule {
         {
             /* Create a mapping of language name to Write-in Candidate name. */
             /* This is used to identify names of write-in candidates. */
-            HashMap<String, String> writeInNames = new HashMap<String, String>();
+            HashMap<String, String> writeInNames = new HashMap<>();
             writeInNames.put("English", "Write-In Candidate");
             writeInNames.put("Español", "Escribe el nombre de su selección");
             writeInNames.put("Français", "Écrivez le nom de votre sélection");
@@ -923,7 +923,7 @@ public class CandidatesModule extends AModule {
         boolean enableWriteIn = writeInEnabledString.equals("true");
 
         /* Construct the table's columns, based on the names found in the XML */
-        ArrayList<String> columns = new ArrayList<String>();
+        ArrayList<String> columns = new ArrayList<>();
         NodeList list = elt.getElementsByTagName( "Column" );
         for (int i = 0; i < list.getLength(); i++) {
             Element child = (Element) list.item( i );
@@ -965,7 +965,7 @@ public class CandidatesModule extends AModule {
      */
     public CandidatesModule(String name, String[] colNames, boolean allowWriteIn) {
         super(name);
-        data = new ArrayList<CardElement>();
+        data = new ArrayList<>();
         columns = colNames.length - 1;
         this.colNames = colNames;
         this.writeInEnabled = allowWriteIn;

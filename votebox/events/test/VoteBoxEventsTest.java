@@ -24,11 +24,11 @@ package votebox.events.test;
 
 import auditorium.IKeyStore;
 import auditorium.SimpleKeyStore;
+import com.sun.org.apache.xpath.internal.SourceTree;
 import crypto.interop.AdderKeyManipulator;
 import crypto.adder.PublicKey;
 import junit.framework.TestCase;
 import sexpression.ASExpression;
-import sexpression.ListExpression;
 import sexpression.StringExpression;
 import sexpression.stream.InvalidVerbatimStreamException;
 import votebox.events.*;
@@ -65,7 +65,8 @@ public class VoteBoxEventsTest extends TestCase {
                 ProvisionalAuthorizeEvent.getMatcher(), ProvisionalCommitEvent.getMatcher(),
                 ProvisionalCommitEvent.getMatcher(),
                 SpoilBallotEvent.getMatcher(), StartScannerEvent.getMatcher(),
-                StatusEvent.getMatcher(), TapMachineEvent.getMatcher(), ProvisionalBallotEvent.getMatcher());
+                StatusEvent.getMatcher(), TapMachineEvent.getMatcher(), ProvisionalBallotEvent.getMatcher(),
+                CompletedUploadEvent.getMatcher(), StartUploadEvent.getMatcher());
 
         keyStore = new SimpleKeyStore("keys");
     }
@@ -357,6 +358,10 @@ public class VoteBoxEventsTest extends TestCase {
         ASExpression sexp = event.toSExp();
 
         CompletedUploadEvent event2 = (CompletedUploadEvent) matcher.match(0, sexp);
+
+        System.out.println();
+        System.out.println(sexp);
+        System.out.println(event2.toSExp());
 
         assertEquals("(completed-upload)", sexp.toString());
 

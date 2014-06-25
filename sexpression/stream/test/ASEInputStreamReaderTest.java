@@ -65,7 +65,7 @@ public class ASEInputStreamReaderTest extends TestCase {
     public void test_simpeList() throws IOException,
             InvalidVerbatimStreamException {
         String test = "(3:abc2:ab)";
-        ASEInputStreamReader stream = null;
+        ASEInputStreamReader stream;
         stream = new ASEInputStreamReader( new ByteArrayInputStream( test
                 .getBytes( "us-ascii" ) ) );
 
@@ -83,7 +83,7 @@ public class ASEInputStreamReaderTest extends TestCase {
     public void test_recursiveLists() throws IOException,
             InvalidVerbatimStreamException {
         String test = "(()(3:abc2:ab))";
-        ASEInputStreamReader stream = null;
+        ASEInputStreamReader stream;
         stream = new ASEInputStreamReader( new ByteArrayInputStream( test
                 .getBytes( "us-ascii" ) ) );
 
@@ -101,7 +101,7 @@ public class ASEInputStreamReaderTest extends TestCase {
     public void test_complexBase64() throws IOException,
             InvalidVerbatimStreamException {
         String test = "{KDEwOkRlYXIgS3lsZTooNTpzLWV4cCgxOmYxOnQxOncpMTohKCkpKQ==}";
-        ASEInputStreamReader stream = null;
+        ASEInputStreamReader stream;
         stream = new ASEInputStreamReader( new ByteArrayInputStream( test
                 .getBytes( "us-ascii" ) ) );
 

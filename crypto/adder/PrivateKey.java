@@ -51,7 +51,7 @@ public class
      */
     public List<AdderInteger> partialDecrypt(Vote vote) {
         List<ElgamalCiphertext> cipherList = vote.getCipherList();
-        List<AdderInteger> resultList = new ArrayList<AdderInteger>(cipherList.size());
+        List<AdderInteger> resultList = new ArrayList<>(cipherList.size());
 
         for (ElgamalCiphertext ciphertext : cipherList) {
             AdderInteger bigG = (ciphertext).getG();

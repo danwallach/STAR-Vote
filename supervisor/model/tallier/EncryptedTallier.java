@@ -55,7 +55,7 @@ public class EncryptedTallier implements ITallier {
 	private Key _privateKey = null;
 
     /** @see supervisor.model.tallier.Tallier#votes */
-	private Map<String, Pair<BigInteger>> _votes = new HashMap<String, Pair<BigInteger>>();
+	private Map<String, Pair<BigInteger>> _votes = new HashMap<>();
 
     /**
      * Constructor which stores the key that will be used for decryption
@@ -124,7 +124,7 @@ public class EncryptedTallier implements ITallier {
 					String pairPart2 = encryptedVote.get(1).toString();
 
                     /* Wrap our ciphers in the Pair class */
-					Pair<BigInteger> pair = new Pair<BigInteger>(new BigInteger(pairPart1), new BigInteger(pairPart2));
+					Pair<BigInteger> pair = new Pair<>(new BigInteger(pairPart1), new BigInteger(pairPart2));
 
                     /* Get the current encrypted total out of the mapping of races to votes */
 					Pair<BigInteger> currentTotal = _votes.get(raceID);

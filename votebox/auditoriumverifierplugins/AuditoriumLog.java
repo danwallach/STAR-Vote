@@ -70,7 +70,7 @@ public class AuditoriumLog implements IVerifierPlugin {
 	 */
 	private void registerData(Verifier verifier) {
 		DagBuilder dag = new FastDAGBuilder(); // DagBuilder();
-		ArrayList<Expression> set = new ArrayList<Expression>();
+		ArrayList<Expression> set = new ArrayList<>();
 
 		try {
 			ASEInputStreamReader in = new ASEInputStreamReader( new FileInputStream(new File(verifier.getArgs().get("log"))));
@@ -81,17 +81,13 @@ public class AuditoriumLog implements IVerifierPlugin {
 				dag.add(msg);
 				set.add(new Expression(msg.toASE()));
 			}
-		} catch (EOFException e) {
-		} catch (IOException e) {
-			throw new PluginException("auditorium", e);
-		} catch (IncorrectFormatException e) {
-			throw new PluginException("auditorium", e);
-		} catch (InvalidVerbatimStreamException e) {
+		} catch (EOFException ignored) {
+		} catch (IOException | IncorrectFormatException | InvalidVerbatimStreamException e) {
 			throw new PluginException("auditorium", e);
 		}
 
         /* Seals logs to avoid tampering */
-		HashMap<String, Value> bindings = new HashMap<String, Value>();
+		HashMap<String, Value> bindings = new HashMap<>();
 		SetValue sv = new SetValue(set.toArray(new Expression[set.size()]));
 		DAGValue dv = dag.toDAG();
 		sv.seal();

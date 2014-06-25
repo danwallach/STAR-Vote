@@ -129,7 +129,7 @@ public class VoteProof {
         }
 
         List<AdderInteger> totalDomain
-            = new ArrayList<AdderInteger>(max + 1);
+            = new ArrayList<>(max + 1);
 
         for (int j = min; j <= max; j++) {
             totalDomain.add(new AdderInteger(j));
@@ -159,9 +159,7 @@ public class VoteProof {
             pList.add(proof);
         }
 
-        VoteProof voteProof = new VoteProof(sumProof, pList);
-
-        return voteProof;
+        return new VoteProof(sumProof, pList);
     }
 
     /**
@@ -177,7 +175,7 @@ public class VoteProof {
      * @see MembershipProof::str
      */
     public String toString() {
-        StringBuffer sb = new StringBuffer(4096);
+        StringBuilder sb = new StringBuilder(4096);
 
         sb.append(sumProof.toString());
 
@@ -195,7 +193,7 @@ public class VoteProof {
      * @return the S-Expression equivalent of this VoteProof
      */
     public ASExpression toASE(){
-    	List<ASExpression> proofListL = new ArrayList<ASExpression>();
+    	List<ASExpression> proofListL = new ArrayList<>();
     	for(MembershipProof proof : proofList)
     		proofListL.add(proof.toASE());
     	
@@ -217,7 +215,7 @@ public class VoteProof {
     	
     	MembershipProof sumProof = MembershipProof.fromASE(exp.get(1));
     	
-    	List<MembershipProof> proofList = new ArrayList<MembershipProof>();
+    	List<MembershipProof> proofList = new ArrayList<>();
     	ListExpression proofListE = (ListExpression)exp.get(2);
     	
     	for(int i = 0; i < proofListE.size(); i++)

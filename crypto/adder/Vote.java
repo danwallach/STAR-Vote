@@ -50,7 +50,7 @@ public class Vote {
      */
     Vote multiply(Vote vote) {
 
-        List<ElgamalCiphertext> vec = new ArrayList<ElgamalCiphertext>(this.getCipherList().size());
+        List<ElgamalCiphertext> vec = new ArrayList<>(this.getCipherList().size());
 
         for (int i = 0; i < this.getCipherList().size(); i++) {
             ElgamalCiphertext ciphertext1 = this.getCipherList().get(i);
@@ -88,7 +88,7 @@ public class Vote {
     public static Vote fromString(String s) {
 
         StringTokenizer st = new StringTokenizer(s, " ");
-        List<ElgamalCiphertext> cList = new ArrayList<ElgamalCiphertext>(25); // XXX: what size?
+        List<ElgamalCiphertext> cList = new ArrayList<>(25); // XXX: what size?
 
         while (st.hasMoreTokens()) {
             String s2 = st.nextToken();
@@ -114,7 +114,7 @@ public class Vote {
      */
     public String toString() {
 
-        StringBuffer sb = new StringBuffer(4096);
+        StringBuilder sb = new StringBuilder(4096);
 
         for (ElgamalCiphertext ciphertext : cipherList) {
             sb.append(ciphertext.toString());
@@ -133,7 +133,7 @@ public class Vote {
      */
     public ASExpression toASE(){
 
-    	List<ASExpression> cList = new ArrayList<ASExpression>();
+    	List<ASExpression> cList = new ArrayList<>();
 
     	for(ElgamalCiphertext text : cipherList)
     		cList.add(text.toASE());
@@ -157,7 +157,7 @@ public class Vote {
     		throw new RuntimeException("Not vote");
     	
     	ListExpression cListE = (ListExpression)exp.get(1);
-    	List<ElgamalCiphertext> cList = new ArrayList<ElgamalCiphertext>();
+    	List<ElgamalCiphertext> cList = new ArrayList<>();
 
     	for(int i = 0; i < cListE.size(); i++)
     		cList.add(ElgamalCiphertext.fromASE(cListE.get(i)));

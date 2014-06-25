@@ -43,16 +43,15 @@ public abstract class ListArgFactory extends ASTFactory {
 	}
 
 	/**
-	 * @see verifier.ast.ASTFactory#make(sexpression.ListExpression,
-	 *      verifier.ast.ASTParser)
+	 * @see verifier.ast.ASTFactory#make(sexpression.ASExpression, sexpression.ListExpression, ASTParser)
 	 */
 	@Override
 	public AST make(ASExpression from, ListExpression matchresult,
 			ASTParser parser) {
-		ArrayList<AST> args = new ArrayList<AST>();
+		ArrayList<AST> args = new ArrayList<>();
 		for (ASExpression exp : (ListExpression) matchresult.get(0))
 			args.add(parser.parse(exp));
-		return _constructor.make(from, args.toArray(new AST[0]));
+		return _constructor.make(from, args.toArray(new AST[args.size()]));
 	}
 
 	/**

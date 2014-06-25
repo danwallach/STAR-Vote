@@ -322,7 +322,7 @@ public class LauncherView extends JFrame {
 
 		if (flipField == null) {
 
-            flipField = new JComboBox<String>();
+            flipField = new JComboBox<>();
 
             flipField.addItem(FLIP_NONE);
 			flipField.addItem(FLIP_4_TO_CANDIDATE);

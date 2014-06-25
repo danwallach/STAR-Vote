@@ -163,7 +163,7 @@ public class PresidentialRaceCard extends ACard {
     	Element cardElt = super.toXML(doc);
 
         /* We will build an array of XML entries recursively */
-    	List<String> ids = new ArrayList<String>();
+    	List<String> ids = new ArrayList<>();
     	
         CandidatesModule candidatesModule = (CandidatesModule) getModuleByName("Candidates");
 

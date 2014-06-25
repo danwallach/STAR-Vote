@@ -50,7 +50,7 @@ public class Print extends AST {
 	}
 
 	public Value eval(ActivationRecord environment) {
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 
 		boolean first = true;
 		for (AST a : _args) {

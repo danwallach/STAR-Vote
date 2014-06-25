@@ -97,7 +97,7 @@ public class IncrementalStepVerifier extends Verifier {
 		}
 		System.out.printf("\n");
 
-        int incr = new Integer(argmap.get("incr")).intValue();
+        int incr = new Integer(argmap.get("incr"));
 		if (incr < 0) throw new RuntimeException("incr cannot be < 0");
 		System.out.printf("# increment: %d\n", incr);
 		
@@ -107,12 +107,12 @@ public class IncrementalStepVerifier extends Verifier {
 		// incremental evaluation?
 		boolean restartEveryTime = false;
 		if (argmap.containsKey("restart"))
-		    restartEveryTime = new Boolean(argmap.get("restart")).booleanValue();
+		    restartEveryTime = new Boolean(argmap.get("restart"));
 		else if (argmap.containsKey("reset"))
-		    restartEveryTime = new Boolean(argmap.get("reset")).booleanValue();
+		    restartEveryTime = new Boolean(argmap.get("reset"));
 
 		if (argmap.containsKey("dagcache"))
-		    useDagCache = new Boolean(argmap.get("dagcache")).booleanValue();
+		    useDagCache = new Boolean(argmap.get("dagcache"));
 
 		if (restartEveryTime) 
 		    System.out.printf("# pretending we don't have incremental; restarting every time\n");

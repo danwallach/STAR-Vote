@@ -214,7 +214,7 @@ public class View extends JFrame {
         /* Setup */
         super("VoteBox Preparation Tool");
         model = m;
-        languageChangeListeners = new ArrayList<LanguageChangeListener>();
+        languageChangeListeners = new ArrayList<>();
 
         /* Set look and feel */
         try { UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); }
@@ -976,8 +976,8 @@ public class View extends JFrame {
         listPanel.setLayout(new GridBagLayout());
 
         /* Create a new model and list */
-        cardListModel = new DefaultListModel<String>();
-        cardList = new JList<String>(cardListModel);
+        cardListModel = new DefaultListModel<>();
+        cardList = new JList<>(cardListModel);
         cardList.setDragEnabled(true);
 
         /* Housekeeping for the list */

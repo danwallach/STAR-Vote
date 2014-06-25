@@ -97,7 +97,7 @@ public class Language {
         /* If the array has already been constructed, just return it. */
 		if (allLanguages != null) return allLanguages;
 
-		allLanguages = new ArrayList<Language>();
+		allLanguages = new ArrayList<>();
 
 		allLanguages.add(new Language("English", "en", new ImageIcon("images/en.png")));
 		allLanguages.add(new Language("Español", "es", new ImageIcon("images/es.png")));
@@ -128,7 +128,7 @@ public class Language {
 
         /* If the map is null, initialize it and add all of the languages we support to it */
 		if (allLanguagesMap == null) {
-			allLanguagesMap = new HashMap<String, Language>();
+			allLanguagesMap = new HashMap<>();
 			ArrayList<Language> languages = getAllLanguages();
 			for (Language lang : languages)
 				allLanguagesMap.put(lang.getName(), lang);

@@ -150,7 +150,7 @@ public class LanguagesDialog extends JDialog {
         GridBagConstraints c = new GridBagConstraints();
 
         /* Create a new group of checkboxes */
-        checkBoxes = new ArrayList<JCheckBox>();
+        checkBoxes = new ArrayList<>();
 
         /* Set layout */
         c.ipadx = 3;
@@ -226,7 +226,7 @@ public class LanguagesDialog extends JDialog {
         okButton.addActionListener( new ActionListener() {
             public void actionPerformed(ActionEvent e) {
 
-                selectedLanguages = new ArrayList<Language>();
+                selectedLanguages = new ArrayList<>();
 
                 /* Look through the checkboxes to see what was selected and add them */
                 for (int i = 0; i < languages.size(); i++)

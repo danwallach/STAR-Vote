@@ -35,13 +35,13 @@ public class VoteTest extends TestCase {
             Vote vote = Vote.fromString("p123G135H246");
 
             assertEquals(new AdderInteger("123"),
-                         ((ElgamalCiphertext) vote.getCipherList().get(0)).getP());
+                         vote.getCipherList().get(0).getP());
             assertEquals(new AdderInteger("135",
-                         ((ElgamalCiphertext) vote.getCipherList().get(0)).getP()),
-                         ((ElgamalCiphertext) vote.getCipherList().get(0)).getG());
+                         vote.getCipherList().get(0).getP()),
+                         vote.getCipherList().get(0).getG());
             assertEquals(new AdderInteger("246",
-                         ((ElgamalCiphertext) vote.getCipherList().get(0)).getP()),
-                         ((ElgamalCiphertext) vote.getCipherList().get(0)).getH());
+                         vote.getCipherList().get(0).getP()),
+                         vote.getCipherList().get(0).getH());
         } catch (InvalidVoteException ive) {
             fail();
         }
@@ -51,20 +51,20 @@ public class VoteTest extends TestCase {
                               new AdderInteger("111"),
                               new AdderInteger("123"));
 
-        List/*<ElgamalCiphertext>*/ cipherList = new ArrayList/*<ElgamalCiphertext>*/(1);
+        List<ElgamalCiphertext> cipherList = new ArrayList<>(1);
         cipherList.add(ciphertext1);
         Vote vote1 = new Vote(cipherList);
 
         assertEquals(new AdderInteger("123"),
-                     ((ElgamalCiphertext) vote1.getCipherList().get(0)).getP());
+                     vote1.getCipherList().get(0).getP());
         assertEquals(new AdderInteger("135",
-                     ((ElgamalCiphertext) vote1.getCipherList().get(0)).getP()),
-                     ((ElgamalCiphertext) vote1.getCipherList().get(0)).getG());
+                     vote1.getCipherList().get(0).getP()),
+                     vote1.getCipherList().get(0).getG());
         assertEquals(new AdderInteger("246",
-                     ((ElgamalCiphertext) vote1.getCipherList().get(0)).getP()),
-                     ((ElgamalCiphertext) vote1.getCipherList().get(0)).getH());
+                     vote1.getCipherList().get(0).getP()),
+                     vote1.getCipherList().get(0).getH());
         assertEquals(new AdderInteger("111"),
-                     ((ElgamalCiphertext) vote1.getCipherList().get(0)).getR());
+                     vote1.getCipherList().get(0).getR());
 
         ElgamalCiphertext ciphertext2
             = new ElgamalCiphertext(new AdderInteger("135"),
@@ -76,7 +76,7 @@ public class VoteTest extends TestCase {
         Vote vote2 = new Vote(cipherList);
 
         assertEquals("p123G12H0",
-                     ((ElgamalCiphertext) vote2.getCipherList().get(0)).toString());
+                     vote2.getCipherList().get(0).toString());
 
         ElgamalCiphertext ciphertext3
             = new ElgamalCiphertext(new AdderInteger("135"),
@@ -88,46 +88,46 @@ public class VoteTest extends TestCase {
         Vote vote3 = new Vote(cipherList);
 
         assertEquals("3b589",
-                     ((ElgamalCiphertext) vote3.getCipherList().get(0)).shortHash());
+                     vote3.getCipherList().get(0).shortHash());
 
         try {
             Vote.fromString("p123G123");
             fail();
-        } catch (InvalidVoteException ive) {
+        } catch (InvalidVoteException ignored) {
 
         }
 
         try {
             Vote.fromString("qGH");
             fail();
-        } catch (InvalidVoteException ive) {
+        } catch (InvalidVoteException ignored) {
 
         }
 
         try {
             Vote.fromString("p123H123H123");
             fail();
-        } catch (InvalidVoteException ive) {
+        } catch (InvalidVoteException ignored) {
 
         }
         try {
             Vote.fromString("p123G123G123");
             fail();
-        } catch (InvalidVoteException ive) {
+        } catch (InvalidVoteException ignored) {
 
         }
 
         try {
             Vote.fromString("p123G123H12a");
             fail();
-        } catch (InvalidVoteException ive) {
+        } catch (InvalidVoteException ignored) {
 
         }
 
         try {
             Vote.fromString("p123G123H123p123");
             fail();
-        } catch (InvalidVoteException ive) {
+        } catch (InvalidVoteException ignored) {
 
         }
 
@@ -139,7 +139,7 @@ public class VoteTest extends TestCase {
                            + "5915557693s360340621934c222506129443c148756415697"
                            + "c387464678922");
             fail();
-        } catch (InvalidVoteException ive) {
+        } catch (InvalidVoteException ignored) {
 
         }
 
@@ -151,7 +151,7 @@ public class VoteTest extends TestCase {
                              + "339s405915557693s360340621934c222506129443c1487"
                              + "56415697c387464678922 xyz");
             fail();
-        } catch (InvalidVoteException ive) {
+        } catch (InvalidVoteException ignored) {
 
         }
 
@@ -165,7 +165,7 @@ public class VoteTest extends TestCase {
                                   );
             assertTrue(vote != null);
             fail();
-        } catch (InvalidVoteException ive) {
+        } catch (InvalidVoteException ignored) {
 
         }
 
@@ -177,7 +177,7 @@ public class VoteTest extends TestCase {
                              + "339s405915557693s360340621934c222506129443c1487"
                              + "56415697c387464678922 xyz");
             fail();
-        } catch (InvalidVoteException ive) {
+        } catch (InvalidVoteException ignored) {
 
         }
 

@@ -85,9 +85,8 @@ public class ASEInputStreamReader {
         // base64/canonical case
         if (b == '{') {
             _stream = _base64Stream;
-            ASExpression returnv = readASE( (byte) _stream.read() );
 
-            return returnv;
+            return readASE( (byte) _stream.read() );
         }
         // EOF case.
         else if (b == -1)
@@ -191,10 +190,7 @@ public class ASEInputStreamReader {
      * string off the stream and constructs a new StringExpression which
      * represents it. Important: This method assumes that the length and the
      * colon have already been read off the stream!
-     * 
-     * @param len
-     *            This method will read this number of bytes off the stream to
-     *            construct the StringExpression
+     *
      * @return This method returns the constructed StringExpression which
      *         represents the string read off the stream.
      * @throws IOException
@@ -203,7 +199,7 @@ public class ASEInputStreamReader {
      */
     private ASExpression readString(byte openchar) throws IOException {
         int b;
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         buffer.append( (char) openchar );
         // Read until the colon to get len
         while ((b = _stream.read()) != ':')
@@ -242,7 +238,7 @@ public class ASEInputStreamReader {
      */
     private ListExpression readList() throws IOException,
             InvalidVerbatimStreamException {
-        ArrayList<ASExpression> list = new ArrayList<ASExpression>();
+        ArrayList<ASExpression> list = new ArrayList<>();
         int b;
 
         // parse ASExpressions off the stream until you read in ')' which

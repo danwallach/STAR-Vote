@@ -137,7 +137,7 @@ public class VoteBox{
         	throw new RuntimeException("usage: VoteBox <machineID>");
         
         numConnections = 0;
-        labelChangedEvent = new Event<Integer>();
+        labelChangedEvent = new Event<>();
 
         /* Announce to auditorium the status */
         statusTimer = new Timer(300000, new ActionListener() {
@@ -160,7 +160,7 @@ public class VoteBox{
         promptingForPin = false;
 
         /* Destroys any previous commits */
-        plaintextAuditCommits = new HashMap<ASExpression, VotePair>();
+        plaintextAuditCommits = new HashMap<>();
 
         /* Loads default ballot file */
         staticCurrentBallotFile = new File(_constants.getBallotFile());

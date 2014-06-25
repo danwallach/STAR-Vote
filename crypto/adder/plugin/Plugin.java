@@ -3,7 +3,6 @@ package crypto.adder.plugin;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
@@ -43,7 +42,7 @@ public final class Plugin {
                                      int max) {
         PublicKey pubKey = PublicKey.fromString(key);
         int c = vote.length();
-        List/*<AdderInteger>*/ choices = new ArrayList/*<AdderInteger>*/(c);
+        List<AdderInteger> choices = new ArrayList<>(c);
 
         for (int i = 0; i < c; i++) {
             if (vote.charAt(i) == '0') {
@@ -189,8 +188,8 @@ public final class Plugin {
             = new  ArrayList/*<ElgamalCiphertext>*/(valueVs.size());
 
         /*for (String key : valueVs) {*/
-        for (Iterator it = valueVs.iterator(); it.hasNext();) {
-            String key = (String) it.next();
+        for (Object valueV : valueVs) {
+            String key = (String) valueV;
             keyList.add(ElgamalCiphertext.fromString(key));
         }
 
@@ -209,7 +208,7 @@ public final class Plugin {
      * @return the encrypted <code>g</code> value
      */
     public static String encryptGValue(String user, String procedure) {
-        StringBuffer sb = new StringBuffer(4096);
+        StringBuilder sb = new StringBuilder(4096);
 
         try {
             Polynomial poly = KeyManagement.readPoly(user, procedure);
@@ -276,11 +275,11 @@ public final class Plugin {
 
         List/*<String>*/ pubKeys = parsePubKeys(pubKeysStr);
 
-        StringBuffer sb = new StringBuffer(4096);
+        StringBuilder sb = new StringBuilder(4096);
 
         /*for (String keyStr : pubKeys) {*/
-        for (Iterator it = pubKeys.iterator(); it.hasNext();) {
-            String keyStr = (String) it.next();
+        for (Object pubKey1 : pubKeys) {
+            String keyStr = (String) pubKey1;
 
             try {
                 StringTokenizer st = new StringTokenizer(keyStr, " ");
@@ -288,9 +287,9 @@ public final class Plugin {
                 String realKeyStr = st.nextToken();
                 PublicKey key = PublicKey.fromString(realKeyStr);
                 ElgamalCiphertext vote
-                    = key.encryptPoly(poly.evaluate(new
-                                                    AdderInteger(auth,
-                                                                 key.getQ())));
+                        = key.encryptPoly(poly.evaluate(new
+                        AdderInteger(auth,
+                        key.getQ())));
 
                 sb.append(auth);
                 sb.append(" ");

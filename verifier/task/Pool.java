@@ -45,7 +45,7 @@ public class Pool {
 	 */
 	public Pool(int threads) {
 		_threads = threads;
-		_ready = new LinkedList<Task>();
+		_ready = new LinkedList<>();
 	}
 
 	/**

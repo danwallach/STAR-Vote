@@ -99,8 +99,6 @@ final class KeyManagement {
             br = new BufferedReader(new FileReader(new File(keyFile)));
             String str = br.readLine();
             pubKey = PublicKey.fromString(str);
-        } catch (FileNotFoundException fnfe) {
-            throw new InvalidPublicKeyException(fnfe.getMessage());
         } catch (IOException ioe) {
             throw new InvalidPublicKeyException(ioe.getMessage());
         } finally {
@@ -108,7 +106,7 @@ final class KeyManagement {
                 if (br != null) {
                     br.close();
                 }
-            } catch (IOException e) {
+            } catch (IOException ignored) {
 
             }
         }
@@ -125,8 +123,6 @@ final class KeyManagement {
             br = new BufferedReader(new FileReader(new File(keyFile)));
             String str = br.readLine();
             poly = Polynomial.fromString(str);
-        } catch (FileNotFoundException fnfe) {
-            throw new InvalidPolynomialException(fnfe.getMessage());
         } catch (IOException ioe) {
             throw new InvalidPolynomialException(ioe.getMessage());
         } finally {
@@ -134,7 +130,7 @@ final class KeyManagement {
                 if (br != null) {
                     br.close();
                 }
-            } catch (IOException e) {
+            } catch (IOException ignored) {
 
             }
         }
@@ -151,8 +147,6 @@ final class KeyManagement {
             br = new BufferedReader(new FileReader(new File(keyFile)));
             String str = br.readLine();
             privKey = PrivateKey.fromString(str);
-        } catch (FileNotFoundException fnfe) {
-            throw new InvalidPrivateKeyException(fnfe.getMessage());
         } catch (IOException ioe) {
             throw new InvalidPrivateKeyException(ioe.getMessage());
         } finally {
@@ -160,7 +154,7 @@ final class KeyManagement {
                 if (br != null) {
                     br.close();
                 }
-            } catch (IOException e) {
+            } catch (IOException ignored) {
 
             }
         }
@@ -218,12 +212,8 @@ final class KeyManagement {
         /* java.io.FilePermission keyFile write */
         File file = new File(keyFile);
 
-       if (file.exists()) {
-          /* java.io.FilePermission keyFile delete */
-          return file.delete();
-       }
+        return !file.exists() || file.delete();
 
-       return true;
     }
 
     static PrivateKey readPrivKey(String user, String procedure)
@@ -365,7 +355,7 @@ final class KeyManagement {
 
         Iterator it = partialDecryptions.iterator();
 
-        StringBuffer sb = new StringBuffer(4096);
+        StringBuilder sb = new StringBuilder(4096);
         sb.append("(");
 
         while (true) {
@@ -405,7 +395,7 @@ final class KeyManagement {
             return false;
         }
 
-        int i = 0;
+        int i;
 
         for (i = 0; i < 8; i++) {
             if (!Util.isHexDigit(procedure.charAt(i))) {

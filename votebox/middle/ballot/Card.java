@@ -31,7 +31,6 @@ import sexpression.StringExpression;
 import sexpression.ListExpression;
 import votebox.middle.IncorrectTypeException;
 import votebox.middle.Properties;
-import votebox.middle.view.widget.UnknownStrategyException;
 
 
 /**
@@ -276,7 +275,7 @@ public class Card {
      * @return an SExpression representation of this Card.
      */
     public ASExpression toASExpression() {
-        ArrayList<ASExpression> elementList = new ArrayList<ASExpression>();
+        ArrayList<ASExpression> elementList = new ArrayList<>();
 
         try{ elementList.add(StringExpression.makeString(this.getSelectedElement())); }
         catch(Exception e){ e.printStackTrace(); }
@@ -295,7 +294,7 @@ public class Card {
      */
     public List<ASExpression> getCastBallot() {
 
-        ArrayList<ASExpression> lst = new ArrayList<ASExpression>();
+        ArrayList<ASExpression> lst = new ArrayList<>();
 
         /* A flag to determine if NO SELECTION was...er...selected. */
         boolean selected = false;

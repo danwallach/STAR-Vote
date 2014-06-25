@@ -69,12 +69,14 @@ public class Constant extends AST {
 		try {
 			return new IntValue(Integer.parseInt(_value));
 		} catch (NumberFormatException e) {
-			if (_value.equals("true"))
-				return True.SINGLETON;
-			else if (_value.equals("false"))
-				return False.SINGLETON;
-			else
-				return environment.lookup(_value);
+            switch (_value) {
+                case "true":
+                    return True.SINGLETON;
+                case "false":
+                    return False.SINGLETON;
+                default:
+                    return environment.lookup(_value);
+            }
 		}
 	}
 

@@ -97,7 +97,7 @@ public class TallyDialog extends JDialog {
         c.insets = new Insets(10, 10, 0, 10);
         add(title, c);
         
-        JComponent resultsField = null;
+        JComponent resultsField;
         List<String> languages = BallotImageHelper.getLanguages(ballot);
         Map<String, Image> candidateImgMap = loadBallotRaces(ballot, languages);
         Map<String, Image> titleImgMap = BallotImageHelper.loadBallotTitles(ballot);
@@ -151,15 +151,15 @@ public class TallyDialog extends JDialog {
      * @return a JTree displaying all this data as described above
      */
 	private JTree createFancyTreeTable(Map<String, BigInteger> results, Map<String, Image> candidateImgMap, Map<String, Image> titleImgMap) {
-		final Map<Map<String, BigInteger>, JTable> modelToView = new HashMap<Map<String, BigInteger>, JTable>();
+		final Map<Map<String, BigInteger>, JTable> modelToView = new HashMap<>();
 		
 		//invisible root node of tree
 		DefaultMutableTreeNode root = new DefaultMutableTreeNode("root", true);
 		
-		Map<Image, List<String>> titleToRaces = new HashMap<Image, List<String>>();
+		Map<Image, List<String>> titleToRaces = new HashMap<>();
 		
 		for(Image title : titleImgMap.values()){
-			List<String> raceIds = new ArrayList<String>();
+			List<String> raceIds = new ArrayList<>();
 			for(String raceId : titleImgMap.keySet()){
 				if(titleImgMap.get(raceId) == title)
 					raceIds.add(raceId);
@@ -171,7 +171,7 @@ public class TallyDialog extends JDialog {
 		//Building the tree model
 		for(Image titleImg : titleToRaces.keySet()){
 			DefaultMutableTreeNode title = new DefaultMutableTreeNode(titleImg, true);
-			Map<String, BigInteger> subResults = new HashMap<String, BigInteger>();
+			Map<String, BigInteger> subResults = new HashMap<>();
 			for(String raceId : titleToRaces.get(titleImg))
 				subResults.put(raceId, results.get(raceId));
 
@@ -359,7 +359,7 @@ public class TallyDialog extends JDialog {
 	 */
 	private Map<String, Image> loadBallotRaces(String ballot, List<String> languages) {
 		try {
-			Map<String, Image> racesToImageMap = new HashMap<String, Image>();
+			Map<String, Image> racesToImageMap = new HashMap<>();
 			
 			ZipFile file = new ZipFile(ballot);
 			

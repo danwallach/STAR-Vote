@@ -72,7 +72,7 @@ public class LogTest {
 
         _log.logAnnouncement( msg1 );
 
-        ArrayList<MessagePointer> last = new ArrayList<MessagePointer>();
+        ArrayList<MessagePointer> last = new ArrayList<>();
         for (MessagePointer p : _log.TESTgetLast())
             last.add( p );
         assertEquals( 1, _log.TESTgetSetCopy().size() );
@@ -85,7 +85,7 @@ public class LogTest {
 
         _log.logAnnouncement( msg2 );
 
-        last = new ArrayList<MessagePointer>();
+        last = new ArrayList<>();
         for (MessagePointer p : _log.TESTgetLast())
             last.add( p );
         assertEquals( 2, _log.TESTgetSetCopy().size() );

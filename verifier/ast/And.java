@@ -66,7 +66,7 @@ public class And extends ListArgConnective {
 
 	@Override
 	public Value result(Box<Boolean> box, ArrayList<AST> unknowns) {
-		if (box.get().booleanValue() == true)
+		if (box.get())
 			return False.SINGLETON;
 		if (unknowns.size() > 0)
 			return new Reduction(new And(unknowns.toArray(new AST[0])));

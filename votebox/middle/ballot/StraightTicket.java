@@ -83,7 +83,7 @@ public class StraightTicket extends ACardStrategy {
 	 */
 	private void assignParties() throws CardStrategyException {
 
-		_partyAffiliations = new HashMap<String, ArrayList<SelectableCardElement>>();
+		_partyAffiliations = new HashMap<>();
 
 		/*
 		  For each CardElement in the ballot, we're going to check for a party
@@ -118,7 +118,7 @@ public class StraightTicket extends ACardStrategy {
 					if (_partyAffiliations.containsKey(party))
 						list = _partyAffiliations.get(party);
 					else {
-						list = new ArrayList<SelectableCardElement>();
+						list = new ArrayList<>();
 						_partyAffiliations.put(party, list);
 					}
 

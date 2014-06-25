@@ -1,7 +1,6 @@
 package crypto.adder;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
@@ -90,7 +89,7 @@ public class MembershipProof {
 		AdderInteger t = AdderInteger.random(q);
 
         /* Create a StringBuffer for holding information to create a String */
-		StringBuffer sb = new StringBuffer(4096);
+		StringBuilder sb = new StringBuilder(4096);
 
         /* Append all the numbers */
 		sb.append(g);
@@ -170,7 +169,7 @@ public class MembershipProof {
 
 		AdderInteger cChoices = new AdderInteger(AdderInteger.ZERO, q);
 
-		StringBuffer sb = new StringBuffer(4096);
+		StringBuilder sb = new StringBuilder(4096);
 
 		sb.append(g);
 		sb.append(h);
@@ -227,7 +226,7 @@ public class MembershipProof {
 			= p.subtract(AdderInteger.ONE).divide(AdderInteger.TWO);
 
 			List<AdderInteger> yList
-			= new ArrayList<AdderInteger>(count);
+			= new ArrayList<>(count);
 
 			for (int ySize = 0; ySize < count; ySize++) {
 				if (!st.nextToken().equals("y")) {
@@ -239,7 +238,7 @@ public class MembershipProof {
 			}
 
 			List<AdderInteger> zList
-			= new ArrayList<AdderInteger>(count);
+			= new ArrayList<>(count);
 
 			for (int zSize = 0; zSize < count; zSize++) {
 				if (!st.nextToken().equals("z")) {
@@ -251,7 +250,7 @@ public class MembershipProof {
 			}
 
 			List<AdderInteger> sList
-			= new ArrayList<AdderInteger>(count);
+			= new ArrayList<>(count);
 
 			for (int sSize = 0; sSize < count; sSize++) {
 				if (!st.nextToken().equals("s")) {
@@ -263,7 +262,7 @@ public class MembershipProof {
 			}
 
 			List<AdderInteger> cList
-			= new ArrayList<AdderInteger>(count);
+			= new ArrayList<>(count);
 
 			for (int cSize = 0; cSize < count; cSize++) {
 				if (!st.nextToken().equals("c")) {
@@ -320,19 +319,19 @@ public class MembershipProof {
      * @return the S-Expression equivalent of this MembershipProof
      */
 	public ASExpression toASE(){
-		List<ASExpression> yListL = new ArrayList<ASExpression>();
+		List<ASExpression> yListL = new ArrayList<>();
 		for(AdderInteger y : yList)
 			yListL.add(y.toASE());
 
-		List<ASExpression> zListL = new ArrayList<ASExpression>();
+		List<ASExpression> zListL = new ArrayList<>();
 		for(AdderInteger z : zList)
 			zListL.add(z.toASE());
 
-		List<ASExpression> sListL = new ArrayList<ASExpression>();
+		List<ASExpression> sListL = new ArrayList<>();
 		for(AdderInteger s : sList)
 			sListL.add(s.toASE());
 
-		List<ASExpression> cListL = new ArrayList<ASExpression>();
+		List<ASExpression> cListL = new ArrayList<>();
 		for(AdderInteger c : cList)
 			cListL.add(c.toASE());
 

@@ -89,8 +89,8 @@ public class BallotEncrypter {
      * @return               a ListExpression in the form (((vote [vote]) (vote-ids ([id1], [id2], ...)) (proof [proof])) ... (public-key [key]))
      */
     public ListExpression encryptWithProof(ListExpression ballot, List<List<String>> raceGroups, PublicKey pubKey){
-        adderRandom = new ArrayList<List<AdderInteger>>();
-        List<ASExpression> subBallots = new ArrayList<ASExpression>();
+        adderRandom = new ArrayList<>();
+        List<ASExpression> subBallots = new ArrayList<>();
 
 
         /* Randomly generate a key for write-in encryption, will be sent over the wire, encrypted */

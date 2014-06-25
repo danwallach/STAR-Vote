@@ -84,7 +84,7 @@ public class LetMatch extends AST {
 							return v;
 						}
 
-						HashMap<String, Value> extension = new HashMap<String, Value>();
+						HashMap<String, Value> extension = new HashMap<>();
 						for (String s : match.keySet())
 							extension.put(s, new Expression(match.get(s)));
 						ActivationRecord env = environment.extend(extension);

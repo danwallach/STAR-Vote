@@ -41,7 +41,6 @@ public class  BallotScanner{
     /** how long a result is stored in memory before it is cleared **/
     private boolean receivedResponse;
 
-
     /**
      * This is an empty constructor that sets the serial number to -1.
      * Equivalent to new BallotScanner(-1).
@@ -81,7 +80,7 @@ public class  BallotScanner{
         activatedObs = new ObservableEvent();
         
         /* Allows BallotScanner to change label on AssignLabelEvent */
-        labelChangedEvent = new Event<Integer>();
+        labelChangedEvent = new Event<>();
 
         /* Sets up the heartbeat */
         statusTimer = new Timer(300000, new ActionListener() {

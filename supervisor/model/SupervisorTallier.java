@@ -2,14 +2,10 @@ package supervisor.model;
 
 import auditorium.Bugout;
 import crypto.adder.*;
-import crypto.adder.plugin.AdderApplet;
-import crypto.interop.AdderKeyManipulator;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.StringExpression;
-import sexpression.stream.ASEInputStreamReader;
 
-import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,7 +30,7 @@ public class SupervisorTallier {
     public static Ballot tally(String precinctID, List<Ballot> cast, PublicKey publicKey){
 
         /* The results of the election are stored by race ID in this map */
-        Map<String, Election> results = new HashMap<String, Election>();
+        Map<String, Election> results = new HashMap<>();
 
         /* Foe each ballot, get each vote add build a results mapping between race id's and elections */
         for (Ballot bal : cast) {

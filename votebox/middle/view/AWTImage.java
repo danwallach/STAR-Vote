@@ -48,7 +48,7 @@ public class AWTImage implements IViewImage {
      * @param isVolatile    whether the AWTImage is volatile
      */
     public AWTImage(String filename, boolean isVolatile) {
-        _bufferedImage = new SoftReference<BufferedImage>(null);
+        _bufferedImage = new SoftReference<>(null);
         _filename = filename;
         _isVolatile = isVolatile;
     }
@@ -59,7 +59,7 @@ public class AWTImage implements IViewImage {
     public BufferedImage getImage() {
 
         if (_isVolatile || _bufferedImage.get() == null)
-            try { _bufferedImage = new SoftReference<BufferedImage>(ImageIO.read(new File(_filename))); }
+            try { _bufferedImage = new SoftReference<>(ImageIO.read(new File(_filename))); }
             catch (IOException e) { throw new BallotBoxViewException( "The file " + _filename + " could not be loaded to represent an image", e ); }
 
         return _bufferedImage.get();
