@@ -1,7 +1,6 @@
 package crypto.adder;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
@@ -11,14 +10,14 @@ import sexpression.ListExpression;
 import sexpression.StringExpression;
 
 /**
- * Represents a private key.
+ * Represents an Elgamal private key.
  *
  * @author David Walluck
  * @version $LastChangedRevision$ $LastChangedDate$
  * @since 0.0.1
  */
-public class
-        PrivateKey {
+public class PrivateKey {
+
     private AdderInteger p;
     private AdderInteger q;
     private AdderInteger g;
@@ -33,8 +32,8 @@ public class
      * @param x     the private value
      * @param f     the message base
      */
-    public PrivateKey(AdderInteger p, AdderInteger g, AdderInteger x,
-                      AdderInteger f) {
+    public PrivateKey(AdderInteger p, AdderInteger g, AdderInteger x, AdderInteger f) {
+
         this.p = p;
         this.q = p.subtract(AdderInteger.ONE).divide(AdderInteger.TWO);
         this.g = g;
@@ -43,7 +42,10 @@ public class
     }
 
     /**
-     * Returns the partial decryption of the given vote.
+     * Computes the authority's partial decryption of a sum. The
+     * \f$i\f$th component of the partial decryption is computed
+     * as \f$G_i ^ x\f$, where \f$G_i\f$ is the first component of
+     * the \f$i\f$ th ciphertext in the sum.
      *
      * @param vote      the vote
      *
@@ -68,6 +70,7 @@ public class
      * @return          plaintext the decryption
      */
     public AdderInteger decrypt(ElgamalCiphertext cipher){
+
         AdderInteger plaintext = cipher.getH();
 
         /*calculate the shared secret*/
@@ -79,21 +82,21 @@ public class
     }
 
     /**
-     * Returns the final private key given a list of polynomials.
-     * @param polyList the polynomial list
+     * Computes the final private key for each authority.
      *
+     * @param polyList      the polynomial list
      * @return the final private key
      */
-    public PrivateKey getFinalPrivKey(List/*<ElgamalCiphertext>*/ polyList) {
+    public PrivateKey getFinalPrivKey(List<ElgamalCiphertext> polyList) {
         AdderInteger total = new AdderInteger(AdderInteger.ZERO, q);
 
-        for (Iterator it = polyList.iterator(); it.hasNext();) {
-            ElgamalCiphertext ciphertext = (ElgamalCiphertext) it.next();
+        for (Object aPolyList : polyList) {
+
+            ElgamalCiphertext ciphertext = (ElgamalCiphertext) aPolyList;
             AdderInteger eL = ciphertext.getG();
             AdderInteger eR = ciphertext.getH();
             AdderInteger product = eL.pow(x.negate()).multiply(eR);
-            AdderInteger qPlusOneOverTwo = q.add(AdderInteger.ONE)
-                                            .divide(AdderInteger.TWO);
+            AdderInteger qPlusOneOverTwo = q.add(AdderInteger.ONE).divide(AdderInteger.TWO);
             AdderInteger posInverse = product.pow(qPlusOneOverTwo);
             AdderInteger negInverse = posInverse.negate();
             AdderInteger inverse;
@@ -199,10 +202,8 @@ public class
             }
 
             return new PrivateKey(p, g, x, f);
-        } catch (NoSuchElementException nsee) {
+        } catch (NoSuchElementException | NumberFormatException nsee) {
             throw new InvalidPrivateKeyException(nsee.getMessage());
-        } catch (NumberFormatException nfe) {
-            throw new InvalidPrivateKeyException(nfe.getMessage());
         }
     }
 
@@ -212,18 +213,8 @@ public class
      * @return the string representation of this private key
      */
     public String toString() {
-        StringBuffer sb = new StringBuffer(4096);
 
-        sb.append("p");
-        sb.append(p.toString());
-        sb.append("g");
-        sb.append(g.toString());
-        sb.append("x");
-        sb.append(x.toString());
-        sb.append("f");
-        sb.append(f.toString());
-
-        return sb.toString();
+        return "p" + p.toString() + "g" + g.toString() + "x" + x.toString() + "f" + f.toString();
     }
     
     /**

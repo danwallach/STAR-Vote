@@ -10,6 +10,13 @@ import sexpression.StringExpression;
 
 /**
  * Represents a vote, and optionally, the corresponding proof.
+ * \brief Additive homomorphic Elgamal ciphertext.
+ *
+ * An Elgamal ciphertext is represented as a pair \f$\langle G, H
+ * \rangle = \langle g^r, h^r f^m\rangle \in \mathrm{Z}_p \times \mathrm{Z}_p\f$.
+ *
+ * To form a ciphertext, you probably want to
+ * @see PublicKey#encrypt(AdderInteger) function.
  *
  * @author David Walluck
  * @version $LastChangedRevision$ $LastChangedDate$
@@ -35,9 +42,9 @@ public class ElgamalCiphertext {
     /**
      * Creates a new ElgamalCiphertext with the specified parameter values.
      *
-     * @param p the prime
-     * @param g the generator
-     * @param h the public value
+     * @param p         the prime / modulus
+     * @param g         the generator, first component of the ciphertext
+     * @param h         the public value, second component of the ciphertext
      */
     public ElgamalCiphertext(AdderInteger g, AdderInteger h, AdderInteger p) {
         this.p = p;
@@ -49,10 +56,10 @@ public class ElgamalCiphertext {
     /**
      * Creates a new ElgamalCiphertext with the specified parameter values.
      *
-     * @param p the prime
-     * @param g the generator
-     * @param h the public value
-     * @param r the private random value
+     * @param p         the prime / modulus
+     * @param g         the generator, first component of the ciphertext
+     * @param h         the public value, second component of the ciphertext
+     * @param r         the private random value, random component of the ciphertext
      */
     public ElgamalCiphertext(AdderInteger g, AdderInteger h, AdderInteger r, AdderInteger p) {
 
@@ -65,7 +72,7 @@ public class ElgamalCiphertext {
     /**
      * Returns the short hash of this vote, ignoring the ballot proof.
      *
-     * @return the short hash
+     * @return          the short hash
      */
     public String shortHash() {
 
@@ -78,6 +85,14 @@ public class ElgamalCiphertext {
         return Util.sha1(str).substring(0, 5);
     }
 
+
+    /**
+     * Multiply this and another ciphertext together. This is accomplished by
+     * multiplying them component-wise.
+     *
+     * @param ciphertext        the ciphertext to multiply against this
+     * @return                  the product of the two ciphertexts.
+     */
     ElgamalCiphertext multiply(ElgamalCiphertext ciphertext) {
 
         /* Get the requisite numbers and multiply */
@@ -139,7 +154,7 @@ public class ElgamalCiphertext {
     /**
      * Sets the proof to the given proof.
      *
-     * @param proof the proof
+     * @param proof         the proof
      */
     public void setProof(MembershipProof proof) {
         this.proof = proof;

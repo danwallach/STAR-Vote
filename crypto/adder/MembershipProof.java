@@ -10,11 +10,63 @@ import sexpression.ListExpression;
 import sexpression.StringExpression;
 
 /**
- * Represents a membership proof.
- *
- * @author David Walluck
- * @version $LastChangedRevision$ $LastChangedDate$
- * @since 0.0.1
+ *  Zero-knowledge proof of set membership.
+ * 
+ * Suppose we have a ciphertext \f$\langle G, H \rangle = \langle
+ * g^r, h^r f^m \rangle\f$ and we wish to prove that \f$m \in
+ * \{i_1, \ldots, i_n\}\f$. Furthermore, suppose that \f$m =
+ * i_x\f$. We can use the following OR-composition proof of
+ * knowledge.
+ * 
+ * <table border=0>
+ * <tr><th>Prover</th><th></th><th>Verifier</th>
+ * <tr><td>\f$c_1, \ldots, c_n \stackrel{\texttt{r}}{\leftarrow}
+ * \mathrm{Z}_q\f$</td><td></td><td></td></tr>
+ * 
+ * <tr><td>\f$s_1, \ldots, s_n \stackrel{\texttt{r}}{\leftarrow}
+ * \mathrm{Z}_q\f$</td><td></td><td></td></tr>
+ * 
+ * <tr><td>if \f$i \neq x\f$, then \f$y_i \leftarrow g^{s_i}G^{-c_i}\f$ and \f$z_i \leftarrow h^{s_i}(H / f^{i_i})^{-c_i}\f$<br> otherwise, \f$y_i = g^t\f$ and \f$z_i
+ *  = h^t\f$</td><td></td><td></td></tr>
+ * 
+ * <tr><td></td><td>\f$\stackrel{y_1, \ldots, y_n, z_1, \ldots,
+ * z_n}{\longrightarrow}\f$</td><td></td></tr>
+ * 
+ * <tr><td></td><td></td><td>\f$c \stackrel{\texttt{r}}{\leftarrow}
+ * \mathrm{Z}_q\f$</td></tr>
+ * 
+ * <tr><td></td><td>\f$\stackrel{c}{\longleftarrow}\f$</td><td></td></tr>
+ * 
+ * <tr><td>\f$c_x = c - c_1 - \cdots -
+ * c_n\f$</td><td></td><td></td></tr>
+ * 
+ * <tr><td>\f$s_x = t + c_x r\f$</td><td></td><td></td></tr>
+ * 
+ * <tr><td></td><td>\f$\stackrel{s_1, \ldots, s_n, c_1, \ldots,
+ * c_n}{\longrightarrow}\f$</td><td></td></tr>
+ * 
+ * <tr><td></td><td></td>
+ * <td>
+ * \f$g^{s_i} \stackrel{?}{=} y_i G^{c_i}\f$ <br>
+ * \f$h^{s_i} \stackrel{?}{=} z_i (H/f^{i_i})^{c_i}, i \in
+ * \{i_1, \ldots, i_n\}\f$<br>
+ * \f$c \stackrel{?}{=} c_1 + \cdots + c_n\f$ </td></tr>
+ * 
+ * </table>
+ * 
+ * Now, we can make this proof non-interactive by employing the
+ * Fiat-Shamir heuristic.  Then, the prover will send the tuple
+ * \f$\langle y_1, z_1, \ldots, y_n, z_n, c, s_1, \ldots, s_n,
+ * c_1, \ldots, c_n\rangle\f$, where \f$c = \mathcal{H}(g, h, G,
+ * H, y_1, z_1, \ldots, y_n, z_n)\f$ and \f$\mathcal{H}\f$ is a
+ * cryptographic hash function. Verification is performed by
+ * testing that \f$c_1 + \cdots + c_n = \mathcal{H}(g, h, G, H,
+ * g^{s_1}G^{-c_1}, h^{s_1}(H/f^{i_1})^{-c_1}, \ldots,
+ * g^{s_n}G^{-c_n}, h^{s_n}(H/f^{i_n})^{-c_n})\f$.
+ * 
+ *  @author David Walluck
+ *  @version $LastChangedRevision$ $LastChangedDate$
+ *  @since 0.0.1
  */
 public class MembershipProof {
 
@@ -148,7 +200,7 @@ public class MembershipProof {
 	}
 
 	/**
-	 * Verifies the given ciphertext given the ciphertext, public key, and
+	 * Verifies the proof given the ciphertext, public key, and
 	 * domain.
 	 *
 	 * @param ciphertext    the ciphertext
@@ -156,8 +208,8 @@ public class MembershipProof {
 	 * @param domain        the domain
 	 * @return              true if the proof is valid
 	 */
-	public boolean verify(ElgamalCiphertext ciphertext, PublicKey pubKey,
-			List/*<AdderInteger>*/ domain) {
+	public boolean verify(ElgamalCiphertext ciphertext, PublicKey pubKey, List<AdderInteger> domain) {
+
 		p = pubKey.getP();
 		q = pubKey.getQ();
 		AdderInteger g = pubKey.getG();
@@ -179,7 +231,7 @@ public class MembershipProof {
 		int size = cList.size();
 
 		for (int i = 0; i < size; i++) {
-			AdderInteger d = (AdderInteger) domain.get(i);
+			AdderInteger d = domain.get(i);
 			AdderInteger fpow = f.pow(d);
 			AdderInteger s = sList.get(i);
 			AdderInteger c = cList.get(i);
@@ -279,8 +331,8 @@ public class MembershipProof {
     }
 
 	/**
-	 * Returns a <code>String</code> object representing this
-	 * <code>MembershipProof</code>.
+	 * Returns a <code>String</code> object representing this <code>MembershipProof</code>.
+     *
 	 * @return the string representation of this proof
 	 */
 	public String toString() {
@@ -315,7 +367,7 @@ public class MembershipProof {
 
 	/**
      * Method for interop with VoteBox's S-Expression system.
-     * 
+     *
      * @return the S-Expression equivalent of this MembershipProof
      */
 	public ASExpression toASE(){
@@ -342,38 +394,38 @@ public class MembershipProof {
 				new ListExpression(sListL),
 				new ListExpression(cListL));
 	}
-	
+
 	/**
      * Method for interop with VoteBox's S-Expression system.
-     * 
+     *
      * @param ase    S-Expression representation of a MembershipProof
      * @return       the MembershipProof equivalent of ase
      */
 	public static MembershipProof fromASE(ASExpression ase){
 		ListExpression exp = (ListExpression)ase;
-		
+
 		if(!(exp.get(0)).toString().equals("membership-proof"))
 			throw new RuntimeException("Not membership-proof");
-		
+
 		AdderInteger p = AdderInteger.fromASE(exp.get(1));
-		
+
 		List<AdderInteger> yList = new ArrayList<>();
 		List<AdderInteger> zList = new ArrayList<>();
 		List<AdderInteger> sList = new ArrayList<>();
 		List<AdderInteger> cList = new ArrayList<>();
-		
+
 		ListExpression yListE = (ListExpression)exp.get(2);
 		ListExpression zListE = (ListExpression)exp.get(3);
 		ListExpression sListE = (ListExpression)exp.get(4);
 		ListExpression cListE = (ListExpression)exp.get(5);
-		
+
 		for(int i = 0; i < yListE.size(); i++) yList.add(AdderInteger.fromASE(yListE.get(i)));
 		for(int i = 0; i < zListE.size(); i++) zList.add(AdderInteger.fromASE(zListE.get(i)));
 		for(int i = 0; i < sListE.size(); i++) sList.add(AdderInteger.fromASE(sListE.get(i)));
 		for(int i = 0; i < cListE.size(); i++) cList.add(AdderInteger.fromASE(cListE.get(i)));
-		
+
 		AdderInteger q = p.subtract(AdderInteger.ONE).divide(AdderInteger.TWO);
-		
+
 		return new MembershipProof(p, q, yList, zList, sList, cList);
 	}
 }
