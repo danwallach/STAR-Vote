@@ -53,8 +53,6 @@ import auditorium.*;
 import javax.print.PrintService;
 import javax.print.attribute.standard.PrinterResolution;
 
-import printer.HTMLPrinter;
-
 /**
  * This class handles all print calls made by Voteboxes, Supervisors and any future additions that will need to print
  */
@@ -163,7 +161,6 @@ public class Printer{
 
         /* TODO actually read in these from somewhere */
         Boolean useTwoColumns = true;
-        Boolean printerFriendly = true;
 
         String path = cleanFilePath +  "media" + fileChar;
         String barcodeFileNameNoExtension = path + "Barcode";
@@ -218,7 +215,7 @@ public class Printer{
         }
 
         /* Generate the HTML file with the properties set above. */
-        HTMLPrinter.generateHTMLFile(htmlFileName, useTwoColumns, printerFriendly, path, _constants, bid, barcodeFileNameNoExtension, lineSeparatorFileName, columnsToPrint);
+        HTMLPrinter.generateHTMLFile(htmlFileName, useTwoColumns, path, _constants, columnsToPrint);
 
         /* Get the file that is to be read for commands and its parameter separator string. */
         String filename = _printerConstants.getCommandsFileFilename();

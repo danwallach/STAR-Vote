@@ -17,7 +17,7 @@ import java.util.HashMap;
 /**
  * A class which provides image manipulation support for printing
  *
- * @author Matt Bernhard, Mircea Berechet, Arghya Chatterjee
+ * @author Matt Bernhard, Arghya Chatterjee, Mircea Berechet
  */
 public class PrintImageUtils {
 
