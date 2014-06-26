@@ -86,7 +86,7 @@ public class Parser implements IParser {
     }
 
     private ASExpression parseList() {
-        ArrayList<ASExpression> list = new ArrayList<ASExpression>();
+        ArrayList<ASExpression> list = new ArrayList<>();
 
         _lexer.read();
         while (!(_lexer.peek() == Close.SINGLETON))

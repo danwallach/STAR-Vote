@@ -141,11 +141,9 @@ public class AuditoriumIntegrityLayer extends AAuditoriumLayer {
             // Send the rest upwards.
             return sig.getPayload();
         }
-        catch (AuditoriumCryptoException e) {
+        catch (AuditoriumCryptoException | SignerValidityException e) {
             throw new IncorrectFormatException( datum, e );
-        } catch (SignerValidityException e) {
-			throw new IncorrectFormatException( datum, e );
-		}
+        }
     }
 
     /**

@@ -125,9 +125,9 @@ public class ConfigurationFileEditor extends JFrame {
     private static final String[] networkPatterns = new String[] {"PORT", "ADDRESS", "TIMEOUT", "DISCOVER"};
 
     /* Default attributes. */
-    private static final ArrayList<String> defaultAttributeNames = new ArrayList<String> ();
-    private static final ArrayList<String> defaultAttributeValues = new ArrayList<String> ();
-    private static final ArrayList<String> defaultAttributeComments = new ArrayList<String>();
+    private static final ArrayList<String> defaultAttributeNames = new ArrayList<>();
+    private static final ArrayList<String> defaultAttributeValues = new ArrayList<>();
+    private static final ArrayList<String> defaultAttributeComments = new ArrayList<>();
 
 
 
@@ -153,19 +153,19 @@ public class ConfigurationFileEditor extends JFrame {
     private final JTextArea fileDescriptionTextArea;
 
     /* The list of lines of text, as they are read from a file. */
-    private ArrayList<String> fileLines = new ArrayList<String> ();
+    private ArrayList<String> fileLines = new ArrayList<>();
 
     /* The configuration attribute names. */
-    private ArrayList<String> configurationAttributeNames = new ArrayList<String> ();
+    private ArrayList<String> configurationAttributeNames = new ArrayList<>();
 
     /* The configuration attribute values. */
-    private ArrayList<String> configurationAttributeValues = new ArrayList<String> ();
+    private ArrayList<String> configurationAttributeValues = new ArrayList<>();
 
     /* The configuration attribute comments. */
-    private ArrayList<String> configurationAttributeComments = new ArrayList<String> ();
+    private ArrayList<String> configurationAttributeComments = new ArrayList<>();
 
     /* The file comments. */
-    private ArrayList<String> fileComments = new ArrayList<String> ();
+    private ArrayList<String> fileComments = new ArrayList<>();
 
     /* Models for the JLists of the tabs in the main tabbed pane. These are used to add names/values to the JLists. */
     private final DefaultListModel<String> generalNamesListModel;
@@ -180,11 +180,11 @@ public class ConfigurationFileEditor extends JFrame {
     private final DefaultListModel<String> electionValuesListModel;
 
     /* ArrayLists for storing the comments associated with the displayed attributes. Comments are not displayed. */
-    private ArrayList<String> generalComments = new ArrayList<String> ();
-    private ArrayList<String> networkComments = new ArrayList<String> ();
-    private ArrayList<String> printComments = new ArrayList<String> ();
-    private ArrayList<String> viewComments = new ArrayList<String> ();
-    private ArrayList<String> electionComments = new ArrayList<String> ();
+    private ArrayList<String> generalComments = new ArrayList<>();
+    private ArrayList<String> networkComments = new ArrayList<>();
+    private ArrayList<String> printComments = new ArrayList<>();
+    private ArrayList<String> viewComments = new ArrayList<>();
+    private ArrayList<String> electionComments = new ArrayList<>();
 
     /* Stores the ID of the group of attributes that the last attribute name was placed into. Used to place the attribute value in the same group. */
     private int groupIndexOfLastFoundAttributeName = INVALID_GROUP;
@@ -229,16 +229,16 @@ public class ConfigurationFileEditor extends JFrame {
         setBounds(0, 0, GUI_WIDTH, GUI_HEIGHT);
 
         // Instantiate 'final' fields.
-        generalNamesListModel = new DefaultListModel<String>();
-        generalValuesListModel = new DefaultListModel<String>();
-        networkNamesListModel = new DefaultListModel<String>();
-        networkValuesListModel = new DefaultListModel<String>();
-        printNamesListModel = new DefaultListModel<String>();
-        printValuesListModel = new DefaultListModel<String>();
-        viewNamesListModel = new DefaultListModel<String>();
-        viewValuesListModel = new DefaultListModel<String>();
-        electionNamesListModel = new DefaultListModel<String>();
-        electionValuesListModel = new DefaultListModel<String>();
+        generalNamesListModel = new DefaultListModel<>();
+        generalValuesListModel = new DefaultListModel<>();
+        networkNamesListModel = new DefaultListModel<>();
+        networkValuesListModel = new DefaultListModel<>();
+        printNamesListModel = new DefaultListModel<>();
+        printValuesListModel = new DefaultListModel<>();
+        viewNamesListModel = new DefaultListModel<>();
+        viewValuesListModel = new DefaultListModel<>();
+        electionNamesListModel = new DefaultListModel<>();
+        electionValuesListModel = new DefaultListModel<>();
         fileDescriptionTextArea = new JTextArea();
         inputFileTextArea = new JTextArea();
         outputFileTextArea = new JTextArea();
@@ -314,7 +314,7 @@ public class ConfigurationFileEditor extends JFrame {
         generalTabPanel.add(generalNamesScrollPane);
         generalNamesScrollPane.setPreferredSize(new Dimension(3 * (MAIN_PANEL_WIDTH - PANEL_CONTENTS_X_OFFSET) / 5 - 15, MIDDLE_PANELS_HEIGHT - TABBED_CONTENTS_Y_OFFSET));
 
-        final JList<String> generalNamesList = new JList<String> (generalNamesListModel);
+        final JList<String> generalNamesList = new JList<>(generalNamesListModel);
         generalNamesScrollPane.setViewportView(generalNamesList);
 
         JScrollPane generalValuesScrollPane = new JScrollPane();
@@ -326,7 +326,7 @@ public class ConfigurationFileEditor extends JFrame {
         valuesScrollBar = generalValuesScrollPane.getVerticalScrollBar();
         valuesScrollBar.setModel(namesScrollBar.getModel());
 
-        final JList<String> generalValuesList = new JList<String> (generalValuesListModel);
+        final JList<String> generalValuesList = new JList<>(generalValuesListModel);
         generalValuesScrollPane.setViewportView(generalValuesList);
 
 		/*
@@ -341,7 +341,7 @@ public class ConfigurationFileEditor extends JFrame {
         networkTabPanel.add(networkNamesScrollPane);
         networkNamesScrollPane.setPreferredSize(new Dimension(3 * (MAIN_PANEL_WIDTH - PANEL_CONTENTS_X_OFFSET) / 5 - 15, MIDDLE_PANELS_HEIGHT - TABBED_CONTENTS_Y_OFFSET));
 
-        final JList<String> networkNamesList = new JList<String> (networkNamesListModel);
+        final JList<String> networkNamesList = new JList<>(networkNamesListModel);
         networkNamesScrollPane.setViewportView(networkNamesList);
 
         JScrollPane networkValuesScrollPane = new JScrollPane();
@@ -353,7 +353,7 @@ public class ConfigurationFileEditor extends JFrame {
         valuesScrollBar = networkValuesScrollPane.getVerticalScrollBar();
         valuesScrollBar.setModel(namesScrollBar.getModel());
 
-        final JList<String> networkValuesList = new JList<String> (networkValuesListModel);
+        final JList<String> networkValuesList = new JList<>(networkValuesListModel);
         networkValuesScrollPane.setViewportView(networkValuesList);
 
 		/*
@@ -368,7 +368,7 @@ public class ConfigurationFileEditor extends JFrame {
         printTabPanel.add(printNamesScrollPane);
         printNamesScrollPane.setPreferredSize(new Dimension(3 * (MAIN_PANEL_WIDTH - PANEL_CONTENTS_X_OFFSET) / 5 - 15, MIDDLE_PANELS_HEIGHT - TABBED_CONTENTS_Y_OFFSET));
 
-        final JList<String> printNamesList = new JList<String> (printNamesListModel);
+        final JList<String> printNamesList = new JList<>(printNamesListModel);
         printNamesScrollPane.setViewportView(printNamesList);
 
         JScrollPane printValuesScrollPane = new JScrollPane();
@@ -380,7 +380,7 @@ public class ConfigurationFileEditor extends JFrame {
         valuesScrollBar = printValuesScrollPane.getVerticalScrollBar();
         valuesScrollBar.setModel(namesScrollBar.getModel());
 
-        final JList<String> printValuesList = new JList<String> (printValuesListModel);
+        final JList<String> printValuesList = new JList<>(printValuesListModel);
         printValuesScrollPane.setViewportView(printValuesList);
 
         /*
@@ -395,7 +395,7 @@ public class ConfigurationFileEditor extends JFrame {
         viewTabPanel.add(viewNamesScrollPane);
         viewNamesScrollPane.setPreferredSize(new Dimension(3 * (MAIN_PANEL_WIDTH - PANEL_CONTENTS_X_OFFSET) / 5 - 15, MIDDLE_PANELS_HEIGHT - TABBED_CONTENTS_Y_OFFSET));
 
-        final JList<String> viewNamesList = new JList<String> (viewNamesListModel);
+        final JList<String> viewNamesList = new JList<>(viewNamesListModel);
         viewNamesScrollPane.setViewportView(viewNamesList);
 
         JScrollPane viewValuesScrollPane = new JScrollPane();
@@ -407,7 +407,7 @@ public class ConfigurationFileEditor extends JFrame {
         valuesScrollBar = viewValuesScrollPane.getVerticalScrollBar();
         valuesScrollBar.setModel(namesScrollBar.getModel());
 
-        final JList<String> viewValuesList = new JList<String> (viewValuesListModel);
+        final JList<String> viewValuesList = new JList<>(viewValuesListModel);
         viewValuesScrollPane.setViewportView(viewValuesList);
 
         /*
@@ -422,7 +422,7 @@ public class ConfigurationFileEditor extends JFrame {
         electionTabPanel.add(electionNamesScrollPane);
         electionNamesScrollPane.setPreferredSize(new Dimension(3 * (MAIN_PANEL_WIDTH - PANEL_CONTENTS_X_OFFSET) / 5 - 15, MIDDLE_PANELS_HEIGHT - TABBED_CONTENTS_Y_OFFSET));
 
-        final JList<String> electionNamesList = new JList<String> (electionNamesListModel);
+        final JList<String> electionNamesList = new JList<>(electionNamesListModel);
         electionNamesScrollPane.setViewportView(electionNamesList);
 
         JScrollPane electionValuesScrollPane = new JScrollPane();
@@ -434,7 +434,7 @@ public class ConfigurationFileEditor extends JFrame {
         valuesScrollBar = electionValuesScrollPane.getVerticalScrollBar();
         valuesScrollBar.setModel(namesScrollBar.getModel());
 
-        final JList<String> electionValuesList = new JList<String> (electionValuesListModel);
+        final JList<String> electionValuesList = new JList<>(electionValuesListModel);
         electionValuesScrollPane.setViewportView(electionValuesList);
 
         /*

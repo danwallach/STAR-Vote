@@ -86,20 +86,20 @@ public abstract class Quantifier extends AST {
 	public Value eval(final ActivationRecord environment) {
 		final Value set = _set.eval(environment);
 
-		final ArrayList<Binding<AST, ActivationRecord>> newUnknowns = new ArrayList<Binding<AST, ActivationRecord>>();
-		final Box<Boolean> box = new Box<Boolean>(false);
-		final Box<Integer> newIndex = new Box<Integer>(0);
+		final ArrayList<Binding<AST, ActivationRecord>> newUnknowns = new ArrayList<>();
+		final Box<Boolean> box = new Box<>(false);
+		final Box<Integer> newIndex = new Box<>(0);
 
 		set.execute(new AValueVisitor() {
 
 			@Override
 			public Value forSet(SetValue setvalue) {
 				// construct a list for all computation
-				ArrayList<Binding<AST, ActivationRecord>> total = new ArrayList<Binding<AST, ActivationRecord>>();
+				ArrayList<Binding<AST, ActivationRecord>> total = new ArrayList<>();
 				for (int lcv = _index; lcv < setvalue.size(); lcv++) {
-					HashMap<String, Value> extension = new HashMap<String, Value>();
+					HashMap<String, Value> extension = new HashMap<>();
 					extension.put(_name, setvalue.get(lcv));
-					total.add(new Binding<AST, ActivationRecord>(_body,
+					total.add(new Binding<>(_body,
 							environment.extend(extension)));
 				}
 				total.addAll(_unknowns);

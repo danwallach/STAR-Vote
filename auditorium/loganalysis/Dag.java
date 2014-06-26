@@ -63,8 +63,8 @@ public class Dag {
      */
     public Dag(String filename) {
         _filename = filename;
-        _dag = new HashMap<MessagePointer, ArrayList<MessagePointer>>();
-        _messageTypes = new HashMap<MessagePointer, String>();
+        _dag = new HashMap<>();
+        _messageTypes = new HashMap<>();
     }
 
     /**
@@ -81,7 +81,7 @@ public class Dag {
                 ASExpression message = reader.read();
                 MessagePointer ptr = new MessagePointer( new Message( message ) );
 
-                ArrayList<MessagePointer> predlist = new ArrayList<MessagePointer>();
+                ArrayList<MessagePointer> predlist = new ArrayList<>();
                 ListExpression matchresult = (ListExpression) PATTERN
                         .match(message);
 
@@ -92,7 +92,7 @@ public class Dag {
                 _dag.put( ptr, predlist );
             }
         }
-        catch (EOFException e) {}
+        catch (EOFException ignored) {}
     }
 
     /**
@@ -120,7 +120,7 @@ public class Dag {
      *         pointers).
      */
     public HashMap<Integer, Integer> getBranchStatistics() {
-        HashMap<Integer, Integer> ret = new HashMap<Integer, Integer>();
+        HashMap<Integer, Integer> ret = new HashMap<>();
         for (MessagePointer mp : _dag.keySet()) {
             int num = _dag.get( mp ).size();
             if (ret.containsKey( num ))

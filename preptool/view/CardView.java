@@ -56,7 +56,7 @@ public class CardView extends JPanel implements IMultiLanguageEditor {
     public CardView(View view, String type, ArrayList<AModule> modules) {
 
         /* Set up grid bag stuff */
-        views = new ArrayList<AModuleView>();
+        views = new ArrayList<>();
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 

@@ -41,7 +41,7 @@ public class UserInfoPanel extends JPanel {
         scanResponsePanel.setBorder(BorderFactory.createEtchedBorder());
         scanResponsePanel.setPreferredSize(new Dimension(600, 100));
 
-        messages = new ArrayList<String>();
+        messages = new ArrayList<>();
 
         messagesPanel = new JPanel();
         messagesPanel.setPreferredSize(new Dimension(600, 150));

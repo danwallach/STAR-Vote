@@ -54,9 +54,9 @@ public class Lexer implements ILexer {
      */
     public Lexer(Reader r) {
         _reader = r;
-        _queue = new LinkedList<Token>();
+        _queue = new LinkedList<>();
         _state = WhitespaceState.SINGLETON;
-        _tokens = new HashMap<Character, Token>();
+        _tokens = new HashMap<>();
 
         _tokens.put( '(', Open.SINGLETON );
         _tokens.put( ')', Close.SINGLETON );

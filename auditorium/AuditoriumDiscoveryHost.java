@@ -140,8 +140,8 @@ public class AuditoriumDiscoveryHost {
     public HostPointer[] discover() throws NetworkException {
 
         // Build the socket infrastructure
-        DatagramSocket sendsocket = null;
-        ServerSocket listensocket = null;
+        DatagramSocket sendsocket;
+        ServerSocket listensocket;
         try {
         	sendsocket = new DatagramSocket();
         	listensocket = new ServerSocket( _constants.getDiscoverReplyPort() );
@@ -151,7 +151,7 @@ public class AuditoriumDiscoveryHost {
             throw new NetworkException( "Cannot bind sockets", e );
         }
 
-        LinkedList<HostPointer> retval = new LinkedList<HostPointer>();
+        LinkedList<HostPointer> retval = new LinkedList<>();
 
         // Send the discover message.
         try {

@@ -3,6 +3,7 @@ package crypto;
 import java.io.File;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.AfterClass;
@@ -51,7 +52,7 @@ public class PiecemealEncrypterTest {
 	protected static void generateRandom(){
 		assert _seeds == null;
 
-		_seeds = new ArrayList<byte[]>();
+		_seeds = new ArrayList<>();
 
 		SecureRandom r = new SecureRandom();
 		for(int i = 0; i < TRIAL_COUNT; i++){
@@ -107,7 +108,7 @@ public class PiecemealEncrypterTest {
 
 	@AfterClass
 	public static void deleteTemporaryFiles() throws Exception{
-		List<File> toDelete = new ArrayList<File>();
+		List<File> toDelete = new ArrayList<>();
 		toDelete.add(_folderPath);
 
 		while(toDelete.size() > 0){
@@ -131,15 +132,13 @@ public class PiecemealEncrypterTest {
 					continue;
 				}
 
-				for(File c : child)
-					toDelete.add(c);
+                Collections.addAll(toDelete, child);
 
 				toDelete.add(del);
 			}else{
 				if(!del.delete())
 					del.deleteOnExit();
-				continue;
-			}
+            }
 		}
 	}
 
@@ -208,7 +207,7 @@ public class PiecemealEncrypterTest {
 			SecureRandom rand = new SecureRandom(seed);
 
 			for(Card card : cards){
-				List<String> contained = new ArrayList<String>();
+				List<String> contained = new ArrayList<>();
 
 				for(SelectableCardElement elem : card.getElements())
 					contained.add(elem.getUniqueID());

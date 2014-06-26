@@ -65,9 +65,6 @@ public class ASEWriter {
      * @throws IOException
      *             This method throws if the decorated stream's write method
      *             throws.
-     * @throws IncorrectUseException
-     *             This method throws if the given expression cannot be
-     *             converted to a verbatim expression.
      */
     public void writeASE(ASExpression expression) throws IOException {
         _stream.write( expression.toVerbatim() );
@@ -83,13 +80,10 @@ public class ASEWriter {
      * @throws IOException
      *             This method throws if the wrapped stream throws an
      *             IOException.
-     * @throws IncorrectUseException
-     *             This method throws if the given expression cannot be
-     *             converted to a verbatim expression.
      */
     public void writeASE64(ASExpression expression) throws IOException {
-        final int openbrace = new String( "{" ).getBytes( "us-ascii" )[0];
-        final int closebrace = new String( "}" ).getBytes( "us-ascii" )[0];
+        final int openbrace = "{".getBytes("us-ascii")[0];
+        final int closebrace = "}".getBytes("us-ascii")[0];
 
         _stream.write( openbrace );
         _base64Stream.write( expression.toVerbatim() );

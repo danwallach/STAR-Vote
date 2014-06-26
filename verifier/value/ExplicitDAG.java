@@ -96,8 +96,8 @@ public class ExplicitDAG extends DAGValue {
         _ptrToMessage = pointerToMessageMap;
         _messageToPtr = messageToPointerMap;
         _predecessors = predecessorGraph;
-        _cache = new HashMap<Expression, HashSet<Expression>>();
-        _completelyCached = new HashSet<Expression>();
+        _cache = new HashMap<>();
+        _completelyCached = new HashSet<>();
 
         initCache();
     }
@@ -111,7 +111,6 @@ public class ExplicitDAG extends DAGValue {
      * @param rightMessage
      *            Compute if l precedes this expression.
      * @return This method returns true in O(1) if it results in a cache hit.
-     * @throws IncorrectFormatException
      */
     public boolean precedes(Expression leftMessage, Expression rightMessage) {
         Expression finish = _messageToPtr.get( leftMessage );
@@ -134,7 +133,7 @@ public class ExplicitDAG extends DAGValue {
 		}
 
         // If we can't use the cache, do BFS.
-        Queue<Expression> q = new LinkedList<Expression>();
+        Queue<Expression> q = new LinkedList<>();
 
         q.offer( start ); // start at the end and work our way back
         while (q.peek() != null) {

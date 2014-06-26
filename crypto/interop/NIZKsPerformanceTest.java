@@ -58,15 +58,15 @@ public class NIZKsPerformanceTest {
 	private static PublicKey _adderPublicKey = null;
     private static PrivateKey _adderPrivateKey = null;
 	
-	private static List<Pair> _toDecryptWithoutNIZKs = new ArrayList<Pair>();
-	private static List<Pair> _toDecryptWithNIZKs = new ArrayList<Pair>();
+	private static List<Pair> _toDecryptWithoutNIZKs = new ArrayList<>();
+	private static List<Pair> _toDecryptWithNIZKs = new ArrayList<>();
 
     SecureRandom r = new SecureRandom();
 
 	protected static void generateRandom(){
 		assert _seeds == null;
 
-		_seeds = new ArrayList<byte[]>();
+		_seeds = new ArrayList<>();
 
 		SecureRandom r = new SecureRandom();
 		for(int i = 0; i < TRIAL_COUNT; i++){
@@ -123,7 +123,7 @@ public class NIZKsPerformanceTest {
 
 	@AfterClass
 	public static void deleteTemporaryFiles() throws Exception{
-		List<File> toDelete = new ArrayList<File>();
+		List<File> toDelete = new ArrayList<>();
 		toDelete.add(_folderPath);
 
 		while(toDelete.size() > 0){
@@ -227,7 +227,7 @@ public class NIZKsPerformanceTest {
 			List<List<String>> groups = _ballot.getRaceGroups();
 
 			long encryptStart = System.currentTimeMillis();
-			ListExpression toDecrypt = BallotEncrypter.SINGLETON.encryptWithProof(exp, groups, _adderPublicKey);
+			ListExpression toDecrypt = BallotEncrypter.SINGLETON.encryptWithProof("0", exp, groups, _adderPublicKey, ASExpression.make("nonce"));
 			long encryptStop = System.currentTimeMillis();
 
 			elapsedTime += (encryptStop - encryptStart);
@@ -286,14 +286,13 @@ public class NIZKsPerformanceTest {
 			ListExpression encrypted = (ListExpression)((Pair)p.second).first;
 			List<List<AdderInteger>> random = (List<List<AdderInteger>>)((Pair)p.second).second;
 
-            System.out.println(encrypted);
             long start = System.currentTimeMillis();
 			ListExpression decrypted = BallotEncrypter.SINGLETON.adderDecrypt(encrypted, random);
 			long stop = System .currentTimeMillis();
 			
 			Assert.assertEquals("Decrypted size does not match expected size", expected.size(), decrypted.size());
 			
-			Map<String, Integer> tempMap = new HashMap<String, Integer>();
+			Map<String, Integer> tempMap = new HashMap<>();
 			
 			for(int i = 0; i < expected.size(); i++){
 				ListExpression expectedRacePair = (ListExpression)expected.get(i);
@@ -335,9 +334,7 @@ public class NIZKsPerformanceTest {
 
         SecureRandom r = new SecureRandom();
 
-        System.out.println(_ballot.toASExpression());
-
-        AuthorizedToCastWithNIZKsEvent ATCE = new AuthorizedToCastWithNIZKsEvent(0, 0, ASExpression.makeVerbatim(_seeds.get(0)), "3", _ballot.toASExpression().toVerbatim(),
+        AuthorizedToCastWithNIZKsEvent ATCE = new AuthorizedToCastWithNIZKsEvent(0, 0, _ballot.toASExpression(), "3", _ballot.toASExpression().toVerbatim(),
                 AdderKeyManipulator.generateFinalPublicKey(_adderPublicKey));
 
         for(byte[] seed : _seeds){
@@ -361,9 +358,7 @@ public class NIZKsPerformanceTest {
             ListExpression exp = _ballot.getCastBallot();
             List<List<String>> groups = _ballot.getRaceGroups();
 
-            ListExpression encBallot = BallotEncrypter.SINGLETON.encryptWithProof(exp, groups, AdderKeyManipulator.generateFinalPublicKey(_adderPublicKey));
-
-            System.out.println(encBallot);
+            ListExpression encBallot = BallotEncrypter.SINGLETON.encryptWithProof("0", exp, groups, AdderKeyManipulator.generateFinalPublicKey(_adderPublicKey), ASExpression.make("nonce"));
 
             ASExpression nonce = StringExpression.makeString(seed);
             String bid = (r.nextInt() + "");
@@ -392,7 +387,7 @@ public class NIZKsPerformanceTest {
 
         }
 
-        List<ASExpression> report = null;
+        Map<String, BigInteger> report = null;
         try{
             for(String string : map.keySet())   {
                 tallier.confirmed(map.get(string));
@@ -400,8 +395,9 @@ public class NIZKsPerformanceTest {
             }
 
             report = tallier.getReport();
-            for(ASExpression s : report){
-                System.out.println(s + " : " + s);
+
+            for(String s : report.keySet()){
+                System.out.println(s + " : " + report.get(s));
             }
         }catch (SearchSpaceExhaustedException e){
             System.out.println("ERROR");

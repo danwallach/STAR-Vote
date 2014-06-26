@@ -1,13 +1,14 @@
 package crypto.adder;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.NoSuchElementException;
 
 /**
- * Represents a polynomial.
+ * Class to represent a polynomial.  This class contains a vector
+ * of coefficients, as well as functions to generate random
+ * coefficients and calculate Lagrange coefficients.
  *
  * @author David Walluck
  * @version $LastChangedRevision$ $LastChangedDate$
@@ -53,7 +54,7 @@ public class Polynomial {
         this.g = g;
         this.f = f;
         this.degree = degree;
-        coeffs = new ArrayList<AdderInteger>(degree + 1);
+        coeffs = new ArrayList<>(degree + 1);
 
         for (int i = 0; i <= degree; i++) {
             coeffs.add(AdderInteger.random(q));
@@ -124,16 +125,13 @@ public class Polynomial {
      * @return the list of Lagrange coefficients of this polynomial
      */
     public List<AdderInteger> lagrange() {
-        List<AdderInteger> lagrangeCoeffs =
-            new ArrayList<AdderInteger>(coeffs.size());
 
-        for (Iterator it = coeffs.iterator(); it.hasNext();) {
-            AdderInteger ai = (AdderInteger) it.next();
+        List<AdderInteger> lagrangeCoeffs = new ArrayList<>(coeffs.size());
+
+        for (AdderInteger ai : coeffs) {
             AdderInteger numerator = new AdderInteger(AdderInteger.ONE, q);
 
-            for (Iterator it2 = coeffs.iterator(); it2.hasNext();) {
-                AdderInteger aj = (AdderInteger) it2.next();
-
+            for (AdderInteger aj : coeffs) {
                 if (!ai.equals(aj)) {
                     numerator = numerator.multiply(q.subtract(aj));
                 }
@@ -141,9 +139,7 @@ public class Polynomial {
 
             AdderInteger denominator = new AdderInteger(AdderInteger.ONE, q);
 
-            for (Iterator it2 = coeffs.iterator(); it2.hasNext();) {
-                AdderInteger aj = (AdderInteger) it2.next();
-
+            for (AdderInteger aj : coeffs) {
                 if (!ai.equals(aj)) {
                     denominator = denominator.multiply(ai.subtract(aj));
                 }
@@ -208,9 +204,11 @@ public class Polynomial {
      * @return a <tt>Polynomial</tt> with the specified values
      */
     public static Polynomial fromString(String s) {
+
         StringTokenizer st0 = new StringTokenizer(s, " ");
 
         try {
+
             StringTokenizer st = new StringTokenizer(st0.nextToken(), "pgf",
                                                      true);
 
@@ -238,18 +236,15 @@ public class Polynomial {
                 throw new InvalidPolynomialException("too many tokens");
             }
 
-            List<AdderInteger> coeffs = new ArrayList<AdderInteger>();
+            List<AdderInteger> coeffs = new ArrayList<>();
 
             while (st0.hasMoreTokens()) {
                 coeffs.add(new AdderInteger(st0.nextToken(), q));
             }
 
             return new Polynomial(p, q, g, f, coeffs);
-        } catch (NoSuchElementException nsee) {
-            throw new InvalidPolynomialException(nsee.getMessage());
-        } catch (NumberFormatException nfe) {
-            throw new InvalidPolynomialException(nfe.getMessage());
         }
+        catch (NoSuchElementException | NumberFormatException nsee) { throw new InvalidPolynomialException(nsee.getMessage()); }
     }
 
     /**
@@ -258,7 +253,8 @@ public class Polynomial {
      * @return the string representation of this polynomial
      */
     public String toString() {
-        StringBuffer sb = new StringBuffer(4096);
+
+        StringBuilder sb = new StringBuilder(4096);
 
         sb.append("p");
         sb.append(p.toString());
@@ -267,8 +263,7 @@ public class Polynomial {
         sb.append("f");
         sb.append(f.toString());
 
-        for (Iterator it = coeffs.iterator(); it.hasNext();) {
-            AdderInteger c = (AdderInteger) it.next();
+        for (AdderInteger c : coeffs) {
             sb.append(" ");
             sb.append(c.toString());
         }

@@ -48,21 +48,21 @@ public class PolynomialTest extends TestCase {
         try {
             Polynomial.fromString("pgf");
             fail();
-        } catch (InvalidPolynomialException ive) {
+        } catch (InvalidPolynomialException ignored) {
 
         }
 
         try {
             Polynomial.fromString("p123g123f12a");
             fail();
-        } catch (InvalidPolynomialException ive) {
+        } catch (InvalidPolynomialException ignored) {
 
         }
 
         try {
             Polynomial.fromString("p123g123f123p123");
             fail();
-        } catch (InvalidPolynomialException ive) {
+        } catch (InvalidPolynomialException ignored) {
 
         }
 
@@ -101,35 +101,35 @@ public class PolynomialTest extends TestCase {
         try {
             Polynomial.fromString("p123g135");
             fail();
-        } catch (InvalidPolynomialException ipe) {
+        } catch (InvalidPolynomialException ignored) {
 
         }
 
         try {
             Polynomial.fromString("g123g135f246");
             fail();
-        } catch (InvalidPolynomialException ipe) {
+        } catch (InvalidPolynomialException ignored) {
 
         }
 
         try {
             Polynomial.fromString("p123p135f246");
             fail();
-        } catch (InvalidPolynomialException ipe) {
+        } catch (InvalidPolynomialException ignored) {
 
         }
 
         try {
             Polynomial.fromString("p123g135g246");
             fail();
-        } catch (InvalidPolynomialException ipe) {
+        } catch (InvalidPolynomialException ignored) {
 
         }
 
         try {
             Polynomial.fromString("p123g135f246 xyz");
             fail();
-        } catch (InvalidPolynomialException ipe) {
+        } catch (InvalidPolynomialException ignored) {
 
         }
     }

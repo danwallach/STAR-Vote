@@ -52,7 +52,7 @@ public class IncrementalAuditoriumLogFast implements IIncrementalPlugin {
 	 * @see verifier.IVerifierPlugin#init(verifier.Verifier)
 	 */
 	public void init(Verifier verifier) {
-		_allset = new ArrayList<Expression>();
+		_allset = new ArrayList<>();
 		_alldag = new FastDAGBuilder();
 		_verifier = verifier;
 
@@ -111,9 +111,9 @@ public class IncrementalAuditoriumLogFast implements IIncrementalPlugin {
      * Initialization of global variables.
      */
 	private void registerGlobals() {
-		HashMap<String, Value> bindings = new HashMap<String, Value>();
+		HashMap<String, Value> bindings = new HashMap<>();
 
-		_allsetValue = new SetValue(_allset.toArray(new Expression[0]));
+		_allsetValue = new SetValue(_allset.toArray(new Expression[_allset.size()]));
 		bindings.put("all-set", _allsetValue);
 		_alldagValue = _alldag.toDAG();
 

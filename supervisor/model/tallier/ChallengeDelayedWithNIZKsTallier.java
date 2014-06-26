@@ -20,7 +20,7 @@ import crypto.interop.AdderKeyManipulator;
 public class ChallengeDelayedWithNIZKsTallier extends EncryptedTallierWithNIZKs {
     private List<String> writeIns;
 
-	private Map<ASExpression, byte[]> _pendingVotes = new HashMap<ASExpression, byte[]>();
+    private Map<ASExpression, byte[]> _pendingVotes = new HashMap<ASExpression, byte[]>();
 
     /**
      * Constructor.
@@ -39,27 +39,28 @@ public class ChallengeDelayedWithNIZKsTallier extends EncryptedTallierWithNIZKs 
      * Performs the same operations, just not when the vote is first recorded. This will happen
      * when a ballot is dropped into the ballot box.
      */
-	public void confirmed(ASExpression nonce) {
-		byte[] ballotBytes = _pendingVotes.remove(nonce);
-		
-		if(_finalPublicKey == null)
-			_finalPublicKey = AdderKeyManipulator.generateFinalPublicKey(_publicKey);
-		else{
-			PublicKey copy = AdderKeyManipulator.generateFinalPublicKey(_publicKey);
-			
-			if(!_finalPublicKey.equals(copy))
-				Bugout.err("Final public key changed!\n"+_finalPublicKey+"\n\n"+copy);
-		}
+    public void confirmed(ASExpression nonce) {
+        byte[] ballotBytes = _pendingVotes.remove(nonce);
 
-		ASEInputStreamReader in = new ASEInputStreamReader(
-				new ByteArrayInputStream(ballotBytes));
-		
-		try {
-			ASExpression sexp = in.read();
+        if(_finalPublicKey == null)
+            _finalPublicKey = AdderKeyManipulator.generateFinalPublicKey(_publicKey);
+        else{
+            PublicKey copy = AdderKeyManipulator.generateFinalPublicKey(_publicKey);
+
+            if(!_finalPublicKey.equals(copy))
+                Bugout.err("Final public key changed!\n"+_finalPublicKey+"\n\n"+copy);
+        }
+
+        ASEInputStreamReader in = new ASEInputStreamReader(
+                new ByteArrayInputStream(ballotBytes));
+
+        try {
+            ASExpression sexp = in.read();
 			/* Check that the ballot is well-formed */
-			ListExpression ballot = (ListExpression)sexp;
+            ListExpression ballot = (ListExpression)sexp;
 
-            System.out.println("SExpression okay!");
+            ListExpression votes = (ListExpression) ballot.get(2);
+
 
             /* TODO This is writein code that doesn't really work */
             /* Pop the key "vote" off the end of each ballot
@@ -69,8 +70,8 @@ public class ChallengeDelayedWithNIZKsTallier extends EncryptedTallierWithNIZKs 
              * byte[] key = parseKey(writeInKey);
              */
 
-            for(int i = 0; i < ballot.size(); i++){
-				ListExpression raceGroup = (ListExpression)ballot.get(i);
+            for(int i = 0; i < votes.size(); i++){
+                ListExpression voteE = (ListExpression)votes.get(i);
 
                 /* TODO Split off any writeIns, if they're present, and store them, encrypted, in a list to be dealt with later
 				ListExpression wholeVote = (ListExpression)raceGroup.get(0);
@@ -83,51 +84,51 @@ public class ChallengeDelayedWithNIZKsTallier extends EncryptedTallierWithNIZKs 
 
                 */
 
-                ListExpression voteE = (ListExpression)raceGroup.get(0);
-				ListExpression voteIdsE = (ListExpression)raceGroup.get(1);
-				ListExpression proofE = (ListExpression)raceGroup.get(2);
-				ListExpression publicKeyE = (ListExpression)raceGroup.get(3);
+                ListExpression voteASE = (ListExpression)voteE.get(0);
+                ListExpression voteIdsE = (ListExpression)voteE.get(1);
+                ListExpression proofE = (ListExpression)voteE.get(2);
+                ListExpression publicKeyE = (ListExpression)ballot.get(4);
 
-                confirmValid(voteE, voteIdsE, proofE, publicKeyE);
-				
-				//Vote vote = Vote.fromString(voteE.get(1).toString());
-				Vote vote = Vote.fromASE(voteE.get(1));
-				List<String> voteIds = new ArrayList<String>();
-				for(int j = 0; j < voteIdsE.get(1).size(); j++)
-					voteIds.add(((ListExpression)voteIdsE.get(1)).get(j).toString());
-				
-				//VoteProof voteProof = VoteProof.fromString(proofE.get(1).toString());
-				VoteProof voteProof = VoteProof.fromASE(proofE.get(1));
-				
-				//PublicKey suppliedPublicKey = PublicKey.fromString(publicKeyE.get(1).toString());
-				PublicKey suppliedPublicKey = PublicKey.fromASE(publicKeyE.get(1));
-				
-				if(!(suppliedPublicKey.toString().trim().equals(_finalPublicKey.toString().trim()))){
-					Bugout.err("!!!Expected supplied final PublicKey to match generated\nSupplied: "+suppliedPublicKey+"\nGenerated: "+_finalPublicKey+"!!!");
-					return;
-				}
-				
-				if(!voteProof.verify(vote, _finalPublicKey, 0, 1)){
-					Bugout.err("!!!Ballot failed NIZK test!!!");
-					return;
-				}
-				
-				String subElectionId = makeId(voteIds);
+                confirmValid(voteASE, voteIdsE, proofE, publicKeyE);
 
-				Election election = _results.get(subElectionId);
-				
-				if(election == null)
-					election = new Election(_publicKey.getP());
-				
-				election.castVote(vote);
-				
-				_results.put(subElectionId, election);
-			}//for
-		}catch(Exception e){
+                //Vote vote = Vote.fromString(voteE.get(1).toString());
+                Vote vote = Vote.fromASE(voteE.get(0));
+                List<ASExpression> voteIds = new ArrayList<>();
+                for(int j = 0; j < voteIdsE.get(1).size(); j++)
+                    voteIds.add(((ListExpression)voteIdsE.get(1)).get(j));
+
+                //VoteProof voteProof = VoteProof.fromString(proofE.get(1).toString());
+                VoteProof voteProof = VoteProof.fromASE(proofE.get(1));
+
+                //PublicKey suppliedPublicKey = PublicKey.fromString(publicKeyE.get(1).toString());
+                PublicKey suppliedPublicKey = PublicKey.fromASE(publicKeyE);
+
+                if(!(suppliedPublicKey.toString().trim().equals(_finalPublicKey.toString().trim()))){
+                    Bugout.err("!!!Expected supplied final PublicKey to match generated\nSupplied: "+suppliedPublicKey+"\nGenerated: "+_finalPublicKey+"!!!");
+                    return;
+                }
+
+                if(!voteProof.verify(vote, _finalPublicKey, 0, 1)){
+                    Bugout.err("!!!Ballot failed NIZK test!!!");
+                    return;
+                }
+
+                String subElectionId = makeId(voteIds);
+
+                Election election = _results.get(subElectionId);
+
+                if(election == null)
+                    election = new Election(_publicKey.getP(), voteIds);
+
+                election.castVote(vote);
+
+                _results.put(subElectionId, election);
+            }//for
+        }catch(Exception e){
             e.printStackTrace();
             Bugout.err("Malformed ballot received <"+e.getMessage()+">");
-			Bugout.err("Rejected ballot:\n"+new String(ballotBytes));
-		}
+            Bugout.err("Rejected ballot:\n"+new String(ballotBytes));
+        }
     }
 
     /* TODO More write-in code
@@ -149,8 +150,8 @@ public class ChallengeDelayedWithNIZKsTallier extends EncryptedTallierWithNIZKs 
      * @param ballot the ballot to confirm
      * @param nonce the nonce associated with that ballot, to avoid bogus confirms
      */
-	public void recordVotes(byte[] ballot, ASExpression nonce) {
-		_pendingVotes.put(nonce, ballot);
-	}
+    public void recordVotes(byte[] ballot, ASExpression nonce) {
+        _pendingVotes.put(nonce, ballot);
+    }
 
 }

@@ -274,7 +274,7 @@ public final class Ballot {
      * @return the SExpression representation of this Ballot.
      */
     public ASExpression toASExpression() {
-        ArrayList<ASExpression> cardList = new ArrayList<ASExpression>();
+        ArrayList<ASExpression> cardList = new ArrayList<>();
         for (Card card : _cards)
             cardList.add(card.toASExpression());
         return new ListExpression(cardList);
@@ -291,7 +291,7 @@ public final class Ballot {
      */
     public ListExpression getCastBallot() {
 
-        ArrayList<ASExpression> pairs = new ArrayList<ASExpression>();
+        ArrayList<ASExpression> pairs = new ArrayList<>();
 
         /* Add all the cast ballots and put into pairs for return */
         for (Card card : _cards)

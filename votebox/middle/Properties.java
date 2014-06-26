@@ -271,7 +271,7 @@ public class Properties {
 
             case "Integer":
 
-                ArrayList<Integer> lst = new ArrayList<Integer>(values.size());
+                ArrayList<Integer> lst = new ArrayList<>(values.size());
 
                 /* Parse and add ints to lst */
                 for (String value : values)

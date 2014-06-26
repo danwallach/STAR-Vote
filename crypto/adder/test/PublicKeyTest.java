@@ -61,49 +61,49 @@ public class PublicKeyTest extends TestCase {
         try {
             PublicKey.fromString("pghf");
             fail();
-        } catch (InvalidPublicKeyException ipke) {
+        } catch (InvalidPublicKeyException ignored) {
 
         }
 
         try {
             PublicKey.fromString("p123g123h123f12a");
             fail();
-        } catch (InvalidPublicKeyException ipke) {
+        } catch (InvalidPublicKeyException ignored) {
 
         }
 
         try {
             PublicKey.fromString("p123g123h123p123");
             fail();
-        } catch (InvalidPublicKeyException ipke) {
+        } catch (InvalidPublicKeyException ignored) {
 
         }
 
         try {
             PublicKey.fromString("g123g123h123p123");
             fail();
-        } catch (InvalidPublicKeyException ipke) {
+        } catch (InvalidPublicKeyException ignored) {
 
         }
 
         try {
             PublicKey.fromString("p123h123h123p123");
             fail();
-        } catch (InvalidPublicKeyException ipke) {
+        } catch (InvalidPublicKeyException ignored) {
 
         }
 
         try {
             PublicKey.fromString("p123g123g123");
             fail();
-        } catch (InvalidPublicKeyException ipke) {
+        } catch (InvalidPublicKeyException ignored) {
 
         }
 
         try {
             PublicKey.fromString("p123g135h246f234p123");
             fail();
-        } catch (InvalidPublicKeyException ipke) {
+        } catch (InvalidPublicKeyException ignored) {
 
         }
     }

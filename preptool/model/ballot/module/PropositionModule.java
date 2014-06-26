@@ -55,9 +55,8 @@ public class PropositionModule extends AModule {
         String name = elt.getAttribute("name");
 
         /* Build the object */
-        PropositionModule module = new PropositionModule(name);
 
-        return module;
+        return new PropositionModule(name);
     }
 
     /** The data contained herein, i.e. the card elements containing yes, no, and none of the above*/

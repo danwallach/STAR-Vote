@@ -118,7 +118,7 @@ public class LayoutParser {
      */
     public Layout getLayout(IBallotVars vars, int size, String lang, IView view) throws LayoutParserException {
 
-        _drawables = new HashMap<String, LinkedList<IDrawable>>();
+        _drawables = new HashMap<>();
 
         Document document;
 
@@ -164,7 +164,7 @@ public class LayoutParser {
 
         System.out.println("In parseLayout: " + node);
         NodeList children           = node.getChildNodes();
-        ArrayList<RenderPage> pages = new ArrayList<RenderPage>();
+        ArrayList<RenderPage> pages = new ArrayList<>();
         Properties properties       = new Properties();
 
         /* Children can either be properties or pages */
@@ -208,7 +208,7 @@ public class LayoutParser {
         System.out.println("In parsePage: " + node);
 
         NodeList children = node.getChildNodes();
-        ArrayList<IDrawable> drawables = new ArrayList<IDrawable>();
+        ArrayList<IDrawable> drawables = new ArrayList<>();
         Properties properties = new Properties();
 
         for (int lcv = 0; lcv < children.getLength(); lcv++) {
@@ -264,8 +264,8 @@ public class LayoutParser {
         Properties properties   = new Properties();
         ToggleButtonGroup group = new ToggleButtonGroup( properties );
 
-        ArrayList<ToggleButton> buttons = new ArrayList<ToggleButton>();
-        ArrayList<Integer> verticals    = new ArrayList<Integer>();
+        ArrayList<ToggleButton> buttons = new ArrayList<>();
+        ArrayList<Integer> verticals    = new ArrayList<>();
 
         for (int lcv = 0; lcv < children.getLength(); lcv++) {
 
@@ -406,7 +406,7 @@ public class LayoutParser {
         if (_drawables.containsKey(uniqueID))
             _drawables.get(uniqueID).add(0, drawable);
         else {
-            LinkedList<IDrawable> l = new LinkedList<IDrawable>();
+            LinkedList<IDrawable> l = new LinkedList<>();
             l.add(drawable);
             _drawables.put(uniqueID, l);
         }
@@ -457,7 +457,7 @@ public class LayoutParser {
         String type = nodeAttributes.getNamedItem("type").getNodeValue();
 
         NodeList children = node.getChildNodes();
-        ArrayList<String> elts = new ArrayList<String>();
+        ArrayList<String> elts = new ArrayList<>();
 
         for (int lcv = 0; lcv < children.getLength(); lcv++) {
             Node child = children.item(lcv);

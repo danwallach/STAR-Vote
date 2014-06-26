@@ -84,7 +84,6 @@ public abstract class ASExpression {
      * @return This method returns the s-expression which represents the given
      *         stream of bytes.
      * @throws InvalidVerbatimStreamException
-     * @throws
      * @see sexpression.stream.ASEInputStreamReader
      */
     public static ASExpression makeVerbatim(byte[] bytes)
@@ -108,7 +107,7 @@ public abstract class ASExpression {
      * @return This method returns the SHA-1 hash of the given byte array.
      */
     public static byte[] computeSHA1(byte[] expression) {
-        MessageDigest md = null;
+        MessageDigest md;
         try {
             md = MessageDigest.getInstance( "SHA" );
             md.update( expression );
@@ -127,7 +126,7 @@ public abstract class ASExpression {
      * @return This method returns the SHA-256 hash of the given byte array.
      */
     public static byte[] computeSHA256(byte[] expression) {
-        MessageDigest md = null;
+        MessageDigest md;
         try {
             md = MessageDigest.getInstance( "SHA-256" );
             md.update( expression );
@@ -208,7 +207,7 @@ public abstract class ASExpression {
     public HashMap<String, ASExpression> namedMatch(ASExpression target) {
         if (match( target ) == NoMatch.SINGLETON)
             return NamedNoMatch.SINGLETON;
-        return new HashMap<String, ASExpression>();
+        return new HashMap<>();
     }
 
     /**

@@ -178,7 +178,6 @@ public class ElectionInfoPanel extends JPanel {
                 }
             }catch(Exception e){
                 System.out.println(e.getMessage());
-                continue;
             }finally {
                 try{
                     if(in != null)

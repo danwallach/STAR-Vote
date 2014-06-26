@@ -43,7 +43,7 @@ public class FastDAG extends DAGValue {
 
 		public MessageProjection(Expression ptr) {
 			_m = ptr;
-			_p = new HashMap<String, Integer>();
+			_p = new HashMap<>();
 		}
 
 		protected final Map<String, Integer> _p;
@@ -117,7 +117,7 @@ public class FastDAG extends DAGValue {
 		_messageToPtr = messageToPtrMap;
 		_predecessors = predecessors;
 		_timelines = hostTimelines;
-		_projections = new HashMap<Expression, MessageProjection>();
+		_projections = new HashMap<>();
 
 		// create the inverted index
 		/*
@@ -127,18 +127,18 @@ public class FastDAG extends DAGValue {
 		 */
 
 		// create the inverted index
-		_ptrToHost = new HashMap<Expression, Pair<String, Integer>>();
+		_ptrToHost = new HashMap<>();
 
 		for (String host : _timelines.keySet()) {
 			Map<Integer, Expression> timeline = _timelines.get(host);
 			for (Integer i : timeline.keySet()) {
 				_ptrToHost.put(timeline.get(i), 
-							   new Pair<String, Integer>(host, i));
+							   new Pair<>(host, i));
 			}
 		}
 
 		
-		_cache = new HashMap<Expression, HashSet<Expression>>();
+		_cache = new HashMap<>();
 		for (Expression e : _predecessors.keySet())
 			_cache.put( e, new HashSet<Expression>() );
 	}
@@ -152,7 +152,6 @@ public class FastDAG extends DAGValue {
 	 * @param rightMessage
 	 *            Compute if l precedes this expression.
 	 * @return This method returns true in O(1) if it results in a cache hit.
-	 * @throws IncorrectFormatException
 	 */
 	public boolean precedes(Expression leftMessage, Expression rightMessage) {
 		Expression finish = _messageToPtr.get(leftMessage);
@@ -183,7 +182,7 @@ public class FastDAG extends DAGValue {
 		// and cache projection from m1 onto h2
 
 		// BFS work
-		Queue<Expression> work = new LinkedList<Expression>();
+		Queue<Expression> work = new LinkedList<>();
 
 		work.offer(start); // start at the end and work our way back
 		while (work.peek() != null) {
@@ -198,7 +197,7 @@ public class FastDAG extends DAGValue {
 					messagePosition.right() /* index */
 			);
 
-			if (messagePosition.left() == finishHostIndex.left()) {
+			if (messagePosition.left().equals(finishHostIndex.left())) {
 //				System.out.println("precedes: found our way to target host: " 
 //						+ messagePosition.left());
 //				System.out.println("precedes: comparing projected position "

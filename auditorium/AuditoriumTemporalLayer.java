@@ -58,7 +58,7 @@ public class AuditoriumTemporalLayer extends AAuditoriumLayer {
      */
     public ASExpression makeAnnouncement(ASExpression datum) {
         // Make new datum - Wrap with everything that is in the last list.
-        ArrayList<ASExpression> list = new ArrayList<ASExpression>();
+        ArrayList<ASExpression> list = new ArrayList<>();
         for (MessagePointer p : getHost().getLog().getLast())
             list.add( p.toASE() );
         ASExpression newdatum = new ListExpression( StringExpression
@@ -81,7 +81,7 @@ public class AuditoriumTemporalLayer extends AAuditoriumLayer {
     public ASExpression makeJoinReply(ASExpression datum) {
         // Make new datum - Construct the last list to return to the requesting
         // host.
-        ArrayList<ASExpression> lst = new ArrayList<ASExpression>();
+        ArrayList<ASExpression> lst = new ArrayList<>();
         for (MessagePointer mp : getHost().getLog().getLast())
             lst.add( mp.toASE() );
         ASExpression newdatum = new ListExpression( lst );

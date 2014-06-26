@@ -44,7 +44,6 @@ import preptool.view.dialog.ProgressDialog;
 
 import javax.swing.*;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 import java.awt.*;
@@ -169,7 +168,7 @@ public class Model {
      */
     public String[] checkTranslations() {
 
-        ArrayList<String> cardsNeeded = new ArrayList<String>();
+        ArrayList<String> cardsNeeded = new ArrayList<>();
         Language primaryLanguage = getLanguages().get(0);
 
         /* Get the cards */
@@ -431,7 +430,7 @@ public class Model {
 
                     /* Clean up temp files */
                     info.setCurrentTask("Cleaning up Temporary Files", c);
-                    Stack<File> dirStack = new Stack<File>();
+                    Stack<File> dirStack = new Stack<>();
                     dirStack.add(tempDir);
 
                     /* Check that there is still something on the stack */
@@ -651,7 +650,7 @@ public class Model {
                     new votebox.middle.driver.Driver(tempDir.getAbsolutePath(), new votebox.middle.view.AWTViewFactory(true, false), false).run();
 
                     /* Delete temporary directories */
-                    Stack<File> dirStack = new Stack<File>();
+                    Stack<File> dirStack = new Stack<>();
                     dirStack.add(tempDir);
 
                     /* While the stack still has something */

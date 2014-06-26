@@ -64,8 +64,8 @@ public abstract class ListArgConnective extends AST {
 	 */
 	@Override
 	public Value eval(ActivationRecord environment) {
-		final Box<Boolean> box = new Box<Boolean>(false);
-		final ArrayList<AST> unknowns = new ArrayList<AST>();
+		final Box<Boolean> box = new Box<>(false);
+		final ArrayList<AST> unknowns = new ArrayList<>();
 
 		for (final AST ast : _args) {
 			ast.eval(environment).execute(new AValueVisitor() {

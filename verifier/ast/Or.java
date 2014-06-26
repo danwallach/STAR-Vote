@@ -59,7 +59,7 @@ public class Or extends ListArgConnective {
 
 	@Override
 	public Value result(Box<Boolean> box, ArrayList<AST> unknowns) {
-		if (box.get().booleanValue() == true)
+		if (box.get())
 			return True.SINGLETON;
 		if (unknowns.size() > 0)
 			return new Reduction(new Or(unknowns.toArray(new AST[0])));

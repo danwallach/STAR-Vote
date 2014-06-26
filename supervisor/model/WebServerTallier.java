@@ -12,12 +12,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This class is one half of the STAR-Vote tallier model. Its job is to homorphically tally a
- * list of Ballot objects and return one Ballot object with encrypted sums for each vote.
+ * This class is the web-server half of the STAR-Vote tallier model. Its function is to
+ * decrypt challenged ballots and tally and decrypt final vote counts across and within precincts.
  *
- * @author Matt Bernhard
+ * @author Matthew Kindy II [shamelessly copied from SupervisorTallier.java currently]
  */
-public class SupervisorTallier {
+public class WebServerTallier {
 
     /**
      * Sum every vote in cast and return a ballot with encrypted sums.
@@ -37,7 +37,6 @@ public class SupervisorTallier {
             try {
                 /* Check that the ballot is well-formed */
                 ListExpression ballot = bal.toListExpression();
-                List<Vote> votes = bal.getVotes();
 
                 /* Iterate through each of the races on the ballot */
                 for (int i = 0; i < ballot.size(); i++) {

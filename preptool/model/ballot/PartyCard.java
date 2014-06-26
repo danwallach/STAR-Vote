@@ -135,7 +135,7 @@ public class PartyCard extends ACard {
         ArrayList<CardElement> cardElements = candidatesModule.getData();
 
         /* Initialize a new list of strings */
-        ArrayList<String> dataStrings = new ArrayList<String>();
+        ArrayList<String> dataStrings = new ArrayList<>();
 
         /* Build the list of party names from the module data */
         for(CardElement ce : cardElements){
@@ -168,7 +168,7 @@ public class PartyCard extends ACard {
         Element cardElt = super.toXML(doc);
 
         /* We will build a list of UIDs */
-        List<String> ids = new ArrayList<String>();
+        List<String> ids = new ArrayList<>();
 
         CandidatesModule candidatesModule = (CandidatesModule) getModuleByName("Party");
 

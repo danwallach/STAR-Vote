@@ -83,7 +83,7 @@ public class Exists extends Quantifier {
 	public Value result(Box<Boolean> box, boolean sealed,
 			ArrayList<Binding<AST, ActivationRecord>> newUnknowns,
 			Box<Integer> newIndex) {
-		if (box.get().booleanValue() == true)
+		if (box.get())
 			return True.SINGLETON;
 		if (sealed && newUnknowns.size() == 0)
 			return False.SINGLETON;

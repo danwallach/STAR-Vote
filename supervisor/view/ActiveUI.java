@@ -501,7 +501,10 @@ public class ActiveUI extends JPanel {
         if (model.arePollsOpen()) {
 
             /* Closing the polls */
-           model.closePolls();
+            boolean canClose = model.closePolls();
+
+            if(!canClose)
+                JOptionPane.showMessageDialog(this, "There is still an active voting session!", "Polls Cannot Be Closed!", JOptionPane.WARNING_MESSAGE);
 
         }
 

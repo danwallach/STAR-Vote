@@ -161,7 +161,7 @@ public class PropositionCard extends ACard {
     public Element toXML(Document doc) {
     	Element cardElt = super.toXML(doc);
 
-    	List<String> ids = new ArrayList<String>();
+    	List<String> ids = new ArrayList<>();
 
         /* We will artificially insert a no selection option, with the same UID as the card itself */
         int id = Integer.parseInt(this.getUID().substring(1)) ;

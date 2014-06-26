@@ -24,7 +24,6 @@ public class AllTests {
         //suite.addTest(new TestSuite(ElgamalCiphertextTest.class));
         //suite.addTest(new TestSuite(MembershipProofTest.class));
         suite.addTest(new TestSuite(crypto.adder.test.PolynomialTest.class));
-        suite.addTest(new TestSuite(PluginTest.class));
         suite.addTest(new TestSuite(PrivateKeyTest.class));
         suite.addTest(new TestSuite(PublicKeyTest.class));
         suite.addTest(new TestSuite(VoteTest.class));

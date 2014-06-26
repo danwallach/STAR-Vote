@@ -366,10 +366,10 @@ public class Base64
         }   // end catch
         finally
         {
-            try{ oos.close();   } catch( Exception e ){}
-            try{ gzos.close();  } catch( Exception e ){}
-            try{ b64os.close(); } catch( Exception e ){}
-            try{ baos.close();  } catch( Exception e ){}
+            try{ oos.close();   } catch( Exception ignored){}
+            try{ gzos.close();  } catch( Exception ignored){}
+            try{ b64os.close(); } catch( Exception ignored){}
+            try{ baos.close();  } catch( Exception ignored){}
         }   // end finally
         
         // Return value according to relevant encoding.
@@ -495,9 +495,9 @@ public class Base64
             }   // end catch
             finally
             {
-                try{ gzos.close();  } catch( Exception e ){}
-                try{ b64os.close(); } catch( Exception e ){}
-                try{ baos.close();  } catch( Exception e ){}
+                try{ gzos.close();  } catch( Exception ignored){}
+                try{ b64os.close(); } catch( Exception ignored){}
+                try{ baos.close();  } catch( Exception ignored){}
             }   // end finally
 
             // Return value according to relevant encoding.
@@ -671,9 +671,9 @@ public class Base64
         
         byte[] b4        = new byte[4];
         int    b4Posn    = 0;
-        int    i         = 0;
-        byte   sbiCrop   = 0;
-        byte   sbiDecode = 0;
+        int    i;
+        byte   sbiCrop;
+        byte   sbiDecode;
         for( i = off; i < off+len; i++ )
         {
             sbiCrop = (byte)(source[i] & 0x7f); // Only the low seven bits
@@ -749,7 +749,7 @@ public class Base64
                 java.util.zip.GZIPInputStream gzis = null;
                 java.io.ByteArrayOutputStream baos = null;
                 byte[] buffer = new byte[2048];
-                int    length = 0;
+                int    length;
 
                 try
                 {
@@ -772,9 +772,9 @@ public class Base64
                 }   // end catch
                 finally
                 {
-                    try{ baos.close(); } catch( Exception e ){}
-                    try{ gzis.close(); } catch( Exception e ){}
-                    try{ bais.close(); } catch( Exception e ){}
+                    try{ baos.close(); } catch( Exception ignored){}
+                    try{ gzis.close(); } catch( Exception ignored){}
+                    try{ bais.close(); } catch( Exception ignored){}
                 }   // end finally
 
             }   // end if: gzipped
@@ -810,20 +810,16 @@ public class Base64
         
             obj = ois.readObject();
         }   // end try
-        catch( java.io.IOException e )
+        catch( java.io.IOException | ClassNotFoundException e )
         {
             e.printStackTrace();
             obj = null;
         }   // end catch
-        catch( java.lang.ClassNotFoundException e )
-        {
-            e.printStackTrace();
-            obj = null;
-        }   // end catch
+        // end catch
         finally
         {
-            try{ bais.close(); } catch( Exception e ){}
-            try{ ois.close();  } catch( Exception e ){}
+            try{ bais.close(); } catch( Exception ignored){}
+            try{ ois.close();  } catch( Exception ignored){}
         }   // end finally
         
         return obj;
@@ -858,7 +854,7 @@ public class Base64
         }   // end catch: IOException
         finally
         {
-            try{ bos.close(); } catch( Exception e ){}
+            try{ bos.close(); } catch( Exception ignored){}
         }   // end finally
         
         return success;
@@ -891,7 +887,7 @@ public class Base64
         }   // end catch: IOException
         finally
         {
-                try{ bos.close(); } catch( Exception e ){}
+                try{ bos.close(); } catch( Exception ignored){}
         }   // end finally
         
         return success;
@@ -949,7 +945,7 @@ public class Base64
         }   // end catch: IOException
         finally
         {
-            try{ bis.close(); } catch( Exception e) {}
+            try{ bis.close(); } catch( Exception ignored) {}
         }   // end finally
         
         return decodedData;
@@ -997,7 +993,7 @@ public class Base64
         }   // end catch: IOException
         finally
         {
-            try{ bis.close(); } catch( Exception e) {}
+            try{ bis.close(); } catch( Exception ignored) {}
         }   // end finally
         
         return encodedData;

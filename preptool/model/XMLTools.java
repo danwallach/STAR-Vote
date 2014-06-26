@@ -141,7 +141,7 @@ public class XMLTools {
 	 */
 	public static HashMap<String, Object> getProperties(Element elt) {
 
-		HashMap<String, Object> properties = new HashMap<String, Object>();
+		HashMap<String, Object> properties = new HashMap<>();
 
         /* Pull the property elements from the element */
 		NodeList list = elt.getElementsByTagName("Property");

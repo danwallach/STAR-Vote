@@ -82,11 +82,10 @@ public class AdderKeyManipulator {
 	public static PrivateKey generateFinalPrivateKey(PublicKey publicKey, PrivateKey privateKey){
 
 		/* Generate the final private key */
-		List<ElgamalCiphertext> ciphertexts = new ArrayList<ElgamalCiphertext>();
+		List<ElgamalCiphertext> ciphertexts = new ArrayList<>();
         ElgamalCiphertext ciphertext = publicKey.encryptPoly(_poly.evaluate(new AdderInteger(0, publicKey.getQ())));
 		ciphertexts.add(ciphertext);
-		PrivateKey finalPrivKey = privateKey.getFinalPrivKey(ciphertexts);
-		
-		return finalPrivKey;
+
+        return privateKey.getFinalPrivKey(ciphertexts);
 	}	
 }

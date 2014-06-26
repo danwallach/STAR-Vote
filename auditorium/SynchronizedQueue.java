@@ -42,7 +42,7 @@ import java.util.Queue;
  */
 public class SynchronizedQueue<T> {
 
-    private final Queue<T> _queue = new LinkedList<T>();
+    private final Queue<T> _queue = new LinkedList<>();
     private volatile boolean _release = false;
 
     /**

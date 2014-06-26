@@ -44,8 +44,8 @@ import sexpression.*;
  */
 public class DagTest {
 
-    private final HashMap<Expression, ArrayList<Expression>> _struct = new HashMap<Expression, ArrayList<Expression>>();
-    private final HashMap<Expression, Expression> _pointers = new HashMap<Expression, Expression>();
+    private final HashMap<Expression, ArrayList<Expression>> _struct = new HashMap<>();
+    private final HashMap<Expression, Expression> _pointers = new HashMap<>();
     private ExplicitDAG _dag;
 
     private final Expression[] _data = {
@@ -84,7 +84,7 @@ public class DagTest {
         if (_struct.containsKey( from ))
             lst = _struct.get( from );
         else {
-            lst = new ArrayList<Expression>();
+            lst = new ArrayList<>();
             _struct.put( from, lst );
         }
 

@@ -102,7 +102,7 @@ public class ViewManager implements IViewManager {
         _ballotLookupAdapter = lookupAdapter;
 
         _variables = vars;
-        _supportedLanguages      = new ArrayList<String>();
+        _supportedLanguages      = new ArrayList<>();
 
         _castBallotEvent         = new ObservableEvent();
         _commitEvent             = new ObservableEvent();

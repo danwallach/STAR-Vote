@@ -269,7 +269,7 @@ public class LanguageBar extends JPanel implements ActionListener {
 
         /* Setup */
         languageMenu = new JPopupMenu();
-        menuItems = new ArrayList<JMenuItem>();
+        menuItems = new ArrayList<>();
 
         /* For each of the languages... */
         for (Language language : languages) {

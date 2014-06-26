@@ -1,11 +1,17 @@
 package supervisor.model.test;
 
+import auditorium.SimpleKeyStore;
+import crypto.adder.AdderInteger;
+import crypto.adder.ElgamalCiphertext;
+import crypto.adder.PublicKey;
+import crypto.adder.Vote;
 import junit.framework.TestCase;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.StringExpression;
 import supervisor.model.Ballot;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,8 +23,13 @@ public class BallotTest extends TestCase {
 
     private Ballot ballot;
 
+    private PublicKey publicKey;
+
     protected void setUp() throws Exception {
         super.setUp();
+
+        SimpleKeyStore ks = new SimpleKeyStore("keys");
+        publicKey = (PublicKey) ks.loadAdderKey("public");
     }
 
     /**
@@ -33,35 +44,67 @@ public class BallotTest extends TestCase {
         return StringExpression.makeString(array);
     }
 
-
     /**
      * @see Ballot#toListExpression()
      */
-    public void testToASESimple(){
-        ASExpression bal = getBlob();
+    public void testToASE(){
+
         ASExpression nonce = getBlob();
 
-        ballot = new Ballot("0", bal, nonce);
+        List<ElgamalCiphertext> ctexts = new ArrayList<>();
 
-        ListExpression l = new ListExpression(StringExpression.make("0"), bal, nonce);
+        ctexts.add(publicKey.encryptPoly(AdderInteger.ZERO));
+        ctexts.add(publicKey.encryptPoly(AdderInteger.ONE));
 
+        List<ASExpression> choices = new ArrayList<>();
+        choices.add(StringExpression.makeString("B0"));
+        choices.add(StringExpression.makeString("B1"));
 
-        assert(l.equals(ballot.toListExpression()));
+        Vote vote = new Vote(ctexts, choices);
+
+        List<Vote> votes = new ArrayList<>();
+        votes.add(vote);
+
+        vote.compute(publicKey);
+
+        ballot = new Ballot("0", votes, nonce, publicKey);
+
+        ListExpression l = new ListExpression(StringExpression.make("ballot"), StringExpression.make("0"), new ListExpression(vote.toASE()), nonce, publicKey.toASE());
+
+        assertEquals(l.toString(), ballot.toListExpression().toString());
     }
 
     /**
-     * @see Ballot#toListExpression(String)
+     * @see Ballot#fromASE(ASExpression)
      */
-    public void testToASEPrecinct(){
-        ASExpression bal = getBlob();
+    public void testFromASE(){
+
         ASExpression nonce = getBlob();
 
-        String precinct = "003";
+        List<ElgamalCiphertext> ctexts = new ArrayList<>();
 
-        ballot = new Ballot("0", bal, nonce);
+        ctexts.add(publicKey.encryptPoly(AdderInteger.ZERO));
+        ctexts.add(publicKey.encryptPoly(AdderInteger.ONE));
 
-        ListExpression l = new ListExpression(StringExpression.make(precinct), StringExpression.make("0"), bal, nonce);
+        List<ASExpression> choices = new ArrayList<>();
+        choices.add(StringExpression.makeString("B0"));
+        choices.add(StringExpression.makeString("B1"));
 
-        assert(l.equals(ballot.toListExpression(precinct)));
+        Vote vote = new Vote(ctexts, choices);
+        vote.compute(publicKey);
+
+        List<Vote> votes = new ArrayList<>();
+        votes.add(vote);
+
+        ballot = new Ballot("0", votes, nonce, publicKey);
+
+        ListExpression l = ballot.toListExpression();
+
+        Ballot newBallot = Ballot.fromASE(l);
+
+        assertEquals(newBallot.toListExpression(), ballot.toListExpression());
     }
+
+
+
 }

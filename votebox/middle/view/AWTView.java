@@ -193,7 +193,7 @@ public class AWTView extends AView {
 					((BufferedImage) drawable.getImage().getImage()).getHeight() );
 
 			/* Find the current elements which are in this new drawing area. */
-			HashSet<IDrawable> redrawset = new HashSet<IDrawable>();
+			HashSet<IDrawable> redrawset = new HashSet<>();
 
             /* Check the current drawables */
 			for (IDrawable d : _currentDrawables) {

@@ -104,11 +104,9 @@ public class ASTParser {
 			}
 			throw new FormatException(expression, new Exception(
 					"This s-expression could not be parsed in any way"));
-		} catch (ClassCastException e) {
-			throw new FormatException(expression, e);
-		} catch (IndexOutOfBoundsException e) {
+		} catch (ClassCastException | IndexOutOfBoundsException e) {
 			throw new FormatException(expression, e);
 		}
 
-	}
+    }
 }

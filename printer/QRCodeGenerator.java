@@ -62,7 +62,7 @@ public class QRCodeGenerator {
 
             /* Set up the encoder with the character set */
             try {
-                Hashtable<EncodeHintType, String> hints = new Hashtable<EncodeHintType, String>(2);
+                Hashtable<EncodeHintType, String> hints = new Hashtable<>(2);
                 hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
 
                 /* Write the matrix using the encoder*/

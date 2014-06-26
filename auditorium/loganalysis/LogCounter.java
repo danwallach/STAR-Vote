@@ -56,7 +56,7 @@ public class LogCounter {
         long count = 0;
         ASEInputStreamReader rd = new ASEInputStreamReader(
                 new FileInputStream( args[0] ) );
-        HashMap<String, ArrayList<Integer>> map = new HashMap<String, ArrayList<Integer>>();
+        HashMap<String, ArrayList<Integer>> map = new HashMap<>();
         int[] branches = new int[1000];
 
         try {
@@ -66,7 +66,7 @@ public class LogCounter {
                 if (map.containsKey( m.getFrom().getNodeId() ))
                     message = map.get( m.getFrom().getNodeId() );
                 else {
-                    message = new ArrayList<Integer>();
+                    message = new ArrayList<>();
                     map.put( m.getFrom().getNodeId(), message );
                 }
                 message.add( Integer.parseInt( m.getSequence() ) );
@@ -76,7 +76,7 @@ public class LogCounter {
                 count++;
             }
         }
-        catch (EOFException e) {}
+        catch (EOFException ignored) {}
         for (String key : map.keySet()) {
             System.err.println( key );
             ArrayList<Integer> lst = map.get( key );

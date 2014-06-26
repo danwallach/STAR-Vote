@@ -1,7 +1,8 @@
 package crypto.adder;
 
+import sexpression.ASExpression;
+
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -14,15 +15,17 @@ import java.util.List;
 public class Election {
     private AdderInteger p;
     private List<Vote> votes;
+    private List<ASExpression> choices;
 
     /**
      * Creates a new election.
      *
      * @param p         the prime
      */
-    public Election(AdderInteger p) {
+    public Election(AdderInteger p, List<ASExpression> choices) {
         this.p = p;
         this.votes = new ArrayList<>();
+        this.choices = choices;
     }
 
     /**
@@ -66,7 +69,7 @@ public class Election {
         }
 
         /* Create a single ballot from the initList*/
-        Vote total = new Vote(initList);
+        Vote total = new Vote(initList, choices);
 
         /* Homomorphically tally the encrypted votes */
         for (Vote vote : votes)
@@ -97,7 +100,7 @@ public class Election {
         AdderInteger g = masterKey.getG();
         AdderInteger f = masterKey.getF();
 
-        List<AdderInteger> coeffs = new ArrayList<AdderInteger>();
+        List<AdderInteger> coeffs = new ArrayList<>();
         coeffs.add(AdderInteger.ZERO);
 
         /* Extract the ciphertexts */

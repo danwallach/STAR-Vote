@@ -39,7 +39,7 @@ public class Future extends Value {
 
 	public static long ID = 0;
 
-	private static final HashMap<Long, WeakReference<Future>> TABLE = new HashMap<Long, WeakReference<Future>>();
+	private static final HashMap<Long, WeakReference<Future>> TABLE = new HashMap<>();
 
 	/**
 	 * Get a reference to a particular future.
@@ -66,7 +66,7 @@ public class Future extends Value {
 	 */
 	public static void registerFuture(Future f) {
 		synchronized (TABLE) {
-			TABLE.put(f._id, new WeakReference<Future>(f));
+			TABLE.put(f._id, new WeakReference<>(f));
 		}
 	}
 

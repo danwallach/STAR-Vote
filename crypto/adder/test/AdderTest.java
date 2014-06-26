@@ -2,7 +2,6 @@ package crypto.adder.test;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -56,7 +55,7 @@ public class AdderTest extends TestCase {
         int numVoters = AdderInteger.random(1, maxVoters + 1);
 
         Map<Integer, Integer>/*<Integer, Integer>*/ voteMap
-            = new HashMap<Integer, Integer>/*<Integer, Integer>*/(numVoters);
+            = new HashMap<>/*<Integer, Integer>*/(numVoters);
 
         for (int choice = 0; choice < numChoices; choice++) {
              voteMap.put(choice, 0);
@@ -65,13 +64,13 @@ public class AdderTest extends TestCase {
         System.out.println("Creating an election with " + maxVoters
                            + " maximum voters and " + numChoices + " choices");
         
-        Election election = new Election(p);
+        Election election = new Election(p, null);
 
         System.out.println("Authorities start");
 
-        List<PublicKey>/*<PublicKey>*/ pubKeys = new ArrayList<PublicKey>/*<PublicKey>*/(numAuths);
-        List<PrivateKey>/*<PrivateKey>*/ privKeys = new ArrayList<PrivateKey>/*<PrivateKey>*/(numAuths);
-        List<Polynomial>/*<Polynomial>*/ polys = new ArrayList<Polynomial>/*<Polynomial>*/(numAuths);
+        List<PublicKey>/*<PublicKey>*/ pubKeys = new ArrayList<>/*<PublicKey>*/(numAuths);
+        List<PrivateKey>/*<PrivateKey>*/ privKeys = new ArrayList<>/*<PrivateKey>*/(numAuths);
+        List<Polynomial>/*<Polynomial>*/ polys = new ArrayList<>/*<Polynomial>*/(numAuths);
 
         for (int i = 0; i < numAuths; i++) {
             PublicKey authPubKey = new PublicKey(p, g, f);
@@ -83,10 +82,10 @@ public class AdderTest extends TestCase {
         }
 
         Map<Integer, List<ElgamalCiphertext>>/*<Integer, List<ElgamlCiphertext>>*/ polyMap
-            = new HashMap<Integer, List<ElgamalCiphertext>>/*<Integer, List<ElgamlCiphertext>>*/(numAuths);
+            = new HashMap<>/*<Integer, List<ElgamlCiphertext>>*/(numAuths);
 
         for (int i = 0; i < numAuths; i++) {
-            List<ElgamalCiphertext>/*<ElgamlCiphertext>*/ ciphertexts = new ArrayList<ElgamalCiphertext>/*<ElgamlCiphertext>*/(numAuths);
+            List<ElgamalCiphertext>/*<ElgamlCiphertext>*/ ciphertexts = new ArrayList<>/*<ElgamlCiphertext>*/(numAuths);
 
             for (int j = 0; j < numAuths; j++) {
                 ElgamalCiphertext ciphertext
@@ -100,7 +99,7 @@ public class AdderTest extends TestCase {
         }
 
         List<PrivateKey>/*<PrivateKey>*/ finprivKeys
-            = new ArrayList<PrivateKey>/*<PrivateKey>*/(numAuths);
+            = new ArrayList<>/*<PrivateKey>*/(numAuths);
         AdderInteger finalH = new AdderInteger(AdderInteger.ONE, p);
 
         for (int i = 0; i < numAuths; i++) {
@@ -128,7 +127,7 @@ public class AdderTest extends TestCase {
             System.out.println("Voter " + (i + 1) + " attempting to cast vote for " + choice);
 
             List<AdderInteger>/*<AdderInteger>*/ choices
-                = new ArrayList<AdderInteger>/*<AdderInteger>*/(numChoices);
+                = new ArrayList<>/*<AdderInteger>*/(numChoices);
 
             for (int j = 0; j < numChoices; j++) {
                 if (j == choice) {
@@ -140,8 +139,9 @@ public class AdderTest extends TestCase {
 
             System.out.println("Vote " + (i + 1) + " cast for " + choice);
            
-            System.out.println("Encrypting vote " + (i + 1)); 
-            Vote vote = finalPubKey.encrypt(choices);
+            System.out.println("Encrypting vote " + (i + 1));
+            /* TODO Fix this null? */
+            Vote vote = finalPubKey.encrypt(choices, null);
             System.out.println("Proving vote " + (i + 1));
             VoteProof proof = new VoteProof();
             proof.compute(vote, finalPubKey, choices, 1, 1);

@@ -80,9 +80,9 @@ public class AuditoriumHost implements IAuditoriumHost {
             throw new FatalNetworkException(
                     "Cannot access network interfaces.", e );
         }
-        Enumeration<InetAddress> addresses = null;
-        NetworkInterface i = null;
-        InetAddress a = null;
+        Enumeration<InetAddress> addresses;
+        NetworkInterface i;
+        InetAddress a;
         while (ints.hasMoreElements()) {
             i = ints.nextElement();
             addresses = i.getInetAddresses();
@@ -158,10 +158,10 @@ public class AuditoriumHost implements IAuditoriumHost {
         _nodeid = machineName;
         _me = new HostPointer( machineName, getMyIP(), constants
                 .getListenPort() );
-        _hosts = new ArrayList<Link>();
+        _hosts = new ArrayList<>();
         
         //Core state
-        _layers = new HashMap<String, IAuditoriumLayer>();
+        _layers = new HashMap<>();
         AuditoriumIntegrityLayer integrity = new AuditoriumIntegrityLayer(
                 AAuditoriumLayer.BOTTOM, this, constants.getKeyStore() );
 
@@ -172,13 +172,13 @@ public class AuditoriumHost implements IAuditoriumHost {
         _head = temporal;
         _discover = new AuditoriumDiscoveryHost( this, constants );
         _constants = constants;
-        _inqueue = new SynchronizedQueue<Pair>();
-        _outqueue = new SynchronizedQueue<ASExpression>();
-        _pendingqueue = new SynchronizedQueue<Message>();
+        _inqueue = new SynchronizedQueue<>();
+        _outqueue = new SynchronizedQueue<>();
+        _pendingqueue = new SynchronizedQueue<>();
 
         // Events
-        _hostJoined = new Event<HostPointer>();
-        _hostLeft = new Event<HostPointer>();
+        _hostJoined = new Event<>();
+        _hostLeft = new Event<>();
         
         // ASExpression loadedRule = null;
 
@@ -264,7 +264,7 @@ public class AuditoriumHost implements IAuditoriumHost {
         try {
             _listensocket.close();
         }
-        catch (IOException e) {}
+        catch (IOException ignored) {}
 
         /*
         // XXX: uncomment when verifier works
@@ -320,7 +320,7 @@ public class AuditoriumHost implements IAuditoriumHost {
         socket.send( joinmsg );
 
         // Receive the reply
-        Message joinreply = null;
+        Message joinreply;
         try {
             joinreply = socket.receive();
             _head.receiveJoinReply( joinreply.getDatum() );
@@ -337,7 +337,7 @@ public class AuditoriumHost implements IAuditoriumHost {
                     try {
                         socket.close();
                     }
-                    catch (IOException e) {}
+                    catch (IOException ignored) {}
                     return;
                 }
             Link l = new Link( this, socket, joinreply.getFrom() );
@@ -484,7 +484,7 @@ public class AuditoriumHost implements IAuditoriumHost {
 
         while (_running) {
             // Get an incoming socket connection.
-            MessageSocket socket = null;
+            MessageSocket socket;
             try {
                 Bugout.msg( "Listen: waiting for connection on "
                         + _constants.getListenPort() );
@@ -502,7 +502,7 @@ public class AuditoriumHost implements IAuditoriumHost {
             }
 
             // Get the join request, make the response.
-            Message jrq = null;
+            Message jrq;
             try {
                 jrq = socket.receive();
                 Bugout.msg( "Listen: received " + new MessagePointer( jrq ) );
@@ -511,7 +511,7 @@ public class AuditoriumHost implements IAuditoriumHost {
                     try {
                         socket.close();
                     }
-                    catch (IOException e) {}
+                    catch (IOException ignored) {}
                     continue;
                 }
             }
@@ -520,7 +520,7 @@ public class AuditoriumHost implements IAuditoriumHost {
                 try {
                     socket.close();
                 }
-                catch (IOException e1) {}
+                catch (IOException ignored) {}
                 continue;
             }
             catch (IncorrectFormatException e) {
@@ -528,7 +528,7 @@ public class AuditoriumHost implements IAuditoriumHost {
                 try {
                     socket.close();
                 }
-                catch (IOException e1) {}
+                catch (IOException ignored) {}
                 continue;
             }
 
@@ -543,12 +543,12 @@ public class AuditoriumHost implements IAuditoriumHost {
                     try {
                         socket.close();
                     }
-                    catch (IOException e1) {}
+                    catch (IOException ignored) {}
                     continue;
                 }
                 for (Link l : _hosts)
-                    if (l.getAddress().equals( jrq.getFrom() ))
-                        continue;
+                    if (l.getAddress().equals( jrq.getFrom() )) {
+                    }
                 Link l = new Link( this, socket, jrq.getFrom() );
                 l.start();
                 _hosts.add( l );
@@ -582,7 +582,7 @@ public class AuditoriumHost implements IAuditoriumHost {
                     logMessage( msg );
                 }
             }
-            catch (ReleasedQueueException e) {}
+            catch (ReleasedQueueException ignored) {}
             catch (IOException e) {
                 throw new FatalNetworkException(
                         "Can't serialize to the log file", e );
@@ -606,7 +606,7 @@ public class AuditoriumHost implements IAuditoriumHost {
                 }
 
             }
-            catch (ReleasedQueueException e) {}
+            catch (ReleasedQueueException ignored) {}
             catch (IOException e) {
                 throw new FatalNetworkException( "can't serialize to log", e );
             }
@@ -619,7 +619,7 @@ public class AuditoriumHost implements IAuditoriumHost {
      * Assume lock is already acquired!
      */
     private void flood(Message message) {
-        ArrayList<Link> removelist = new ArrayList<Link>();
+        ArrayList<Link> removelist = new ArrayList<>();
 
         for (Link l : _hosts) {
             try {
@@ -655,7 +655,6 @@ public class AuditoriumHost implements IAuditoriumHost {
             }
             catch (IncorrectFormatException e) {
                 Bugout.err( "Receive: malformed message:" + e.getMessage() );
-                return;
             }
         }
     }

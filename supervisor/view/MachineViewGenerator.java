@@ -53,7 +53,7 @@ public class MachineViewGenerator {
      * Constructs a new MachineViewGenerator
      */
     public MachineViewGenerator() {
-        views = new HashMap<AMachine, AMachineView>();
+        views = new HashMap<>();
     }
 
     /**

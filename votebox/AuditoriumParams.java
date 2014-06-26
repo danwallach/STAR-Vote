@@ -152,7 +152,7 @@ public class AuditoriumParams implements IAuditoriumParams,
      */
     public AuditoriumParams(String path) {
 
-        _config = new HashMap<String, String>();
+        _config = new HashMap<>();
         read(path);
     }
 
@@ -160,7 +160,7 @@ public class AuditoriumParams implements IAuditoriumParams,
      * Default constructor simply constructs an empty HashMap(String:String)
      */
     private AuditoriumParams() {
-        _config = new HashMap<String, String>();
+        _config = new HashMap<>();
     }
 
     /**
@@ -821,7 +821,7 @@ public class AuditoriumParams implements IAuditoriumParams,
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(path))));
 
-            ArrayList<String> content = new ArrayList<String>();
+            ArrayList<String> content = new ArrayList<>();
             String temp;
 
             /* Read until the end of the file is reached */

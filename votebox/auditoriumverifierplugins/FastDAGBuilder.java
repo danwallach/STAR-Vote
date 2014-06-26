@@ -62,9 +62,9 @@ public class FastDAGBuilder extends DagBuilder {
     private Map<String, Map<Integer, Expression>> _timelines;
     
     public FastDAGBuilder() {
-        _predecessors = new HashMap<Expression, List<Expression>>();
-        _msgToPtr = new HashMap<Expression, Expression>();
-        _timelines = new HashMap<String, Map<Integer, Expression>>();
+        _predecessors = new HashMap<>();
+        _msgToPtr = new HashMap<>();
+        _timelines = new HashMap<>();
     }
 
     /**
@@ -103,7 +103,7 @@ public class FastDAGBuilder extends DagBuilder {
 
             ListExpression matchlist = (ListExpression) matchresult;
 
-            ArrayList<Expression> ptrlst = new ArrayList<Expression>();
+            ArrayList<Expression> ptrlst = new ArrayList<>();
 
             /*
                For each ASE, check if it matches by passing to constructor, then convert back,

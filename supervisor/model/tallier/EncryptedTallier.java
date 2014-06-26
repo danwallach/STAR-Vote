@@ -28,7 +28,6 @@ package supervisor.model.tallier;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,122 +48,122 @@ import crypto.Pair;
  */
 public class EncryptedTallier implements ITallier {
     /** @see supervisor.model.tallier.Tallier#pattern */
-	private static ASExpression PATTERN = new ListWildcard(new ListExpression(StringWildcard.SINGLETON, Wildcard.SINGLETON));
+    private static ASExpression PATTERN = new ListWildcard(new ListExpression(StringWildcard.SINGLETON, Wildcard.SINGLETON));
 
     /** This private key will allow for final decryption */
-	private Key _privateKey = null;
+    private Key _privateKey = null;
 
     /** @see supervisor.model.tallier.Tallier#votes */
-	private Map<String, Pair<BigInteger>> _votes = new HashMap<String, Pair<BigInteger>>();
+    private Map<String, Pair<BigInteger>> _votes = new HashMap<String, Pair<BigInteger>>();
 
     /**
      * Constructor which stores the key that will be used for decryption
      *
      * @param privateKey ElGamal private key which is used in decryption
      */
-	public EncryptedTallier(Key privateKey){
-		_privateKey = privateKey;
-	}
-	
-	/**
+    public EncryptedTallier(Key privateKey){
+        _privateKey = privateKey;
+    }
+
+    /**
      * Uses the private key to decrypt the homomorphically tallied votes, race by race.
      *
      * @see ITallier#getReport()
-	 */
-	public java.util.ArrayList<ASExpression> getReport() {
+     */
+    public Map<String, BigInteger> getReport() {
 
-        /* this Arraylist will house the homomorphically tallied votes */
-        ArrayList<ASExpression> results = new ArrayList<>();
+        /* This map will store the final results */
+        Map<String, BigInteger> results = new HashMap<String, BigInteger>();
 
         /* For each canidate, retrieve the encrypted vote totals */
-		for(String candidate : _votes.keySet()){
+        for(String candidate : _votes.keySet()){
 
             /* This is the encrypted total for the given candidate */
-			Pair<BigInteger> value = _votes.get(candidate);
+            Pair<BigInteger> value = _votes.get(candidate);
 
             /* Decrypt the total, and store the results to be returned */
-			BigInteger decryptedValue = ElGamalCrypto.SINGLETON.decrypt(_privateKey, value);
-			results.add(new ListExpression(candidate, decryptedValue.toString()));
-		}
-		
-		return results;
-	}
+            BigInteger decryptedValue = ElGamalCrypto.SINGLETON.decrypt(_privateKey, value);
+            results.put(candidate, decryptedValue);
+        }
+
+        return results;
+    }
 
     /**
      * @see supervisor.model.tallier.ITallier#recordVotes(byte[], sexpression.ASExpression)
      *
      * @param ignoredNonce the nonce here isn't used since we don't do NIZKs TODO verify this
      */
-	public void recordVotes(byte[] ballotBytes, ASExpression ignoredNonce) {
+    public void recordVotes(byte[] ballotBytes, ASExpression ignoredNonce) {
         /* This will parse the raw ballot bytes */
-		ASEInputStreamReader in = new ASEInputStreamReader(
-				new ByteArrayInputStream(ballotBytes));
-		try {
-			ASExpression sexp = in.read();
+        ASEInputStreamReader in = new ASEInputStreamReader(
+                new ByteArrayInputStream(ballotBytes));
+        try {
+            ASExpression sexp = in.read();
 
 			/* Check that the ballot is well-formed */
-			if(PATTERN.match(sexp) != NoMatch.SINGLETON){
+            if(PATTERN.match(sexp) != NoMatch.SINGLETON){
                 /* Now that we know the ballot is a ListExpression, enforce the type */
-				ListExpression ballot = (ListExpression)sexp;
+                ListExpression ballot = (ListExpression)sexp;
 
                 /* For each encrypted vote in the ballot */
-				for(ASExpression voteE : ballot){
+                for(ASExpression voteE : ballot){
 
                     /* Enforce its ListExpression type */
-					ListExpression vote = (ListExpression)voteE;
+                    ListExpression vote = (ListExpression)voteE;
 
                     /* Grab the race information for this vote */
-					String raceID = vote.get(0).toString();
+                    String raceID = vote.get(0).toString();
 
                     /* Grab the vote choice cipher text */
-					ListExpression encryptedVote = (ListExpression)vote.get(1);
+                    ListExpression encryptedVote = (ListExpression)vote.get(1);
 
                     /* As per ElGamal, our cipher texts are pairs */
-					String pairPart1 = encryptedVote.get(0).toString();
-					String pairPart2 = encryptedVote.get(1).toString();
+                    String pairPart1 = encryptedVote.get(0).toString();
+                    String pairPart2 = encryptedVote.get(1).toString();
 
                     /* Wrap our ciphers in the Pair class */
-					Pair<BigInteger> pair = new Pair<BigInteger>(new BigInteger(pairPart1), new BigInteger(pairPart2));
+                    Pair<BigInteger> pair = new Pair<BigInteger>(new BigInteger(pairPart1), new BigInteger(pairPart2));
 
                     /* Get the current encrypted total out of the mapping of races to votes */
-					Pair<BigInteger> currentTotal = _votes.get(raceID);
+                    Pair<BigInteger> currentTotal = _votes.get(raceID);
 
                     /* Ensure that the total exists */
-					if(currentTotal != null)
+                    if(currentTotal != null)
 						/*
 						 * We generate a new cyphertext which has a plain text equivalent to
 						 * D(pair) + D(currentTotal) - the sum of the decrypted pair and currentTotal values -
 						 * by multiplying pair and currentTotal.
 						 */
-						currentTotal = ElGamalCrypto.SINGLETON.mult(pair, currentTotal);
+                        currentTotal = ElGamalCrypto.SINGLETON.mult(pair, currentTotal);
 
 
                     /* If the given race doesn't have a sum yet, make this cipher pair the sum */
                     else
-						currentTotal = pair;
+                        currentTotal = pair;
 
                     /* Put the newly summed total back into the map */
-					_votes.put(raceID, currentTotal);
-				}
-			}
+                    _votes.put(raceID, currentTotal);
+                }
+            }
 
             /* If the ballot is not well formed, we cannot continue and must error */
             /* TODO Maybe improve the error displaying? */
             else
-				Bugout.err("Received a malformed ballot.\n"+sexp+" does not match "+PATTERN);
+                Bugout.err("Received a malformed ballot.\n"+sexp+" does not match "+PATTERN);
 
-		}catch(IOException e){
-		    Bugout.err("Encountered IOException when counting encrypted vote: "+e.getMessage());
-		} catch (InvalidVerbatimStreamException e) {
-			Bugout.err("Encountered InvalidVerbatimStream when counting encrypted vote: "+e.getMessage());
-		}
-	}
+        }catch(IOException e){
+            Bugout.err("Encountered IOException when counting encrypted vote: "+e.getMessage());
+        } catch (InvalidVerbatimStreamException e) {
+            Bugout.err("Encountered InvalidVerbatimStream when counting encrypted vote: "+e.getMessage());
+        }
+    }
 
     /**
      * @see supervisor.model.tallier.ITallier#confirmed(sexpression.ASExpression)
      */
-	public void confirmed(ASExpression nonce) {
-		throw new RuntimeException("EncryptedTallier.confirmed NOT IMPLEMENTED");
-	}
+    public void confirmed(ASExpression nonce) {
+        throw new RuntimeException("EncryptedTallier.confirmed NOT IMPLEMENTED");
+    }
 
 }

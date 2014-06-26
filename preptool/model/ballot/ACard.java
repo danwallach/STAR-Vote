@@ -110,7 +110,7 @@ public abstract class ACard {
      */
     public ACard(String type) {
         this.type = type;
-        this.modules = new ArrayList<AModule>();
+        this.modules = new ArrayList<>();
     }
 
     /**

@@ -11,13 +11,33 @@ import sexpression.ListExpression;
 import sexpression.StringExpression;
 
 /**
- * Represents a public key.
+ * Elgamal public key.
+ *
+ * The main component of a public key is the value \f$h \in
+ * \langle g \rangle\f$.  To create a public key from scratch, you
+ * probably first want to generate a safe prime and then generate
+ * a key pair. As an example:
+ *
+ * \code
+ * // Create a context object for random number generation.
+ * Context ctx;
+ *
+ * // Create an empty public key.
+ * PublicKey pub_key(&ctx);
+ *
+ * // Generate a prime of length 1024 and a generator.
+ * pub_key.make_partial_key(1024);
+ *
+ * // Create the public key and return the corresponding private key.
+ * PrivateKey priv_key = pub_key.gen_key_pair();
+ * \endcode
  *
  * @author David Walluck
  * @version $LastChangedRevision$ $LastChangedDate$
  * @since 0.0.1
  */
 public class PublicKey {
+
     private AdderInteger p;
     private AdderInteger q;
     private AdderInteger g;
@@ -28,10 +48,11 @@ public class PublicKey {
      * Creates a new PublicKey with the specified parameter values.
      *
      * @param p     the prime
-     * @param g     the generator
-     * @param f     the message base
+     * @param g     the generator of the key
+     * @param f     the message base, generator used for homomorphic encryption
      */
     public PublicKey(AdderInteger p, AdderInteger g, AdderInteger f) {
+
         this.p = p;
         this.q = p.subtract(AdderInteger.ONE).divide(AdderInteger.TWO);
         this.g = g;
@@ -42,12 +63,12 @@ public class PublicKey {
      * Creates a new PublicKey with the specified parameter values.
      *
      * @param p     the prime
-     * @param g     the generator
+     * @param g     the generator of the key
      * @param h     the public value
-     * @param f     the message base
+     * @param f     the message base, generator used for homomorphic encryption
      */
-    public PublicKey(AdderInteger p, AdderInteger g, AdderInteger h,
-                     AdderInteger f) {
+    public PublicKey(AdderInteger p, AdderInteger g, AdderInteger h, AdderInteger f) {
+
         this.p = p;
         this.q = p.subtract(AdderInteger.ONE).divide(AdderInteger.TWO);
         this.g = g;
@@ -59,10 +80,10 @@ public class PublicKey {
      * Creates a new PublicKey with the specified parameter values.
      *
      * @param p     the prime
-     * @param q     the sub-prime
-     * @param g     the generator
+     * @param q     the order of the group
+     * @param g     the generator of the key
      * @param h     the public value
-     * @param f     the message base
+     * @param f     the message base, generator used for homomorphic encryption
      */
     private PublicKey(AdderInteger p, AdderInteger q, AdderInteger g,
                       AdderInteger h, AdderInteger f) {
@@ -74,7 +95,7 @@ public class PublicKey {
     }
 
     /**
-     * Creates a partial public key given the specified prime.
+     * Generates key parameters \f$g, f\f$ given a prime \f$p\f$.
      *
      * @param p     the prime
      * @return      the public key
@@ -101,9 +122,11 @@ public class PublicKey {
     }
 
     /**
-     * Creates a partial public key with the given length in bits.
+     * Generates key parameters \f$p, g, f\f$ given a key length.
+     * This function generates a safe prime \f$p\f$.
      *
-     * @param length        the length of the key to generate in bits
+     * @param length        the length of the key in bits.  That is, \f$p\f$ will
+     *                      be chosen to be a \e length - bit prime number.
      * @return              the public key
      */
     public static PublicKey makePartialKey(int length) {
@@ -124,19 +147,19 @@ public class PublicKey {
     }
 
     /**
-     * Encrypts the given choice given the base.
-     * @param m
+     * Encrypts a message as an additive homomorphic Elgamal ciphertext.
+     * The ciphertext returned is of the form \f$\langle g^r, h^r
+     * f^m\rangle\f$, where \f$m\f$ is the message.
      *
-     * @return the encrypted vote
+     * @param m     the message
+     * @return      the encrypted of the message
      */
     private ElgamalCiphertext encrypt(AdderInteger m) {
         AdderInteger r = AdderInteger.random(q);
         AdderInteger bigG = g.pow(r);
         AdderInteger bigH = h.pow(r).multiply(f.pow(m));
 
-        ElgamalCiphertext ciphertext = new ElgamalCiphertext(bigG, bigH, r, p);
-
-        return ciphertext;
+        return new ElgamalCiphertext(bigG, bigH, r, p);
     }
 
     /**
@@ -152,49 +175,47 @@ public class PublicKey {
         AdderInteger bigG = g.pow(r);
         AdderInteger bigH = h.pow(r).multiply(m);
 
-        ElgamalCiphertext ciphertext = new ElgamalCiphertext(bigG, bigH, r, p);
-
-        return ciphertext;
+        return new ElgamalCiphertext(bigG, bigH, r, p);
     }
     /**
-     * Encrypts the given choice given the base.
+     * Encrypts a vote from a vector of AdderIntegers.
      *
-     * @param choices the choices
-     *
-     * @return the encrypted vote
+     * @param selections       the choices
+     * @return              the encrypted vote
      */
-    public Vote encrypt(List<AdderInteger> choices) {
-        List<ElgamalCiphertext> voteList
-            = new ArrayList<ElgamalCiphertext>(choices.size());
+    public Vote encrypt(List<AdderInteger> selections, List<ASExpression> choices) {
+
+        List<ElgamalCiphertext> voteList = new ArrayList<>(selections.size());
 
         Iterator it;
 
-        for (it = choices.iterator(); it.hasNext();) {
+        for (it = selections.iterator(); it.hasNext();) {
             AdderInteger choice = (AdderInteger) it.next();
             voteList.add(encrypt(choice));
         }
 
-        Vote vote = new Vote(voteList);
-
-        return vote;
+        return new Vote(voteList, choices);
     }
 
     /**
-     * Encrypts a polynomial of the given value.
-     * @param m the message
+     * Encrypts a polynomial value destined for an authority. The
+     * ciphertext returned is of the form \f$\langle g^r, h^r
+     * (m+1)^2 \rangle\f$, where \f$m\f$ is the value of the source's
+     * polynomial evaluated at the ID of the destination.
      *
-     * @return the encrypted vote
+     * @param m         the destination authority's ID
+     * @return          the encrypted ID
      */
     public ElgamalCiphertext encryptPoly(AdderInteger m) {
+
         AdderInteger r = AdderInteger.random(q);
         AdderInteger bigG = g.pow(r);
         AdderInteger mPlusOne = new AdderInteger(m.add(AdderInteger.ONE), p);
         AdderInteger bigH = h.pow(r).multiply(mPlusOne.pow(AdderInteger.TWO));
 
         /*TODO  This is a VoteBox related change.  We need to keep r around, but not send it over the wire*/
-        ElgamalCiphertext ciphertext = new ElgamalCiphertext(bigG, bigH, r, p);
 
-        return ciphertext;
+        return new ElgamalCiphertext(bigG, bigH, r, p);
     }
 
 
@@ -285,10 +306,8 @@ public class PublicKey {
             }
 
             return new PublicKey(p, q, g, h, f);
-        } catch (NoSuchElementException nsee) {
+        } catch (NoSuchElementException | NumberFormatException nsee) {
             throw new InvalidPublicKeyException(nsee.getMessage());
-        } catch (NumberFormatException nfe) {
-            throw new InvalidPublicKeyException(nfe.getMessage());
         }
     }
 
@@ -298,7 +317,7 @@ public class PublicKey {
      * @return the string representation of this public key
      */
     public String toString() {
-        StringBuffer sb = new StringBuffer(4096);
+        StringBuilder sb = new StringBuilder(4096);
 
         sb.append("p");
         sb.append(p.toString());
@@ -364,9 +383,8 @@ public class PublicKey {
      */
     @Override
     public boolean equals(Object o){
-    	if(!(o instanceof PublicKey))
-    		return false;
-    	
-    	return o.toString().equals(toString());
+
+        return o instanceof PublicKey && o.toString().equals(toString());
+
     }
 }

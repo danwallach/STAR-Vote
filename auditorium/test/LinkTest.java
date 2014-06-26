@@ -89,8 +89,8 @@ public class LinkTest {
     @Before
     public void setup() throws Exception {
         Thread.sleep( 100 );
-        _received = new SynchronizedQueue<Message>();
-        _links = new SynchronizedQueue<Link>();
+        _received = new SynchronizedQueue<>();
+        _links = new SynchronizedQueue<>();
 
         new Thread( new Runnable() {
 

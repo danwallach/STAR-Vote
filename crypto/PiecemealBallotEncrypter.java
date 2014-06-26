@@ -23,27 +23,27 @@ import crypto.adder.PublicKey;
 public class PiecemealBallotEncrypter {
 	public static PiecemealBallotEncrypter SINGELTON = new PiecemealBallotEncrypter();
 
-	private Map<String, ListExpression> _voteCache   = new HashMap<String, ListExpression>();
-	private Map<String, ListExpression> _randomCache = new HashMap<String, ListExpression>();
+	private Map<String, ListExpression> _voteCache   = new HashMap<>();
+	private Map<String, ListExpression> _randomCache = new HashMap<>();
 
 	private boolean _adderMode = false;
 	private boolean _pureMode  = false;
 
-	private List<Runnable> _pendingActions = new ArrayList<Runnable>();
+	private List<Runnable> _pendingActions = new ArrayList<>();
 	
 	private Thread         _worker = new Thread(){
 		public void run(){
 			while(true){
-				List<Runnable> copy = null;
+				List<Runnable> copy;
 
 				synchronized(_pendingActions){
 					if(_pendingActions.size() == 0){
 						try {
 							_pendingActions.wait();
-						} catch (InterruptedException e) {}
+						} catch (InterruptedException ignored) {}
 					}//if
 
-					copy = new ArrayList<Runnable>(_pendingActions);
+					copy = new ArrayList<>(_pendingActions);
 					_pendingActions.clear();
 				}
 
@@ -89,13 +89,13 @@ public class PiecemealBallotEncrypter {
 	 * @see PiecemealBallotEncrypter
 	 */
 	protected void adderUpdateImpl(String id, ListExpression singleCard, List<String> cardGroup, PublicKey publicKey){
-		List<List<String>> groups = new ArrayList<List<String>>();
+		List<List<String>> groups = new ArrayList<>();
 		groups.add(cardGroup);
 
-		_voteCache.put(id, BallotEncrypter.SINGLETON.encryptWithProof(singleCard, groups, publicKey));
+		_voteCache.put(id, BallotEncrypter.SINGLETON.encryptWithProof(id, singleCard, groups, publicKey, ASExpression.make("nonce")));
 
 		List<AdderInteger> randoms = BallotEncrypter.SINGLETON.getRecentAdderRandom().get(0);
-		List<ASExpression> randomExps = new ArrayList<ASExpression>();
+		List<ASExpression> randomExps = new ArrayList<>();
 		for(AdderInteger r : randoms)
 			randomExps.add(r.toASE());
 
@@ -154,7 +154,7 @@ public class PiecemealBallotEncrypter {
 	 * @return the encrypted ballot, in a form dependent upon which update was called.
 	 */
 	public ListExpression getEncryptedBallot(){
-		final List<ListExpression> retVal = new ArrayList<ListExpression>();
+		final List<ListExpression> retVal = new ArrayList<>();
 
 		Runnable r = new Runnable(){
 			public void run(){
@@ -173,14 +173,14 @@ public class PiecemealBallotEncrypter {
 		synchronized(retVal){
 			try {
 				retVal.wait();
-			} catch (InterruptedException e) {}
+			} catch (InterruptedException ignored) {}
 		}
 
 		return retVal.get(0);
 	}
 
 	protected ListExpression getEncryptedBallotImpl(){
-		List<ASExpression> subBallots = new ArrayList<ASExpression>();
+		List<ASExpression> subBallots = new ArrayList<>();
 
 		/*
 		 * Kind of a trick here.
@@ -207,7 +207,7 @@ public class PiecemealBallotEncrypter {
 	 * @return the order to traverse the _voteCache in while building the final ballot and/or the random list
 	 */
 	protected List<String> canonicalIdOrder(){
-		List<String> ids = new ArrayList<String>();
+		List<String> ids = new ArrayList<>();
 		ids.addAll(_voteCache.keySet());
 
 		Collections.sort(ids, new Comparator<String>(){
@@ -234,7 +234,7 @@ public class PiecemealBallotEncrypter {
 	 * @return A ListExpression containing the random values used to encrypt the last ballot cast
 	 */
 	public ListExpression getRecentRandom(){
-		final List<ASExpression> randoms = new ArrayList<ASExpression>();
+		final List<ASExpression> randoms = new ArrayList<>();
 
 
 		Runnable r = new Runnable(){
@@ -260,7 +260,7 @@ public class PiecemealBallotEncrypter {
 		synchronized(randoms){
 			try {
 				randoms.wait();
-			} catch (InterruptedException e) {}
+			} catch (InterruptedException ignored) {}
 		}
 
 		return new ListExpression(randoms);
@@ -270,14 +270,14 @@ public class PiecemealBallotEncrypter {
 	 * @return the random values used to encrypt the last ballot cast.
 	 */
 	public List<List<AdderInteger>> getRecentAdderRandom(){
-		final List<List<AdderInteger>> randoms = new ArrayList<List<AdderInteger>>();
+		final List<List<AdderInteger>> randoms = new ArrayList<>();
 
 		Runnable r = new Runnable(){
 			public void run(){
 				synchronized(randoms){
 					for(String id : canonicalIdOrder()){
 						ListExpression exp = _randomCache.get(id);
-						List<AdderInteger> subRandom = new ArrayList<AdderInteger>();
+						List<AdderInteger> subRandom = new ArrayList<>();
 						for(int i = 0; i < exp.size(); i++){
 							subRandom.add(AdderInteger.fromASE(exp.get(i)));
 						}
@@ -298,7 +298,7 @@ public class PiecemealBallotEncrypter {
 		synchronized(randoms){
 			try {
 				randoms.wait();
-			} catch (InterruptedException e) {}
+			} catch (InterruptedException ignored) {}
 		}
 
 		return randoms;

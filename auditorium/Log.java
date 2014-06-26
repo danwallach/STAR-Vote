@@ -56,8 +56,8 @@ public class Log {
      */
     public Log(File location) throws FileNotFoundException {
         _location = new FileOutputStream( location );
-        _haveSeen = new HashSet<MessagePointer>();
-        _last = new LinkedList<MessagePointer>();
+        _haveSeen = new HashSet<>();
+        _last = new LinkedList<>();
     }
 
     /**
@@ -130,7 +130,7 @@ public class Log {
      * lookup is done atomically with the store!)
      */
     public synchronized HashSet<MessagePointer> TESTgetSetCopy() {
-        return new HashSet<MessagePointer>( _haveSeen );
+        return new HashSet<>( _haveSeen );
     }
 
     /**
@@ -139,6 +139,6 @@ public class Log {
      * operation.
      */
     public synchronized List<MessagePointer> TESTgetLast() {
-        return new LinkedList<MessagePointer>( _last );
+        return new LinkedList<>( _last );
     }
 }

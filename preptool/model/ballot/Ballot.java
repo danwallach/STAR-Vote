@@ -53,7 +53,7 @@ public class Ballot {
     public static Ballot parseXML(Element elt) {
         assert elt.getTagName().equals("Ballot");
         Ballot ballot = new Ballot();
-        ArrayList<String> languageNames = new ArrayList<String>();
+        ArrayList<String> languageNames = new ArrayList<>();
         NodeList list = elt.getChildNodes();
         for (int i = 0; i < list.getLength(); i++) {
             Node child = list.item(i);
@@ -90,9 +90,9 @@ public class Ballot {
      * Constructs a blank Ballot with an empty list of cards, languages, and parties.
      */
     public Ballot() {
-        cards = new ArrayList<ACard>();
-        languages = new ArrayList<Language>();
-        parties = new ArrayList<Party>();
+        cards = new ArrayList<>();
+        languages = new ArrayList<>();
+        parties = new ArrayList<>();
     }
 
     /**

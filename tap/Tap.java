@@ -113,7 +113,7 @@ public class Tap {
 
             try {
 
-                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+                List<NameValuePair> nameValuePairs = new ArrayList<>(1);
             /* For each of the ballotStrings... */
             for (String ballotString : ballotList) {
 
@@ -165,7 +165,7 @@ public class Tap {
             }
 
             public void commitBallot(CommitBallotEvent e) {
-			    /* TODO? BallotStore.addPrecinct(e.getBID().toString(), e.getBallot()); */
+			    /* TODO? BallotStore.addPrecinct(e.getBID().toString(), e.getVotes()); */
             }
 
             public void ballotReceived(BallotReceivedEvent e){

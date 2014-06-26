@@ -41,8 +41,8 @@ public class Controller {
 	public static final Controller SINGLETON = new Controller();
 
 	private Controller() {
-		_out = new ArrayList<OutputStream>();
-		_sockets = new ArrayList<Socket>();
+		_out = new ArrayList<>();
+		_sockets = new ArrayList<>();
 	}
 
 	private final ArrayList<OutputStream> _out;
