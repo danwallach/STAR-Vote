@@ -1,5 +1,6 @@
 package crypto.adder;
 
+import java.lang.reflect.Member;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -18,20 +19,30 @@ import sexpression.StringExpression;
  */
 public class VoteProof {
 
-    private AdderInteger p;
+    /** the list of proofs for each candidate-vote pairing */
     private List<MembershipProof> proofList;
+
+    /** The proof for ths sum of candidate-vote pairings */
     private MembershipProof sumProof;
 
     /**
      * Default constructor.
      */
     public VoteProof() {
-
+        proofList = new ArrayList<>();
     }
 
-    private VoteProof(MembershipProof sumProof, List<MembershipProof> proofList) {
+    public VoteProof(MembershipProof sumProof, List<MembershipProof> proofList) {
         this.sumProof = sumProof;
         this.proofList = proofList;
+    }
+
+
+    /**
+     * @return the list of proofs for each candidate-vote pairing
+     */
+    public List<MembershipProof> getProofList() {
+        return proofList;
     }
 
     /**
@@ -55,14 +66,13 @@ public class VoteProof {
      */
     public void compute(Vote vote, PublicKey pubKey, List<AdderInteger> choices, int min, int max) {
 
-        this.p = pubKey.getP();
         List<ElgamalCiphertext> cipherList = vote.getCipherList();
         List<AdderInteger> cipherDomain = new ArrayList<>(2);
 
         cipherDomain.add(AdderInteger.ZERO);
         cipherDomain.add(AdderInteger.ONE);
 
-        ElgamalCiphertext sumCipher = new ElgamalCiphertext(AdderInteger.ONE, AdderInteger.ONE, p);
+        ElgamalCiphertext sumCipher = new ElgamalCiphertext(AdderInteger.ONE, AdderInteger.ONE, pubKey.getP());
 
         int numChoices = 0;
         int size = cipherList.size();
@@ -104,7 +114,6 @@ public class VoteProof {
      * @see MembershipProof#verify(ElgamalCiphertext, PublicKey, java.util.List)
      */
     public boolean verify(Vote vote, PublicKey pubKey, int min, int max) {
-        this.p = pubKey.getP();
         List<ElgamalCiphertext> cipherList = vote.getCipherList();
         List<AdderInteger> cipherDomain
             = new ArrayList<>(2);
@@ -113,7 +122,7 @@ public class VoteProof {
         cipherDomain.add(AdderInteger.ONE);
 
         ElgamalCiphertext sumCipher
-            = new ElgamalCiphertext(AdderInteger.ONE, AdderInteger.ONE, p);
+            = new ElgamalCiphertext(AdderInteger.ONE, AdderInteger.ONE, pubKey.getP());
         int size = this.proofList.size();
 
         for (int i = 0; i < size; i++) {
@@ -137,6 +146,24 @@ public class VoteProof {
 
         return this.sumProof.verify(sumCipher, pubKey, totalDomain);
 
+    }
+
+    /**
+     * A method used for constructing a new proof based on two previous proofs, for use
+     * when homomorphically adding two Votes together.
+     *
+     * @see Vote#multiply(Vote)
+     *
+     * @param otherProof the proof to multiply with this one
+     */
+    public List<MembershipProof> multiply(VoteProof otherProof) {
+
+        List<MembershipProof> otherList = new ArrayList<>();
+
+        otherList.addAll(proofList);
+        otherList.addAll(otherProof.proofList);
+
+        return otherList;
     }
 
     /**
@@ -223,5 +250,9 @@ public class VoteProof {
     		proofList.add(MembershipProof.fromASE(proofListE.get(i)));
     	
     	return new VoteProof(sumProof, proofList);
+    }
+
+    public void setProofList(List<MembershipProof> proofList) {
+        this.proofList = proofList;
     }
 }

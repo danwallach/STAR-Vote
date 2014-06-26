@@ -64,7 +64,7 @@ public class AdderTest extends TestCase {
         System.out.println("Creating an election with " + maxVoters
                            + " maximum voters and " + numChoices + " choices");
         
-        Election election = new Election(p, null);
+        Election election = new Election(pubKey, null);
 
         System.out.println("Authorities start");
 

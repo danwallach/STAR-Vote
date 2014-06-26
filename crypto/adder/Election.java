@@ -13,17 +13,23 @@ import java.util.List;
  * @since 0.0.1
  */
 public class Election {
-    private AdderInteger p;
+
+    /** */
+    private PublicKey publicKey;
+
+    /** */
     private List<Vote> votes;
+
+    /** */
     private List<ASExpression> choices;
 
     /**
      * Creates a new election.
      *
-     * @param p         the prime
+     * @param publicKey         the public key
      */
-    public Election(AdderInteger p, List<ASExpression> choices) {
-        this.p = p;
+    public Election(PublicKey publicKey, List<ASExpression> choices) {
+        this.publicKey = publicKey;
         this.votes = new ArrayList<>();
         this.choices = choices;
     }
@@ -64,16 +70,22 @@ public class Election {
           This specific vote will be used a query used to calculate the total number of votes.
         */
         for (ElgamalCiphertext ignored : v.getCipherList()) {
-            ElgamalCiphertext ciphertext = new ElgamalCiphertext(AdderInteger.ONE, AdderInteger.ONE, p);
+            ElgamalCiphertext ciphertext = new ElgamalCiphertext(AdderInteger.ONE, AdderInteger.ONE, publicKey.getP());
             initList.add(ciphertext);
         }
 
+        VoteProof totalProof = new VoteProof();
+
         /* Create a single ballot from the initList*/
-        Vote total = new Vote(initList, choices);
+        Vote total = new Vote(initList, choices, totalProof);
+
 
         /* Homomorphically tally the encrypted votes */
         for (Vote vote : votes)
             total = vote.multiply(total);
+
+        total.computeSumProof(votes.size(), publicKey);
+        total.verifyVoteProof(publicKey, 0, votes.size());
 
         return total;
     }

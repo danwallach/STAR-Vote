@@ -176,7 +176,8 @@ public class EncryptedTallierWithNIZKs implements ITallier {
                 }
 
                 /* Confirm that the vote proof is valid */
-                if(!voteProof.verify(vote, _finalPublicKey, 0, 1)){
+                if(!voteProof.
+                        verify(vote, _finalPublicKey, 0, 1)){
                     Bugout.err("!!!Ballot failed NIZK test!!!");
                     return;
                 }
@@ -187,7 +188,7 @@ public class EncryptedTallierWithNIZKs implements ITallier {
 
                 /* If we haven't seen this specific election before, initialize it */
                 if(election == null)
-                    election = new Election(_publicKey.getP(), voteIds);
+                    election = new Election(_publicKey, voteIds);
 
                 /* This will homomorphically tally the vote */
                 election.castVote(vote);
@@ -225,7 +226,7 @@ public class EncryptedTallierWithNIZKs implements ITallier {
         if(!voteIds.get(0).toString().equals("vote-ids"))
             throw new RuntimeException("Missing \"vote-ids\"");
 
-        if(!proof.get(0).toString().equals("proof"))
+        if(!proof.get(0).toString().equals("vote-proof"))
             throw new RuntimeException("Missing \"proof\"");
 
         if(!publicKey.get(0).toString().equals("public-key"))

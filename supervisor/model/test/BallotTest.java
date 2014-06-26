@@ -65,13 +65,13 @@ public class BallotTest extends TestCase {
         List<Vote> votes = new ArrayList<>();
         votes.add(vote);
 
-        vote.compute(publicKey);
+        vote.verifyVoteProof(publicKey, 0, 1);
 
         ballot = new Ballot("0", votes, nonce, publicKey);
 
         ListExpression l = new ListExpression(StringExpression.make("ballot"), StringExpression.make("0"), new ListExpression(vote.toASE()), nonce, publicKey.toASE());
 
-        assertEquals(l.toString(), ballot.toListExpression().toString());
+        assertEquals(l, ballot.toListExpression());
     }
 
     /**
@@ -91,7 +91,7 @@ public class BallotTest extends TestCase {
         choices.add(StringExpression.makeString("B1"));
 
         Vote vote = new Vote(ctexts, choices);
-        vote.compute(publicKey);
+        vote.verifyVoteProof(publicKey, 0, 1);
 
         List<Vote> votes = new ArrayList<>();
         votes.add(vote);
@@ -102,7 +102,10 @@ public class BallotTest extends TestCase {
 
         Ballot newBallot = Ballot.fromASE(l);
 
-        assertEquals(newBallot.toListExpression(), ballot.toListExpression());
+        ListExpression newL = newBallot.toListExpression();
+        ListExpression oldL = ballot.toListExpression();
+
+        assertEquals(oldL, newL);
     }
 
 

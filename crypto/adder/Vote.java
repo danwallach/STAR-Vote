@@ -56,6 +56,17 @@ public class Vote {
     }
 
     /**
+     * Initializes a vote from a vector of ciphertexts.
+     */
+    private Vote(List<ElgamalCiphertext> cipherList, List<ASExpression> choices, List<MembershipProof> proofList) {
+        this.cipherList = cipherList;
+        this.choices = choices;
+
+        proof = new VoteProof();
+        proof.setProofList(proofList);
+    }
+
+    /**
      * Accessor function to retrieve the cipherList.
      * @return the vector of ciphertexts.
      */
@@ -70,32 +81,64 @@ public class Vote {
         return proof;
     }
 
-    public void compute(PublicKey publicKey) {
-        List<AdderInteger> choices = new ArrayList<>();
-        choices.add(AdderInteger.ZERO);
-        choices.add(AdderInteger.ONE);
-
-        proof.compute(this, publicKey, choices, 0, cipherList.size());
+    public boolean verifyVoteProof(PublicKey publicKey, int min, int max){
+        return proof.verify(this, publicKey, min, max);
     }
 
     /**
-     * Multiplies this and another Vote component-wise and returns the result
+     * Multiplies this and another Vote component-wise and returns the result.
+     * Note that this will result in a partial proof until computeSumProof() is
+     * called after all Votes have been homomorphically tallied.
      *
-     * @param vote      the Vote to multiply against
-     * @return          the product of the two votes.
+     * @param otherVote     the Vote to multiply against
+     * @return              the product of the two votes.
      */
-    Vote multiply(Vote vote) {
+    public Vote multiply(Vote otherVote) {
 
         List<ElgamalCiphertext> vec = new ArrayList<>();
 
         for (int i = 0; i < this.getCipherList().size(); i++) {
             ElgamalCiphertext ciphertext1 = this.getCipherList().get(i);
-            ElgamalCiphertext ciphertext2 = vote.getCipherList().get(i);
+            ElgamalCiphertext ciphertext2 = otherVote.getCipherList().get(i);
             vec.add(ciphertext1.multiply(ciphertext2));
         }
 
-        return new Vote(vec, choices);
+        List<MembershipProof> otherList = proof.multiply(otherVote.proof);
+
+        return new Vote(vec, choices, otherList);
     }
+
+    /**
+     * Computes the proof for a Vote which has been created as a homomorphic sum of
+     * all the votes in the election. This is to allow for NIZK verification after
+     * we've homomorphically tallied all of the votes. ONLY CALL THIS AFTER ALL VOTES
+     * HAVE BEEN SUMMED IN AN ELECTION.
+     *
+     * @param numVotes          the total number of votes cast in this race
+     * @param publicKey         the public key for the votes
+     */
+    public void computeSumProof(int numVotes, PublicKey publicKey){
+
+        ElgamalCiphertext sumCipher = cipherList.get(0);
+
+        /* Multiply all the ciphertexts together - needed for sumProof.compute() */
+        for (int i=1; i<cipherList.size(); i++)
+            sumCipher = cipherList.get(i).multiply(sumCipher);
+
+        List<AdderInteger> totalDomain = new ArrayList<>(numVotes + 1);
+
+        /* Create a new totalDomain (the range of 0 to the total number of votes cast in this race) */
+        for (int i=0; i<numVotes+1; i++)
+            totalDomain.add(new AdderInteger(i));
+
+        /* Compute the sumProof so that we can make a proof for the homomorphically tallied votes */
+        MembershipProof sumProof = new MembershipProof();
+        sumProof.compute(sumCipher, publicKey, new AdderInteger(numVotes), totalDomain);
+
+        /* Set the new proof */
+        proof = new VoteProof(sumProof, proof.getProofList());
+    }
+
 
    /**
     * Constructs a Vote from a String
@@ -153,7 +196,7 @@ public class Vote {
      *
      * @see ElgamalCiphertext#toASE()
      */
-    public ASExpression toASE(){
+    public ListExpression toASE(){
 
     	List<ASExpression> cList = new ArrayList<>();
 
@@ -181,8 +224,7 @@ public class Vote {
 
     	ListExpression exp = (ListExpression)ase;
 
-
-    	ListExpression voteExp = (ListExpression) exp.get(0);
+        ListExpression voteExp = (ListExpression) exp.get(0);
         ListExpression choiceExp = (ListExpression) exp.get(1);
         ListExpression proofExp = (ListExpression) exp.get(2);
 

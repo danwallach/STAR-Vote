@@ -92,13 +92,13 @@ public class ChallengeDelayedWithNIZKsTallier extends EncryptedTallierWithNIZKs 
                 confirmValid(voteASE, voteIdsE, proofE, publicKeyE);
 
                 //Vote vote = Vote.fromString(voteE.get(1).toString());
-                Vote vote = Vote.fromASE(voteE.get(0));
+                Vote vote = Vote.fromASE(voteE);
                 List<ASExpression> voteIds = new ArrayList<>();
                 for(int j = 0; j < voteIdsE.get(1).size(); j++)
                     voteIds.add(((ListExpression)voteIdsE.get(1)).get(j));
 
                 //VoteProof voteProof = VoteProof.fromString(proofE.get(1).toString());
-                VoteProof voteProof = VoteProof.fromASE(proofE.get(1));
+//                VoteProof voteProof = VoteProof.fromASE(proofE.get(1));
 
                 //PublicKey suppliedPublicKey = PublicKey.fromString(publicKeyE.get(1).toString());
                 PublicKey suppliedPublicKey = PublicKey.fromASE(publicKeyE);
@@ -108,7 +108,8 @@ public class ChallengeDelayedWithNIZKsTallier extends EncryptedTallierWithNIZKs 
                     return;
                 }
 
-                if(!voteProof.verify(vote, _finalPublicKey, 0, 1)){
+
+                if(!vote.verifyVoteProof(_finalPublicKey, 0, 1)){
                     Bugout.err("!!!Ballot failed NIZK test!!!");
                     return;
                 }
@@ -118,7 +119,7 @@ public class ChallengeDelayedWithNIZKsTallier extends EncryptedTallierWithNIZKs 
                 Election election = _results.get(subElectionId);
 
                 if(election == null)
-                    election = new Election(_publicKey.getP(), voteIds);
+                    election = new Election(_publicKey, voteIds);
 
                 election.castVote(vote);
 

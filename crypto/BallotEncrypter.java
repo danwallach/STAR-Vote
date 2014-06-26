@@ -186,6 +186,8 @@ public class BallotEncrypter {
 
         List<ASExpression> secureWriteIns;
 
+        System.out.println(subBallot);
+
         /* Iterate over each of the race vote records (i.e. each candidate) */
         for(int i = 0; i < subBallot.size(); i++){
 
@@ -232,7 +234,11 @@ public class BallotEncrypter {
 		VoteProof proof = new VoteProof();
 		proof.compute(vote, finalPubKey, value, 0, 1);
 
-        ASExpression outASE = vote.toASE();
+        Vote outVote = new Vote(vote.getCipherList(), valueIds, proof);
+
+
+
+        return outVote.toASE();
 
         //Now stick the encrypted write-ins back into the votes
 //        for(ASExpression written : secureWriteIns){
@@ -240,10 +246,10 @@ public class BallotEncrypter {
 //        }
 
         /* Create the return list of the vote, vote ids, proof and corresponding public keys */
-		ListExpression idList = new ListExpression(StringExpression.makeString("vote-ids"),new ListExpression(valueIds));
-		ListExpression pList  = new ListExpression(StringExpression.makeString("proof"),	proof.toASE());
+//		ListExpression idList = new ListExpression(StringExpression.makeString("vote-ids"),new ListExpression(valueIds));
+//		ListExpression pList  = new ListExpression(StringExpression.makeString("proof"),	proof.toASE());
 
-        return new ListExpression(outASE, idList, pList);
+//        return outASE;
     }
 
     /**
@@ -398,7 +404,8 @@ public class BallotEncrypter {
     	for(int i = 0; i < votes.size(); i++){
     		ListExpression race = (ListExpression)votes.get(i);
 
-            Vote vote = Vote.fromASE(race.get(0));
+            System.out.println(race);
+            Vote vote = Vote.fromASE(race);
     		ListExpression voteIds = (ListExpression)(race.get(1));
 
             PublicKey finalPubKey = PublicKey.fromASE(ballot.get(4));

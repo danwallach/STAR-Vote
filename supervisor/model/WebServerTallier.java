@@ -90,7 +90,7 @@ public class WebServerTallier {
 
                     /* If we haven't seen this specific election before, initialize it */
                     if (election == null)
-                        election = new Election(publicKey.getP(), voteIds);
+                        election = new Election(publicKey, voteIds);
 
                     /* This will homomorphically tally the vote */
                     election.castVote(vote);

@@ -180,8 +180,9 @@ public class PublicKey {
     /**
      * Encrypts a vote from a vector of AdderIntegers.
      *
-     * @param selections       the choices
-     * @return              the encrypted vote
+     * @param selections       the vector of 0's and 1's for a race
+     * @param choices          list of candidate IDs for a race
+     * @return                 the encrypted vote
      */
     public Vote encrypt(List<AdderInteger> selections, List<ASExpression> choices) {
 
