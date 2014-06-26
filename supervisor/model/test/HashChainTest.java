@@ -171,19 +171,20 @@ public class HashChainTest extends TestCase {
             HashToBID.put(lastHash, d.format(ballotUniqueness));
             HashToMID.put(lastHash, s.format(serial));
 
-            System.out.println("HashToBID Entry: (" + lastHash + ", " + d.format(ballotUniqueness) + ")");
-            System.out.println("HashToDID Entry: (" + lastHash + ", " + s.format(serial) + ")");
+            System.out.println("HashToBID Entry: " + i + " (" + lastHash + ", " + d.format(ballotUniqueness) + ")");
+            System.out.println("HashToDID Entry: " + i + " (" + lastHash + ", " + s.format(serial) + ")\n\n");
 
             /* Update the last hash */
             lastHash = hash;
         }
 
-        HashChain goodChain = new HashChain(HashToBID, HashToMID);
+        HashChain goodChain = new HashChain(HashToBID, HashToMID, lastHash);
         goodChain.closeHashChain();
         assertFalse(goodChain.isHashChainCompromised());
 
         HashToBID = new HashMap<>();
         HashToMID = new HashMap<>();
+        lastHash = "00000000000000000000000000000000";
 
         /* Add 10 "good" hashes */
         for(int i = 0; i < 10; i++) {
@@ -210,14 +211,14 @@ public class HashChainTest extends TestCase {
             HashToBID.put(toSet, d.format(ballotUniqueness));
             HashToMID.put(toSet, s.format(serial));
 
-            System.out.println("HashToBID Entry: (" + lastHash + ", " + d.format(ballotUniqueness) + ")");
-            System.out.println("HashToMID Entry: (" + lastHash + ", " + s.format(serial) + ")");
+            System.out.println("HashToBID Entry: " + i + " (" + toSet + ", " + d.format(ballotUniqueness) + ")");
+            System.out.println("HashToMID Entry: " + i + " (" + toSet + ", " + s.format(serial) + ")");
 
             /* Update the last hash */
             lastHash = hash;
         }
 
-        HashChain badChain = new HashChain(HashToBID, HashToMID);
+        HashChain badChain = new HashChain(HashToBID, HashToMID, lastHash);
         badChain.closeHashChain();
         assertTrue(badChain.isHashChainCompromised());
     }

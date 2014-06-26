@@ -41,10 +41,11 @@ public class HashChain {
      * Default constructor.
      */
     public HashChain(){
-        this(new HashMap<String, String>(), new HashMap<String, String>());
+        this(new HashMap<String, String>(), new HashMap<String, String>(), "");
+        lastHash = initialLastHash;
     }
 
-    public HashChain(HashMap<String,String> hashToBID, HashMap<String, String> hashToMID) {
+    public HashChain(HashMap<String,String> hashToBID, HashMap<String, String> hashToMID, String lastHash) {
 
         HashToBID = hashToBID;
         HashToMID = hashToMID;
@@ -52,7 +53,7 @@ public class HashChain {
         uniquenessFormat = new DecimalFormat("0000000000");
         serialFormat = new DecimalFormat("00");
 
-        lastHash = initialLastHash;
+        this.lastHash = lastHash;
         isClosed = false;
     }
 
@@ -146,15 +147,15 @@ public class HashChain {
      *
      * @return          true if the hash chain is valid, false if it has been compromised.
      */
-    public Boolean isHashChainCompromised(){
+    public boolean isHashChainCompromised(){
 
         String previousHash = initialLastHash;
         String elementsToBeHashed;
 
         /* See if the initialLastHash is in the HashToBID */
-        if (!HashToBID.containsKey(previousHash))
+        if (!HashToBID.containsKey(previousHash)) {
             return true;
-
+        }
         /* Compute the hash chain from beginning to end using the stored ballot info to reconstruct the chain */
 
         /* Cycle through the hashes while you're not getting the end string */
@@ -164,10 +165,8 @@ public class HashChain {
             elementsToBeHashed = HashToBID.get(previousHash) + HashToMID.get(previousHash) + previousHash;
             previousHash = hashWithSHA256(elementsToBeHashed);
 
-            System.out.println("ETBH: " + elementsToBeHashed);
             /* If the hash that was computed was not the expected hash, we have a problem. */
             if(!HashToBID.containsKey(previousHash)) {
-                System.out.println("Previous hash: " + previousHash);
                 return true;
             }
         }
@@ -181,7 +180,7 @@ public class HashChain {
      */
     public void closeHashChain(){
 
-        if(!isClosed && !isHashChainCompromised()) {
+        if(!isClosed) {
             HashToBID.put(lastHash, "0000000000");
             isClosed = true;
         }
