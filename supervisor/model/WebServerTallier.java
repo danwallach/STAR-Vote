@@ -1,11 +1,15 @@
 package supervisor.model;
 
 import auditorium.Bugout;
-import crypto.adder.*;
+import crypto.adder.Election;
+import crypto.adder.PrivateKey;
+import crypto.adder.PublicKey;
+import crypto.adder.Vote;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.StringExpression;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +24,8 @@ import java.util.Map;
 public class WebServerTallier {
 
     /**
-     * Sum every vote in cast and return a ballot with encrypted sums.
+     * Sum every vote in cast and return a Ballot with encrypted sums that includes every race
+     * across all Ballots.
      *
      * @param precinctID    the ID of the precinct constructing this ballot, used as a ballot id
      * @param cast          the list of cast ballots that should be homomorphically summed
@@ -32,112 +37,136 @@ public class WebServerTallier {
         /* The results of the election are stored by race ID in this map */
         Map<String, Election> results = new HashMap<>();
 
-        /* Foe each ballot, get each vote add build a results mapping between race id's and elections */
+        /* For each ballot, get each vote and build a results mapping between race ids and elections */
         for (Ballot bal : cast) {
+
             try {
-                /* Check that the ballot is well-formed */
+
                 ListExpression ballot = bal.toListExpression();
+                List<Vote> votes = bal.getVotes();
 
-                /* Iterate through each of the races on the ballot */
-                for (int i = 0; i < ballot.size(); i++) {
-                    /* Retrieve the corresponding race information from this selection */
-                    ListExpression raceGroup = (ListExpression) ballot.get(i);
+                /* Cycle through each of the races */
+                for(Vote vote: votes){
 
-                    /* The first entry in ballot is the vote itself */
-                    ListExpression voteE = (ListExpression) raceGroup.get(0);
+                    /* Get all the candidate choices */
+                    List<ASExpression> possibleChoices = vote.getChoices();
 
-                    /* The second entry is the candidate identifier */
-                    ListExpression voteIdsE = (ListExpression) raceGroup.get(1);
-
-                    /* The third entry is a validity (TODO validity or integrity?) proof for the vote */
-                    ListExpression proofE = (ListExpression) raceGroup.get(2);
-
-                    /* The final entry is the public key that the vote was encrypted with */
-                    ListExpression publicKeyE = (ListExpression) raceGroup.get(3);
-
-                    /* Ensure that all of these fields are valid */
-                    confirmValid(voteE, voteIdsE, proofE, publicKeyE);
-
-                    /* Now that we know the vote is valid, read it in as an Adder Vote object */
-                    Vote vote = Vote.fromASE(voteE.get(1));
-                    List<ASExpression> voteIds = new ArrayList<>();
-
-                    /* Add the candidates to a list */
-                    for (int j = 0; j < voteIdsE.get(1).size(); j++)
-                        voteIds.add(((ListExpression) voteIdsE.get(1)).get(j));
-
-                    /* Compute the validity proof */
-                    VoteProof voteProof = VoteProof.fromASE(proofE.get(1));
-
-                    /* Grab the supplied public key */
-                    PublicKey suppliedPublicKey = PublicKey.fromASE(publicKeyE.get(1));
+                    PublicKey ballotKey = bal.getPublicKey();
 
                     /* Confirm that the keys are the same */
-                    if (!(suppliedPublicKey.toString().trim().equals(publicKey.toString().trim()))) {
-                        Bugout.err("!!!Expected supplied final PublicKey to match generated\nSupplied: " + suppliedPublicKey + "\nGenerated: " + publicKey + "!!!");
+                    if (!(ballotKey.equals(publicKey))) {
+                        Bugout.err("!!!Expected supplied final PublicKey to match generated\nSupplied: " + ballotKey + "\nGenerated: " + publicKey + "!!!");
                         return null;
                     }
 
                     /* Confirm that the vote proof is valid */
-                    if (!voteProof.verify(vote, publicKey, 0, 1)) {
+                    if (!vote.verify(publicKey, 0, 1)) {
                         Bugout.err("!!!Ballot failed NIZK test!!!");
                         return null;
                     }
 
                     /* Code these results as a subelection so the ciphers can be summed homomorphically */
-                    String subElectionId = makeId(voteIds);
-                    Election election = results.get(subElectionId);
+                    String raceID = makeId(possibleChoices);
+                    Election election = results.get(raceID);
 
-                    /* If we haven't seen this specific election before, initialize it */
+                    /* If we haven't seen this specific race before, initialize it */
                     if (election == null)
-                        election = new Election(publicKey, voteIds);
+                        election = new Election(publicKey, possibleChoices);
 
-                    /* This will homomorphically tally the vote */
+                    /* This will ready election to homomorphically tally the vote */
                     election.castVote(vote);
 
                     /* Now save the result until we're ready to decrypt the totals */
-                    results.put(subElectionId, election);
+                    results.put(raceID, election);
                 }
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 Bugout.err("Malformed ballot received <" + e.getMessage() + ">");
                 Bugout.err("Rejected ballot:\n" + bal);
             }
         }
 
-        /*
-         * Build a list of sums for each race so we can put them in a ListExpression
-         * of the form ((vote [vote]) (vote-ids ([id1], [id2], ...)) (proof [proof]) (public-key [key]))
-         */
-        ArrayList<ASExpression> votes = new ArrayList<>();
+        /* This will hold the final list of summed Votes to be put into a Ballot */
+        ArrayList<Vote> votes = new ArrayList<>();
 
-        /* These are the only choices on a ballot that we need for a vote proof */
-        ArrayList<AdderInteger> choices = new ArrayList<>();
-        choices.add(AdderInteger.ZERO);
-        choices.add(AdderInteger.ONE);
+        /* This will be used to create the nonce eventually */
+        ArrayList<ASExpression> voteASE = new ArrayList<>();
 
+        /* Now go through each race */
         for(String id :  results.keySet()) {
-            ArrayList<ASExpression> voteASE = new ArrayList<>();
 
+            /* Get the race */
+            Election thisRace = results.get(id);
+
+            /* Get the homomorphically tallied vote for this race */
             Vote vote = results.get(id).sumVotes();
-            VoteProof proof = new VoteProof();
-            proof.compute(vote, publicKey, choices, 0, cast.size());
 
-            voteASE.add(vote.toASE());
-            voteASE.add(new ListExpression(StringExpression.makeString("vote-ids"), StringExpression.makeString(id)));
-            voteASE.add(proof.toASE());
-            voteASE.add(publicKey.toASE());
-
-            /* Add our newly tallied ciphers, race id's, and */
-            votes.add(new ListExpression(voteASE));
+            /* Verify the voteProof and error off if bad */
+            if(vote.verifyVoteProof(publicKey, 0, thisRace.getVotes().size())) {
+                votes.add(vote);
+                voteASE.add(vote.toASE());
+            }
+            else System.err.println("There was a bad summed vote that was not added to the ballot!");
         }
 
-        ListExpression voteList = new ListExpression(votes);
+        /* Create the nonce */
+        ListExpression voteList = new ListExpression(voteASE);
         ASExpression nonce = StringExpression.makeString(voteList.getSHA256());
 
+        /* Return the Ballot of all the summed race results */
+        return new Ballot(precinctID, votes, nonce, publicKey);
+    }
 
-        //return new Ballot(precinctID, votes, nonce);
+    /**
+     * Decrypts a Ballot.
+     *
+     * @param toDecrypt     the Ballot to be decrypted -- it is expected that this is a challenged ballot
+     */
+    public static Ballot decrypt(Ballot toDecrypt, PublicKey publicKey, PrivateKey privateKey) {
+
         return null;
+    }
 
+    /**
+     * Calculates the individual vote totals for each of the candidates in each of the races in the Ballot
+     *
+     * @param toTotal       the previously tallied Ballot from which to extract the candidate sums
+     * @return              a mapping of candidates to vote totals for all of the races in toTotal
+     */
+    public static Map<String, BigInteger> getVoteTotals(Ballot toTotal) {
+
+        /* Something like this: */
+//
+//        /* For each race group (analogous to each race), decrypt the sums */
+//        for(String group : _results.keySet()){
+//
+//            /* Here our races are represented as "Elections", a class provided in the UConn encryption code */
+//            Election election = _results.get(group);
+//
+//            /* From the election, we can get the sum of cipher texts */
+//            Vote cipherSum = election.sumVotes();
+//
+//            /*
+//             * As per the Adder decryption process, partially decrypt the ciphertext to generate some necessary
+//             * information for the final decryption.
+//             */
+//            List<AdderInteger> partialSum = _finalPrivateKey.partialDecrypt(cipherSum);
+//
+//            /* This is a LaGrange coefficient used as part of the decryption computations */
+//            AdderInteger coeff = AdderInteger.ZERO;
+//
+//            /* Rely on the Adder election class to perform the final decryption of the election sums */
+//            List<AdderInteger> results = election.getFinalSum(partialSum, cipherSum, _finalPublicKey);
+//
+//            /* Split off the results by candidate ID*/
+//            String[] ids = group.split(",");
+//
+//            /* For each candidate in the race, put the decrypted sums in the results map */
+//            for(int i = 0; i < ids.length; i++)
+//                report.put(ids[i], results.get(i).bigintValue());
+//        }
+
+        return null;
     }
 
     /**
@@ -160,8 +189,8 @@ public class WebServerTallier {
     /**
      * Using NIZKs, imposes structure on our race format we haven't had before.
      *
-     * @param voteIds a list of strings representing vote identifiers
-     * @return a string representation of the list of voteIDs
+     * @param voteIds       a list of strings representing vote identifiers
+     * @return              a string representation of the list of voteIDs
      */
     private static String makeId(List<ASExpression> voteIds){
         String str = voteIds.get(0).toString();

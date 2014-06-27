@@ -25,22 +25,19 @@
 
 package supervisor.model.tallier;
 
+import auditorium.Bugout;
+import auditorium.Key;
+import crypto.ElGamalCrypto;
+import crypto.Pair;
+import sexpression.*;
+import sexpression.stream.ASEInputStreamReader;
+import sexpression.stream.InvalidVerbatimStreamException;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
-
-import auditorium.Bugout;
-import auditorium.Key;
-
-import sexpression.*;
-
-import sexpression.ASExpression;
-import sexpression.stream.ASEInputStreamReader;
-import sexpression.stream.InvalidVerbatimStreamException;
-import crypto.ElGamalCrypto;
-import crypto.Pair;
 
 /**
  * A tallier which uses exponential ElGamal encryption to homomorphically tally ballots and
@@ -75,7 +72,7 @@ public class EncryptedTallier implements ITallier {
         /* This map will store the final results */
         Map<String, BigInteger> results = new HashMap<String, BigInteger>();
 
-        /* For each canidate, retrieve the encrypted vote totals */
+        /* For each candidate, retrieve the encrypted vote totals */
         for(String candidate : _votes.keySet()){
 
             /* This is the encrypted total for the given candidate */

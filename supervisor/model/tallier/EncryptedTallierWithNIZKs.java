@@ -64,6 +64,7 @@ public class EncryptedTallierWithNIZKs implements ITallier {
      */
     @SuppressWarnings("unchecked")
     public Map<String, BigInteger> getReport() {
+
         /* Ensure the private key is still valid before decryption */
         _finalPrivateKey = AdderKeyManipulator.generateFinalPrivateKey(_publicKey, _privateKey);
 
