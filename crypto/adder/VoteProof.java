@@ -66,8 +66,9 @@ public class VoteProof {
         public void compute(Vote vote, PublicKey pubKey, List<AdderInteger> choices, int min, int max) {
 
         List<ElgamalCiphertext> cipherList = vote.getCipherList();
-        List<AdderInteger> cipherDomain = new ArrayList<>(2);
 
+        /* Create the domain of possible selection options */
+        List<AdderInteger> cipherDomain = new ArrayList<>(2);
         cipherDomain.add(AdderInteger.ZERO);
         cipherDomain.add(AdderInteger.ONE);
 
@@ -78,24 +79,32 @@ public class VoteProof {
         this.proofList = new ArrayList<>(size);
 
         for (int i = 0; i < size; i++) {
+
             MembershipProof proof = new MembershipProof();
+
+            /* Get the encrypted vote and the plaintext */
             ElgamalCiphertext ciphertext = cipherList.get(i);
             AdderInteger choice = choices.get(i);
+
+            /* Compute the NIZK and add it to the proofList */
             proof.compute(ciphertext, pubKey, choice, cipherDomain);
             this.proofList.add(proof);
 
+            /* Multiply this ciphertext into the sum */
             sumCipher = sumCipher.multiply(ciphertext);
 
+            /* Keep track of how many total selections have been made */
             if (choice.equals(AdderInteger.ONE))
                 numChoices++;
         }
 
-        List<AdderInteger> totalDomain
-            = new ArrayList<>(max + 1);
+        List<AdderInteger> totalDomain = new ArrayList<>(max + 1);
 
+        /* Create the domain of possible selection totals */
         for (int j = min; j <= max; j++)
             totalDomain.add(new AdderInteger(j));
 
+        /* Compute the sumProof */
         this.sumProof = new MembershipProof();
         this.sumProof.compute(sumCipher, pubKey, new AdderInteger(numChoices), totalDomain);
     }
@@ -127,19 +136,16 @@ public class VoteProof {
             ElgamalCiphertext ciphertext
                 = cipherList.get(i);
 
-            if (!proof.verify(ciphertext, pubKey, cipherDomain)) {
+            if (!proof.verify(ciphertext, pubKey, cipherDomain))
                 return false;
-            }
 
             sumCipher = sumCipher.multiply(ciphertext);
         }
 
-        List<AdderInteger> totalDomain
-            = new ArrayList<>(max + 1);
+        List<AdderInteger> totalDomain = new ArrayList<>(max + 1);
 
-        for (int j = min; j <= max; j++) {
+        for (int j = min; j <= max; j++)
             totalDomain.add(new AdderInteger(j));
-        }
 
         return this.sumProof.verify(sumCipher, pubKey, totalDomain);
 
@@ -151,7 +157,8 @@ public class VoteProof {
      *
      * @see Vote#multiply(Vote)
      *
-     * @param otherProof the proof to multiply with this one
+     * @param otherProof        the proof to multiply with this one
+     * @return                  the concatenated membership proofs of this VoteProof
      */
     public List<MembershipProof> multiply(VoteProof otherProof) {
 
@@ -194,7 +201,7 @@ public class VoteProof {
      * \f$P_i\f$ is the proof that the \f$i\f$ th candidate is a 0
      * or 1.
      *
-     * @return the string representation of the proof.
+     * @return          the string representation of the proof.
      *
      * @see MembershipProof::str
      */
@@ -230,8 +237,8 @@ public class VoteProof {
     /**
      * Method for interop with VoteBox's S-Expression system.
      * 
-     * @param ase - S-Expression representation of a VoteProof
-     * @return the VoteProof equivalent of ase
+     * @param ase       S-Expression representation of a VoteProof
+     * @return          the VoteProof equivalent of ase
      */
     public static VoteProof fromASE(ASExpression ase){
     	ListExpression exp = (ListExpression)ase;
