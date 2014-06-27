@@ -24,7 +24,7 @@ public class SupervisorTallier {
     /**
      * Sum every vote in cast and return a ballot with encrypted sums.
      *
-     * @param precinctID    the ID of the precinct constructing this ballot, used as a ballot id
+     * @param precinctID    the ID of the precinct constructing this tallied Ballot, used as a ballot id
      * @param cast          the list of cast ballots that should be homomorphically summed
      * @param publicKey     the public key used for vote proofs
      * @return              a Ballot containing the encrypted sums for each race
@@ -39,7 +39,6 @@ public class SupervisorTallier {
 
             try {
 
-                ListExpression ballot = bal.toListExpression();
                 List<Vote> votes = bal.getVotes();
 
                 /* Cycle through each of the races */

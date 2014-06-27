@@ -45,7 +45,6 @@ public class EncryptedTallierWithNIZKs implements ITallier {
     public EncryptedTallierWithNIZKs(PublicKey pub, PrivateKey priv){
         _privateKey = priv;
         _publicKey = pub;
-
     }
 
     /**

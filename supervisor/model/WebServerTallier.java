@@ -27,22 +27,21 @@ public class WebServerTallier {
      * Sum every vote in cast and return a Ballot with encrypted sums that includes every race
      * across all Ballots.
      *
-     * @param precinctID    the ID of the precinct constructing this ballot, used as a ballot id
-     * @param cast          the list of cast ballots that should be homomorphically summed
+     * @param ID            the ID to be assigned to this ballot post-tallying, used as a ballot id
+     * @param toSum         the list of cast ballots that should be homomorphically summed
      * @param publicKey     the public key used for vote proofs
      * @return              a Ballot containing the encrypted sums for each race
      */
-    public static Ballot tally(String precinctID, List<Ballot> cast, PublicKey publicKey){
+    public static Ballot tally(String ID, List<Ballot> toSum, PublicKey publicKey){
 
         /* The results of the election are stored by race ID in this map */
         Map<String, Election> results = new HashMap<>();
 
         /* For each ballot, get each vote and build a results mapping between race ids and elections */
-        for (Ballot bal : cast) {
+        for (Ballot bal : toSum) {
 
             try {
 
-                ListExpression ballot = bal.toListExpression();
                 List<Vote> votes = bal.getVotes();
 
                 /* Cycle through each of the races */
@@ -114,7 +113,7 @@ public class WebServerTallier {
         ASExpression nonce = StringExpression.makeString(voteList.getSHA256());
 
         /* Return the Ballot of all the summed race results */
-        return new Ballot(precinctID, votes, nonce, publicKey);
+        return new Ballot(ID, votes, nonce, publicKey);
     }
 
     /**
@@ -124,18 +123,8 @@ public class WebServerTallier {
      */
     public static Ballot decrypt(Ballot toDecrypt, PublicKey publicKey, PrivateKey privateKey) {
 
-        return null;
-    }
 
-    /**
-     * Calculates the individual vote totals for each of the candidates in each of the races in the Ballot
-     *
-     * @param toTotal       the previously tallied Ballot from which to extract the candidate sums
-     * @return              a mapping of candidates to vote totals for all of the races in toTotal
-     */
-    public static Map<String, BigInteger> getVoteTotals(Ballot toTotal) {
-
-        /* Something like this: */
+                /* Something like this? */
 //
 //        /* For each race group (analogous to each race), decrypt the sums */
 //        for(String group : _results.keySet()){
@@ -165,6 +154,44 @@ public class WebServerTallier {
 //            for(int i = 0; i < ids.length; i++)
 //                report.put(ids[i], results.get(i).bigintValue());
 //        }
+
+        return null;
+    }
+
+    /**
+     * Decrypts a Ballot.
+     *
+     * @param toDecrypt     the List of Ballots to be decrypted -- it is expected that
+     *                      these are challenged ballots
+     */
+    public static List<Ballot> decryptAll(List<Ballot> toDecrypt, PublicKey publicKey, PrivateKey privateKey) {
+
+        List<Ballot> decryptedList = new ArrayList<>();
+
+        for (Ballot ballot : toDecrypt)
+            decryptedList.add(decrypt(ballot, publicKey, privateKey));
+
+        return decryptedList;
+    }
+
+    /**
+     * Calculates the individual vote totals for each of the candidates in each of the races in the Ballot
+     *
+     * @see Election#getFinalSum(List, Vote, PublicKey)
+     * @see crypto.BallotEncrypter#adderDecryptWithKey(Election, PublicKey, PrivateKey)
+     *
+     * @param toTotal       the previously tallied Ballot from which to extract the candidate sums
+     * @return              a mapping of candidates to vote totals for all of the races in toTotal
+     */
+    public static Map<String, BigInteger> getVoteTotals(Ballot toTotal, PublicKey publicKey) {
+
+        /* Create an election */
+
+        /* Generate the final private and public keys */
+
+        /* Partially Decrypt the partial sums */
+
+        /* Add and decrypt to get the final sums */
 
         return null;
     }
