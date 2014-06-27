@@ -22,32 +22,26 @@
 
 package crypto;
 
-import java.math.BigInteger;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.util.*;
-
-import crypto.adder.AdderInteger;
-import crypto.adder.Election;
-import crypto.adder.ElgamalCiphertext;
-import crypto.adder.PrivateKey;
-import crypto.adder.PublicKey;
-import crypto.adder.Vote;
-import crypto.adder.VoteProof;
-
 import auditorium.Bugout;
 import auditorium.Key;
-
-import sexpression.*;
+import crypto.adder.*;
 import crypto.interop.AdderKeyManipulator;
+import sexpression.ASExpression;
+import sexpression.ListExpression;
+import sexpression.NoMatch;
+import sexpression.StringExpression;
 import sexpression.stream.InvalidVerbatimStreamException;
-import votebox.middle.ballot.*;
+import votebox.middle.ballot.Ballot;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
+import java.math.BigInteger;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.*;
 
 /**
  * This class is the main interface between STAR-Vote operations and our crypto library.
@@ -172,7 +166,7 @@ public class BallotEncrypter {
     /**
      * Take an unencrypted ballot and make it encrypted, while also generating a NIZK
      * 
-     * @param subBallot         This is the pre-encrypt ballot in the form ((race-id counter) ...)
+     * @param subBallot         This is the pre-encrypt ballot in the form ((candidate-id counter) ...)
      * @param pubKey            this is an Adder-style public key
      * @param writeInKey        the key used to encrypt the writeIn
      * @return                  A ListExpression of the form ((vote [vote]) (vote-ids ([id1], [id2], ...)) (proof [proof]) (public-key [key]))

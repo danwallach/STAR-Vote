@@ -84,6 +84,7 @@ public class Election {
         for (Vote vote : votes)
             total = vote.multiply(total);
 
+        /* Compute and verify the vote proof */
         total.computeSumProof(votes.size(), publicKey);
         total.verifyVoteProof(publicKey, 0, votes.size());
 

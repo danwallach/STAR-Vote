@@ -1,13 +1,12 @@
 package crypto.adder;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.StringTokenizer;
-
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.StringExpression;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
 
 
 /**
@@ -66,6 +65,9 @@ public class Vote {
         proof.setProofList(proofList);
     }
 
+
+    public List<ASExpression> getChoices() { return choices; }
+
     /**
      * Accessor function to retrieve the cipherList.
      * @return the vector of ciphertexts.
@@ -75,10 +77,14 @@ public class Vote {
     }
 
     /**
-     * @return the proof for this vote
+     *
+     * @param publicKey
+     * @param min
+     * @param max
+     * @return
      */
-    public VoteProof getProof() {
-        return proof;
+    public boolean verify(PublicKey publicKey, int min, int max) {
+        return proof.verify(this, publicKey, min, max);
     }
 
     public boolean verifyVoteProof(PublicKey publicKey, int min, int max){
@@ -190,7 +196,8 @@ public class Vote {
     }
  
     /**
-     * Method for interop with VoteBox's S-Expression system.
+     * Method for interop with VoteBox's S-Expression system. Creates ListExpressions of the form
+     * ((vote [vote]) (vote-ids ([id1], [id2], ...)) (proof [proof]))
      * 
      * @return      the S-Expression equivalent of this Vote
      *
@@ -249,4 +256,5 @@ public class Vote {
 
     	return new Vote(vote, choices, VoteProof.fromASE(proofExp));
     }
+
 }

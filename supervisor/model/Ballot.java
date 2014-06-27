@@ -24,9 +24,9 @@ public class Ballot {
     /** A representation of the ballot (document of voter intent) as an ASExpression
      *
      *                |------------ This is a Vote as an ASExpression -------------|
-     * (ballot bid (  ((vote [vote]) (vote-ids ([id1], [id2], ...)) (proof [proof]))
-     *                ((vote [vote]) (vote-ids ([id1], [id2], ...)) (proof [proof]))
-     *                ((vote [vote]) (vote-ids ([id1], [id2], ...)) (proof [proof]))...  ) (public-key [key]) nonce)
+     * (ballot bid (  ((vote [vote]) (vote-ids ([id1], [id2], ...)) (vote-proof [proof]))
+     *                ((vote [vote]) (vote-ids ([id1], [id2], ...)) (vote-proof [proof]))
+     *                ((vote [vote]) (vote-ids ([id1], [id2], ...)) (vote-proof [proof]))...  ) (public-key [key]) nonce)
      *
      * */
     private final List<Vote> ballot;

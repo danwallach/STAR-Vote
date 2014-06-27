@@ -133,7 +133,7 @@ public class Precinct {
      *                  cast in this precinct
      */
     public Ballot getCastBallotTotal(){
-        return cast.get(0);
+        return SupervisorTallier.tally(precinctID, cast, publicKey);
     }
 
     /**

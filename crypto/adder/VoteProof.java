@@ -1,13 +1,12 @@
 package crypto.adder;
 
-import java.lang.reflect.Member;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
-
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.StringExpression;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
 
 
 /**
@@ -53,8 +52,8 @@ public class VoteProof {
      * ciphertext in the vote, with a domain of \f$\{0, 1\}\f$.
      * Then, all of the ciphertexts are multiplied together and a
      * final proof is computed over the product of the
-     * ciphertexts, with a domain of \f$\{\mathit{minimum},\ldots,
-     * \mathit{maximum}\}\f$.
+     * ciphertexts, with a domain of \f$\{\mathit{min},\ldots,
+     * \mathit{max}\}\f$.
      *
      * @param vote          the vote the proof will be computed over.
      * @param pubKey        the public key used to encrypt the vote.
@@ -64,7 +63,7 @@ public class VoteProof {
      *
      * @see MembershipProof#compute(ElgamalCiphertext, PublicKey, AdderInteger, List)
      */
-    public void compute(Vote vote, PublicKey pubKey, List<AdderInteger> choices, int min, int max) {
+        public void compute(Vote vote, PublicKey pubKey, List<AdderInteger> choices, int min, int max) {
 
         List<ElgamalCiphertext> cipherList = vote.getCipherList();
         List<AdderInteger> cipherDomain = new ArrayList<>(2);
@@ -94,9 +93,8 @@ public class VoteProof {
         List<AdderInteger> totalDomain
             = new ArrayList<>(max + 1);
 
-        for (int j = min; j <= max; j++) {
+        for (int j = min; j <= max; j++)
             totalDomain.add(new AdderInteger(j));
-        }
 
         this.sumProof = new MembershipProof();
         this.sumProof.compute(sumCipher, pubKey, new AdderInteger(numChoices), totalDomain);
@@ -114,15 +112,14 @@ public class VoteProof {
      * @see MembershipProof#verify(ElgamalCiphertext, PublicKey, java.util.List)
      */
     public boolean verify(Vote vote, PublicKey pubKey, int min, int max) {
+
         List<ElgamalCiphertext> cipherList = vote.getCipherList();
-        List<AdderInteger> cipherDomain
-            = new ArrayList<>(2);
+        List<AdderInteger> cipherDomain = new ArrayList<>(2);
 
         cipherDomain.add(AdderInteger.ZERO);
         cipherDomain.add(AdderInteger.ONE);
 
-        ElgamalCiphertext sumCipher
-            = new ElgamalCiphertext(AdderInteger.ONE, AdderInteger.ONE, pubKey.getP());
+        ElgamalCiphertext sumCipher = new ElgamalCiphertext(AdderInteger.ONE, AdderInteger.ONE, pubKey.getP());
         int size = this.proofList.size();
 
         for (int i = 0; i < size; i++) {

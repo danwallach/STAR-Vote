@@ -1,25 +1,18 @@
 package supervisor.model.tallier;
 
+import auditorium.Bugout;
+import crypto.adder.*;
+import crypto.interop.AdderKeyManipulator;
+import sexpression.ASExpression;
+import sexpression.ListExpression;
+import sexpression.stream.ASEInputStreamReader;
+
 import java.io.ByteArrayInputStream;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import auditorium.Bugout;
-
-import crypto.adder.AdderInteger;
-import crypto.adder.Election;
-import crypto.adder.PrivateKey;
-import crypto.adder.PublicKey;
-import crypto.adder.Vote;
-import crypto.adder.VoteProof;
-
-import sexpression.ASExpression;
-import sexpression.ListExpression;
-import sexpression.stream.ASEInputStreamReader;
-import crypto.interop.AdderKeyManipulator;
 
 /**
  * Tallier for elections run with NIZKs but without the commit-challenge model enabled.
@@ -75,7 +68,7 @@ public class EncryptedTallierWithNIZKs implements ITallier {
         _finalPrivateKey = AdderKeyManipulator.generateFinalPrivateKey(_publicKey, _privateKey);
 
         /* this map will house the final results after they've been decrypted */
-        Map<String, BigInteger> report = new HashMap<String, BigInteger>();
+        Map<String, BigInteger> report = new HashMap<>();
 
         /* For each race group (analogous to each race), decrypt the sums */
         for(String group : _results.keySet()){
@@ -93,7 +86,7 @@ public class EncryptedTallierWithNIZKs implements ITallier {
             List<AdderInteger> partialSum = _finalPrivateKey.partialDecrypt(cipherSum);
 
             /* This is a LaGrange coefficient used as part of the decryption computations */
-            AdderInteger coeff = new AdderInteger(0);
+            AdderInteger coeff = AdderInteger.ZERO;
 
             /* Rely on the Adder election class to perform the final decryption of the election sums */
             List<AdderInteger> results = election.getFinalSum(partialSum, cipherSum, _finalPublicKey);
