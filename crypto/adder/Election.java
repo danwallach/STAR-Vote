@@ -107,10 +107,23 @@ public class Election {
      */
     public List<AdderInteger> getFinalSum(List<AdderInteger> partialSums, Vote sum, PublicKey masterKey) {
 
+        /*
+
+    	  Adder encrypt is of m (public initial g, p, h) [inferred from code]
+    	                    m = {0, 1}
+    	                    g' = g^r = g^y
+    	                    h' = h^r * f^m = h^y * m'
+
+    	  Quick decrypt (given r) [puzzled out by Kevin Montrose]
+    	                    confirm g^r = g'
+    	                    m' = (h' / (h^r)) = h' / h^y
+    	                    if(m' == f) m = 1
+    	                    if(m' == 1) m = 0
+
+    	*/
+
         /* Get relevant key data */
-        AdderInteger p = masterKey.getP();
         AdderInteger q = masterKey.getQ();
-        AdderInteger g = masterKey.getG();
         AdderInteger f = masterKey.getF();
 
         List<AdderInteger> coeffs = new ArrayList<>();
@@ -130,7 +143,6 @@ public class Election {
 
             /* Pull out the ith partial sum (equals h^y) */
             AdderInteger product = partialSums.get(i);
-
 
             /* Get the public value from the ith ciphertext (encrypted sum for ith candidate) (bigH = h' = h^y * f^m) (bigG = g^y) */
             AdderInteger bigH = (cipherList.get(i)).getH();
