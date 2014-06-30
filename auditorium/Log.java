@@ -113,7 +113,7 @@ public class Log {
      * @return This method returns the last list.
      */
     public MessagePointer[] getLast() {
-        MessagePointer[] ret = _last.toArray( new MessagePointer[0] );
+        MessagePointer[] ret = _last.toArray(new MessagePointer[_last.size()]);
         _last.clear();
         return ret;
     }
@@ -126,7 +126,7 @@ public class Log {
     // ** Testing Methods ***
     /**
      * THIS METHOD IS ONLY USED FOR TESTING. Use the return value of
-     * logAnnouncement to know whether or not you've seen a message (becaues the
+     * logAnnouncement to know whether or not you've seen a message (because the
      * lookup is done atomically with the store!)
      */
     public synchronized HashSet<MessagePointer> TESTgetSetCopy() {

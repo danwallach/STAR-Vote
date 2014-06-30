@@ -156,6 +156,8 @@ public class Printer{
 
         if(!test) cleanFilePath = ballotPath.substring(0, ballotPath.lastIndexOf(fileChar) + 1);
 
+        cleanFilePath += "data" + File.separator;
+
         /* Print to an HTML file. Parameters to be used: */
         String htmlFileName = cleanFilePath + "PrintableBallot.html";
 

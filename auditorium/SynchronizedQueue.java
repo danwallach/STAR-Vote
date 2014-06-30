@@ -27,7 +27,7 @@ import java.util.Queue;
 
 /**
  * This is an implementation of a synchronized queue (LIFO push/pop policy)
- * which holds S-Exprssions. I wrote it because Java's collections API is
+ * which holds S-Expressions. I wrote it because Java's collections API is
  * inherently confusing, and if i used Collections.synchronizedList(), my
  * intuition tells me that something dangerous might happen.<br>
  * <br>

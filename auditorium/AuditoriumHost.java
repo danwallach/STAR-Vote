@@ -649,7 +649,7 @@ public class AuditoriumHost implements IAuditoriumHost {
                 ASExpression payload = _head.receiveAnnouncement( message
                         .getDatum() );
                 if (!_inqueue.push( new Pair( message.getFrom(), payload ) )) {
-                    Bugout.err( "Receive: Applciation queue push fail" );
+                    Bugout.err( "Receive: Application queue push fail" );
                     stop();
                 }
             }

@@ -25,8 +25,8 @@ package auditorium;
 /**
  * Class representing an exception that resulted from an error in the signing chain of a certificate
  * or other signed artifact.
- * @author Montrose
  *
+ * @author Montrose
  */
 @SuppressWarnings("serial")
 public class SignerValidityException extends Exception {

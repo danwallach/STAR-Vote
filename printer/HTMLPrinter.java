@@ -125,27 +125,26 @@ public class HTMLPrinter {
             writer.write("<div id = \"right_column\" style=\"background-color:#FFFFFF;width:334px;height:780px;float:left;\">\n");
 
             /* Put images in the right column. */
-            try
-            {
+            if (imageNames.size() > 1) {
                 ArrayList<String> right_column = imageNames.get(1);
                 isSelectionImage = false;
-                for (String imageName : right_column)
-                {
+                for (String imageName : right_column) {
                     /* Load in the image. */
                     writer.write("<img src = \"" + pathToMediaFolder + imageName + "\" alt = \"Image did not load properly\" width = \"334\">\n");
 
                     /*  Leave an empty line after selection images. */
-                    if (isSelectionImage){
+                    if (isSelectionImage) {
 
                         /* Add selection separator. */
-                        while ((currentLine = reader.readLine())!=null && (currentLine.startsWith("<img id = \"line_sep")) )
+                        while ((currentLine = reader.readLine()) != null && (currentLine.startsWith("<img id = \"line_sep")))
                             writer.write(currentLine);
+
                     }
-                    /* Set the flag for selection images and reset it for label/title images. */
+                /* Set the flag for selection images and reset it for label/title images. */
                     isSelectionImage = !isSelectionImage;
                 }
+
             }
-            catch (IndexOutOfBoundsException e){ e.printStackTrace();}
 
             /* End of the right column.*/
             writer.write("</div>\n");

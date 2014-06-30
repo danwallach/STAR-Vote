@@ -35,7 +35,7 @@ import java.io.IOException;
  * auditorium in being able to keep up with many links flooding messages onto
  * its queues.
  * 
- * @author Kyle Derr Derr
+ * @author Kyle Derr
  * 
  */
 public class Link {
