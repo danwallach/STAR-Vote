@@ -14,7 +14,8 @@ import java.util.regex.Pattern;
 /**
  * A test suite for the HashChain class
  *
- * Created by Matthew Kindy II on 6/25/2014.
+ * @author Matthew Kindy II
+ * 6/25/2014
  */
 public class HashChainTest extends TestCase {
 
@@ -105,6 +106,9 @@ public class HashChainTest extends TestCase {
         }
     }
 
+    /**
+     *
+     */
     public void testCloseHash() {
 
         /* Test 10 different instantiations */
@@ -136,6 +140,9 @@ public class HashChainTest extends TestCase {
         }
     }
 
+    /**
+     *
+     */
     public void testIsHashChainCompromised()
     {
 

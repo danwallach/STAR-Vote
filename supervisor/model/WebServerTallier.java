@@ -1,10 +1,8 @@
 package supervisor.model;
 
 import auditorium.Bugout;
-import crypto.adder.Election;
-import crypto.adder.PrivateKey;
-import crypto.adder.PublicKey;
-import crypto.adder.Vote;
+import crypto.adder.*;
+import crypto.interop.AdderKeyManipulator;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.StringExpression;
@@ -19,7 +17,7 @@ import java.util.Map;
  * This class is the web-server half of the STAR-Vote tallier model. Its function is to
  * decrypt challenged ballots and tally and decrypt final vote counts across and within precincts.
  *
- * @author Matthew Kindy II [shamelessly copied from SupervisorTallier.java currently]
+ * @author Matthew Kindy II
  */
 public class WebServerTallier {
 
@@ -121,41 +119,18 @@ public class WebServerTallier {
      *
      * @param toDecrypt     the Ballot to be decrypted -- it is expected that this is a challenged ballot
      */
-    public static Ballot decrypt(Ballot toDecrypt, PublicKey publicKey, PrivateKey privateKey) {
+    public static List<String> decrypt(Ballot toDecrypt, PublicKey publicKey, PrivateKey privateKey) {
 
+        /* Get the mapping of candidates to votes for this Ballot */
+        Map<String, BigInteger> candidatesToTotals = getVoteTotals(toDecrypt, 1, publicKey, privateKey);
+        List<String> selections = new ArrayList<>();
 
-                /* Something like this? */
-//
-//        /* For each race group (analogous to each race), decrypt the sums */
-//        for(String group : _results.keySet()){
-//
-//            /* Here our races are represented as "Elections", a class provided in the UConn encryption code */
-//            Election election = _results.get(group);
-//
-//            /* From the election, we can get the sum of cipher texts */
-//            Vote cipherSum = election.sumVotes();
-//
-//            /*
-//             * As per the Adder decryption process, partially decrypt the ciphertext to generate some necessary
-//             * information for the final decryption.
-//             */
-//            List<AdderInteger> partialSum = _finalPrivateKey.partialDecrypt(cipherSum);
-//
-//            /* This is a LaGrange coefficient used as part of the decryption computations */
-//            AdderInteger coeff = AdderInteger.ZERO;
-//
-//            /* Rely on the Adder election class to perform the final decryption of the election sums */
-//            List<AdderInteger> results = election.getFinalSum(partialSum, cipherSum, _finalPublicKey);
-//
-//            /* Split off the results by candidate ID*/
-//            String[] ids = group.split(",");
-//
-//            /* For each candidate in the race, put the decrypted sums in the results map */
-//            for(int i = 0; i < ids.length; i++)
-//                report.put(ids[i], results.get(i).bigintValue());
-//        }
+        /* Add the selected candidates to the list */
+        for (String s : candidatesToTotals.keySet())
+            if (candidatesToTotals.get(s).equals(BigInteger.ONE))
+                selections.add(s);
 
-        return null;
+        return selections;
     }
 
     /**
@@ -164,9 +139,9 @@ public class WebServerTallier {
      * @param toDecrypt     the List of Ballots to be decrypted -- it is expected that
      *                      these are challenged ballots
      */
-    public static List<Ballot> decryptAll(List<Ballot> toDecrypt, PublicKey publicKey, PrivateKey privateKey) {
+    public static List<List<String>> decryptAll(List<Ballot> toDecrypt, PublicKey publicKey, PrivateKey privateKey) {
 
-        List<Ballot> decryptedList = new ArrayList<>();
+        List<List<String>> decryptedList = new ArrayList<>();
 
         for (Ballot ballot : toDecrypt)
             decryptedList.add(decrypt(ballot, publicKey, privateKey));
@@ -181,36 +156,116 @@ public class WebServerTallier {
      * @see crypto.BallotEncrypter#adderDecryptWithKey(Election, PublicKey, PrivateKey)
      *
      * @param toTotal       the previously tallied Ballot from which to extract the candidate sums
+     * @param size          the "size" of the Ballot (the number of combined Ballots added to create this Ballot)
+     * @param publicKey     the public key
+     * @param privateKey    the private key
      * @return              a mapping of candidates to vote totals for all of the races in toTotal
      */
-    public static Map<String, BigInteger> getVoteTotals(Ballot toTotal, PublicKey publicKey) {
-
-        /* Create an election */
+    public static Map<String, BigInteger> getVoteTotals(Ballot toTotal, int size, PublicKey publicKey, PrivateKey privateKey) {
 
         /* Generate the final private and public keys */
+        PrivateKey finalPrivateKey = AdderKeyManipulator.generateFinalPrivateKey(publicKey, privateKey);
+        PublicKey finalPublicKey = AdderKeyManipulator.generateFinalPublicKey(publicKey);
 
-        /* Partially Decrypt the partial sums */
+        Map<String, BigInteger> voteTotals = new HashMap<>();
 
-        /* Add and decrypt to get the final sums */
+        /* Iterate over each of the races */
+        for (Vote v: toTotal.getVotes()) {
 
-        return null;
+            /* Get the candidates */
+            List<ASExpression> raceCandidates = v.getChoices();
+
+            /* Partially Decrypt the partial sums */
+            List<AdderInteger> partialSum = finalPrivateKey.partialDecrypt(v);
+
+            /* Get the final sums */
+            List<AdderInteger> finalSum = getDecryptedFinalSum(partialSum, v, size, finalPublicKey);
+
+            /* Map the candidates to their results in this race */
+            for(int i=0; i< raceCandidates.size(); i++)
+                voteTotals.put(raceCandidates.get(i).toString(), finalSum.get(i).bigintValue());
+        }
+
+        return voteTotals;
     }
 
     /**
-     * Confirms that the vote, voteIds, proof, and publicKey fields pulled out of a ballot are well-formed.
+     *
+     * @param partialSums           the list of partial sums gathered from the summed Vote
+     * @param sum                   the summed Vote for which to get the decrypted totals
+     * @param size                  the possible total number of votes for a candidate in a race
+     * @param masterKey             the public key
+     * @return                      a vector of vote totals for each candidate in this Vote (race)
      */
-    private static void confirmValid(ListExpression vote, ListExpression voteIds, ListExpression proof, ListExpression publicKey){
-        if(!vote.get(0).toString().equals("vote"))
-            throw new RuntimeException("Missing \"vote\"");
+    private static List<AdderInteger> getDecryptedFinalSum(List<AdderInteger> partialSums, Vote sum, int size, PublicKey masterKey) {
 
-        if(!voteIds.get(0).toString().equals("vote-ids"))
-            throw new RuntimeException("Missing \"vote-ids\"");
+        /*
 
-        if(!proof.get(0).toString().equals("proof"))
-            throw new RuntimeException("Missing \"proof\"");
+    	  Adder encrypt is of m (public initial g, p, h) [inferred from code]
+    	                    m = {0, 1}
+    	                    g' = g^r = g^y
+    	                    h' = h^r * f^m = h^y * m'
 
-        if(!publicKey.get(0).toString().equals("public-key"))
-            throw new RuntimeException("Missing \"public-key\"");
+    	  Quick decrypt (given r) [puzzled out by Kevin Montrose]
+    	                    confirm g^r = g'
+    	                    m' = (h' / (h^r)) = h' / h^y
+    	                    if(m' == f) m = 1
+    	                    if(m' == 1) m = 0
+
+    	*/
+
+        /* Get relevant key data */
+        AdderInteger q = masterKey.getQ();
+        AdderInteger f = masterKey.getF();
+
+        /* Extract the ciphertexts */
+        List<ElgamalCiphertext> cipherList = sum.getCipherList();
+
+        /* Figure out how many ciphertexts there are */
+        int csize = cipherList.size();
+
+        List<AdderInteger> results = new ArrayList<>();
+
+        /* For each cipher (i.e. for each candidate) */
+        for (int i = 0; i < csize; i++) {
+
+
+            /* Pull out the ith partial sum (equals h^y) */
+            AdderInteger product = partialSums.get(i);
+
+
+            /* Get the public value from the ith ciphertext (encrypted sum for ith candidate) (bigH = h' = h^y * f^m) (bigG = g^y) */
+            AdderInteger bigH = (cipherList.get(i)).getH();
+
+            /* Divide h' / h^y = f^m, where m = total number of votes for a candidate */
+            AdderInteger target = bigH.divide(product);
+
+            /* Indicates if we have successfully resolved the ciphertext */
+            boolean gotResult = false;
+
+            AdderInteger j = null;
+
+            /* Iterate over the number of votes to try to guess n */
+            for (int k = 0; k <= size; k++) {
+
+                /* Create a guess */
+                j = new AdderInteger(k, q);
+
+                System.out.println("DOES " + f.pow(j) + " equal " + target + "?");
+
+                /* Check the guess and get out when found */
+                if (f.pow(j).equals(target)) {
+                    gotResult = true;
+                    break;
+                }
+            }
+
+            /* Keep track of found result, otherwise error */
+            if (gotResult) results.add(j);
+            else throw new SearchSpaceExhaustedException("Error searching for " + target);
+        }
+
+        return results;
     }
 
     /**
