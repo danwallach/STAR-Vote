@@ -159,7 +159,7 @@ public class WebServerTallier {
     }
 
     /**
-     * Decrypts a Ballot.
+     * Decrypts all the Ballots in a List.
      *
      * @param toDecrypt     the List of Ballots to be decrypted -- it is expected that
      *                      these are challenged ballots

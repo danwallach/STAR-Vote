@@ -349,13 +349,13 @@ public class Model {
      */
     public boolean closePolls() {
 
-        boolean canClose = isActiveVotingSession();
+        boolean canClose = !isActiveVotingSession();
 
-        if(!canClose)
+        if(canClose)
             /* Announce that the polls are closing */
             auditorium.announce(new PollsClosedEvent(mySerial, new Date().getTime()));
 
-        return !canClose;
+        return canClose;
     }
 
     /**
