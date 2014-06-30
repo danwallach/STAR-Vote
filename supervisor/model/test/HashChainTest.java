@@ -148,6 +148,8 @@ public class HashChainTest extends TestCase {
         DecimalFormat d = new DecimalFormat("0000000000");
         DecimalFormat s = new DecimalFormat("00");
 
+        System.out.println("\n");
+
         /* Add 10 "good" hashes */
         for(int i = 0; i < 10; i++) {
 
@@ -172,11 +174,13 @@ public class HashChainTest extends TestCase {
             HashToMID.put(lastHash, s.format(serial));
 
             System.out.println("HashToBID Entry: " + i + " (" + lastHash + ", " + d.format(ballotUniqueness) + ")");
-            System.out.println("HashToDID Entry: " + i + " (" + lastHash + ", " + s.format(serial) + ")\n\n");
+            System.out.println("HashToDID Entry: " + i + " (" + lastHash + ", " + s.format(serial) + ")");
 
             /* Update the last hash */
             lastHash = hash;
         }
+
+        System.out.println("\n");
 
         HashChain goodChain = new HashChain(HashToBID, HashToMID, lastHash);
         goodChain.closeHashChain();
@@ -221,6 +225,8 @@ public class HashChainTest extends TestCase {
         HashChain badChain = new HashChain(HashToBID, HashToMID, lastHash);
         badChain.closeHashChain();
         assertTrue(badChain.isHashChainCompromised());
+
+        System.out.println("\n");
     }
 
     /**

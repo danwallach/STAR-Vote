@@ -36,7 +36,6 @@ public class HashChain {
     /** A boolean that is true when the HashChain has been closed */
     private boolean isClosed;
 
-
     /**
      * Default constructor.
      */
@@ -156,10 +155,9 @@ public class HashChain {
         if (!HashToBID.containsKey(previousHash)) {
             return true;
         }
-        /* Compute the hash chain from beginning to end using the stored ballot info to reconstruct the chain */
 
         /* Cycle through the hashes while you're not getting the end string */
-        while (!HashToBID.get(previousHash).equals("0000000000")) {
+        while (!HashToBID.get(previousHash).equals("0000000000") && !lastHash.equals(previousHash)) {
 
             /* From the previous hash construct "[BID][MID][previousHash]" and hash it to get the next previous hash */
             elementsToBeHashed = HashToBID.get(previousHash) + HashToMID.get(previousHash) + previousHash;
@@ -173,6 +171,21 @@ public class HashChain {
 
         /* If we got to the end, there is no problem */
         return false;
+    }
+
+    /**
+     * Constructs a String representation of the HashChain and returns a hash of it
+     *
+     * @return      a hash of the String representation of the HashChain
+     */
+    public String hashSelf(){
+
+        String toBeHashed = "";
+
+        for (String entry : HashToBID.keySet())
+            toBeHashed += HashToBID.get(entry) + HashToMID.get(entry) + entry;
+
+        return hashWithSHA256(toBeHashed);
     }
 
     /**
