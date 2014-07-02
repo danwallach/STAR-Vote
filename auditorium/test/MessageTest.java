@@ -45,7 +45,7 @@ public class MessageTest {
 
     // ** <init>(String, HostPointer, ASExpression) **
     @Test
-    public void test_1constructor_1() {
+    public void test1constructor1() {
         Message msg = new Message( "message",
                 new HostPointer( "id", "ip", 9000 ), "TEST",
                 StringExpression.EMPTY );
@@ -62,22 +62,22 @@ public class MessageTest {
     }
 
     @Test
-    public void test_1constructor_2() {
-        Message msg = new Message( "othermessage", new HostPointer( "otherid",
-                "otherip", 9000 ), "YARRGH", new ListExpression( "How", "Are",
+    public void test1constructor2() {
+        Message msg = new Message( "otherMessage", new HostPointer( "otherID",
+                "otherIP", 9000 ), "YARRGH", new ListExpression( "How", "Are",
                 "you" ) );
 
-        assertEquals( "othermessage", msg.getType() );
-        assertEquals( new HostPointer( "otherid", "otherip", 9000 ), msg
+        assertEquals( "otherMessage", msg.getType() );
+        assertEquals( new HostPointer( "otherID", "otherIP", 9000 ), msg
                 .getFrom() );
         assertEquals( new ListExpression( "How", "Are", "you" ), msg.getDatum() );
         assertEquals( "YARRGH", msg.getSequence() );
         assertEquals(
-            "(othermessage (host otherid otherip 9000) YARRGH (How Are you))",
+            "(otherMessage (host otherID otherIP 9000) YARRGH (How Are you))",
             msg.toString() );
         assertEquals( new ListExpression(
-                StringExpression.makeString( "othermessage" ), new ListExpression(
-                        "host", "otherid", "otherip", "9000" ),
+                StringExpression.makeString( "otherMessage" ), new ListExpression(
+                        "host", "otherID", "otherIP", "9000" ),
                 StringExpression.makeString( "YARRGH" ), new ListExpression( "How",
                         "Are", "you" ) ), msg.toASE() );
     }
@@ -85,54 +85,54 @@ public class MessageTest {
     // ** <init>(ASExpression) tests **
     // junk
     @Test(expected = IncorrectFormatException.class)
-    public void test_2constructor_1() throws Exception {
+    public void test2constructor1() throws Exception {
         new Message( Nothing.SINGLETON );
     }
 
     @Test(expected = IncorrectFormatException.class)
-    public void test_2constructor_2() throws Exception {
+    public void test2constructor2() throws Exception {
         new Message( NoMatch.SINGLETON );
     }
 
     @Test(expected = IncorrectFormatException.class)
-    public void test_2constructor_3() throws Exception {
+    public void test2constructor3() throws Exception {
         new Message( ListExpression.EMPTY );
     }
 
     @Test(expected = IncorrectFormatException.class)
-    public void test_2constructor_4() throws Exception {
+    public void test2constructor4() throws Exception {
         new Message( StringExpression.EMPTY );
     }
 
     @Test(expected = IncorrectFormatException.class)
-    public void test_2constructor_5() throws Exception {
+    public void test2constructor5() throws Exception {
         new Message( StringExpression.makeString( "TEST" ) );
     }
 
     @Test(expected = IncorrectFormatException.class)
-    public void test_2constructor_6() throws Exception {
+    public void test2constructor6() throws Exception {
         new Message( new ListExpression( StringExpression.makeString( "TEST" ),
                 StringExpression.makeString( "TEST" ) ) );
     }
 
     // [0] !instanceof String
     @Test(expected = IncorrectFormatException.class)
-    public void test_2constructor_8() throws Exception {
+    public void test2constructor8() throws Exception {
         new Message( new ListExpression( ListExpression.EMPTY, new HostPointer(
                 "test", "test", 1 ).toASE(), StringExpression.makeString( "test" ) ) );
     }
 
     // [1] !instanceof HostPointer
     @Test(expected = IncorrectFormatException.class)
-    public void test_2constructor_9() throws Exception {
+    public void test2constructor9() throws Exception {
         new Message( new ListExpression( StringExpression.makeString( "test" ),
-                new ListExpression( "notapointer" ), StringExpression.makeString(
+                new ListExpression( "notAPointer" ), StringExpression.makeString(
                         "test" ) ) );
     }
 
     // length > 4
     @Test(expected = IncorrectFormatException.class)
-    public void test_2constructor_10() throws Exception {
+    public void test2constructor10() throws Exception {
         new Message( new ListExpression(
                 StringExpression.makeString( "announcement" ), new HostPointer(
                         "test", "test", 1 ).toASE(), StringExpression.makeString(
@@ -143,14 +143,14 @@ public class MessageTest {
 
     // the datum is no longer optional!
     @Test(expected = IncorrectFormatException.class)
-    public void test_2constructor12() throws Exception {
+    public void test2constructor12() throws Exception {
         new Message( new ListExpression( StringExpression.makeString( "type" ),
                 new HostPointer( "id", "ip", 1 ).toASE() ) );
     }
 
     // Good checking
     @Test
-    public void test_2constructor_11() throws Exception {
+    public void test2constructor11() throws Exception {
         Message msg = new Message( new ListExpression( StringExpression.makeString(
                 "type" ), new HostPointer( "id", "ip", 1 ).toASE(),
                 StringExpression.makeString( "seq" ), StringExpression.makeString( "datum" ) ) );
@@ -167,7 +167,7 @@ public class MessageTest {
 
     // ** getHash() tests **
     @Test
-    public void test_gethash_1() throws Exception {
+    public void testGetHash1() throws Exception {
         Message message = new Message( "type",
                 new HostPointer( "id", "ip", 1 ), "TEST", NoMatch.SINGLETON );
         assertEquals( StringExpression.makeString( message.toASE().getSHA1() ),
@@ -175,7 +175,7 @@ public class MessageTest {
     }
 
     @Test
-    public void test_gethash_2() throws Exception {
+    public void testGetHash2() throws Exception {
         Message message = new Message( "type",
                 new HostPointer( "id", "ip", 1 ), "TEST", Nothing.SINGLETON );
 
@@ -184,7 +184,7 @@ public class MessageTest {
     }
 
     @Test
-    public void test_gethash_3() throws Exception {
+    public void testGetHash3() throws Exception {
         Message message = new Message( "type",
                 new HostPointer( "id", "ip", 1 ), "TEST",
                 StringExpression.EMPTY );
@@ -194,7 +194,7 @@ public class MessageTest {
     }
 
     @Test
-    public void test_gethash_4() throws Exception {
+    public void testGetHash4() throws Exception {
         Message message = new Message( "type",
                 new HostPointer( "id", "ip", 1 ), "TEST", ListExpression.EMPTY );
 

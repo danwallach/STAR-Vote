@@ -44,7 +44,7 @@ public class CryptoTest {
             "Three" );
 
     @Test
-    public void testsignverify() throws Exception {
+    public void testSignVerify() throws Exception {
         for (int lcv = 0; lcv < 3; lcv++) {
             Keys keys = gen.generateKey( "TEST", "TEST" );
             Cert cert = gen.createCert( keys.getPrivate(), keys.getPublic() );
@@ -54,7 +54,7 @@ public class CryptoTest {
     }
 
     @Test(expected = AuditoriumCryptoException.class)
-    public void testsignverifyfail() throws Exception {
+    public void testSignVerifyFail() throws Exception {
         for (int lcv = 0; lcv < 3; lcv++) {
             Keys keys = gen.generateKey( "TEST", "TEST" );
             Cert cert = gen.createCert( keys.getPrivate(), keys.getPublic() );

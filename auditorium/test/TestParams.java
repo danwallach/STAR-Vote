@@ -33,6 +33,7 @@ import auditorium.IAuditoriumParams;
  * @author dsandler
  * 
  */
+@SuppressWarnings("WeakerAccess")
 public class TestParams implements IAuditoriumParams {
 
     public static final TestParams Singleton = new TestParams();
@@ -48,7 +49,7 @@ public class TestParams implements IAuditoriumParams {
     public static final int LISTEN_PORT = 9700;
     public static final int JOIN_TIMEOUT = 1000;
     public static final String BROADCAST_ADDRESS = "255.255.255.255";
-    public static final String LOG_LOCATION = "/local/Kyle Derr Derr/log.out";
+    public static final String LOG_LOCATION = "log/log.out";
     public static final String KEYS_DIRECTORY = "/keys/";
     public static final String RULE_FILE = "rules";
     public static final boolean ENCRYPTION_ENABLED = false;
@@ -57,9 +58,6 @@ public class TestParams implements IAuditoriumParams {
 	public static final int VIEW_RESTART_TIMEOUT = 5000;
 	public static final int DEFAULT_SERIAL_NUMBER = -1;
 	public static final String DEFAULT_REPORT_ADDRESS = "";
-    public static final int DEFAULT_PORT = -1;
-    public static final int DEFAULT_HTTP_PORT = 80;
-    public static final String DEFAULT_BALLOT_FILE = "";
     public static final String DEFAULT_PRINTER_FOR_VVPAT = "";
     public static final boolean DEFAULT_ENABLE_NIZKS = false;
     public static final boolean DEFAULT_USE_PIECEMEAL_ENCRYPTION = false;

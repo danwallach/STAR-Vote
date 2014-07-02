@@ -29,6 +29,11 @@ import static org.junit.Assert.*;
 import auditorium.*;
 import sexpression.*;
 
+/**
+ * Tests for Auditorium Keys
+ *
+ * @author Kyle Derr
+ */
 public class KeyTest {
 
     // ** <init>(String, String, BigInteger, BigInteger) tests **
@@ -110,17 +115,7 @@ public class KeyTest {
     }
 
     // Good testing
-    byte[][] numbers = {
-            {
-                24
-            }, {
-                34
-            }, {
-                127
-            }, {
-                -49
-            }
-    };
+    private byte[][] numbers = {{24}, {34}, {127}, {-49}};
 
     @Test
     public void constructor2_9() throws Exception {

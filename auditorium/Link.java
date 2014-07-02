@@ -138,24 +138,21 @@ public class Link {
     private void listenThread() {
         Bugout.msg( "Link " + _address + ": THREAD START" );
         try {
-            while (_running) {
-                try {
-                    Message message = _socket.receive();
-                    Bugout.msg( "Link " + _address + ": received: "
-                            + new MessagePointer( message ) );
-                    _host.receiveAnnouncement( message );
-                }
-                catch (IncorrectFormatException e) {
-                    Bugout
-                            .err( "Link "
-                                    + _address
-                                    + ": received a message that is incorrectly formatted:"
-                                    + e.getMessage() );
-                }
+            Message message;
+            while (_running && (message  = _socket.receive()) != null) {
+                Bugout.msg( "Link " + _address + ": received: "
+                        + new MessagePointer( message ) );
+                _host.receiveAnnouncement(message);
             }
         }
         catch (NetworkException e) {
             Bugout.err( "Link " + _address + ": " + e.getMessage() );
+        } catch (IncorrectFormatException e) {
+            Bugout
+                    .err("Link "
+                            + _address
+                            + ": received a message that is incorrectly formatted:"
+                            + e.getMessage());
         }
         _host.removeLink( this );
         Bugout.msg( "Link " + _address + ": THREAD END" );

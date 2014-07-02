@@ -45,9 +45,9 @@ import auditorium.MessagePointer;
  */
 public class MessagePointerTest {
 
-    // ** <init>(String, String, ASExprsesion) **
+    // ** <init>(String, String, ASExpression) **
     @Test
-    public void test_1constructor_1() throws Exception {
+    public void test1constructor1() throws Exception {
         MessagePointer mp = new MessagePointer( "node", "number",
                 StringExpression.EMPTY );
         assertEquals( "node", mp.getNodeId() );
@@ -59,7 +59,7 @@ public class MessagePointerTest {
     }
 
     @Test
-    public void test_1constructor_2() throws Exception {
+    public void test1constructor2() throws Exception {
         MessagePointer mp = new MessagePointer( "node2", "number2",
                 StringExpression.makeString( "bleh" ) );
         assertEquals( "node2", mp.getNodeId() );
@@ -73,41 +73,41 @@ public class MessagePointerTest {
     // ** <init>(ASExpression) tests **
     // junk
     @Test(expected = IncorrectFormatException.class)
-    public void test_2constructor_3() throws Exception {
+    public void test2constructor3() throws Exception {
         new MessagePointer( NoMatch.SINGLETON );
     }
 
     @Test(expected = IncorrectFormatException.class)
-    public void test_2constructor_4() throws Exception {
+    public void test2constructor4() throws Exception {
         new MessagePointer( Nothing.SINGLETON );
     }
 
     @Test(expected = IncorrectFormatException.class)
-    public void test_2constructor_5() throws Exception {
+    public void test2constructor5() throws Exception {
         new MessagePointer( StringWildcard.SINGLETON );
     }
 
     @Test(expected = IncorrectFormatException.class)
-    public void test_2constructor_6() throws Exception {
+    public void test2constructor6() throws Exception {
         new MessagePointer( ListExpression.EMPTY );
     }
 
     // [0] isn't 'msg'
     @Test(expected = IncorrectFormatException.class)
-    public void test_2constructor_7() throws Exception {
+    public void test2constructor7() throws Exception {
         new MessagePointer( new ListExpression( "notmsg", "node", "1", "hash" ) );
     }
 
     // length >4
     @Test(expected = IncorrectFormatException.class)
-    public void test_2constructor_8() throws Exception {
+    public void test2constructor8() throws Exception {
         new MessagePointer( new ListExpression( "msg", "node", "1", "hash",
                 "extra" ) );
     }
 
     // Good
     @Test
-    public void test_2constructor_9() throws Exception {
+    public void test2constructor9() throws Exception {
         MessagePointer mp = new MessagePointer( new ListExpression( "ptr",
                 "node", "1", "hash" ) );
         assertEquals( "node", mp.getNodeId() );
@@ -119,15 +119,15 @@ public class MessagePointerTest {
     }
 
     // ** <init>(Message) **
-    HostPointer hp = new HostPointer( "1", "2", 3 );
+    private HostPointer hp = new HostPointer( "1", "2", 3 );
 
     @Test
-    public void test_3constructor_1() throws Exception {
-        Message m = new Message( "type", hp, "asdf", ListExpression.EMPTY );
+    public void test3constructor1() throws Exception {
+        Message m = new Message( "type", hp, "bleh", ListExpression.EMPTY );
         MessagePointer mp = new MessagePointer( m );
 
         assertEquals( "1", mp.getNodeId() );
-        assertEquals( "asdf", mp.getNumber() );
+        assertEquals( "bleh", mp.getNumber() );
         assertEquals( m.getHash(), mp.getHash() );
     }
 }

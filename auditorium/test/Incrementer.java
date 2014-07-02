@@ -26,11 +26,15 @@ import sexpression.StringExpression;
 import auditorium.AuditoriumHost;
 import auditorium.HostPointer;
 
+/**
+ * Test class that counts the number of packets received through Auditorium. On reaching 10 packets, it terminates.
+ *
+ * @author Kyle Derr
+ */
 public class Incrementer {
 
     public static void main(String[] args) throws Exception {
-        AuditoriumHost host = new AuditoriumHost( args[0],
-                TestParams.Singleton );
+        AuditoriumHost host = new AuditoriumHost(args[0], TestParams.Singleton);
         host.start();
         for (HostPointer hp : host.discover())
             host.join( hp );

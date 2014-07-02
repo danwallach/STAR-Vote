@@ -31,7 +31,7 @@ public class SignatureTest {
 
     // ** <init>(String, StringExpression, ASExpression) tests **
     @Test
-    public void constructor1_1() {
+    public void constructor11() {
         Signature sig = new Signature( "ID", StringExpression.makeString( "sigdata" ),
                 StringExpression.EMPTY );
 
@@ -43,52 +43,52 @@ public class SignatureTest {
     }
 
     @Test
-    public void constructor1_2() {
+    public void constructor12() {
         Signature sig = new Signature( "awesomeID", StringExpression.makeString(
-                "datadata" ), StringExpression.makeString( "payload" ) );
+                "data" ), StringExpression.makeString( "payload" ) );
 
         assertEquals( "awesomeID", sig.getId() );
-        assertEquals( "datadata", sig.getSigData().toString() );
+        assertEquals( "data", sig.getSigData().toString() );
         assertEquals( StringExpression.makeString( "payload" ), sig.getPayload() );
-        assertEquals( new ListExpression( "signature", "awesomeID", "datadata",
+        assertEquals( new ListExpression( "signature", "awesomeID", "data",
                 "payload" ), sig.toASE() );
     }
 
     // **<init>(ASExpression) tests **
     // Junk
     @Test(expected = IncorrectFormatException.class)
-    public void constructor2_1() throws Exception {
+    public void constructor21() throws Exception {
         new Signature( NoMatch.SINGLETON );
     }
 
     @Test(expected = IncorrectFormatException.class)
-    public void constructor2_2() throws Exception {
+    public void constructor22() throws Exception {
         new Signature( StringExpression.EMPTY );
     }
 
     // len < 4
     @Test(expected = IncorrectFormatException.class)
-    public void constructor2_3() throws Exception {
+    public void constructor23() throws Exception {
         new Signature( new ListExpression( "signature", "id", "sigdata" ) );
     }
 
     // len > 4
     @Test(expected = IncorrectFormatException.class)
-    public void constructor2_4() throws Exception {
+    public void constructor24() throws Exception {
         new Signature( new ListExpression( "signature", "id", "sigdata",
                 "payload", "extra" ) );
     }
 
     // [0] != "signature"
     @Test(expected = IncorrectFormatException.class)
-    public void constructor2_5() throws Exception {
+    public void constructor25() throws Exception {
         new Signature( new ListExpression( "notsignature", "id", "sigdata",
                 "payload" ) );
     }
 
     // [1] not a string
     @Test(expected = IncorrectFormatException.class)
-    public void constructor2_6() throws Exception {
+    public void constructor26() throws Exception {
         new Signature( new ListExpression( StringExpression.makeString( "signature" ),
                 new ListExpression( "id" ), StringExpression.makeString( "sigdata" ),
                 StringExpression.makeString( "payload" ) ) );
@@ -96,7 +96,7 @@ public class SignatureTest {
 
     // [2] not a string
     @Test(expected = IncorrectFormatException.class)
-    public void constructor2_7() throws Exception {
+    public void constructor27() throws Exception {
         new Signature( new ListExpression( StringExpression.makeString( "signature" ),
                 StringExpression.makeString( "id" ), new ListExpression( "sigdata" ),
                 StringExpression.makeString( "payload" ) ) );
@@ -104,14 +104,14 @@ public class SignatureTest {
 
     // Good
     @Test
-    public void constructor2_8() throws Exception {
+    public void constructor28() throws Exception {
         Signature sig = new Signature( new ListExpression( "signature",
-                "awesomeID", "datadata", "payload" ) );
+                "awesomeID", "data", "payload" ) );
 
         assertEquals( "awesomeID", sig.getId() );
-        assertEquals( "datadata", sig.getSigData().toString() );
+        assertEquals( "data", sig.getSigData().toString() );
         assertEquals( StringExpression.makeString( "payload" ), sig.getPayload() );
-        assertEquals( new ListExpression( "signature", "awesomeID", "datadata",
+        assertEquals( new ListExpression( "signature", "awesomeID", "data",
                 "payload" ), sig.toASE() );
     }
 }

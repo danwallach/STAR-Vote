@@ -34,16 +34,17 @@ import auditorium.*;
  * This class offers JUnit testing of the auditorium.Cert class.
  * 
  * @author Kyle Derr
- * 
  */
 public class CertTest {
 
-    private final Key key = new Key( "KEYID", "KEYANNOTATION", new BigInteger(
-            "1" ), new BigInteger( "2" ) );
+    /** Auditorium key for easy certification */
+    private final Key key = new Key("KEYID", "KEYANNOTATION", new BigInteger("1"), new BigInteger("2"));
+
+    /** ASE representation of the key */
     private final ASExpression keyASE = key.toASE();
 
-    private final Signature sig = new Signature( "signer",
-            StringExpression.makeString( "sigdata" ), key.toASE() );
+    /** Auditorium signature based on the key */
+    private final Signature sig = new Signature("signer", StringExpression.makeString( "sigdata" ), key.toASE());
 
     // ** <init>(String, StringExpression, Key) tests **
     // the payload of the signature isn't a key.
