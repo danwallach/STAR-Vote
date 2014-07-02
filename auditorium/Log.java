@@ -22,6 +22,9 @@
 
 package auditorium;
 
+import sexpression.StringExpression;
+import sexpression.stream.InvalidVerbatimStreamException;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -46,6 +49,9 @@ public class Log {
     private final HashSet<MessagePointer> _haveSeen;
     private final LinkedList<MessagePointer> _last;
 
+    /** A reference to that last hash value so we can chain the messages in the log */
+    private StringExpression lastChainedHash;
+
     /**
      * Construct a Log instance that serializes log data to a given location.
      * 
@@ -54,10 +60,13 @@ public class Log {
      * @throws FileNotFoundException
      *             This method throws if the given location cannot be found.
      */
-    public Log(File location) throws FileNotFoundException {
+    public Log(File location) throws FileNotFoundException, InvalidVerbatimStreamException {
         _location = new FileOutputStream( location );
         _haveSeen = new HashSet<>();
         _last = new LinkedList<>();
+
+        /* Initialize that hash chain with string 0000000000 */
+        lastChainedHash = (StringExpression) StringExpression.makeVerbatim(StringExpression.computeSHA1(StringExpression.makeString("0000000000").toVerbatim()));
     }
 
     /**
@@ -74,11 +83,25 @@ public class Log {
      *             the message to the log file on disk.
      */
     public boolean logAnnouncement(Message message) throws IOException {
-        MessagePointer tomessage = new MessagePointer( message );
-        if (!_haveSeen.contains( tomessage )) {
-            _haveSeen.add( tomessage );
-            _last.add( tomessage );
-            write( message );
+
+        /* Copy this message into the hash chain */
+        Message chained = new Message(message.getType(), message.getFrom(), message.getSequence(), message.getDatum());
+
+        /* Chain the hash values */
+        chained.chain(lastChainedHash);
+
+        /* Update our reference to the chain */
+        lastChainedHash = chained.getHash();
+
+        MessagePointer toMessage = new MessagePointer( message );
+        if (!_haveSeen.contains( toMessage )) {
+
+            /* Since the chained value is only used here, we update our lists with the unchained version */
+            _haveSeen.add( toMessage );
+            _last.add( toMessage );
+
+            /* Write the chained value to the log */
+            write( chained );
             return true;
         }
         return false;
@@ -119,7 +142,7 @@ public class Log {
     }
 
     private void write(Message message) throws IOException {
-        _location.write( message.toASE().toVerbatim() );
+        _location.write( message.toASTWithHash().toVerbatim() );
         _location.flush();
     }
 
