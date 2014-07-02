@@ -76,8 +76,7 @@ public class ASEInputStreamReader {
      *             list). If the parser expects one of these two and finds
      *             something else, the data is invalid.
      */
-    public ASExpression read() throws IOException,
-            InvalidVerbatimStreamException {
+    public ASExpression read() throws IOException, InvalidVerbatimStreamException {
         // Read in the first byte to check for type: base64 or standard
         // verbatim.
         _stream = _standardStream;

@@ -89,7 +89,7 @@ public class GraphViz {
     /**
      * Where is your dot program located? It will be called externally.
      */
-    private static String DOT = "/usr/local/bin/dot";
+    private static String DOT = "/usr/bin/dot";
 
     /**
      * The source of the graph written in dot language.
@@ -189,8 +189,7 @@ public class GraphViz {
     }
 
     /**
-     * Copied and pasted get_img_stream to turn it into something that writes
-     * the file directly. -Kyle Derr Derr.
+     * Copied and pasted get_img_stream to turn it into something that writes the file directly. -Kyle Derr.
      * 
      * @param path
      *            File to save graph to
