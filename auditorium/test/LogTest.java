@@ -50,7 +50,7 @@ public class LogTest {
 
     @After
     public void tear() {
-        new File( "temp" ).delete();
+        assertTrue(new File( "temp" ).delete());
     }
 
     // ** logAnnouncement(Message) tests

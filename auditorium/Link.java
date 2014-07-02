@@ -131,10 +131,8 @@ public class Link {
      */
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof Link))
-            return false;
+        return o instanceof Link && this._address.equals(((Link) o)._address);
 
-        return this._address.equals( ((Link) o)._address );
     }
 
     private void listenThread() {

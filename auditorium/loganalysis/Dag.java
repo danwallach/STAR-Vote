@@ -23,7 +23,6 @@
 package auditorium.loganalysis;
 
 import java.io.CharArrayReader;
-import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -46,69 +45,65 @@ import sexpression.stream.*;
  */
 public class Dag {
 
-    public static final ASExpression PATTERN = new Parser(
-            new Lexer(
-                    new CharArrayReader(
-                            new String(
-                                    "(announce(host #string #string #string) #string (signed-message (cert (signature #string #string (key #string #string #string #string)))(signature #string #string (succeeds #list:(ptr #string #string #string) #any))))" )
-                                    .toCharArray() ) ) ).read();
+    private static final String PATTERN_STRING = "(announce(host #string #string #string) #string " +
+                                                "(signed-message (cert " +
+                                                "(signature #string #string (key #string #string #string #string)))" +
+                                                "(signature #string #string " +
+                                                "(succeeds #list:(ptr #string #string #string) #any))))";
 
-    private final String _filename;
-    private final HashMap<MessagePointer, ArrayList<MessagePointer>> _dag;
-    private final HashMap<MessagePointer, String> _messageTypes;
+
+    private static final ASExpression PATTERN = new Parser(new Lexer(new CharArrayReader(PATTERN_STRING.toCharArray()))).read();
+
+    private final String filename;
+    private final HashMap<MessagePointer, ArrayList<MessagePointer>> dag;
+    private final HashMap<MessagePointer, String> messageTypes;
 
     /**
      * @param filename
      *            Build the dag from an auditorium log file found at this path.
      */
     public Dag(String filename) {
-        _filename = filename;
-        _dag = new HashMap<>();
-        _messageTypes = new HashMap<>();
+        this.filename = filename;
+        dag = new HashMap<>();
+        messageTypes = new HashMap<>();
     }
 
     /**
-     * Parse the file given at construct time and build the dag based on this
-     * file.
+     * Parse the file given at construct time and build the dag based on this file.
      */
     public void build() throws IOException, InvalidVerbatimStreamException,
             IncorrectFormatException {
         ASEInputStreamReader reader = new ASEInputStreamReader(
-                new FileInputStream( new File( _filename ) ) );
+                new FileInputStream( new File( filename ) ) );
 
-        try {
-            while (true) {
-                ASExpression message = reader.read();
-                MessagePointer ptr = new MessagePointer( new Message( message ) );
+        ASExpression message;
+        while ((message = reader.read()) != null) {
+            MessagePointer ptr = new MessagePointer( new Message( message ) );
 
-                ArrayList<MessagePointer> predlist = new ArrayList<>();
-                ListExpression matchresult = (ListExpression) PATTERN
-                        .match(message);
+            /* List of message pointers that predate this message pointer */
+            ArrayList<MessagePointer> predateList = new ArrayList<>();
+            ListExpression matchResult = (ListExpression) PATTERN.match(message);
 
-                for (ASExpression ase : (ListExpression) matchresult.get( 12 ))  {
-                    predlist.add( new MessagePointer( ase ) );
-                }
-                _messageTypes.put(ptr, ((ListExpression)matchresult.get(13)).get(0).toString());
-                _dag.put( ptr, predlist );
-            }
+            for (ASExpression ase : (ListExpression) matchResult.get( 12 ))
+                predateList.add(new MessagePointer(ase));
+
+            messageTypes.put(ptr, ((ListExpression)matchResult.get(13)).get(0).toString());
+            dag.put( ptr, predateList );
         }
-        catch (EOFException ignored) {}
     }
 
     /**
-     * @return This method returns the dag structure that is wrapped by this
-     *         instance.
+     * @return This method returns the dag structure that is wrapped by this instance.
      */
     public HashMap<MessagePointer, ArrayList<MessagePointer>> getDag() {
-        return _dag;
+        return dag;
     }
 
     /**
-     * @return This method gets the message type associated with a message pointer
-     *         so graphing is clearer.
+     * @return This method gets the message type associated with a message pointer so graphing is clearer.
      */
     public HashMap<MessagePointer, String> getTypes(){
-        return _messageTypes;
+        return messageTypes;
     }
 
     /**
@@ -121,8 +116,8 @@ public class Dag {
      */
     public HashMap<Integer, Integer> getBranchStatistics() {
         HashMap<Integer, Integer> ret = new HashMap<>();
-        for (MessagePointer mp : _dag.keySet()) {
-            int num = _dag.get( mp ).size();
+        for (MessagePointer mp : dag.keySet()) {
+            int num = dag.get( mp ).size();
             if (ret.containsKey( num ))
                 ret.put( num, ret.get( num ) + 1 );
             else

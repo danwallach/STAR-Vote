@@ -61,11 +61,11 @@ public class AuditoriumTemporalLayer extends AAuditoriumLayer {
         ArrayList<ASExpression> list = new ArrayList<>();
         for (MessagePointer p : getHost().getLog().getLast())
             list.add( p.toASE() );
-        ASExpression newdatum = new ListExpression( StringExpression
+        ASExpression newDatum = new ListExpression( StringExpression
                 .makeString( "succeeds" ), new ListExpression( list ), datum );
 
         // Make decorated method call
-        return getChild().makeAnnouncement( newdatum );
+        return getChild().makeAnnouncement( newDatum );
     }
 
     /**
@@ -84,10 +84,10 @@ public class AuditoriumTemporalLayer extends AAuditoriumLayer {
         ArrayList<ASExpression> lst = new ArrayList<>();
         for (MessagePointer mp : getHost().getLog().getLast())
             lst.add( mp.toASE() );
-        ASExpression newdatum = new ListExpression( lst );
+        ASExpression newDatum = new ListExpression( lst );
 
         // Make decorated method call.
-        return getChild().makeJoinReply( newdatum );
+        return getChild().makeJoinReply( newDatum );
     }
 
     /**

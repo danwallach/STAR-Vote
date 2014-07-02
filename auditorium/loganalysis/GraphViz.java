@@ -121,7 +121,7 @@ public class GraphViz {
      * Adds a string to the graph's source (with newline).
      */
     public void addln(String line) {
-        graph.append(line + "\n");
+        graph.append(line).append("\n");
     }
 
     /**
@@ -142,20 +142,15 @@ public class GraphViz {
         File dot;
         byte[] img_stream;
 
-        try {
-            dot = writeDotSourceToFile( dot_source );
-            if (dot != null) {
-                img_stream = get_img_stream( dot );
-                if (!dot.delete())
-                    System.err.println( "Warning: " + dot.getAbsolutePath()
-                            + " could not be deleted!" );
-                return img_stream;
-            }
-            return null;
+        dot = writeDotSourceToFile( dot_source );
+        if (dot != null) {
+            img_stream = get_img_stream( dot );
+            if (!dot.delete())
+                System.err.println( "Warning: " + dot.getAbsolutePath()
+                        + " could not be deleted!" );
+            return img_stream;
         }
-        catch (java.io.IOException ioe) {
-            return null;
-        }
+        return null;
     }
 
     /**
@@ -200,7 +195,7 @@ public class GraphViz {
      * @param path
      *            File to save graph to
      */
-    public void writeGraph(File path) throws IOException {
+    public void writeGraph(File path) {
         try {
             File sourcefile = writeDotSourceToFile();
             Runtime rt = Runtime.getRuntime();
@@ -250,10 +245,11 @@ public class GraphViz {
 
             FileInputStream in = new FileInputStream( img.getAbsolutePath() );
             img_stream = new byte[in.available()];
-            in.read( img_stream );
-            // Close it if we need to
-            if (in != null)
-                in.close();
+
+            if(in.read( img_stream ) == 0)
+                throw new IOException("Couldn't read the file " + img.getName());
+
+            in.close();
 
             if (!img.delete())
                 System.err.println( "Warning: " + img.getAbsolutePath()
@@ -282,7 +278,7 @@ public class GraphViz {
      * @return The file (as a File object) that contains the source of the
      *         graph.
      */
-    private File writeDotSourceToFile(String str) throws java.io.IOException {
+    private File writeDotSourceToFile(String str) {
         File temp;
         try {
             temp = File.createTempFile( "graph_", ".dot.tmp", new File(
@@ -306,7 +302,7 @@ public class GraphViz {
      * @return This method returns a file handle to the temp file where the
      *         source lies.
      */
-    private File writeDotSourceToFile() throws IOException {
+    private File writeDotSourceToFile() {
         return writeDotSourceToFile( getDotSource() );
     }
 

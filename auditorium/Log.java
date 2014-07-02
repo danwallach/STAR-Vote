@@ -23,7 +23,6 @@
 package auditorium;
 
 import sexpression.StringExpression;
-import sexpression.stream.InvalidVerbatimStreamException;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -60,27 +59,23 @@ public class Log {
      * @throws FileNotFoundException
      *             This method throws if the given location cannot be found.
      */
-    public Log(File location) throws FileNotFoundException, InvalidVerbatimStreamException {
+    public Log(File location) throws FileNotFoundException {
         _location = new FileOutputStream( location );
         _haveSeen = new HashSet<>();
         _last = new LinkedList<>();
 
         /* Initialize that hash chain with string 0000000000 */
-        lastChainedHash = (StringExpression) StringExpression.makeVerbatim(StringExpression.computeSHA1(StringExpression.makeString("0000000000").toVerbatim()));
+        lastChainedHash = StringExpression.makeString(StringExpression.makeString("0000000000").getSHA1());
     }
 
     /**
      * Call this method to check and see if a message has been seen before, and
-     * if it has not, log it.
+     * if it has not, add it into the hash chain and log it.
      * 
-     * @param message
-     *            This is the message in question. Log it if it hasn't been seen
-     *            before.
-     * @return This method returns true if something new gets added to the log,
-     *         and false otherwise.
-     * @throws IOException
-     *             This method throws if there is an IO error when trying to add
-     *             the message to the log file on disk.
+     * @param       message This is the message in question. Log it if it hasn't been seen before.
+     * @return      This method returns true if something new gets added to the log, and false otherwise.
+     *
+     * @throws IOException This method throws if there is an IO error when trying to add the message to the log file on disk.
      */
     public boolean logAnnouncement(Message message) throws IOException {
 
@@ -142,7 +137,7 @@ public class Log {
     }
 
     private void write(Message message) throws IOException {
-        _location.write( message.toASTWithHash().toVerbatim() );
+        _location.write(message.toASTWithHash().toVerbatim());
         _location.flush();
     }
 

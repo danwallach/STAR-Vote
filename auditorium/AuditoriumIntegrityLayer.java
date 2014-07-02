@@ -36,12 +36,12 @@ public class AuditoriumIntegrityLayer extends AAuditoriumLayer {
             StringExpression.makeString( "signed-message" ),
             Wildcard.SINGLETON, Wildcard.SINGLETON );
 
-    private final String _nodeID;
-    private final IKeyStore _keystore;
-    private Cert _mycert;
+    private final String nodeID;
+    private final IKeyStore keystore;
+    private Cert mycert;
 
     // / All certificate authority keys are expected to be annotated thusly
-    public static final String CA_ANNOTATION = "ca";
+    public static final String CAANNOTATION = "ca";
 
     /**
      * @param child
@@ -54,8 +54,8 @@ public class AuditoriumIntegrityLayer extends AAuditoriumLayer {
     public AuditoriumIntegrityLayer(AAuditoriumLayer child,
             IAuditoriumHost host, IKeyStore keystore) {
         super( child, host );
-        _nodeID = host.getNodeId();
-        _keystore = keystore;
+        nodeID = host.getNodeId();
+        this.keystore = keystore;
 
         if (keystore == null)
             Bugout
@@ -75,12 +75,12 @@ public class AuditoriumIntegrityLayer extends AAuditoriumLayer {
      */
     public ASExpression makeAnnouncement(ASExpression datum) {
         // Make new datum
-        ASExpression newdatum;
+        ASExpression newDatum;
 
         try {
-            newdatum = new ListExpression( StringExpression
-                    .makeString( "signed-message" ), _mycert.toASE(),
-                    RSACrypto.SINGLETON.sign( datum, _keystore.loadKey( _nodeID ) )
+            newDatum = new ListExpression( StringExpression
+                    .makeString( "signed-message" ), mycert.toASE(),
+                    RSACrypto.SINGLETON.sign( datum, keystore.loadKey( nodeID ) )
                             .toASE() );
         }
         catch (AuditoriumCryptoException e) {
@@ -90,7 +90,7 @@ public class AuditoriumIntegrityLayer extends AAuditoriumLayer {
         }
 
         // Decorated method call.
-        return getChild().makeAnnouncement( newdatum );
+        return getChild().makeAnnouncement( newDatum );
     }
 
     /**
@@ -114,21 +114,21 @@ public class AuditoriumIntegrityLayer extends AAuditoriumLayer {
             throws IncorrectFormatException {
         try {
             // Decorated method call
-            ASExpression matchresult = PATTERN.match( getChild()
+            ASExpression matchResult = PATTERN.match( getChild()
                     .receiveAnnouncement( datum ) );
-            if (matchresult == NoMatch.SINGLETON)
+            if (matchResult == NoMatch.SINGLETON)
                 throw new IncorrectFormatException( datum, new Exception( datum
                         + " doesn't match the pattern:" + PATTERN ) );
-            ListExpression matchlist = (ListExpression) matchresult;
+            ListExpression matchList = (ListExpression) matchResult;
 
-            Cert cer = new Cert( matchlist.get( 0 ) );
-            Signature sig = new Signature( matchlist.get( 1 ) );
-            RSACrypto.SINGLETON.verify( new Signature( matchlist.get( 1 ) ),
-                new Cert( matchlist.get( 0 ) ) );
+            Cert cer = new Cert( matchList.get( 0 ) );
+            Signature sig = new Signature( matchList.get( 1 ) );
+            RSACrypto.SINGLETON.verify( new Signature( matchList.get( 1 ) ),
+                new Cert( matchList.get( 0 ) ) );
 
             String signingKeyId = cer.getSignature().getId(); // the ID of the key that signed the *certificate*
-            Cert signingCert = _keystore.loadCert( signingKeyId ); // the cert that signed the certificate
-            if (signingCert.getKey().getAnnotation().equals( CA_ANNOTATION )) {
+            Cert signingCert = keystore.loadCert( signingKeyId ); // the cert that signed the certificate
+            if (signingCert.getKey().getAnnotation().equals( CAANNOTATION )) {
             	// verify that the signature on the certificate itself is correct
                 RSACrypto.SINGLETON.verify( cer.getSignature(), signingCert );
             }
@@ -170,12 +170,12 @@ public class AuditoriumIntegrityLayer extends AAuditoriumLayer {
         StringExpression message = StringExpression.makeString( "test" );
 
         // load my cert
-        _mycert = _keystore.loadCert( _nodeID );
+        mycert = keystore.loadCert( nodeID );
 
         // Make a test signature and verify it. (Check that "my" cert and key
         // are on disk)
-        Signature sig = RSACrypto.SINGLETON.sign( message, _keystore
-                .loadKey( _nodeID ) );
-        RSACrypto.SINGLETON.verify( sig, _mycert );
+        Signature sig = RSACrypto.SINGLETON.sign( message, keystore
+                .loadKey( nodeID ) );
+        RSACrypto.SINGLETON.verify( sig, mycert );
     }
 }

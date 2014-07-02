@@ -39,16 +39,23 @@ public class KeyStoreTest {
     @Before
     public void build() throws Exception {
         _file = new File( "tmp/" );
-        _file.mkdir();
+        if(!_file.mkdir())
+            throw new RuntimeException("Couldn't create the files!");
         Generator.main( "5", "tmp/" );
         _keystore = new SimpleKeyStore( "tmp/" );
     }
 
     @After
     public void tear() throws Exception {
-        for (File child : _file.listFiles())
-            child.delete();
-        _file.delete();
+        File[] fileList;
+        if((fileList = _file.listFiles()) != null) {
+            for (File child : fileList)
+                if(!child.delete())
+                    throw new RuntimeException("Couldn't delete files!");
+        }
+
+        if(!_file.delete())
+            throw new RuntimeException("Couldn't delete files!");
     }
 
     @Test

@@ -63,13 +63,9 @@ public class MessagePointer {
     /**
      * Convert a message pointer from its sexp form to it's object form.
      * 
-     * @param exp
-     *            Convert this sexp.
-     * @return This method returns the given message pointer in sexp form after
-     *         it has been converted to object form.
-     * @throws IncorrectFormatException
-     *             This method throws if the given expression is not (ptr
-     *             [nodeid] [sequence num] [hash]).
+     * @param exp Convert this sexp.
+
+     * @throws IncorrectFormatException This method throws if the given expression is not (ptr [nodeid] [sequence num] [hash]).
      */
     public MessagePointer(ASExpression exp) throws IncorrectFormatException {
         ASExpression result = PATTERN.match( exp );

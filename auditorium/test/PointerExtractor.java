@@ -88,7 +88,7 @@ public class PointerExtractor {
                 new PointerExtractor( s ).extract();
             }
             catch (Exception e) {
-                System.err.println( e );
+                e.printStackTrace();
             }
     }
 }

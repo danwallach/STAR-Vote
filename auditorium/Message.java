@@ -23,7 +23,6 @@
 package auditorium;
 
 import sexpression.*;
-import sexpression.stream.InvalidVerbatimStreamException;
 
 /**
  * An instance of this class represents an auditorium wire message. Messages on
@@ -179,13 +178,9 @@ public class Message {
      * @param lastChainedHash the past hash that will be hashed along with this to form the hash chain
      */
     public void chain(StringExpression lastChainedHash) {
-        String newData = hash.toString() + lastChainedHash.toString();
+        String newData = getHash().toString() + lastChainedHash.toString();
 
-        try {
-            hash = (StringExpression) StringExpression.makeVerbatim(StringExpression.computeSHA1(StringExpression.makeString(newData).toVerbatim()));
-        } catch (InvalidVerbatimStreamException e) {
-            e.printStackTrace();
-        }
+        hash = StringExpression.makeString(StringExpression.makeString(newData).getSHA1());
 
     }
 }

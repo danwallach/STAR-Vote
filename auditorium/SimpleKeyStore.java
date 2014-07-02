@@ -177,12 +177,10 @@ public class SimpleKeyStore implements IKeyStore {
 			InputStream stream = getInput(file);
 
 			return new ASEInputStreamReader(stream).read();
-		} catch (IOException e1) {
-			throw new AuditoriumCryptoException("load(\""+file+"\")", e1);
-		} catch (InvalidVerbatimStreamException e1) {
+		} catch (IOException | InvalidVerbatimStreamException e1) {
 			throw new AuditoriumCryptoException("load(\""+file+"\")", e1);
 		}
-	}
+    }
 	
 	/**
 	 * Opens a stream for reading a key.
@@ -224,7 +222,7 @@ public class SimpleKeyStore implements IKeyStore {
 				if(jarFile.exists()){
 					JarFile vbJar = new JarFile(jarFile);
 
-					JarEntry jEntry = null;
+					JarEntry jEntry;
 
 					if(entry.startsWith("/"))
 						jEntry = vbJar.getJarEntry(entry.substring(1));
@@ -253,7 +251,7 @@ public class SimpleKeyStore implements IKeyStore {
 			if(!rootFile.exists() && entry.startsWith("/"))
 				rootFile = new File(entry.substring(1).replace('/', File.separatorChar));
 
-			InputStream in = new FileInputStream(rootFile);
+			return new FileInputStream(rootFile);
 
 			/*ASExpression exp = new ASEInputStreamReader(in).read();
 
@@ -261,8 +259,6 @@ public class SimpleKeyStore implements IKeyStore {
 
 			return exp;*/
 			
-			if(in != null)
-				return in;
 		}catch(Exception e){
 			String msg = "load(); path = \""+entry+"\"";
 
@@ -273,6 +269,6 @@ public class SimpleKeyStore implements IKeyStore {
 			throw new AuditoriumCryptoException( msg, e );
 		}//catch
 		
-		throw new AuditoriumCryptoException("No key found for \""+file+"\"", null);
+//		throw new AuditoriumCryptoException("No key found for \""+file+"\"", null);
 	}
 }

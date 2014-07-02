@@ -56,12 +56,12 @@ import sexpression.stream.*;
  */
 public class AuditoriumDiscoveryHost {
 
-    private final IAuditoriumHost _host;
-    private final IAuditoriumParams _constants;
-    private final HostPointer _discoveraddress;
-    private final HostPointer _hostaddress;
-    private volatile boolean _running;
-    private DatagramSocket _discoverSocket;
+    private final IAuditoriumHost host;
+    private final IAuditoriumParams constants;
+    private final HostPointer discoverAddress;
+    private final HostPointer hostAddress;
+    private volatile boolean running;
+    private DatagramSocket discoverSocket;
 
     /**
      * @param host
@@ -73,16 +73,16 @@ public class AuditoriumDiscoveryHost {
      */
     public AuditoriumDiscoveryHost(IAuditoriumHost host,
             IAuditoriumParams constants) {
-        _host = host;
-        _constants = constants;
-        _hostaddress = host.getMe();
-        _discoveraddress = new HostPointer( _host.getNodeId(), _host.getMe()
+        this.host = host;
+        this.constants = constants;
+        hostAddress = host.getMe();
+        discoverAddress = new HostPointer( this.host.getNodeId(), this.host.getMe()
                 .getIP(), constants.getDiscoverReplyPort() );
-        _running = false;
+        running = false;
 
         try {
-            _discoverSocket = new DatagramSocket();
-            _discoverSocket.setSoTimeout( 0 );
+            discoverSocket = new DatagramSocket();
+            discoverSocket.setSoTimeout(0);
         }
         catch (SocketException e) {
             throw new FatalNetworkException( "Cannot create discover socket.",
@@ -101,9 +101,9 @@ public class AuditoriumDiscoveryHost {
     public void start() throws NetworkException {
         Bugout.msg( "Discovery: STARTING" );
 
-        _running = true;
+        running = true;
         try {
-        	_discoverSocket = new DatagramSocket( _constants.getDiscoverPort() );
+        	discoverSocket = new DatagramSocket( constants.getDiscoverPort() );
         }
         catch (SocketException e) {
             throw new NetworkException( "Could not bind the discovery socket: "
@@ -123,8 +123,8 @@ public class AuditoriumDiscoveryHost {
      */
     public void stop() {
         Bugout.msg( "Discovery: STOPPING" );
-        _running = false;
-        _discoverSocket.close();
+        running = false;
+        discoverSocket.close();
     }
 
     /**
@@ -140,28 +140,28 @@ public class AuditoriumDiscoveryHost {
     public HostPointer[] discover() throws NetworkException {
 
         // Build the socket infrastructure
-        DatagramSocket sendsocket;
-        ServerSocket listensocket;
+        DatagramSocket sendSocket;
+        ServerSocket listenSocket;
         try {
-        	sendsocket = new DatagramSocket();
-        	listensocket = new ServerSocket( _constants.getDiscoverReplyPort() );
-        	listensocket.setSoTimeout( _constants.getDiscoverTimeout() );
+        	sendSocket = new DatagramSocket();
+        	listenSocket = new ServerSocket( constants.getDiscoverReplyPort() );
+        	listenSocket.setSoTimeout(constants.getDiscoverTimeout());
         }
         catch (IOException e) {
             throw new NetworkException( "Cannot bind sockets", e );
         }
 
-        LinkedList<HostPointer> retval = new LinkedList<>();
+        LinkedList<HostPointer> ret = new LinkedList<>();
 
         // Send the discover message.
         try {
-            Message discmsg = new Message( "Discover", _hostaddress, _host
-                    .nextSequence(), _discoveraddress.toASE() );
-            byte[] discbytes = discmsg.toASE().toVerbatim();
-            sendsocket.send( new DatagramPacket( discbytes, discbytes.length,
-                    InetAddress.getByName( _constants.getBroadcastAddress() ),
-                    _constants.getDiscoverPort() ) );
-            Bugout.msg( "Discover: sending: " + new MessagePointer( discmsg ) );
+            Message discMsg = new Message( "Discover", hostAddress, host
+                    .nextSequence(), discoverAddress.toASE() );
+            byte[] discBytes = discMsg.toASE().toVerbatim();
+            sendSocket.send(new DatagramPacket(discBytes, discBytes.length,
+                    InetAddress.getByName(constants.getBroadcastAddress()),
+                    constants.getDiscoverPort()));
+            Bugout.msg( "Discover: sending: " + new MessagePointer( discMsg ) );
         }
         catch (UnknownHostException e) {
             throw new FatalNetworkException(
@@ -175,7 +175,7 @@ public class AuditoriumDiscoveryHost {
         while (true) {
             try {
                 Bugout.msg( "Discover: waiting for incoming socket connection" );
-                MessageSocket socket = new MessageSocket( listensocket.accept() );
+                MessageSocket socket = new MessageSocket( listenSocket.accept() );
                 Bugout.msg( "Discover: awaiting bytes" );
                 Message response = socket.receive();
                 Bugout.msg( "Discover: received: "
@@ -186,8 +186,8 @@ public class AuditoriumDiscoveryHost {
 
                 for (ASExpression ase : (ListExpression) response.getDatum()) {
                     HostPointer p = new HostPointer( ase );
-                    if (!retval.contains( p ))
-                        retval.add( p );
+                    if (!ret.contains( p ))
+                        ret.add( p );
                 }
                 socket.close();
             }
@@ -198,19 +198,14 @@ public class AuditoriumDiscoveryHost {
                 Bugout.err( "Host: IO Error receiving discover response: "
                         + e.getMessage() );
             }
-            catch (IncorrectFormatException e) {
-                Bugout
-                        .err( "Host: Discover response was not formatted correctly: "
-                                + e.getMessage() );
-            }
-            catch (ClassCastException e) {
+            catch (IncorrectFormatException | ClassCastException e) {
                 Bugout
                         .err( "Host: Discover response was not formatted correctly: "
                                 + e.getMessage() );
             }
         }
 
-        return retval.toArray( new HostPointer[0] );
+        return ret.toArray(new HostPointer[ret.size()]);
     }
 
     /**
@@ -219,14 +214,14 @@ public class AuditoriumDiscoveryHost {
      */
     private void discoverListenerThread() {
         Bugout.msg( "Discover: THREAD START" );
-        while (_running) {
+        while (running) {
             try {
                 // Listen for a packet
                 byte[] buf = new byte[1000];
                 DatagramPacket p = new DatagramPacket( buf, buf.length );
                 Bugout.msg( "Discover: waiting for packet" );
                 try {
-                    _discoverSocket.receive( p );
+                    discoverSocket.receive(p);
                 }
                 catch (IOException e) {
                     Bugout
@@ -244,13 +239,13 @@ public class AuditoriumDiscoveryHost {
 
                 // Respond to the message.
                 HostPointer address = new HostPointer( message.getDatum() );
-                if (address.equals( _discoveraddress ))
+                if (address.equals(discoverAddress))
                     continue;
                 Bugout.msg( "Discover: replying to " + address );
-                MessageSocket s = new MessageSocket( address, _constants
+                MessageSocket s = new MessageSocket( address, constants
                         .getDiscoverReplyTimeout() );
-                s.send( new Message( "discover-reply", _hostaddress, _host
-                        .nextSequence(), new ListExpression( _hostaddress
+                s.send( new Message( "discover-reply", hostAddress, host
+                        .nextSequence(), new ListExpression( hostAddress
                         .toASE() ) ) );
                 s.close();
                 Bugout.msg( "Discover: reply sent." );
@@ -267,10 +262,10 @@ public class AuditoriumDiscoveryHost {
                         .err( "Discover: packet received was not a correctly formatted s-expression" );
             }
             catch (NetworkException e) {
-                System.out.println(e.getStackTrace());
+                e.printStackTrace();
                 Bugout.err( "Discover: packet received: " + e.getMessage() );
-                Bugout.err( "Discover: socket: port - "+_discoverSocket.getPort());
-                Bugout.err( "Discover: socket: local port - "+_discoverSocket.getLocalPort());
+                Bugout.err("Discover: socket: port - " + discoverSocket.getPort());
+                Bugout.err( "Discover: socket: local port - "+ discoverSocket.getLocalPort());
             }
         }
         Bugout.msg( "Discover: THREAD END" );

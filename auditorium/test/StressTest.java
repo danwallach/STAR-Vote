@@ -55,7 +55,7 @@ public class StressTest {
         host.stop();
     }
 
-    public static void listenthread(final AuditoriumHost host) throws Exception {
+    public static void listenthread(final AuditoriumHost host) {
         new Thread( new Runnable() {
 
             public void run() {

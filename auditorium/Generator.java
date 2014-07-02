@@ -53,14 +53,14 @@ public class Generator {
         private final Key _private;
 
         /**
-         * @param pub
+         * @param pubKey
          *            This is the public key for the pair.
-         * @param priv
+         * @param privKey
          *            This is the private key for the pair.
          */
-        public Keys(Key pub, Key priv) {
-            _public = pub;
-            _private = priv;
+        public Keys(Key pubKey, Key privKey) {
+            _public = pubKey;
+            _private = privKey;
         }
 
         /**

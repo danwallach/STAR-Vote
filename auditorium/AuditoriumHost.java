@@ -33,11 +33,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Observer;
-
-// import auditorium.verifierplugins.*;
-
 import sexpression.*;
-// import verifier.*;
 
 /**
  * This is the top level class that an application should interface with if it
@@ -72,9 +68,9 @@ public class AuditoriumHost implements IAuditoriumHost {
      * @return This method returns the IP address of this host.
      */
     public static String getMyIP() {
-        Enumeration<NetworkInterface> ints;
+        Enumeration<NetworkInterface> interfaces;
         try {
-            ints = NetworkInterface.getNetworkInterfaces();
+            interfaces = NetworkInterface.getNetworkInterfaces();
         }
         catch (SocketException e) {
             throw new FatalNetworkException(
@@ -83,8 +79,8 @@ public class AuditoriumHost implements IAuditoriumHost {
         Enumeration<InetAddress> addresses;
         NetworkInterface i;
         InetAddress a;
-        while (ints.hasMoreElements()) {
-            i = ints.nextElement();
+        while (interfaces.hasMoreElements()) {
+            i = interfaces.nextElement();
             addresses = i.getInetAddresses();
             while (addresses.hasMoreElements()) {
                 a = addresses.nextElement();
@@ -113,36 +109,35 @@ public class AuditoriumHost implements IAuditoriumHost {
     }
 
     // Core state
-    private final HashMap<String, IAuditoriumLayer> _layers;
-    private final IAuditoriumLayer _head;
-    private final AuditoriumDiscoveryHost _discover;
-    private final IAuditoriumParams _constants;
-    private final SynchronizedQueue<Pair> _inqueue;
-    private final SynchronizedQueue<ASExpression> _outqueue;
-    private final SynchronizedQueue<Message> _pendingqueue;
+    private final HashMap<String, IAuditoriumLayer> layers;
+    private final IAuditoriumLayer head;
+    private final AuditoriumDiscoveryHost discover;
+    private final IAuditoriumParams constants;
+    private final SynchronizedQueue<Pair> inQueue;
+    private final SynchronizedQueue<ASExpression> outQueue;
+    private final SynchronizedQueue<Message> pendingQueue;
 
     // People
-    private final HostPointer _me;
-    private final String _nodeid;
-    private final ArrayList<Link> _hosts;
+    private final HostPointer me;
+    private final String nodeID;
+    private final ArrayList<Link> hosts;
 
     // Events
-    private final Event<HostPointer> _hostJoined;
-    private final Event<HostPointer> _hostLeft;
+    private final Event<HostPointer> hostJoined;
+    private final Event<HostPointer> hostLeft;
 
     // Verifier
-//    private final Verifier _verifier;
-//    private final ASExpression _rule;
-//    private final IncrementalAuditoriumLog _verifierPlugin;
-    private final Log _log;
-    private long _counter;
+//    private final Verifier verifier;
+//    private final ASExpression rule;
+//    private final IncrementalAuditoriumLog verifierPlugin;
+    private final Log log;
 
     // Sockets
-    private ServerSocket _listensocket;
+    private ServerSocket listenSocket;
 
     // Thread state
-    private volatile boolean _running;
-    private volatile long _sequence;
+    private volatile boolean running;
+    private volatile long sequence;
 
     /**
      * @param machineName
@@ -155,40 +150,40 @@ public class AuditoriumHost implements IAuditoriumHost {
      */
     public AuditoriumHost(String machineName, IAuditoriumParams constants) {
         // People
-        _nodeid = machineName;
-        _me = new HostPointer( machineName, getMyIP(), constants
+        nodeID = machineName;
+        me = new HostPointer( machineName, getMyIP(), constants
                 .getListenPort() );
-        _hosts = new ArrayList<>();
+        hosts = new ArrayList<>();
         
         //Core state
-        _layers = new HashMap<>();
+        layers = new HashMap<>();
         AuditoriumIntegrityLayer integrity = new AuditoriumIntegrityLayer(
                 AAuditoriumLayer.BOTTOM, this, constants.getKeyStore() );
 
         AuditoriumTemporalLayer temporal = new AuditoriumTemporalLayer(
                 integrity, this );
-        _layers.put( "Integrity", integrity );
-        _layers.put( "Temporal", temporal );
-        _head = temporal;
-        _discover = new AuditoriumDiscoveryHost( this, constants );
-        _constants = constants;
-        _inqueue = new SynchronizedQueue<>();
-        _outqueue = new SynchronizedQueue<>();
-        _pendingqueue = new SynchronizedQueue<>();
+        layers.put( "Integrity", integrity );
+        layers.put( "Temporal", temporal );
+        head = temporal;
+        discover = new AuditoriumDiscoveryHost( this, constants );
+        this.constants = constants;
+        inQueue = new SynchronizedQueue<>();
+        outQueue = new SynchronizedQueue<>();
+        pendingQueue = new SynchronizedQueue<>();
 
         // Events
-        _hostJoined = new Event<>();
-        _hostLeft = new Event<>();
+        hostJoined = new Event<>();
+        hostLeft = new Event<>();
         
         // ASExpression loadedRule = null;
 
         // Verifier
         try {
-        	String ruleFile = constants.getRuleFile();
-        	if (ruleFile != null) {
+//        	String ruleFile = constants.getRuleFile();
+//        	if (ruleFile != null) {
 //        		loadedRule = Verifier.readRule( constants.getRuleFile() );
-        	}
-            _log = new Log( new File( constants.getLogLocation() ) );
+//        	}
+            log = new Log( new File( constants.getLogLocation() ) );
         }
         catch (FileNotFoundException e) {
             throw new FatalNetworkException( "Can't open file: "
@@ -198,20 +193,20 @@ public class AuditoriumHost implements IAuditoriumHost {
         /*
         // XXX: remove comments when the verifier compiles again 
         if (loadedRule != null) {
-        	_rule = loadedRule;
-	        _verifierPlugin = new IncrementalAuditoriumLog();
-	        _verifier = new Verifier( new NoOpStackTraceWriter() );
-	        _verifier.registerPlugin( _verifierPlugin );
+        	rule = loadedRule;
+	        verifierPlugin = new IncrementalAuditoriumLog();
+	        verifier = new Verifier( new NoOpStackTraceWriter() );
+	        verifier.registerPlugin( verifierPlugin );
         } else {
-        	_rule = null;
-    		_verifierPlugin = null;
-			_verifier = null;
+        	rule = null;
+    		verifierPlugin = null;
+			verifier = null;
         }
         */
 	        
         // Thread state
-        _running = false;
-        _sequence = 0;
+        running = false;
+        sequence = 0;
     }
 
     /**
@@ -222,8 +217,8 @@ public class AuditoriumHost implements IAuditoriumHost {
      */
     public void start() throws NetworkException {
         Bugout.msg( "Host: STARTING" );
-        _discover.start();
-        _running = true;
+        discover.start();
+        running = true;
         new Thread( new Runnable() {
 
             public void run() {
@@ -251,25 +246,25 @@ public class AuditoriumHost implements IAuditoriumHost {
      * Stop the threads.
      */
     public void stop() {
-        if (!_running)
+        if (!running)
             return;
 
         Bugout.msg( "Host: STOPPING" );
-        _running = false;
-        _discover.stop();
+        running = false;
+        discover.stop();
         disconnect();
-        _inqueue.releaseThreads();
-        _outqueue.releaseThreads();
-        _pendingqueue.releaseThreads();
+        inQueue.releaseThreads();
+        outQueue.releaseThreads();
+        pendingQueue.releaseThreads();
         try {
-            _listensocket.close();
+            listenSocket.close();
         }
         catch (IOException ignored) {}
 
         /*
         // XXX: uncomment when verifier works
-        if (_verifier != null) {
-        	System.out.println( "Verification result:" + _verifier.eval( _rule ) );
+        if (verifier != null) {
+        	System.out.println( "Verification result:" + verifier.eval( rule ) );
         }
         */
     }
@@ -279,9 +274,9 @@ public class AuditoriumHost implements IAuditoriumHost {
      * accepting join requests).
      */
     public synchronized void disconnect() {
-        for (Link l : _hosts)
+        for (Link l : hosts)
             l.stop();
-        _hosts.clear();
+        hosts.clear();
     }
 
     /**
@@ -292,7 +287,7 @@ public class AuditoriumHost implements IAuditoriumHost {
      * @return This method returns an array of pointers to nearby hosts.
      */
     public HostPointer[] discover() throws NetworkException {
-        return _discover.discover();
+        return discover.discover();
     }
 
     /**
@@ -304,7 +299,7 @@ public class AuditoriumHost implements IAuditoriumHost {
      */
     public void join(HostPointer host) throws NetworkException {
         synchronized (this) {
-            for (Link l : _hosts)
+            for (Link l : hosts)
                 if (l.getAddress().equals( host )) {
                     Bugout.msg( "Host: already joined " + host );
                     return;
@@ -312,37 +307,37 @@ public class AuditoriumHost implements IAuditoriumHost {
         }
 
         // Send the join
-        Message joinmsg = new Message( "join", _me, nextSequence(), _head
+        Message joinMsg = new Message( "join", me, nextSequence(), head
                 .makeJoin( StringExpression.EMPTY ) );
-        MessageSocket socket = new MessageSocket( host, _constants
+        MessageSocket socket = new MessageSocket( host, constants
                 .getJoinTimeout() );
-        Bugout.msg( "Host: sending join: " + new MessagePointer( joinmsg ) );
-        socket.send( joinmsg );
+        Bugout.msg( "Host: sending join: " + new MessagePointer( joinMsg ) );
+        socket.send( joinMsg );
 
         // Receive the reply
-        Message joinreply;
+        Message joinReply;
         try {
-            joinreply = socket.receive();
-            _head.receiveJoinReply( joinreply.getDatum() );
+            joinReply = socket.receive();
+            head.receiveJoinReply(joinReply.getDatum());
         }
         catch (IncorrectFormatException e) {
             throw new NetworkException( "Couldn't join, malformed reply", e );
         }
-        Bugout.msg( "Host: received reply: " + new MessagePointer( joinreply ) );
+        Bugout.msg( "Host: received reply: " + new MessagePointer( joinReply ) );
 
         // Add the link
         synchronized (this) {
-            for (Link l : _hosts)
-                if (l.getAddress().equals( joinreply.getFrom() )) {
+            for (Link l : hosts)
+                if (l.getAddress().equals(joinReply.getFrom())) {
                     try {
                         socket.close();
                     }
                     catch (IOException ignored) {}
                     return;
                 }
-            Link l = new Link( this, socket, joinreply.getFrom() );
+            Link l = new Link( this, socket, joinReply.getFrom() );
             l.start();
-            _hosts.add( l );
+            hosts.add( l );
         }
 
     }
@@ -355,7 +350,7 @@ public class AuditoriumHost implements IAuditoriumHost {
      *            Place this announcement on the wire.
      */
     public void announce(ASExpression announcement) {
-        _outqueue.push( announcement );
+        outQueue.push(announcement);
     }
 
     /**
@@ -370,7 +365,7 @@ public class AuditoriumHost implements IAuditoriumHost {
      *             messages.
      */
     public Pair listen() throws ReleasedQueueException {
-        return _inqueue.pop();
+        return inQueue.pop();
     }
 
     /**
@@ -387,8 +382,8 @@ public class AuditoriumHost implements IAuditoriumHost {
      */
     public IAuditoriumLayer getLayerByName(String layer)
             throws LayerNotFoundException {
-        if (_layers.containsKey( layer ))
-            return _layers.get( layer );
+        if (layers.containsKey( layer ))
+            return layers.get( layer );
         throw new LayerNotFoundException( layer );
     }
 
@@ -400,7 +395,7 @@ public class AuditoriumHost implements IAuditoriumHost {
      *            argument will be of type HostPointer.
      */
     public void registerForJoined(Observer observer) {
-        _hostJoined.addObserver( observer );
+        hostJoined.addObserver( observer );
     }
 
     /**
@@ -411,36 +406,36 @@ public class AuditoriumHost implements IAuditoriumHost {
      *            This observer will be notified when a host leaves the network.
      */
     public void registerForLeft(Observer observer) {
-        _hostLeft.addObserver( observer );
+        hostLeft.addObserver( observer );
     }
 
     /**
      * @see auditorium.IAuditoriumHost#getMe()
      */
     public HostPointer getMe() {
-        return _me;
+        return me;
     }
 
     /**
      * @see auditorium.IAuditoriumHost#getNodeId()
      */
     public String getNodeId() {
-        return _nodeid;
+        return nodeID;
     }
 
     /**
      * @see auditorium.IAuditoriumHost#getLog()
      */
     public Log getLog() {
-        return _log;
+        return log;
     }
 
     /**
      * @see auditorium.IAuditoriumHost#nextSequence()
      */
     public String nextSequence() {
-        _sequence++;
-        return Long.toString( _sequence );
+        sequence++;
+        return Long.toString( sequence );
     }
 
     /**
@@ -448,9 +443,9 @@ public class AuditoriumHost implements IAuditoriumHost {
      */
     public ListExpression getAddresses() {
         // ArrayList<ASExpression> lst = new ArrayList<ASExpression>();
-        // for (Link l : _hosts)
+        // for (Link l : hosts)
         // lst.add( l.getAddress().toASE() );
-        // lst.add( _me.toASE() );
+        // lst.add( me.toASE() );
         // return new ListExpression( lst );
         throw new RuntimeException( "Do not use this method yet." );
     }
@@ -459,7 +454,7 @@ public class AuditoriumHost implements IAuditoriumHost {
      * @see auditorium.IAuditoriumHost#receiveAnnouncement(auditorium.Message)
      */
     public void receiveAnnouncement(Message message) {
-        _pendingqueue.push( message );
+        pendingQueue.push(message);
     }
 
     /**
@@ -467,28 +462,28 @@ public class AuditoriumHost implements IAuditoriumHost {
      */
     public synchronized void removeLink(Link link) {
         link.stop();
-        _hosts.remove( link );
-        _hostLeft.notify( link.getAddress() );
+        hosts.remove( link );
+        hostLeft.notify( link.getAddress() );
     }
 
     // Join thread.
     private void joinListenerThread() {
         Bugout.msg( "Listen: THREAD START" );
         try {
-        	_listensocket = new ServerSocket( _constants.getListenPort() );
+        	listenSocket = new ServerSocket( constants.getListenPort() );
         }
         catch (IOException e1) {
             Bugout.err( "Couldn't bind socket." );
             return;
         }
 
-        while (_running) {
+        while (running) {
             // Get an incoming socket connection.
             MessageSocket socket;
             try {
                 Bugout.msg( "Listen: waiting for connection on "
-                        + _constants.getListenPort() );
-                socket = new MessageSocket( _listensocket.accept() );
+                        + constants.getListenPort() );
+                socket = new MessageSocket( listenSocket.accept() );
                 Bugout.msg( "Listen: connection received." );
             }
             catch (NetworkException e) {
@@ -535,8 +530,8 @@ public class AuditoriumHost implements IAuditoriumHost {
             // Send the join response, set up the auditorium link.
             synchronized (this) {
                 try {
-                    socket.send( new Message( "join-reply", _me,
-                            nextSequence(), _head
+                    socket.send( new Message( "join-reply", me,
+                            nextSequence(), head
                                     .makeJoinReply( Nothing.SINGLETON ) ) );
                 }
                 catch (NetworkException e) {
@@ -546,13 +541,12 @@ public class AuditoriumHost implements IAuditoriumHost {
                     catch (IOException ignored) {}
                     continue;
                 }
-                for (Link l : _hosts)
-                    if (l.getAddress().equals( jrq.getFrom() )) {
-                    }
+//                for (Link l : hosts)
+//                    }
                 Link l = new Link( this, socket, jrq.getFrom() );
                 l.start();
-                _hosts.add( l );
-                _hostJoined.notify( jrq.getFrom() );
+                hosts.add( l );
+                hostJoined.notify( jrq.getFrom() );
                 Bugout.msg( "Listen: Connection successful to "
                         + l.getAddress() );
             }
@@ -564,13 +558,13 @@ public class AuditoriumHost implements IAuditoriumHost {
     // Announce thread
     private void announceThread() {
         Bugout.msg( "Announce: THREAD START" );
-        while (_running) {
+        while (running) {
             try {
-                ASExpression announcement = _outqueue.pop();
+                ASExpression announcement = outQueue.pop();
                 synchronized (this) {
                     // Make the announcement
-                    Message msg = new Message( "announce", _me, nextSequence(),
-                            _head.makeAnnouncement( announcement ) );
+                    Message msg = new Message( "announce", me, nextSequence(),
+                            head.makeAnnouncement( announcement ) );
 
                     // Flood the message.
                     Bugout.msg( "Announce: flooding "
@@ -595,9 +589,9 @@ public class AuditoriumHost implements IAuditoriumHost {
     // Receive thread
     private void receiveThread() {
         Bugout.msg( "Receive: THREAD START." );
-        while (_running) {
+        while (running) {
             try {
-                Message message = _pendingqueue.pop();
+                Message message = pendingQueue.pop();
 
                 synchronized (this) {
                     Bugout.msg( "Announce: flooding "
@@ -619,20 +613,20 @@ public class AuditoriumHost implements IAuditoriumHost {
      * Assume lock is already acquired!
      */
     private void flood(Message message) {
-        ArrayList<Link> removelist = new ArrayList<>();
+        ArrayList<Link> removeList = new ArrayList<>();
 
-        for (Link l : _hosts) {
+        for (Link l : hosts) {
             try {
                 l.getSocket().send( message );
             }
             catch (NetworkException e) {
-                removelist.add( l );
+                removeList.add(l);
             }
         }
 
-        for (Link l : removelist) {
+        for (Link l : removeList) {
             l.stop();
-            _hosts.remove( l );
+            hosts.remove( l );
         }
     }
 
@@ -640,15 +634,15 @@ public class AuditoriumHost implements IAuditoriumHost {
      * Assume lock is already acquired!
      */
     private void logMessage(Message message) throws IOException {
-        if (_log.logAnnouncement( message )) {
+        if (log.logAnnouncement( message )) {
             verify( message );
             try {
                 Bugout.msg( "Host: logging and flooding: "
                         + new MessagePointer( message ) );
                 flood( message );
-                ASExpression payload = _head.receiveAnnouncement( message
+                ASExpression payload = head.receiveAnnouncement( message
                         .getDatum() );
-                if (!_inqueue.push( new Pair( message.getFrom(), payload ) )) {
+                if (!inQueue.push( new Pair( message.getFrom(), payload ) )) {
                     Bugout.err( "Receive: Application queue push fail" );
                     stop();
                 }
@@ -676,13 +670,12 @@ public class AuditoriumHost implements IAuditoriumHost {
      *            Add this message.
      */
     private void verify(Message message) {
-        _counter++;
         /*
         // XXX: uncomment when verifier works
-		if (_verifier != null) {
-			_verifierPlugin.addLogData( message );
-			if (_counter % 10 == 0)
-				_verifier.eval( _rule );
+		if (verifier != null) {
+			verifierPlugin.addLogData( message );
+			if (counter % 10 == 0)
+				verifier.eval( rule );
 		}
 		*/
     }

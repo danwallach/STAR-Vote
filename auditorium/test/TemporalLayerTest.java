@@ -79,7 +79,8 @@ public class TemporalLayerTest {
 
     @After
     public void tear() {
-        _tmpFile.delete();
+        if(!_tmpFile.delete())
+            throw new RuntimeException("Couldn't delete file!");
     }
 
     // ** makeAnnouncement(ASExpression) tests **
