@@ -149,11 +149,10 @@ public class IntegrityLayerTest {
     }
 
     // ** receiveAnnouncement(ASExpression) tests **
-    private void receiveAnnouncementTest(ASExpression wrapThis)
-            throws Exception {
-        ASExpression wrapped = layer.makeAnnouncement( wrapThis );
-        System.err.println( wrapped );
-        assertEquals( wrapThis, layer.receiveAnnouncement( wrapped ) );
+    private void receiveAnnouncementTest(ASExpression wrapThis) throws Exception {
+        ASExpression wrapped = layer.makeAnnouncement(wrapThis);
+        System.err.println(wrapped);
+        assertEquals(wrapThis, layer.receiveAnnouncement(wrapped));
     }
 
     private void receiveAnnouncementTestFail(ASExpression sendThis)
