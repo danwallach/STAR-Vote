@@ -32,8 +32,6 @@ package auditorium;
  */
 public class AuditoriumCryptoException extends Exception {
 
-    private static final long serialVersionUID = 1L;
-
     public AuditoriumCryptoException(String action, Exception e) {
         super( "There was a problem while performing the crypto action: "
                 + action + ".", e );
