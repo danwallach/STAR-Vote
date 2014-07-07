@@ -26,6 +26,8 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
+import sexpression.ASExpression;
+import sexpression.StringExpression;
 import sexpression.stream.*;
 
 /**
@@ -112,7 +114,15 @@ public class MessageSocket {
      * @throws IncorrectFormatException if the incoming s-exp isn't formatted as a message.
      */
     public Message receive() throws NetworkException, IncorrectFormatException {
-        try { return new Message(_in.read()); }
+
+        try {
+            ASExpression data = _in.read();
+
+            if(data != null)
+                return new Message(data);
+            else
+                return null;
+        }
         catch (IOException | InvalidVerbatimStreamException e) {
             throw new NetworkException( "while receiving:" + e.getMessage(), e );
         }

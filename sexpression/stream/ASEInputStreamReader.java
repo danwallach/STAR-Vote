@@ -65,7 +65,7 @@ public class ASEInputStreamReader {
      * s-expressions in the verbatim form should be "back to back" on the stream
      * in order for subsequent calls to read() to give the desired behavior..)
      * 
-     * @return This method returns the parsed ASExpression.
+     * @return This method returns the parsed ASExpression, or null if the end of file was reached.
      * @throws IOException
      *             This method throws if reading from the decorated stream
      *             throws.
@@ -76,8 +76,7 @@ public class ASEInputStreamReader {
      *             list). If the parser expects one of these two and finds
      *             something else, the data is invalid.
      */
-    public ASExpression read() throws IOException,
-            InvalidVerbatimStreamException {
+    public ASExpression read() throws IOException, InvalidVerbatimStreamException {
         // Read in the first byte to check for type: base64 or standard
         // verbatim.
         _stream = _standardStream;
@@ -90,7 +89,7 @@ public class ASEInputStreamReader {
         }
         // EOF case.
         else if (b == -1)
-            throw new EOFException( "End of stream" );
+            return null;
         // verbatim case
         else
             return readASE( b );

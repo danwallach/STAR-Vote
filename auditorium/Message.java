@@ -37,14 +37,12 @@ public class Message {
             StringWildcard.SINGLETON, HostPointer.PATTERN,
             StringWildcard.SINGLETON, Wildcard.SINGLETON );
 
-    private final String _type;
-    private final HostPointer _from;
-    private final String _sequence;
-    private final ASExpression _datum;
+    private final String type;
+    private final HostPointer from;
+    private final String sequence;
+    private final ASExpression datum;
 
-    // lazy eval save fields
-    private ASExpression _aseform = null;
-    private StringExpression _hash = null;
+    private StringExpression hash = null;
 
     /**
      * @param type
@@ -60,10 +58,10 @@ public class Message {
      */
     public Message(String type, HostPointer from, String sequence,
             ASExpression datum) {
-        _type = type;
-        _from = from;
-        _sequence = sequence;
-        _datum = datum;
+        this.type = type;
+        this.from = from;
+        this.sequence = sequence;
+        this.datum = datum;
     }
 
     /**
@@ -80,10 +78,10 @@ public class Message {
             throw new IncorrectFormatException( message, new Exception( message
                     + " didn't match the pattern:" + PATTERN ) );
         ListExpression lst = (ListExpression) message;
-        _type = lst.get( 0 ).toString();
-        _from = new HostPointer( lst.get( 1 ) );
-        _sequence = lst.get( 2 ).toString();
-        _datum = lst.get( 3 );
+        type = lst.get( 0 ).toString();
+        from = new HostPointer( lst.get( 1 ) );
+        sequence = lst.get( 2 ).toString();
+        datum = lst.get( 3 );
     }
 
     /**
@@ -92,11 +90,17 @@ public class Message {
      * @return This method returns ([name] [host] [datum]).
      */
     public ASExpression toASE() {
-        if (_aseform == null)
-            _aseform = new ListExpression(
-                    StringExpression.makeString( _type ), _from.toASE(),
-                    StringExpression.makeString( _sequence ), _datum );
-        return _aseform;
+        return new ListExpression(StringExpression.makeString(type), from.toASE(), StringExpression.makeString(sequence), datum);
+    }
+
+    /**
+     * Convert the message to an ASE, including its hash value. This is so messages with chained hash values can be
+     * logged.
+     *
+     * @return Return an ASE of the form ([name] [host] [datum] [chained hash value])
+     */
+    public ASExpression toASTWithHash() {
+        return new ListExpression(StringExpression.makeString(type), from.toASE(), StringExpression.makeString(sequence), datum, hash);
     }
 
     /**
@@ -105,9 +109,9 @@ public class Message {
      * @return This method returns the hash of this message.
      */
     public StringExpression getHash() {
-        if (_hash == null)
-            _hash = StringExpression.makeString( toASE().getSHA1() );
-        return _hash;
+        if (hash == null)
+            hash = StringExpression.makeString( toASE().getSHA1() );
+        return hash;
     }
 
     /**
@@ -116,7 +120,7 @@ public class Message {
      * @return This method returns the type field for this message.
      */
     public String getType() {
-        return _type;
+        return type;
     }
 
     /**
@@ -125,7 +129,7 @@ public class Message {
      * @return This method returns the from field for this message.
      */
     public HostPointer getFrom() {
-        return _from;
+        return from;
     }
 
     /**
@@ -134,7 +138,7 @@ public class Message {
      * @return This method returns the sequence number of this message.
      */
     public String getSequence() {
-        return _sequence;
+        return sequence;
     }
 
     /**
@@ -143,7 +147,7 @@ public class Message {
      * @return This method returns the datum field for this message.
      */
     public ASExpression getDatum() {
-        return _datum;
+        return datum;
     }
 
     /**
@@ -168,5 +172,15 @@ public class Message {
         catch (IncorrectFormatException e) {
             return false;
         }
+    }
+
+    /**
+     * @param lastChainedHash the past hash that will be hashed along with this to form the hash chain
+     */
+    public void chain(StringExpression lastChainedHash) {
+        String newData = getHash().toString() + lastChainedHash.toString();
+
+        hash = StringExpression.makeString(StringExpression.makeString(newData).getSHA1());
+
     }
 }

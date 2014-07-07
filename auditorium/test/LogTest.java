@@ -37,26 +37,25 @@ import auditorium.*;
  * Tests for the Log class.
  * 
  * @author Kyle Derr
- * 
  */
 public class LogTest {
 
-    private Log _log;
+    private Log log;
 
     @Before
     public void setup() throws Exception {
-        _log = new Log( new File( "temp" ) );
+        log = new Log( new File( "temp" ) );
     }
 
     @After
     public void tear() {
-        new File( "temp" ).delete();
+        assertTrue(new File( "temp" ).delete());
     }
 
     // ** logAnnouncement(Message) tests
 
     @Test
-    public void log_announcement_1() throws Exception {
+    public void logAnnouncement1() throws Exception {
         Message msg1 = new Message( "announcement", new HostPointer(
                 "test-node", "192.168.1.100", 9000 ), "0",
                 StringExpression.makeString( "test" ) );
@@ -66,35 +65,35 @@ public class LogTest {
                 StringExpression.makeString( "test2" ) );
         MessagePointer pointer2 = new MessagePointer( msg2 );
 
-        assertFalse( _log.TESTgetSetCopy().contains( pointer1 ) );
-        assertFalse( _log.TESTgetSetCopy().contains( pointer2 ) );
-        assertEquals( 0, _log.getLast().length );
+        assertFalse( log.TESTgetSetCopy().contains( pointer1 ) );
+        assertFalse( log.TESTgetSetCopy().contains( pointer2 ) );
+        assertEquals( 0, log.getLast().length );
 
-        _log.logAnnouncement( msg1 );
+        log.logAnnouncement( msg1 );
 
         ArrayList<MessagePointer> last = new ArrayList<>();
-        for (MessagePointer p : _log.TESTgetLast())
+        for (MessagePointer p : log.TESTgetLast())
             last.add( p );
-        assertEquals( 1, _log.TESTgetSetCopy().size() );
-        assertTrue( _log.TESTgetSetCopy().contains( pointer1 ) );
-        assertFalse( _log.TESTgetSetCopy().contains( pointer2 ) );
+        assertEquals( 1, log.TESTgetSetCopy().size() );
+        assertTrue( log.TESTgetSetCopy().contains( pointer1 ) );
+        assertFalse( log.TESTgetSetCopy().contains( pointer2 ) );
         assertEquals( 1, last.size() );
         assertTrue( last.contains( pointer1 ) );
         assertFalse( last.contains( pointer2 ) );
-        assertFalse( _log.logAnnouncement( msg1 ) );
+        assertFalse( log.logAnnouncement( msg1 ) );
 
-        _log.logAnnouncement( msg2 );
+        log.logAnnouncement( msg2 );
 
         last = new ArrayList<>();
-        for (MessagePointer p : _log.TESTgetLast())
+        for (MessagePointer p : log.TESTgetLast())
             last.add( p );
-        assertEquals( 2, _log.TESTgetSetCopy().size() );
-        assertTrue( _log.TESTgetSetCopy().contains( pointer1 ) );
-        assertTrue( _log.TESTgetSetCopy().contains( pointer2 ) );
+        assertEquals( 2, log.TESTgetSetCopy().size() );
+        assertTrue( log.TESTgetSetCopy().contains( pointer1 ) );
+        assertTrue( log.TESTgetSetCopy().contains( pointer2 ) );
         assertEquals( 2, last.size() );
         assertTrue( last.contains( pointer1 ) );
         assertTrue( last.contains( pointer2 ) );
-        assertFalse( _log.logAnnouncement( msg1 ) );
-        assertFalse( _log.logAnnouncement( msg2 ) );
+        assertFalse( log.logAnnouncement( msg1 ) );
+        assertFalse( log.logAnnouncement( msg2 ) );
     }
 }

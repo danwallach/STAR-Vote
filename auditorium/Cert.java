@@ -70,13 +70,13 @@ public class Cert {
      *             like PATTERN.
      */
     public Cert(ASExpression cert) throws IncorrectFormatException {
-        ASExpression matchresult = PATTERN.match( cert );
-        if (matchresult == NoMatch.SINGLETON)
+        ASExpression matchResult = PATTERN.match( cert );
+        if (matchResult == NoMatch.SINGLETON)
             throw new IncorrectFormatException( cert, new Exception(
                     "given expression did not match the pattern" ) );
-        ListExpression matchlist = (ListExpression) matchresult;
+        ListExpression matchList = (ListExpression) matchResult;
 
-        _signature = new Signature( matchlist.get( 0 ) );
+        _signature = new Signature( matchList.get( 0 ) );
         _key = new Key( _signature.getPayload() );
     }
 

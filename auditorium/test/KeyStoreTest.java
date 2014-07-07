@@ -29,55 +29,64 @@ import org.junit.*;
 import auditorium.*;
 import sexpression.*;
 
+/**
+ * Tests the functionality of the Auditorium key store
+ *
+ * @author Kyle Derr
+ */
 public class KeyStoreTest {
 
-    private final ASExpression _message = new ListExpression( "one", "two" );
+    private final ASExpression message = new ListExpression( "one", "two" );
 
-    private File _file;
-    private SimpleKeyStore _keystore;
+    private File file;
+    private SimpleKeyStore keystore;
 
     @Before
     public void build() throws Exception {
-        _file = new File( "tmp/" );
-        _file.mkdir();
+        file = new File( "tmp/" );
+        file.mkdir();
         Generator.main( "5", "tmp/" );
-        _keystore = new SimpleKeyStore( "tmp/" );
+        keystore = new SimpleKeyStore( "tmp/" );
     }
 
     @After
     public void tear() throws Exception {
-        for (File child : _file.listFiles())
-            child.delete();
-        _file.delete();
+        File[] fileList;
+        if((fileList = file.listFiles()) != null) {
+            for (File child : fileList)
+               child.delete();
+        }
+
+        file.delete();
     }
 
     @Test
-    public void load_key() throws Exception {
+    public void loadKey() throws Exception {
         for (int lcv = 0; lcv < 5; lcv++) {
-            Cert cert = _keystore.loadCert( Integer.toString( lcv ) );
-            Key key = _keystore.loadKey( Integer.toString( lcv ) );
-            Signature sig = RSACrypto.SINGLETON.sign( _message, key );
+            Cert cert = keystore.loadCert( Integer.toString( lcv ) );
+            Key key = keystore.loadKey( Integer.toString( lcv ) );
+            Signature sig = RSACrypto.SINGLETON.sign( message, key );
             RSACrypto.SINGLETON.verify( sig, cert );
         }
     }
 
     @Test(expected = AuditoriumCryptoException.class)
-    public void load_key_fail_1() throws Exception {
-        _keystore.loadKey( "blah" );
+    public void loadKeyFail1() throws Exception {
+        keystore.loadKey( "blah" );
     }
 
     @Test(expected = AuditoriumCryptoException.class)
-    public void load_key_fail_2() throws Exception {
-        _keystore.loadKey( "5" );
+    public void loadKeyFail2() throws Exception {
+        keystore.loadKey( "5" );
     }
 
     @Test(expected = AuditoriumCryptoException.class)
-    public void load_cert_fail_1() throws Exception {
-        _keystore.loadCert( "blah" );
+    public void loadCertFail1() throws Exception {
+        keystore.loadCert( "blah" );
     }
 
     @Test(expected = AuditoriumCryptoException.class)
-    public void load_cert_fail_2() throws Exception {
-        _keystore.loadCert( "5" );
+    public void loadCertFail2() throws Exception {
+        keystore.loadCert( "5" );
     }
 }

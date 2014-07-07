@@ -37,17 +37,17 @@ import sexpression.*;
  */
 public class AuditoriumTemporalLayer extends AAuditoriumLayer {
 
-    public static final ASExpression PATTERN = new ListExpression(
-            StringExpression.makeString( "succeeds" ), new ListWildcard(
-                    MessagePointer.PATTERN ), Wildcard.SINGLETON );
-    public static final ASExpression REPLY_PATTERN = new ListWildcard(
-            MessagePointer.PATTERN );
+    /** Pattern for the "succeeds" clause in messages (which assigned temporality, of the form (succeeds <list-of-ptrs> <payload>) */
+    public static final ASExpression PATTERN = new ListExpression(StringExpression.makeString("succeeds"), new ListWildcard(MessagePointer.PATTERN), Wildcard.SINGLETON);
+
+    /** Pattern for the message pointers contained in a join-reply, of the form (<ptr> <ptr> ... <ptr>) */
+    public static final ASExpression REPLY_POINTERS_PATTERN = new ListWildcard(MessagePointer.PATTERN);
 
     /**
-     * @param child
-     *            This layer is below the constructed layer.
-     * @param host
-     *            This is the host that is using this new layer.
+     * Constructor, just relies on the super constructor.
+     *
+     * @param child         This layer is below the constructed layer.
+     * @param host          This is the host that is using this layer.
      */
     public AuditoriumTemporalLayer(AAuditoriumLayer child, IAuditoriumHost host) {
         super( child, host );
@@ -57,18 +57,21 @@ public class AuditoriumTemporalLayer extends AAuditoriumLayer {
      * @see auditorium.IAuditoriumLayer#makeAnnouncement(sexpression.ASExpression)
      */
     public ASExpression makeAnnouncement(ASExpression datum) {
-        // Make new datum - Wrap with everything that is in the last list.
+        /* Make new datum - Wrap with everything that is in the last list. */
         ArrayList<ASExpression> list = new ArrayList<>();
         for (MessagePointer p : getHost().getLog().getLast())
-            list.add( p.toASE() );
-        ASExpression newdatum = new ListExpression( StringExpression
-                .makeString( "succeeds" ), new ListExpression( list ), datum );
+            list.add(p.toASE());
 
-        // Make decorated method call
-        return getChild().makeAnnouncement( newdatum );
+        /* build the succeeds clause */
+        ASExpression newDatum = new ListExpression(StringExpression.makeString("succeeds"), new ListExpression(list), datum);
+
+         /* Decorated method call to allow child layers to handle the message */
+        return getChild().makeAnnouncement(newDatum);
     }
 
     /**
+     * We don't do anything to Joins, so just pass it down.
+     *
      * @see auditorium.IAuditoriumLayer#makeJoin(sexpression.ASExpression)
      */
     public ASExpression makeJoin(ASExpression datum) {
@@ -79,63 +82,58 @@ public class AuditoriumTemporalLayer extends AAuditoriumLayer {
      * @see auditorium.IAuditoriumLayer#makeJoinReply(sexpression.ASExpression)
      */
     public ASExpression makeJoinReply(ASExpression datum) {
-        // Make new datum - Construct the last list to return to the requesting
-        // host.
+        /* Make new datum - Construct the last list to return to the requesting host. */
         ArrayList<ASExpression> lst = new ArrayList<>();
         for (MessagePointer mp : getHost().getLog().getLast())
-            lst.add( mp.toASE() );
-        ASExpression newdatum = new ListExpression( lst );
+            lst.add(mp.toASE());
 
-        // Make decorated method call.
-        return getChild().makeJoinReply( newdatum );
+        /* Put the pointers into a ListExpression to send */
+        ASExpression newDatum = new ListExpression( lst );
+
+        /* Decorated method call to allow child layers to handle the message */
+        return getChild().makeJoinReply( newDatum );
     }
 
     /**
      * @see auditorium.IAuditoriumLayer#receiveAnnouncement(sexpression.ASExpression)
      */
-    public ASExpression receiveAnnouncement(ASExpression datum)
-            throws IncorrectFormatException {
-        // Make decorated method call
-        ASExpression result = PATTERN.match( getChild().receiveAnnouncement(
-            datum ) );
-        if (result == NoMatch.SINGLETON)
-            throw new IncorrectFormatException( datum, new Exception( datum
-                    + " doesn't match the pattern: " + PATTERN ) );
+    public ASExpression receiveAnnouncement(ASExpression datum) throws IncorrectFormatException {
 
-        // Extract message pointers that are now "seen"
-        for (ASExpression ase : (ListExpression) ((ListExpression) result)
-                .get( 0 )) {
-            getHost().getLog().removeFromLast( new MessagePointer( ase ) );
-        }
+        /* Make sure the receive message matches the pattern */
+        ASExpression result = PATTERN.match(getChild().receiveAnnouncement(datum));
+        if (result == NoMatch.SINGLETON) throw new IncorrectFormatException(datum, new Exception(datum + " doesn't match the pattern: " + PATTERN));
 
-        // push the rest of the data up the stack..
-        return ((ListExpression) result).get( 1 );
+        /* Extract message pointers that are now "seen" */
+        for (ASExpression ase : (ListExpression)((ListExpression)result).get(0))
+            getHost().getLog().removeFromLast(new MessagePointer(ase));
+
+        /* push the rest of the data up the stack. */
+        return ((ListExpression)result).get(1);
     }
 
     /**
      * @see auditorium.IAuditoriumLayer#receiveJoinReply(sexpression.ASExpression)
      */
-    public ASExpression receiveJoinReply(ASExpression datum)
-            throws IncorrectFormatException {
-        // Make decorated method call.
-        ASExpression result = REPLY_PATTERN.match( getChild().receiveJoinReply(
-            datum ) );
-        if (result == NoMatch.SINGLETON)
-            throw new IncorrectFormatException( datum, new Exception( datum
-                    + " didn't match the pattern " + REPLY_PATTERN ) );
+    public ASExpression receiveJoinReply(ASExpression datum) throws IncorrectFormatException {
 
-        ListExpression below = (ListExpression) ((ListExpression) result)
-                .get( 0 );
-        // Extract message pointers to be added to the last list.
+        /* Ensure the list of pointers is really a list */
+        ASExpression result = REPLY_POINTERS_PATTERN.match(getChild().receiveJoinReply(datum));
+        if (result == NoMatch.SINGLETON) throw new IncorrectFormatException(datum, new Exception(datum + " didn't match the pattern " + REPLY_POINTERS_PATTERN));
+
+        ListExpression below = (ListExpression)((ListExpression)result).get(0);
+
+        /* Extract message pointers to be added to the last list. */
         for (ASExpression ase : below)
-            getHost().getLog().updateLast( new MessagePointer( ase ) );
+            getHost().getLog().updateLast(new MessagePointer(ase));
 
-        // There is no more data to return.
+        /* There is no more data to return. */
         return Nothing.SINGLETON;
 
     }
 
     /**
+     * We don't handle receiving joins, pass it on.
+     *
      * @see auditorium.IAuditoriumLayer#receiveJoin(sexpression.ASExpression)
      */
     public ASExpression receiveJoin(ASExpression datum)

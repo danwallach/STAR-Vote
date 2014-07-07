@@ -25,22 +25,31 @@ package auditorium.test;
 import sexpression.StringExpression;
 import auditorium.*;
 
+/**
+ * A test to see if Auditorium can handle lots of traffic
+ *
+ * @author Kyle Derr
+ */
 public class StressTest {
 
-    public static volatile boolean running = true;
+    private static volatile boolean running = true;
 
+
+    /**
+     * @param args ([serial])
+     */
     public static void main(String[] args) throws Exception {
         Bugout.ERR_OUTPUT_ON = true;
         Bugout.MSG_OUTPUT_ON = true;
         AuditoriumHost host = new AuditoriumHost( args[0],
                 TestParams.Singleton );
         host.start();
-        listenthread( host );
-        HostPointer[] ptrs = host.discover();
+        listenThread(host);
+        HostPointer[] pointers = host.discover();
         System.err.println( "Discover complete...waiting" );
         Thread.sleep( 1000 );
 
-        for (HostPointer ptr : ptrs)
+        for (HostPointer ptr : pointers)
             host.join( ptr );
 
         for (int lcv = 0; lcv < 100; lcv++) {
@@ -55,7 +64,7 @@ public class StressTest {
         host.stop();
     }
 
-    public static void listenthread(final AuditoriumHost host) throws Exception {
+    private static void listenThread(final AuditoriumHost host) {
         new Thread( new Runnable() {
 
             public void run() {

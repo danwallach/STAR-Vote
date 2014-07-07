@@ -46,11 +46,16 @@ import sexpression.stream.*;
  */
 public class LogCounter {
 
-    public static final ASExpression PATTERN = new Parser(
-            new Lexer(
-                    new CharArrayReader(
-                            "(announce(host #string #string #string) #string (signed-message (cert (signature #string #string (key #string #string #string #string)))(signature #string #string (succeeds #list:(ptr #string #string #string) #any))))"
-                                    .toCharArray() ) ) ).read();
+    /* FIXME This patter is probably broken with the new hash chain */
+    /** The pattern string for reading logged messages */
+    private static final String PATTERN_STRING = "(announce(host #string #string #string) #string " +
+                                                 "(signed-message (cert " +
+                                                 "(signature #string #string (key #string #string #string #string)))" +
+                                                 "(signature #string #string " +
+                                                 "(succeeds #list:(ptr #string #string #string) #any))))";
+
+    /** Tha actual ASE pattern based on PATTERN_STRING */
+    public static final ASExpression PATTERN = new Parser(new Lexer(new CharArrayReader(PATTERN_STRING.toCharArray()))).read();
 
     public static void main(String[] args) throws Exception {
         long count = 0;
@@ -59,24 +64,24 @@ public class LogCounter {
         HashMap<String, ArrayList<Integer>> map = new HashMap<>();
         int[] branches = new int[1000];
 
-        try {
-            while (true) {
-                Message m = new Message( rd.read() );
-                ArrayList<Integer> message;
-                if (map.containsKey( m.getFrom().getNodeId() ))
-                    message = map.get( m.getFrom().getNodeId() );
-                else {
-                    message = new ArrayList<>();
-                    map.put( m.getFrom().getNodeId(), message );
-                }
-                message.add( Integer.parseInt( m.getSequence() ) );
-                ListExpression list = (ListExpression) PATTERN
-                        .match( m.toASE() );
-                branches[list.get( 12 ).size()]++;
-                count++;
+        ASExpression read;
+
+        while ((read = rd.read()) != null) {
+            Message m = new Message(read);
+            ArrayList<Integer> message;
+            if (map.containsKey( m.getFrom().getNodeId() ))
+                message = map.get( m.getFrom().getNodeId() );
+            else {
+                message = new ArrayList<>();
+                map.put( m.getFrom().getNodeId(), message );
             }
+            message.add( Integer.parseInt( m.getSequence() ) );
+            ListExpression list = (ListExpression) PATTERN
+                    .match( m.toASE() );
+            branches[list.get( 12 ).size()]++;
+            count++;
         }
-        catch (EOFException ignored) {}
+
         for (String key : map.keySet()) {
             System.err.println( key );
             ArrayList<Integer> lst = map.get( key );

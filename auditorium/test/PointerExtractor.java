@@ -25,70 +25,88 @@ package auditorium.test;
 import java.io.File;
 import java.io.FileInputStream;
 
+import auditorium.Cert;
 import auditorium.HostPointer;
-import auditorium.MessagePointer;
 
+import auditorium.Signature;
 import sexpression.*;
 import sexpression.stream.*;
 
+
+
+/**
+ *Some odd debugging function for taking apart logs. I don't know why -Matt Bernhard
+ *
+ * @author Kyle Derr
+ */
 public class PointerExtractor {
 
-    // 0: id
-    // 1: ip
-    // 2: port
-    // 3: sequence
+    // 0: announce
+    // 1: (host id ip port)
+    // 2: sequence
     // 4: cert
     // 5: signature
     // 6: list-of-pointers
     // 7: datum
     public static final ASExpression PATTERN = new ListExpression(
-            StringExpression.makeString( "announce" ), HostPointer.PATTERN,
-            new ListExpression( StringExpression.makeString( "sequence" ),
-                    StringWildcard.SINGLETON, new ListExpression(
-                            StringExpression.makeString( "signature" ),
-                            StringWildcard.SINGLETON, StringWildcard.SINGLETON,
-                            new ListExpression( StringExpression
-                                    .makeString( "succeeds" ),
-                                    new ListWildcard( MessagePointer.PATTERN ),
-                                    Wildcard.SINGLETON ) ) ) );
+            StringExpression.makeString( "announce" ), HostPointer.PATTERN, StringWildcard.SINGLETON,
+            new ListExpression(StringExpression.make("signed-message"), Cert.PATTERN, Signature.PATTERN) );
 
-    private final String _path;
+    private final String path;
 
     public PointerExtractor(String path) {
-        _path = path;
+        this.path = path;
     }
 
     public void extract() throws Exception {
-        ASEInputStreamReader reader = new ASEInputStreamReader(
-                new FileInputStream( new File( _path ) ) );
+        ASEInputStreamReader reader = new ASEInputStreamReader(new FileInputStream(new File(path)));
 
         ASExpression read;
         while ((read = reader.read()) != null) {
+
+            System.out.println("############################################################################");
             try {
                 ListExpression result = (ListExpression) PATTERN.match( read );
+                System.out.println("------------------------------------------------------------------");
                 System.out.println( "ID:" + result.get( 0 ) + " SEQUENCE:"
-                        + result.get( 3 ) + " MESSAGE:" + result.get( 7 ) );
-                System.err.println( "Pointers:" );
-                for (ASExpression ase : (ListExpression) result.get( 6 )) {
+                        + result.get( 3 ) + " MESSAGE:" + ((ListExpression)result.get(7)).get(2) );
+                System.out.println( "Pointers:" );
+                System.out.println(">>>>>>>>>>>>>" + result.get(7));
+
+//                result = result.get(7).
+                for (ASExpression ase : (ListExpression) ((ListExpression)result.get(7)).get(1)) {
                     ListExpression le = (ListExpression) ase;
-                    System.err.println( "    " + le.get( 1 ) + " / "
+                    System.out.println( "    " + le.get( 1 ) + " / "
                             + le.get( 2 ) );
                 }
+
+                System.out.println("------------------------------------------------------------------");
             }
             catch (ClassCastException e) {
-                System.err.println( "Skipping malformed expression" );
+                System.out.println( "Skipping malformed expression" );
+                System.out.println("********************************************************************");
+                System.out.println(read);
+                System.out.println("********************************************************************");
             }
+            System.out.println("############################################################################");
+            System.out.println("\n\n\n");
+
         }
+
     }
 
+
+    /**
+     * @param args list of names of log files of any length
+     */
     public static void main(String[] args) {
         System.out.println( "Reading files" );
         for (String s : args)
             try {
-                new PointerExtractor( s ).extract();
+                new PointerExtractor(s).extract();
             }
             catch (Exception e) {
-                System.err.println( e );
+                e.printStackTrace();
             }
     }
 }

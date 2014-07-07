@@ -1,10 +1,7 @@
 package supervisor.model.test;
 
 import auditorium.SimpleKeyStore;
-import crypto.adder.AdderInteger;
-import crypto.adder.ElgamalCiphertext;
-import crypto.adder.PublicKey;
-import crypto.adder.Vote;
+import crypto.adder.*;
 import junit.framework.TestCase;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
@@ -63,7 +60,20 @@ public class BallotTest extends TestCase {
         Vote vote = new Vote(ctexts, choices);
 
         List<Vote> votes = new ArrayList<>();
+        List<AdderInteger> c = new ArrayList<>();
+
+        c.add(AdderInteger.ZERO);
+        c.add(AdderInteger.ONE);
+
+
+        VoteProof proof = new VoteProof();
+        proof.compute(vote, publicKey, c, 0, 1);
+
+        vote = new Vote(ctexts, choices, proof);
+
         votes.add(vote);
+
+
 
         vote.verifyVoteProof(publicKey, 0, 1);
 
@@ -90,8 +100,17 @@ public class BallotTest extends TestCase {
         choices.add(StringExpression.makeString("B0"));
         choices.add(StringExpression.makeString("B1"));
 
+        List<AdderInteger> c = new ArrayList<>();
+
         Vote vote = new Vote(ctexts, choices);
-        vote.verifyVoteProof(publicKey, 0, 1);
+
+        c.add(AdderInteger.ZERO);
+        c.add(AdderInteger.ONE);
+
+        VoteProof proof = new VoteProof();
+        proof.compute(vote, publicKey, c, 0, 1);
+
+        vote = new Vote(ctexts, choices, proof);
 
         List<Vote> votes = new ArrayList<>();
         votes.add(vote);

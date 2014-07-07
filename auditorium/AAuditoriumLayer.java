@@ -66,28 +66,30 @@ public abstract class AAuditoriumLayer implements IAuditoriumLayer {
         }
     };
 
-    private final IAuditoriumLayer _child;
-    private final IAuditoriumHost _host;
+    /** The layer below this one */
+    private final IAuditoriumLayer child;
+
+    /** The host who runs the show */
+    private final IAuditoriumHost host;
 
     /**
-     * @param child
-     *            This is the child layer.
-     * @param host
-     *            Adapter to the host of this layer.
+     * Constructor.
+     *
+     * @param child         This is the child layer.
+     * @param host          Adapter to the host of this layer.
      */
     protected AAuditoriumLayer(IAuditoriumLayer child, IAuditoriumHost host) {
-        _child = child;
-        _host = host;
+        this.child = child;
+        this.host = host;
     }
-
 
     /**
      * Get the layer instance which is a child of this layer.
      * 
-     * @return This method returns the child layer instance.
+     * @return      the child layer instance.
      */
     protected IAuditoriumLayer getChild() {
-        return _child;
+        return child;
     }
 
     /**
@@ -95,9 +97,9 @@ public abstract class AAuditoriumLayer implements IAuditoriumLayer {
      * this adapter to get at the message wrapper or to access another layer's
      * public methods.
      * 
-     * @return This method returns the adapter to the host that owns this layer.
+     * @return      the adapter to the host that owns this layer.
      */
     protected IAuditoriumHost getHost() {
-        return _host;
+        return host;
     }
 }

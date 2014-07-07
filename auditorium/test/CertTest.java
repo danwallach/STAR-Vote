@@ -34,100 +34,101 @@ import auditorium.*;
  * This class offers JUnit testing of the auditorium.Cert class.
  * 
  * @author Kyle Derr
- * 
  */
 public class CertTest {
 
-    private final Key _key = new Key( "KEYID", "KEYANNOTATION", new BigInteger(
-            "1" ), new BigInteger( "2" ) );
-    private final ASExpression _keyase = _key.toASE();
+    /** Auditorium key for easy certification */
+    private final Key key = new Key("KEYID", "KEYANNOTATION", new BigInteger("1"), new BigInteger("2"));
 
-    private final Signature _sig = new Signature( "signer",
-            StringExpression.makeString( "sigdata" ), _key.toASE() );
+    /** ASE representation of the key */
+    private final ASExpression keyASE = key.toASE();
+
+    /** Auditorium signature based on the key */
+    private final Signature sig = new Signature("signer", StringExpression.makeString( "sigdata" ), key.toASE());
 
     // ** <init>(String, StringExpression, Key) tests **
     // the payload of the signature isn't a key.
     @Test(expected = IncorrectFormatException.class)
-    public void constructor1_1() throws Exception {
+    public void constructor11() throws Exception {
         new Cert( new Signature( "signer", StringExpression.makeString( "sigdata" ),
                 ListExpression.EMPTY ) );
     }
 
     // Good
     @Test
-    public void constructor1_2() throws Exception {
-        Cert c = new Cert( _sig );
+    public void constructor12() throws Exception {
+        Cert c = new Cert( sig );
 
-        assertEquals( _sig.toASE(), c.getSignature().toASE() );
-        assertEquals( _key.toASE(), c.getKey().toASE() );
+        assertEquals( sig.toASE(), c.getSignature().toASE() );
+        assertEquals( key.toASE(), c.getKey().toASE() );
         assertEquals( new ListExpression( StringExpression.makeString( "cert" ),
                 new ListExpression( StringExpression.makeString( "signature" ),
                         StringExpression.makeString( "signer" ), StringExpression.makeString(
-                                "sigdata" ), _keyase ) ), c.toASE() );
+                                "sigdata" ), keyASE) ), c.toASE() );
 
     }
 
     // ** <init>(ASExpression) tests **
     // Junk
     @Test(expected = IncorrectFormatException.class)
-    public void constructor2_1() throws IncorrectFormatException {
+    public void constructor21() throws IncorrectFormatException {
         new Cert( StringExpression.EMPTY );
     }
 
     @Test(expected = IncorrectFormatException.class)
-    public void constructor2_2() throws IncorrectFormatException {
+    public void constructor22() throws IncorrectFormatException {
         new Cert( new ListExpression( "non", "sense" ) );
     }
 
     // len < 2
     @Test(expected = IncorrectFormatException.class)
-    public void constructor2_3() throws IncorrectFormatException {
+    public void constructor23() throws IncorrectFormatException {
         new Cert( new ListExpression( "cert" ) );
     }
 
     // len > 2
     @Test(expected = IncorrectFormatException.class)
-    public void constructor2_4() throws IncorrectFormatException {
+    public void constructor24() throws IncorrectFormatException {
         new Cert( new ListExpression( StringExpression.makeString( "cert" ),
                 new ListExpression( StringExpression.makeString( "signature" ),
                         StringExpression.makeString( "signer" ), StringExpression.makeString(
-                                "Sig" ), _keyase ), StringExpression.makeString(
+                                "Sig" ), keyASE), StringExpression.makeString(
                         "extra" ) ) );
     }
 
     // [0] != cert
     @Test(expected = IncorrectFormatException.class)
-    public void constructor2_5() throws IncorrectFormatException {
+    public void constructor25() throws IncorrectFormatException {
         new Cert( new ListExpression( StringExpression.makeString( "notcert" ),
                 new ListExpression( StringExpression.makeString( "signature" ),
                         StringExpression.makeString( "signer" ), StringExpression.makeString(
-                                "Sig" ), _keyase ) ) );
+                                "Sig" ), keyASE) ) );
     }
 
     // [1] !signature
     @Test(expected = IncorrectFormatException.class)
-    public void constructor2_6() throws IncorrectFormatException {
+    public void constructor26() throws IncorrectFormatException {
         new Cert( new ListExpression( StringExpression.makeString( "cert" ),
                 new ListExpression( StringExpression.makeString( "notsignature" ),
                         StringExpression.makeString( "signer" ), StringExpression.makeString(
-                                "Sig" ), _keyase ) ) );
+                                "Sig" ), keyASE) ) );
     }
 
     // Good
     @Test
-    public void constructor2_7() throws IncorrectFormatException {
+    public void constructor27() throws IncorrectFormatException {
         Cert c = new Cert( new ListExpression( StringExpression.makeString( "cert" ),
                 new ListExpression( StringExpression.makeString( "signature" ),
                         StringExpression.makeString( "signer" ), StringExpression.makeString(
-                                "Sig" ), _keyase ) ) );
+                                "Sig" ), keyASE) ) );
 
         assertEquals( new Signature( "signer", StringExpression.makeString( "Sig" ),
-                _keyase ).toASE(), c.getSignature().toASE() );
-        assertEquals( _keyase, c.getKey().toASE() );
+                keyASE).toASE(), c.getSignature().toASE() );
+        assertEquals(keyASE, c.getKey().toASE() );
         assertEquals( new ListExpression( StringExpression.makeString( "cert" ),
                 new ListExpression( StringExpression.makeString( "signature" ),
                         StringExpression.makeString( "signer" ), StringExpression.makeString(
-                                "Sig" ), _keyase ) ), c.toASE() );
+                                "Sig" ), keyASE) ), c.toASE() );
 
     }
 }

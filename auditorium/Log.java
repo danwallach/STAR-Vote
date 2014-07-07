@@ -22,6 +22,8 @@
 
 package auditorium;
 
+import sexpression.StringExpression;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -46,6 +48,9 @@ public class Log {
     private final HashSet<MessagePointer> _haveSeen;
     private final LinkedList<MessagePointer> _last;
 
+    /** A reference to that last hash value so we can chain the messages in the log */
+    private StringExpression lastChainedHash;
+
     /**
      * Construct a Log instance that serializes log data to a given location.
      * 
@@ -58,27 +63,40 @@ public class Log {
         _location = new FileOutputStream( location );
         _haveSeen = new HashSet<>();
         _last = new LinkedList<>();
+
+        /* Initialize that hash chain with string 0000000000 */
+        lastChainedHash = StringExpression.makeString(StringExpression.makeString("0000000000").getSHA1());
     }
 
     /**
      * Call this method to check and see if a message has been seen before, and
-     * if it has not, log it.
+     * if it has not, add it into the hash chain and log it.
      * 
-     * @param message
-     *            This is the message in question. Log it if it hasn't been seen
-     *            before.
-     * @return This method returns true if something new gets added to the log,
-     *         and false otherwise.
-     * @throws IOException
-     *             This method throws if there is an IO error when trying to add
-     *             the message to the log file on disk.
+     * @param       message This is the message in question. Log it if it hasn't been seen before.
+     * @return      This method returns true if something new gets added to the log, and false otherwise.
+     *
+     * @throws IOException This method throws if there is an IO error when trying to add the message to the log file on disk.
      */
     public boolean logAnnouncement(Message message) throws IOException {
-        MessagePointer tomessage = new MessagePointer( message );
-        if (!_haveSeen.contains( tomessage )) {
-            _haveSeen.add( tomessage );
-            _last.add( tomessage );
-            write( message );
+
+        /* Copy this message into the hash chain */
+        Message chained = new Message(message.getType(), message.getFrom(), message.getSequence(), message.getDatum());
+
+        /* Chain the hash values */
+        chained.chain(lastChainedHash);
+
+        /* Update our reference to the chain */
+        lastChainedHash = chained.getHash();
+
+        MessagePointer toMessage = new MessagePointer( message );
+        if (!_haveSeen.contains( toMessage )) {
+
+            /* Since the chained value is only used here, we update our lists with the unchained version */
+            _haveSeen.add( toMessage );
+            _last.add( toMessage );
+
+            /* Write the chained value to the log */
+            write( chained );
             return true;
         }
         return false;
@@ -119,7 +137,7 @@ public class Log {
     }
 
     private void write(Message message) throws IOException {
-        _location.write( message.toASE().toVerbatim() );
+        _location.write(message.toASTWithHash().toVerbatim());
         _location.flush();
     }
 

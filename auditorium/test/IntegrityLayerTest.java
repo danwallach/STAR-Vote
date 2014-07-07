@@ -30,10 +30,15 @@ import sexpression.*;
 import auditorium.*;
 import auditorium.Generator.Keys;
 
+/**
+ * Tests the Auditorium integrity layer
+ *
+ * @author Kyle Derr
+ */
 public class IntegrityLayerTest {
 
     // Stuff we're testing
-    private IAuditoriumHost _host = new IAuditoriumHost() {
+    private IAuditoriumHost host = new IAuditoriumHost() {
 
         public ASExpression getAddresses() {
             throw new RuntimeException( "unused" );
@@ -63,223 +68,222 @@ public class IntegrityLayerTest {
             return "TEST";
         }
     };
-    private Cert _mycert;
-    private Key _mykey;
-    private Cert _cacert;
-    private IKeyStore _keystore = new IKeyStore() {
+    private Cert myCert;
+    private Key myKey;
+    private Cert caCert;
+    private IKeyStore keystore = new IKeyStore() {
 
-        public Cert loadCert(String nodeid) throws AuditoriumCryptoException {
-            if (nodeid.equals("ca"))
-                return _cacert;
-            return _mycert;
+        public Cert loadCert(String nodeID) throws AuditoriumCryptoException {
+            if (nodeID.equals("ca"))
+                return caCert;
+            return myCert;
         }
 
-        public Key loadKey(String nodeid) throws AuditoriumCryptoException {
-            return _mykey;
+        public Key loadKey(String nodeID) throws AuditoriumCryptoException {
+            return myKey;
         }
         
-        public Object loadAdderKey(String nodeid) throws RuntimeException{
+        public Object loadAdderKey(String nodeID) throws RuntimeException{
         	return null;
         }
     };
-    private AuditoriumIntegrityLayer _layer;
+    private AuditoriumIntegrityLayer layer;
 
     @Before
     public void build() throws Exception {
         Generator gen = new Generator();
         Keys ca = gen.generateKey( "ca", "ca" );
         Keys my = gen.generateKey( "me", "booth" );
-        _mykey = my.getPrivate();
-        _mycert = new Cert( RSACrypto.SINGLETON.sign( my.getPublic().toASE(), ca
+        myKey = my.getPrivate();
+        myCert = new Cert( RSACrypto.SINGLETON.sign( my.getPublic().toASE(), ca
                 .getPrivate() ) );
-        _cacert = new Cert( RSACrypto.SINGLETON.sign( ca.getPublic().toASE(), ca
+        caCert = new Cert( RSACrypto.SINGLETON.sign( ca.getPublic().toASE(), ca
                 .getPrivate() ) );
-        _layer = new AuditoriumIntegrityLayer( AAuditoriumLayer.BOTTOM, _host,
-                _keystore );
+        layer = new AuditoriumIntegrityLayer( AAuditoriumLayer.BOTTOM, host,
+                keystore );
     }
 
     // ** makeAnnouncement(ASExpression) tests **
-    private void make_announcement_test(ASExpression datum) throws Exception {
+    private void makeAnnouncementTest(ASExpression datum) throws Exception {
         // compute actual
-        ASExpression wrapped = _layer.makeAnnouncement( datum );
+        ASExpression wrapped = layer.makeAnnouncement( datum );
 
         // compute expected
-        ASExpression matchagainst = new ListExpression( StringExpression
-                .makeString( "signed-message" ), _mycert.toASE(),
-                RSACrypto.SINGLETON.sign( datum, _mykey ).toASE() );
+        ASExpression matchAgainst = new ListExpression( StringExpression
+                .makeString( "signed-message" ), myCert.toASE(),
+                RSACrypto.SINGLETON.sign( datum, myKey).toASE() );
 
-        assertEquals( matchagainst, wrapped );
+        assertEquals( matchAgainst, wrapped );
 
     }
 
     @Test
-    public void makeAnnouncement_1() throws Exception {
-        make_announcement_test( NoMatch.SINGLETON );
+    public void makeAnnouncement1() throws Exception {
+        makeAnnouncementTest(NoMatch.SINGLETON);
     }
 
     @Test
-    public void makeAnnouncement_2() throws Exception {
-        make_announcement_test( Nothing.SINGLETON );
+    public void makeAnnouncement2() throws Exception {
+        makeAnnouncementTest(Nothing.SINGLETON);
     }
 
     @Test
-    public void makeAnnouncement_3() throws Exception {
-        make_announcement_test( StringExpression.EMPTY );
+    public void makeAnnouncement3() throws Exception {
+        makeAnnouncementTest(StringExpression.EMPTY);
     }
 
     @Test
-    public void makeAnnouncement_4() throws Exception {
-        make_announcement_test( ListExpression.EMPTY );
+    public void makeAnnouncement4() throws Exception {
+        makeAnnouncementTest(ListExpression.EMPTY);
     }
 
     @Test
-    public void makeAnnouncement_5() throws Exception {
-        make_announcement_test( StringExpression.makeString( "TEST" ) );
+    public void makeAnnouncement5() throws Exception {
+        makeAnnouncementTest(StringExpression.makeString("TEST"));
     }
 
     @Test
-    public void makeAnnouncement_6() throws Exception {
-        make_announcement_test( new ListExpression( StringExpression
-                .makeString( "TEST" ), StringExpression.makeString( "TEST" ) ) );
+    public void makeAnnouncement6() throws Exception {
+        makeAnnouncementTest(new ListExpression(StringExpression
+                .makeString("TEST"), StringExpression.makeString("TEST")));
     }
 
     // ** receiveAnnouncement(ASExpression) tests **
-    private void receive_announcement_test(ASExpression wrapthis)
-            throws Exception {
-        ASExpression wrapped = _layer.makeAnnouncement( wrapthis );
-        System.err.println( wrapped );
-        assertEquals( wrapthis, _layer.receiveAnnouncement( wrapped ) );
+    private void receiveAnnouncementTest(ASExpression wrapThis) throws Exception {
+        ASExpression wrapped = layer.makeAnnouncement(wrapThis);
+        System.err.println(wrapped);
+        assertEquals(wrapThis, layer.receiveAnnouncement(wrapped));
     }
 
-    private void receive_announcement_test_fail(ASExpression sendthis)
+    private void receiveAnnouncementTestFail(ASExpression sendThis)
             throws IncorrectFormatException {
-        _layer.receiveAnnouncement( sendthis );
+        layer.receiveAnnouncement( sendThis );
     }
 
     // Good (actually construct a message with makeAnnouncement)
     @Test
-    public void receive_announcement_1() throws Exception {
-        receive_announcement_test( StringExpression.EMPTY );
+    public void receiveAnnouncement1() throws Exception {
+        receiveAnnouncementTest(StringExpression.EMPTY);
     }
 
     @Test
-    public void receive_announcement_2() throws Exception {
-        receive_announcement_test( ListExpression.EMPTY );
+    public void receiveAnnouncement2() throws Exception {
+        receiveAnnouncementTest(ListExpression.EMPTY);
     }
 
     @Test
-    public void receive_announcement_3() throws Exception {
-        receive_announcement_test( StringExpression.makeString( "Test" ) );
+    public void receiveAnnouncement3() throws Exception {
+        receiveAnnouncementTest(StringExpression.makeString("Test"));
     }
 
     @Test
-    public void receive_announcement_4() throws Exception {
-        receive_announcement_test( new ListExpression( StringExpression
-                .makeString( "Test" ) ) );
+    public void receiveAnnouncement4() throws Exception {
+        receiveAnnouncementTest(new ListExpression(StringExpression
+                .makeString("Test")));
     }
 
     @Test
-    public void receive_announcement_5() throws Exception {
-        receive_announcement_test( new ListExpression( StringExpression
-                .makeString( "Test" ), new ListExpression( StringExpression
-                .makeString( "Test" ) ), StringExpression.makeString( "TEST" ) ) );
+    public void receiveAnnouncement5() throws Exception {
+        receiveAnnouncementTest(new ListExpression(StringExpression
+                .makeString("Test"), new ListExpression(StringExpression
+                .makeString("Test")), StringExpression.makeString("TEST")));
     }
 
     // Bad (random stuff)
     @Test(expected = IncorrectFormatException.class)
-    public void receive_announcement_6() throws Exception {
-        receive_announcement_test_fail( NoMatch.SINGLETON );
+    public void receiveAnnouncement6() throws Exception {
+        receiveAnnouncementTestFail(NoMatch.SINGLETON);
     }
 
     @Test(expected = IncorrectFormatException.class)
-    public void receive_announcement_7() throws Exception {
-        receive_announcement_test_fail( Nothing.SINGLETON );
+    public void receiveAnnouncement7() throws Exception {
+        receiveAnnouncementTestFail(Nothing.SINGLETON);
     }
 
     @Test(expected = IncorrectFormatException.class)
-    public void receive_announcement_8() throws Exception {
-        receive_announcement_test_fail( StringExpression.EMPTY );
+    public void receiveAnnouncement8() throws Exception {
+        receiveAnnouncementTestFail(StringExpression.EMPTY);
     }
 
     @Test(expected = IncorrectFormatException.class)
-    public void receive_announcement_9() throws Exception {
-        receive_announcement_test_fail( ListExpression.EMPTY );
+    public void receiveAnnouncement9() throws Exception {
+        receiveAnnouncementTestFail(ListExpression.EMPTY);
     }
 
     @Test(expected = IncorrectFormatException.class)
-    public void receive_announcement_10() throws Exception {
-        receive_announcement_test_fail( StringExpression.makeString( "TEST" ) );
+    public void receiveAnnouncement10() throws Exception {
+        receiveAnnouncementTestFail(StringExpression.makeString("TEST"));
     }
 
     // Bad (format the message correctly, but make the cert, sig, or message
     // type not check) (Don't need to check with every single cert/key anymore).
 
     @Test(expected = IncorrectFormatException.class)
-    public void receive_announcement_11() throws Exception {
+    public void receiveAnnouncement11() throws Exception {
         ASExpression datum = StringExpression.makeString( "TEST" );
-        Signature sig = RSACrypto.SINGLETON.sign( datum, _mykey );
+        Signature sig = RSACrypto.SINGLETON.sign( datum, myKey);
 
-        _layer.receiveAnnouncement( new ListExpression( StringExpression
-                .makeString( "not-signed-message" ), _mycert.toASE(), sig
+        layer.receiveAnnouncement( new ListExpression( StringExpression
+                .makeString( "not-signed-message" ), myCert.toASE(), sig
                 .toASE(), datum ) );
     }
 
     @Test(expected = IncorrectFormatException.class)
-    public void receive_announcement_12() throws Exception {
+    public void receiveAnnouncement12() throws Exception {
         ASExpression datum = StringExpression.makeString( "TEST" );
-        Signature sig = RSACrypto.SINGLETON.sign( datum, _mykey );
-        byte[] sigbytes = sig.getSigData().getBytesCopy();
-        sigbytes[0] = 1;
-        Signature notsig = new Signature( "TEST", StringExpression
-                .makeString( sigbytes ), datum );
+        Signature sig = RSACrypto.SINGLETON.sign( datum, myKey);
+        byte[] sigBytes = sig.getSigData().getBytesCopy();
+        sigBytes[0] = 1;
+        Signature notSig = new Signature( "TEST", StringExpression
+                .makeString( sigBytes ), datum );
 
-        _layer.receiveAnnouncement( new ListExpression( StringExpression
-                .makeString( "signed-message" ), _mycert.toASE(), notsig
+        layer.receiveAnnouncement( new ListExpression( StringExpression
+                .makeString( "signed-message" ), myCert.toASE(), notSig
                 .toASE(), datum ) );
     }
 
     @Test(expected = IncorrectFormatException.class)
-    public void receive_announcement_13() throws Exception {
+    public void receiveAnnouncement13() throws Exception {
         ASExpression datum = StringExpression.makeString( "TEST" );
 
-        _layer.receiveAnnouncement( new ListExpression( StringExpression
-                .makeString( "signature" ), _mycert.toASE(),
+        layer.receiveAnnouncement( new ListExpression( StringExpression
+                .makeString( "signature" ), myCert.toASE(),
                 StringExpression.EMPTY, datum ) );
     }
 
     // ** do nothing method tests **
     // (all these tested methods essentially return what they're given)
-    private void donothing_test(ASExpression datum) throws Exception {
+    private void doNothingTest(ASExpression datum) throws Exception {
         for (int lcv = 1; lcv <= 10; lcv++) {
-            assertEquals( datum, _layer.makeJoin( datum ) );
-            assertEquals( datum, _layer.makeJoinReply( datum ) );
-            assertEquals( datum, _layer.receiveJoin( datum ) );
-            assertEquals( datum, _layer.receiveJoinReply( datum ) );
+            assertEquals( datum, layer.makeJoin( datum ) );
+            assertEquals( datum, layer.makeJoinReply( datum ) );
+            assertEquals( datum, layer.receiveJoin( datum ) );
+            assertEquals( datum, layer.receiveJoinReply( datum ) );
         }
     }
 
     @Test
-    public void donothing_1() throws Exception {
-        donothing_test( NoMatch.SINGLETON );
+    public void doNothing1() throws Exception {
+        doNothingTest(NoMatch.SINGLETON);
     }
 
     @Test
-    public void donothing_2() throws Exception {
-        donothing_test( Nothing.SINGLETON );
+    public void doNothing2() throws Exception {
+        doNothingTest(Nothing.SINGLETON);
     }
 
     @Test
-    public void donothing_3() throws Exception {
-        donothing_test( StringExpression.EMPTY );
+    public void doNothing3() throws Exception {
+        doNothingTest(StringExpression.EMPTY);
     }
 
     @Test
-    public void donothing_4() throws Exception {
-        donothing_test( ListExpression.EMPTY );
+    public void doNothing4() throws Exception {
+        doNothingTest(ListExpression.EMPTY);
     }
 
     @Test
-    public void donothing_5() throws Exception {
-        donothing_test( StringExpression.makeString( "TEST" ) );
+    public void doNothing5() throws Exception {
+        doNothingTest(StringExpression.makeString("TEST"));
     }
 }

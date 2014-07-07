@@ -33,18 +33,23 @@ import org.junit.Test;
 import sexpression.*;
 import auditorium.*;
 
+/**
+ * A test of the temporal layer (the layer that orders events with respect to time)
+ *
+ * @author Kyle Derr
+ */
 public class TemporalLayerTest {
 
-	private File _tmpFile;
-    private Log _log;
-    private IAuditoriumHost _host = new IAuditoriumHost() {
+	private File tmpFile;
+    private Log log;
+    private IAuditoriumHost host = new IAuditoriumHost() {
 
         public ASExpression getAddresses() {
             throw new RuntimeException( "not used" );
         }
 
         public Log getLog() {
-            return _log;
+            return log;
         }
 
         public HostPointer getMe() {
@@ -67,19 +72,20 @@ public class TemporalLayerTest {
             throw new RuntimeException( "not used" );
         }
     };
-    private AuditoriumTemporalLayer _layer;
+    private AuditoriumTemporalLayer layer;
 
     @Before
     public void setup() throws Exception {
-    	_tmpFile = File.createTempFile("tmp", "test");
+    	tmpFile = File.createTempFile("tmp", "test");
     	
-        _log = new Log( _tmpFile );
-        _layer = new AuditoriumTemporalLayer( AAuditoriumLayer.BOTTOM, _host );
+        log = new Log( tmpFile );
+        layer = new AuditoriumTemporalLayer( AAuditoriumLayer.BOTTOM, host );
     }
 
     @After
     public void tear() {
-        _tmpFile.delete();
+        if(!tmpFile.delete())
+            throw new RuntimeException("Couldn't delete file!");
     }
 
     // ** makeAnnouncement(ASExpression) tests **
@@ -89,123 +95,123 @@ public class TemporalLayerTest {
      * up in the datum section, then returns the pointer list for checking by
      * the caller.
      */
-    private ASExpression test_makeAnnouncement(ASExpression wrapthis)
+    private ASExpression testMakeAnnouncement(ASExpression wrapThis)
             throws Exception {
-        ListExpression datum = (ListExpression) _layer
-                .makeAnnouncement( wrapthis );
+        ListExpression datum = (ListExpression) layer
+                .makeAnnouncement( wrapThis );
         ListExpression result = (ListExpression) AuditoriumTemporalLayer.PATTERN
                 .match( datum );
 
         assertNotSame( result, NoMatch.SINGLETON );
-        assertEquals( wrapthis, result.get( 1 ) );
+        assertEquals( wrapThis, result.get( 1 ) );
         return result.get( 0 );
     }
 
     @Test
-    public void test_makeannounement_4() throws Exception {
+    public void testMakeAnnouncement4() throws Exception {
         assertEquals( ListExpression.EMPTY,
-            test_makeAnnouncement( ListExpression.EMPTY ) );
+            testMakeAnnouncement( ListExpression.EMPTY ) );
     }
 
     @Test
-    public void test_makeannounement_5() throws Exception {
+    public void testMakeAnnouncement5() throws Exception {
         assertEquals( ListExpression.EMPTY,
-            test_makeAnnouncement( StringExpression.EMPTY ) );
+            testMakeAnnouncement( StringExpression.EMPTY ) );
     }
 
     @Test
-    public void test_makeannounement_6() throws Exception {
+    public void testMakeAnnouncement6() throws Exception {
         assertEquals( ListExpression.EMPTY,
-            test_makeAnnouncement( StringExpression.makeString( "TEST" ) ) );
+            testMakeAnnouncement( StringExpression.makeString( "TEST" ) ) );
     }
 
     @Test
-    public void test_makeannouncement_7() throws Exception {
+    public void testMakeAnnouncement7() throws Exception {
         assertEquals( ListExpression.EMPTY,
-            test_makeAnnouncement( new ListExpression( StringExpression.makeString(
+            testMakeAnnouncement( new ListExpression( StringExpression.makeString(
                     "TEST" ), StringExpression.makeString( "TEST2" ) ) ) );
     }
 
     // Two things in the log.
-    HostPointer hp = new HostPointer( "host", "ip", 200 );
-    Message m1 = new Message( "announcement", hp, "1", StringExpression.makeString(
+    private HostPointer hp = new HostPointer( "host", "ip", 200 );
+    private Message m1 = new Message( "announcement", hp, "1", StringExpression.makeString(
             "msg" ) );
-    Message m2 = new Message( "announcement2", hp, "2", StringExpression.makeString(
+    private Message m2 = new Message( "announcement2", hp, "2", StringExpression.makeString(
             "msg" ) );
 
     @Test
-    public void test_makeannouncement_8() throws Exception {
-        _log.logAnnouncement( m1 );
-        _log.logAnnouncement( m2 );
+    public void testMakeAnnouncement8() throws Exception {
+        log.logAnnouncement( m1 );
+        log.logAnnouncement( m2 );
 
         assertEquals( new ListExpression( new MessagePointer( m1 ).toASE(),
                 new MessagePointer( m2 ).toASE() ),
-            test_makeAnnouncement( ListExpression.EMPTY ) );
+            testMakeAnnouncement( ListExpression.EMPTY ) );
     }
 
     // ** makeJoinReply(ASExpression) tests **
     @Test
-    public void test_makejoin_1() throws Exception {
-        assertEquals( ListExpression.EMPTY, _layer
+    public void testMakeJoin11() throws Exception {
+        assertEquals( ListExpression.EMPTY, layer
                 .makeJoinReply( ListExpression.EMPTY ) );
     }
 
     @Test
-    public void test_makejoin_2() throws Exception {
-        assertEquals( ListExpression.EMPTY, _layer
+    public void testMakeJoin12() throws Exception {
+        assertEquals( ListExpression.EMPTY, layer
                 .makeJoinReply( Nothing.SINGLETON ) );
     }
 
     @Test
-    public void test_makejoin_3() throws Exception {
-        _log.logAnnouncement( m1 );
+    public void testMakeJoin13() throws Exception {
+        log.logAnnouncement( m1 );
 
         assertEquals( new ListExpression( new MessagePointer( m1 ).toASE() ),
-            _layer.makeJoinReply( StringExpression.makeString( "asf" ) ) );
+            layer.makeJoinReply( StringExpression.makeString( "asf" ) ) );
     }
 
     @Test
-    public void test_makejoin_4() throws Exception {
-        _log.logAnnouncement( m1 );
-        _log.logAnnouncement( m2 );
+    public void testMakeJoin14() throws Exception {
+        log.logAnnouncement( m1 );
+        log.logAnnouncement( m2 );
 
         assertEquals( new ListExpression( new MessagePointer( m1 ).toASE(),
-                new MessagePointer( m2 ).toASE() ), _layer
+                new MessagePointer( m2 ).toASE() ), layer
                 .makeJoinReply( StringExpression.EMPTY ) );
     }
 
     // ** receiveAnnouncement(ASExpression) tests **
     // Junk
     @Test(expected = IncorrectFormatException.class)
-    public void test_receiveannouncement_1() throws Exception {
-        _layer.receiveAnnouncement( NoMatch.SINGLETON );
+    public void testReceiveAnnouncement1() throws Exception {
+        layer.receiveAnnouncement( NoMatch.SINGLETON );
     }
 
     @Test(expected = IncorrectFormatException.class)
-    public void test_receiveannouncement_2() throws Exception {
-        _layer.receiveAnnouncement( Wildcard.SINGLETON );
+    public void testReceiveAnnouncement2() throws Exception {
+        layer.receiveAnnouncement( Wildcard.SINGLETON );
     }
 
     @Test(expected = IncorrectFormatException.class)
-    public void test_receiveannouncement_3() throws Exception {
-        _layer.receiveAnnouncement( Nothing.SINGLETON );
+    public void testReceiveAnnouncement3() throws Exception {
+        layer.receiveAnnouncement( Nothing.SINGLETON );
     }
 
     @Test(expected = IncorrectFormatException.class)
-    public void test_receiveannouncement_4() throws Exception {
-        _layer.receiveAnnouncement( Nothing.SINGLETON );
+    public void testReceiveAnnouncement4() throws Exception {
+        layer.receiveAnnouncement( Nothing.SINGLETON );
     }
 
     @Test(expected = IncorrectFormatException.class)
-    public void test_receiveannouncement_5() throws Exception {
-        _layer
+    public void testReceiveAnnouncement5() throws Exception {
+        layer
                 .receiveAnnouncement( new ListExpression( "Check", "one", "two" ) );
     }
 
     // [0] != succeeds
     @Test(expected = IncorrectFormatException.class)
-    public void test_receiveannouncement_6() throws Exception {
-        _layer
+    public void testReceiveAnnouncement6() throws Exception {
+        layer
                 .receiveAnnouncement( new ListExpression( StringExpression.makeString(
                         "not-succeeds" ), ListExpression.EMPTY,
                         StringExpression.EMPTY ) );
@@ -213,15 +219,15 @@ public class TemporalLayerTest {
 
     // pointer list spot isn't a list at all
     @Test(expected = IncorrectFormatException.class)
-    public void test_receiveannouncement_7() throws Exception {
-        _layer.receiveAnnouncement( new ListExpression( StringExpression.makeString(
+    public void testReceiveAnnouncement7() throws Exception {
+        layer.receiveAnnouncement( new ListExpression( StringExpression.makeString(
                 "succeeds" ), StringExpression.EMPTY, StringExpression.EMPTY ) );
     }
 
     // pointer list has one element that doesn't match the pattern
     @Test(expected = IncorrectFormatException.class)
-    public void test_receiveannouncement_8() throws Exception {
-        _layer.receiveAnnouncement( new ListExpression( StringExpression.makeString(
+    public void testReceiveAnnouncement8() throws Exception {
+        layer.receiveAnnouncement( new ListExpression( StringExpression.makeString(
                 "succeeds" ), new ListExpression( new ListExpression( "ptr",
                 "node", "1", "" ), new ListExpression( "ptr", "node", "1", "",
                 "extra" ), new ListExpression( "ptr", "node", "1", "" ) ),
@@ -229,8 +235,8 @@ public class TemporalLayerTest {
     }
 
     @Test(expected = IncorrectFormatException.class)
-    public void test_receiveannouncement_9() throws Exception {
-        _layer.receiveAnnouncement( new ListExpression( StringExpression.makeString(
+    public void testReceiveAnnouncement9() throws Exception {
+        layer.receiveAnnouncement( new ListExpression( StringExpression.makeString(
                 "succeeds" ), new ListExpression( new ListExpression( "ptr",
                 "node", "1", "" ), new ListExpression( StringExpression.makeString(
                 "ptr" ), StringExpression.makeString( "node" ), StringExpression.makeString(
@@ -241,8 +247,8 @@ public class TemporalLayerTest {
     // pointer list has one element that matches the pattern, but can't be
     // parsed into a pointer
     @Test(expected = IncorrectFormatException.class)
-    public void test_receiveannouncement_10() throws Exception {
-        _layer.receiveAnnouncement( new ListExpression( StringExpression.makeString(
+    public void testReceiveAnnouncement10() throws Exception {
+        layer.receiveAnnouncement( new ListExpression( StringExpression.makeString(
                 "succeeds" ), new ListExpression( new ListExpression( "ptr",
                 "node", "1", "" ), new ListExpression( "notptr", "node", "1",
                 "" ), new ListExpression( "ptr", "node", "1", "" ) ),
@@ -251,8 +257,8 @@ public class TemporalLayerTest {
 
     // length > 3
     @Test(expected = IncorrectFormatException.class)
-    public void test_receiveannouncement_11() throws Exception {
-        _layer.receiveAnnouncement( new ListExpression( StringExpression.makeString(
+    public void testReceiveAnnouncement11() throws Exception {
+        layer.receiveAnnouncement( new ListExpression( StringExpression.makeString(
                 "succeeds" ), new ListExpression( new ListExpression( "ptr",
                 "node", "1", "" ),
                 new ListExpression( "ptr", "node", "1", "" ),
@@ -262,107 +268,107 @@ public class TemporalLayerTest {
 
     // Good
     @Test
-    public void test_receiveannouncement_12() throws Exception {
-        _log.logAnnouncement( m1 );
-        assertEquals( 1, _log.TESTgetLast().size() );
-        assertEquals( new MessagePointer( m1 ), _log.TESTgetLast().get( 0 ) );
+    public void testReceiveAnnouncement12() throws Exception {
+        log.logAnnouncement( m1 );
+        assertEquals( 1, log.TESTgetLast().size() );
+        assertEquals( new MessagePointer( m1 ), log.TESTgetLast().get( 0 ) );
 
-        _layer.receiveAnnouncement( new ListExpression( StringExpression.makeString(
+        layer.receiveAnnouncement( new ListExpression( StringExpression.makeString(
                 "succeeds" ), new ListExpression( new MessagePointer( m1 )
                 .toASE() ), StringExpression.makeString( "TEST DATUM" ) ) );
 
-        assertEquals( 0, _log.TESTgetLast().size() );
+        assertEquals( 0, log.TESTgetLast().size() );
     }
 
     @Test
-    public void test_receiveannouncement_13() throws Exception {
-        _log.logAnnouncement( m1 );
-        _log.logAnnouncement( m2 );
-        assertEquals( 2, _log.TESTgetLast().size() );
-        assertEquals( new MessagePointer( m1 ), _log.TESTgetLast().get( 0 ) );
-        assertEquals( new MessagePointer( m2 ), _log.TESTgetLast().get( 1 ) );
+    public void testReceiveAnnouncement13() throws Exception {
+        log.logAnnouncement( m1 );
+        log.logAnnouncement( m2 );
+        assertEquals( 2, log.TESTgetLast().size() );
+        assertEquals( new MessagePointer( m1 ), log.TESTgetLast().get( 0 ) );
+        assertEquals( new MessagePointer( m2 ), log.TESTgetLast().get( 1 ) );
 
-        _layer.receiveAnnouncement( new ListExpression( StringExpression.makeString(
+        layer.receiveAnnouncement( new ListExpression( StringExpression.makeString(
                 "succeeds" ), new ListExpression( new MessagePointer( m1 )
                 .toASE() ), StringExpression.makeString( "TEST DATUM" ) ) );
 
-        assertEquals( 1, _log.TESTgetLast().size() );
-        assertEquals( new MessagePointer( m2 ), _log.TESTgetLast().get( 0 ) );
+        assertEquals( 1, log.TESTgetLast().size() );
+        assertEquals( new MessagePointer( m2 ), log.TESTgetLast().get( 0 ) );
     }
 
     // ** receiveJoinReply(ASExpression) tests **
     // Junk
     @Test(expected = IncorrectFormatException.class)
-    public void test_receivejoinreply_1() throws Exception {
-        _layer.receiveJoinReply( NoMatch.SINGLETON );
+    public void testReceiveJoinReply1() throws Exception {
+        layer.receiveJoinReply( NoMatch.SINGLETON );
     }
 
     @Test(expected = IncorrectFormatException.class)
-    public void test_receivejoinreply_2() throws Exception {
-        _layer.receiveJoinReply( Wildcard.SINGLETON );
+    public void testReceiveJoinReply2() throws Exception {
+        layer.receiveJoinReply( Wildcard.SINGLETON );
     }
 
     @Test(expected = IncorrectFormatException.class)
-    public void test_receivejoinreply_3() throws Exception {
-        _layer.receiveJoinReply( Nothing.SINGLETON );
+    public void testReceiveJoinReply3() throws Exception {
+        layer.receiveJoinReply( Nothing.SINGLETON );
     }
 
     @Test(expected = IncorrectFormatException.class)
-    public void test_receivejoinreply_4() throws Exception {
-        _layer.receiveJoinReply( Nothing.SINGLETON );
+    public void testReceiveJoinReply4() throws Exception {
+        layer.receiveJoinReply( Nothing.SINGLETON );
     }
 
     @Test(expected = IncorrectFormatException.class)
-    public void test_receivejoinreply_5() throws Exception {
-        _layer.receiveJoinReply( new ListExpression( "Check", "one", "two" ) );
+    public void testReceiveJoinReply5() throws Exception {
+        layer.receiveJoinReply( new ListExpression( "Check", "one", "two" ) );
     }
 
     // not a list
     @Test(expected = IncorrectFormatException.class)
-    public void test_receivejoinreply_6() throws Exception {
-        _layer.receiveJoinReply( StringExpression.makeString( "This is not a list" ) );
+    public void testReceiveJoinReply6() throws Exception {
+        layer.receiveJoinReply( StringExpression.makeString( "This is not a list" ) );
     }
 
     // a list, but not all the members match the pattern
     @Test(expected = IncorrectFormatException.class)
-    public void test_receivejoinreply_7() throws Exception {
-        _layer.receiveJoinReply( new ListExpression( new MessagePointer( m1 )
-                .toASE(), new ListExpression( "ptr", "hostid", "number",
+    public void testReceiveJoinReply7() throws Exception {
+        layer.receiveJoinReply( new ListExpression( new MessagePointer( m1 )
+                .toASE(), new ListExpression( "ptr", "hostID", "number",
                 "hash", "EXTRA" ), new MessagePointer( m2 ).toASE() ) );
     }
 
-    // all the members match the pattern, but pointers can't be construted out
+    // all the members match the pattern, but pointers can't be constructed out
     // of them.
     @Test(expected = IncorrectFormatException.class)
-    public void test_receivejoinreply_8() throws Exception {
-        _layer.receiveJoinReply( new ListExpression( new MessagePointer( m1 )
-                .toASE(), new ListExpression( "notptr", "hostid", "number",
+    public void testReceiveJoinReply8() throws Exception {
+        layer.receiveJoinReply( new ListExpression( new MessagePointer( m1 )
+                .toASE(), new ListExpression( "notptr", "hostID", "number",
                 "hash" ), new MessagePointer( m2 ).toASE() ) );
     }
 
     // Good.
     @Test
-    public void test_receivejoinreply_9() throws Exception {
-        assertEquals( 0, _log.TESTgetLast().size() );
+    public void testReceiveJoinReply9() throws Exception {
+        assertEquals( 0, log.TESTgetLast().size() );
 
-        _layer.receiveJoinReply( new ListExpression( new MessagePointer( m1 )
+        layer.receiveJoinReply( new ListExpression( new MessagePointer( m1 )
                 .toASE() ) );
 
-        assertEquals( 1, _log.TESTgetLast().size() );
-        assertEquals( new MessagePointer( m1 ), _log.TESTgetLast().get( 0 ) );
+        assertEquals( 1, log.TESTgetLast().size() );
+        assertEquals( new MessagePointer( m1 ), log.TESTgetLast().get( 0 ) );
     }
 
     @Test
-    public void test_receivejoinreply_10() throws Exception {
-        assertEquals( 0, _log.TESTgetLast().size() );
+    public void testReceiveJoinReply10() throws Exception {
+        assertEquals( 0, log.TESTgetLast().size() );
 
-        _layer.receiveJoinReply( new ListExpression( new MessagePointer( m1 )
+        layer.receiveJoinReply( new ListExpression( new MessagePointer( m1 )
                 .toASE() ) );
-        _layer.receiveJoinReply( new ListExpression( new MessagePointer( m2 )
+        layer.receiveJoinReply( new ListExpression( new MessagePointer( m2 )
                 .toASE() ) );
 
-        assertEquals( 2, _log.TESTgetLast().size() );
-        assertEquals( new MessagePointer( m1 ), _log.TESTgetLast().get( 0 ) );
-        assertEquals( new MessagePointer( m2 ), _log.TESTgetLast().get( 1 ) );
+        assertEquals( 2, log.TESTgetLast().size() );
+        assertEquals( new MessagePointer( m1 ), log.TESTgetLast().get( 0 ) );
+        assertEquals( new MessagePointer( m2 ), log.TESTgetLast().get( 1 ) );
     }
 }

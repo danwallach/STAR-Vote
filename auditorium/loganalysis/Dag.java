@@ -23,7 +23,6 @@
 package auditorium.loganalysis;
 
 import java.io.CharArrayReader;
-import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -46,69 +45,83 @@ import sexpression.stream.*;
  */
 public class Dag {
 
-    public static final ASExpression PATTERN = new Parser(
-            new Lexer(
-                    new CharArrayReader(
-                            new String(
-                                    "(announce(host #string #string #string) #string (signed-message (cert (signature #string #string (key #string #string #string #string)))(signature #string #string (succeeds #list:(ptr #string #string #string) #any))))" )
-                                    .toCharArray() ) ) ).read();
+    /* FIXME This patter is probably broken with the new hash chain */
+    /** The pattern string for reading logged messages */
+    private static final String PATTERN_STRING = "(announce(host #string #string #string) #string " +
+                                                "(signed-message (cert " +
+                                                "(signature #string #string (key #string #string #string #string)))" +
+                                                "(signature #string #string " +
+                                                "(succeeds #list:(ptr #string #string #string) #any))))";
 
-    private final String _filename;
-    private final HashMap<MessagePointer, ArrayList<MessagePointer>> _dag;
-    private final HashMap<MessagePointer, String> _messageTypes;
+
+    /** Tha actual ASE pattern based on PATTERN_STRING */
+    private static final ASExpression PATTERN = new Parser(new Lexer(new CharArrayReader(PATTERN_STRING.toCharArray()))).read();
+
+    /** log file to build the dag from */
+    private final String filename;
+
+    /** Map representation of the dag */
+    private final HashMap<MessagePointer, ArrayList<MessagePointer>> dag;
+
+    /** map of all the messages to their types */
+    private final HashMap<MessagePointer, String> messageTypes;
 
     /**
-     * @param filename
-     *            Build the dag from an auditorium log file found at this path.
+     * Constructor. Initializes the fields.
+     *
+     * @param filename  Build the dag from an auditorium log file found at this path.
      */
     public Dag(String filename) {
-        _filename = filename;
-        _dag = new HashMap<>();
-        _messageTypes = new HashMap<>();
+        this.filename = filename;
+        dag = new HashMap<>();
+        messageTypes = new HashMap<>();
     }
 
     /**
-     * Parse the file given at construct time and build the dag based on this
-     * file.
+     * Parse the file given at construct time and build the dag based on this file.
      */
-    public void build() throws IOException, InvalidVerbatimStreamException,
-            IncorrectFormatException {
-        ASEInputStreamReader reader = new ASEInputStreamReader(
-                new FileInputStream( new File( _filename ) ) );
+    public void build() throws IOException, InvalidVerbatimStreamException, IncorrectFormatException {
 
-        try {
-            while (true) {
-                ASExpression message = reader.read();
-                MessagePointer ptr = new MessagePointer( new Message( message ) );
+        /* Read the file in as an ASE */
+        ASEInputStreamReader reader = new ASEInputStreamReader(new FileInputStream(new File(filename)));
 
-                ArrayList<MessagePointer> predlist = new ArrayList<>();
-                ListExpression matchresult = (ListExpression) PATTERN
-                        .match(message);
+        /* Read in the ASEs contained in the file, one by one */
+        ASExpression message;
+        while ((message = reader.read()) != null) {
 
-                for (ASExpression ase : (ListExpression) matchresult.get( 12 ))  {
-                    predlist.add( new MessagePointer( ase ) );
-                }
-                _messageTypes.put(ptr, ((ListExpression)matchresult.get(13)).get(0).toString());
-                _dag.put( ptr, predlist );
-            }
+            /* build a message pointer based on the read-in message */
+            MessagePointer ptr = new MessagePointer(new Message(message));
+
+            /* List of message pointers that predate this message pointer */
+            ArrayList<MessagePointer> predateList = new ArrayList<>();
+
+            /* Match the expression to the pattern */
+            ListExpression matchResult = (ListExpression) PATTERN.match(message);
+
+            /* Pull out all of the message pointers corresponding to messages that predate this message */
+            for (ASExpression ase : (ListExpression) matchResult.get( 12 ))
+                predateList.add(new MessagePointer(ase));
+
+            /* map this message to its type */
+            messageTypes.put(ptr, ((ListExpression)matchResult.get(13)).get(0).toString());
+
+            /* map the pointer to its predecessors */
+            dag.put( ptr, predateList );
         }
-        catch (EOFException ignored) {}
     }
 
     /**
-     * @return This method returns the dag structure that is wrapped by this
-     *         instance.
+     * @return This method returns the dag structure that is wrapped by this instance.
      */
     public HashMap<MessagePointer, ArrayList<MessagePointer>> getDag() {
-        return _dag;
+        return dag;
     }
 
     /**
-     * @return This method gets the message type associated with a message pointer
-     *         so graphing is clearer.
+     * @return This method gets the message type associated with a message pointer so graphing is clearer.
      */
     public HashMap<MessagePointer, String> getTypes(){
-        return _messageTypes;
+        return messageTypes;
     }
 
     /**
@@ -120,14 +133,21 @@ public class Dag {
      *         pointers).
      */
     public HashMap<Integer, Integer> getBranchStatistics() {
+
+        /* Intialize the return map */
         HashMap<Integer, Integer> ret = new HashMap<>();
-        for (MessagePointer mp : _dag.keySet()) {
-            int num = _dag.get( mp ).size();
-            if (ret.containsKey( num ))
-                ret.put( num, ret.get( num ) + 1 );
-            else
-                ret.put( num, 1 );
+
+        /* Iterate over the nodes in the graph (MessagePointers) */
+        for (MessagePointer mp : dag.keySet()) {
+
+            /* get the inflow to this node */
+            int num = dag.get( mp ).size();
+
+            /* Count how many times a node with this inflow has been seen */
+            int freq = ret.containsKey(num) ? ret.get(num) + 1 : 1;
+            ret.put(num, freq);
         }
+
         return ret;
     }
 }

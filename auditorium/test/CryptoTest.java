@@ -39,32 +39,32 @@ import sexpression.*;
  */
 public class CryptoTest {
 
-    private final Generator _gen = new Generator();
-    private final ASExpression _message = new ListExpression( "One", "Two",
+    private final Generator gen = new Generator();
+    private final ASExpression message = new ListExpression( "One", "Two",
             "Three" );
 
     @Test
-    public void test_sign_verify() throws Exception {
+    public void testSignVerify() throws Exception {
         for (int lcv = 0; lcv < 3; lcv++) {
-            Keys keys = _gen.generateKey( "TEST", "TEST" );
-            Cert cert = _gen.createCert( keys.getPrivate(), keys.getPublic() );
-            Signature sig = RSACrypto.SINGLETON.sign( _message, keys.getPrivate() );
+            Keys keys = gen.generateKey( "TEST", "TEST" );
+            Cert cert = gen.createCert( keys.getPrivate(), keys.getPublic() );
+            Signature sig = RSACrypto.SINGLETON.sign( message, keys.getPrivate() );
             RSACrypto.SINGLETON.verify( sig, cert );
         }
     }
 
     @Test(expected = AuditoriumCryptoException.class)
-    public void test_sign_verify_fail() throws Exception {
+    public void testSignVerifyFail() throws Exception {
         for (int lcv = 0; lcv < 3; lcv++) {
-            Keys keys = _gen.generateKey( "TEST", "TEST" );
-            Cert cert = _gen.createCert( keys.getPrivate(), keys.getPublic() );
-            Signature sig = RSACrypto.SINGLETON.sign( _message, keys.getPrivate() );
-            byte[] sigbytes = sig.getSigData().getBytesCopy();
-            sigbytes[32] = 12;
-            sigbytes[1] = -3;
-            Signature notsig = new Signature( "TEST", StringExpression.makeString(
-                    sigbytes ), keys.getPublic().toASE() );
-            RSACrypto.SINGLETON.verify( notsig, cert );
+            Keys keys = gen.generateKey( "TEST", "TEST" );
+            Cert cert = gen.createCert( keys.getPrivate(), keys.getPublic() );
+            Signature sig = RSACrypto.SINGLETON.sign( message, keys.getPrivate() );
+            byte[] sigBytes = sig.getSigData().getBytesCopy();
+            sigBytes[32] = 12;
+            sigBytes[1] = -3;
+            Signature notSig = new Signature( "TEST", StringExpression.makeString(
+                    sigBytes ), keys.getPublic().toASE() );
+            RSACrypto.SINGLETON.verify( notSig, cert );
         }
     }
 }
