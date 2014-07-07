@@ -228,7 +228,10 @@ public class NIZKsPerformanceTest {
 
 			long encryptStart = System.currentTimeMillis();
 			ListExpression toDecrypt = BallotEncrypter.SINGLETON.encryptWithProof("0", exp, groups, _adderPublicKey, ASExpression.make("nonce"));
-			long encryptStop = System.currentTimeMillis();
+
+            System.out.println(((ListExpression)(toDecrypt.get(2))).get(0));
+
+            long encryptStop = System.currentTimeMillis();
 
 			elapsedTime += (encryptStop - encryptStart);
 			System.out.println("\t"+(encryptStop - encryptStart)+" milliseconds");

@@ -118,6 +118,7 @@ public class WebServerTallier {
      * Decrypts a Ballot.
      *
      * @param toDecrypt     the Ballot to be decrypted -- it is expected that this is a challenged ballot
+     * @return              a list of candidates that were selected
      */
     public static List<String> decrypt(Ballot toDecrypt, PublicKey publicKey, PrivateKey privateKey) {
 
