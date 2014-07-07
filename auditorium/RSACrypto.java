@@ -80,7 +80,7 @@ public class RSACrypto {
      *            This is the certificate of the host that supposedly signed the
      *            message.
      */
-    public void verify(Signature signature, Cert host)
+    public void verify(Signature signature, Certificate host)
             throws AuditoriumCryptoException {
         try {
             KeyFactory factory = KeyFactory.getInstance( "RSA" );

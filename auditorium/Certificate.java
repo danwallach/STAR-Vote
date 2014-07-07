@@ -42,67 +42,73 @@ import sexpression.*;
  * @see auditorium.Key
  * @author Kyle Derr
  */
-public class Cert {
+public class Certificate {
 
-    public static final ASExpression PATTERN = new ListExpression(
-            StringExpression.makeString( "cert" ), Wildcard.SINGLETON );
+    /** The pattern for a certificate, of the form (cert <signature>) */
+    public static final ASExpression PATTERN = new ListExpression(StringExpression.makeString("cert"), Wildcard.SINGLETON);
 
-    private final Signature _signature;
-    private final Key _key;
+    /** The signature of this certificate, which it signs messages with, of the form (signature [id] [sigdata] {payload}) */
+    private final Signature signature;
+
+    /** The key this certificate uses to sign things with, of the form (key [id] [annotation] [mod] [exp]) */
+    private final Key key;
 
     /**
-     * @param sig
-     *            This is the signature
+     * Constructor.
+     *
+     * @param sig       the signature of this certificate
+     *
      * @throws IncorrectFormatException
      */
-    public Cert(Signature sig) throws IncorrectFormatException {
-        _signature = sig;
-        _key = new Key( sig.getPayload() );
+    public Certificate(Signature sig) throws IncorrectFormatException {
+        signature = sig;
+
+        /* Extract the key from the signature */
+        key = new Key(sig.getPayload());
     }
 
     /**
      * Construct a certificate from its s-expression format.
      * 
-     * @param cert
-     *            This is the certificate message in its s-expression format.
-     * @throws IncorrectFormatException
-     *             This method throws if the given expression isn't formatted
-     *             like PATTERN.
+     * @param cert      the certificate message in its s-expression format.
+     *
+     * @throws IncorrectFormatException Thrown if the given expression isn't formatted like PATTERN.
      */
-    public Cert(ASExpression cert) throws IncorrectFormatException {
+    public Certificate(ASExpression cert) throws IncorrectFormatException {
+
+        /* Ensure this S-expression is actually a certificate */
         ASExpression matchResult = PATTERN.match( cert );
         if (matchResult == NoMatch.SINGLETON)
-            throw new IncorrectFormatException( cert, new Exception(
-                    "given expression did not match the pattern" ) );
+            throw new IncorrectFormatException(cert, new Exception("given expression did not match the pattern"));
+
+        /* Enforce type */
         ListExpression matchList = (ListExpression) matchResult;
 
-        _signature = new Signature( matchList.get( 0 ) );
-        _key = new Key( _signature.getPayload() );
+        /* Extract the vital information */
+        signature = new Signature(matchList.get(0));
+        key = new Key(signature.getPayload());
     }
 
     /**
      * Convert this certificate to its auditorium s-expression format.
      * 
-     * @return This method returns (cert (signature [signer] [)
-     *             THis method throws if the certificate cannot be encoded.
+     * @return An S-Expression of the form (cert (signature [signer] [data] (key [id] [annotation] [mod] [exp])))
      */
     public ListExpression toASE() {
-        return new ListExpression( StringExpression.makeString( "cert" ),
-                _signature.toASE() );
+        return new ListExpression(StringExpression.makeString("cert"), signature.toASE());
     }
 
     /**
-     * @return This method returns the signature structure that makes up this
-     *         cert.
+     * @return       The signature structure that makes up this cert.
      */
     public Signature getSignature() {
-        return _signature;
+        return signature;
     }
 
     /**
-     * @return This method returns the key that this certificate presents.
+     * @return       The key that this certificate presents.
      */
     public Key getKey() {
-        return _key;
+        return key;
     }
 }

@@ -24,13 +24,17 @@ package auditorium;
 
 import java.util.Observable;
 
+/**
+ * The base class for events in our event-driven network format
+ *
+ * @param <T>           the type of the event
+ */
 public class Event<T> extends Observable {
 
     /**
-     * Notify observers that a new host has joined.
+     * Notify observers that a host has changed state (joined or left).
      * 
-     * @param o
-     *            This is the host that joined.
+     * @param o         This is the host that has changed state.
      */
     public void notify(T o) {
         setChanged();

@@ -151,7 +151,7 @@ public class LinkTest {
         stream.write( ListExpression.EMPTY.toVerbatim() );
         Thread.sleep( 100 );
 
-        assertTrue( link.running() );
+        assertFalse( link.running() );
 
         assertEquals( 0, links.size() );
         assertEquals( 0, received.size() );

@@ -68,12 +68,12 @@ public class IntegrityLayerTest {
             return "TEST";
         }
     };
-    private Cert myCert;
+    private Certificate myCert;
     private Key myKey;
-    private Cert caCert;
+    private Certificate caCert;
     private IKeyStore keystore = new IKeyStore() {
 
-        public Cert loadCert(String nodeID) throws AuditoriumCryptoException {
+        public Certificate loadCert(String nodeID) throws AuditoriumCryptoException {
             if (nodeID.equals("ca"))
                 return caCert;
             return myCert;
@@ -95,9 +95,9 @@ public class IntegrityLayerTest {
         Keys ca = gen.generateKey( "ca", "ca" );
         Keys my = gen.generateKey( "me", "booth" );
         myKey = my.getPrivate();
-        myCert = new Cert( RSACrypto.SINGLETON.sign( my.getPublic().toASE(), ca
+        myCert = new Certificate( RSACrypto.SINGLETON.sign( my.getPublic().toASE(), ca
                 .getPrivate() ) );
-        caCert = new Cert( RSACrypto.SINGLETON.sign( ca.getPublic().toASE(), ca
+        caCert = new Certificate( RSACrypto.SINGLETON.sign( ca.getPublic().toASE(), ca
                 .getPrivate() ) );
         layer = new AuditoriumIntegrityLayer( AAuditoriumLayer.BOTTOM, host,
                 keystore );

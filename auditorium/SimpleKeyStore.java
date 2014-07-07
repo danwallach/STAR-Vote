@@ -43,13 +43,13 @@ import sexpression.stream.*;
  * <tt><i>nodeid</i>.key</tt> and containing an S-expression matching the
  * format expected by {@link Key}; similarly, certificate files are named
  * <tt><i>nodeid</i>.cert</tt> and contain an S-expression recognized by the
- * constructor for {@link Cert}.
+ * constructor for {@link Certificate}.
  *
  * Keys and Certs are cached internally, so multiple requests for the same key
  * will not result in multiple loads from disk.
  * 
  * @see auditorium.Key
- * @see auditorium.Cert
+ * @see Certificate
  * @author Kyle Derr
  * 
  */
@@ -59,7 +59,7 @@ public class SimpleKeyStore implements IKeyStore {
 
 	private final String _dir;
 	private HashMap<String,Key>  _keyCache;
-	private HashMap<String,Cert> _certCache;
+	private HashMap<String, Certificate> _certCache;
 
 	/**
 	 * @param dir
@@ -95,11 +95,11 @@ public class SimpleKeyStore implements IKeyStore {
 	 * 
 	 * @see auditorium.IKeyStore#loadCert(java.lang.String)
 	 */
-	public Cert loadCert(String nodeid) throws AuditoriumCryptoException {
+	public Certificate loadCert(String nodeid) throws AuditoriumCryptoException {
 		if (! _certCache.containsKey(nodeid)) {
 			try {
 				_certCache.put(nodeid, 
-						new Cert( load( nodeid + ".cert" ) ));
+						new Certificate( load( nodeid + ".cert" ) ));
 			}
 			catch (Exception e) {
 				throw new AuditoriumCryptoException( "loadCert(\"" + nodeid + "\")", e );

@@ -42,7 +42,7 @@ public class AuditoriumIntegrityLayer extends AAuditoriumLayer {
     private final IKeyStore keystore;
 
     /** The certification this layer uses to sign messages */
-    private Cert myCert;
+    private Certificate myCert;
 
     /** All certificate authority keys are expected to be annotated thusly */
     public static final String CA_ANNOTATION = "ca";
@@ -125,7 +125,7 @@ public class AuditoriumIntegrityLayer extends AAuditoriumLayer {
             ListExpression matchList = (ListExpression) matchResult;
 
             /* Get out the certificate and signature */
-            Cert cer = new Cert(matchList.get(0));
+            Certificate cer = new Certificate(matchList.get(0));
             Signature sig = new Signature(matchList.get(1));
 
             /* Verify the signature */
@@ -135,7 +135,7 @@ public class AuditoriumIntegrityLayer extends AAuditoriumLayer {
             String signingKeyId = cer.getSignature().getId();
 
             /* the certificate (Cert object) that signed the, er, certificate */
-            Cert signingCert = keystore.loadCert( signingKeyId );
+            Certificate signingCert = keystore.loadCert( signingKeyId );
 
             /* verify that the signature on the certificate itself is correct */
             if (signingCert.getKey().getAnnotation().equals(CA_ANNOTATION))

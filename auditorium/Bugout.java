@@ -26,62 +26,62 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 
 /**
- * This class contains debugging output messages (which might, someday, get
- * turned into logs).
+ * This class contains debugging output messages (which might, someday, get turned into logs).
  * 
  * @author Kyle Derr
- * 
  */
 public class Bugout {
 
-    /**
-     * Clear this field to disable debugging messages.
-     */
+    /** Clear this field to disable debugging messages. */
     public static volatile boolean MSG_OUTPUT_ON = true;
 
-    /**
-     * Clear this field to disable error output.
-     */
+    /** Clear this field to disable error output. */
     public static volatile boolean ERR_OUTPUT_ON = true;
+
+
+    /** This will allow us to write to standard output, System.out */
+    private static PrintWriter msg = new PrintWriter(System.out);
+
+    /** This will allow us to write to error output, System.err */
+    private static PrintWriter err = new PrintWriter(System.err);
 
     /**
      * Set where the debugging and error message go.
-     * 
-     * @param msg
-     *            Normal debugging messages go here.
-     * @param err
-     *            Error messages go here.
+     *
+     * @param msg       Normal debugging messages go here.
+     * @param err       Error messages go here.
      */
     public static void changeStreams(OutputStream msg, OutputStream err) {
-        _msg = new PrintWriter( msg );
-        _err = new PrintWriter( err );
+        Bugout.msg = new PrintWriter( msg );
+        Bugout.err = new PrintWriter( err );
     }
-
-    private static PrintWriter _msg = new PrintWriter( System.out );
-    private static PrintWriter _err = new PrintWriter( System.err );
 
     /**
      * Print a debugging message.
      * 
-     * @param message
-     *            Print this message.
+     * @param message       The message to print
      */
     public synchronized static void msg(String message) {
-        if (MSG_OUTPUT_ON)
-            _msg.println( "MESSAGE: " + message );
-        _msg.flush();
+
+        /* If we are supposed to output messages, do so */
+        if (MSG_OUTPUT_ON) msg.println( "MESSAGE: " + message );
+
+        /* Flush the stream */
+        msg.flush();
     }
 
     /**
      * Print an error message.
      * 
-     * @param err
-     *            Print this message.
+     * @param err       Print this message.
      */
     public synchronized static void err(String err) {
-        if (ERR_OUTPUT_ON)
-            _err.println( "ERROR: " + err );
-        _err.flush();
+
+        /* If we are supposed to output messages, do so */
+        if (ERR_OUTPUT_ON) Bugout.err.println("ERROR: " + err);
+
+        /* Flush the stream */
+        Bugout.err.flush();
     }
 
 }

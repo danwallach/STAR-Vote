@@ -50,7 +50,7 @@ public class TestDataGen {
 	private long _nonce;
 
 	// Certificate and private key for each host
-	private final Cert[] _cert = new Cert[10];
+	private final Certificate[] _cert = new Certificate[10];
 	private final Key[] _key = new Key[10];
 
 	// Host pointer for each host.
@@ -122,7 +122,7 @@ public class TestDataGen {
 	public Message makeMessage(int from, ASExpression message, boolean track)
 			throws Exception {
 		_sequence[from]++;
-		Cert cert = _cert[from];
+		Certificate cert = _cert[from];
 		Key key = _key[from];
 
 		Signature sig;

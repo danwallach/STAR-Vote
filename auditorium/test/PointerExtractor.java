@@ -25,7 +25,7 @@ package auditorium.test;
 import java.io.File;
 import java.io.FileInputStream;
 
-import auditorium.Cert;
+import auditorium.Certificate;
 import auditorium.HostPointer;
 
 import auditorium.Signature;
@@ -50,7 +50,7 @@ public class PointerExtractor {
     // 7: datum
     public static final ASExpression PATTERN = new ListExpression(
             StringExpression.makeString( "announce" ), HostPointer.PATTERN, StringWildcard.SINGLETON,
-            new ListExpression(StringExpression.make("signed-message"), Cert.PATTERN, Signature.PATTERN) );
+            new ListExpression(StringExpression.make("signed-message"), Certificate.PATTERN, Signature.PATTERN) );
 
     private final String path;
 

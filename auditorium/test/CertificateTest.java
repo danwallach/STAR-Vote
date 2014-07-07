@@ -35,7 +35,7 @@ import auditorium.*;
  * 
  * @author Kyle Derr
  */
-public class CertTest {
+public class CertificateTest {
 
     /** Auditorium key for easy certification */
     private final Key key = new Key("KEYID", "KEYANNOTATION", new BigInteger("1"), new BigInteger("2"));
@@ -50,14 +50,14 @@ public class CertTest {
     // the payload of the signature isn't a key.
     @Test(expected = IncorrectFormatException.class)
     public void constructor11() throws Exception {
-        new Cert( new Signature( "signer", StringExpression.makeString( "sigdata" ),
+        new Certificate( new Signature( "signer", StringExpression.makeString( "sigdata" ),
                 ListExpression.EMPTY ) );
     }
 
     // Good
     @Test
     public void constructor12() throws Exception {
-        Cert c = new Cert( sig );
+        Certificate c = new Certificate( sig );
 
         assertEquals( sig.toASE(), c.getSignature().toASE() );
         assertEquals( key.toASE(), c.getKey().toASE() );
@@ -72,24 +72,24 @@ public class CertTest {
     // Junk
     @Test(expected = IncorrectFormatException.class)
     public void constructor21() throws IncorrectFormatException {
-        new Cert( StringExpression.EMPTY );
+        new Certificate( StringExpression.EMPTY );
     }
 
     @Test(expected = IncorrectFormatException.class)
     public void constructor22() throws IncorrectFormatException {
-        new Cert( new ListExpression( "non", "sense" ) );
+        new Certificate( new ListExpression( "non", "sense" ) );
     }
 
     // len < 2
     @Test(expected = IncorrectFormatException.class)
     public void constructor23() throws IncorrectFormatException {
-        new Cert( new ListExpression( "cert" ) );
+        new Certificate( new ListExpression( "cert" ) );
     }
 
     // len > 2
     @Test(expected = IncorrectFormatException.class)
     public void constructor24() throws IncorrectFormatException {
-        new Cert( new ListExpression( StringExpression.makeString( "cert" ),
+        new Certificate( new ListExpression( StringExpression.makeString( "cert" ),
                 new ListExpression( StringExpression.makeString( "signature" ),
                         StringExpression.makeString( "signer" ), StringExpression.makeString(
                                 "Sig" ), keyASE), StringExpression.makeString(
@@ -99,7 +99,7 @@ public class CertTest {
     // [0] != cert
     @Test(expected = IncorrectFormatException.class)
     public void constructor25() throws IncorrectFormatException {
-        new Cert( new ListExpression( StringExpression.makeString( "notcert" ),
+        new Certificate( new ListExpression( StringExpression.makeString( "notcert" ),
                 new ListExpression( StringExpression.makeString( "signature" ),
                         StringExpression.makeString( "signer" ), StringExpression.makeString(
                                 "Sig" ), keyASE) ) );
@@ -108,7 +108,7 @@ public class CertTest {
     // [1] !signature
     @Test(expected = IncorrectFormatException.class)
     public void constructor26() throws IncorrectFormatException {
-        new Cert( new ListExpression( StringExpression.makeString( "cert" ),
+        new Certificate( new ListExpression( StringExpression.makeString( "cert" ),
                 new ListExpression( StringExpression.makeString( "notsignature" ),
                         StringExpression.makeString( "signer" ), StringExpression.makeString(
                                 "Sig" ), keyASE) ) );
@@ -117,7 +117,7 @@ public class CertTest {
     // Good
     @Test
     public void constructor27() throws IncorrectFormatException {
-        Cert c = new Cert( new ListExpression( StringExpression.makeString( "cert" ),
+        Certificate c = new Certificate( new ListExpression( StringExpression.makeString( "cert" ),
                 new ListExpression( StringExpression.makeString( "signature" ),
                         StringExpression.makeString( "signer" ), StringExpression.makeString(
                                 "Sig" ), keyASE) ) );

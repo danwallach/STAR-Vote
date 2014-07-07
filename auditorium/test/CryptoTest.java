@@ -47,7 +47,7 @@ public class CryptoTest {
     public void testSignVerify() throws Exception {
         for (int lcv = 0; lcv < 3; lcv++) {
             Keys keys = gen.generateKey( "TEST", "TEST" );
-            Cert cert = gen.createCert( keys.getPrivate(), keys.getPublic() );
+            Certificate cert = gen.createCert( keys.getPrivate(), keys.getPublic() );
             Signature sig = RSACrypto.SINGLETON.sign( message, keys.getPrivate() );
             RSACrypto.SINGLETON.verify( sig, cert );
         }
@@ -57,7 +57,7 @@ public class CryptoTest {
     public void testSignVerifyFail() throws Exception {
         for (int lcv = 0; lcv < 3; lcv++) {
             Keys keys = gen.generateKey( "TEST", "TEST" );
-            Cert cert = gen.createCert( keys.getPrivate(), keys.getPublic() );
+            Certificate cert = gen.createCert( keys.getPrivate(), keys.getPublic() );
             Signature sig = RSACrypto.SINGLETON.sign( message, keys.getPrivate() );
             byte[] sigBytes = sig.getSigData().getBytesCopy();
             sigBytes[32] = 12;

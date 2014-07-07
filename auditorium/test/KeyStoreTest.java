@@ -63,7 +63,7 @@ public class KeyStoreTest {
     @Test
     public void loadKey() throws Exception {
         for (int lcv = 0; lcv < 5; lcv++) {
-            Cert cert = keystore.loadCert( Integer.toString( lcv ) );
+            Certificate cert = keystore.loadCert( Integer.toString( lcv ) );
             Key key = keystore.loadKey( Integer.toString( lcv ) );
             Signature sig = RSACrypto.SINGLETON.sign( message, key );
             RSACrypto.SINGLETON.verify( sig, cert );

@@ -49,7 +49,7 @@ public interface IKeyStore {
      * @return This method returns the certificate that wasa loaded from the
      *         given file.
      */
-    Cert loadCert(String nodeid) throws AuditoriumCryptoException;
+    Certificate loadCert(String nodeid) throws AuditoriumCryptoException;
     
     /**
      * Load the adder key associated with the given ID.

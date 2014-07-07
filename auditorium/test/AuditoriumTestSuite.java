@@ -27,7 +27,7 @@ import org.junit.runner.*;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-  CertTest.class,
+  CertificateTest.class,
   CryptoTest.class,
   HostPointerTest.class,
   IntegrityLayerTest.class,

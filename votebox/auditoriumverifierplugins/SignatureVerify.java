@@ -80,7 +80,7 @@ public class SignatureVerify extends AST {
 
 						try {
                             /* Finds certification */
-							Cert c = new Cert(certvalue.getASE());
+							Certificate c = new Certificate(certvalue.getASE());
 
                             /* Finds signature */
 							Signature s = new Signature(sigvalue.getASE());

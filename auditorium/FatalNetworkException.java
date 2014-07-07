@@ -23,15 +23,14 @@
 package auditorium;
 
 /**
- * This is thrown if Auditorium has found an unrecoverable error.
+ * This is thrown if Auditorium has found an unrecoverable error. It's basically just a wrapper.
  * 
  * @author Kyle Derr
  */
 public class FatalNetworkException extends RuntimeException {
 
-    private static final long serialVersionUID = 1L;
-
     public FatalNetworkException(String message, Throwable cause) {
         super( message, cause );
     }
+
 }
