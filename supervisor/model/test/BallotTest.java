@@ -48,16 +48,16 @@ public class BallotTest extends TestCase {
 
         ASExpression nonce = getBlob();
 
-        List<ElgamalCiphertext> ctexts = new ArrayList<>();
+        List<ElgamalCiphertext> cTexts = new ArrayList<>();
 
-        ctexts.add(publicKey.encryptPoly(AdderInteger.ZERO));
-        ctexts.add(publicKey.encryptPoly(AdderInteger.ONE));
+        cTexts.add(publicKey.encryptPoly(AdderInteger.ZERO));
+        cTexts.add(publicKey.encryptPoly(AdderInteger.ONE));
 
         List<ASExpression> choices = new ArrayList<>();
         choices.add(StringExpression.makeString("B0"));
         choices.add(StringExpression.makeString("B1"));
 
-        Vote vote = new Vote(ctexts, choices);
+        Vote vote = new Vote(cTexts, choices);
 
         List<Vote> votes = new ArrayList<>();
         List<AdderInteger> c = new ArrayList<>();
@@ -69,13 +69,11 @@ public class BallotTest extends TestCase {
         VoteProof proof = new VoteProof();
         proof.compute(vote, publicKey, c, 0, 1);
 
-        vote = new Vote(ctexts, choices, proof);
+        vote = new Vote(cTexts, choices, proof);
 
         votes.add(vote);
 
-
-
-        vote.verifyVoteProof(publicKey, 0, 1);
+        assertTrue(vote.verifyVoteProof(publicKey, 0, 1));
 
         ballot = new Ballot("0", votes, nonce, publicKey);
 
@@ -91,10 +89,10 @@ public class BallotTest extends TestCase {
 
         ASExpression nonce = getBlob();
 
-        List<ElgamalCiphertext> ctexts = new ArrayList<>();
+        List<ElgamalCiphertext> cTexts = new ArrayList<>();
 
-        ctexts.add(publicKey.encryptPoly(AdderInteger.ZERO));
-        ctexts.add(publicKey.encryptPoly(AdderInteger.ONE));
+        cTexts.add(publicKey.encryptPoly(AdderInteger.ZERO));
+        cTexts.add(publicKey.encryptPoly(AdderInteger.ONE));
 
         List<ASExpression> choices = new ArrayList<>();
         choices.add(StringExpression.makeString("B0"));
@@ -102,7 +100,7 @@ public class BallotTest extends TestCase {
 
         List<AdderInteger> c = new ArrayList<>();
 
-        Vote vote = new Vote(ctexts, choices);
+        Vote vote = new Vote(cTexts, choices);
 
         c.add(AdderInteger.ZERO);
         c.add(AdderInteger.ONE);
@@ -110,7 +108,7 @@ public class BallotTest extends TestCase {
         VoteProof proof = new VoteProof();
         proof.compute(vote, publicKey, c, 0, 1);
 
-        vote = new Vote(ctexts, choices, proof);
+        vote = new Vote(cTexts, choices, proof);
 
         List<Vote> votes = new ArrayList<>();
         votes.add(vote);

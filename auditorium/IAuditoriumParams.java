@@ -32,27 +32,22 @@ package auditorium;
 public interface IAuditoriumParams {
 
     /**
-     * @return Timeout after this many miliseconds when listening for discover
-     *         responses.
+     * @return Timeout after this many milliseconds when listening for discover responses.
      */
     public int getDiscoverTimeout();
 
     /**
      * @return Discover requests should be UDP broadcast on this port.
      */
-
     public int getDiscoverPort();
 
     /**
-     * @return Timeout after this many miliseconds when trying to reply to a
-     *         discover request.
+     * @return Timeout after this many milliseconds when trying to reply to a discover request.
      */
-
     public int getDiscoverReplyTimeout();
 
     /**
-     * @return Discover replies should be sent over a TCP socket established at
-     *         this port.
+     * @return Discover replies should be sent over a TCP socket established at this port.
      */
     public int getDiscoverReplyPort();
 
@@ -62,10 +57,8 @@ public interface IAuditoriumParams {
     public int getListenPort();
 
     /**
-     * @return If you don't get a reply back from the join in this amount of
-     *         time, give up.
+     * @return If you don't get a reply back from the join in this amount of time, give up.
      */
-
     public int getJoinTimeout();
 
     /**
@@ -79,41 +72,39 @@ public interface IAuditoriumParams {
     public String getLogLocation();
 
     /**
-	 * @return Return an {@link auditorium.IKeyStore} to be used when looking for
-	 *         certificates of other participants or signing authorities.
+	 * @return {@link auditorium.IKeyStore} to be used when looking for certificates of other participants or signing authorities.
 	 */
     public IKeyStore getKeyStore();
 
     /**
-	 * @return This method returns the location of the file that defines the
+	 * @return The location of the file that defines the
 	 *         rule that should be given to an instance of {@link verifier.Verifier}.
 	 *         Return null to denote that the verifier should not be used.
 	 */
     public String getRuleFile();
     
     /**
-     * @return Returns true if encryption for cast ballots is enabled.  This is used to determine the
+     * @return True if encryption for cast ballots is enabled.  This is used to determine the
      *         Tallier to use in the Supervisor, and the cast-ballot message to send from
      *         VoteBox.
      */
     public boolean getCastBallotEncryptionEnabled();
 
     /**
-     * @return Returns true if VoteBox should use SDL to connect toe an Elo touchscreen as an input device.
+     * @return True if VoteBox should use SDL to connect toe an Elo touchscreen as an input device.
      *         Should only be true on linux, SDL view, framebuffer driven machines.  All other configurations
      *         are likely to fail, and ungracefully at that.
      */
     public boolean getUseEloTouchScreen();
     
     /**
-     * 
-     * @return Return the path to the Elo touch screen.  Used by SDL to connect to that device for mouse input.
+     * @return The path to the Elo touch screen.  Used by SDL to connect to that device for mouse input.
      */
     public String getEloTouchScreenDevice();
     
     /**
      * 
-     * @return the amount of time (in milliseconds) the view should wait before restarting after
+     * @return The amount of time (in milliseconds) the view should wait before restarting after
      *         a successful vote.
      */
     public int getViewRestartTimeout();
@@ -154,7 +145,7 @@ public interface IAuditoriumParams {
     public int getPrintableHeightForVVPAT();
     
     /**
-     * @return true if VoteBox should use NIZKs to confirm the wellformed-ness of ballots.
+     * @return true if VoteBox should use NIZKs to confirm that the ballots are well-formed.
      */
     public boolean getEnableNIZKs();
     
@@ -188,5 +179,8 @@ public interface IAuditoriumParams {
      */
     public String getElectionName();
 
-    int getPort();
+    /**
+     * @return the port to be used for network communication
+     */
+    public int getPort();
 }

@@ -33,98 +33,87 @@ import sexpression.*;
  */
 public class HostPointer {
 
-    public static final ASExpression PATTERN = new ListExpression(
-            StringExpression.makeString( "host" ), StringWildcard.SINGLETON,
-            StringWildcard.SINGLETON, StringWildcard.SINGLETON );
+    /** The pattern for matching host pointers, of the form: (host [node-id] [ip] [port]) */
+    public static final ASExpression PATTERN = new ListExpression(StringExpression.makeString("host"), StringWildcard.SINGLETON, StringWildcard.SINGLETON, StringWildcard.SINGLETON);
 
-    private final String _nodeid;
-    private final String _ip;
-    private final int _port;
+    /** The serial number of the machine to which this host pointer corresponds */
+    private final String nodeID;
 
-    // lazy eval save
-    private ListExpression _aseform;
-    private String _string;
+    /** The IP address of this host */
+    private final String ip;
+
+    /** The port of this host */
+    private final int port;
 
     /**
-     * @param nodeid
-     *            This is the id of the host.
-     * @param ip
-     *            This is the IP of the host in dotted decimal format.
-     * @param port
-     *            This is the port that the host is listening on.
+     * Constructor.
+     *
+     * @param nodeID        the id of the host.
+     * @param ip            the host in dotted decimal format.
+     * @param port          the port that the host is listening on.
      */
-    public HostPointer(String nodeid, String ip, int port) {
-        _nodeid = nodeid;
-        _port = port;
-        _ip = ip;
+    public HostPointer(String nodeID, String ip, int port) {
+        this.nodeID = nodeID;
+        this.port = port;
+        this.ip = ip;
     }
 
     /**
      * Construct a new host address from its s-expression representation.
-     * 
-     * @param hostexp
-     *            This should be of the format (host [id] [ip] [port])
-     * @throws IncorrectFormatException
-     *             This method throws if the given exp is not correctly
-     *             formatted.
+     *
+     * @param hostExp       This should be of the format (host [id] [ip] [port])
+     *
+     * @throws IncorrectFormatException thrown if the given exp is not correctly formatted.
      */
-    public HostPointer(ASExpression hostexp) throws IncorrectFormatException {
+    public HostPointer(ASExpression hostExp) throws IncorrectFormatException {
         try {
-            ASExpression result = PATTERN.match( hostexp );
-            if (result == NoMatch.SINGLETON)
-                throw new IncorrectFormatException( hostexp, new Exception(
-                        hostexp + " didn't match the pattern " + PATTERN ) );
-            _nodeid = ((ListExpression) result).get( 0 ).toString();
-            _ip = ((ListExpression) result).get( 1 ).toString();
-            _port = Integer.parseInt( ((ListExpression) result).get( 2 )
-                    .toString() );
-        }
-        catch (NumberFormatException e) {
-            throw new IncorrectFormatException( hostexp, e );
-        }
+            /* Make sure the expression is a host pointer expression */
+            ASExpression result = PATTERN.match( hostExp );
+            if (result == NoMatch.SINGLETON) throw new IncorrectFormatException(hostExp, new Exception(hostExp + " didn't match the pattern " + PATTERN));
+
+            /* fill in the fields from the expression */
+            nodeID = ((ListExpression)result).get(0).toString();
+            ip = ((ListExpression)result).get(1).toString();
+            port = Integer.parseInt(((ListExpression)result).get(2).toString());
+
+        } catch (NumberFormatException e) { throw new IncorrectFormatException( hostExp, e ); }
     }
 
     /**
      * Get the id of the node this references.
-     * 
-     * @return This method returns the node id.
+     *
+     * @return      the node id.
      */
     public String getNodeId() {
-        return _nodeid;
+        return nodeID;
     }
 
     /**
      * Get the IP of this host.
-     * 
-     * @return This method returns the IP of this host.
+     *
+     * @return      the IP of this host.
      */
     public String getIP() {
-        return _ip;
+        return ip;
     }
 
     /**
      * Get the port of this host.
-     * 
-     * @return This method returns the port of this host.
+     *
+     * @return      the port of this host.
      */
     public int getPort() {
-        return _port;
+        return port;
     }
 
     /**
-     * Return the sexpression representation of this host pointer.
-     * 
-     * @return This method returns (host _nodeid _ip _port)
+     * Return the S-Expression representation of this host pointer.
+     *
+     * @return      (host nodeID ip port)
      */
     public ListExpression toASE() {
-        if (_aseform == null)
-            _aseform = new ListExpression(
-                    StringExpression.makeString( "host" ), StringExpression
-                            .makeString( _nodeid ), StringExpression
-                            .makeString( _ip ), StringExpression
-                            .makeString( Integer.toString( _port ) ) );
-
-        return _aseform;
+       return new ListExpression(StringExpression.makeString("host"), StringExpression.makeString(nodeID),
+                                 StringExpression.makeString(ip), StringExpression.makeString(Integer.toString(port)));
     }
 
     /**
@@ -136,8 +125,8 @@ public class HostPointer {
             return false;
         HostPointer hpo = (HostPointer) o;
 
-        return _nodeid.equals( hpo._nodeid ) && _ip.equals( hpo._ip )
-                && _port == hpo._port;
+        return nodeID.equals( hpo.nodeID) && ip.equals(hpo.ip)
+                && port == hpo.port;
     }
 
     /**
@@ -145,10 +134,7 @@ public class HostPointer {
      */
     @Override
     public String toString() {
-        if (_string == null)
-            _string = _nodeid + "@" + _ip + ":" + Integer.toString( _port );
-
-        return _string;
+        return nodeID + "@" + ip + ":" + Integer.toString(port);
     }
 
 }

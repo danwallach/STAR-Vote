@@ -141,6 +141,8 @@ public class Vote {
         MembershipProof sumProof = new MembershipProof();
         sumProof.compute(sumCipher, publicKey, new AdderInteger(numVotes), totalDomain);
 
+        System.out.println("??????????????" + sumProof.verify(sumCipher, publicKey, totalDomain));
+
         /* Set the new proof */
         proof = new VoteProof(sumProof, proof.getProofList());
     }

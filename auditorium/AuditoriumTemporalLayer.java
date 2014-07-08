@@ -81,7 +81,7 @@ public class AuditoriumTemporalLayer extends AAuditoriumLayer {
     /**
      * @see auditorium.IAuditoriumLayer#makeJoinReply(sexpression.ASExpression)
      */
-    public ASExpression makeJoinReply(ASExpression datum) {
+    public ASExpression makeJoinReply(ASExpression joinMessage) {
         /* Make new datum - Construct the last list to return to the requesting host. */
         ArrayList<ASExpression> lst = new ArrayList<>();
         for (MessagePointer mp : getHost().getLog().getLast())

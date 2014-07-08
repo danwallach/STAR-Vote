@@ -58,72 +58,54 @@ public interface IAuditoriumLayer {
     /**
      * Make the datum to be sent as part of a join message. Flow: top to bottom.
      * 
-     * @param datum
-     *            Place this datum in the message.
-     * @return The datum to be dropped in the join message.
+     * @param datum         Place this datum in the message.
+     * @return              The datum to be dropped in the join message.
      */
     public ASExpression makeJoin(ASExpression datum);
 
     /**
      * Make the datum for a join reply message. Flow: top to bottom.
      * 
-     * @param joinmessage
-     *            This is the datum from the join message that was received.
-     * @return This method returns the join reply datum.
+     * @param joinMessage       This is the datum from the join message that was received.
+     * @return                  the join reply datum.
      */
-    public ASExpression makeJoinReply(ASExpression joinmessage);
+    public ASExpression makeJoinReply(ASExpression joinMessage);
 
     /**
      * Make the datum for an announcement message. Flow: top to bottom.
      * 
-     * @param announcement
-     *            Send this announcement.
-     * @return This method returns the announcement datum.
+     * @param announcement      Send this announcement.
+     * @return                  the announcement datum.
      */
     public ASExpression makeAnnouncement(ASExpression announcement);
 
     /**
-     * Process an announcement that was received on the network. Flow: bottom to
-     * top.
+     * Process an announcement that was received on the network. Flow: bottom to top.
      * 
-     * @param datum
-     *            Process this datum.
-     * @return This method returns the remaining data after it is unwrapped.
+     * @param datum         Process this datum.
+     * @return              The remaining data after it is unwrapped.
      * 
-     * @throws IncorrectFormatException
-     *             This method throws if the datum is not formatted how it needs
-     *             to be for a given layer to use it correctly.
+     * @throws IncorrectFormatException Thrown if the datum is not formatted how it needs to be for a given layer to use it correctly.
      */
-    public ASExpression receiveAnnouncement(ASExpression datum)
-            throws IncorrectFormatException;
+    public ASExpression receiveAnnouncement(ASExpression datum) throws IncorrectFormatException;
 
     /**
-     * Process a join message that was received on the network. Flow: bottom to
-     * top.
+     * Process a join message that was received on the network. Flow: bottom to top.
      * 
-     * @param datum
-     *            Process this datum.
-     * @return After a layer processes the piece of the datum it needs, it
-     *         returns the rest.
-     * @throws IncorrectFormatException
-     *             This method throws if the datum is not formatted how it needs
-     *             to be for a given layer to use it correctly.
+     * @param datum         Process this datum.
+     * @return              After a layer processes the piece of the datum it needs, it returns the rest.
+     *
+     * @throws IncorrectFormatException Thrown if the datum is not formatted how it needs to be for a given layer to use it correctly.
      */
-    public ASExpression receiveJoin(ASExpression datum)
-            throws IncorrectFormatException;
+    public ASExpression receiveJoin(ASExpression datum) throws IncorrectFormatException;
 
     /**
-     * Process a join reply that was received on the network. Flow: bottom to
-     * top.
+     * Process a join reply that was received on the network. Flow: bottom to top.
      * 
-     * @param datum
-     *            Process this datum.
-     * @return After a layer processes the piece of the datum it needs, it
-     *         returns the rest.
-     * @throws IncorrectFormatException
-     *             This method throws if the datum is not formatted how it needs
-     *             to be for a given layer to use it correctly.
+     * @param datum         Process this datum.
+     * @return              After a layer processes the piece of the datum it needs, it returns the rest.
+     *
+     * @throws IncorrectFormatException Thrown if the datum is not formatted how it needs to be for a given layer to use it correctly.
      */
-    public ASExpression receiveJoinReply(ASExpression datum)
-            throws IncorrectFormatException;
+    public ASExpression receiveJoinReply(ASExpression datum) throws IncorrectFormatException;
 }

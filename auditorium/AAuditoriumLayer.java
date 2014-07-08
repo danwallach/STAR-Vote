@@ -46,8 +46,8 @@ public abstract class AAuditoriumLayer implements IAuditoriumLayer {
             return datum;
         }
 
-        public ASExpression makeJoinReply(ASExpression datum) {
-            return datum;
+        public ASExpression makeJoinReply(ASExpression joinMessage) {
+            return joinMessage;
         }
 
         public ASExpression receiveAnnouncement(ASExpression datum)

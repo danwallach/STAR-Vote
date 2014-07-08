@@ -29,7 +29,6 @@ import sexpression.ASExpression;
  * done so that testing is easier.
  * 
  * @author Kyle Derr
- * 
  */
 public interface IAuditoriumHost {
 
@@ -37,7 +36,7 @@ public interface IAuditoriumHost {
      * Get the node ID of this auditorium host. This uniquely identifies this
      * host from all other hosts that could possibly be on the network.
      * 
-     * @return This method returns the unique host identifier.
+     * @return      the unique host identifier.
      */
     String getNodeId();
 
@@ -46,23 +45,21 @@ public interface IAuditoriumHost {
      * serialize messages to the log and keep track of what messages have been
      * logged in the past.
      * 
-     * @return This method returns the host's log instance.
+     * @return      the host's log instance.
      */
     Log getLog();
 
     /**
      * Get a pointer to the host.
      * 
-     * @return This method returns a HostPointer instance that refers to this
-     *         host.
+     * @return      a HostPointer instance that refers to this host.
      */
     HostPointer getMe();
 
     /**
      * Get all the addresses that are in this network.
      * 
-     * @return This method returns an s-expression representation of all
-     *         addresses that are a member of this network.
+     * @return      S-Expression representation of all addresses that are a member of this network.
      */
     ASExpression getAddresses();
 
@@ -70,23 +67,21 @@ public interface IAuditoriumHost {
      * Notify the host that message was received on a link. Links should call
      * this method.
      * 
-     * @param message
-     *            Notify the host that this message was received on the link.
+     * @param message       Notify the host that this message was received on the link.
      */
     void receiveAnnouncement(Message message);
 
     /**
-     * @return This method returns the incremented sequence number counter's
-     *         value.Call this method when making messages to put on the wire,
-     *         to determine what the sequence number should be.
+     * @return          The incremented sequence number counter's value.
+     *                  Call this method when making messages to put on the wire,
+     *                  to determine what the sequence number should be.
      */
     String nextSequence();
 
     /**
      * Remove this host's link
      * 
-     * @param l
-     *            Remove this link
+     * @param l         Remove this link
      */
     void removeLink(Link l);
 
