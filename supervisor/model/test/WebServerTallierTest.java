@@ -43,6 +43,8 @@ public class WebServerTallierTest extends TestCase {
         PublicKey publicKey = (PublicKey)keyStore.loadAdderKey("public");
         PrivateKey privateKey = (PrivateKey)keyStore.loadAdderKey("private");
 
+        PublicKey finalPublicKey = AdderKeyManipulator.generateFinalPublicKey(publicKey);
+
         /* ((B0 0)(B1 0)(B2 1)...) */
         List<ASExpression> singleVote = new ArrayList<>();
 
@@ -85,14 +87,14 @@ public class WebServerTallierTest extends TestCase {
             ballotList.add(Ballot.fromASE(ballotASEList.get(i)));
 
         /* Tally them */
-        Ballot summed = WebServerTallier.tally("TEST1", ballotList, publicKey);
+        Ballot summed = WebServerTallier.tally("TEST1", ballotList, finalPublicKey);
 
         /* Get the vote totals */
-        Map<String, BigInteger> voteTotals = WebServerTallier.getVoteTotals(summed, 5, publicKey, privateKey);
+        Map<String, BigInteger> voteTotals = WebServerTallier.getVoteTotals(summed, 5, finalPublicKey, privateKey);
 
         /* (Sanity) Check the BID and the public key */
         assertEquals(summed.getBid(), "TEST1");
-        assertEquals(summed.getPublicKey(), publicKey);
+        assertEquals(summed.getPublicKey(), finalPublicKey);
 
         /* Compare the decrypted totals with the expected totals */
         for (Map.Entry<String, BigInteger> entry : voteTotals.entrySet()) {
@@ -119,7 +121,7 @@ public class WebServerTallierTest extends TestCase {
         /* Load up singleVote with pattern (1 0 0 0 0 1 0 0 0 0) */
         for (int i=0; i<10; i++) {
 
-            int s = (i%5)==0 ? 1 : 0;
+            int s = (i==1 || i==6) ? 1 : 0;
 
             /* So each of these is (B0 1), (B1 0), etc. */
             singleVote.add(new ListExpression("B" + i, "" + s));

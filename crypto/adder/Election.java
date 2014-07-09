@@ -63,63 +63,37 @@ public class Election {
         /* Pull out the first vote */
         Vote v = votes.get(0);
 
-        List<ElgamalCiphertext> initList = new ArrayList<>();
-
-        /*
-          Load up the initList with new ciphertexts only from the first Vote in the Election
-          This specific vote will be a query used to calculate the total number of votes.
-        */
-        for (ElgamalCiphertext ignored : v.getCipherList()) {
-            ElgamalCiphertext ciphertext = new ElgamalCiphertext(AdderInteger.ONE, AdderInteger.ONE, publicKey.getP());
-            initList.add(ciphertext);
-        }
-
-        VoteProof totalProof = new VoteProof(new MembershipProof(), new ArrayList<MembershipProof>());
-
-        /* Create a single ballot from the initList */
-        Vote total = new Vote(initList, choices, totalProof);
         Vote total2 = v;
-
-        /* Homomorphically tally the encrypted votes */
-        for (Vote vote : votes)
-            total = vote.multiply(total);
 
         for (int i=1; i<votes.size(); i++)
             total2 = votes.get(i).multiply(total2);
 
         List<AdderInteger> choices = new ArrayList<>();
 
+        choices.add(AdderInteger.ZERO);
         choices.add(AdderInteger.ONE);
         choices.add(AdderInteger.ZERO);
         choices.add(AdderInteger.ZERO);
         choices.add(AdderInteger.ZERO);
-        choices.add(AdderInteger.ZERO);
 
-        System.out.println("Testing single vote sumproof");
+        System.out.println("Testing single vote summed");
         /* Compute and verify the vote proof */
-        total.computeSumProof(votes.size(), publicKey);
+        //total2.computeSumProof(votes.size(), publicKey);
 
         /* TODO: Note that this won't function properly because it expects the ciphertexts to be 0/1 */
-        System.out.println("Verfied: " + total.verifyVoteProof(publicKey, 0, votes.size()));
+        System.out.println("Verfied: " + total2.verifyVoteProof(publicKey, 0, votes.size()));
         System.out.println("-----------------");
-
 
         System.out.println("Testing single vote no sumproof: ");
-        VoteProof vp = new VoteProof();
-        vp.compute(total, publicKey, choices, 0, 1);
-        System.out.println("Verfied: " + total.verifyVoteProof(publicKey, 0 ,1));
-        System.out.println("-----------------");
-
-        System.out.println("Testing single vote no sumproof2: ");
         VoteProof vp2 = new VoteProof();
         vp2.compute(total2, publicKey, choices, 0, 1);
-        System.out.println("Verfied: " + total2.verifyVoteProof(publicKey, 0 ,1));
+
+        Vote test = new Vote(total2.getCipherList(), total2.getChoices(), vp2);
+
+        System.out.println("Verfied: " + test.verifyVoteProof(publicKey, 0, 1));
         System.out.println("-----------------");
 
-
-
-
-        return total;
+        return total2;
     }
 
     /**
