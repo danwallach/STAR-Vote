@@ -22,9 +22,9 @@
 
 package auditorium;
 
-import java.math.BigInteger;
-
 import sexpression.*;
+
+import java.math.BigInteger;
 
 /**
  * This class represents one half of an asymmetric cryptographic key; as such it
@@ -43,64 +43,60 @@ import sexpression.*;
  * 
  * @see sexpression
  * @author Kyle Derr
- *
- * This class has now been extended to support ECDH keys as well, with an
- * overloaded constructor that can handle not taking in a modulus. The key
- * value itself is largely unchanged, it is just
- * 
  */
 public class Key {
 
+    /** The pattern for key s-expressions (key <i>id</i> <i>annotation</i> <i>mod</i> <i>exp</i>) */
     public static final ASExpression PATTERN = new ListExpression(
             StringExpression.makeString( "key" ), StringWildcard.SINGLETON,
             StringWildcard.SINGLETON, StringWildcard.SINGLETON,
             StringWildcard.SINGLETON );
 
-    private final String _id;
-    private final String _annotation;
-    private final BigInteger _mod;
-    private final BigInteger _key;
+    /** The serial of the host holding this key */
+    private final String id;
+
+    /** information about this key, e.g. that it is private */
+    private final String annotation;
+
+    /** the key's modulus, the product of two primes */
+    private final BigInteger mod;
+
+    /** The key itself */
+    private final BigInteger key;
 
     /**
-     * @param id
-     *            The key belongs to the host that has this ID
-     * @param annotation
-     *            The key is annotated with this string (usually something about
-     *            how the key is supposed to be used)
-     * @param mod
-     *            This is the key's modulus, the product of two large primes.
-     * @param key
-     *            This is the actual key material (in RSA, it is an exponent).
+     * @param id                The key belongs to the host that has this ID
+     * @param annotation        The key is annotated with this string (usually something about how the key is supposed to be used)
+     * @param mod               This is the key's modulus, the product of two large primes.
+     * @param key               This is the actual key material (in RSA, it is an exponent).
      */
     public Key(String id, String annotation, BigInteger mod, BigInteger key) {
-        _id = id;
-        _annotation = annotation;
-        _mod = mod;
-        _key = key;
+        this.id = id;
+        this.annotation = annotation;
+        this.mod = mod;
+        this.key = key;
     }
 
     /**
-     * @param expression
-     *            Construct the key from this expression. This should be the get
-     *            in s-expression format (like what is returned from toASE())
-     * @throws IncorrectFormatException
-     *             This method throws if the given expression is not formatted
-     *             correctly.
+     * @param expression        Construct the key from this expression.
+     *                          This should be the get in s-expression format (like what is returned from toASE())
+     * @throws IncorrectFormatException Thrown if the given expression is not formatted correctly.
      */
     public Key(ASExpression expression) throws IncorrectFormatException {
         try {
-            ASExpression matchresult = PATTERN.match( expression );
+            /* Match the expression against the pattern */
+            ASExpression matchresult = PATTERN.match(expression);
             if (matchresult == NoMatch.SINGLETON)
-                throw new IncorrectFormatException( expression, new Exception(
-                        "did not match the pattern for key" ) );
-            ListExpression matchlist = (ListExpression) matchresult;
+                throw new IncorrectFormatException(expression, new Exception("did not match the pattern for key"));
 
-            _id = matchlist.get( 0 ).toString();
-            _annotation = matchlist.get( 1 ).toString();
-            _mod = new BigInteger( ((StringExpression) matchlist.get( 2 ))
-                    .getBytesCopy() );
-            _key = new BigInteger( ((StringExpression) matchlist.get( 3 ))
-                    .getBytesCopy() );
+            /* get out the match results */
+            ListExpression matchList = (ListExpression)matchresult;
+
+            /* Get out the necessary information from the expression */
+            id = matchList.get(0).toString();
+            annotation = matchList.get(1).toString();
+            mod = new BigInteger(((StringExpression)matchList.get(2)).getBytesCopy());
+            key = new BigInteger(((StringExpression)matchList.get(3)).getBytesCopy());
         }
         catch (ClassCastException e) {
             throw new IncorrectFormatException( expression, e );
@@ -114,37 +110,37 @@ public class Key {
      */
     public ASExpression toASE() {
         return new ListExpression( StringExpression.makeString( "key" ),
-                StringExpression.makeString( _id ), StringExpression
-                        .makeString( _annotation ), StringExpression
-                        .makeString( _mod.toByteArray() ), StringExpression
-                        .makeString( _key.toByteArray() ) );
+                StringExpression.makeString(id), StringExpression
+                        .makeString(annotation), StringExpression
+                        .makeString( mod.toByteArray() ), StringExpression
+                        .makeString(key.toByteArray()) );
     }
 
     /**
      * @return This method returns the ID of the host that this key belongs to.
      */
     public String getId() {
-        return _id;
+        return id;
     }
 
     /**
      * @return This method returns the annotation string given to this key.
      */
     public String getAnnotation() {
-        return _annotation;
+        return annotation;
     }
 
     /**
      * @return This method returns the key's modulus number.
      */
     public BigInteger getMod() {
-        return _mod;
+        return mod;
     }
 
     /**
      * @return This method returns the key's exponent.
      */
     public BigInteger getKey() {
-        return _key;
+        return key;
     }
 }

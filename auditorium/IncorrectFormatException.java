@@ -29,16 +29,14 @@ import sexpression.ASExpression;
  * formatted a particular way, but it isn't.
  * 
  * @author Kyle Derr
- * 
  */
 public class IncorrectFormatException extends Exception {
-    private static final long serialVersionUID = 1L;
 
+    /** The S-expression in question */
     private final ASExpression _ase;
 
     public IncorrectFormatException(ASExpression message, Throwable exception) {
-        super( message.toString() + " incorrectly formatted: "
-                + exception.getMessage(), exception );
+        super(message.toString() + " incorrectly formatted: " + exception.getMessage(), exception);
         _ase = message;
     }
 
