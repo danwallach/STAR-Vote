@@ -179,7 +179,9 @@ public class MembershipProof {
 
                 /* Record the index of the valid value */
 				indexInDomain = i;
-			}
+
+                System.out.println("I'm inside the if!!! " + i);
+            }
             else {
 
                 /* If we don't have a valid value, generate random numbers for c_i and s_i */

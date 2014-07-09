@@ -14,13 +14,13 @@ import java.util.List;
  */
 public class Election {
 
-    /** */
+    /** The public key used to encrypt and tally */
     private PublicKey publicKey;
 
-    /** */
+    /** The List of all Votes cast in this Election */
     private List<Vote> votes;
 
-    /** */
+    /** The List of all candidates in this Election (race) */
     private List<ASExpression> choices;
 
     /**
@@ -74,7 +74,7 @@ public class Election {
             initList.add(ciphertext);
         }
 
-        VoteProof totalProof = new VoteProof();
+        VoteProof totalProof = new VoteProof(new MembershipProof(), new ArrayList<MembershipProof>());
 
         /* Create a single ballot from the initList */
         Vote total = new Vote(initList, choices, totalProof);

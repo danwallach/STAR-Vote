@@ -4,6 +4,7 @@ import auditorium.SimpleKeyStore;
 import crypto.BallotEncrypter;
 import crypto.adder.PrivateKey;
 import crypto.adder.PublicKey;
+import crypto.interop.AdderKeyManipulator;
 import junit.framework.TestCase;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
@@ -49,7 +50,7 @@ public class WebServerTallierTest extends TestCase {
         for (int i=0; i<10; i++) {
 
             int s = (i%5)==0 ? 1 : 0;
-            singleVote.add(StringExpression.make("B" + i + " " + s));
+            singleVote.add(new ListExpression("B" + i, "" + s));
         }
 
         List<ASExpression> ballotASEList = new ArrayList<>();
@@ -110,6 +111,8 @@ public class WebServerTallierTest extends TestCase {
         PublicKey publicKey = (PublicKey)keyStore.loadAdderKey("public");
         PrivateKey privateKey = (PrivateKey)keyStore.loadAdderKey("private");
 
+        PublicKey finalPublicKey = AdderKeyManipulator.generateFinalPublicKey(publicKey);
+
         /* ((B0 0)(B1 0)(B2 1)...) */
         List<ASExpression> singleVote = new ArrayList<>();
 
@@ -119,7 +122,7 @@ public class WebServerTallierTest extends TestCase {
             int s = (i%5)==0 ? 1 : 0;
 
             /* So each of these is (B0 1), (B1 0), etc. */
-            singleVote.add(StringExpression.make("B" + i + " " + s));
+            singleVote.add(new ListExpression("B" + i, "" + s));
         }
 
         /* Create a new set of race groups */
@@ -148,10 +151,10 @@ public class WebServerTallierTest extends TestCase {
         ballotList.add(Ballot.fromASE(ballotASE));
 
         /* Tally them */
-        Ballot summed = WebServerTallier.tally("TEST1", ballotList, publicKey);
+        Ballot summed = WebServerTallier.tally("TEST1", ballotList, finalPublicKey);
 
         /* Get the vote totals */
-        Map<String, BigInteger> voteTotals = WebServerTallier.getVoteTotals(summed, 5, publicKey, privateKey);
+        Map<String, BigInteger> voteTotals = WebServerTallier.getVoteTotals(summed, 5, finalPublicKey, privateKey);
 
         /* (Sanity) Check the BID and the public key */
         assertEquals(summed.getBid(), "TEST1");
@@ -198,7 +201,7 @@ public class WebServerTallierTest extends TestCase {
             int s = (i%5)==0 ? 1 : 0;
 
             /* So each of these is (B0 0), (B1 1), etc. */
-            singleVote.add(StringExpression.make("B" + i + " " + s));
+            singleVote.add(new ListExpression("B" + i, "" + s));
         }
 
         /* Create a new set of race groups */
@@ -275,7 +278,7 @@ public class WebServerTallierTest extends TestCase {
                 int s = i == choice ? 1 : 0;
 
                 /* So each of these is (B0 0), (B1 1), etc. */
-                singleVote.add(StringExpression.make("B" + i + " " + s));
+                singleVote.add(new ListExpression("B" + i, "" + s));
             }
 
             /* Create a new set of race groups */
