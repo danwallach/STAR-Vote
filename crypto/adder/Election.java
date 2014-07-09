@@ -78,10 +78,14 @@ public class Election {
 
         /* Create a single ballot from the initList */
         Vote total = new Vote(initList, choices, totalProof);
+        Vote total2 = v;
 
         /* Homomorphically tally the encrypted votes */
         for (Vote vote : votes)
             total = vote.multiply(total);
+
+        for (int i=1; i<votes.size(); i++)
+            total2 = votes.get(i).multiply(total2);
 
         List<AdderInteger> choices = new ArrayList<>();
 
@@ -91,14 +95,6 @@ public class Election {
         choices.add(AdderInteger.ZERO);
         choices.add(AdderInteger.ZERO);
 
-
-        System.out.println("Testing single vote no sumproof: ");
-        VoteProof vp = new VoteProof();
-        vp.compute(v, publicKey, choices, 0, 1);
-        System.out.println("Verfied: " + v.verifyVoteProof(publicKey, 0 ,1));
-        System.out.println("-----------------");
-
-
         System.out.println("Testing single vote sumproof");
         /* Compute and verify the vote proof */
         total.computeSumProof(votes.size(), publicKey);
@@ -106,6 +102,22 @@ public class Election {
         /* TODO: Note that this won't function properly because it expects the ciphertexts to be 0/1 */
         System.out.println("Verfied: " + total.verifyVoteProof(publicKey, 0, votes.size()));
         System.out.println("-----------------");
+
+
+        System.out.println("Testing single vote no sumproof: ");
+        VoteProof vp = new VoteProof();
+        vp.compute(total, publicKey, choices, 0, 1);
+        System.out.println("Verfied: " + total.verifyVoteProof(publicKey, 0 ,1));
+        System.out.println("-----------------");
+
+        System.out.println("Testing single vote no sumproof2: ");
+        VoteProof vp2 = new VoteProof();
+        vp2.compute(total2, publicKey, choices, 0, 1);
+        System.out.println("Verfied: " + total2.verifyVoteProof(publicKey, 0 ,1));
+        System.out.println("-----------------");
+
+
+
 
         return total;
     }
