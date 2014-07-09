@@ -22,19 +22,22 @@
 
 package auditorium.loganalysis;
 
+import auditorium.IncorrectFormatException;
+import auditorium.Message;
+import auditorium.MessagePointer;
+import sexpression.ASExpression;
+import sexpression.ListExpression;
+import sexpression.lexer.Lexer;
+import sexpression.parser.Parser;
+import sexpression.stream.ASEInputStreamReader;
+import sexpression.stream.InvalidVerbatimStreamException;
+
 import java.io.CharArrayReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import auditorium.*;
-
-import sexpression.*;
-import sexpression.lexer.*;
-import sexpression.parser.*;
-import sexpression.stream.*;
 
 /**
  * Builds a representation of the dag of logs based on the auditorium file
@@ -48,10 +51,10 @@ public class Dag {
     /* FIXME This patter is probably broken with the new hash chain */
     /** The pattern string for reading logged messages */
     private static final String PATTERN_STRING = "(announce(host #string #string #string) #string " +
-                                                "(signed-message (cert " +
-                                                "(signature #string #string (key #string #string #string #string)))" +
-                                                "(signature #string #string " +
-                                                "(succeeds #list:(ptr #string #string #string) #any))))";
+                                                 "(signed-message (cert " +
+                                                 "(signature #string #string (key #string #string #string #string)))" +
+                                                 "(signature #string #string " +
+                                                 "(succeeds #list:(ptr #string #string #string) #any))))";
 
 
     /** Tha actual ASE pattern based on PATTERN_STRING */

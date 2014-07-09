@@ -22,20 +22,14 @@
 
 package verifier;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
-import java.util.HashMap;
-
-import sexpression.*;
-import sexpression.parser.Parser;
+import sexpression.ASExpression;
 import sexpression.lexer.Lexer;
+import sexpression.parser.Parser;
 import verifier.ast.*;
 import verifier.value.Value;
+
+import java.io.*;
+import java.util.HashMap;
 
 /**
  * This is the top-level class for the generic s-expression rule verifier. Its
@@ -129,7 +123,7 @@ public class Verifier {
 	 *            core verifier and to its plugins (A mapping of these
 	 *            parameters is given to all plugin instances upon
 	 *            construction). Variables that the core verifier will be
-	 *            looking for include "rule", "config", "out".
+	 *            looking for include "rule", "config", "log".
 	 */
 	public static void main(String[] args) throws Exception {
 		HashMap<String, String> argmap = new HashMap<>();
