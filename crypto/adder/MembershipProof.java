@@ -7,7 +7,9 @@ import sexpression.StringExpression;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.StringTokenizer/**
+import java.util.StringTokenizer;
+
+/**
  *  Zero-knowledge proof of set membership.
  * 
  * Suppose we have a ciphertext \f$\langle G, H \rangle = \langle
