@@ -140,6 +140,7 @@ public class VoteProof {
         List<ElgamalCiphertext> cipherList = vote.getCipherList();
         List<AdderInteger> cipherDomain = new ArrayList<>(2);
 
+        /* TODO Summed votes cipherDomain */
         /* Selections can only be 0 or 1 */
         cipherDomain.add(AdderInteger.ZERO);
         cipherDomain.add(AdderInteger.ONE);
