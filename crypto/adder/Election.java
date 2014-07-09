@@ -67,7 +67,7 @@ public class Election {
 
         /*
           Load up the initList with new ciphertexts only from the first Vote in the Election
-          This specific vote will be used a query used to calculate the total number of votes.
+          This specific vote will be a query used to calculate the total number of votes.
         */
         for (ElgamalCiphertext ignored : v.getCipherList()) {
             ElgamalCiphertext ciphertext = new ElgamalCiphertext(AdderInteger.ONE, AdderInteger.ONE, publicKey.getP());
@@ -76,9 +76,8 @@ public class Election {
 
         VoteProof totalProof = new VoteProof();
 
-        /* Create a single ballot from the initList*/
+        /* Create a single ballot from the initList */
         Vote total = new Vote(initList, choices, totalProof);
-
 
         /* Homomorphically tally the encrypted votes */
         for (Vote vote : votes)

@@ -64,7 +64,7 @@ public class WebServerTallierTest extends TestCase {
             List<String> groupList = new ArrayList<>();
 
             for (int j = 0; j < 5; j++)
-                groupList.add("B"+ 5*i+(j+1));
+                groupList.add("B"+ (5*i+j));
 
             /* Add this group to the raceGroups */
             raceGroups.add(groupList);
@@ -132,7 +132,7 @@ public class WebServerTallierTest extends TestCase {
             List<String> groupList = new ArrayList<>();
 
             for (int j = 0; j < 5; j++)
-                groupList.add("B"+ 5*i+(j+1));
+                groupList.add("B"+ (5*i+j));
 
             /* Add this group to the raceGroups */
             raceGroups.add(groupList);
@@ -192,10 +192,10 @@ public class WebServerTallierTest extends TestCase {
         /* ((B0 0)(B1 0)(B2 1)...) */
         List<ASExpression> singleVote = new ArrayList<>();
 
-        /* Load up singleVote with pattern (0 1 0 0 0 1 0 0 0 0) */
+        /* Load up singleVote with pattern (1 0 0 0 0 1 0 0 0 0) */
         for (int i=0; i<10; i++) {
 
-            int s = (i%4)==1 ? 1 : 0;
+            int s = (i%5)==0 ? 1 : 0;
 
             /* So each of these is (B0 0), (B1 1), etc. */
             singleVote.add(StringExpression.make("B" + i + " " + s));
@@ -211,7 +211,7 @@ public class WebServerTallierTest extends TestCase {
             List<String> groupList = new ArrayList<>();
 
             for (int j = 0; j < 5; j++)
-                groupList.add("B"+ 5*i+(j+1));
+                groupList.add("B"+ (5*i+j));
 
             /* Add this group to the raceGroups */
             raceGroups.add(groupList);
@@ -226,7 +226,7 @@ public class WebServerTallierTest extends TestCase {
 
         /* Compare the decrypted totals with the expected totals */
         for (Map.Entry<String, BigInteger> entry : voteTotals.entrySet()) {
-            int toCompare = entry.getKey().equals("B1") || entry.getKey().equals("B5") ? 1 : 0;
+            int toCompare = entry.getKey().equals("B0") || entry.getKey().equals("B5") ? 1 : 0;
             assertEquals(entry.getValue().intValue(), toCompare);
         }
 
@@ -288,7 +288,7 @@ public class WebServerTallierTest extends TestCase {
                 List<String> groupList = new ArrayList<>();
 
                 for (int j = 0; j < 5; j++)
-                    groupList.add("B" + 5 * i + (j + 1));
+                    groupList.add("B" + (5*i+j));
 
                 /* Add this group to the raceGroups */
                 raceGroups.add(groupList);

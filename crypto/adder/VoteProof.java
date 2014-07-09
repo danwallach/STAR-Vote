@@ -28,9 +28,14 @@ public class VoteProof {
      * Default constructor.
      */
     public VoteProof() {
-        proofList = new ArrayList<>();
+
     }
 
+    /**
+     * Constructor used internally by fromString and fromASE
+     * @param sumProof      the MembershipProof for the summed ciphertexts
+     * @param proofList     the list of MembershipProofs for each of the ciphertexts
+     */
     public VoteProof(MembershipProof sumProof, List<MembershipProof> proofList) {
         this.sumProof = sumProof;
         this.proofList = proofList;
@@ -69,23 +74,31 @@ public class VoteProof {
 
         /* Create the domain of possible selection options */
         List<AdderInteger> cipherDomain = new ArrayList<>(2);
+        /* Add a minimum of 0 and 1 to the domain of possible choices */
         cipherDomain.add(AdderInteger.ZERO);
         cipherDomain.add(AdderInteger.ONE);
 
+        /* Set this up as a multiplicative identity */
         ElgamalCiphertext sumCipher = new ElgamalCiphertext(AdderInteger.ONE, AdderInteger.ONE, pubKey.getP());
 
         int numChoices = 0;
+
+        /* Figure out the number of ciphertexts */
         int size = cipherList.size();
+
         this.proofList = new ArrayList<>(size);
 
+        /* Cycle through each of the ciphertexts */
         for (int i = 0; i < size; i++) {
-
-            MembershipProof proof = new MembershipProof();
 
             /* Get the encrypted vote and the plaintext */
             ElgamalCiphertext ciphertext = cipherList.get(i);
+
+            /* Pull out the plaintext for this choice */
             AdderInteger choice = choices.get(i);
 
+            MembershipProof proof = new MembershipProof();
+            
             /* Compute the NIZK and add it to the proofList */
             proof.compute(ciphertext, pubKey, choice, cipherDomain);
             this.proofList.add(proof);
@@ -96,11 +109,13 @@ public class VoteProof {
             /* Keep track of how many total selections have been made */
             if (choice.equals(AdderInteger.ONE))
                 numChoices++;
+
         }
 
+        /* Create the domain */
         List<AdderInteger> totalDomain = new ArrayList<>(max + 1);
 
-        /* Create the domain of possible selection totals */
+        /* Add from min to max, inclusive, to the domain of possible choices */
         for (int j = min; j <= max; j++)
             totalDomain.add(new AdderInteger(j));
 
@@ -125,17 +140,22 @@ public class VoteProof {
         List<ElgamalCiphertext> cipherList = vote.getCipherList();
         List<AdderInteger> cipherDomain = new ArrayList<>(2);
 
+        /* Selections can only be 0 or 1 */
         cipherDomain.add(AdderInteger.ZERO);
         cipherDomain.add(AdderInteger.ONE);
 
+        /* Create a multiplicative identity */
         ElgamalCiphertext sumCipher = new ElgamalCiphertext(AdderInteger.ONE, AdderInteger.ONE, pubKey.getP());
+
         int size = this.proofList.size();
 
+        /* Cycle through each of the proofs and associated ciphertexts */
         for (int i = 0; i < size; i++) {
-            MembershipProof proof = this.proofList.get(i);
-            ElgamalCiphertext ciphertext
-                = cipherList.get(i);
 
+            MembershipProof proof = this.proofList.get(i);
+            ElgamalCiphertext ciphertext = cipherList.get(i);
+
+            /* Return false if the proof couldn't be verified */
             if (!proof.verify(ciphertext, pubKey, cipherDomain))
                 return false;
 
