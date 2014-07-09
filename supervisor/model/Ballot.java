@@ -126,8 +126,6 @@ public class Ballot {
 
         ListExpression exp = (ListExpression)ase;
 
-        System.out.println(exp.get(0));
-
         if(!(exp.get(0)).toString().equals("ballot"))
             throw new RuntimeException("Not ballot");
 

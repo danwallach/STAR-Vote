@@ -83,11 +83,29 @@ public class Election {
         for (Vote vote : votes)
             total = vote.multiply(total);
 
+        List<AdderInteger> choices = new ArrayList<>();
+
+        choices.add(AdderInteger.ONE);
+        choices.add(AdderInteger.ZERO);
+        choices.add(AdderInteger.ZERO);
+        choices.add(AdderInteger.ZERO);
+        choices.add(AdderInteger.ZERO);
+        //choices.add(AdderInteger.ONE);
+
+        System.out.println("Testing single vote no sumproof: ");
+        VoteProof vp = new VoteProof();
+        vp.compute(total, publicKey, choices, 0, 1);
+        System.out.println("Verfied: " + vp.verify(total, publicKey, 0, 1));
+        System.out.println("-----------------");
+
+
+        System.out.println("Testing single vote sumproof");
         /* Compute and verify the vote proof */
         total.computeSumProof(votes.size(), publicKey);
 
         /* TODO: Note that this won't function properly because it expects the ciphertexts to be 0/1 */
-        total.verifyVoteProof(publicKey, 0, votes.size());
+        System.out.println("Verfied: " + total.verifyVoteProof(publicKey, 0, votes.size()));
+        System.out.println("-----------------");
 
         return total;
     }

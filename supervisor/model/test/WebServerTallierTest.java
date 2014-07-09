@@ -143,8 +143,9 @@ public class WebServerTallierTest extends TestCase {
 
         /* Encrypt 1 new ballotsASE */
         ListExpression ballot = new ListExpression(singleVote);
+        System.out.println("-----PRE  ENCRYPTION-----");
         ASExpression ballotASE = be.encryptWithProof("000", ballot, raceGroups, publicKey, ASExpression.make("nonce"));
-
+        System.out.println("-----POST ENCRYPTION-----");
         List<Ballot> ballotList = new ArrayList<>();
 
         /* Fill the ballotList with the ASE converted to Ballot */
@@ -158,7 +159,7 @@ public class WebServerTallierTest extends TestCase {
 
         /* (Sanity) Check the BID and the public key */
         assertEquals(summed.getBid(), "TEST1");
-        assertEquals(summed.getPublicKey(), publicKey);
+        assertEquals(summed.getPublicKey(), finalPublicKey);
 
         /* Compare the decrypted totals with the expected totals */
         for (Map.Entry<String, BigInteger> entry : voteTotals.entrySet()) {
