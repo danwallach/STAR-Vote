@@ -7,9 +7,7 @@ import sexpression.StringExpression;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.StringTokenizer;
-
-/**
+import java.util.StringTokenizer/**
  *  Zero-knowledge proof of set membership.
  * 
  * Suppose we have a ciphertext \f$\langle G, H \rangle = \langle
@@ -70,25 +68,12 @@ import java.util.StringTokenizer;
  */
 public class MembershipProof {
 
-    /** A prime number  used to derive a generator for our group */
 	private AdderInteger p;
-
-    /** The order of our group */
 	private AdderInteger q;
-
-    /** The last valid commitment */
 	private AdderInteger c;
-
-    /** List of temporary, random members of the group (g^t), accompanied by one valid ciphertext */
 	private List<AdderInteger> yList;
-
-    /** List of temporary, fake encrypted messages */
 	private List<AdderInteger> zList;
-
-    /** List of values of the form cr + t used to compute the ZK proof */
 	private List<AdderInteger> sList;
-
-    /** List of commitments, including several random numbers and by one computation on the hash of the commitment string */
 	private List<AdderInteger> cList;
 
 	/**
@@ -203,9 +188,9 @@ public class MembershipProof {
 
                 /* This will be needed for computing z_i */
 				AdderInteger negC = c.negate();
-
-                /* This is essentially the message corresponding to domain member d mapped into G */
-				AdderInteger fpow = f.pow(d);
+				             
+			    /* This is essentially the message corresponding to domain member d mapped into G */
+                AdderInteger fpow = f.pow(d);
 
                 /* Compute a group member g^s * (g^r)^(-c_i) = g^(s - r*c_i) */
 				y = g.pow(s).multiply(bigG.pow(negC));

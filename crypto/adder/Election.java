@@ -85,6 +85,8 @@ public class Election {
 
         /* Compute and verify the vote proof */
         total.computeSumProof(votes.size(), publicKey);
+
+        /* TODO: Note that this won't function properly because it expects the ciphertexts to be 0/1 */
         total.verifyVoteProof(publicKey, 0, votes.size());
 
         return total;
