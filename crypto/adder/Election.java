@@ -90,7 +90,7 @@ public class Election {
         choices.add(AdderInteger.ZERO);
         choices.add(AdderInteger.ZERO);
         choices.add(AdderInteger.ZERO);
-        //choices.add(AdderInteger.ONE);
+        choices.add(AdderInteger.ONE);
 
         System.out.println("Testing single vote no sumproof: ");
         VoteProof vp = new VoteProof();

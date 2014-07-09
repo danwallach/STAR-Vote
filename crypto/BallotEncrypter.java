@@ -114,35 +114,37 @@ public class BallotEncrypter {
         /* Iterate over each of the race vote records (i.e. each candidate) */
         for (int i = 0; i < ballot.size(); i++) {
 
-                /* Extract the ith race vote record from the ballot */
-                ListExpression vote = (ListExpression)ballot.get(i);
+            /* Extract the ith race vote record from the ballot */
+            ListExpression vote = (ListExpression)ballot.get(i);
 
-                /* Pull out the candidate id */
-                String id = vote.get(0).toString();
+            /* Pull out the candidate id */
+            String id = vote.get(0).toString();
 
-                /* Map the candidate id to the race vote record */
-                ballotMap.put(id, vote);
+            /* Map the candidate id to the race vote record */
+            ballotMap.put(id, vote);
         }
 
 
         /* Iterate over the races (pull out each group of candidates) */
         for(List<String> group : raceGroups){
 
-                /* Create an ArrayList to hold the vote records for a single race */
-                List<ASExpression> races = new ArrayList<>();
+            /* Create an ArrayList to hold the vote records for a single race */
+            List<ASExpression> races = new ArrayList<>();
 
-                /* Iterate over the candidates and get the vote corresponding to that candidate and add it to races */
-                for(String candidateId : group)
-                        races.add(ballotMap.get(candidateId));
+            /* Iterate over the candidates and get the vote corresponding to that candidate and add it to races */
+            for(String candidateId : group)
+                    races.add(ballotMap.get(candidateId));
 
-                /* Create a new  ListExpression for the entire race from the races ArrayList */
-                ListExpression subBallot = new ListExpression(races);
+            /* Create a new  ListExpression for the entire race from the races ArrayList */
+            ListExpression subBallot = new ListExpression(races);
 
-                /* Encrypt the mapped sub-ballot with the elGamal Public key and the random generated writeInKey */
-                ListExpression encryptedSubBallot = encryptSubBallotWithProof(subBallot, pubKey, writeInKey);
+            System.out.println("Current subBallot: " + subBallot);
 
-                /* Add the encrypted sub-ballot to the list of sub-ballots (this will be the entire ballot eventually) */
-                subBallots.add(encryptedSubBallot);
+            /* Encrypt the mapped sub-ballot with the elGamal Public key and the random generated writeInKey */
+            ListExpression encryptedSubBallot = encryptSubBallotWithProof(subBallot, pubKey, writeInKey);
+
+            /* Add the encrypted sub-ballot to the list of sub-ballots (this will be the entire ballot eventually) */
+            subBallots.add(encryptedSubBallot);
         }
 
         /* Non-homomorphically encrypt the write-in key */
@@ -208,9 +210,15 @@ public class BallotEncrypter {
             valueIds.add(candidateID);
         }
 
+        System.out.println("Inside encryptSubBallotWithProof: \n\tValues: \t" + value + "\n\tValueIDs: \t" + valueIds);
+
         PublicKey finalPubKey = AdderKeyManipulator.generateFinalPublicKey(pubKey);
 
+
+
         Vote vote = finalPubKey.encrypt(value, valueIds);
+
+        System.out.println("\tCipherlist: \t" + vote.getCipherList().size() + " elements");
 
         /* Important data from the ElGamal Encryption */
         List<ElgamalCiphertext> ciphers = vote.getCipherList();
@@ -224,9 +232,11 @@ public class BallotEncrypter {
 		/* Add this list of random values for the subBallot to the entire ballot list. */
 		adderRandom.add(subRandom);
 
-        /* Checking the encrypted subBallots against the proofs*/
+        /* Checking the encrypted subBallots against the proofs */
 		VoteProof proof = new VoteProof();
 		proof.compute(vote, finalPubKey, value, 0, 1);
+
+        System.out.println("\tCipherlist2: \t" + vote.getCipherList().size() + " elements");
 
         Vote outVote = new Vote(vote.getCipherList(), valueIds, proof);
 

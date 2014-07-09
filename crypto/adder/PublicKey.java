@@ -195,6 +195,8 @@ public class PublicKey {
             voteList.add(encrypt(choice));
         }
 
+        System.out.println("\tVoteList: \t" + voteList.size() + " elements");
+
         return new Vote(voteList, choices);
     }
 
