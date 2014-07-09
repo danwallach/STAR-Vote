@@ -90,12 +90,12 @@ public class Election {
         choices.add(AdderInteger.ZERO);
         choices.add(AdderInteger.ZERO);
         choices.add(AdderInteger.ZERO);
-        choices.add(AdderInteger.ONE);
+
 
         System.out.println("Testing single vote no sumproof: ");
         VoteProof vp = new VoteProof();
-        vp.compute(total, publicKey, choices, 0, 1);
-        System.out.println("Verfied: " + vp.verify(total, publicKey, 0, 1));
+        vp.compute(v, publicKey, choices, 0, 1);
+        System.out.println("Verfied: " + v.verifyVoteProof(publicKey, 0 ,1));
         System.out.println("-----------------");
 
 

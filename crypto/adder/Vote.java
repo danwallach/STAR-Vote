@@ -76,17 +76,6 @@ public class Vote {
         return cipherList;
     }
 
-    /**
-     *
-     * @param publicKey
-     * @param min
-     * @param max
-     * @return
-     */
-    public boolean verify(PublicKey publicKey, int min, int max) {
-        return proof.verify(this, publicKey, min, max);
-    }
-
     public boolean verifyVoteProof(PublicKey publicKey, int min, int max){
         return proof.verify(this, publicKey, min, max);
     }

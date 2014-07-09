@@ -57,7 +57,7 @@ public class WebServerTallier {
                     }
 
                     /* Confirm that the vote proof is valid */
-                    if (!vote.verify(publicKey, 0, 1)) {
+                    if (!vote.verifyVoteProof(publicKey, 0, 1)) {
                         Bugout.err("!!!Ballot failed NIZK test!!!");
                         return null;
                     }
