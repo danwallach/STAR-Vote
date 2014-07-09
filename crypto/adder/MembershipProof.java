@@ -212,6 +212,7 @@ public class MembershipProof {
 
 		p = pubKey.getP();
 		q = pubKey.getQ();
+
 		AdderInteger g = pubKey.getG();
 		AdderInteger h = pubKey.getH();
 		AdderInteger f = pubKey.getF();
@@ -231,11 +232,16 @@ public class MembershipProof {
 		int size = cList.size();
 
 		for (int i = 0; i < size; i++) {
+
 			AdderInteger d = domain.get(i);
-			AdderInteger fpow = f.pow(d);
-			AdderInteger s = sList.get(i);
-			AdderInteger c = cList.get(i);
-			AdderInteger negC = c.negate();
+
+            AdderInteger fpow = f.pow(d);
+
+            AdderInteger s = sList.get(i);
+
+            AdderInteger c = cList.get(i);
+
+            AdderInteger negC = c.negate();
 
 			cChoices = cChoices.add(c);
 
