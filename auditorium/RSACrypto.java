@@ -34,39 +34,40 @@ import sexpression.*;
  * Crypto primitives used in auditorium are wrapped here.
  * 
  * @author Kyle Derr
- * 
  */
 public class RSACrypto {
 
+    /** Since we'll only really need one of these, we use the singleton pattern */
     public static final RSACrypto SINGLETON = new RSACrypto();
 
+    /** Private constructor for singleton */
     private RSACrypto() {}
 
     /**
      * Create an RSA digital signature.
      * 
-     * @param data
-     *            Sign this expression's verbatim form.
-     * @param key
-     *            Use this key to create the signature.
-     * @return This method returns the signature data.
+     * @param data      Sign this expression's verbatim form.
+     * @param key       Use this key to create the signature.
+     * @return          The signature data.
+     *
+     * @throws AuditoriumCryptoException Thrown if there is a problem with signing the data
      */
-    public Signature sign(ASExpression data, Key key)
-            throws AuditoriumCryptoException {
+    public Signature sign(ASExpression data, Key key) throws AuditoriumCryptoException {
         try {
-            KeyFactory factory = KeyFactory.getInstance( "RSA" );
-            java.security.Signature sig = java.security.Signature
-                    .getInstance( "SHA1withRSA" );
-            PrivateKey privkey = factory
-                    .generatePrivate( new RSAPrivateKeySpec( key.getMod(), key
-                            .getKey() ) );
-            sig.initSign( privkey );
-            sig.update( data.toVerbatim() );
-            return new Signature( key.getId(),
-                    StringExpression.makeString( sig.sign() ), data );
+            /* Build a key using RSA */
+            KeyFactory factory = KeyFactory.getInstance("RSA");
+            java.security.Signature sig = java.security.Signature.getInstance("SHA1withRSA");
+            PrivateKey privatekey = factory.generatePrivate(new RSAPrivateKeySpec(key.getMod(), key.getKey()));
+
+            /* Initialize the signer */
+            sig.initSign(privatekey);
+            sig.update(data.toVerbatim());
+
+            /* Return a new Signature object with the signed data and signature from the key*/
+            return new Signature(key.getId(), StringExpression.makeString(sig.sign()), data);
         }
         catch (Exception e) {
-            throw new AuditoriumCryptoException( "sign", e );
+            throw new AuditoriumCryptoException("sign", e);
         }
     }
 
@@ -74,29 +75,28 @@ public class RSACrypto {
      * Verify that an RSA digital signature (possibly created by the sign
      * function) came from a particular host.
      * 
-     * @param signature
-     *            This is the digital signature, itself.
-     * @param host
-     *            This is the certificate of the host that supposedly signed the
-     *            message.
+     * @param signature         The digital signature, itself.
+     * @param host              The certificate of the host that supposedly signed the message.
+     *
+     * @throws AuditoriumCryptoException Thrown if there is a problem with the verification process
      */
-    public void verify(Signature signature, Certificate host)
-            throws AuditoriumCryptoException {
+    public void verify(Signature signature, Certificate host) throws AuditoriumCryptoException {
         try {
-            KeyFactory factory = KeyFactory.getInstance( "RSA" );
-            java.security.Signature sig = java.security.Signature
-                    .getInstance( "SHA1withRSA" );
-            PublicKey pubkey = factory.generatePublic( new RSAPublicKeySpec(
-                    host.getKey().getMod(), host.getKey().getKey() ) );
-            sig.initVerify( pubkey );
-            sig.update( signature.getPayload().toVerbatim() );
-            if (!sig.verify( signature.getSigData().getBytesCopy() ))
-                throw new AuditoriumCryptoException( "verify signature",
-                        new Exception( "Verification failure: " + signature
-                                + " not signed by " + host ) );
+            /* Get an RSA key */
+            KeyFactory factory = KeyFactory.getInstance("RSA");
+            java.security.Signature sig = java.security.Signature.getInstance("SHA1withRSA");
+            PublicKey publickey = factory.generatePublic(new RSAPublicKeySpec(host.getKey().getMod(), host.getKey().getKey()));
+
+            /* Initialize the key */
+            sig.initVerify(publickey);
+            sig.update(signature.getPayload().toVerbatim());
+
+            /* Verify the provided signature */
+            if (!sig.verify(signature.getSigData().getBytesCopy()))
+                throw new AuditoriumCryptoException("verify signature", new Exception("Verification failure: " + signature + " not signed by " + host));
         }
         catch (Exception e) {
-            throw new AuditoriumCryptoException( "verify signature", e );
+            throw new AuditoriumCryptoException("verify signature", e);
         }
     }
 }

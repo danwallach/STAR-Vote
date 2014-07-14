@@ -310,7 +310,7 @@ public class Model {
         else {
             /* For NIZKs to work, we have to establish the public key before the voting can start */
             auditorium.announce(new AuthorizedToCastWithNIZKsEvent(mySerial, otherSerial, ASENonce, p.getPrecinctID(), ballot,
-                    AdderKeyManipulator.generateFinalPublicKey((PublicKey)auditoriumParams.getKeyStore().loadAdderKey("public"))));
+                    AdderKeyManipulator.generateFinalPublicKey(auditoriumParams.getKeyStore().loadAdderPublicKey())));
         }
     }
 
@@ -1343,7 +1343,7 @@ public class Model {
             /* Pare off the precinct information */
             String precinctID = fileName.substring(fileName.length()-7,fileName.length()-4);
 
-            PublicKey publicKey = (PublicKey) auditoriumParams.getKeyStore().loadAdderKey("public");
+            PublicKey publicKey = auditoriumParams.getKeyStore().loadAdderPublicKey();
 
             Precinct precinct = new Precinct(precinctID, ballotFile.getAbsolutePath(), publicKey);
 

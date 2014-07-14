@@ -271,7 +271,7 @@ public class VoteBox{
                         else {
 
                             ASExpression encBallot = BallotEncrypter.SINGLETON.encryptWithProof(bid, ballot,
-                                    (List<List<String>>) arg[1], (PublicKey) _constants.getKeyStore().loadAdderKey("public"), nonce);
+                                    (List<List<String>>) arg[1], _constants.getKeyStore().loadAdderPublicKey(), nonce);
 
                             auditorium.announce(new CommitBallotEvent(mySerial, nonce,
                                     encBallot.toVerbatim(), bid, precinct));
@@ -372,7 +372,7 @@ public class VoteBox{
                         else {
 
                             List<String> raceGroup = currentDriver.getBallotAdapter().getRaceGroupContaining(needUpdate.get(uid));
-                            PiecemealBallotEncrypter.SINGELTON.adderUpdate(uid, needUpdate.get(uid), raceGroup, (PublicKey)_constants.getKeyStore().loadAdderKey("public"));
+                            PiecemealBallotEncrypter.SINGELTON.adderUpdate(uid, needUpdate.get(uid), raceGroup, _constants.getKeyStore().loadAdderPublicKey());
 
                         }
                     }
@@ -471,7 +471,7 @@ public class VoteBox{
                         } else {
 
                             ASExpression encBallot = BallotEncrypter.SINGLETON.encryptWithProof(bid, ballot,
-                                    (List<List<String>>) arg[1], (PublicKey) _constants.getKeyStore().loadAdderKey("public"), nonce);
+                                    (List<List<String>>) arg[1], _constants.getKeyStore().loadAdderPublicKey(), nonce);
 
 
                             auditorium.announce(new CommitBallotEvent(mySerial,

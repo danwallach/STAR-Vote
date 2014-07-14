@@ -27,7 +27,6 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 
 import sexpression.ASExpression;
-import sexpression.StringExpression;
 import sexpression.stream.*;
 
 /**
@@ -36,53 +35,52 @@ import sexpression.stream.*;
  * auditorium messages.
  * 
  * @author Kyle Derr
- * 
  */
 public class MessageSocket {
 
-    private final ASEWriter _out;
-    private final ASEInputStreamReader _in;
-    private final Socket _socket;
+    /** Writer for outgoing messages on the socket */
+    private final ASEWriter out;
+
+    /** Reader for incoming messages on the socket */
+    private final ASEInputStreamReader in;
+
+    /** The Java socket that we use to relay messages */
+    private final Socket socket;
 
     /**
      * Construct a new message socket and connect it to the given host, but
      * timeout the connection after a given period of time.
      * 
-     * @param host
-     *            Connect to this host.
-     * @param timeout
-     *            Only wait this long for the connection to succeed.
-     * @throws NetworkException
-     *             This method throws if there is a problem connecting.
+     * @param host          Connect to this host.
+     * @param timeout       Only wait this long for the connection to succeed.
+     *
+     * @throws NetworkException Thrown if there is a problem connecting.
      */
     public MessageSocket(HostPointer host, int timeout) throws NetworkException {
-        _socket = new Socket();
+        socket = new Socket();
         try {
-            _socket.connect( new InetSocketAddress( host.getIP(), host
-                    .getPort() ), timeout );
-            _out = new ASEWriter( _socket.getOutputStream() );
-            _in = new ASEInputStreamReader( _socket.getInputStream() );
+            socket.connect(new InetSocketAddress(host.getIP(), host.getPort()), timeout);
+            out = new ASEWriter(socket.getOutputStream());
+            in = new ASEInputStreamReader(socket.getInputStream());
         }
         catch (IOException e) {
             e.printStackTrace();
-            throw new NetworkException( "couldn't create socket", e );
+            throw new NetworkException("couldn't create socket", e);
         }
     }
 
     /**
      * Construct a new message socket with an already connected socket.
      * 
-     * @param socket
-     *            wrap this socket.
-     * @throws NetworkException
-     *             This method throws if the socket given isn't already
-     *             connected.
+     * @param socket        wrap this socket.
+     *
+     * @throws NetworkException Thrown if the socket given isn't already connected.
      */
     public MessageSocket(Socket socket) throws NetworkException {
-        _socket = socket;
+        this.socket = socket;
         try {
-            _out = new ASEWriter( socket.getOutputStream() );
-            _in = new ASEInputStreamReader( socket.getInputStream() );
+            out = new ASEWriter( socket.getOutputStream() );
+            in = new ASEInputStreamReader( socket.getInputStream() );
         }
         catch (IOException e) {
             throw new NetworkException( "couldn't create socket", e );
@@ -92,14 +90,13 @@ public class MessageSocket {
     /**
      * Send a message.
      * 
-     * @param msg
-     *            Send this message.
-     * @throws NetworkException
-     *             This method throws if the message can't be sent.
+     * @param msg       Send this message.
+     *
+     * @throws NetworkException Thrown if the message can't be sent.
      */
     public void send(Message msg) throws NetworkException {
         try {
-            _out.writeASE( msg.toASE() );
+            out.writeASE(msg.toASE());
         }
         catch (IOException e) {
             throw new NetworkException( "Couldn't send " + msg, e );
@@ -109,14 +106,14 @@ public class MessageSocket {
     /**
      * Receive a message.
      * 
-     * @return This method returns the message that is received.
+     * @return      The message that is received.
      *
-     * @throws IncorrectFormatException if the incoming s-exp isn't formatted as a message.
+     * @throws IncorrectFormatException if the incoming s-expression isn't formatted as a message.
      */
     public Message receive() throws NetworkException, IncorrectFormatException {
 
         try {
-            ASExpression data = _in.read();
+            ASExpression data = in.read();
 
             if(data != null)
                 return new Message(data);
@@ -131,10 +128,9 @@ public class MessageSocket {
     /**
      * Close the socket.
      * 
-     * @throws IOException
-     *             This method throws if the decorated call to close throws.
+     * @throws IOException Thrown if the decorated call to close throws.
      */
     public void close() throws IOException {
-        _socket.close();
+        socket.close();
     }
 }

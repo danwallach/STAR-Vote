@@ -28,20 +28,22 @@ public class WebServerTallierTest extends TestCase {
 
     private BallotEncrypter be;
 
+    private PublicKey publicKey;
+    private PrivateKey privateKey;
+
     protected void setUp() throws Exception {
         super.setUp();
         be = BallotEncrypter.SINGLETON;
+
+        SimpleKeyStore keyStore = new SimpleKeyStore("keys");
+        publicKey = keyStore.loadAdderPublicKey();
+        privateKey = keyStore.loadAdderPrivateKey();
     }
 
     /**
      * This is to test that a series of Ballots are tallied properly into one Ballot
      */
     public void testTally(){
-
-        /* Load up the public and private keys */
-        SimpleKeyStore keyStore = new SimpleKeyStore("keys");
-        PublicKey publicKey = (PublicKey)keyStore.loadAdderKey("public");
-        PrivateKey privateKey = (PrivateKey)keyStore.loadAdderKey("private");
 
         PublicKey finalPublicKey = AdderKeyManipulator.generateFinalPublicKey(publicKey);
 
@@ -107,11 +109,6 @@ public class WebServerTallierTest extends TestCase {
      * This is to test that a single Ballot is "tallied" properly into one Ballot
      */
     public void testTallySingle(){
-
-        /* Load up the public and private keys */
-        SimpleKeyStore keyStore = new SimpleKeyStore("keys");
-        PublicKey publicKey = (PublicKey)keyStore.loadAdderKey("public");
-        PrivateKey privateKey = (PrivateKey)keyStore.loadAdderKey("private");
 
         PublicKey finalPublicKey = AdderKeyManipulator.generateFinalPublicKey(publicKey);
 
@@ -192,11 +189,6 @@ public class WebServerTallierTest extends TestCase {
      */
     public void testGetVoteTotals(){
 
-        /* Load up the public and private keys */
-        SimpleKeyStore keyStore = new SimpleKeyStore("keys");
-        PublicKey publicKey = (PublicKey)keyStore.loadAdderKey("public");
-        PrivateKey privateKey = (PrivateKey)keyStore.loadAdderKey("private");
-
         /* ((B0 0)(B1 0)(B2 1)...) */
         List<ASExpression> singleVote = new ArrayList<>();
 
@@ -244,11 +236,6 @@ public class WebServerTallierTest extends TestCase {
      * This is to test many times over that mapping vote totals to candidates is working properly under many random scenarios
      */
     public void testGetLotsOfVoteTotals(){
-
-        /* Load up the public and private keys */
-        SimpleKeyStore keyStore = new SimpleKeyStore("keys");
-        PublicKey publicKey = (PublicKey)keyStore.loadAdderKey("public");
-        PrivateKey privateKey = (PrivateKey)keyStore.loadAdderKey("private");
 
         /* Try this 100 times */
         for (int trial=0; trial<100; trial++) {

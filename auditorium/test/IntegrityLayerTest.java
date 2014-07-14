@@ -24,6 +24,8 @@ package auditorium.test;
 
 import static org.junit.Assert.*;
 
+import crypto.adder.PrivateKey;
+import crypto.adder.PublicKey;
 import org.junit.*;
 
 import sexpression.*;
@@ -79,13 +81,20 @@ public class IntegrityLayerTest {
             return myCert;
         }
 
+        @Override
+        public PublicKey loadAdderPublicKey() throws RuntimeException {
+            return null;
+        }
+
+        @Override
+        public PrivateKey loadAdderPrivateKey() throws RuntimeException {
+            return null;
+        }
+
         public Key loadKey(String nodeID) throws AuditoriumCryptoException {
             return myKey;
         }
         
-        public Object loadAdderKey(String nodeID) throws RuntimeException{
-        	return null;
-        }
     };
     private AuditoriumIntegrityLayer layer;
 

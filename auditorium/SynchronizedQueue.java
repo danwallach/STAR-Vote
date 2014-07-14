@@ -28,7 +28,7 @@ import java.util.Queue;
 /**
  * This is an implementation of a synchronized queue (LIFO push/pop policy)
  * which holds S-Expressions. I wrote it because Java's collections API is
- * inherently confusing, and if i used Collections.synchronizedList(), my
+ * inherently confusing, and if I used Collections.synchronizedList(), my
  * intuition tells me that something dangerous might happen.<br>
  * <br>
  * This class is implemented using a java.util.LinkedList, interpreting it as a
@@ -42,48 +42,45 @@ import java.util.Queue;
  */
 public class SynchronizedQueue<T> {
 
-    private final Queue<T> _queue = new LinkedList<>();
-    private volatile boolean _release = false;
+    /** The actual data structure */
+    private final Queue<T> queue = new LinkedList<>();
+
+    /** A boolean denoting if the queue has become released and can no longer receive data */
+    private volatile boolean release = false;
 
     /**
      * Call this method to add a new S-Expression to the queue.
      * 
-     * @param exp
-     *            This is the expression that wants to be added to the queue.
-     * @return This method returns true if the add was a success, or false
-     *         otherwise.
+     * @param exp       The expression that wants to be added to the queue.
+     * @return          True if the add was a success, or false otherwise.
      */
     public synchronized boolean push(T exp) {
         notifyAll();
-        return _queue.offer( exp );
+        return queue.offer( exp );
     }
 
     /**
      * Call this method to remove the least recently added S-Expression from the
      * queue.
      * 
-     * @return This method returns the least recently added S-Expression, or
-     *         returns null if the queue is empty.
-     * @throws ReleasedQueueException
-     *             This method throws if it deems it cannot ever get any input.
-     *             This determination is made if another thread calls
-     *             releaseThreads().
+     * @return This method returns the least recently added S-Expression, or returns null if the queue is empty.
+     *
+     * @throws ReleasedQueueException Thrown if it deems it cannot ever get any input. This determination is made if another thread calls releaseThreads().
      */
     public synchronized T pop() throws ReleasedQueueException {
-        while (_queue.isEmpty() && !_release) {
+        while (queue.isEmpty() && !release) {
             try {
                 wait();
             }
             catch (InterruptedException e) {
-                throw new FatalNetworkException(
-                        "Couldn't wait on the synchronized queue.", e );
+                throw new FatalNetworkException("Couldn't wait on the synchronized queue.", e);
             }
         }
 
-        if (_release)
+        if (release)
             throw ReleasedQueueException.SINGLETON;
 
-        return _queue.poll();
+        return queue.poll();
     }
 
     /**
@@ -92,7 +89,7 @@ public class SynchronizedQueue<T> {
      * @return This method returns the number of elements that are in the queue.
      */
     public synchronized int size() {
-        return _queue.size();
+        return queue.size();
     }
 
     /**
@@ -100,7 +97,7 @@ public class SynchronizedQueue<T> {
      * operation is not recoverable (subsequent pop operations will not block).
      */
     public synchronized void releaseThreads() {
-        _release = true;
+        release = true;
         notifyAll();
     }
 }

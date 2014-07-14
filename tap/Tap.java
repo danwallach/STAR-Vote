@@ -82,8 +82,8 @@ public class Tap {
         _wrappedOut = out;
         _output = new ASEWriter(_wrappedOut);
 
-        privateKey = (PrivateKey)params.getKeyStore().loadAdderKey("private");
-        publicKey = (PublicKey)params.getKeyStore().loadAdderKey("public");
+        publicKey = params.getKeyStore().loadAdderPublicKey();
+        privateKey = params.getKeyStore().loadAdderPrivateKey();
     }
 
     /**

@@ -26,11 +26,9 @@ package auditorium;
  * This is thrown when a queue has determined it cannot get any more input.
  * 
  * @author Kyle Derr
- * 
  */
 public class ReleasedQueueException extends Exception {
 
-    private static final long serialVersionUID = 1L;
     public static final ReleasedQueueException SINGLETON = new ReleasedQueueException();
 
     private ReleasedQueueException() {}

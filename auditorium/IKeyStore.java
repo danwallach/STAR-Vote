@@ -22,6 +22,9 @@
 
 package auditorium;
 
+import crypto.adder.PrivateKey;
+import crypto.adder.PublicKey;
+
 /**
  * The auditorium integrity layer interfaces with an instance of this type in
  * order to access keys that are stored as files on the disk.
@@ -47,7 +50,12 @@ public interface IKeyStore {
     Certificate loadCert(String nodeID) throws AuditoriumCryptoException;
     
     /**
-     * Load the adder key associated with the given ID.
+     * Load the adder public key associated with the given ID.
      */
-    Object loadAdderKey(String nodeID) throws RuntimeException;
+    PublicKey loadAdderPublicKey() throws RuntimeException;
+
+    /**
+     * Load the adder private key associated with the given ID.
+     */
+    PrivateKey loadAdderPrivateKey() throws RuntimeException;
 }

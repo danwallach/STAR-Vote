@@ -33,77 +33,79 @@ import sexpression.*;
  */
 public class Signature {
 
+    /** The pattern for an ASE Signature, (signature [signer-id] [sigdata] {payload}) */
     public static final ASExpression PATTERN = new ListExpression(
             StringExpression.makeString( "signature" ),
             StringWildcard.SINGLETON, StringWildcard.SINGLETON,
             Wildcard.SINGLETON );
 
-    private final String _id;
-    private final StringExpression _sigdata;
-    private final ASExpression _payload;
+    /** The serial of the signing machine
+     * */
+    private final String id;
+
+    /** The signature data */
+    private final StringExpression sigdata;
+
+    /** The actual data that was signed */
+    private final ASExpression payload;
 
     /**
-     * @param id
-     *            This is the ID of the signer.
-     * @param sigdata
-     *            This is the actual digital signature bytes.
-     * @param payload
-     *            This is the thing that is signed.
+     * @param id            The ID of the signer.
+     * @param sigdata       The actual digital signature bytes.
+     * @param payload       The thing that is signed.
      */
     public Signature(String id, StringExpression sigdata, ASExpression payload) {
-        _id = id;
-        _sigdata = sigdata;
-        _payload = payload;
+        this.id = id;
+        this.sigdata = sigdata;
+        this.payload = payload;
     }
 
     /**
      * Construct a signature structure based on its s-expression format.
      * 
-     * @param expression
-     *            This is the expression that will be converted.
-     * @throws IncorrectFormatException
-     *             This method throws if the given expression is not formatted
-     *             as (signature [signer-id] [sigdata] {payload}).
+     * @param expression        The expression that will be converted.
+     * @throws IncorrectFormatException Thrown if the given expression is not formatted as (signature [signer-id] [sigdata] {payload}).
      */
     public Signature(ASExpression expression) throws IncorrectFormatException {
-        ASExpression matchresult = PATTERN.match( expression );
-        if (matchresult == NoMatch.SINGLETON)
-            throw new IncorrectFormatException( expression, new Exception(
-                    "did not match the pattern for key" ) );
-        ListExpression matchlist = (ListExpression) matchresult;
 
-        _id = matchlist.get( 0 ).toString();
-        _sigdata = (StringExpression) matchlist.get( 1 );
-        _payload = matchlist.get( 2 );
+        /* Attempt to match the aSE */
+        ASExpression matchResult = PATTERN.match(expression);
+        if (matchResult == NoMatch.SINGLETON)
+            throw new IncorrectFormatException(expression, new Exception("did not match the pattern for key"));
+
+        /* Now extract the data from the ASE*/
+        ListExpression matchList = (ListExpression) matchResult;
+
+        id = matchList.get(0).toString();
+        sigdata = (StringExpression) matchList.get(1);
+        payload = matchList.get(2);
     }
 
     /**
      * @return This method returns this signature in its s-expression form.
      */
     public ASExpression toASE() {
-        return new ListExpression( StringExpression.makeString( "signature" ),
-                StringExpression.makeString( _id ), _sigdata, _payload );
+        return new ListExpression(StringExpression.makeString("signature"), StringExpression.makeString(id), sigdata, payload);
     }
 
     /**
      * @return This method returns the ID of the signer.
      */
     public String getId() {
-        return _id;
+        return id;
     }
 
     /**
      * @return This method returns the signature data.
      */
     public StringExpression getSigData() {
-        return _sigdata;
+        return sigdata;
     }
 
     /**
-     * @return This method returns the payload -- the expression that was
-     *         signed.
+     * @return This method returns the payload i.e. the expression that was signed.
      */
     public ASExpression getPayload() {
-        return _payload;
+        return payload;
     }
 }

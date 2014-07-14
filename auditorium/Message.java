@@ -33,31 +33,35 @@ import sexpression.*;
  */
 public class Message {
 
+    /** Pattern for message ASE's, of the form ([name] [host] [sequence] [datum]) */
     public static final ASExpression PATTERN = new ListExpression(
             StringWildcard.SINGLETON, HostPointer.PATTERN,
             StringWildcard.SINGLETON, Wildcard.SINGLETON );
 
+    /** Denotes the type of the message (e.g. "join", "join-reply", "discover", "discover-reply", or "announce")*/
     private final String type;
+
+    /** The sender of the message */
     private final HostPointer from;
+
+    /** The serial of the sender of the message*/
     private final String sequence;
+
+    /** The contents of the message */
     private final ASExpression datum;
 
+    /** A hash of the message object */
     private StringExpression hash = null;
 
     /**
-     * @param type
-     *            Construct a message of this type. This should be one of
-     *            "join", "join-reply", "discover", "discover-reply", and
-     *            "announce".
-     * @param from
-     *            Construct a message as being from this host.
-     * @param sequence
-     *            Construct of a message that has this sequence number.
-     * @param datum
-     *            Construct a message that has this datum.
+     * Constructor
+     *
+     * @param type          Construct a message of this type. This should be one of "join", "join-reply", "discover", "discover-reply", and "announce".
+     * @param from          Construct a message as being from this host.
+     * @param sequence      Construct of a message that has this sequence number.
+     * @param datum         Construct a message that has this datum.
      */
-    public Message(String type, HostPointer from, String sequence,
-            ASExpression datum) {
+    public Message(String type, HostPointer from, String sequence, ASExpression datum) {
         this.type = type;
         this.from = from;
         this.sequence = sequence;
@@ -67,16 +71,17 @@ public class Message {
     /**
      * Construct a message from its s-expression format.
      * 
-     * @param message
-     *            Construct a message from this s-expression
-     * @throws IncorrectFormatException
-     *             This method throws if the s-expression given is not in the
-     *             correct format: ([name] [host] [sequence] [datum]).
+     * @param message       Construct a message from this s-expression
+     *
+     * @throws IncorrectFormatException This method throws if the s-expression given is not in the correct format: ([name] [host] [sequence] [datum]).
      */
     public Message(ASExpression message) throws IncorrectFormatException {
+
+        /* Attempt to match the pattern */
         if (PATTERN.match( message ) == NoMatch.SINGLETON)
-            throw new IncorrectFormatException( message, new Exception( message
-                    + " didn't match the pattern:" + PATTERN ) );
+            throw new IncorrectFormatException(message, new Exception(message + " didn't match the pattern:" + PATTERN));
+
+        /* Extract data from the now-matched expression */
         ListExpression lst = (ListExpression) message;
         type = lst.get( 0 ).toString();
         from = new HostPointer( lst.get( 1 ) );
@@ -106,7 +111,7 @@ public class Message {
     /**
      * Get the hash of this message.
      * 
-     * @return This method returns the hash of this message.
+     * @return The hash of this message.
      */
     public StringExpression getHash() {
         if (hash == null)
@@ -117,7 +122,7 @@ public class Message {
     /**
      * Get the type field for this message.
      * 
-     * @return This method returns the type field for this message.
+     * @return The type field for this message.
      */
     public String getType() {
         return type;
@@ -126,7 +131,7 @@ public class Message {
     /**
      * Get the from field for this message.
      * 
-     * @return This method returns the from field for this message.
+     * @return The from field for this message.
      */
     public HostPointer getFrom() {
         return from;
@@ -135,7 +140,7 @@ public class Message {
     /**
      * Get the sequence number of this message.
      * 
-     * @return This method returns the sequence number of this message.
+     * @return The sequence number of this message.
      */
     public String getSequence() {
         return sequence;
@@ -144,7 +149,7 @@ public class Message {
     /**
      * Get the datum field for this message.
      * 
-     * @return This method returns the datum field for this message.
+     * @return The datum field for this message.
      */
     public ASExpression getDatum() {
         return datum;
@@ -159,6 +164,8 @@ public class Message {
     }
 
     /**
+     * Relies on MessagePointers equality method
+     *
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
@@ -166,8 +173,7 @@ public class Message {
         if (!(o instanceof Message))
             return false;
         try {
-            return new MessagePointer( toASE() ).equals( new MessagePointer(
-                    ((Message) o).toASE() ) );
+            return new MessagePointer(toASE()).equals(new MessagePointer(((Message)o).toASE()));
         }
         catch (IncorrectFormatException e) {
             return false;

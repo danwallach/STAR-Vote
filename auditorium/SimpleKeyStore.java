@@ -40,9 +40,9 @@ import sexpression.stream.*;
 /**
  * Simple keystore implementation which looks for keys and certificates in a
  * specified directory. Keys are represented by files named
- * <tt><i>nodeid</i>.key</tt> and containing an S-expression matching the
+ * <tt><i>nodeID</i>.key</tt> and containing an S-expression matching the
  * format expected by {@link Key}; similarly, certificate files are named
- * <tt><i>nodeid</i>.cert</tt> and contain an S-expression recognized by the
+ * <tt><i>nodeID</i>.cert</tt> and contain an S-expression recognized by the
  * constructor for {@link Certificate}.
  *
  * Keys and Certs are cached internally, so multiple requests for the same key
@@ -54,21 +54,29 @@ import sexpression.stream.*;
  * 
  */
 public class SimpleKeyStore implements IKeyStore {
-	//Name of file containing keys/classes/etc for votebox (generally, a jar file)
-	public static final String ROOT_JARS[] = {"Votebox.jar", "Supervisor.jar", "Scanner.jar"};
+	/** Name of file containing keys/classes/etc for votebox (generally, a jar file) */
+	private static final String ROOT_JARS[] = {"Votebox.jar", "Supervisor.jar", "Scanner.jar"};
 
-	private final String _dir;
-	private HashMap<String,Key>  _keyCache;
-	private HashMap<String, Certificate> _certCache;
+    /** The path of directory containing the keys */
+	private final String dir;
+
+    /** A mapping of key references, for easy access */
+	private HashMap<String,Key> keyCache;
+
+    /** A mapping of certificate references, for easy access*/
+	private HashMap<String, Certificate> certCache;
 
 	/**
-	 * @param dir
-	 *            This is the directory where the key and cert files are stored.
+     * Constructor.
+     *
+	 * @param dir The directory where the key and cert files are stored.
 	 */
 	public SimpleKeyStore(String dir) {
-		_dir = dir;
-		_keyCache  = new HashMap<>();
-		_certCache = new HashMap<>();
+		this.dir = dir;
+
+        /* Initialize the maps */
+		keyCache = new HashMap<>();
+		certCache = new HashMap<>();
 	}
 
 	/**
@@ -77,17 +85,16 @@ public class SimpleKeyStore implements IKeyStore {
 	 * @see auditorium.IKeyStore#loadKey(java.lang.String)
 	 */
 	public Key loadKey(String nodeID) throws AuditoriumCryptoException {
-		if (! _keyCache.containsKey(nodeID)) {
+		if (!keyCache.containsKey(nodeID)) {
 			try {
-				_keyCache.put(nodeID,
-						new Key( load( nodeID + ".key" ) ));
+				keyCache.put(nodeID, new Key(load(nodeID + ".key")));
 			}
 			catch (Exception e) {
-				throw new AuditoriumCryptoException( "loadKey(\"" + nodeID + "\")", e );
+				throw new AuditoriumCryptoException("loadKey(\"" + nodeID + "\")", e);
 			}
 		}
 
-		return _keyCache.get(nodeID);
+		return keyCache.get(nodeID);
 	}
 
 	/**
@@ -96,83 +103,77 @@ public class SimpleKeyStore implements IKeyStore {
 	 * @see auditorium.IKeyStore#loadCert(java.lang.String)
 	 */
 	public Certificate loadCert(String nodeID) throws AuditoriumCryptoException {
-		if (! _certCache.containsKey(nodeID)) {
+		if (!certCache.containsKey(nodeID)) {
 			try {
-				_certCache.put(nodeID,
-						new Certificate( load( nodeID + ".cert" ) ));
+				certCache.put(nodeID, new Certificate(load(nodeID + ".cert")));
 			}
 			catch (Exception e) {
-				throw new AuditoriumCryptoException( "loadCert(\"" + nodeID + "\")", e );
+				throw new AuditoriumCryptoException("loadCert(\"" + nodeID + "\")", e);
 			}
 		}
 
-		return _certCache.get(nodeID);
+		return certCache.get(nodeID);
 	}
 
-	public Object loadAdderKey(String nodeID){
-		try{
+    /**
+     * Load a key used by the Adder crypto package, which has properties necessary for homomorphic ElGamal as well as
+     * generating NIZKs
+     *
+     * @return the adder key
+     */
+    public PublicKey loadAdderPublicKey() {
+        try{
+            InputStream in = getInput("public.adder.key");
 
-            InputStream in = getInput(nodeID +".adder.key");
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			
-			int i;
-			while((i = in.read()) != -1){
-				baos.write(i);
-			}
-			
-			//String str = new String(baos.toByteArray());
+            int i;
+            while((i = in.read()) != -1){
+                byteArrayOutputStream.write(i);
+            }
 
-			PublicKey pubKey = null;
-			PrivateKey privKey = null;
+            return PublicKey.fromASE(ASExpression.makeVerbatim(byteArrayOutputStream.toByteArray()));
 
-			try{
-				//pubKey = PublicKey.fromString(str);
-				pubKey = PublicKey.fromASE(ASExpression.makeVerbatim(baos.toByteArray()));
-			}catch(Exception e){
-                //TODO This should probably be made less stupid
-				//e.printStackTrace();
-				try{
-					//privKey = PrivateKey.fromString(str);
-					privKey = PrivateKey.fromASE(ASExpression.makeVerbatim(baos.toByteArray()));
-				}catch(Exception f){f.printStackTrace();}
-			}
+        }catch(Exception e){
+            throw new RuntimeException(e);
+        }
+    }
 
-			if(pubKey != null)
-				return pubKey;
+    /**
+     * Load a key used by the Adder crypto package, which has properties necessary for homomorphic ElGamal as well as
+     * generating NIZKs
+     *
+     * @return the adder key
+     */
+    public PrivateKey loadAdderPrivateKey() {
+        try{
+            InputStream in = getInput("private.adder.key");
 
-			if(privKey != null)
-				return privKey;
-		}catch(Exception e){
-			throw new RuntimeException(e);
-		}
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
-		throw new RuntimeException("No adder key exists for nodeid: "+ nodeID);
-	}
+            int i;
+            while((i = in.read()) != -1){
+                byteArrayOutputStream.write(i);
+            }
+
+            return PrivateKey.fromASE(ASExpression.makeVerbatim(byteArrayOutputStream.toByteArray()));
+
+        }catch(Exception e){
+            throw new RuntimeException(e);
+        }
+    }
 
 	/**
 	 * Loads a file for use in the KeyStore.<BR>
 	 * First searches the ROOT_JAR, if it exists.<BR>
 	 * Then looks for the path in the filesystem.<BR>
-	 * The path itself is derived from _dir (_dir + "/" + file, approximately).
+	 * The path itself is derived from dir (dir + "/" + file, approximately).
 	 * 
-	 * @param file - The file to load
+	 * @param file The file to load
 	 * @return An ASExpression representing the file resource
 	 * @throws AuditoriumCryptoException - Should any exception occur during processing.
 	 */
 	private ASExpression load(String file) throws AuditoriumCryptoException {
-		/*String path = _dir + "/" + file; // note that "/" is the classLoader's path component separator char
-        try {
-            InputStream stream = getClass().getResourceAsStream(path);
-			if (stream == null)
-                throw new FileNotFoundException(path);
-
-            return new ASEInputStreamReader( stream ).read();
-        }
-        catch (Exception e) {
-            throw new AuditoriumCryptoException( "load(); path=\"" + path + "\"", e );
-        }*/
-
 		try {
 			InputStream stream = getInput(file);
 
@@ -185,13 +186,13 @@ public class SimpleKeyStore implements IKeyStore {
 	/**
 	 * Opens a stream for reading a key.
 	 * 
-	 * @param file - the name of the file that contains the key.  This does not include the path to the key
+	 * @param file the name of the file that contains the key.  This does not include the path to the key
 	 * @return an open InputStream to read from.
 	 * @throws AuditoriumCryptoException - If the key cannot be found, or an error occurs
 	 */
 	private InputStream getInput(String file) throws AuditoriumCryptoException{
         //TODO MAKE THIS WORK. RAWR.
-//		InputStream stream = getClass().getResourceAsStream(_dir+"/"+file); // "/" is the classloaders path component, not a hardcoded unix style path component separator
+//		InputStream stream = getClass().getResourceAsStream(dir+"/"+file); // "/" is the class loaders path component, not a hardcoded unix style path component separator
 //		// leave it alone
 //
 //		if(stream != null)
@@ -204,7 +205,7 @@ public class SimpleKeyStore implements IKeyStore {
 
 		boolean[] jarsExist = new boolean[ROOT_JARS.length];
 
-		String entry = _dir;
+		String entry = dir;
 		if(!entry.endsWith("/"))
 			entry += "/" + file;
 		else
