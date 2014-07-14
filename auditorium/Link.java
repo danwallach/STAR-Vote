@@ -40,44 +40,53 @@ import java.io.IOException;
  */
 public class Link {
 
-    private final IAuditoriumHost _host;
-    private final MessageSocket _socket;
-    private final HostPointer _address;
-    private volatile boolean _running;
+    /** A reference to the host that holds this link */
+    private final IAuditoriumHost host;
+
+    /** The socket over which this link communicates */
+    private final MessageSocket socket;
+
+    /** The address of the host to which this link corresponds */
+    private final HostPointer address;
+
+    /** Denotes whether start() has been called on the link and its thread is running*/
+    private volatile boolean running;
 
     /**
      * Construct a new auditorium link structure to wrap a socket that has
      * already been established with another auditorium host.
      * 
-     * @param host
-     *            This is the AuditoriumHost that is using this link.
-     * @param socket
-     *            This is the socket to the other auditorium host.
-     * @param address
-     *            This is the address that the socket is connected to.
+     * @param host          The AuditoriumHost that is using this link.
+     * @param socket        The socket to the other auditorium host.
+     * @param address       The address that the socket is connected to.
      */
     public Link(IAuditoriumHost host, MessageSocket socket, HostPointer address) {
-        _host = host;
-        _socket = socket;
-        _address = address;
-        _running = false;
+        this.host = host;
+        this.socket = socket;
+        this.address = address;
+        running = false;
     }
 
     /**
      * Start the thread.
      */
     public void start() {
-        Bugout.msg( "Link " + _address + ": STARTING" );
+        /* Note that we're starting on the console */
+        Bugout.msg("Link " + address + ": STARTING");
 
-        _running = true; // listenThread will stop immediately if not set here
+        /* listenThread will stop immediately if not set here */
+        running = true;
 
-        Thread t = new Thread( new Runnable() {
+        /* Start the listening thread */
+        Thread t = new Thread(new Runnable() {
 
             public void run() {
                 listenThread();
             }
-        } );
-        t.setPriority( Thread.currentThread().getPriority() + 1 );
+        });
+
+        /* Establish the priority of this thread as one less than the host thread */
+        t.setPriority(Thread.currentThread().getPriority() + 1);
         t.start();
 
     }
@@ -86,44 +95,44 @@ public class Link {
      * Stop the thread.
      */
     public void stop() {
-        Bugout.err( "Link " + _address + ": STOPPING" );
-        _running = false;
+        /* Note that we're stopping on the console */
+        Bugout.err("Link " + address + ": STOPPING");
+
+        /* Close the socket */
+        running = false;
         try {
-            _socket.close();
+            socket.close();
         }
         catch (IOException e) {
-            Bugout.err( "Link " + _address + ": while stopping: "
-                    + e.getMessage() );
+            Bugout.err("Link " + address + ": while stopping: " + e.getMessage());
         }
     }
 
     /**
      * Get the address of the other end of this link.
      * 
-     * @return This method returns the address of who this link is with.
+     * @return The address of who this link is with.
      */
     public HostPointer getAddress() {
-        return _address;
+        return address;
     }
 
     /**
      * Get the message socket that is established for this link.
      * 
-     * @return This method returns the message socket that is established for
-     *         this link.
+     * @return The message socket that is established for this link.
      */
     public MessageSocket getSocket() {
-        return _socket;
+        return socket;
     }
 
     /**
      * Check if this link is currently running
      * 
-     * @return This method returns true if the link is running or false if it
-     *         isn't.
+     * @return Returns true if the link is running or false if it isn't.
      */
     public boolean running() {
-        return _running;
+        return running;
     }
 
     /**
@@ -131,31 +140,34 @@ public class Link {
      */
     @Override
     public boolean equals(Object o) {
-        return o instanceof Link && this._address.equals(((Link) o)._address);
-
+        return o instanceof Link && this.address.equals(((Link) o).address);
     }
 
+
+    /**
+     * Thread that will handle messages coming across the socket
+     */
     private void listenThread() {
-        Bugout.msg( "Link " + _address + ": THREAD START" );
+
+        /* Note that the thread is starting */
+        Bugout.msg( "Link " + address + ": THREAD START" );
+
+        /* Now read in data from the socket and pass it to the host */
         try {
             Message message;
-            while (_running && (message  = _socket.receive()) != null) {
-                Bugout.msg( "Link " + _address + ": received: "
-                        + new MessagePointer( message ) );
-                _host.receiveAnnouncement(message);
+            while (running && (message  = socket.receive()) != null) {
+                Bugout.msg("Link " + address + ": received: " + new MessagePointer(message));
+                host.receiveAnnouncement(message);
             }
-        }
-        catch (NetworkException e) {
-            Bugout.err( "Link " + _address + ": " + e.getMessage() );
+        } catch (NetworkException e) {
+            Bugout.err("Link " + address + ": " + e.getMessage());
         } catch (IncorrectFormatException e) {
-            Bugout
-                    .err("Link "
-                            + _address
-                            + ": received a message that is incorrectly formatted:"
-                            + e.getMessage());
+            Bugout.err("Link " + address + ": received a message that is incorrectly formatted:" + e.getMessage());
         }
-        _host.removeLink( this );
-        Bugout.msg( "Link " + _address + ": THREAD END" );
+
+        /* If we exit the while loop, remove and close this link */
+        host.removeLink(this);
+        Bugout.msg("Link " + address + ": THREAD END");
         stop();
     }
 }

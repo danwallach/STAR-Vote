@@ -40,13 +40,18 @@ import java.util.List;
  * (This is useful for helping the temporal layer decide what messages should be
  * pointed to when said messages are being constructed.)
  * 
- * @author Kyle Derr Derr
+ * @author Kyle Derr
  */
 public class Log {
 
-    private final FileOutputStream _location;
-    private final HashSet<MessagePointer> _haveSeen;
-    private final LinkedList<MessagePointer> _last;
+    /** The file to which the log will be written */
+    private final FileOutputStream location;
+
+    /** A set of message pointers that have already been seen, so we don't have to handle them */
+    private final HashSet<MessagePointer> haveSeen;
+
+    /** A list of message pointers that have been heard by the log but not referenced by an actual message  */
+    private final LinkedList<MessagePointer> last;
 
     /** A reference to that last hash value so we can chain the messages in the log */
     private StringExpression lastChainedHash;
@@ -54,15 +59,14 @@ public class Log {
     /**
      * Construct a Log instance that serializes log data to a given location.
      * 
-     * @param location
-     *            This is the location that should be written to.
-     * @throws FileNotFoundException
-     *             This method throws if the given location cannot be found.
+     * @param location      The location that should be written to.
+     *
+     * @throws FileNotFoundException Thrown if the given location cannot be found.
      */
     public Log(File location) throws FileNotFoundException {
-        _location = new FileOutputStream( location );
-        _haveSeen = new HashSet<>();
-        _last = new LinkedList<>();
+        this.location = new FileOutputStream( location );
+        haveSeen = new HashSet<>();
+        last = new LinkedList<>();
 
         /* Initialize that hash chain with string 0000000000 */
         lastChainedHash = StringExpression.makeString(StringExpression.makeString("0000000000").getSHA1());
@@ -72,8 +76,8 @@ public class Log {
      * Call this method to check and see if a message has been seen before, and
      * if it has not, add it into the hash chain and log it.
      * 
-     * @param       message This is the message in question. Log it if it hasn't been seen before.
-     * @return      This method returns true if something new gets added to the log, and false otherwise.
+     * @param       message The message in question. Log it if it hasn't been seen before.
+     * @return      True if something new gets added to the log, and false otherwise.
      *
      * @throws IOException This method throws if there is an IO error when trying to add the message to the log file on disk.
      */
@@ -89,14 +93,14 @@ public class Log {
         lastChainedHash = chained.getHash();
 
         MessagePointer toMessage = new MessagePointer( message );
-        if (!_haveSeen.contains( toMessage )) {
+        if (!haveSeen.contains(toMessage)) {
 
             /* Since the chained value is only used here, we update our lists with the unchained version */
-            _haveSeen.add( toMessage );
-            _last.add( toMessage );
+            haveSeen.add(toMessage);
+            last.add(toMessage);
 
             /* Write the chained value to the log */
-            write( chained );
+            write(chained);
             return true;
         }
         return false;
@@ -106,21 +110,19 @@ public class Log {
      * Add a message to the "last" list. This message will be included in the
      * pointer set for the next message sent out.
      * 
-     * @param message
-     *            Add this message.
+     * @param message       Add this message.
      */
     public void updateLast(MessagePointer message) {
-        _last.add( message );
+        last.add(message);
     }
 
     /**
      * Remove a pointer from the last list, if it exists in the list.
      * 
-     * @param message
-     *            Remove this message from the last list.
+     * @param message       Remove this message from the last list.
      */
     public void removeFromLast(MessagePointer message) {
-        _last.remove( message );
+        last.remove(message);
     }
 
     /**
@@ -131,14 +133,21 @@ public class Log {
      * @return This method returns the last list.
      */
     public MessagePointer[] getLast() {
-        MessagePointer[] ret = _last.toArray(new MessagePointer[_last.size()]);
-        _last.clear();
+        MessagePointer[] ret = last.toArray(new MessagePointer[last.size()]);
+        last.clear();
         return ret;
     }
 
+    /**
+     * Write messages to the log
+     *
+     * @param message       The message to write
+     *
+     * @throws IOException If something goes wrong in trying to write the message to the log, report it
+     */
     private void write(Message message) throws IOException {
-        _location.write(message.toASTWithHash().toVerbatim());
-        _location.flush();
+        location.write(message.toASTWithHash().toVerbatim());
+        location.flush();
     }
 
     // ** Testing Methods ***
@@ -147,8 +156,8 @@ public class Log {
      * logAnnouncement to know whether or not you've seen a message (because the
      * lookup is done atomically with the store!)
      */
-    public synchronized HashSet<MessagePointer> TESTgetSetCopy() {
-        return new HashSet<>( _haveSeen );
+    public synchronized HashSet<MessagePointer> getSetCopyTest() {
+        return new HashSet<>(haveSeen);
     }
 
     /**
@@ -156,7 +165,7 @@ public class Log {
      * it gets the last set and then subsequently clears it in one atomic
      * operation.
      */
-    public synchronized List<MessagePointer> TESTgetLast() {
-        return new LinkedList<>( _last );
+    public synchronized List<MessagePointer> getLastTest() {
+        return new LinkedList<>(last);
     }
 }

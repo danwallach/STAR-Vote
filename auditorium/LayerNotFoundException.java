@@ -29,11 +29,10 @@ package auditorium;
  */
 public class LayerNotFoundException extends Exception {
 
-    private static final long serialVersionUID = 1L;
-    private String _layer;
+    private String layer;
 
     public LayerNotFoundException(String layer) {
-        _layer = layer;
+        this.layer = layer;
     }
 
     @Override
@@ -43,6 +42,6 @@ public class LayerNotFoundException extends Exception {
 
     @Override
     public String getMessage() {
-        return _layer + " isn't in the stack";
+        return layer + " isn't in the stack";
     }
 }

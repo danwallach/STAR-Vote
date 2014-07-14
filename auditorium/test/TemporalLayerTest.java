@@ -270,30 +270,30 @@ public class TemporalLayerTest {
     @Test
     public void testReceiveAnnouncement12() throws Exception {
         log.logAnnouncement( m1 );
-        assertEquals( 1, log.TESTgetLast().size() );
-        assertEquals( new MessagePointer( m1 ), log.TESTgetLast().get( 0 ) );
+        assertEquals( 1, log.getLastTest().size() );
+        assertEquals( new MessagePointer( m1 ), log.getLastTest().get( 0 ) );
 
         layer.receiveAnnouncement( new ListExpression( StringExpression.makeString(
                 "succeeds" ), new ListExpression( new MessagePointer( m1 )
                 .toASE() ), StringExpression.makeString( "TEST DATUM" ) ) );
 
-        assertEquals( 0, log.TESTgetLast().size() );
+        assertEquals( 0, log.getLastTest().size() );
     }
 
     @Test
     public void testReceiveAnnouncement13() throws Exception {
         log.logAnnouncement( m1 );
         log.logAnnouncement( m2 );
-        assertEquals( 2, log.TESTgetLast().size() );
-        assertEquals( new MessagePointer( m1 ), log.TESTgetLast().get( 0 ) );
-        assertEquals( new MessagePointer( m2 ), log.TESTgetLast().get( 1 ) );
+        assertEquals( 2, log.getLastTest().size() );
+        assertEquals( new MessagePointer( m1 ), log.getLastTest().get( 0 ) );
+        assertEquals( new MessagePointer( m2 ), log.getLastTest().get( 1 ) );
 
         layer.receiveAnnouncement( new ListExpression( StringExpression.makeString(
                 "succeeds" ), new ListExpression( new MessagePointer( m1 )
                 .toASE() ), StringExpression.makeString( "TEST DATUM" ) ) );
 
-        assertEquals( 1, log.TESTgetLast().size() );
-        assertEquals( new MessagePointer( m2 ), log.TESTgetLast().get( 0 ) );
+        assertEquals( 1, log.getLastTest().size() );
+        assertEquals( new MessagePointer( m2 ), log.getLastTest().get( 0 ) );
     }
 
     // ** receiveJoinReply(ASExpression) tests **
@@ -349,26 +349,26 @@ public class TemporalLayerTest {
     // Good.
     @Test
     public void testReceiveJoinReply9() throws Exception {
-        assertEquals( 0, log.TESTgetLast().size() );
+        assertEquals( 0, log.getLastTest().size() );
 
         layer.receiveJoinReply( new ListExpression( new MessagePointer( m1 )
                 .toASE() ) );
 
-        assertEquals( 1, log.TESTgetLast().size() );
-        assertEquals( new MessagePointer( m1 ), log.TESTgetLast().get( 0 ) );
+        assertEquals( 1, log.getLastTest().size() );
+        assertEquals( new MessagePointer( m1 ), log.getLastTest().get( 0 ) );
     }
 
     @Test
     public void testReceiveJoinReply10() throws Exception {
-        assertEquals( 0, log.TESTgetLast().size() );
+        assertEquals( 0, log.getLastTest().size() );
 
         layer.receiveJoinReply( new ListExpression( new MessagePointer( m1 )
                 .toASE() ) );
         layer.receiveJoinReply( new ListExpression( new MessagePointer( m2 )
                 .toASE() ) );
 
-        assertEquals( 2, log.TESTgetLast().size() );
-        assertEquals( new MessagePointer( m1 ), log.TESTgetLast().get( 0 ) );
-        assertEquals( new MessagePointer( m2 ), log.TESTgetLast().get( 1 ) );
+        assertEquals( 2, log.getLastTest().size() );
+        assertEquals( new MessagePointer( m1 ), log.getLastTest().get( 0 ) );
+        assertEquals( new MessagePointer( m2 ), log.getLastTest().get( 1 ) );
     }
 }

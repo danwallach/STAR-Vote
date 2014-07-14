@@ -65,18 +65,18 @@ public class LogTest {
                 StringExpression.makeString( "test2" ) );
         MessagePointer pointer2 = new MessagePointer( msg2 );
 
-        assertFalse( log.TESTgetSetCopy().contains( pointer1 ) );
-        assertFalse( log.TESTgetSetCopy().contains( pointer2 ) );
+        assertFalse( log.getSetCopyTest().contains( pointer1 ) );
+        assertFalse( log.getSetCopyTest().contains( pointer2 ) );
         assertEquals( 0, log.getLast().length );
 
         log.logAnnouncement( msg1 );
 
         ArrayList<MessagePointer> last = new ArrayList<>();
-        for (MessagePointer p : log.TESTgetLast())
+        for (MessagePointer p : log.getLastTest())
             last.add( p );
-        assertEquals( 1, log.TESTgetSetCopy().size() );
-        assertTrue( log.TESTgetSetCopy().contains( pointer1 ) );
-        assertFalse( log.TESTgetSetCopy().contains( pointer2 ) );
+        assertEquals( 1, log.getSetCopyTest().size() );
+        assertTrue( log.getSetCopyTest().contains( pointer1 ) );
+        assertFalse( log.getSetCopyTest().contains( pointer2 ) );
         assertEquals( 1, last.size() );
         assertTrue( last.contains( pointer1 ) );
         assertFalse( last.contains( pointer2 ) );
@@ -85,11 +85,11 @@ public class LogTest {
         log.logAnnouncement( msg2 );
 
         last = new ArrayList<>();
-        for (MessagePointer p : log.TESTgetLast())
+        for (MessagePointer p : log.getLastTest())
             last.add( p );
-        assertEquals( 2, log.TESTgetSetCopy().size() );
-        assertTrue( log.TESTgetSetCopy().contains( pointer1 ) );
-        assertTrue( log.TESTgetSetCopy().contains( pointer2 ) );
+        assertEquals( 2, log.getSetCopyTest().size() );
+        assertTrue( log.getSetCopyTest().contains( pointer1 ) );
+        assertTrue( log.getSetCopyTest().contains( pointer2 ) );
         assertEquals( 2, last.size() );
         assertTrue( last.contains( pointer1 ) );
         assertTrue( last.contains( pointer2 ) );
