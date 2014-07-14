@@ -228,7 +228,7 @@ public abstract class ASExpression {
      * This method computes the SHA1 hash of the verbatim representation of this
      * S-Expression.
      * 
-     * @return This method returns the SHA1 hash of this sexpression.
+     * @return This method returns the SHA1 hash of this s-expression.
      */
     public byte[] getSHA1() {
         if (_hash == null) {

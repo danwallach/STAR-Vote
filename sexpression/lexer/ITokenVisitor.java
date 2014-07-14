@@ -29,7 +29,7 @@ package sexpression.lexer;
  * case for every concrete instance of Token.
  * 
  * @see sexpression.lexer.Token
- * @author kyle
+ * @author Kyle Derr
  * 
  * @param <E>
  *            Specify the return type of the visitor execution here.

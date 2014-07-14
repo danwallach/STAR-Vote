@@ -50,7 +50,7 @@ public class Nothing extends ASExpression {
     }
 
     /**
-     * @see sexpression.ASpecialExpression#toVerbatimHelp()
+     * @see sexpression.ASExpression#toVerbatimHelp()
      */
     @Override
     public ByteArrayBuffer toVerbatimHelp() {

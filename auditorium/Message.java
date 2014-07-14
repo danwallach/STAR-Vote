@@ -36,7 +36,7 @@ public class Message {
     /** Pattern for message ASE's, of the form ([name] [host] [sequence] [datum]) */
     public static final ASExpression PATTERN = new ListExpression(
             StringWildcard.SINGLETON, HostPointer.PATTERN,
-            StringWildcard.SINGLETON, AuditoriumIntegrityLayer.PATTERN, Wildcard.SINGLETON );
+            StringWildcard.SINGLETON, Wildcard.SINGLETON);
 
 
 
@@ -53,7 +53,7 @@ public class Message {
     private final ASExpression datum;
 
     /** A hash of the message object */
-    private ASExpression hash = null;
+    private ASExpression hash;
 
     /**
      * Constructor
@@ -90,9 +90,7 @@ public class Message {
         from = new HostPointer( lst.get( 1 ) );
         sequence = lst.get( 2 ).toString();
         datum = lst.get( 3 );
-
-        if(lst.size() == 5)
-            hash = lst.get(4);
+//        hash = lst.get(4);
 
 
     }
@@ -112,7 +110,7 @@ public class Message {
      *
      * @return Return an ASE of the form ([name] [host] [datum] [chained hash value])
      */
-    public ASExpression toASTWithHash() {
+    public ASExpression toASEWithHash() {
         return new ListExpression(StringExpression.makeString(type), from.toASE(), StringExpression.makeString(sequence), datum, hash);
     }
 

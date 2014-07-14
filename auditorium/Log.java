@@ -147,7 +147,7 @@ public class Log {
      * @throws IOException If something goes wrong in trying to write the message to the log, report it
      */
     private void write(Message message) throws IOException {
-        location.write(message.toASTWithHash().toVerbatim());
+        location.write(message.toASE().toVerbatim());
         location.flush();
     }
 

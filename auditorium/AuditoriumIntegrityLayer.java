@@ -33,7 +33,7 @@ import sexpression.*;
 public class AuditoriumIntegrityLayer extends AAuditoriumLayer {
 
     /** The pattern for signed messages, of the form (signed-message <certificate> <signature>) */
-    public static final ASExpression PATTERN = new ListExpression(StringExpression.makeString("signed-message"), Certificate.PATTERN, Signature.PATTERN);
+    public static final ASExpression PATTERN = new ListExpression(StringExpression.makeString("signed-message"), Wildcard.SINGLETON, Wildcard.SINGLETON);
 
     /** The serial number of the machine running this layer */
     private final String nodeID;
@@ -117,6 +117,7 @@ public class AuditoriumIntegrityLayer extends AAuditoriumLayer {
     public ASExpression receiveAnnouncement(ASExpression datum) throws IncorrectFormatException {
 
         try {
+
             /* Match the incoming message to ensure that it is signed properly */
             ASExpression matchResult = PATTERN.match(getChild().receiveAnnouncement(datum));
             if (matchResult == NoMatch.SINGLETON) throw new IncorrectFormatException(datum, new Exception(datum + " doesn't match the pattern:" + PATTERN));

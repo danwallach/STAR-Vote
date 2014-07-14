@@ -38,8 +38,7 @@ public class WhitespaceState implements ILexerState {
     private WhitespaceState() {}
 
     /**
-     * @see sexpression.lexer.ILexerState#readCharacter(sexpression.lexer.Lexer,
-     *      char)
+     * @see sexpression.lexer.ILexerState#readCharacter(sexpression.lexer.Lexer, char)
      */
     public void readCharacter(Lexer l, char b) {
         WordState ws = new WordState();
