@@ -137,9 +137,6 @@ public class ListExpression extends ASExpression implements
 
         ASExpression[] targetList = ((ListExpression) target)._list;
         if (targetList.length != _list.length) {
-            System.out.println("Not of correct length! Actual: " + targetList.length + " Expected: " + _list.length);
-            System.out.println(Arrays.toString(_list));
-            System.out.println(Arrays.toString(targetList));
             return NoMatch.SINGLETON;
         }
 

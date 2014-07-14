@@ -46,5 +46,5 @@ public interface IVerifierPlugin {
      *
      * @throws PluginException if the plugin encountered problems.
      */
-    public abstract void init(Verifier verifier) throws PluginException;
+    public abstract void init(Verifier verifier) throws PluginException, HashChainCompromisedException;
 }

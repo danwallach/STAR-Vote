@@ -31,6 +31,7 @@ import java.util.HashMap;
 
 import auditorium.*;
 
+import sexpression.ASExpression;
 import verifier.*;
 import verifier.value.*;
 import sexpression.stream.*;
@@ -75,9 +76,10 @@ public class AuditoriumLog implements IVerifierPlugin {
 		try {
 			ASEInputStreamReader in = new ASEInputStreamReader( new FileInputStream(new File(verifier.getArgs().get("log"))));
 
+            ASExpression exp;
             /* Loop until end of file and load into dag to build set TODO EOF stuff */
-			while (true) {
-				Message msg = new Message(in.read());
+			while ((exp = in.read()) != null) {
+				Message msg = new Message(exp);
 				dag.add(msg);
 				set.add(new Expression(msg.toASE()));
 			}

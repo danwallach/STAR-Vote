@@ -38,6 +38,10 @@ public class Message {
             StringWildcard.SINGLETON, HostPointer.PATTERN,
             StringWildcard.SINGLETON, Wildcard.SINGLETON);
 
+    public static final ASExpression LOG_PATTERN = new ListExpression(
+            StringWildcard.SINGLETON, HostPointer.PATTERN,
+            StringWildcard.SINGLETON, Wildcard.SINGLETON, Wildcard.SINGLETON);
+
 
 
     /** Denotes the type of the message (e.g. "join", "join-reply", "discover", "discover-reply", or "announce")*/
@@ -79,18 +83,25 @@ public class Message {
      */
     public Message(ASExpression message) throws IncorrectFormatException {
 
-
         /* Attempt to match the pattern */
-        if (PATTERN.match(message) == NoMatch.SINGLETON)
+        if (PATTERN.match(message) != NoMatch.SINGLETON) {
+
+            /* Extract data from the now-matched expression */
+            ListExpression lst = (ListExpression) message;
+            type = lst.get(0).toString();
+            from = new HostPointer(lst.get(1));
+            sequence = lst.get(2).toString();
+            datum = lst.get(3);
+        } else if (LOG_PATTERN.match(message) != NoMatch.SINGLETON) {
+            ListExpression lst = (ListExpression) message;
+            type = lst.get(0).toString();
+            from = new HostPointer(lst.get(1));
+            sequence = lst.get(2).toString();
+            datum = lst.get(3);
+            hash = lst.get(4);
+        } else
             throw new IncorrectFormatException(message, new Exception(message + " didn't match the pattern:" + PATTERN));
 
-        /* Extract data from the now-matched expression */
-        ListExpression lst = (ListExpression) message;
-        type = lst.get( 0 ).toString();
-        from = new HostPointer( lst.get( 1 ) );
-        sequence = lst.get( 2 ).toString();
-        datum = lst.get( 3 );
-//        hash = lst.get(4);
 
 
     }
@@ -120,8 +131,10 @@ public class Message {
      * @return The hash of this message.
      */
     public ASExpression getHash() {
-        if (hash == null)
-            hash = StringExpression.makeString( toASE().getSHA1() );
+        if (hash == null) {
+            System.out.println("ARGH");
+            hash = StringExpression.makeString(toASE().getSHA1());
+        }
         return hash;
     }
 

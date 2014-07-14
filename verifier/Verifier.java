@@ -27,6 +27,7 @@ import sexpression.lexer.Lexer;
 import sexpression.parser.Parser;
 import verifier.ast.*;
 import verifier.value.Value;
+import votebox.AuditoriumParams;
 
 import java.io.*;
 import java.util.HashMap;
@@ -134,13 +135,10 @@ public class Verifier {
 			argNotFound("rule");
 		if (!argmap.containsKey("log"))
 			argNotFound("log");
-		if (!argmap.containsKey("config"))
-			argNotFound("config");
 
 		ASExpression rule = readRule(argmap.get("rule"));
-		String config = argmap.get("config");
 
-		Verifier v = new Verifier(config, argmap);
+		Verifier v = new Verifier("verifier.conf", argmap);
 
 		System.out.println("RESULT: " + v.eval(rule));
 		System.out.println("ASSERTION FAILURES:");
@@ -303,7 +301,7 @@ public class Verifier {
 		String s;
 		try {
 			while ((s = reader.readLine()) != null) {
-				// Make sure blank lines don't screw us.
+                // Make sure blank lines don't screw us.
 				s = s.replaceAll(" ", "");
 				s = s.replaceAll("\n", "");
 				if (s.equals(""))
@@ -315,5 +313,5 @@ public class Verifier {
 		} catch (Exception e) {
 			throw new InitException(e);
 		}
-	}
+    }
 }

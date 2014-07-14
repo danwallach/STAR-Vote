@@ -49,7 +49,7 @@ public class IncrementalStepVerifier extends Verifier {
     
 	static HashMap<String, String> argmap;
 
-    public static void reset() throws Exception {
+    public static void reset() throws Exception, HashChainCompromisedException {
 		System.out.printf("# resetting all verifier state\n");
 
         v = new Verifier(argmap);
