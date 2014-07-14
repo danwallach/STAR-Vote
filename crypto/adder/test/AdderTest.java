@@ -54,8 +54,7 @@ public class AdderTest extends TestCase {
         int maxVoters = 20;
         int numVoters = AdderInteger.random(1, maxVoters + 1);
 
-        Map<Integer, Integer>/*<Integer, Integer>*/ voteMap
-            = new HashMap<>/*<Integer, Integer>*/(numVoters);
+        Map<Integer, Integer> voteMap = new HashMap<> (numVoters);
 
         for (int choice = 0; choice < numChoices; choice++) {
              voteMap.put(choice, 0);
@@ -81,17 +80,14 @@ public class AdderTest extends TestCase {
             polys.add(authPoly);
         }
 
-        Map<Integer, List<ElgamalCiphertext>>/*<Integer, List<ElgamlCiphertext>>*/ polyMap
-            = new HashMap<>/*<Integer, List<ElgamlCiphertext>>*/(numAuths);
+        Map<Integer, List<ElgamalCiphertext>> polyMap= new HashMap<> (numAuths);
 
         for (int i = 0; i < numAuths; i++) {
-            List<ElgamalCiphertext>/*<ElgamlCiphertext>*/ ciphertexts = new ArrayList<>/*<ElgamlCiphertext>*/(numAuths);
+            List<ElgamalCiphertext> ciphertexts = new ArrayList<> (numAuths);
 
             for (int j = 0; j < numAuths; j++) {
                 ElgamalCiphertext ciphertext
-                    = (pubKeys.get(j)).
-                                   encryptPoly((polys.get(i)).
-                                   evaluate(new AdderInteger(j, q)));
+                    = (pubKeys.get(j)).encryptPoly((polys.get(i)).evaluate(new AdderInteger(j, q)));
                 ciphertexts.add(ciphertext);
             }
 

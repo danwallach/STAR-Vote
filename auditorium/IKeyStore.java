@@ -23,11 +23,10 @@
 package auditorium;
 
 /**
- * The auditorium integrity layer intefaces with an instance of this type in
- * order to access keys that are stored somehow.
+ * The auditorium integrity layer interfaces with an instance of this type in
+ * order to access keys that are stored as files on the disk.
  * 
  * @author Kyle Derr
- * 
  */
 public interface IKeyStore {
 
@@ -35,24 +34,20 @@ public interface IKeyStore {
      * Load the private key associated with a given ID.
      * 
      * @return This method returns the private key of the ID that was asked for.
-     * @throws AuditoriumCryptoException
-     *             This method throws if the file can't be found or if it isn't
-     *             in the correct format.
+     * @throws AuditoriumCryptoException Thrown if the file can't be found or if it isn't in the correct format.
      */
-    Key loadKey(String nodeid) throws AuditoriumCryptoException;
+    Key loadKey(String nodeID) throws AuditoriumCryptoException;
 
     /**
      * Load a PEM certificate from a file.
      * 
-     * @param nodeid
-     *            Load this node's certificate.
-     * @return This method returns the certificate that wasa loaded from the
-     *         given file.
+     * @param nodeID            Load this node's certificate.
+     * @return                  This method returns the certificate that was loaded from the given file.
      */
-    Certificate loadCert(String nodeid) throws AuditoriumCryptoException;
+    Certificate loadCert(String nodeID) throws AuditoriumCryptoException;
     
     /**
      * Load the adder key associated with the given ID.
      */
-    Object loadAdderKey(String nodeid) throws RuntimeException;
+    Object loadAdderKey(String nodeID) throws RuntimeException;
 }

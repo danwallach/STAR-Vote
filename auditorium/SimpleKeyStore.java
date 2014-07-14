@@ -76,18 +76,18 @@ public class SimpleKeyStore implements IKeyStore {
 	 * 
 	 * @see auditorium.IKeyStore#loadKey(java.lang.String)
 	 */
-	public Key loadKey(String nodeid) throws AuditoriumCryptoException {
-		if (! _keyCache.containsKey(nodeid)) {
+	public Key loadKey(String nodeID) throws AuditoriumCryptoException {
+		if (! _keyCache.containsKey(nodeID)) {
 			try {
-				_keyCache.put(nodeid, 
-						new Key( load( nodeid + ".key" ) ));
+				_keyCache.put(nodeID,
+						new Key( load( nodeID + ".key" ) ));
 			}
 			catch (Exception e) {
-				throw new AuditoriumCryptoException( "loadKey(\"" + nodeid + "\")", e );
+				throw new AuditoriumCryptoException( "loadKey(\"" + nodeID + "\")", e );
 			}
 		}
 
-		return _keyCache.get(nodeid);
+		return _keyCache.get(nodeID);
 	}
 
 	/**
@@ -95,24 +95,24 @@ public class SimpleKeyStore implements IKeyStore {
 	 * 
 	 * @see auditorium.IKeyStore#loadCert(java.lang.String)
 	 */
-	public Certificate loadCert(String nodeid) throws AuditoriumCryptoException {
-		if (! _certCache.containsKey(nodeid)) {
+	public Certificate loadCert(String nodeID) throws AuditoriumCryptoException {
+		if (! _certCache.containsKey(nodeID)) {
 			try {
-				_certCache.put(nodeid, 
-						new Certificate( load( nodeid + ".cert" ) ));
+				_certCache.put(nodeID,
+						new Certificate( load( nodeID + ".cert" ) ));
 			}
 			catch (Exception e) {
-				throw new AuditoriumCryptoException( "loadCert(\"" + nodeid + "\")", e );
+				throw new AuditoriumCryptoException( "loadCert(\"" + nodeID + "\")", e );
 			}
 		}
 
-		return _certCache.get(nodeid);
+		return _certCache.get(nodeID);
 	}
 
-	public Object loadAdderKey(String nodeid){
+	public Object loadAdderKey(String nodeID){
 		try{
 
-            InputStream in = getInput(nodeid+".adder.key");
+            InputStream in = getInput(nodeID +".adder.key");
 
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			
@@ -147,7 +147,7 @@ public class SimpleKeyStore implements IKeyStore {
 			throw new RuntimeException(e);
 		}
 
-		throw new RuntimeException("No adder key exists for nodeid: "+nodeid);
+		throw new RuntimeException("No adder key exists for nodeid: "+ nodeID);
 	}
 
 	/**
