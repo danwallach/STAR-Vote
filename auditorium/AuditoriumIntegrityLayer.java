@@ -33,7 +33,7 @@ import sexpression.*;
 public class AuditoriumIntegrityLayer extends AAuditoriumLayer {
 
     /** The pattern for signed messages, of the form (signed-message <certificate> <signature>) */
-    public static final ASExpression PATTERN = new ListExpression(StringExpression.makeString("signed-message"), Wildcard.SINGLETON, Wildcard.SINGLETON);
+    public static final ASExpression PATTERN = new ListExpression(StringExpression.makeString("signed-message"), Certificate.PATTERN, Signature.PATTERN);
 
     /** The serial number of the machine running this layer */
     private final String nodeID;

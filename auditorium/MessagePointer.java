@@ -48,7 +48,7 @@ public class MessagePointer {
     private final String number;
 
     /** A hash of the message this points to */
-    private final StringExpression hash;
+    private final ASExpression hash;
 
     /** The ASE representation of this pointer, for lazy evaluation */
     private ASExpression aseForm;
@@ -83,7 +83,7 @@ public class MessagePointer {
         /* Extract the information from the ASE */
         nodeID = ((ListExpression)result).get(0).toString();
         number = ((ListExpression)result).get(1).toString();
-        hash = (StringExpression)((ListExpression)result).get(2);
+        hash = ((ListExpression)result).get(2);
     }
 
     /**
@@ -120,7 +120,7 @@ public class MessagePointer {
      *
      * @return The hash of the message that this points to.
      */
-    public StringExpression getHash() {
+    public ASExpression getHash() {
         return hash;
     }
 

@@ -48,13 +48,12 @@ import java.util.HashMap;
  */
 public class Dag {
 
-    /* FIXME This patter is probably broken with the new hash chain */
     /** The pattern string for reading logged messages */
     private static final String PATTERN_STRING = "(announce(host #string #string #string) #string " +
                                                  "(signed-message (cert " +
                                                  "(signature #string #string (key #string #string #string #string)))" +
                                                  "(signature #string #string " +
-                                                 "(succeeds #list:(ptr #string #string #string) #any))))";
+                                                 "(succeeds #list:(ptr #string #string #string) #any))) #any)";
 
 
     /** Tha actual ASE pattern based on PATTERN_STRING */

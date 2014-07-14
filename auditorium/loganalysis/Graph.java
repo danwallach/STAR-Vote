@@ -45,7 +45,11 @@ public class Graph {
      * @param args list of files to parse and output graphs of.
      */
     public static void main(String[] args) throws Exception {
-        for (String s : args) graph(s);
+        try {
+            for (String s : args) graph(s);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

@@ -22,6 +22,7 @@
 
 package auditorium;
 
+import sexpression.ASExpression;
 import sexpression.StringExpression;
 
 import java.io.File;
@@ -54,7 +55,7 @@ public class Log {
     private final LinkedList<MessagePointer> last;
 
     /** A reference to that last hash value so we can chain the messages in the log */
-    private StringExpression lastChainedHash;
+    private ASExpression lastChainedHash;
 
     /**
      * Construct a Log instance that serializes log data to a given location.

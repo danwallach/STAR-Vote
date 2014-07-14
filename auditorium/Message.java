@@ -36,7 +36,9 @@ public class Message {
     /** Pattern for message ASE's, of the form ([name] [host] [sequence] [datum]) */
     public static final ASExpression PATTERN = new ListExpression(
             StringWildcard.SINGLETON, HostPointer.PATTERN,
-            StringWildcard.SINGLETON, Wildcard.SINGLETON );
+            StringWildcard.SINGLETON, AuditoriumIntegrityLayer.PATTERN, Wildcard.SINGLETON );
+
+
 
     /** Denotes the type of the message (e.g. "join", "join-reply", "discover", "discover-reply", or "announce")*/
     private final String type;
@@ -51,7 +53,7 @@ public class Message {
     private final ASExpression datum;
 
     /** A hash of the message object */
-    private StringExpression hash = null;
+    private ASExpression hash = null;
 
     /**
      * Constructor
@@ -77,8 +79,9 @@ public class Message {
      */
     public Message(ASExpression message) throws IncorrectFormatException {
 
+
         /* Attempt to match the pattern */
-        if (PATTERN.match( message ) == NoMatch.SINGLETON)
+        if (PATTERN.match(message) == NoMatch.SINGLETON)
             throw new IncorrectFormatException(message, new Exception(message + " didn't match the pattern:" + PATTERN));
 
         /* Extract data from the now-matched expression */
@@ -87,6 +90,11 @@ public class Message {
         from = new HostPointer( lst.get( 1 ) );
         sequence = lst.get( 2 ).toString();
         datum = lst.get( 3 );
+
+        if(lst.size() == 5)
+            hash = lst.get(4);
+
+
     }
 
     /**
@@ -113,7 +121,7 @@ public class Message {
      * 
      * @return The hash of this message.
      */
-    public StringExpression getHash() {
+    public ASExpression getHash() {
         if (hash == null)
             hash = StringExpression.makeString( toASE().getSHA1() );
         return hash;
@@ -183,7 +191,7 @@ public class Message {
     /**
      * @param lastChainedHash the past hash that will be hashed along with this to form the hash chain
      */
-    public void chain(StringExpression lastChainedHash) {
+    public void chain(ASExpression lastChainedHash) {
         String newData = getHash().toString() + lastChainedHash.toString();
 
         hash = StringExpression.makeString(StringExpression.makeString(newData).getSHA1());

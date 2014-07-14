@@ -273,9 +273,11 @@ public class TemporalLayerTest {
         assertEquals( 1, log.getLastTest().size() );
         assertEquals( new MessagePointer( m1 ), log.getLastTest().get( 0 ) );
 
-        layer.receiveAnnouncement( new ListExpression( StringExpression.makeString(
+        ListExpression exp =  new ListExpression( StringExpression.makeString(
                 "succeeds" ), new ListExpression( new MessagePointer( m1 )
-                .toASE() ), StringExpression.makeString( "TEST DATUM" ) ) );
+                .toASE() ), StringExpression.makeString( "TEST DATUM" ) );
+
+        layer.receiveAnnouncement(exp);
 
         assertEquals( 0, log.getLastTest().size() );
     }

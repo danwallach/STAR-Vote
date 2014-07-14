@@ -90,8 +90,6 @@ public class ListExpression extends ASExpression implements
      * @param elts
      *            This set of strings contains the elements that make up the
      *            elements of the tuple.
-     * @return This method returns an S-Expression which represents a tuple
-     *         containing the provided elements.
      */
     public ListExpression(String... elts) {
         _list = new ASExpression[elts.length];
@@ -136,19 +134,26 @@ public class ListExpression extends ASExpression implements
     public ASExpression match(ASExpression target) {
         if (!(target instanceof ListExpression))
             return NoMatch.SINGLETON;
-        ASExpression[] targetlist = ((ListExpression) target)._list;
-        if (targetlist.length != _list.length)
-            return NoMatch.SINGLETON;
 
-        ASExpression thiselt, targetelt;
+        ASExpression[] targetList = ((ListExpression) target)._list;
+        if (targetList.length != _list.length) {
+            System.out.println("Not of correct length! Actual: " + targetList.length + " Expected: " + _list.length);
+            System.out.println(Arrays.toString(_list));
+            System.out.println(Arrays.toString(targetList));
+            return NoMatch.SINGLETON;
+        }
+
+        ASExpression thisElt, targetElt;
         ArrayList<ASExpression> matchList = new ArrayList<>();
         for (int lcv = 0; lcv < _list.length; lcv++) {
-            thiselt = _list[lcv];
-            targetelt = targetlist[lcv];
+            thisElt = _list[lcv];
+            targetElt = targetList[lcv];
 
-            ASExpression result = thiselt.match( targetelt );
-            if (result == NoMatch.SINGLETON)
+            ASExpression result = thisElt.match(targetElt);
+            if (result == NoMatch.SINGLETON) {
+                System.out.println(targetElt);
                 return NoMatch.SINGLETON;
+            }
             else
                 for (ASExpression ase : (ListExpression) result)
                     matchList.add( ase );
