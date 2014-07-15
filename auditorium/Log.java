@@ -108,6 +108,27 @@ public class Log {
     }
 
     /**
+     * @see this#logAnnouncement(Message)
+     *
+     * This is for testing purposes and shouldn't be used in any official capacity
+     */
+    public boolean logAnnouncementNoChain(Message message) throws IOException {
+
+        MessagePointer toMessage = new MessagePointer( message );
+        if (!haveSeen.contains(toMessage)) {
+
+            /* Since the chained value is only used here, we update our lists with the unchained version */
+            haveSeen.add(toMessage);
+            last.add(toMessage);
+
+            /* Write the chained value to the log */
+            write(message);
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Add a message to the "last" list. This message will be included in the
      * pointer set for the next message sent out.
      * 
@@ -147,7 +168,7 @@ public class Log {
      * @throws IOException If something goes wrong in trying to write the message to the log, report it
      */
     private void write(Message message) throws IOException {
-        location.write(message.toASE().toVerbatim());
+        location.write(message.toASEWithHash().toVerbatim());
         location.flush();
     }
 

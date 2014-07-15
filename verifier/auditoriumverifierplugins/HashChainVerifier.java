@@ -21,6 +21,8 @@ import java.io.IOException;
  */
 public class HashChainVerifier implements IVerifierPlugin {
 
+    private Verifier verifier;
+
     /**
      * Initialize the plugin.
      *
@@ -29,7 +31,7 @@ public class HashChainVerifier implements IVerifierPlugin {
      */
     @Override
     public void init(Verifier verifier) throws PluginException, HashChainCompromisedException {
-        verify(verifier);
+        this.verifier = verifier;
     }
 
 
@@ -38,9 +40,8 @@ public class HashChainVerifier implements IVerifierPlugin {
      *
      * TODO We should probably retool the way verifier handles plugins since they seem to be somewhat backwards
      *
-     * @param verifier the verifier instance that is constructing this plugin
      */
-    public void verify(Verifier verifier) throws HashChainCompromisedException {
+    public void verify() throws HashChainCompromisedException {
         /* Initialize that hash chain with string 0000000000, the known starting value for our hash */
         ASExpression hash = StringExpression.makeString(StringExpression.makeString("0000000000").getSHA1());
 
@@ -51,18 +52,18 @@ public class HashChainVerifier implements IVerifierPlugin {
 
             /* Loop until end of file and load into dag to build set */
             while ((exp = in.read()) != null) {
-                //System.out.println(exp);
                 Message msg = new Message(exp);
 
-                String newData = msg.getHash().toString() /*+ hash.toString()*/;
-                hash = StringExpression.makeString(StringExpression.makeString(newData).getSHA1());
+                /* Build a new message based on the one found in the log */
+                Message compare = new Message(msg.getType(), msg.getFrom(), msg.getSequence(), msg.getDatum());
 
-                System.out.println(hash + " | " +  msg.getHash());
+                /* Recompute its hash, including the value we expect it to have for its hash */
+                compare.chain(hash);
+                hash = compare.getHash();
 
-//                if(!hash.equals(msg.getHash()))
-//                    throw new HashChainCompromisedException("The hash chain failed to verify!");
-
-
+                /* Compare the newly built hash with the hash we read in */
+                if(!hash.equals(msg.getHash()))
+                    throw new HashChainCompromisedException("The hash chain failed to verify!");
             }
         } catch (EOFException ignored) {
         } catch (IOException | IncorrectFormatException | InvalidVerbatimStreamException e) {

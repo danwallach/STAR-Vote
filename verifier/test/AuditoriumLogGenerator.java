@@ -54,6 +54,7 @@ public class AuditoriumLogGenerator {
         temporalLayer = new AuditoriumTemporalLayer(integrityLayer, host);
 
 
+
         hp = new HostPointer("0", "127.0.0.1", 9000);
         try {
             log = new Log(new File(filePath));
@@ -63,13 +64,21 @@ public class AuditoriumLogGenerator {
     }
 
     /**
-     * A utility method for logging event messages so that they are signed and given a temporal assignement
+     * A utility method for logging event messages so that they are signed and given a temporal assignment
      *
      * @param datum the message to log
      * @throws IOException if the log fails in writing
      */
     private static void logDatum(ASExpression datum) throws IOException {
         log.logAnnouncement(new Message("announce", hp, "0", temporalLayer.makeAnnouncement(datum)));
+    }
+
+    /**
+     * A utility message that will insert data in the log that invalidates the hash chain
+     */
+    private static void compromiseHashChain(ASExpression datum) throws IncorrectFormatException, IOException {
+        log.logAnnouncementNoChain(new Message("announce", hp, "0", temporalLayer.makeAnnouncement(datum)));
+
     }
 
     /**
@@ -91,6 +100,9 @@ public class AuditoriumLogGenerator {
 
         return array;
     }
+
+
+
 
     /**
      * A utility method for logging the election start up of a supervisor, votebox, and ballot scanner.
@@ -128,11 +140,11 @@ public class AuditoriumLogGenerator {
      * PIN entering, authorization, committing, scanning, and casting.
      */
     private static void vote() throws IOException {
-        /* The votebox enters a PIN, and the supervisor then authorizes it */
-        PINEnteredEvent pin = new PINEnteredEvent(1, "pin");
 
         /* Get some ballot data */
         byte[] ballot = getBlob();
+
+        PINEnteredEvent pin = new PINEnteredEvent(1, "pin");
 
         AuthorizedToCastWithNIZKsEvent authorize = new AuthorizedToCastWithNIZKsEvent(0, 1, StringExpression.make("nonce"), "precinct", ballot, publicKey);
 
@@ -148,6 +160,7 @@ public class AuditoriumLogGenerator {
 
         EncryptedCastBallotWithNIZKsEvent ecbwne = new EncryptedCastBallotWithNIZKsEvent(0, StringExpression.make("nonce"), ballot, bid);
 
+        logDatum(pin.toSExp());
         logDatum(authorize.toSExp());
         logDatum(cbe.toSExp());
         logDatum(bse.toSExp());
@@ -191,4 +204,16 @@ public class AuditoriumLogGenerator {
         close();
 
     }
+
+    public static void generateSimpleSupervisorCompromisedHashLog() throws IOException, IncorrectFormatException {
+        start3Machines();
+
+        /* Cast one vote */
+        vote();
+
+        compromiseHashChain((new SupervisorEvent(0, 0, "status")).toSExp());
+
+        close();
+    }
+
 }
