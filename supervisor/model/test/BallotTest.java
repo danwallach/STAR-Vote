@@ -48,16 +48,9 @@ public class BallotTest extends TestCase {
 
         ASExpression nonce = getBlob();
 
-        List<ElgamalCiphertext> cTexts = new ArrayList<>();
-
-        cTexts.add(publicKey.encryptPoly(AdderInteger.ZERO));
-        cTexts.add(publicKey.encryptPoly(AdderInteger.ONE));
-
         List<ASExpression> choices = new ArrayList<>();
         choices.add(StringExpression.makeString("B0"));
         choices.add(StringExpression.makeString("B1"));
-
-        Vote vote = new Vote(cTexts, choices);
 
         List<Vote> votes = new ArrayList<>();
         List<AdderInteger> c = new ArrayList<>();
@@ -65,11 +58,12 @@ public class BallotTest extends TestCase {
         c.add(AdderInteger.ZERO);
         c.add(AdderInteger.ONE);
 
+        Vote vote = publicKey.encrypt(c, choices);
 
-        VoteProof proof = new VoteProof();
+        VoteProof proof = new VoteProof()   ;
         proof.compute(vote, publicKey, c, 0, 1);
 
-        vote = new Vote(cTexts, choices, proof);
+        vote = new Vote(vote.getCipherList(), vote.getChoices(), proof);
 
         votes.add(vote);
 
