@@ -6,7 +6,8 @@
    (auditorium-message-fmt (quote 
         (announce (host %id:#string %addr:#string %port:#string)
                   %seqno:#string
-                  %message:#any)))
+                  %message:#any
+                  %hash:#any)))
 
    (cert-fmt (quote
           (cert (signature %cert-signer:#string

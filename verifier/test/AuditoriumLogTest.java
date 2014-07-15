@@ -1,11 +1,12 @@
 package verifier.test;
 
+import auditorium.IncorrectFormatException;
 import junit.framework.TestCase;
 import sexpression.ASExpression;
 import verifier.Verifier;
 import verifier.auditoriumverifierplugins.AuditoriumLog;
 
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.HashMap;
 
 /**
@@ -28,7 +29,7 @@ public class AuditoriumLogTest extends TestCase {
         super.setUp();
 
         AuditoriumLogGenerator.setUp("temp");
-        AuditoriumLogGenerator.generateSimpleLog();
+
 
         auditoriumLog = new AuditoriumLog();
 
@@ -38,17 +39,32 @@ public class AuditoriumLogTest extends TestCase {
         auditoriumLog.init(v);
     }
 
-    public void testSimpleRules() {
+    public void testSimpleLogVoting2Rules() {
         ASExpression rule;
 
         try {
-             rule = Verifier.readRule("rules/empty.rules");
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+            AuditoriumLogGenerator.generateSimpleLog();
+            rule = Verifier.readRule("rules/voting2.rules");
+        } catch (IncorrectFormatException | IOException e) {
+            fail(e.getMessage());
+            return;
         }
 
         v.eval(rule);
+    }
 
+    public void testSimpleSupervisorLogVoting2Rules() {
+        ASExpression rule;
+
+        try {
+            AuditoriumLogGenerator.generateSimpleSupervisorLog();
+            rule = Verifier.readRule("rules/voting2.rules");
+        } catch (IncorrectFormatException | IOException e) {
+            fail(e.getMessage());
+            return;
+        }
+
+        v.eval(rule);
     }
 
 }
