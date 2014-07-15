@@ -20,57 +20,53 @@
   * ACCESS OR USE OF THE SOFTWARE.
  */
 
-package votebox.auditoriumverifierplugins;
+package verifier.auditoriumverifierplugins;
+
+import auditorium.IncorrectFormatException;
+import auditorium.Message;
+import auditorium.MessagePointer;
+import sexpression.*;
+import verifier.FormatException;
+import verifier.value.DAGValue;
+import verifier.value.Expression;
+import verifier.value.FastDAG;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import auditorium.*;
 
-import sexpression.*;
-import verifier.*;
-import verifier.value.*;
 
-/**
- * A DAG builder incrementally accepts auditorium messages and builds a DAG
- * which represents the timeline of them. At any point during this process, the
- * user can ask that a verifier.DAG be constructed to represent what has been
- * seen so far.
- * 
- * @author kyle
- * 
- */
-public class DagBuilder {
+public class FastDAGBuilder extends DagBuilder {
 
     /*
      * Matching against this pattern should yield the following: [0]: cert [1]:
-     * signer id [2]: sigdata [3]: list of pointers that precede [4]: data
+     * signer id [2]: sigdata [3]: list of pointers that preceed [4]: data
      */
     private static final ASExpression PATTERN = new ListExpression(StringExpression.makeString( "signed-message" ), Wildcard.SINGLETON,
                                                 new ListExpression(StringExpression.makeString( "signature" ), StringWildcard.SINGLETON, StringWildcard.SINGLETON,
-                                                new ListExpression( StringExpression.makeString( "succeeds" ), new ListWildcard( MessagePointer.PATTERN ),
-                                                Wildcard.SINGLETON ) ) );
+                                                new ListExpression(StringExpression.makeString( "succeeds" ),
+                                                new ListWildcard(MessagePointer.PATTERN), Wildcard.SINGLETON ) ) );
 
     /* Mapping of ptr-->(listof predecessor ptrs) */
-    private HashMap<Expression, ArrayList<Expression>> _predecessors;
+    private HashMap<Expression, List<Expression>> _predecessors;
 
-    /* Mapping of ptr-->full-message */
-    private HashMap<Expression, Expression> _ptrToMsg;
-
-    /* mapping of message-->its own ptr */
+    /* Mapping of message-->its own ptr */
     private HashMap<Expression, Expression> _msgToPtr;
-
-    public DagBuilder() {
+    
+    private Map<String, Map<Integer, Expression>> _timelines;
+    
+    public FastDAGBuilder() {
         _predecessors = new HashMap<>();
-        _ptrToMsg = new HashMap<>();
         _msgToPtr = new HashMap<>();
+        _timelines = new HashMap<>();
     }
 
     /**
      * Add a message to the list of messages that this builder is holding
-     * 
-     * @param message Add this message to the list
      *
+     * @param message Add this message to the list
      * @throws FormatException This method throws if the given message's datum is not
      *                         formatted as expected.
      */
@@ -78,30 +74,43 @@ public class DagBuilder {
 
         try {
 
-        	Expression ptr  = new Expression( new MessagePointer( message ).toASE());
-        	Expression expr = new Expression( message.toASE() );
+        	MessagePointer msgPtr   = new MessagePointer(message);
+        	Expression ptr          = new Expression(msgPtr.toASE());
+        	Expression expr         = new Expression(message.toASE());
+            String msgPtrID         = msgPtr.getNodeId();
+
             
         	/* Store ptr-->message mapping in DAG */
-        	_ptrToMsg.put( ptr, expr );
             _msgToPtr.put( expr, ptr );
+            
+            /* Store timeline index if the timeline doesn't have it */
+            if (! _timelines.containsKey(msgPtrID))
+            	_timelines.put(msgPtrID, new HashMap<Integer, Expression>());
 
+            /* Finish the putting process */
+            _timelines.get(msgPtrID).put(new Integer(msgPtr.getNumber()), ptr);
+
+            /* Check if the pattern matches */
             ASExpression matchresult = PATTERN.match(message.getDatum());
 
-            /* Throw an exception if there is a bad match */
+            /* Throw an exception if the formatting doesn't match */
             if (matchresult == NoMatch.SINGLETON)
-                throw new FormatException( message.getDatum(), new Exception("didn't match pattern for an Auditorium message: " + PATTERN ) );
+                throw new FormatException( message.getDatum(), new Exception( "didn't match pattern for an Auditorium message: " + PATTERN ) );
 
             ListExpression matchlist = (ListExpression) matchresult;
 
             ArrayList<Expression> ptrlst = new ArrayList<>();
 
-            /* Creating ASE that represents a message */
+            /*
+               For each ASE, check if it matches by passing to constructor, then convert back,
+               make an Expression and add to the ptrlist.
+             */
             for (ASExpression ptrexp : (ListExpression) matchlist.get(3))
                 ptrlst.add(new Expression(new MessagePointer(ptrexp).toASE()));
             
             _predecessors.put( ptr, ptrlst );
         }
-        catch (IncorrectFormatException e) { throw new FormatException(message.getDatum(), e); }
+        catch (IncorrectFormatException e) { throw new FormatException( message.getDatum(), e ); }
     }
 
     /**
@@ -109,6 +118,6 @@ public class DagBuilder {
      *         messages that have been given so far.
      */
     public DAGValue toDAG() {
-        return new ExplicitDAG( _ptrToMsg, _msgToPtr, _predecessors );
+    	return new FastDAG(_msgToPtr, _predecessors, _timelines);
     }
 }

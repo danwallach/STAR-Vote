@@ -33,7 +33,7 @@ import verifier.util.*;
 
 /** example command line:
  *
- *  java -cp build verifier.IncrcmentalStepVerifier incr=40 rule=rules/voting2.rules  log=logdata/20070929-superlog.out  plugin=votebox.auditoriumverifierplugins.IncrementalAuditoriumLog
+ *  java -cp build verifier.IncrcmentalStepVerifier incr=40 rule=rules/voting2.rules  log=logdata/20070929-superlog.out  plugin=verifier.auditoriumverifierplugins.IncrementalAuditoriumLog
  */
 public class IncrementalStepVerifier extends Verifier {
     static ThreadTimer timer = null;

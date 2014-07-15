@@ -22,6 +22,11 @@
 
 package auditorium;
 
+import sexpression.ASExpression;
+import sexpression.ListExpression;
+import sexpression.Nothing;
+import sexpression.StringExpression;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -33,7 +38,6 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Observer;
-import sexpression.*;
 
 /**
  * This is the top level class that an application should interface with if it
@@ -191,8 +195,7 @@ public class AuditoriumHost implements IAuditoriumHost {
     public AuditoriumHost(String machineName, IAuditoriumParams constants) {
         /* Initialize the info fields */
         nodeID = machineName;
-        me = new HostPointer( machineName, getMyIP(), constants
-                .getListenPort() );
+        me = new HostPointer( machineName, getMyIP(), constants.getListenPort() );
         hosts = new ArrayList<>();
         
         /* Initialize the state fields */

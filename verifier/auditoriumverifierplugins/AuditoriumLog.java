@@ -20,7 +20,21 @@
   * ACCESS OR USE OF THE SOFTWARE.
  */
 
-package votebox.auditoriumverifierplugins;
+package verifier.auditoriumverifierplugins;
+
+import auditorium.IncorrectFormatException;
+import auditorium.Message;
+import sexpression.ASExpression;
+import sexpression.stream.ASEInputStreamReader;
+import sexpression.stream.InvalidVerbatimStreamException;
+import verifier.ActivationRecord;
+import verifier.IVerifierPlugin;
+import verifier.PluginException;
+import verifier.Verifier;
+import verifier.value.DAGValue;
+import verifier.value.Expression;
+import verifier.value.SetValue;
+import verifier.value.Value;
 
 import java.io.EOFException;
 import java.io.File;
@@ -28,13 +42,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import auditorium.*;
-
-import sexpression.ASExpression;
-import verifier.*;
-import verifier.value.*;
-import sexpression.stream.*;
 
 /**
  * Read log data in from the argument "log" and construct all-set and all-dag

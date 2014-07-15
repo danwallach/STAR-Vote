@@ -20,7 +20,7 @@
   * ACCESS OR USE OF THE SOFTWARE.
  */
 
-package votebox.auditoriumverifierplugins;
+package verifier.auditoriumverifierplugins;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,12 +35,10 @@ import sexpression.*;
  * data given via this API (rather than read from a file). It also registers the
  * signature-verify primitive.
  * 
- * Uses the fast BFS implementation [10/04/2007 00:07 dsandler]
- * 
  * @author kyle
  * 
  */
-public class IncrementalAuditoriumLogFast implements IIncrementalPlugin {
+public class IncrementalAuditoriumLog implements IIncrementalPlugin {
 
 	private Verifier _verifier;
 	private ArrayList<Expression> _allset;
@@ -53,7 +51,7 @@ public class IncrementalAuditoriumLogFast implements IIncrementalPlugin {
 	 */
 	public void init(Verifier verifier) {
 		_allset = new ArrayList<>();
-		_alldag = new FastDAGBuilder();
+		_alldag = new DagBuilder();
 		_verifier = verifier;
 
 		registerHandlers();
@@ -117,9 +115,10 @@ public class IncrementalAuditoriumLogFast implements IIncrementalPlugin {
 		bindings.put("all-set", _allsetValue);
 		_alldagValue = _alldag.toDAG();
 
-		/* TODO XXX: see note in IncrementalAuditoriumLog.java at this point */
-
-        /* Toggle cache dependent on value (if it is present) */
+		/* TODO XXX: hack: this is the only way I could figure to pass along an outer tuning parameter to an interior data structure. I think we
+		   TODO should work on standardizing this, that is, figure out which class holds the arguments for everyone. Verifier's as good a choice as
+		   TODO any. [10/09/2007 11:37 dsandler] */
+        /* If the key is present, toggle based on the value */
 		if (_verifier.getArgs().containsKey("dagcache")) {
 			if (Boolean.parseBoolean(_verifier.getArgs().get("dagcache")))
 				_alldagValue.enableCache();

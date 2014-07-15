@@ -20,7 +20,7 @@
   * ACCESS OR USE OF THE SOFTWARE.
  */
 
-package votebox.auditoriumverifierplugins;
+package verifier.auditoriumverifierplugins;
 
 import auditorium.*;
 import sexpression.*;

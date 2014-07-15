@@ -1,4 +1,4 @@
-package votebox.auditoriumverifierplugins;
+package verifier.auditoriumverifierplugins;
 
 import auditorium.IncorrectFormatException;
 import auditorium.Message;
@@ -7,17 +7,11 @@ import sexpression.StringExpression;
 import sexpression.stream.ASEInputStreamReader;
 import sexpression.stream.InvalidVerbatimStreamException;
 import verifier.*;
-import verifier.value.DAGValue;
-import verifier.value.Expression;
-import verifier.value.SetValue;
-import verifier.value.Value;
 
 import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * This is a plugin for verifier that will look at the hashes contained in each logged message and recompute the hash chain

@@ -132,7 +132,6 @@ public class Message {
      */
     public ASExpression getHash() {
         if (hash == null) {
-            System.out.println("ARGH");
             hash = StringExpression.makeString(toASE().getSHA1());
         }
         return hash;
