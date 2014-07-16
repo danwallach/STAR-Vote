@@ -79,7 +79,6 @@ public class ASTParser {
 	 * @return This method returns the AST that represents the given expression.
 	 */
 	public AST parse(ASExpression expression) {
-		// System.out.println("[astparse] " + expression);
 		try {
 			// constant/identifier case
 			ASExpression matchresult = _constfactory.getPatternASE().match(

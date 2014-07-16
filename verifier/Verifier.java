@@ -248,8 +248,7 @@ public class Verifier {
 	 * @return This method returns the result of the evaluation.
 	 */
 	public Value eval(ASExpression rule) {
-		Value v = new ASTParser(_factories, Constant.FACTORY).parse(rule).eval(
-				ActivationRecord.END);
+		Value v = new ASTParser(_factories, Constant.FACTORY).parse(rule).eval(ActivationRecord.END);
 		Controller.SINGLETON.stop();
 		LSpawn.POOL.stop();
 		return v;

@@ -28,13 +28,19 @@ public class AuditoriumLogGenerator {
     /** This will ensure that everything will be written to the log by the same host */
     private static HostPointer hp;
 
-    private static AuditoriumTemporalLayer temporalLayer;
+    /**
+     * The top layer of our hosts, will be a temporal layer. We need a reference so we can directly build messages without
+     * actually sending them over the network.
+     */
+    private static IAuditoriumLayer topLayer;
 
+    /** For generating random strings like bid's*/
     private static Random rand;
 
     /** A decimal formatter for generating PINs */
     private static DecimalFormat format = new DecimalFormat("00000");
 
+    /** Necessary for initializing our integrity layer as well as logging certain kinds of events, like EncryptedCastWithNIZKs */
     private static PublicKey publicKey;
 
 
@@ -51,7 +57,7 @@ public class AuditoriumLogGenerator {
         IKeyStore ks = new SimpleKeyStore("keys");
         publicKey = ks.loadAdderPublicKey();
         AuditoriumIntegrityLayer integrityLayer = new AuditoriumIntegrityLayer(AAuditoriumLayer.BOTTOM, host, ks);
-        temporalLayer = new AuditoriumTemporalLayer(integrityLayer, host);
+        topLayer = new AuditoriumTemporalLayer(integrityLayer, host);
 
 
 
@@ -70,14 +76,14 @@ public class AuditoriumLogGenerator {
      * @throws IOException if the log fails in writing
      */
     private static void logDatum(ASExpression datum) throws IOException {
-        log.logAnnouncement(new Message("announce", hp, "0", temporalLayer.makeAnnouncement(datum)));
+        log.logAnnouncement(new Message("announce", hp, "0", topLayer.makeAnnouncement(datum)));
     }
 
     /**
      * A utility message that will insert data in the log that invalidates the hash chain
      */
     private static void compromiseHashChain(ASExpression datum) throws IncorrectFormatException, IOException {
-        log.logAnnouncementNoChain(new Message("announce", hp, "0", temporalLayer.makeAnnouncement(datum)));
+        log.logAnnouncementNoChain(new Message("announce", hp, "0", topLayer.makeAnnouncement(datum)));
 
     }
 

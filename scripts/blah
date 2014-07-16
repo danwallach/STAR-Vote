@@ -1,0 +1,41 @@
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+tcp        0      0 0.0.0.0:50020           0.0.0.0:*               LISTEN      3947/java       
+tcp        0      0 127.0.0.1:58983         0.0.0.0:*               LISTEN      4319/java       
+tcp        0      0 127.0.0.1:38185         0.0.0.0:*               LISTEN      19409/java      
+tcp        0      0 0.0.0.0:50060           0.0.0.0:*               LISTEN      4319/java       
+tcp        0      0 127.0.0.1:63342         0.0.0.0:*               LISTEN      1073/java       
+tcp        0      0 127.0.0.1:63343         0.0.0.0:*               LISTEN      19409/java      
+tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN      2199/apache2    
+tcp        0      0 127.0.0.1:7634          0.0.0.0:*               LISTEN      1953/hddtemp    
+tcp        0      0 127.0.0.1:53            0.0.0.0:*               LISTEN      3052/dnsmasq    
+tcp        0      0 192.168.122.1:53        0.0.0.0:*               LISTEN      2268/dnsmasq    
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      683/sshd        
+tcp        0      0 127.0.0.1:631           0.0.0.0:*               LISTEN      1240/cupsd      
+tcp        0      0 0.0.0.0:25              0.0.0.0:*               LISTEN      2064/master     
+tcp        0      0 0.0.0.0:50010           0.0.0.0:*               LISTEN      3947/java       
+tcp        0      0 0.0.0.0:50075           0.0.0.0:*               LISTEN      3947/java       
+tcp        0      0 0.0.0.0:17500           0.0.0.0:*               LISTEN      15263/dropbox   
+tcp        0      0 127.0.0.1:6942          0.0.0.0:*               LISTEN      1073/java       
+tcp        0      0 0.0.0.0:35614           0.0.0.0:*               LISTEN      3947/java       
+tcp        0      0 127.0.0.1:6943          0.0.0.0:*               LISTEN      19409/java      
+tcp6       0      0 :::2181                 :::*                    LISTEN      4756/java       
+tcp6       0      0 :::7533                 :::*                    LISTEN      9006/java       
+tcp6       0      0 :::3888                 :::*                    LISTEN      4756/java       
+tcp6       0      0 168.7.30.142:60020      :::*                    LISTEN      5043/java       
+tcp6       0      0 :::22                   :::*                    LISTEN      683/sshd        
+tcp6       0      0 ::1:631                 :::*                    LISTEN      1240/cupsd      
+tcp6       0      0 :::25                   :::*                    LISTEN      2064/master     
+tcp6       0      0 :::60030                :::*                    LISTEN      5043/java       
+udp        0      0 0.0.0.0:41890           0.0.0.0:*                           823/avahi-daemon: r
+udp        0      0 127.0.0.1:53            0.0.0.0:*                           3052/dnsmasq    
+udp        0      0 192.168.122.1:53        0.0.0.0:*                           2268/dnsmasq    
+udp        0      0 0.0.0.0:67              0.0.0.0:*                           2268/dnsmasq    
+udp        0      0 0.0.0.0:68              0.0.0.0:*                           3046/dhclient   
+udp        0      0 0.0.0.0:17500           0.0.0.0:*                           15263/dropbox   
+udp        0      0 0.0.0.0:5353            0.0.0.0:*                           15514/chromium-brow
+udp        0      0 0.0.0.0:5353            0.0.0.0:*                           15514/chromium-brow
+udp        0      0 0.0.0.0:5353            0.0.0.0:*                           823/avahi-daemon: r
+udp6       0      0 :::45905                :::*                                823/avahi-daemon: r
+udp6       0      0 :::5353                 :::*                                15514/chromium-brow
+udp6       0      0 :::5353                 :::*                                823/avahi-daemon: r

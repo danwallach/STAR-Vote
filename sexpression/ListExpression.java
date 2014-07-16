@@ -148,7 +148,7 @@ public class ListExpression extends ASExpression implements
 
             ASExpression result = thisElt.match(targetElt);
             if (result == NoMatch.SINGLETON) {
-                System.out.println(targetElt);
+//                System.out.println(targetElt);
                 return NoMatch.SINGLETON;
             }
             else

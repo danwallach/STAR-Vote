@@ -132,7 +132,6 @@ public class Let extends AST {
 			env = _record;
 		}
 
-        System.out.println(_body.toASE());
         Value v = _body.eval(env);
 		if (v instanceof Reduction)
 			return new Reduction(new Let(((Reduction) v).getAST(), env));
