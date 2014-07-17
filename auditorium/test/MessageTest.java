@@ -22,18 +22,16 @@
 
 package auditorium.test;
 
-import static org.junit.Assert.*;
-
-import org.junit.*;
-
+import auditorium.HostPointer;
+import auditorium.IncorrectFormatException;
+import auditorium.Message;
+import org.junit.Test;
 import sexpression.ListExpression;
 import sexpression.NoMatch;
 import sexpression.Nothing;
 import sexpression.StringExpression;
 
-import auditorium.HostPointer;
-import auditorium.IncorrectFormatException;
-import auditorium.Message;
+import static org.junit.Assert.assertEquals;
 
 /**
  * JUnit test of the auditorium.Message class.
@@ -137,7 +135,7 @@ public class MessageTest {
                 StringExpression.makeString( "announcement" ), new HostPointer(
                         "test", "test", 1 ).toASE(), StringExpression.makeString(
                         "sequence" ), StringExpression.makeString( "datum" ),
-                ListExpression.EMPTY ) );
+                ListExpression.EMPTY, ListExpression.EMPTY ) );
 
     }
 

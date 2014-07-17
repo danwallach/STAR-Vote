@@ -23,6 +23,8 @@ public class HashChainVerifier implements IVerifierPlugin {
 
     private Verifier verifier;
 
+    private ASExpression incrementalHash;
+
     /**
      * Initialize the plugin.
      *
@@ -30,7 +32,8 @@ public class HashChainVerifier implements IVerifierPlugin {
      * @throws PluginException
      */
     @Override
-    public void init(Verifier verifier) throws PluginException, HashChainCompromisedException {
+    public void init(Verifier verifier)  {
+        incrementalHash = StringExpression.makeString(StringExpression.makeString("0000000000").getSHA1());
         this.verifier = verifier;
     }
 
@@ -69,5 +72,25 @@ public class HashChainVerifier implements IVerifierPlugin {
         } catch (IOException | IncorrectFormatException | InvalidVerbatimStreamException e) {
             throw new PluginException("auditorium", e);
         }
+    }
+
+    /**
+     * This will allow our verifier to check to make sure that messages, as they are logged,
+     * are properly hash chained.
+     *
+     * @param entry the new message to check
+     */
+    public void verifyIncremental(Message entry) throws HashChainCompromisedException {
+
+        /* Build a new message based on the one found in the log */
+        Message compare = new Message(entry.getType(), entry.getFrom(), entry.getSequence(), entry.getDatum());
+
+        /* Recompute its hash, including the value we expect it to have for its hash */
+        compare.chain(incrementalHash);
+        incrementalHash = compare.getHash();
+
+        /* Compare the newly built hash with the hash we read in */
+        if(!incrementalHash.equals(entry.getHash()))
+            throw new HashChainCompromisedException("The hash chain failed to verify!");
     }
 }

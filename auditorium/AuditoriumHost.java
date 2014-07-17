@@ -26,6 +26,9 @@ import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.Nothing;
 import sexpression.StringExpression;
+import verifier.Verifier;
+import verifier.auditoriumverifierplugins.HashChainVerifier;
+import verifier.auditoriumverifierplugins.IncrementalAuditoriumLog;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -125,9 +128,6 @@ public class AuditoriumHost implements IAuditoriumHost {
         }
     }
 
-    /** A mapping of all the layers of the network, referenced by their names */
-    private final HashMap<String, IAuditoriumLayer> layers;
-
     /** The top layer of the network, in essence the head of a singly-linked list */
     private final IAuditoriumLayer head;
 
@@ -156,7 +156,7 @@ public class AuditoriumHost implements IAuditoriumHost {
     private final ArrayList<Link> hosts;
 
     // Events
-    /** Reference to an event that gets fired when a host joines the network  */
+    /** Reference to an event that gets fired when a host joins the network  */
     private final Event<HostPointer> hostJoined;
 
     /** Reference to an event for when a host leaves the network */
@@ -164,16 +164,19 @@ public class AuditoriumHost implements IAuditoriumHost {
 
     // Verifier
     /** A verifier to dynamically audit and verify the logs we write out */
-//    private final Verifier verifier;
+    private final Verifier verifier;
 
     /** The rules to feed to the verifier so it knows what to look for */
-//    private final ASExpression rule;
+    private final ASExpression rule;
 
     /** Plugin to the verifier so it can incrementally audit the log */
-//    private final IncrementalAuditoriumLog verifierPlugin;
+    private final IncrementalAuditoriumLog verifierPlugin;
 
     /** Reference to the log, where events are logged and sent out */
     private final Log log;
+
+    /** A counter to be used with the incremental log counter */
+    private long counter;
 
     // Sockets
     /** The socket on which messages are received */
@@ -189,7 +192,7 @@ public class AuditoriumHost implements IAuditoriumHost {
     /**
      * Constructor.
      *
-     * @param machineName The host needs to be given an ID unique across the network. There also needs to be an entry in the keystore that corresponds to this ID.
+     * @param machineName The host needs to be given an ID unique across the network. There also needs to be an entry in the key store that corresponds to this ID.
      * @param constants   The host will get constant information from this instance (timeouts, file locations, etc.)
      */
     public AuditoriumHost(String machineName, IAuditoriumParams constants) {
@@ -199,15 +202,11 @@ public class AuditoriumHost implements IAuditoriumHost {
         hosts = new ArrayList<>();
         
         /* Initialize the state fields */
-        layers = new HashMap<>();
+        /* A mapping of all the layers of the network, referenced by their names */
         AuditoriumIntegrityLayer integrity = new AuditoriumIntegrityLayer(
                 AAuditoriumLayer.BOTTOM, this, constants.getKeyStore() );
 
-        AuditoriumTemporalLayer temporal = new AuditoriumTemporalLayer(
-                integrity, this );
-        layers.put( "Integrity", integrity );
-        layers.put( "Temporal", temporal );
-        head = temporal;
+        head = new AuditoriumTemporalLayer(integrity, this);
         discover = new AuditoriumDiscoveryHost( this, constants );
         this.constants = constants;
         inQueue = new SynchronizedQueue<>();
@@ -219,14 +218,14 @@ public class AuditoriumHost implements IAuditoriumHost {
         hostLeft = new Event<>();
 
         /* Initialize the log auditor */
-        // ASExpression loadedRule = null;
+        ASExpression loadedRule = null;
 
         // Verifier
         try {
-//        	String ruleFile = constants.getRuleFile();
-//        	if (ruleFile != null) {
-//        		loadedRule = Verifier.readRule( constants.getRuleFile() );
-//        	}
+        	String ruleFile = constants.getRuleFile();
+        	if (ruleFile != null) {
+        		loadedRule = Verifier.readRule(constants.getRuleFile());
+        	}
             log = new Log( new File( constants.getLogLocation() ) );
         }
         catch (FileNotFoundException e) {
@@ -234,19 +233,21 @@ public class AuditoriumHost implements IAuditoriumHost {
                     + e.getMessage(), e );
         }
         
-        /*
-        // XXX: remove comments when the verifier compiles again 
+
+        /* Plugin to the verifier so it can ensure the integrity of logged messages */
+        HashChainVerifier hashChainVerifier;
         if (loadedRule != null) {
-        	rule = loadedRule;
-	        verifierPlugin = new IncrementalAuditoriumLog();
-	        verifier = new Verifier( new NoOpStackTraceWriter() );
-	        verifier.registerPlugin( verifierPlugin );
+            rule = loadedRule;
+            hashChainVerifier = new HashChainVerifier();
+            verifierPlugin = new IncrementalAuditoriumLog(hashChainVerifier);
+
+            verifier = new Verifier(new HashMap<String, String>(), verifierPlugin);
         } else {
         	rule = null;
     		verifierPlugin = null;
 			verifier = null;
         }
-        */
+
 	        
         /* Initialize the thread state */
         running = false;
@@ -310,12 +311,9 @@ public class AuditoriumHost implements IAuditoriumHost {
         catch (IOException ignored) {}
 
         /* Note the results of the auditing */
-        /*
-        // XXX: uncomment when verifier works
         if (verifier != null) {
         	System.out.println( "Verification result:" + verifier.eval( rule ) );
         }
-        */
     }
 
     /**
@@ -698,14 +696,13 @@ public class AuditoriumHost implements IAuditoriumHost {
      *            Add this message.
      */
     private void verify(Message message) {
-        System.out.println(message.toASE());
-        /*
-        // XXX: uncomment when verifier works
+        counter++;
+
 		if (verifier != null) {
 			verifierPlugin.addLogData( message );
 			if (counter % 10 == 0)
 				verifier.eval( rule );
 		}
-		*/
+
     }
 }

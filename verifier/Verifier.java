@@ -27,9 +27,10 @@ import sexpression.lexer.Lexer;
 import sexpression.parser.Parser;
 import verifier.ast.*;
 import verifier.value.Value;
-import votebox.AuditoriumParams;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 /**
@@ -116,6 +117,7 @@ public class Verifier {
 		return factories;
 	}
 
+    private ArrayList<IVerifierPlugin> plugins;
 	/**
 	 * @param args
 	 *            Command line arguments constitute configuration parameters and
@@ -199,8 +201,8 @@ public class Verifier {
 		return bindings;
 	}
 
-	private final HashMap<String, String> _args;
-	private final HashMap<String, ASTFactory> _factories;
+	private final HashMap<String, String> args;
+	private final HashMap<String, ASTFactory> factories;
 
 	/**
 	 * Verifier's main should use this constructor.
@@ -215,8 +217,9 @@ public class Verifier {
 	 */
 	private Verifier(String cfglocation, HashMap<String, String> args)
 			throws InitException {
-		_args = args;
-		_factories = getPrimitives();
+		this.args = args;
+		factories = getPrimitives();
+        plugins = new ArrayList<>();
 
 		loadPlugins(cfglocation);
 	}
@@ -226,8 +229,9 @@ public class Verifier {
 	 * constructor or the Verifier(args) version.
 	 */
 	public Verifier() {
-		_args = new HashMap<>();
-		_factories = getPrimitives();
+		args = new HashMap<>();
+		factories = getPrimitives();
+        plugins = new ArrayList<>();
 	}
 
 	/**
@@ -235,9 +239,22 @@ public class Verifier {
 	 * constructor.
 	 */
 	public Verifier(HashMap<String, String> args) {
-		_args = args;
-		_factories = getPrimitives();
+		this.args = args;
+		factories = getPrimitives();
+        plugins = new ArrayList<>();
 	}
+
+    public Verifier(HashMap<String, String> args, IVerifierPlugin... plugins) {
+        this.args = args;
+        factories = getPrimitives();
+
+        this.plugins = new ArrayList<>();
+
+        Collections.addAll(this.plugins, plugins);
+
+        initPlugins();
+
+    }
 
 	/**
 	 * Evaluate a particular rule.
@@ -248,7 +265,7 @@ public class Verifier {
 	 * @return This method returns the result of the evaluation.
 	 */
 	public Value eval(ASExpression rule) {
-		Value v = new ASTParser(_factories, Constant.FACTORY).parse(rule).eval(ActivationRecord.END);
+		Value v = new ASTParser(factories, Constant.FACTORY).parse(rule).eval(ActivationRecord.END);
 		Controller.SINGLETON.stop();
 		LSpawn.POOL.stop();
 		return v;
@@ -274,7 +291,7 @@ public class Verifier {
 	 *         were provided on the command line as 'x=y'.
 	 */
 	public HashMap<String, String> getArgs() {
-		return _args;
+		return args;
 	}
 
 	/**
@@ -282,7 +299,7 @@ public class Verifier {
 	 *         mappings to this in order to add new primitive operations.
 	 */
 	public HashMap<String, ASTFactory> getPrimitiveFactories() {
-		return _factories;
+		return factories;
 	}
 
 	private void loadPlugins(String cfglocation) throws InitException {
@@ -312,5 +329,15 @@ public class Verifier {
 		} catch (Exception e) {
 			throw new InitException(e);
 		}
+    }
+
+    private void initPlugins(){
+        for(IVerifierPlugin plugin : plugins) {
+            try {
+                plugin.init(this);
+            } catch (HashChainCompromisedException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 }

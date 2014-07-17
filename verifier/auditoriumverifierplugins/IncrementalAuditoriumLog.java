@@ -22,13 +22,17 @@
 
 package verifier.auditoriumverifierplugins;
 
+import auditorium.IncorrectFormatException;
+import auditorium.Message;
+import sexpression.ASExpression;
+import verifier.*;
+import verifier.value.DAGValue;
+import verifier.value.Expression;
+import verifier.value.SetValue;
+import verifier.value.Value;
+
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import verifier.*;
-import verifier.value.*;
-import auditorium.*;
-import sexpression.*;
 
 /**
  * This verifier plugin maintains all-set and all-dag based on incremental log
@@ -45,6 +49,13 @@ public class IncrementalAuditoriumLog implements IIncrementalPlugin {
 	private SetValue _allsetValue;
 	private DagBuilder _alldag;
 	private DAGValue _alldagValue;
+    private HashChainVerifier hashChainVerifier;
+
+    public IncrementalAuditoriumLog(){}
+
+    public IncrementalAuditoriumLog(HashChainVerifier hashChainVerifier) {
+        this.hashChainVerifier = hashChainVerifier;
+    }
 
 	/**
 	 * @see verifier.IVerifierPlugin#init(verifier.Verifier)
@@ -53,6 +64,8 @@ public class IncrementalAuditoriumLog implements IIncrementalPlugin {
 		_allset = new ArrayList<>();
 		_alldag = new DagBuilder();
 		_verifier = verifier;
+
+        hashChainVerifier.init(verifier);
 
 		registerHandlers();
 		registerGlobals();
@@ -64,7 +77,14 @@ public class IncrementalAuditoriumLog implements IIncrementalPlugin {
 	 * @param entry Message to append to the log.
 	 */
 	public void addLogData(Message entry) {
-		_allset.add(new Expression(entry.toASE()));
+
+        try {
+            hashChainVerifier.verifyIncremental(entry);
+        } catch (HashChainCompromisedException e) {
+            /* TODO We should probably not throw a runtime exception, but some how note the hash chain was compromised. */
+            throw new RuntimeException(e);
+        }
+        _allset.add(new Expression(entry.toASE()));
 		_alldag.add(entry);
 		registerGlobals();
 	}

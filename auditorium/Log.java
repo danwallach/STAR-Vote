@@ -83,17 +83,16 @@ public class Log {
      * @throws IOException This method throws if there is an IO error when trying to add the message to the log file on disk.
      */
     public boolean logAnnouncement(Message message) throws IOException {
-
-        /* Copy this message into the hash chain */
-        Message chained = new Message(message.getType(), message.getFrom(), message.getSequence(), message.getDatum());
+        /* Copy this message without a a reference to the hash chain for reference outside of the log  */
+        Message copy = new Message(message.getType(), message.getFrom(), message.getSequence(), message.getDatum());
 
         /* Chain the hash values */
-        chained.chain(lastChainedHash);
+        message.chain(lastChainedHash);
 
         /* Update our reference to the chain */
-        lastChainedHash = chained.getHash();
+        lastChainedHash = message.getHash();
 
-        MessagePointer toMessage = new MessagePointer( message );
+        MessagePointer toMessage = new MessagePointer( copy );
         if (!haveSeen.contains(toMessage)) {
 
             /* Since the chained value is only used here, we update our lists with the unchained version */
@@ -101,7 +100,7 @@ public class Log {
             last.add(toMessage);
 
             /* Write the chained value to the log */
-            write(chained);
+            write(message);
             return true;
         }
         return false;
