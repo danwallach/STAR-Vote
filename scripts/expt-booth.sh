@@ -5,9 +5,9 @@
 
 this_rack=`hostname -s|cut -d0 -f2`
 
-cd ~/Workspace/STAR-Vote/
+cd .. 
 
 echo "Running with ID $this_rack"
-java -cp ~/Workspace/STAR-Vote/out/production/STAR-Vote/ sim.autobooth.Booth id=$this_rack \
+java -cp out/production/STAR-Vote/  sim.autobooth.Booth id=$this_rack \
 	vote-min-time=10000 \
 	vote-max-time=60000

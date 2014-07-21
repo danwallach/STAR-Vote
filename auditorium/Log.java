@@ -84,7 +84,7 @@ public class Log {
      */
     public boolean logAnnouncement(Message message) throws IOException {
         /* Copy this message without a a reference to the hash chain for reference outside of the log  */
-        Message copy = new Message(message.getType(), message.getFrom(), message.getSequence(), message.getDatum());
+        //Message copy = new Message(message.getType(), message.getFrom(), message.getSequence(), message.getDatum());
 
         /* Chain the hash values */
         message.chain(lastChainedHash);
@@ -92,7 +92,7 @@ public class Log {
         /* Update our reference to the chain */
         lastChainedHash = message.getHash();
 
-        MessagePointer toMessage = new MessagePointer( copy );
+        MessagePointer toMessage = new MessagePointer( message );
         if (!haveSeen.contains(toMessage)) {
 
             /* Since the chained value is only used here, we update our lists with the unchained version */

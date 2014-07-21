@@ -245,11 +245,11 @@ public class ListExpression extends ASExpression implements
         if (!(o instanceof ListExpression))
             return false;
 
-        if(!Arrays.equals( _list, ((ListExpression) o)._list )) {
-            System.out.println("LIST 1: " + Arrays.toString(_list));
-            System.out.println("LIST 2: " + Arrays.toString(((ListExpression) o)._list ));
-
-        }
+//        if(!Arrays.equals( _list, ((ListExpression) o)._list )) {
+//            System.out.println("LIST 1: " + Arrays.toString(_list));
+//            System.out.println("LIST 2: " + Arrays.toString(((ListExpression) o)._list ));
+//
+//        }
         return Arrays.equals( _list, ((ListExpression) o)._list );
     }
 }

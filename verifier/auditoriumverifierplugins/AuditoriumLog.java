@@ -77,7 +77,7 @@ public class AuditoriumLog implements IVerifierPlugin {
 	 *                 all-set to represent the log data in this verifier.
 	 */
 	private void registerData(Verifier verifier) {
-		DagBuilder dag = new FastDAGBuilder(); // DagBuilder();
+		DagBuilder dag = new /*FastDAGBuilder(); //*/ DagBuilder();
 		ArrayList<Expression> set = new ArrayList<>();
 
 		try {
@@ -87,7 +87,8 @@ public class AuditoriumLog implements IVerifierPlugin {
             /* Loop until end of file and load into dag to build set TODO EOF stuff */
 			while ((exp = in.read()) != null) {
 				Message msg = new Message(exp);
-				dag.add(msg);
+//                System.out.println(msg);
+                dag.add(msg);
 				set.add(new Expression(msg.toASE()));
 			}
 		} catch (EOFException ignored) {

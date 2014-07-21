@@ -154,8 +154,8 @@ public class FastDAG extends DAGValue {
 	 * @return This method returns true in O(1) if it results in a cache hit.
 	 */
 	public boolean precedes(Expression leftMessage, Expression rightMessage) {
-		Expression finish = _messageToPtr.get(leftMessage);
-		Expression start = _messageToPtr.get(rightMessage);
+		Expression start = _messageToPtr.get(leftMessage);
+		Expression finish = _messageToPtr.get(rightMessage);
 
 //		System.out.println("precedes: searching for " + finish + " <<? " + start);
 
@@ -184,7 +184,7 @@ public class FastDAG extends DAGValue {
 		// BFS work
 		Queue<Expression> work = new LinkedList<>();
 
-		work.offer(start); // start at the end and work our way back
+		work.offer(finish); // start at the end and work our way back
 		while (work.peek() != null) {
 			Expression e = work.poll();
 
@@ -198,13 +198,13 @@ public class FastDAG extends DAGValue {
 			);
 
 			if (messagePosition.left().equals(finishHostIndex.left())) {
-//				System.out.println("precedes: found our way to target host: " 
-//						+ messagePosition.left());
-//				System.out.println("precedes: comparing projected position "
-//						+ messagePosition.left() + "@"
-//						+ messagePosition.right() + " to target position "
-//						+ finishHostIndex.left() + "@"
-//						+ finishHostIndex.right());
+				System.out.println("precedes: found our way to target host: "
+						+ messagePosition.left());
+				System.out.println("precedes: comparing projected position "
+						+ messagePosition.left() + "@"
+						+ messagePosition.right() + " to target position "
+						+ finishHostIndex.left() + "@"
+						+ finishHostIndex.right());
 				
 				// found a path to the same HOST as the target
 				// now we have an opportunity to short-circuit the search and

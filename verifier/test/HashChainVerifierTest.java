@@ -29,7 +29,7 @@ public class HashChainVerifierTest extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
 
-        AuditoriumLogGenerator.setUp("temp");
+        AuditoriumLogGenerator.setUp();
 
 
         auditoriumLog = new AuditoriumLog();

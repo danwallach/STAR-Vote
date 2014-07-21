@@ -38,6 +38,7 @@ public class Message {
             StringWildcard.SINGLETON, HostPointer.PATTERN,
             StringWildcard.SINGLETON, Wildcard.SINGLETON);
 
+    /** Pattern for message ASE's, of the form ([name] [host] [sequence] [datum] [hash]) */
     public static final ASExpression LOG_PATTERN = new ListExpression(
             StringWildcard.SINGLETON, HostPointer.PATTERN,
             StringWildcard.SINGLETON, Wildcard.SINGLETON, Wildcard.SINGLETON);

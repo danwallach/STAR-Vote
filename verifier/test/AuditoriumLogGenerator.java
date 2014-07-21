@@ -3,6 +3,7 @@ package verifier.test;
 import auditorium.*;
 import crypto.adder.PublicKey;
 import sexpression.ASExpression;
+import sexpression.ListExpression;
 import sexpression.StringExpression;
 import votebox.AuditoriumParams;
 import votebox.events.*;
@@ -47,26 +48,22 @@ public class AuditoriumLogGenerator {
     /**
      * Set up the generator, including initializing the Log with the log file
      *
-     * @param filePath the file where the log will be written
      */
-    public static void setUp(String filePath) {
+    public static void setUp() {
         rand = new Random();
 
-        AuditoriumHost host = new AuditoriumHost("0", new AuditoriumParams(""));
+        AuditoriumHost host = new AuditoriumHost("0", new AuditoriumParams("test.conf"));
+        log = host.getLog();
 
         IKeyStore ks = new SimpleKeyStore("keys");
         publicKey = ks.loadAdderPublicKey();
         AuditoriumIntegrityLayer integrityLayer = new AuditoriumIntegrityLayer(AAuditoriumLayer.BOTTOM, host, ks);
-        topLayer = new AuditoriumTemporalLayer(integrityLayer, host);
+        //topLayer = new AuditoriumTemporalLayer(integrityLayer, host);
+        topLayer = new AuditoriumIntegrityLayer(AAuditoriumLayer.BOTTOM, host, ks);
 
 
 
         hp = new HostPointer("0", "127.0.0.1", 9000);
-        try {
-            log = new Log(new File(filePath));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
     }
 
     /**
@@ -76,7 +73,20 @@ public class AuditoriumLogGenerator {
      * @throws IOException if the log fails in writing
      */
     private static void logDatum(ASExpression datum) throws IOException {
-        log.logAnnouncement(new Message("announce", hp, "0", topLayer.makeAnnouncement(datum)));
+
+        /* Build a dag of messages (from TemporalLayer */
+         /* Make new datum - Wrap with everything that is in the last list. */
+        ArrayList<ASExpression> list = new ArrayList<>();
+        for (MessagePointer p : log.getLast())
+            list.add(p.toASE());
+
+        /* build the succeeds clause */
+        ASExpression newDatum = new ListExpression(StringExpression.makeString("succeeds"), new ListExpression(list), datum);
+
+
+
+        Message msg = new Message("announce", hp, "0", topLayer.makeAnnouncement(newDatum));
+        log.logAnnouncement(msg);
     }
 
     /**
@@ -189,9 +199,13 @@ public class AuditoriumLogGenerator {
      * A method that will simply write one event to a log
      */
     public static void generateSimpleLog() throws IOException, IncorrectFormatException {
+
+        start3Machines();
         SupervisorEvent e = new SupervisorEvent(0, 0, "activated");
 
         logDatum(e.toSExp());
+
+        close();
 
     }
 

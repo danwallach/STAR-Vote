@@ -1,8 +1,8 @@
 #!/bin/sh
-cd /home/mdb12/Workspace/STAR-Vote
+cd .. 
 
 # 3 minute micro-experiment
-java -cp ~/Workspace/STAR-Vote/out/production/STAR-Vote/ sim.pseupervisor.Pseupervisor \
+java -cp out/production/STAR-Vote/ sim.pseupervisor.Pseupervisor \
 	open-polls-time=60000 \
 	close-polls-time=500000 \
 	auth-period-min=30000 auth-period-max=60000 \

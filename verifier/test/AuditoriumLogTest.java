@@ -1,10 +1,12 @@
 package verifier.test;
 
 import auditorium.IncorrectFormatException;
+import auditorium.NetworkException;
 import junit.framework.TestCase;
 import sexpression.ASExpression;
 import verifier.Verifier;
 import verifier.auditoriumverifierplugins.AuditoriumLog;
+import verifier.value.True;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -28,43 +30,50 @@ public class AuditoriumLogTest extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
 
-        AuditoriumLogGenerator.setUp("temp");
-
-
         auditoriumLog = new AuditoriumLog();
 
-        args.put("log", "temp");
+        args.put("log", "test.out");
 
         v = new Verifier(args);
-        auditoriumLog.init(v);
+
     }
 
     public void testSimpleLogVoting2Rules() {
         ASExpression rule;
 
+        System.out.println(v.getArgs().get("log"));
+        AuditoriumLogGenerator.setUp();
+
         try {
             AuditoriumLogGenerator.generateSimpleLog();
-            rule = Verifier.readRule("rules/voting2.rules");
+            rule = Verifier.readRule("rules/STARVoting.rules");
         } catch (IncorrectFormatException | IOException e) {
             fail(e.getMessage());
             return;
         }
 
-        v.eval(rule);
+        auditoriumLog.init(v);
+        assertEquals(True.SINGLETON, v.eval(rule));
+
     }
 
     public void testSimpleSupervisorLogVoting2Rules() {
         ASExpression rule;
 
+        AuditoriumLogGenerator.setUp();
+
+
         try {
             AuditoriumLogGenerator.generateSimpleSupervisorLog();
-            rule = Verifier.readRule("rules/voting2.rules");
+            rule = Verifier.readRule("rules/STARVoting.rules");
         } catch (IncorrectFormatException | IOException e) {
             fail(e.getMessage());
             return;
         }
 
-        v.eval(rule);
+        auditoriumLog.init(v);
+        assertEquals(True.SINGLETON, v.eval(rule));
+
     }
 
 }

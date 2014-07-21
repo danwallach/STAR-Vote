@@ -75,6 +75,8 @@ public class LogTest {
         for (MessagePointer p : log.getLastTest())
             last.add( p );
         assertEquals( 1, log.getSetCopyTest().size() );
+
+        /* Note that this fails because it is expecting an un-chained message pointer */
         assertTrue( log.getSetCopyTest().contains( pointer1 ) );
         assertFalse( log.getSetCopyTest().contains( pointer2 ) );
         assertEquals( 1, last.size() );

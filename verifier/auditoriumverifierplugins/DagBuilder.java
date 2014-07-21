@@ -93,11 +93,16 @@ public class DagBuilder {
 
             ListExpression matchlist = (ListExpression) matchresult;
 
+//            System.out.println(matchlist);
+
             ArrayList<Expression> ptrlst = new ArrayList<>();
 
+//            System.out.println(matchlist.get(3));
+
             /* Creating ASE that represents a message */
-            for (ASExpression ptrexp : (ListExpression) matchlist.get(3))
+            for (ASExpression ptrexp : (ListExpression) matchlist.get(3)) {
                 ptrlst.add(new Expression(new MessagePointer(ptrexp).toASE()));
+            }
             
             _predecessors.put( ptr, ptrlst );
         }
