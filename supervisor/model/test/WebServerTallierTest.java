@@ -167,25 +167,34 @@ public class WebServerTallierTest extends TestCase {
         choices.add(AdderInteger.ZERO);
         choices.add(AdderInteger.ZERO);
 
-        System.out.println("Testing single vote no sumproof, vote 1: ");
-
-        VoteProof vp = new VoteProof();
-        vp.compute(total, publicKey, choices, 0, 1);
-
-        Vote test = new Vote(total.getCipherList(), total.getChoices(), vp);
-
-        System.out.println("Verfied: " + test.verifyVoteProof(publicKey, 0, 1));
         System.out.println("-----------------");
+        System.out.println("In WebserverTallierTest.testTallySingle() -- Testing single vote computed VoteProof, vote 1: ");
+        VoteProof vp = new VoteProof();
+        vp.compute(total, finalPublicKey, choices, 0, 1);
 
-        System.out.println("Testing single vote no sumproof, vote 2: ");
+        System.out.println("In WebserverTallierTest.testTallySingle() -- Constructing new Vote with choices: " + total.getChoices());
+
+        //[This doesn't verify!] because of no R value:
+        Vote test1 = new Vote(total.getCipherList(), total.getChoices(), vp);
+        Vote test = new Vote(total);
+
+        System.out.println("In WebserverTallierTest.testTallySingle() -- Single vote computed VoteProof verified: " + test.verifyVoteProof(finalPublicKey, 0, 1));
+
+        System.out.println("-----------------");
+        System.out.println("In WebserverTallierTest.testTallySingle() -- Testing single vote computed VoteProof, vote 2: ");
 
         total = toTally.getVotes().get(1);
-        vp = new VoteProof();
-        vp.compute(total, publicKey, choices, 0, 1);
 
-        test = new Vote(total.getCipherList(), total.getChoices(), vp);
+        //vp = new VoteProof();
+        //vp.compute(total, publicKey, choices, 0, 1);
 
-        System.out.println("Verfied: " + test.verifyVoteProof(publicKey, 0, 1));
+        System.out.println("In WebserverTallierTest.testTallySingle() -- Constructing new Vote with choices: " + total.getChoices());
+
+        //[This doesn't verify!]:
+        // test = new Vote(total.getCipherList(), total.getChoices(), vp);
+        test = new Vote(total);
+
+        System.out.println("In WebserverTallierTest.testTallySingle() -- Single vote computed VoteProof verified: " + test.verifyVoteProof(finalPublicKey, 0, 1));
         System.out.println("-----------------");
 
         /* Get the vote totals */

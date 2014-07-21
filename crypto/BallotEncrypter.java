@@ -214,8 +214,6 @@ public class BallotEncrypter {
 
         PublicKey finalPubKey = AdderKeyManipulator.generateFinalPublicKey(pubKey);
 
-
-
         Vote vote = finalPubKey.encrypt(value, valueIds);
 
         System.out.println("\tCipherlist: \t" + vote.getCipherList().size() + " elements");
@@ -234,13 +232,12 @@ public class BallotEncrypter {
 
         /* Checking the encrypted subBallots against the proofs */
 		VoteProof proof = new VoteProof();
-		proof.compute(vote, finalPubKey, value, 0, 1);
+
+        proof.compute(vote, finalPubKey, value, 0, 1);
 
         System.out.println("\tCipherlist2: \t" + vote.getCipherList().size() + " elements");
 
         Vote outVote = new Vote(vote.getCipherList(), valueIds, proof);
-
-
 
         return outVote.toASE();
 

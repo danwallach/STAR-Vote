@@ -34,6 +34,12 @@ public class Vote {
 
     }
 
+    public Vote(Vote vote) {
+       cipherList = vote.cipherList;
+       proof = vote.proof;
+       choices = vote.choices;
+    }
+
     /**
      * Initializes a vote from a vector of ciphertexts.
      */
@@ -76,6 +82,13 @@ public class Vote {
         return cipherList;
     }
 
+    /**
+     *
+     * @param publicKey
+     * @param min
+     * @param max
+     * @return
+     */
     public boolean verifyVoteProof(PublicKey publicKey, int min, int max){
         return proof.verify(this, publicKey, min, max);
     }
@@ -93,8 +106,10 @@ public class Vote {
         List<ElgamalCiphertext> vec = new ArrayList<>();
 
         for (int i = 0; i < this.getCipherList().size(); i++) {
+
             ElgamalCiphertext ciphertext1 = this.getCipherList().get(i);
             ElgamalCiphertext ciphertext2 = otherVote.getCipherList().get(i);
+
             vec.add(ciphertext1.multiply(ciphertext2));
         }
 
@@ -136,7 +151,7 @@ public class Vote {
 
 
         /* Todo check that compute and verify handle values greater than 1 */
-        System.out.println("??????????????" + sumProof.verify(sumCipher, publicKey, totalDomain));
+        System.out.println("In Vote.computeSumProof() -- verifying the sumProof post calculation: " + sumProof.verify(sumCipher, publicKey, totalDomain));
 
         proof = new VoteProof(sumProof, new ArrayList<MembershipProof>());
         //return sumProof;

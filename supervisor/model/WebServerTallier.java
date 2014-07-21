@@ -57,10 +57,14 @@ public class WebServerTallier {
                     }
 
                     /* Confirm that the vote proof is valid */
+                    System.out.println("In WebserverTallier.tally() -- verifying the VoteProofs. ");
+
                     if (!vote.verifyVoteProof(publicKey, 0, 1)) {
                         Bugout.err("!!!Ballot failed NIZK test!!!");
                         return null;
                     }
+                    else
+                        System.out.println("Vote was successfully verified!\n");
 
                     /* Code these results as a subelection so the ciphers can be summed homomorphically */
                     String raceID = makeId(possibleChoices);
@@ -96,12 +100,16 @@ public class WebServerTallier {
             Election thisRace = results.get(id);
 
             /* Get the homomorphically tallied vote for this race */
+            System.out.println("Entering Election.sumVotes(): ");
             Vote vote = results.get(id).sumVotes();
 
             /* Verify the voteProof and error off if bad */
+
+            System.out.println("In WebserverTallier.tally() -- Verifying this vote ");
             if(vote.verifyVoteProof(publicKey, 0, thisRace.getVotes().size())) {
                 votes.add(vote);
                 voteASE.add(vote.toASE());
+                System.out.println("This Vote was successfully added to the Ballot!");
             }
             else System.err.println("There was a bad summed vote that was not added to the ballot!");
         }

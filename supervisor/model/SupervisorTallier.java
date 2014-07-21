@@ -97,6 +97,7 @@ public class SupervisorTallier {
             /* Get the homomorphically tallied vote for this race */
             Vote vote = results.get(id).sumVotes();
 
+
             /* Verify the voteProof and error off if bad */
             if(vote.verifyVoteProof(publicKey, 0, thisRace.getVotes().size())) {
                 votes.add(vote);

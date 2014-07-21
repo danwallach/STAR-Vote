@@ -1,13 +1,9 @@
 package crypto.interop;
 
+import crypto.adder.*;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import crypto.adder.AdderInteger;
-import crypto.adder.ElgamalCiphertext;
-import crypto.adder.Polynomial;
-import crypto.adder.PrivateKey;
-import crypto.adder.PublicKey;
 
 public class AdderKeyManipulator {
 
@@ -84,7 +80,7 @@ public class AdderKeyManipulator {
 		/* Generate the final private key */
 		List<ElgamalCiphertext> ciphertexts = new ArrayList<>();
         ElgamalCiphertext ciphertext = publicKey.encryptPoly(_poly.evaluate(new AdderInteger(0, publicKey.getQ())));
-		ciphertexts.add(ciphertext);
+        ciphertexts.add(ciphertext);
 
         return privateKey.getFinalPrivKey(ciphertexts);
 	}	

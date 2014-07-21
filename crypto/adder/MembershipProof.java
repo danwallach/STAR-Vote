@@ -180,7 +180,7 @@ public class MembershipProof {
                 /* Record the index of the valid value */
 				indexInDomain = i;
 
-                System.out.println("I'm inside the if!!! " + i);
+                System.out.println("In MembershipProof.compute(): " + i);
             }
             else {
 

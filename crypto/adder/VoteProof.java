@@ -74,12 +74,14 @@ public class VoteProof {
 
         /* Create the domain of possible selection options */
         List<AdderInteger> cipherDomain = new ArrayList<>(2);
+
         /* Add a minimum of 0 and 1 to the domain of possible choices */
         cipherDomain.add(AdderInteger.ZERO);
         cipherDomain.add(AdderInteger.ONE);
 
         /* Set this up as a multiplicative identity */
         ElgamalCiphertext sumCipher = new ElgamalCiphertext(AdderInteger.ONE, AdderInteger.ONE, pubKey.getP());
+        System.out.println("[sumCipher-compute]: \t" + sumCipher);
 
         int numChoices = 0;
 
@@ -98,9 +100,10 @@ public class VoteProof {
             AdderInteger choice = choices.get(i);
 
             MembershipProof proof = new MembershipProof();
-            
+
             /* Compute the NIZK and add it to the proofList */
             proof.compute(ciphertext, pubKey, choice, cipherDomain);
+
             this.proofList.add(proof);
 
             /* Multiply this ciphertext into the sum */
@@ -118,6 +121,8 @@ public class VoteProof {
         /* Add from min to max, inclusive, to the domain of possible choices */
         for (int j = min; j <= max; j++)
             totalDomain.add(new AdderInteger(j));
+
+        System.out.println("[sumCipher-compute]: \t" + sumCipher);
 
         /* Compute the sumProof */
         this.sumProof = new MembershipProof();
@@ -149,7 +154,7 @@ public class VoteProof {
 
         int size = this.proofList.size();
 
-        System.out.println("Size: " + proofList.size());
+        System.out.println("In VoteProof.verify() -- Prooflist size: " + proofList.size());
 
         for (ElgamalCiphertext ciphertext : cipherList)
             sumCipher = sumCipher.multiply(ciphertext);
@@ -162,7 +167,7 @@ public class VoteProof {
 
             /* Return false if the proof couldn't be verified */
             if (!proof.verify(ciphertext, pubKey, cipherDomain)) {
-                System.out.println("Membership fail");
+                System.out.println("Membership verification fail at "+i);
                 return false;
             }
         }
@@ -171,9 +176,9 @@ public class VoteProof {
         List<AdderInteger> totalDomain = new ArrayList<>();
         totalDomain.addAll(cipherDomain);
 
-        System.out.println(totalDomain);
+        System.out.println("In VoteProof.verify() -- Total Domain: " + totalDomain);
 
-        System.out.println("SumProof verification: ");
+        System.out.println("SumProof verification step: ");
         return this.sumProof.verify(sumCipher, pubKey, totalDomain);
     }
 
@@ -190,7 +195,7 @@ public class VoteProof {
 
         List<MembershipProof> otherList = new ArrayList<>();
 
-        otherList.addAll(proofList);
+        otherList.addAll(this.proofList);
         otherList.addAll(otherProof.proofList);
 
         return otherList;

@@ -1,11 +1,11 @@
 package crypto.adder;
 
-import java.util.NoSuchElementException;
-import java.util.StringTokenizer;
-
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.StringExpression;
+
+import java.util.NoSuchElementException;
+import java.util.StringTokenizer;
 
 
 /**
@@ -257,8 +257,8 @@ public class ElgamalCiphertext {
         StringExpression label = StringExpression.makeString("elgamal-ciphertext");
 
         /* TODO check if this can be simplified to just proofString = proof == null ? "" : proof.toASE() */
-        return (proof == null) ? new ListExpression(label, p.toASE(), g.toASE(), h.toASE()) :
-    	                         new ListExpression(label, p.toASE(), g.toASE(), h.toASE(), proof.toASE());
+        return (proof == null) ? new ListExpression(label, p.toASE(), g.toASE(), r.toASE(), h.toASE()) :
+    	                         new ListExpression(label, p.toASE(), g.toASE(), r.toASE(), h.toASE(), proof.toASE());
     }
     
     /**
@@ -283,15 +283,17 @@ public class ElgamalCiphertext {
         /* Extract the numbers */
     	AdderInteger p = AdderInteger.fromASE(list.get(1));
     	AdderInteger g = AdderInteger.fromASE(list.get(2));
-    	AdderInteger h = AdderInteger.fromASE(list.get(3));
+    	AdderInteger r = AdderInteger.fromASE(list.get(3));
+        AdderInteger h = AdderInteger.fromASE(list.get(4));
+
     	MembershipProof proof = null;
 
         /* Expect a proof if of size 5 -- then extract it */
-    	if(list.size() == 5)
-    		proof = MembershipProof.fromASE(list.get(4));
+    	if(list.size() == 6)
+    		proof = MembershipProof.fromASE(list.get(5));
 
         /* Create a new ciphertext from the numbers */
-    	ElgamalCiphertext text = new ElgamalCiphertext(g,h,p);
+    	ElgamalCiphertext text = new ElgamalCiphertext(g,h,r,p);
 
         /* Set the proof if we got one */
     	if(proof != null)

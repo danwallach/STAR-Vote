@@ -1,8 +1,8 @@
 package crypto.adder;
 
+import crypto.interop.AdderKeyManipulator;
 import sexpression.ASExpression;
 
-import java.lang.reflect.Member;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,33 +61,29 @@ public class Election {
      */
     public Vote sumVotes() {
 
+        PublicKey finalPublicKey = AdderKeyManipulator.generateFinalPublicKey(publicKey);
+
         /* Pull out the first vote */
         Vote v = votes.get(0);
-
-        System.out.println("-----");
-        System.out.println("Testing first vote 1: " + v.verifyVoteProof(publicKey,0,1));
 
         List<ElgamalCiphertext> cipherlist = new ArrayList<>();
 
         /* Construct a bunch of individual multiplicative identities */
         for (int i=0; i<v.getCipherList().size(); i++)
-            cipherlist.add(new ElgamalCiphertext(AdderInteger.ONE, AdderInteger.ONE, publicKey.getP()));
+            cipherlist.add(new ElgamalCiphertext(AdderInteger.ONE, AdderInteger.ONE, finalPublicKey.getP()));
 
         /* Create a new multiplicative identity */
-        Vote total = new Vote(cipherlist, v.getChoices(), new VoteProof(null, new ArrayList<MembershipProof>()));
+        Vote total = new Vote(cipherlist, v.getChoices(), new VoteProof(new MembershipProof(), new ArrayList<MembershipProof>()));
 
         /* Multiply all the votes together */
         for (Vote vote : votes)
             total = vote.multiply(total);
 
-        System.out.println("Testing first vote 2: " + v.verifyVoteProof(publicKey,0,1));
+        /* These are aliasing checks */
 
         /* Compute the sumProof for this totalled Vote and put it into total */
         //MembershipProof sumProof = total.computeSumProof(votes.size(), publicKey);
-        total.computeSumProof(votes.size(), publicKey);
-
-        System.out.println("Testing first vote 3: " + v.verifyVoteProof(publicKey,0,1));
-        System.out.println("-----");
+        total.computeSumProof(votes.size(), finalPublicKey);
 
         /*
           Create an empty ArrayList for proofList. This doesn't seem to need to be filled out
@@ -100,8 +96,8 @@ public class Election {
 
         /* ---------------- TESTING ---------------- */
 
-        System.out.println("Testing single vote summed, Max: " + votes.size());
-        System.out.println("Verfied: " + total.verifyVoteProof(publicKey, 0, votes.size()));
+        System.out.println("In Election.sumVotes() -- Testing single vote summed, Max expected value: " + votes.size());
+        System.out.println("In Election.sumVotes() -- [Single vote summed] sumProof verfied: " + total.verifyVoteProof(publicKey, 0, votes.size()));
 
         System.out.println("-----------------");
 
