@@ -2,8 +2,7 @@ package supervisor.model.test;
 
 import auditorium.SimpleKeyStore;
 import crypto.BallotEncrypter;
-import crypto.adder.PrivateKey;
-import crypto.adder.PublicKey;
+import crypto.adder.*;
 import crypto.interop.AdderKeyManipulator;
 import junit.framework.TestCase;
 import sexpression.ASExpression;
@@ -115,7 +114,7 @@ public class WebServerTallierTest extends TestCase {
         /* ((B0 0)(B1 0)(B2 1)...) */
         List<ASExpression> singleVote = new ArrayList<>();
 
-        /* Load up singleVote with pattern (1 0 0 0 0 1 0 0 0 0) */
+        /* Load up singleVote with pattern (0 1 0 0 0 0 1 0 0 0) */
         for (int i=0; i<10; i++) {
 
             int s = (i==1 || i==6) ? 1 : 0;
@@ -149,11 +148,45 @@ public class WebServerTallierTest extends TestCase {
 
         List<Ballot> ballotList = new ArrayList<>();
 
+        Ballot toTally = Ballot.fromASE(ballotASE);
+
         /* Fill the ballotList with the ASE converted to Ballot */
-        ballotList.add(Ballot.fromASE(ballotASE));
+        ballotList.add(toTally);
 
         /* Tally them */
         Ballot summed = WebServerTallier.tally("TEST1", ballotList, finalPublicKey);
+
+        /* For testing */
+        List<AdderInteger> choices = new ArrayList<>();
+        Vote total = toTally.getVotes().get(0);
+
+        /* For testing: set this to what the totalled vote should be */
+        choices.add(AdderInteger.ZERO);
+        choices.add(AdderInteger.ONE);
+        choices.add(AdderInteger.ZERO);
+        choices.add(AdderInteger.ZERO);
+        choices.add(AdderInteger.ZERO);
+
+        System.out.println("Testing single vote no sumproof, vote 1: ");
+
+        VoteProof vp = new VoteProof();
+        vp.compute(total, publicKey, choices, 0, 1);
+
+        Vote test = new Vote(total.getCipherList(), total.getChoices(), vp);
+
+        System.out.println("Verfied: " + test.verifyVoteProof(publicKey, 0, 1));
+        System.out.println("-----------------");
+
+        System.out.println("Testing single vote no sumproof, vote 2: ");
+
+        total = toTally.getVotes().get(1);
+        vp = new VoteProof();
+        vp.compute(total, publicKey, choices, 0, 1);
+
+        test = new Vote(total.getCipherList(), total.getChoices(), vp);
+
+        System.out.println("Verfied: " + test.verifyVoteProof(publicKey, 0, 1));
+        System.out.println("-----------------");
 
         /* Get the vote totals */
         Map<String, BigInteger> voteTotals = WebServerTallier.getVoteTotals(summed, 5, finalPublicKey, privateKey);
@@ -164,7 +197,7 @@ public class WebServerTallierTest extends TestCase {
 
         /* Compare the decrypted totals with the expected totals */
         for (Map.Entry<String, BigInteger> entry : voteTotals.entrySet()) {
-            int toCompare = entry.getKey().equals("B0") || entry.getKey().equals("B5") ? 1 : 0;
+            int toCompare = entry.getKey().equals("B1") || entry.getKey().equals("B6") ? 1 : 0;
             assertEquals(entry.getValue().intValue(), toCompare);
         }
 

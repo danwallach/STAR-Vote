@@ -2,6 +2,7 @@ package crypto.adder;
 
 import sexpression.ASExpression;
 
+import java.lang.reflect.Member;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,37 +64,50 @@ public class Election {
         /* Pull out the first vote */
         Vote v = votes.get(0);
 
-        Vote total2 = v;
+        System.out.println("-----");
+        System.out.println("Testing first vote 1: " + v.verifyVoteProof(publicKey,0,1));
 
-        for (int i=1; i<votes.size(); i++)
-            total2 = votes.get(i).multiply(total2);
+        List<ElgamalCiphertext> cipherlist = new ArrayList<>();
 
-        List<AdderInteger> choices = new ArrayList<>();
+        /* Construct a bunch of individual multiplicative identities */
+        for (int i=0; i<v.getCipherList().size(); i++)
+            cipherlist.add(new ElgamalCiphertext(AdderInteger.ONE, AdderInteger.ONE, publicKey.getP()));
 
-        choices.add(AdderInteger.ZERO);
-        choices.add(AdderInteger.ONE);
-        choices.add(AdderInteger.ZERO);
-        choices.add(AdderInteger.ZERO);
-        choices.add(AdderInteger.ZERO);
+        /* Create a new multiplicative identity */
+        Vote total = new Vote(cipherlist, v.getChoices(), new VoteProof(null, new ArrayList<MembershipProof>()));
 
-        System.out.println("Testing single vote summed");
-        /* Compute and verify the vote proof */
-        //total2.computeSumProof(votes.size(), publicKey);
+        /* Multiply all the votes together */
+        for (Vote vote : votes)
+            total = vote.multiply(total);
 
-        /* TODO: Note that this won't function properly because it expects the ciphertexts to be 0/1 */
-        System.out.println("Verfied: " + total2.verifyVoteProof(publicKey, 0, votes.size()));
+        System.out.println("Testing first vote 2: " + v.verifyVoteProof(publicKey,0,1));
+
+        /* Compute the sumProof for this totalled Vote and put it into total */
+        //MembershipProof sumProof = total.computeSumProof(votes.size(), publicKey);
+        total.computeSumProof(votes.size(), publicKey);
+
+        System.out.println("Testing first vote 3: " + v.verifyVoteProof(publicKey,0,1));
+        System.out.println("-----");
+
+        /*
+          Create an empty ArrayList for proofList. This doesn't seem to need to be filled out
+          because individual NIZKs are checked pre-sum and we check the sum post-sum
+        */
+        //List<MembershipProof> proofList = new ArrayList<>();
+
+        /* Construct a new vote with the proofs and all the information */
+        //Vote summedVote = new Vote(total.getCipherList(), total.getChoices(), new VoteProof(sumProof, proofList));
+
+        /* ---------------- TESTING ---------------- */
+
+        System.out.println("Testing single vote summed, Max: " + votes.size());
+        System.out.println("Verfied: " + total.verifyVoteProof(publicKey, 0, votes.size()));
+
         System.out.println("-----------------");
 
-        System.out.println("Testing single vote no sumproof: ");
-        VoteProof vp2 = new VoteProof();
-        vp2.compute(total2, publicKey, choices, 0, 1);
+        /* ------------------------------------------ */
 
-        Vote test = new Vote(total2.getCipherList(), total2.getChoices(), vp2);
-
-        System.out.println("Verfied: " + test.verifyVoteProof(publicKey, 0, 1));
-        System.out.println("-----------------");
-
-        return total2;
+        return total;
     }
 
     /**

@@ -111,29 +111,35 @@ public class Vote {
      *
      * @param numVotes          the total number of votes cast in this race
      * @param publicKey         the public key for the votes
+     * @return                  the computed sumProof
      */
     public void computeSumProof(int numVotes, PublicKey publicKey){
 
-        ElgamalCiphertext sumCipher = cipherList.get(0);
+        /* Create a multiplicative identity */
+        ElgamalCiphertext sumCipher = new ElgamalCiphertext(AdderInteger.ONE, AdderInteger.ONE, publicKey.getP());
+
+        System.out.println("Cipherlist size in computeSumProof: " + cipherList.size());
 
         /* Multiply all the ciphertexts together - needed for sumProof.compute() */
-        for (int i=1; i<cipherList.size(); i++)
-            sumCipher = cipherList.get(i).multiply(sumCipher);
+        for (ElgamalCiphertext ciphertext : cipherList)
+            sumCipher = ciphertext.multiply(sumCipher);
 
         List<AdderInteger> totalDomain = new ArrayList<>(numVotes + 1);
 
         /* Create a new totalDomain (the range of 0 to the total number of votes cast in this race) */
-        for (int i=0; i<numVotes+1; i++)
+        for (int i=0; i<=numVotes; i++)
             totalDomain.add(new AdderInteger(i));
 
         /* Compute the sumProof so that we can make a proof for the homomorphically tallied votes */
         MembershipProof sumProof = new MembershipProof();
         sumProof.compute(sumCipher, publicKey, new AdderInteger(numVotes), totalDomain);
 
+
+        /* Todo check that compute and verify handle values greater than 1 */
         System.out.println("??????????????" + sumProof.verify(sumCipher, publicKey, totalDomain));
 
-        /* Set the new proof */
-        proof = new VoteProof(sumProof, proof.getProofList());
+        proof = new VoteProof(sumProof, new ArrayList<MembershipProof>());
+        //return sumProof;
     }
 
 

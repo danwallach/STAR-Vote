@@ -102,7 +102,6 @@ public class ElgamalCiphertext {
         AdderInteger r = this.getR().add(ciphertext.getR());
 
         /* Create a new ciphertext */
-
         return new ElgamalCiphertext(g, h, r, p);
     }
 

@@ -138,38 +138,43 @@ public class VoteProof {
     public boolean verify(Vote vote, PublicKey pubKey, int min, int max) {
 
         List<ElgamalCiphertext> cipherList = vote.getCipherList();
-        List<AdderInteger> cipherDomain = new ArrayList<>(2);
+        List<AdderInteger> cipherDomain = new ArrayList<>(max+1);
 
-        /* TODO Summed votes cipherDomain */
-        /* Selections can only be 0 or 1 */
-        cipherDomain.add(AdderInteger.ZERO);
-        cipherDomain.add(AdderInteger.ONE);
+        /* Number of selections must be in the domain */
+        for (int i=min; i<=max; i++)
+            cipherDomain.add(new AdderInteger(i));
 
         /* Create a multiplicative identity */
         ElgamalCiphertext sumCipher = new ElgamalCiphertext(AdderInteger.ONE, AdderInteger.ONE, pubKey.getP());
 
         int size = this.proofList.size();
 
-        /* Cycle through each of the proofs and associated ciphertexts */
+        System.out.println("Size: " + proofList.size());
+
+        for (ElgamalCiphertext ciphertext : cipherList)
+            sumCipher = sumCipher.multiply(ciphertext);
+
+        /* Check each of the proofs and associated ciphertexts */
         for (int i = 0; i < size; i++) {
 
             MembershipProof proof = this.proofList.get(i);
             ElgamalCiphertext ciphertext = cipherList.get(i);
 
             /* Return false if the proof couldn't be verified */
-            if (!proof.verify(ciphertext, pubKey, cipherDomain))
+            if (!proof.verify(ciphertext, pubKey, cipherDomain)) {
+                System.out.println("Membership fail");
                 return false;
-
-            sumCipher = sumCipher.multiply(ciphertext);
+            }
         }
 
-        List<AdderInteger> totalDomain = new ArrayList<>(max + 1);
+        /* Total sum of number of selections must also be in the domain */
+        List<AdderInteger> totalDomain = new ArrayList<>();
+        totalDomain.addAll(cipherDomain);
 
-        for (int j = min; j <= max; j++)
-            totalDomain.add(new AdderInteger(j));
+        System.out.println(totalDomain);
 
+        System.out.println("SumProof verification: ");
         return this.sumProof.verify(sumCipher, pubKey, totalDomain);
-
     }
 
     /**
