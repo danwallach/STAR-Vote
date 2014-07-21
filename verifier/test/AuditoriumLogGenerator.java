@@ -8,8 +8,6 @@ import sexpression.StringExpression;
 import votebox.AuditoriumParams;
 import votebox.events.*;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -57,8 +55,6 @@ public class AuditoriumLogGenerator {
 
         IKeyStore ks = new SimpleKeyStore("keys");
         publicKey = ks.loadAdderPublicKey();
-        AuditoriumIntegrityLayer integrityLayer = new AuditoriumIntegrityLayer(AAuditoriumLayer.BOTTOM, host, ks);
-        //topLayer = new AuditoriumTemporalLayer(integrityLayer, host);
         topLayer = new AuditoriumIntegrityLayer(AAuditoriumLayer.BOTTOM, host, ks);
 
 
@@ -157,24 +153,31 @@ public class AuditoriumLogGenerator {
      */
     private static void vote() throws IOException {
 
+        String precinct = "precinct";
+
+        ASExpression nonce = StringExpression.make("nonce");
+
         /* Get some ballot data */
         byte[] ballot = getBlob();
 
         PINEnteredEvent pin = new PINEnteredEvent(1, "pin");
 
-        AuthorizedToCastWithNIZKsEvent authorize = new AuthorizedToCastWithNIZKsEvent(0, 1, StringExpression.make("nonce"), "precinct", ballot, publicKey);
+        AuthorizedToCastWithNIZKsEvent authorize = new AuthorizedToCastWithNIZKsEvent(0, 1, nonce, precinct, ballot, publicKey);
 
         /* Generate a random bid for this voting session */
         String bid = getRandomString();
 
         /* The votebox now commits the ballot */
-        CommitBallotEvent cbe = new CommitBallotEvent(1, StringExpression.make("nonce"), ballot, bid, "000");
+        CommitBallotEvent cbe = new CommitBallotEvent(1, nonce, ballot, bid, precinct);
+
+        /* We annnounce that the ballot was recieved */
+        BallotReceivedEvent bre = new BallotReceivedEvent(0, 1, nonce, bid, precinct);
 
         /* Now we scan the ballot and accept it */
         BallotScannedEvent bse = new BallotScannedEvent(2, bid);
         BallotScanAcceptedEvent bsae = new BallotScanAcceptedEvent(0, bid);
 
-        EncryptedCastBallotWithNIZKsEvent ecbwne = new EncryptedCastBallotWithNIZKsEvent(0, StringExpression.make("nonce"), ballot, bid);
+        EncryptedCastBallotWithNIZKsEvent ecbwne = new EncryptedCastBallotWithNIZKsEvent(0, nonce, ballot, bid);
 
         logDatum(pin.toSExp());
         logDatum(authorize.toSExp());
@@ -182,6 +185,7 @@ public class AuditoriumLogGenerator {
         logDatum(bse.toSExp());
         logDatum(bsae.toSExp());
         logDatum(ecbwne.toSExp());
+        logDatum(bre.toSExp());
     }
 
     /**
