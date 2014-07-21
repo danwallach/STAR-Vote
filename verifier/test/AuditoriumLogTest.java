@@ -1,7 +1,6 @@
 package verifier.test;
 
 import auditorium.IncorrectFormatException;
-import auditorium.NetworkException;
 import junit.framework.TestCase;
 import sexpression.ASExpression;
 import verifier.Verifier;
@@ -75,5 +74,27 @@ public class AuditoriumLogTest extends TestCase {
         assertEquals(True.SINGLETON, v.eval(rule));
 
     }
+
+
+    public void testSimpleSupervisorLogMoreVotes() {
+        ASExpression rule;
+
+        AuditoriumLogGenerator.setUp();
+
+
+        try {
+            AuditoriumLogGenerator.generateLotsOfVotesLog();
+            rule = Verifier.readRule("rules/STARVoting.rules");
+        } catch (IncorrectFormatException | IOException e) {
+            fail(e.getMessage());
+            return;
+        }
+
+        auditoriumLog.init(v);
+        assertEquals(True.SINGLETON, v.eval(rule));
+
+    }
+
+
 
 }

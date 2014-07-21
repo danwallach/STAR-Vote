@@ -155,7 +155,7 @@ public class AuditoriumLogGenerator {
 
         String precinct = "precinct";
 
-        ASExpression nonce = StringExpression.make("nonce");
+        ASExpression nonce = StringExpression.make(getRandomString());
 
         /* Get some ballot data */
         byte[] ballot = getBlob();
@@ -240,4 +240,13 @@ public class AuditoriumLogGenerator {
         close();
     }
 
+    public static void generateLotsOfVotesLog() throws IOException, IncorrectFormatException{
+
+        start3Machines();
+
+        for(int i = 0; i < 100; i++)
+            vote();
+
+        close();
+    }
 }

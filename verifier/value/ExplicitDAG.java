@@ -22,8 +22,6 @@
 
 package verifier.value;
 
-import auditorium.Bugout;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -118,7 +116,7 @@ public class ExplicitDAG extends DAGValue {
         Expression finish = _messageToPtr.get( leftMessage );
         Expression start = _messageToPtr.get( rightMessage );
 
-        Bugout.msg("precedes: searching for " + finish + " <<? " + start);
+//        Bugout.msg("precedes: searching for " + finish + " <<? " + start);
 
         if (finish.equals( start ))
             return false;
@@ -140,7 +138,7 @@ public class ExplicitDAG extends DAGValue {
         q.offer( start ); // start at the end and work our way back
         while (q.peek() != null) {
             Expression e = q.poll();
-            Bugout.msg("precedes: considering " + e);
+//            Bugout.msg("precedes: considering " + e);
             if (e.equals( finish )) {
                 // found a path.
                 return true;
