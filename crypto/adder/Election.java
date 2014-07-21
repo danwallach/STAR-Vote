@@ -179,7 +179,7 @@ public class Election {
                 /* Create a guess */
                 j = new AdderInteger(k, q);
 
-                System.out.println("DOES " + f.pow(j) + " equal " + target + "?");
+                //System.out.println("DOES " + f.pow(j) + " equal " + target + "?");
 
                 /* Check the guess and get out when found */
                 if (f.pow(j).equals(target)) {

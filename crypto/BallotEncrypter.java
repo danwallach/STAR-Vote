@@ -216,8 +216,6 @@ public class BallotEncrypter {
 
         Vote vote = finalPubKey.encrypt(value, valueIds);
 
-        System.out.println("\tCipherlist: \t" + vote.getCipherList().size() + " elements");
-
         /* Important data from the ElGamal Encryption */
         List<ElgamalCiphertext> ciphers = vote.getCipherList();
 		
@@ -234,8 +232,6 @@ public class BallotEncrypter {
 		VoteProof proof = new VoteProof();
 
         proof.compute(vote, finalPubKey, value, 0, 1);
-
-        System.out.println("\tCipherlist2: \t" + vote.getCipherList().size() + " elements");
 
         Vote outVote = new Vote(vote.getCipherList(), valueIds, proof);
 

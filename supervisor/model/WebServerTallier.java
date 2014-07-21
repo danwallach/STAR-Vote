@@ -8,10 +8,7 @@ import sexpression.ListExpression;
 import sexpression.StringExpression;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * This class is the web-server half of the STAR-Vote tallier model. Its function is to
@@ -170,13 +167,13 @@ public class WebServerTallier {
      * @param privateKey    the private key
      * @return              a mapping of candidates to vote totals for all of the races in toTotal
      */
-    public static Map<String, BigInteger> getVoteTotals(Ballot toTotal, int size, PublicKey publicKey, PrivateKey privateKey) {
+    public static TreeMap<String, BigInteger> getVoteTotals(Ballot toTotal, int size, PublicKey publicKey, PrivateKey privateKey) {
 
         /* Generate the final private and public keys */
-        PrivateKey finalPrivateKey = AdderKeyManipulator.generateFinalPrivateKey(publicKey, privateKey);
         PublicKey finalPublicKey = AdderKeyManipulator.generateFinalPublicKey(publicKey);
+        PrivateKey finalPrivateKey = AdderKeyManipulator.generateFinalPrivateKey(publicKey, privateKey);
 
-        Map<String, BigInteger> voteTotals = new HashMap<>();
+        TreeMap<String, BigInteger> voteTotals = new TreeMap<>();
 
         /* Iterate over each of the races */
         for (Vote v: toTotal.getVotes()) {
@@ -260,7 +257,7 @@ public class WebServerTallier {
                 /* Create a guess */
                 j = new AdderInteger(k, q);
 
-                System.out.println("DOES " + f.pow(j) + " equal " + target + "?");
+                //System.out.println("DOES " + f.pow(j) + " equal " + target + "?");
 
                 /* Check the guess and get out when found */
                 if (f.pow(j).equals(target)) {

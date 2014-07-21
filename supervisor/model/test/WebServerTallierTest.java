@@ -12,10 +12,7 @@ import supervisor.model.Ballot;
 import supervisor.model.WebServerTallier;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 /**
  * A test suite for the WebServerTallier class
@@ -91,7 +88,7 @@ public class WebServerTallierTest extends TestCase {
         Ballot summed = WebServerTallier.tally("TEST1", ballotList, finalPublicKey);
 
         /* Get the vote totals */
-        Map<String, BigInteger> voteTotals = WebServerTallier.getVoteTotals(summed, 5, finalPublicKey, privateKey);
+        TreeMap<String, BigInteger> voteTotals = WebServerTallier.getVoteTotals(summed, 5, publicKey, privateKey);
 
         /* (Sanity) Check the BID and the public key */
         assertEquals(summed.getBid(), "TEST1");
@@ -101,6 +98,7 @@ public class WebServerTallierTest extends TestCase {
         for (Map.Entry<String, BigInteger> entry : voteTotals.entrySet()) {
             int toCompare = entry.getKey().equals("B0") || entry.getKey().equals("B5") ? 5 : 0;
             assertEquals(entry.getValue().intValue(), toCompare);
+            System.out.println(entry.getKey() + ": " + entry.getValue());
         }
     }
 
@@ -198,7 +196,7 @@ public class WebServerTallierTest extends TestCase {
         System.out.println("-----------------");
 
         /* Get the vote totals */
-        Map<String, BigInteger> voteTotals = WebServerTallier.getVoteTotals(summed, 5, finalPublicKey, privateKey);
+        TreeMap<String, BigInteger> voteTotals = WebServerTallier.getVoteTotals(summed, 1, publicKey, privateKey);
 
         /* (Sanity) Check the BID and the public key */
         assertEquals(summed.getBid(), "TEST1");
@@ -208,6 +206,7 @@ public class WebServerTallierTest extends TestCase {
         for (Map.Entry<String, BigInteger> entry : voteTotals.entrySet()) {
             int toCompare = entry.getKey().equals("B1") || entry.getKey().equals("B6") ? 1 : 0;
             assertEquals(entry.getValue().intValue(), toCompare);
+            System.out.println(entry.getKey() + ": " + entry.getValue());
         }
 
     }
@@ -217,12 +216,124 @@ public class WebServerTallierTest extends TestCase {
      */
     public void testDecrypt(){
 
+        PublicKey finalPublicKey = AdderKeyManipulator.generateFinalPublicKey(publicKey);
+        PrivateKey finalPrivateKey = AdderKeyManipulator.generateFinalPrivateKey(publicKey, privateKey);
+
+
+        /* ((B0 0)(B1 0)(B2 1)...) */
+        List<ASExpression> singleVote = new ArrayList<>();
+
+        /* Load up singleVote with pattern (0 1 0 0 0 0 1 0 0 0) */
+        for (int i=0; i<10; i++) {
+
+            int s = (i==1 || i==6) ? 1 : 0;
+
+            /* So each of these is (B0 1), (B1 0), etc. */
+            singleVote.add(new ListExpression("B" + i, "" + s));
+        }
+
+        /* Create a new set of race groups */
+        List<List<String>> raceGroups = new ArrayList<>();
+
+        /* Set up two groups in this ballot [B0 B1 B2 B3 B4] [B5 B6 B7 B8 B9] */
+        for (int i=0; i<2; i++) {
+
+            /* Set up for the next group */
+            List<String> groupList = new ArrayList<>();
+
+            for (int j = 0; j < 5; j++)
+                groupList.add("B"+ (5*i+j));
+
+            /* Add this group to the raceGroups */
+            raceGroups.add(groupList);
+        }
+
+        /* Encrypt 1 new ballotsASE */
+        ListExpression ballot = new ListExpression(singleVote);
+
+        System.out.println("-----PRE  ENCRYPTION-----");
+        ASExpression ballotASE = be.encryptWithProof("000", ballot, raceGroups, publicKey, ASExpression.make("nonce"));
+        System.out.println("-----POST ENCRYPTION-----");
+
+        Ballot toDecrypt = Ballot.fromASE(ballotASE);
+
+        List<String> decrypted = WebServerTallier.decrypt(toDecrypt, finalPublicKey, finalPrivateKey);
+        List<String> expected = new ArrayList<>();
+
+        expected.add("B1");
+        expected.add("B6");
+
+        assertEquals(decrypted, expected);
+        System.out.println("Selected: "+decrypted);
     }
 
     /**
      * This is to test that a series of challenged Ballots are decrypted properly
      */
     public void testDecryptAll(){
+
+        PublicKey finalPublicKey = AdderKeyManipulator.generateFinalPublicKey(publicKey);
+        PrivateKey finalPrivateKey = AdderKeyManipulator.generateFinalPrivateKey(publicKey, privateKey);
+        Random r = new Random();
+
+        List<List<String>> expected = new ArrayList<>();
+        List<Ballot> allBallots = new ArrayList<>();
+
+        for(int j=0; j<100; j++) {
+
+            /* ((B0 0)(B1 0)(B2 1)...) */
+            List<ASExpression> singleVote = new ArrayList<>();
+
+            int first = r.nextInt(5);
+            int second = 5 + r.nextInt(5);
+
+            expected.add(new ArrayList<String>());
+            expected.get(j).add("B" + first);
+            expected.get(j).add("B" + second);
+
+            /* Load up singleVote with pattern (0 1 0 0 0 0 1 0 0 0) */
+            for (int i = 0; i < 10; i++) {
+
+                int s = (i == first || i == second) ? 1 : 0;
+
+                /* So each of these is (B0 1), (B1 0), etc. */
+                singleVote.add(new ListExpression("B" + i, "" + s));
+            }
+
+            /* Create a new set of race groups */
+            List<List<String>> raceGroups = new ArrayList<>();
+
+            /* Set up two groups in this ballot [B0 B1 B2 B3 B4] [B5 B6 B7 B8 B9] */
+            for (int i = 0; i < 2; i++) {
+
+                /* Set up for the next group */
+                List<String> groupList = new ArrayList<>();
+
+                for (int k = 0; k < 5; k++)
+                    groupList.add("B" + (5 * i + k));
+
+                /* Add this group to the raceGroups */
+                raceGroups.add(groupList);
+            }
+
+            /* Encrypt 1 new ballotsASE */
+            ListExpression ballot = new ListExpression(singleVote);
+
+            System.out.println("-----PRE  ENCRYPTION-----");
+            ASExpression ballotASE = be.encryptWithProof("000", ballot, raceGroups, publicKey, ASExpression.make("nonce"));
+            System.out.println("-----POST ENCRYPTION-----");
+
+            Ballot toDecrypt = Ballot.fromASE(ballotASE);
+
+            allBallots.add(toDecrypt);
+
+        }
+
+        List<List<String>> decrypted = WebServerTallier.decryptAll(allBallots, finalPublicKey, finalPrivateKey);
+        assertEquals(decrypted, expected);
+
+        for(List<String> ballot : decrypted)
+            System.out.println("Selected: " + ballot);
 
     }
 
@@ -264,12 +375,13 @@ public class WebServerTallierTest extends TestCase {
         ASExpression ballotASE = be.encryptWithProof("000", ballot, raceGroups, publicKey, ASExpression.make("nonce"));
 
         /* Get the vote "totals" */
-        Map<String, BigInteger> voteTotals = WebServerTallier.getVoteTotals(Ballot.fromASE(ballotASE), 1, publicKey, privateKey);
+        Map<String, BigInteger> voteTotals = WebServerTallier.getVoteTotals(Ballot.fromASE(ballotASE), 5, publicKey, privateKey);
 
         /* Compare the decrypted totals with the expected totals */
         for (Map.Entry<String, BigInteger> entry : voteTotals.entrySet()) {
             int toCompare = entry.getKey().equals("B0") || entry.getKey().equals("B5") ? 1 : 0;
             assertEquals(entry.getValue().intValue(), toCompare);
+            System.out.println(entry.getKey() + ": " + entry.getValue());
         }
 
     }
@@ -342,6 +454,7 @@ public class WebServerTallierTest extends TestCase {
             for (Map.Entry<String, BigInteger> entry : voteTotals.entrySet()) {
                 int toCompare = choiceList.contains(entry.getKey()) ? 1 : 0;
                 assertEquals(entry.getValue().intValue(), toCompare);
+                System.out.println(entry.getKey() + ": " + entry.getValue());
             }
         }
     }

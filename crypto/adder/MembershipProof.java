@@ -179,8 +179,6 @@ public class MembershipProof {
 
                 /* Record the index of the valid value */
 				indexInDomain = i;
-
-                System.out.println("In MembershipProof.compute(): " + i);
             }
             else {
 

@@ -81,7 +81,6 @@ public class VoteProof {
 
         /* Set this up as a multiplicative identity */
         ElgamalCiphertext sumCipher = new ElgamalCiphertext(AdderInteger.ONE, AdderInteger.ONE, pubKey.getP());
-        System.out.println("[sumCipher-compute]: \t" + sumCipher);
 
         int numChoices = 0;
 
@@ -121,8 +120,6 @@ public class VoteProof {
         /* Add from min to max, inclusive, to the domain of possible choices */
         for (int j = min; j <= max; j++)
             totalDomain.add(new AdderInteger(j));
-
-        System.out.println("[sumCipher-compute]: \t" + sumCipher);
 
         /* Compute the sumProof */
         this.sumProof = new MembershipProof();
