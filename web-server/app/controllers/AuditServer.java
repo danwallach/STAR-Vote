@@ -206,14 +206,17 @@ public class AuditServer extends Controller {
         * - If the size of the original map is only one, load the Ballots in the Precincts into the database
         *   Otherwise, create a Conflict associated with the Map
         *
-        * - Load non-conflicted Maps to a "Publish" page where they can be published publicly. At this step, HTML print
-        *   challenged Ballots, and allow verification of cast Ballots. Probably want to re-tally and publish results by
-        *   Precinct after each new "Publish" event.
+        * - Load non-conflicted Maps to a "Publish" page where they can be published publicly. After publishing, allow
+        *   verification of cast and challenged Ballots. Probably want to re-tally and publish results by physical
+        *   precinct after each new "Publish" event. (Notion of public/private information to be added to server)
+        *   May want to keep track of how many Precinct objects associated with a precinct have been published vs.
+        *   are ready to be published (e.g. 10 Precincts for P1 have existed on the server, 2 have been published and
+        *   8 are waiting to be published [on the "Publish" page], so show something like 2/10 precincts reporting)
         *
         * - Add all the Map.Entries for a conflicted Map to a "Conflicts" page as a single entry where the user
         *   can choose the proper Map<String,Precinct> by Supervisor-Hash to resolve the conflict.
         *
-        * - When a conflicted Map is resolved, add its Precincts to the "Publish" page
+        * - When a conflicted Map is resolved, add it to the "Publish" page
         */
 
         /* Code for this method in handling a POST command are found at http://www.vogella.com/articles/ApacheHttpClient/article.html */
