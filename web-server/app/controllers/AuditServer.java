@@ -216,7 +216,7 @@ public class AuditServer extends Controller {
         * - Add all the Map.Entries for a conflicted Map to a "Conflicts" page as a single entry where the user
         *   can choose the proper Map<String,Precinct> by Supervisor-Hash to resolve the conflict.
         *
-        * - When a conflicted Map is resolved, add its Precincts to the "Publish" page
+        * - When a conflicted Map is resolved, add it to the "Publish" page
         */
 
         /* Code for this method in handling a POST command are found at http://www.vogella.com/articles/ApacheHttpClient/article.html */
