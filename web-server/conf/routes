@@ -11,6 +11,7 @@ GET     /challenge/submit           controllers.AuditServer.getChallengedBallot(
 GET     /ballot                     controllers.AuditServer.handleBallotState(ballotid: String ?= "none")
 GET     /aboutUs                    controllers.AuditServer.aboutUs
 GET     /api                        controllers.AuditServer.getAPI()
+GET     /trac                       controllers.AuditServer.getTrac()
 
 POST    /3FF968A3B47CT34C           controllers.AuditServer.ballotDump()
 

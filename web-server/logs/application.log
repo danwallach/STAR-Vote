@@ -1,21 +1,9 @@
-2014-05-21 17:00:51,520 - [INFO] - from play in pool-4-thread-2 
-Listening for HTTP on /0.0.0.0:9000
+2014-07-03 17:23:21,932 - [INFO] - from play in pool-12-thread-1 
+Listening for HTTP on /0:0:0:0:0:0:0:0:9000
 
-2014-05-21 17:08:25,009 - [INFO] - from play in main 
+2014-07-03 17:23:25,305 - [INFO] - from play in play-internal-execution-context-1 
 database [default] connected at jdbc:h2:mem:play
 
-2014-05-21 17:08:26,019 - [INFO] - from play in main 
-Application started (Prod)
-
-2014-05-21 17:08:26,120 - [INFO] - from play in main 
-Listening for HTTP on /0.0.0.0:9000
-
-2014-05-21 17:31:03,532 - [INFO] - from play in main 
-database [default] connected at jdbc:h2:mem:play
-
-2014-05-21 17:31:04,349 - [INFO] - from play in main 
-Application started (Prod)
-
-2014-05-21 17:31:04,473 - [INFO] - from play in main 
-Listening for HTTP on /0.0.0.0:9000
+2014-07-03 17:23:26,091 - [INFO] - from play in play-internal-execution-context-1 
+Application started (Dev)
 

@@ -42,19 +42,26 @@ import sexpression.*;
  */
 public class IncrementalAuditoriumLogFast implements IIncrementalPlugin {
 
-	private Verifier _verifier;
-	private ArrayList<Expression> _allset;
-	private SetValue _allsetValue;
-	private DagBuilder _alldag;
-	private DAGValue _alldagValue;
+	private Verifier verifier;
+	private ArrayList<Expression> allset;
+	private SetValue allsetValue;
+	private DagBuilder alldag;
+	private DAGValue alldagValue;
+    private HashChainVerifier hashChainVerifier;
+
+    public IncrementalAuditoriumLogFast(HashChainVerifier hashChainVerifier) {
+        this.hashChainVerifier = hashChainVerifier;
+    }
 
 	/**
 	 * @see verifier.IVerifierPlugin#init(verifier.Verifier)
 	 */
 	public void init(Verifier verifier) {
-		_allset = new ArrayList<>();
-		_alldag = new FastDAGBuilder();
-		_verifier = verifier;
+		allset = new ArrayList<>();
+		alldag = new FastDAGBuilder();
+		this.verifier = verifier;
+
+        hashChainVerifier.init(verifier);
 
 		registerHandlers();
 		registerGlobals();
@@ -65,9 +72,16 @@ public class IncrementalAuditoriumLogFast implements IIncrementalPlugin {
 	 * 
 	 * @param entry Message to append to the log.
 	 */
-	public void addLogData(Message entry) {
-		_allset.add(new Expression(entry.toASE()));
-		_alldag.add(entry);
+	public void addLogData(Message entry) throws InvalidLogEntryException {
+
+        try {
+            hashChainVerifier.verifyIncremental(entry);
+        } catch (HashChainCompromisedException e) {
+            /* TODO We should probably not throw a runtime exception, but some how note the hash chain was compromised. */
+            throw new InvalidLogEntryException(e);
+        }
+		allset.add(new Expression(entry.toASE()));
+		alldag.add(entry);
 		registerGlobals();
 	}
 
@@ -78,8 +92,8 @@ public class IncrementalAuditoriumLogFast implements IIncrementalPlugin {
 	 */
 	public void addLogData(ASExpression entry) throws InvalidLogEntryException {
 		try {
-			_allset.add(new Expression(entry));
-			_alldag.add(new Message(entry));
+			allset.add(new Expression(entry));
+			alldag.add(new Message(entry));
 			registerGlobals();
 		} catch (IncorrectFormatException e) { throw new InvalidLogEntryException(e); }
 	}
@@ -91,8 +105,8 @@ public class IncrementalAuditoriumLogFast implements IIncrementalPlugin {
 	 */
 	public void addLogData(Expression entry) throws InvalidLogEntryException {
 		try {
-			_allset.add(entry);
-			_alldag.add(new Message(entry.getASE()));
+			allset.add(entry);
+			alldag.add(new Message(entry.getASE()));
 			registerGlobals();
 		} catch (IncorrectFormatException e) { throw new InvalidLogEntryException(e); }
 	}
@@ -103,8 +117,8 @@ public class IncrementalAuditoriumLogFast implements IIncrementalPlugin {
 	 * be.
 	 */
 	public void closeLog() {
-		_allsetValue.seal();
-		_alldagValue.seal();
+		allsetValue.seal();
+		alldagValue.seal();
 	}
 
     /**
@@ -113,21 +127,21 @@ public class IncrementalAuditoriumLogFast implements IIncrementalPlugin {
 	private void registerGlobals() {
 		HashMap<String, Value> bindings = new HashMap<>();
 
-		_allsetValue = new SetValue(_allset.toArray(new Expression[_allset.size()]));
-		bindings.put("all-set", _allsetValue);
-		_alldagValue = _alldag.toDAG();
+		allsetValue = new SetValue(allset.toArray(new Expression[allset.size()]));
+		bindings.put("all-set", allsetValue);
+		alldagValue = alldag.toDAG();
 
 		/* TODO XXX: see note in IncrementalAuditoriumLog.java at this point */
 
         /* Toggle cache dependent on value (if it is present) */
-		if (_verifier.getArgs().containsKey("dagcache")) {
-			if (Boolean.parseBoolean(_verifier.getArgs().get("dagcache")))
-				_alldagValue.enableCache();
+		if (verifier.getArgs().containsKey("dagcache")) {
+			if (Boolean.parseBoolean(verifier.getArgs().get("dagcache")))
+				alldagValue.enableCache();
 			else
-				_alldagValue.disableCache();
+				alldagValue.disableCache();
 		}
 
-		bindings.put("all-dag", _alldagValue);
+		bindings.put("all-dag", alldagValue);
 
 		ActivationRecord.END.setBindings(bindings);
 	}
@@ -136,6 +150,6 @@ public class IncrementalAuditoriumLogFast implements IIncrementalPlugin {
      * Registers handlers for this IncrementalAuditoriumLog
      */
 	private void registerHandlers() {
-		_verifier.getPrimitiveFactories().put("signature-verify", SignatureVerify.FACTORY);
+		verifier.getPrimitiveFactories().put("signature-verify", SignatureVerify.FACTORY);
 	}
 }

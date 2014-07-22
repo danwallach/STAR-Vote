@@ -125,8 +125,7 @@ public class Let extends AST {
 		if (_record == null) {
 			HashMap<String, Value> extension = new HashMap<>();
 			for (int lcv = 0; lcv < _bindings.length; lcv++)
-				extension
-						.put(_variables[lcv], _bindings[lcv].eval(environment));
+				extension.put(_variables[lcv], _bindings[lcv].eval(environment));
 			env = environment.extend(extension);
 		} else {
 			env = _record;

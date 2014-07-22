@@ -277,6 +277,11 @@ public class AuditServer extends Controller {
         File file = new File("htmls/ChallengedBallot_" + ballotid + ".html");
         return ok(file);
     }
+    
+    /**
+     * Redirects to the 
+     */
+    public static Result getTrac() { return redirect("/assets/trac/index.html"); }
 
     /**
      * Sends to the API page

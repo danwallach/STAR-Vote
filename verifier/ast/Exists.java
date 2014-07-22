@@ -87,7 +87,7 @@ public class Exists extends Quantifier {
 			return True.SINGLETON;
 		if (sealed && newUnknowns.size() == 0)
 			return False.SINGLETON;
-		return new Reduction(new Exists(_name, _set, _body, newIndex.get(),
+		return new Reduction(new Exists(name, set, body, newIndex.get(),
 				newUnknowns));
 	}
 

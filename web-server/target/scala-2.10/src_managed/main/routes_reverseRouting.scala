@@ -1,6 +1,6 @@
-// @SOURCE:/home/mdb12/STAR-Vote/web-server/conf/routes
-// @HASH:732bbe8e4c64d59f907c3fc9acb7cd88507a1ed8
-// @DATE:Wed May 21 16:19:17 CDT 2014
+// @SOURCE:/home/mdb12/Workspace/STAR-Vote/web-server/conf/routes
+// @HASH:b5ca75a4151ba694f60f9191e0caa8929a7776be
+// @DATE:Thu Jul 03 17:21:29 CDT 2014
 
 import Routes.{prefix => _prefix, defaultPrefix => _defaultPrefix}
 import play.core._
@@ -13,12 +13,13 @@ import play.libs.F
 import Router.queryString
 
 
+// @LINE:24
 // @LINE:23
-// @LINE:22
+// @LINE:20
 // @LINE:19
 // @LINE:18
-// @LINE:17
-// @LINE:15
+// @LINE:16
+// @LINE:14
 // @LINE:13
 // @LINE:12
 // @LINE:11
@@ -29,11 +30,12 @@ import Router.queryString
 // @LINE:6
 package controllers {
 
-// @LINE:22
+// @LINE:23
+// @LINE:20
 // @LINE:19
 // @LINE:18
-// @LINE:17
-// @LINE:15
+// @LINE:16
+// @LINE:14
 // @LINE:13
 // @LINE:12
 // @LINE:11
@@ -51,15 +53,21 @@ def getChallengedBallot(ballotid:String = "none"): Call = {
 }
                                                 
 
-// @LINE:17
+// @LINE:18
 def adminlogin(): Call = {
    Call("GET", _prefix + { _defaultPrefix } + "admin")
 }
                                                 
 
-// @LINE:18
+// @LINE:19
 def adminverify(): Call = {
    Call("POST", _prefix + { _defaultPrefix } + "admin/login")
+}
+                                                
+
+// @LINE:14
+def getTrac(): Call = {
+   Call("GET", _prefix + { _defaultPrefix } + "trac")
 }
                                                 
 
@@ -87,13 +95,13 @@ def getCastBallot(ballotid:String = "none"): Call = {
 }
                                                 
 
-// @LINE:22
+// @LINE:23
 def getBallotHtmlFile(ballotid:String = "none"): Call = {
    Call("GET", _prefix + { _defaultPrefix } + "files" + queryString(List(if(ballotid == "none") None else Some(implicitly[QueryStringBindable[String]].unbind("ballotid", ballotid)))))
 }
                                                 
 
-// @LINE:19
+// @LINE:20
 def adminclear(): Call = {
    Call("POST", _prefix + { _defaultPrefix } + "admin/cleardata")
 }
@@ -105,7 +113,7 @@ def challenge(): Call = {
 }
                                                 
 
-// @LINE:15
+// @LINE:16
 def ballotDump(): Call = {
    Call("POST", _prefix + { _defaultPrefix } + "3FF968A3B47CT34C")
 }
@@ -126,11 +134,11 @@ def aboutUs(): Call = {
 }
                           
 
-// @LINE:23
+// @LINE:24
 class ReverseAssets {
     
 
-// @LINE:23
+// @LINE:24
 def at(file:String): Call = {
    Call("GET", _prefix + { _defaultPrefix } + "assets/" + implicitly[PathBindable[String]].unbind("file", file))
 }
@@ -142,12 +150,13 @@ def at(file:String): Call = {
                   
 
 
+// @LINE:24
 // @LINE:23
-// @LINE:22
+// @LINE:20
 // @LINE:19
 // @LINE:18
-// @LINE:17
-// @LINE:15
+// @LINE:16
+// @LINE:14
 // @LINE:13
 // @LINE:12
 // @LINE:11
@@ -158,11 +167,12 @@ def at(file:String): Call = {
 // @LINE:6
 package controllers.javascript {
 
-// @LINE:22
+// @LINE:23
+// @LINE:20
 // @LINE:19
 // @LINE:18
-// @LINE:17
-// @LINE:15
+// @LINE:16
+// @LINE:14
 // @LINE:13
 // @LINE:12
 // @LINE:11
@@ -185,7 +195,7 @@ def getChallengedBallot : JavascriptReverseRoute = JavascriptReverseRoute(
 )
                         
 
-// @LINE:17
+// @LINE:18
 def adminlogin : JavascriptReverseRoute = JavascriptReverseRoute(
    "controllers.AuditServer.adminlogin",
    """
@@ -196,12 +206,23 @@ def adminlogin : JavascriptReverseRoute = JavascriptReverseRoute(
 )
                         
 
-// @LINE:18
+// @LINE:19
 def adminverify : JavascriptReverseRoute = JavascriptReverseRoute(
    "controllers.AuditServer.adminverify",
    """
       function() {
       return _wA({method:"POST", url:"""" + _prefix + { _defaultPrefix } + """" + "admin/login"})
+      }
+   """
+)
+                        
+
+// @LINE:14
+def getTrac : JavascriptReverseRoute = JavascriptReverseRoute(
+   "controllers.AuditServer.getTrac",
+   """
+      function() {
+      return _wA({method:"GET", url:"""" + _prefix + { _defaultPrefix } + """" + "trac"})
       }
    """
 )
@@ -251,7 +272,7 @@ def getCastBallot : JavascriptReverseRoute = JavascriptReverseRoute(
 )
                         
 
-// @LINE:22
+// @LINE:23
 def getBallotHtmlFile : JavascriptReverseRoute = JavascriptReverseRoute(
    "controllers.AuditServer.getBallotHtmlFile",
    """
@@ -262,7 +283,7 @@ def getBallotHtmlFile : JavascriptReverseRoute = JavascriptReverseRoute(
 )
                         
 
-// @LINE:19
+// @LINE:20
 def adminclear : JavascriptReverseRoute = JavascriptReverseRoute(
    "controllers.AuditServer.adminclear",
    """
@@ -284,7 +305,7 @@ def challenge : JavascriptReverseRoute = JavascriptReverseRoute(
 )
                         
 
-// @LINE:15
+// @LINE:16
 def ballotDump : JavascriptReverseRoute = JavascriptReverseRoute(
    "controllers.AuditServer.ballotDump",
    """
@@ -320,11 +341,11 @@ def aboutUs : JavascriptReverseRoute = JavascriptReverseRoute(
 }
               
 
-// @LINE:23
+// @LINE:24
 class ReverseAssets {
     
 
-// @LINE:23
+// @LINE:24
 def at : JavascriptReverseRoute = JavascriptReverseRoute(
    "controllers.Assets.at",
    """
@@ -341,12 +362,13 @@ def at : JavascriptReverseRoute = JavascriptReverseRoute(
         
 
 
+// @LINE:24
 // @LINE:23
-// @LINE:22
+// @LINE:20
 // @LINE:19
 // @LINE:18
-// @LINE:17
-// @LINE:15
+// @LINE:16
+// @LINE:14
 // @LINE:13
 // @LINE:12
 // @LINE:11
@@ -358,11 +380,12 @@ def at : JavascriptReverseRoute = JavascriptReverseRoute(
 package controllers.ref {
 
 
-// @LINE:22
+// @LINE:23
+// @LINE:20
 // @LINE:19
 // @LINE:18
-// @LINE:17
-// @LINE:15
+// @LINE:16
+// @LINE:14
 // @LINE:13
 // @LINE:12
 // @LINE:11
@@ -380,15 +403,21 @@ def getChallengedBallot(ballotid:String): play.api.mvc.HandlerRef[_] = new play.
 )
                       
 
-// @LINE:17
+// @LINE:18
 def adminlogin(): play.api.mvc.HandlerRef[_] = new play.api.mvc.HandlerRef(
    controllers.AuditServer.adminlogin(), HandlerDef(this, "controllers.AuditServer", "adminlogin", Seq(), "GET", """""", _prefix + """admin""")
 )
                       
 
-// @LINE:18
+// @LINE:19
 def adminverify(): play.api.mvc.HandlerRef[_] = new play.api.mvc.HandlerRef(
    controllers.AuditServer.adminverify(), HandlerDef(this, "controllers.AuditServer", "adminverify", Seq(), "POST", """""", _prefix + """admin/login""")
+)
+                      
+
+// @LINE:14
+def getTrac(): play.api.mvc.HandlerRef[_] = new play.api.mvc.HandlerRef(
+   controllers.AuditServer.getTrac(), HandlerDef(this, "controllers.AuditServer", "getTrac", Seq(), "GET", """""", _prefix + """trac""")
 )
                       
 
@@ -416,13 +445,13 @@ def getCastBallot(ballotid:String): play.api.mvc.HandlerRef[_] = new play.api.mv
 )
                       
 
-// @LINE:22
+// @LINE:23
 def getBallotHtmlFile(ballotid:String): play.api.mvc.HandlerRef[_] = new play.api.mvc.HandlerRef(
    controllers.AuditServer.getBallotHtmlFile(ballotid), HandlerDef(this, "controllers.AuditServer", "getBallotHtmlFile", Seq(classOf[String]), "GET", """ Map static resources from the /public folder to the /assets URL path""", _prefix + """files""")
 )
                       
 
-// @LINE:19
+// @LINE:20
 def adminclear(): play.api.mvc.HandlerRef[_] = new play.api.mvc.HandlerRef(
    controllers.AuditServer.adminclear(), HandlerDef(this, "controllers.AuditServer", "adminclear", Seq(), "POST", """""", _prefix + """admin/cleardata""")
 )
@@ -434,7 +463,7 @@ def challenge(): play.api.mvc.HandlerRef[_] = new play.api.mvc.HandlerRef(
 )
                       
 
-// @LINE:15
+// @LINE:16
 def ballotDump(): play.api.mvc.HandlerRef[_] = new play.api.mvc.HandlerRef(
    controllers.AuditServer.ballotDump(), HandlerDef(this, "controllers.AuditServer", "ballotDump", Seq(), "POST", """""", _prefix + """3FF968A3B47CT34C""")
 )
@@ -455,11 +484,11 @@ def aboutUs(): play.api.mvc.HandlerRef[_] = new play.api.mvc.HandlerRef(
 }
                           
 
-// @LINE:23
+// @LINE:24
 class ReverseAssets {
     
 
-// @LINE:23
+// @LINE:24
 def at(path:String, file:String): play.api.mvc.HandlerRef[_] = new play.api.mvc.HandlerRef(
    controllers.Assets.at(path, file), HandlerDef(this, "controllers.Assets", "at", Seq(classOf[String], classOf[String]), "GET", """""", _prefix + """assets/$file<.+>""")
 )

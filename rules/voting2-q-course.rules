@@ -107,7 +107,7 @@ false))
           false)
         false)))
 ;
-;;    ; RULE: cast-ballot must be preceded by auth and succeded by
+;;    ; RULE: cast-ballot must be preceded by auth and succeeded by
 ;;    ; ballot-received
     (forall ballot all-set
       (spawn (let-match signed-auditorium-message-fmt ballot

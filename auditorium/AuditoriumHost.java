@@ -26,6 +26,7 @@ import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.Nothing;
 import sexpression.StringExpression;
+import verifier.InvalidLogEntryException;
 import verifier.Verifier;
 import verifier.auditoriumverifierplugins.HashChainVerifier;
 import verifier.auditoriumverifierplugins.IncrementalAuditoriumLog;
@@ -237,12 +238,14 @@ public class AuditoriumHost implements IAuditoriumHost {
         /* Plugin to the verifier so it can ensure the integrity of logged messages */
         HashChainVerifier hashChainVerifier;
         if (loadedRule != null) {
+
             rule = loadedRule;
             hashChainVerifier = new HashChainVerifier();
             verifierPlugin = new IncrementalAuditoriumLog(hashChainVerifier);
 
             verifier = new Verifier(new HashMap<String, String>(), verifierPlugin);
         } else {
+            Bugout.err("Verifier failed to successfully load the rule");
         	rule = null;
     		verifierPlugin = null;
 			verifier = null;
@@ -658,8 +661,11 @@ public class AuditoriumHost implements IAuditoriumHost {
         if (log.logAnnouncement(message)) {
 
             /* verify that the message was logged properly*/
-            /* TODO This is where hash chaining may be checked */
-            verify( message );
+            try {
+                verify( message );
+            } catch (InvalidLogEntryException e) {
+                throw new RuntimeException("Couldn't verify message: " + message.getDatum());
+            }
 
             /* Now send the message */
             try {
@@ -695,7 +701,7 @@ public class AuditoriumHost implements IAuditoriumHost {
      * @param message
      *            Add this message.
      */
-    private void verify(Message message) {
+    private void verify(Message message) throws InvalidLogEntryException {
         counter++;
 
 		if (verifier != null) {

@@ -304,7 +304,7 @@ public class Verifier {
 
 	private void loadPlugins(String cfglocation) throws InitException {
 		// open the plugin list file.
-		BufferedReader reader = null;
+		BufferedReader reader;
 		try {
 			reader = new BufferedReader(new InputStreamReader(
 					new FileInputStream(new File(cfglocation))));

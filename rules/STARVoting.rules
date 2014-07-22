@@ -169,7 +169,7 @@
                         ((n_result (= nonce cast-nonce))
                          (p_result (precedes auth ballot all-dag)))
 
-                      (and ((print ((quote NONCE) nonce))(print ((quote CAST_NONCE) cast-nonce))(print ((quote N_RESULT) n_result))(print ((quote P_RESULT) p_result)) n_result p_result)))
+                      (and ((print ((quote NONCE) nonce))(print ((quote CAST_NONCE) cast-nonce)) n_result p_result)))
                      false)
                   false)))) (and ((print ((quote A) res)) res)))
               ; must be followed by receipt

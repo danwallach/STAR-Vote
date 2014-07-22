@@ -41,22 +41,22 @@ public abstract class Quantifier extends AST {
 
 	public abstract String getPName();
 
-	protected final String _name;
-	protected final AST _set;
-	protected final AST _body;
-	protected final int _index;
-	protected final ArrayList<Binding<AST, ActivationRecord>> _unknowns;
+	protected final String name;
+	protected final AST set;
+	protected final AST body;
+	protected final int index;
+	protected final ArrayList<Binding<AST, ActivationRecord>> unknowns;
 
-	private ASExpression _ase;
+	private ASExpression ase;
 
 	protected Quantifier(String name, AST set, AST body, int index,
 			ArrayList<Binding<AST, ActivationRecord>> unknowns) {
 		super(null);
-		_name = name;
-		_set = set;
-		_body = body;
-		_index = index;
-		_unknowns = unknowns;
+		this.name = name;
+		this.set = set;
+		this.body = body;
+		this.index = index;
+		this.unknowns = unknowns;
 	}
 
 	/**
@@ -64,19 +64,19 @@ public abstract class Quantifier extends AST {
 	 */
 	@Override
 	public ASExpression toASE() {
-		if (_ase == null) {
-			ASExpression[] values = new ASExpression[_unknowns.size()];
+		if (ase == null) {
+			ASExpression[] values = new ASExpression[unknowns.size()];
 			for (int lcv = 0; lcv < values.length; lcv++) {
-				AST ast = _unknowns.get(lcv).var;
-				ActivationRecord rec = _unknowns.get(lcv).val;
+				AST ast = unknowns.get(lcv).var;
+				ActivationRecord rec = unknowns.get(lcv).val;
 				values[lcv] = new ListExpression(ast.toASE(), rec.toASE());
 			}
-			_ase = new ListExpression(StringExpression.make(getPName()),
-			StringExpression.make(_name), _set.toASE(), _body.toASE(),
-					StringExpression.make(Integer.toString(_index)),
+			ase = new ListExpression(StringExpression.make(getPName()),
+			StringExpression.make(name), set.toASE(), body.toASE(),
+					StringExpression.make(Integer.toString(index)),
 					new ListExpression(values));
 		}
-		return _ase;
+		return ase;
 	}
 
 	/**
@@ -84,7 +84,7 @@ public abstract class Quantifier extends AST {
 	 */
 	@Override
 	public Value eval(final ActivationRecord environment) {
-		final Value set = _set.eval(environment);
+		final Value set = this.set.eval(environment);
 
 		final ArrayList<Binding<AST, ActivationRecord>> newUnknowns = new ArrayList<>();
 		final Box<Boolean> box = new Box<>(false);
@@ -96,13 +96,13 @@ public abstract class Quantifier extends AST {
 			public Value forSet(SetValue setvalue) {
 				// construct a list for all computation
 				ArrayList<Binding<AST, ActivationRecord>> total = new ArrayList<>();
-				for (int lcv = _index; lcv < setvalue.size(); lcv++) {
+				for (int lcv = index; lcv < setvalue.size(); lcv++) {
 					HashMap<String, Value> extension = new HashMap<>();
-					extension.put(_name, setvalue.get(lcv));
-					total.add(new Binding<>(_body,
+					extension.put(name, setvalue.get(lcv));
+					total.add(new Binding<>(body,
 							environment.extend(extension)));
 				}
-				total.addAll(_unknowns);
+				total.addAll(unknowns);
 				newIndex.set(setvalue.size());
 
 				// Evaluate all unknowns
@@ -131,7 +131,7 @@ public abstract class Quantifier extends AST {
 
 						@Override
 						public Value forReduction(Reduction r) {
-                            newUnknowns.add(_unknowns.get(flcv));
+                            newUnknowns.add(unknowns.get(flcv));
 							return null;
 						}
 

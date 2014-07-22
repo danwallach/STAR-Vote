@@ -67,8 +67,8 @@ Seq[Any](_display_(Seq[Any](/*1.2*/main("About Us")/*1.18*/ {_display_(Seq[Any](
 }
                 /*
                     -- GENERATED --
-                    DATE: Wed May 21 16:19:19 CDT 2014
-                    SOURCE: /home/mdb12/STAR-Vote/web-server/app/views/aboutUs.scala.html
+                    DATE: Thu Jul 03 17:16:52 CDT 2014
+                    SOURCE: /home/mdb12/Workspace/STAR-Vote/web-server/app/views/aboutUs.scala.html
                     HASH: d1cf4f032c61e179562af59a208f3b10e4ee0e51
                     MATRIX: 866->1|890->17|929->19
                     LINES: 29->1|29->1|29->1

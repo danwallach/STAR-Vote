@@ -82,7 +82,7 @@ public class Forall extends Quantifier {
 			return False.SINGLETON;
 		if (sealed && newUnknowns.size() == 0)
 			return True.SINGLETON;
-		return new Reduction(new Forall(_name, _set, _body, newIndex.get(),
+		return new Reduction(new Forall(name, set, body, newIndex.get(),
 				newUnknowns));
 	}
 
