@@ -59,6 +59,7 @@ public class AuditoriumParams implements IAuditoriumParams,
 
     public static final String VIEW_IMPLEMENTATION = "AWT"; //Changed from SDL
     public static final String RULE_FILE = "rules/STARVoting.rules";
+    public static final String INCREMENTAL_RULE_FILE = "rules/STARVotingIncremental.rules";
     
     /* Default for cast_ballot_encryption_enabled. */
     public static final boolean CAST_BALLOT_ENCRYPTION_ENABLED = true;
@@ -694,6 +695,11 @@ public class AuditoriumParams implements IAuditoriumParams,
             return Integer.parseInt(_config.get("SERVER_PORT"));
 
         return DEFAULT_PORT;
+    }
+
+    @Override
+    public String getIncrementalRuleFile() {
+        return INCREMENTAL_RULE_FILE;
     }
 
     /**

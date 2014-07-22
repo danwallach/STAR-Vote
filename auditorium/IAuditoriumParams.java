@@ -183,4 +183,10 @@ public interface IAuditoriumParams {
      * @return the port to be used for network communication
      */
     public int getPort();
+
+
+    /**
+     * @return the rule file for incremental verification
+     */
+    public String getIncrementalRuleFile();
 }

@@ -186,6 +186,12 @@ public class Launcher {
                     public int          getDiscoverReplyTimeout()        { return 0; }
                     public int          getDiscoverTimeout()             { return 0; }
                     public int          getPort()                        { return 0; }
+
+                    @Override
+                    public String getIncrementalRuleFile() {
+                        return null;
+                    }
+
                     public int          getListenPort()                  { return 0; }
                     public int          getJoinTimeout()                 { return 0; }
                     public int          getViewRestartTimeout()          { return 1; }

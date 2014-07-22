@@ -28,6 +28,7 @@ import sexpression.Nothing;
 import sexpression.StringExpression;
 import verifier.InvalidLogEntryException;
 import verifier.Verifier;
+import verifier.auditoriumverifierplugins.AuditoriumLog;
 import verifier.auditoriumverifierplugins.HashChainVerifier;
 import verifier.auditoriumverifierplugins.IncrementalAuditoriumLog;
 
@@ -167,11 +168,16 @@ public class AuditoriumHost implements IAuditoriumHost {
     /** A verifier to dynamically audit and verify the logs we write out */
     private final Verifier verifier;
 
-    /** The rules to feed to the verifier so it knows what to look for */
+    /** The rules to feed to the incremental verifier so it knows what to look for */
+    private final ASExpression incrementalRule;
+
+    /** The rules to feed to the verifier so it knows what to look for after the logs have been sealed */
     private final ASExpression rule;
 
     /** Plugin to the verifier so it can incrementally audit the log */
-    private final IncrementalAuditoriumLog verifierPlugin;
+    private final AuditoriumLog verifierPlugin;
+
+    private final IncrementalAuditoriumLog incVerifierPlugin;
 
     /** Reference to the log, where events are logged and sent out */
     private final Log log;
@@ -220,13 +226,16 @@ public class AuditoriumHost implements IAuditoriumHost {
 
         /* Initialize the log auditor */
         ASExpression loadedRule = null;
+        ASExpression loadedIncrementalRule = null;
 
         // Verifier
         try {
         	String ruleFile = constants.getRuleFile();
-        	if (ruleFile != null) {
+            String incrementalRuleFile = constants.getIncrementalRuleFile();
+        	if (ruleFile != null)
         		loadedRule = Verifier.readRule(constants.getRuleFile());
-        	}
+        	if(incrementalRuleFile != null)
+                loadedIncrementalRule = Verifier.readRule(constants.getIncrementalRuleFile());
             log = new Log( new File( constants.getLogLocation() ) );
         }
         catch (FileNotFoundException e) {
@@ -238,15 +247,20 @@ public class AuditoriumHost implements IAuditoriumHost {
         /* Plugin to the verifier so it can ensure the integrity of logged messages */
         HashChainVerifier hashChainVerifier;
         if (loadedRule != null) {
-
+            incrementalRule = loadedIncrementalRule;
             rule = loadedRule;
             hashChainVerifier = new HashChainVerifier();
-            verifierPlugin = new IncrementalAuditoriumLog(hashChainVerifier);
+            incVerifierPlugin = new IncrementalAuditoriumLog(hashChainVerifier);
+            verifierPlugin = new AuditoriumLog();
+            HashMap<String, String> args = new HashMap<>();
+            args.put("log", constants.getLogLocation());
 
-            verifier = new Verifier(new HashMap<String, String>(), verifierPlugin);
+            verifier = new Verifier(args, incVerifierPlugin, verifierPlugin);
         } else {
             Bugout.err("Verifier failed to successfully load the rule");
         	rule = null;
+            incrementalRule = null;
+            incVerifierPlugin = null;
     		verifierPlugin = null;
 			verifier = null;
         }
@@ -315,6 +329,7 @@ public class AuditoriumHost implements IAuditoriumHost {
 
         /* Note the results of the auditing */
         if (verifier != null) {
+            verifierPlugin.init(verifier);
         	System.out.println( "Verification result:" + verifier.eval( rule ) );
         }
     }
@@ -705,9 +720,9 @@ public class AuditoriumHost implements IAuditoriumHost {
         counter++;
 
 		if (verifier != null) {
-			verifierPlugin.addLogData( message );
+			incVerifierPlugin.addLogData( message );
 			if (counter % 10 == 0)
-				verifier.eval( rule );
+				verifier.eval( incrementalRule );
 		}
 
     }

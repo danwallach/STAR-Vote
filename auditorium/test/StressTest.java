@@ -24,6 +24,8 @@ package auditorium.test;
 
 import sexpression.StringExpression;
 import auditorium.*;
+import votebox.events.PollsClosedEvent;
+import votebox.events.PollsOpenEvent;
 
 /**
  * A test to see if Auditorium can handle lots of traffic
@@ -41,7 +43,7 @@ public class StressTest {
     public static void main(String[] args) throws Exception {
         Bugout.ERR_OUTPUT_ON = true;
         Bugout.MSG_OUTPUT_ON = true;
-        AuditoriumHost host = new AuditoriumHost( args[0],
+        AuditoriumHost host = new AuditoriumHost( /*args[0]*/ "0",
                 TestParams.Singleton );
         host.start();
         listenThread(host);
@@ -52,10 +54,14 @@ public class StressTest {
         for (HostPointer ptr : pointers)
             host.join( ptr );
 
+        host.announce(new PollsOpenEvent(0, 0, "keyword").toSExp());
+
         for (int lcv = 0; lcv < 100; lcv++) {
             Thread.sleep( 300 );
             host.announce( StringExpression.makeString( Integer.toString( lcv ) ) );
         }
+
+        host.announce(new PollsClosedEvent(0, 1000).toSExp());
 
         System.err.println( "Done, letting the queues empty" );
         Thread.sleep( 30000 );

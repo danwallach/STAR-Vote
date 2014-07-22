@@ -51,7 +51,8 @@ public class TestParams implements IAuditoriumParams {
     public static final String BROADCAST_ADDRESS = "255.255.255.255";
     public static final String LOG_LOCATION = "log/log.out";
     public static final String KEYS_DIRECTORY = "/keys/";
-    public static final String RULE_FILE = "rules";
+    public static final String RULE_FILE = "rules/STARVoting.rules";
+    public static final String INCREMENTAL_RULE_FILE = "rules/STARVotingIncremental.rules";
     public static final boolean ENCRYPTION_ENABLED = false;
     public static final boolean USE_ELO_TOUCH_SCREEN = false;
 	public static final String ELO_TOUCH_SCREEN_DEVICE = null;
@@ -181,5 +182,10 @@ public class TestParams implements IAuditoriumParams {
 
     public int getPort() {
         return 0;
+    }
+
+    @Override
+    public String getIncrementalRuleFile() {
+        return INCREMENTAL_RULE_FILE;
     }
 }
