@@ -58,7 +58,7 @@ public class AuditoriumParams implements IAuditoriumParams,
     public static final String KEYS_DIRECTORY = "keys/";
 
     public static final String VIEW_IMPLEMENTATION = "AWT"; //Changed from SDL
-    public static final String RULE_FILE = "rules/voting2.rules";
+    public static final String RULE_FILE = "rules/STARVoting.rules";
     
     /* Default for cast_ballot_encryption_enabled. */
     public static final boolean CAST_BALLOT_ENCRYPTION_ENABLED = true;
