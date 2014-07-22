@@ -76,12 +76,13 @@ public class LogTest {
             last.add( p );
         assertEquals( 1, log.getSetCopyTest().size() );
 
-        /* Note that this fails because it is expecting an un-chained message pointer */
         assertTrue( log.getSetCopyTest().contains( pointer1 ) );
         assertFalse( log.getSetCopyTest().contains( pointer2 ) );
         assertEquals( 1, last.size() );
         assertTrue( last.contains( pointer1 ) );
         assertFalse( last.contains( pointer2 ) );
+
+
         assertFalse( log.logAnnouncement( msg1 ) );
 
         log.logAnnouncement( msg2 );
