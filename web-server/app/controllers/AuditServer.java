@@ -197,6 +197,25 @@ public class AuditServer extends Controller {
      */
     public static Result ballotDump() {
 
+       /* Strategy:
+        *
+        * - Load the Map<String, Map<String, Precinct>>.
+        *   Each Map.Entry<String, Map> is <Supervisor-Hash, PrecinctMap>
+        *   Each Map.Entry<String, Precinct> is <PrecinctID, PrecinctObject>
+        *
+        * - If the size of the original map is only one, load the Ballots in the Precincts into the database
+        *   Otherwise, create a Conflict associated with the Map
+        *
+        * - Load non-conflicted Maps to a "Publish" page where they can be published publicly. At this step, HTML print
+        *   challenged Ballots, and allow verification of cast Ballots. Probably want to re-tally and publish results by
+        *   Precinct after each new "Publish" event.
+        *
+        * - Add all the Map.Entries for a conflicted Map to a "Conflicts" page as a single entry where the user
+        *   can choose the proper Map<String,Precinct> by Supervisor-Hash to resolve the conflict.
+        *
+        * - When a conflicted Map is resolved, add its Precincts to the "Publish" page
+        */
+
         /* Code for this method in handling a POST command are found at http://www.vogella.com/articles/ApacheHttpClient/article.html */
 
         final Map<String, String[]> values = request().body().asFormUrlEncoded();
