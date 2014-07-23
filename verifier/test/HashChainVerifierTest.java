@@ -2,10 +2,16 @@ package verifier.test;
 
 import auditorium.IncorrectFormatException;
 import junit.framework.TestCase;
+import sexpression.ASExpression;
 import verifier.HashChainCompromisedException;
+import verifier.InvalidLogEntryException;
 import verifier.Verifier;
 import verifier.auditoriumverifierplugins.AuditoriumLog;
 import verifier.auditoriumverifierplugins.HashChainVerifier;
+import verifier.auditoriumverifierplugins.IncrementalAuditoriumLog;
+import verifier.value.False;
+import verifier.value.Value;
+import votebox.events.SupervisorEvent;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -21,6 +27,7 @@ public class HashChainVerifierTest extends TestCase {
 
     /** The plugin itself */
     AuditoriumLog auditoriumLog;
+    IncrementalAuditoriumLog incrementalAuditoriumLog;
     HashChainVerifier hashChainVerifier;
 
     /** Arguments to the verifier, such as log location */
@@ -31,15 +38,21 @@ public class HashChainVerifierTest extends TestCase {
 
         AuditoriumLogGenerator.setUp();
 
-
         auditoriumLog = new AuditoriumLog();
         hashChainVerifier = new HashChainVerifier();
+        incrementalAuditoriumLog = new IncrementalAuditoriumLog(hashChainVerifier);
 
-        args.put("log", "temp");
+        args.put("log", "test.out");
 
         v = new Verifier(args);
-        auditoriumLog.init(v);
-        hashChainVerifier.init(v);
+        incrementalAuditoriumLog.init(v);
+        IncrementalAuditoriumLogGenerator.setUp(incrementalAuditoriumLog);
+//        hashChainVerifier.init(v);
+    }
+
+    private void assertGood(Value value) {
+//        assertEquals(True.SINGLETON, value);
+        assertNotSame(False.SINGLETON, value);
     }
 
     /**
@@ -84,6 +97,85 @@ public class HashChainVerifierTest extends TestCase {
             fail(e.getMessage());
         } catch (HashChainCompromisedException e) {
             //Expected
+        }
+    }
+
+    public void testIncrementalSimpleSupervisorHash() {
+        ASExpression incRule, rule;
+
+        try {
+            incRule = Verifier.readRule("rules/STARVotingIncremental.rules");
+            rule = Verifier.readRule("rules/STARVoting.rules");
+
+            IncrementalAuditoriumLogGenerator.start3Machines();
+
+            assertGood(v.eval(incRule));
+
+            IncrementalAuditoriumLogGenerator.vote();
+
+            assertGood(v.eval(incRule));
+
+            IncrementalAuditoriumLogGenerator.close();
+
+            assertGood(v.eval(incRule));
+
+            hashChainVerifier.verify();
+
+            System.out.println("Now verifying the whole log!");
+
+            auditoriumLog.init(v);
+
+            assertGood(v.eval(rule));
+
+            hashChainVerifier.verify();
+
+
+        } catch (IOException | InvalidLogEntryException | HashChainCompromisedException e) {
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+
+    }
+
+    public void testIncrementalLotsOfVotes() {
+        ASExpression incRule, rule;
+
+
+        try {
+            incRule = Verifier.readRule("rules/STARVotingIncremental.rules");
+            rule = Verifier.readRule("rules/STARVoting.rules");
+
+
+            IncrementalAuditoriumLogGenerator.start3Machines();
+
+            assertGood(v.eval(incRule));
+
+            for(int i = 0; i < 100; i++) {
+                IncrementalAuditoriumLogGenerator.vote();
+                if(i%10 == 0)
+                    IncrementalAuditoriumLogGenerator.logDatum(new SupervisorEvent(0, 0, "active").toSExp());
+                assertGood(v.eval(incRule));
+            }
+
+            assertGood(v.eval(incRule));
+
+            IncrementalAuditoriumLogGenerator.close();
+
+            assertGood(v.eval(incRule));
+
+            hashChainVerifier.verify();
+
+            auditoriumLog.init(v);
+
+            assertGood(v.eval(rule));
+
+            hashChainVerifier.verify();
+
+
+
+        } catch (IOException | InvalidLogEntryException | HashChainCompromisedException e) {
+            e.printStackTrace();
+            fail(e.getMessage());
         }
     }
 }

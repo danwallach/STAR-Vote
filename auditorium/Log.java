@@ -90,10 +90,10 @@ public class Log {
         message.chain(lastChainedHash);
 
         /* Update our reference to the chain */
-        lastChainedHash = message.getHash();
+        lastChainedHash = message.getChainedHash();
 
-        MessagePointer toMessage = new MessagePointer( copy );
-        if (!haveSeen.contains(toMessage)) {
+        MessagePointer toMessage = new MessagePointer( message );
+        if (!haveSeen.contains(new MessagePointer(copy))) {
 
             /* Since the chained value is only used here, we update our lists with the unchained version */
             haveSeen.add(toMessage);

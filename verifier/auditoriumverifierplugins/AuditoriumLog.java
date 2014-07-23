@@ -84,10 +84,9 @@ public class AuditoriumLog implements IVerifierPlugin {
 			ASEInputStreamReader in = new ASEInputStreamReader( new FileInputStream(new File(verifier.getArgs().get("log"))));
 
             ASExpression exp;
-            /* Loop until end of file and load into dag to build set TODO EOF stuff */
+            /* Loop until end of file and load into dag to build set */
 			while ((exp = in.read()) != null) {
 				Message msg = new Message(exp);
-//                System.out.println(msg);
                 dag.add(msg);
 				set.add(new Expression(msg.toASE()));
 			}

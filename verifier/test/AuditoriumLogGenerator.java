@@ -70,8 +70,8 @@ public class AuditoriumLogGenerator {
      */
     private static void logDatum(ASExpression datum) throws IOException {
 
-        /* Build a dag of messages (from TemporalLayer */
-         /* Make new datum - Wrap with everything that is in the last list. */
+        /* Build a dag of messages (from TemporalLayer) */
+        /* Make new datum - Wrap with everything that is in the last list. */
         ArrayList<ASExpression> list = new ArrayList<>();
         for (MessagePointer p : log.getLast())
             list.add(p.toASE());
@@ -79,9 +79,8 @@ public class AuditoriumLogGenerator {
         /* build the succeeds clause */
         ASExpression newDatum = new ListExpression(StringExpression.makeString("succeeds"), new ListExpression(list), datum);
 
-
-
         Message msg = new Message("announce", hp, "0", topLayer.makeAnnouncement(newDatum));
+
         log.logAnnouncement(msg);
     }
 
@@ -112,9 +111,6 @@ public class AuditoriumLogGenerator {
 
         return array;
     }
-
-
-
 
     /**
      * A utility method for logging the election start up of a supervisor, votebox, and ballot scanner.
@@ -170,7 +166,7 @@ public class AuditoriumLogGenerator {
         /* The votebox now commits the ballot */
         CommitBallotEvent cbe = new CommitBallotEvent(1, nonce, ballot, bid, precinct);
 
-        /* We annnounce that the ballot was recieved */
+        /* We annnounce that the ballot was received */
         BallotReceivedEvent bre = new BallotReceivedEvent(0, 1, nonce, bid, precinct);
 
         /* Now we scan the ballot and accept it */
@@ -194,7 +190,6 @@ public class AuditoriumLogGenerator {
     private static void close() throws IOException {
         /* we close the polls */
         PollsClosedEvent pce = new PollsClosedEvent(0, 1000);
-
 
         logDatum(pce.toSExp());
     }

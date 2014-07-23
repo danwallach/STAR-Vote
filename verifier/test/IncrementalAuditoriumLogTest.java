@@ -5,6 +5,7 @@ import junit.framework.TestCase;
 import sexpression.ASExpression;
 import verifier.InvalidLogEntryException;
 import verifier.Verifier;
+import verifier.auditoriumverifierplugins.AuditoriumLog;
 import verifier.auditoriumverifierplugins.HashChainVerifier;
 import verifier.auditoriumverifierplugins.IncrementalAuditoriumLog;
 import verifier.value.False;
@@ -23,7 +24,8 @@ public class IncrementalAuditoriumLogTest extends TestCase {
     Verifier v;
 
     /** The plugin itself */
-    IncrementalAuditoriumLog auditoriumLog;
+    IncrementalAuditoriumLog incAuditoriumLog;
+    AuditoriumLog auditoriumLog;
 
     /** Arguments to the verifier, such as log location */
     HashMap<String, String> args = new HashMap<>();
@@ -32,13 +34,14 @@ public class IncrementalAuditoriumLogTest extends TestCase {
         super.setUp();
 
         HashChainVerifier hash = new HashChainVerifier();
-        auditoriumLog = new IncrementalAuditoriumLog(hash);
+        incAuditoriumLog = new IncrementalAuditoriumLog(hash);
+        auditoriumLog = new AuditoriumLog();
 
         args.put("log", "test.out");
 
         v = new Verifier(args);
 
-        auditoriumLog.init(v);
+        incAuditoriumLog.init(v);
 
     }
 
@@ -51,7 +54,7 @@ public class IncrementalAuditoriumLogTest extends TestCase {
     public void testIncrementalVoting() {
 
         ASExpression rule;
-        IncrementalAuditoriumLogGenerator.setUp(auditoriumLog);
+        IncrementalAuditoriumLogGenerator.setUp(incAuditoriumLog);
 
         try {
             rule = Verifier.readRule("rules/STARVotingIncremental.rules");
@@ -84,7 +87,7 @@ public class IncrementalAuditoriumLogTest extends TestCase {
     public void testSimpleLog() {
         ASExpression rule;
 
-        IncrementalAuditoriumLogGenerator.setUp(auditoriumLog);
+        IncrementalAuditoriumLogGenerator.setUp(incAuditoriumLog);
 
         try {
             rule = Verifier.readRule("rules/STARVotingIncremental.rules");
@@ -110,7 +113,7 @@ public class IncrementalAuditoriumLogTest extends TestCase {
     public void testSimpleSupervisorLog() {
         ASExpression rule;
 
-        IncrementalAuditoriumLogGenerator.setUp(auditoriumLog);
+        IncrementalAuditoriumLogGenerator.setUp(incAuditoriumLog);
 
         try {
             IncrementalAuditoriumLogGenerator.generateSimpleSupervisorLog();
@@ -129,7 +132,7 @@ public class IncrementalAuditoriumLogTest extends TestCase {
     public void testSimpleSupervisorLogMoreVotes() {
         ASExpression rule;
 
-        IncrementalAuditoriumLogGenerator.setUp(auditoriumLog);
+        IncrementalAuditoriumLogGenerator.setUp(incAuditoriumLog);
 
         try {
             IncrementalAuditoriumLogGenerator.generateLotsOfVotesLog();
@@ -147,7 +150,7 @@ public class IncrementalAuditoriumLogTest extends TestCase {
     public void testSimpleSupervisorLogMoreVotesIncremental() {
         ASExpression rule;
 
-        IncrementalAuditoriumLogGenerator.setUp(auditoriumLog);
+        IncrementalAuditoriumLogGenerator.setUp(incAuditoriumLog);
 
         try {
             rule = Verifier.readRule("rules/STARVotingIncremental.rules");

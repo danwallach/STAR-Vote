@@ -76,6 +76,8 @@ public class LogTest {
             last.add( p );
         assertEquals( 1, log.getSetCopyTest().size() );
 
+        pointer1 = new MessagePointer(msg1);
+
         assertTrue( log.getSetCopyTest().contains( pointer1 ) );
         assertFalse( log.getSetCopyTest().contains( pointer2 ) );
         assertEquals( 1, last.size() );

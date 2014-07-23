@@ -62,10 +62,10 @@ public class HashChainVerifier implements IVerifierPlugin {
 
                 /* Recompute its hash, including the value we expect it to have for its hash */
                 compare.chain(hash);
-                hash = compare.getHash();
+                hash = compare.getChainedHash();
 
                 /* Compare the newly built hash with the hash we read in */
-                if(!hash.equals(msg.getHash()))
+                if(!hash.equals(msg.getChainedHash()))
                     throw new HashChainCompromisedException("The hash chain failed to verify!");
             }
         } catch (EOFException ignored) {

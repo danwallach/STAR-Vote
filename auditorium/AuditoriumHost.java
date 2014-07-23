@@ -682,13 +682,15 @@ public class AuditoriumHost implements IAuditoriumHost {
             try {
                 verify( message );
             } catch (InvalidLogEntryException e) {
-                throw new RuntimeException("Couldn't verify message: " + message.getDatum());
+                Bugout.err(e.getMessage());
+                e.printStackTrace();
+
             }
 
             /* Now send the message */
             try {
                 Bugout.msg("Host: logging and flooding: " + new MessagePointer(message));
-                flood(message);
+                flood(copy);
 
                 /*
                  * We tell the temporal layer to received the unchained message, since that is the version of the message

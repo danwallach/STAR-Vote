@@ -37,10 +37,9 @@ public class AuditoriumLogTest extends TestCase {
 
     }
 
-    public void testSimpleLogVoting2Rules() {
+    public void testSimpleLogVoting() {
         ASExpression rule;
 
-        System.out.println(v.getArgs().get("log"));
         AuditoriumLogGenerator.setUp();
 
         try {
@@ -56,7 +55,7 @@ public class AuditoriumLogTest extends TestCase {
 
     }
 
-    public void testSimpleSupervisorLogVoting2Rules() {
+    public void testSimpleSupervisorLog() {
         ASExpression rule;
 
         AuditoriumLogGenerator.setUp();

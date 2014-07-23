@@ -60,6 +60,9 @@ public class Message {
     /** A hash of the message object */
     private ASExpression hash;
 
+    /** A chained hash of the message object*/
+    private ASExpression chainedHash = StringExpression.make("null");
+
     /**
      * Constructor
      *
@@ -99,7 +102,7 @@ public class Message {
             from = new HostPointer(lst.get(1));
             sequence = lst.get(2).toString();
             datum = lst.get(3);
-            hash = lst.get(4);
+            chainedHash = lst.get(4);
         } else
             throw new IncorrectFormatException(message, new Exception(message + " didn't match the pattern:" + PATTERN));
 
@@ -123,7 +126,7 @@ public class Message {
      * @return Return an ASE of the form ([name] [host] [datum] [chained hash value])
      */
     public ASExpression toASEWithHash() {
-        return new ListExpression(StringExpression.makeString(type), from.toASE(), StringExpression.makeString(sequence), datum, hash);
+        return new ListExpression(StringExpression.makeString(type), from.toASE(), StringExpression.makeString(sequence), datum, chainedHash);
     }
 
     /**
@@ -132,10 +135,14 @@ public class Message {
      * @return The hash of this message.
      */
     public ASExpression getHash() {
-        if (hash == null) {
+        if (hash == null)
             hash = StringExpression.makeString(toASE().getSHA1());
-        }
+
         return hash;
+    }
+
+    public ASExpression getChainedHash() {
+        return chainedHash;
     }
 
     /**
@@ -205,7 +212,7 @@ public class Message {
     public void chain(ASExpression lastChainedHash) {
         String newData = getHash().toString() + lastChainedHash.toString();
 
-        hash = StringExpression.makeString(StringExpression.makeString(newData).getSHA1());
+        chainedHash = StringExpression.makeString(StringExpression.makeString(newData).getSHA1());
 
     }
 }
