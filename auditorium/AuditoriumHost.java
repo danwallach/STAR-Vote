@@ -672,6 +672,9 @@ public class AuditoriumHost implements IAuditoriumHost {
      */
     private void logMessage(Message message) throws IOException {
 
+        /* copy the message so we have an unchained reference to check against the log with */
+        Message copy = new Message(message.getType(), message.getFrom(), message.getSequence(), message.getDatum());
+
         /* Log the message and ensure it hasn't already been sent */
         if (log.logAnnouncement(message)) {
 
@@ -686,7 +689,14 @@ public class AuditoriumHost implements IAuditoriumHost {
             try {
                 Bugout.msg("Host: logging and flooding: " + new MessagePointer(message));
                 flood(message);
-                ASExpression payload = head.receiveAnnouncement(message.getDatum());
+
+                /*
+                 * We tell the temporal layer to received the unchained message, since that is the version of the message
+                 * that the log keeps in it's last seen list. This is unfortunate, but if we continued to look for
+                 * chained messages we'd never find the same message twice, as it would chain once more and thus
+                 * give a different hash.
+                 */
+                ASExpression payload = head.receiveAnnouncement(copy.getDatum());
 
                 /* Put the message on the queue so its sending can be awaited */
                 if (!inQueue.push(new Pair(message.getFrom(), payload))) {

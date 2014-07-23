@@ -156,6 +156,8 @@ public class IncrementalAuditoriumLogTest extends TestCase {
 
             for(int i = 0; i < 100; i++) {
                 IncrementalAuditoriumLogGenerator.vote();
+                if(i%10 == 0)
+                    IncrementalAuditoriumLogGenerator.logDatum(new SupervisorEvent(0, 0, "active").toSExp());
                 assertGood(v.eval(rule));
             }
 

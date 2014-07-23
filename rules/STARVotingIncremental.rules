@@ -54,10 +54,10 @@
     (cast-ballot-fmt (quote (encrypted-cast-ballot-with-nizks %nonce:#string %cast-ballot-data:#any %bid:#string)))
 
     ;; election maintenance messages
-    ;(assign-label-fmt (quote (assign-label %nodeid:#string %label:#string)))
-    ;(super-status-fmt (quote (supervisor %timestamp:#string %status:#string)))
-    ;(booth-status-fmt (quote (booth %timestamp:#string %status:#string)))
-    ;(super-activated-fmt (quote (activated %statuses:#list:#any)))
+    (assign-label-fmt (quote (assign-label %nodeid:#string %label:#string)))
+    (super-status-fmt (quote (supervisor %timestamp:#string %status:#string)))
+    ; (booth-status-fmt (quote (booth %timestamp:#string %status:#string)))
+    (super-activated-fmt (quote (activated %statuses:#list:#any)))
 
     ; supervisor recovery messages
     ;(polls-open-query-fmt (quote (polls-open? %keyword:#string)))

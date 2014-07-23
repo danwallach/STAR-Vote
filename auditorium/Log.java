@@ -93,7 +93,6 @@ public class Log {
         lastChainedHash = message.getHash();
 
         MessagePointer toMessage = new MessagePointer( copy );
-        System.out.println(toMessage);
         if (!haveSeen.contains(toMessage)) {
 
             /* Since the chained value is only used here, we update our lists with the unchained version */
