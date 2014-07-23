@@ -166,7 +166,7 @@ public class AuditoriumLogGenerator {
         /* The votebox now commits the ballot */
         CommitBallotEvent cbe = new CommitBallotEvent(1, nonce, ballot, bid, precinct);
 
-        /* We annnounce that the ballot was received */
+        /* We announce that the ballot was received */
         BallotReceivedEvent bre = new BallotReceivedEvent(0, 1, nonce, bid, precinct);
 
         /* Now we scan the ballot and accept it */

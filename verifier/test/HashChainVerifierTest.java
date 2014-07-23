@@ -47,11 +47,9 @@ public class HashChainVerifierTest extends TestCase {
         v = new Verifier(args);
         incrementalAuditoriumLog.init(v);
         IncrementalAuditoriumLogGenerator.setUp(incrementalAuditoriumLog);
-//        hashChainVerifier.init(v);
     }
 
     private void assertGood(Value value) {
-//        assertEquals(True.SINGLETON, value);
         assertNotSame(False.SINGLETON, value);
     }
 

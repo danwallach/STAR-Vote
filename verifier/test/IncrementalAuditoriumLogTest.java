@@ -46,7 +46,6 @@ public class IncrementalAuditoriumLogTest extends TestCase {
     }
 
     private void assertGood(Value value) {
-//        assertEquals(True.SINGLETON, value);
         assertNotSame(False.SINGLETON, value);
     }
 
