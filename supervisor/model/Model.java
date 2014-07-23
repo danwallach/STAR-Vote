@@ -1409,7 +1409,7 @@ public class Model {
      * @return          Set of entries of mappings of PIDs to Precincts
      */
     public String[] getPrecinctIDs(){
-        return (String[]) precincts.keySet().toArray();
+        return precincts.keySet().toArray(new String[precincts.size()]);
     }
 
     /**
