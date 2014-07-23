@@ -10,6 +10,7 @@ import verifier.auditoriumverifierplugins.HashChainVerifier;
 import verifier.auditoriumverifierplugins.IncrementalAuditoriumLog;
 import verifier.value.False;
 import verifier.value.Value;
+import votebox.events.ProvisionalAuthorizeEvent;
 import votebox.events.SupervisorEvent;
 
 import java.io.IOException;
@@ -84,21 +85,24 @@ public class IncrementalAuditoriumLogTest extends TestCase {
     }
 
     public void testSimpleLog() {
-        ASExpression rule;
+        ASExpression rule, incRule;
 
         IncrementalAuditoriumLogGenerator.setUp(incAuditoriumLog);
 
         try {
-            rule = Verifier.readRule("rules/STARVotingIncremental.rules");
+            rule = Verifier.readRule("rules/STARVoting.rules");
+            incRule = Verifier.readRule("rules/STARVotingIncremental.rules");
 
             IncrementalAuditoriumLogGenerator.start3Machines();
-            assertGood(v.eval(rule));
+            assertGood(v.eval(incRule));
 
             SupervisorEvent e = new SupervisorEvent(0, 0, "activated");
 
             IncrementalAuditoriumLogGenerator.logDatum(e.toSExp());
 
             IncrementalAuditoriumLogGenerator.close();
+
+            assertGood(v.eval(incRule));
 
         } catch ( IOException | InvalidLogEntryException e) {
             fail(e.getMessage());
@@ -110,13 +114,15 @@ public class IncrementalAuditoriumLogTest extends TestCase {
     }
 
     public void testSimpleSupervisorLog() {
-        ASExpression rule;
+        ASExpression rule, incRule;
 
         IncrementalAuditoriumLogGenerator.setUp(incAuditoriumLog);
 
         try {
+            rule = Verifier.readRule("rules/STARVoting.rules");
             IncrementalAuditoriumLogGenerator.generateSimpleSupervisorLog();
-            rule = Verifier.readRule("rules/STARVotingIncremental.rules");
+            incRule = Verifier.readRule("rules/STARVotingIncremental.rules");
+            assertGood(v.eval(incRule));
         } catch (IncorrectFormatException | IOException | InvalidLogEntryException e) {
             fail(e.getMessage());
             return;
@@ -129,13 +135,15 @@ public class IncrementalAuditoriumLogTest extends TestCase {
 
 
     public void testSimpleSupervisorLogMoreVotes() {
-        ASExpression rule;
+        ASExpression rule, incRule;
 
         IncrementalAuditoriumLogGenerator.setUp(incAuditoriumLog);
 
         try {
+            rule = Verifier.readRule("rules/STARVoting.rules");
             IncrementalAuditoriumLogGenerator.generateLotsOfVotesLog();
-            rule = Verifier.readRule("rules/STARVotingIncremental.rules");
+            incRule = Verifier.readRule("rules/STARVotingIncremental.rules");
+            assertGood(v.eval(incRule));
         } catch (IncorrectFormatException | IOException | InvalidLogEntryException e) {
             fail(e.getMessage());
             return;
@@ -147,12 +155,13 @@ public class IncrementalAuditoriumLogTest extends TestCase {
     }
 
     public void testSimpleSupervisorLogMoreVotesIncremental() {
-        ASExpression rule;
+        ASExpression rule, incRule;
 
         IncrementalAuditoriumLogGenerator.setUp(incAuditoriumLog);
 
         try {
-            rule = Verifier.readRule("rules/STARVotingIncremental.rules");
+            rule = Verifier.readRule("rules/STARVoting.rules");
+            incRule = Verifier.readRule("rules/STARVotingIncremental.rules");
 
             IncrementalAuditoriumLogGenerator.start3Machines();
 
@@ -160,7 +169,7 @@ public class IncrementalAuditoriumLogTest extends TestCase {
                 IncrementalAuditoriumLogGenerator.vote();
                 if(i%10 == 0)
                     IncrementalAuditoriumLogGenerator.logDatum(new SupervisorEvent(0, 0, "active").toSExp());
-                assertGood(v.eval(rule));
+                assertGood(v.eval(incRule));
             }
 
             IncrementalAuditoriumLogGenerator.close();
@@ -170,6 +179,35 @@ public class IncrementalAuditoriumLogTest extends TestCase {
         }
 
         assertGood(v.eval(rule));
+    }
+
+    public void testSimpleSupervisorIncrementalMoreVotesProvisional() {
+
+        ASExpression rule, incRule;
+
+        IncrementalAuditoriumLogGenerator.setUp(incAuditoriumLog);
+
+        try {
+            rule = Verifier.readRule("rules/STARVoting.rules");
+            incRule = Verifier.readRule("rules/STARVotingIncremental.rules");
+
+            IncrementalAuditoriumLogGenerator.start3Machines();
+
+            for(int i = 0; i < 100; i++) {
+                IncrementalAuditoriumLogGenerator.vote();
+                if(i%10 == 0)
+                    IncrementalAuditoriumLogGenerator.provisionalVote();
+                assertGood(v.eval(incRule));
+            }
+
+            IncrementalAuditoriumLogGenerator.close();
+        } catch (IOException | InvalidLogEntryException e) {
+            fail(e.getMessage());
+            return;
+        }
+
+        assertGood(v.eval(rule));
+
     }
 
 

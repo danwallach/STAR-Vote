@@ -826,7 +826,7 @@ public class Model {
                                     mySerial, event));
                     }*/
 
-                    if(arePollsOpen())
+                    if(arePollsOpen() && e.getKeyword().equals(keyword))
                         auditorium.announce(new LastPollsOpenEvent(mySerial, lastPollsOpenHeard));
                 }
             }

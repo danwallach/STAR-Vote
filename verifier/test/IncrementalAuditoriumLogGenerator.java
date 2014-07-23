@@ -198,6 +198,46 @@ public class IncrementalAuditoriumLogGenerator {
         logDatum(bre.toSExp());
     }
 
+
+    public static void provisionalVote() throws IOException, InvalidLogEntryException {
+
+
+        String precinct = "precinct";
+
+        ASExpression nonce = StringExpression.make(getRandomString());
+
+        /* Get some ballot data */
+        byte[] ballot = getBlob();
+
+        PINEnteredEvent pin = new PINEnteredEvent(1, "pin");
+
+        ProvisionalAuthorizeEvent authorize = new ProvisionalAuthorizeEvent(0, 1, nonce, ballot);
+
+        /* Generate a random bid for this voting session */
+        String bid = getRandomString();
+
+        /* The votebox now commits the ballot */
+        ProvisionalCommitEvent pce = new ProvisionalCommitEvent(1, nonce, ballot, bid);
+
+        ProvisionalBallotEvent pbe = new ProvisionalBallotEvent(0, nonce, bid);
+
+        /* We announce that the ballot was recieved */
+        BallotReceivedEvent bre = new BallotReceivedEvent(0, 1, nonce, bid, precinct);
+
+        /* Now we scan the ballot and accept it */
+        BallotScannedEvent bse = new BallotScannedEvent(2, bid);
+        BallotScanAcceptedEvent bsae = new BallotScanAcceptedEvent(0, bid);
+
+
+        logDatum(pin.toSExp());
+        logDatum(authorize.toSExp());
+        logDatum(pce.toSExp());
+        logDatum(bse.toSExp());
+        logDatum(pbe.toSExp());
+        logDatum(bsae.toSExp());
+        logDatum(bre.toSExp());
+    }
+
     /**
      * Utility method to close out the election logging process
      */
@@ -261,4 +301,5 @@ public class IncrementalAuditoriumLogGenerator {
 
         close();
     }
+
 }

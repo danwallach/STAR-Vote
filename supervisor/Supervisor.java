@@ -27,6 +27,8 @@ import supervisor.view.View;
 import auditorium.Bugout;
 import votebox.AuditoriumParams;
 
+import javax.swing.*;
+
 /**
  * This is the main entry point of the Supervisor. It is the "Controller" of the
  * MVC pattern.
@@ -78,6 +80,13 @@ public class Supervisor {
     	
         view = new View(model);
         view.setVisible(true);
+
+        String keyword = "";
+        while (keyword == null || keyword.equals(""))
+            keyword = JOptionPane.showInputDialog(view,
+                    "Please enter today's election keyword:", "Keyword",
+                    JOptionPane.QUESTION_MESSAGE);
+        model.setKeyword(keyword);
 
         view.display();
         model.start();
