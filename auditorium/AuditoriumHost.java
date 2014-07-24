@@ -202,7 +202,7 @@ public class AuditoriumHost implements IAuditoriumHost {
      * @param machineName The host needs to be given an ID unique across the network. There also needs to be an entry in the key store that corresponds to this ID.
      * @param constants   The host will get constant information from this instance (timeouts, file locations, etc.)
      */
-    public AuditoriumHost(String machineName, IAuditoriumParams constants) {
+    public AuditoriumHost(String machineName, IAuditoriumParams constants, String launchCode) {
         /* Initialize the info fields */
         nodeID = machineName;
         me = new HostPointer( machineName, getMyIP(), constants.getListenPort() );
@@ -236,7 +236,7 @@ public class AuditoriumHost implements IAuditoriumHost {
         		loadedRule = Verifier.readRule(constants.getRuleFile());
         	if(incrementalRuleFile != null)
                 loadedIncrementalRule = Verifier.readRule(constants.getIncrementalRuleFile());
-            log = new Log( new File( constants.getLogLocation() ) );
+            log = new Log( new File( constants.getLogLocation() ), launchCode );
         }
         catch (FileNotFoundException e) {
             throw new FatalNetworkException( "Can't open file: "

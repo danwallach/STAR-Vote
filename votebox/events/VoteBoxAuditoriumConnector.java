@@ -66,13 +66,13 @@ public class VoteBoxAuditoriumConnector {
      * @param rules         the matchers for messages this machine needs
      * @throws NetworkException
      */
-    public VoteBoxAuditoriumConnector(int serial, IAuditoriumParams params, MatcherRule... rules) throws NetworkException {
+    public VoteBoxAuditoriumConnector(int serial, IAuditoriumParams params, String launchCode, MatcherRule... rules) throws NetworkException {
 
         /* Initialize the event notifier */
         notifier = new VoteBoxEventNotifier();
 
         /* Initialize the network  with the provided serial number and parameters*/
-        auditorium = new AuditoriumHost( Integer.toString( serial ), params );
+        auditorium = new AuditoriumHost( Integer.toString( serial ), params, launchCode );
 
         /* Initialize the message matcher */
         matcher = new VoteBoxEventMatcher( rules );

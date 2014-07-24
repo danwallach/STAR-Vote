@@ -57,7 +57,7 @@ public class IncrementalAuditoriumLogGenerator {
     public static void setUp(IncrementalAuditoriumLog incLog) {
         rand = new Random();
 
-        AuditoriumHost host = new AuditoriumHost("0", new AuditoriumParams("test.conf"));
+        AuditoriumHost host = new AuditoriumHost("0", new AuditoriumParams("test.conf"), "0000000000");
         log = host.getLog();
 
         IKeyStore ks = new SimpleKeyStore("keys");

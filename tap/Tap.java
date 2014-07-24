@@ -60,6 +60,7 @@ import org.apache.http.message.BasicNameValuePair;
 public class Tap {
 
     private int _mySerial = -1;
+    private final String launchCode;
     private ASEWriter _output = null;
     private OutputStream _wrappedOut = null;
     private VoteBoxAuditoriumConnector _auditorium = null;
@@ -76,11 +77,12 @@ public class Tap {
      * @param serial        serial number of this machine.
      * @param out           OutputStream to send selected messages to.
      */
-    public Tap(int serial, OutputStream out){
+    public Tap(int serial, OutputStream out, String launchCode){
 
         _mySerial = serial;
         _wrappedOut = out;
         _output = new ASEWriter(_wrappedOut);
+        this.launchCode = launchCode;
 
         publicKey = params.getKeyStore().loadAdderPublicKey();
         privateKey = params.getKeyStore().loadAdderPrivateKey();
@@ -143,7 +145,7 @@ public class Tap {
         try{
 
             _auditorium = new VoteBoxAuditoriumConnector(_mySerial,
-                    AuditoriumParams.Singleton,
+                    AuditoriumParams.Singleton, launchCode,
                     CommitBallotEvent.getMatcher(),
                     BallotReceivedEvent.getMatcher(),
                     BallotScanAcceptedEvent.getMatcher(),
@@ -254,9 +256,10 @@ public class Tap {
 
         int serial;
         int port;
+        String launchCode;
 
         /* See if there isn't a full argument set */
-        if (args.length != 3) {
+        if (args.length != 4) {
 
             int p = 0;
 
@@ -304,6 +307,8 @@ public class Tap {
                     throw new RuntimeException("usage: Tap [serial] [report address] [port]\nExpected valid port.");
                 }
             }
+
+            launchCode = "0000000000";
         }
 
         /* If there is a full argument set... */
@@ -314,6 +319,7 @@ public class Tap {
                 serial = Integer.parseInt(args[0]);
                 reportAddr = args[1];
                 port = Integer.parseInt(args[2]);
+                launchCode = args[3];
             }
             catch (Exception e) { throw new RuntimeException("usage: Tap [serial] [report address] [port]"); }
         }
@@ -333,7 +339,7 @@ public class Tap {
                     localCon.connect(addr);
 
                     /* Start the tap */
-                    (new Tap(serial, localCon.getOutputStream())).start();
+                    (new Tap(serial, localCon.getOutputStream(), launchCode)).start();
                     break;
                 }
                 catch (IOException e) { /* If no good, retry */

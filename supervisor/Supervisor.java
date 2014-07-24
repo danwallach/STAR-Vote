@@ -84,7 +84,7 @@ public class Supervisor {
         String keyword = "";
         while (keyword == null || keyword.equals(""))
             keyword = JOptionPane.showInputDialog(view,
-                    "Please enter today's election keyword:", "Keyword",
+                    "Please enter today's election launch code:", "Launch Code",
                     JOptionPane.QUESTION_MESSAGE);
         model.setKeyword(keyword);
 

@@ -30,7 +30,7 @@ public class Main {
     public static void main(String[] args) throws Exception {
         VoteBoxAuditoriumConnector vbac = new VoteBoxAuditoriumConnector(
                 Integer.parseInt( args[0] ),
-				new AuditoriumParams("vb.conf"));
+				new AuditoriumParams("vb.conf"), "0000000000");
         vbac.connect();
     }
 }

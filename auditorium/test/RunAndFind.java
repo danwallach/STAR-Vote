@@ -36,7 +36,8 @@ public class RunAndFind {
 
     public static void main(String[] args) throws Exception {
         AuditoriumHost host = new AuditoriumHost( args[0],
-                TestParams.Singleton );
+                TestParams.Singleton, "0000000000" );
+
         host.start();
         HostPointer[] found = host.discover();
         for (HostPointer hp : found) {

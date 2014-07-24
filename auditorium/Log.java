@@ -64,13 +64,13 @@ public class Log {
      *
      * @throws FileNotFoundException Thrown if the given location cannot be found.
      */
-    public Log(File location) throws FileNotFoundException {
+    public Log(File location, String launchCode) throws FileNotFoundException {
         this.location = new FileOutputStream( location );
         haveSeen = new HashSet<>();
         last = new LinkedList<>();
 
         /* Initialize that hash chain with string 0000000000 */
-        lastChainedHash = StringExpression.makeString(StringExpression.makeString("0000000000").getSHA1());
+        lastChainedHash = StringExpression.makeString(StringExpression.makeString(launchCode).getSHA1());
     }
 
     /**

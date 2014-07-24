@@ -46,6 +46,7 @@ import votebox.middle.view.AWTViewFactory;
 import votebox.middle.view.IViewFactory;
 
 import javax.imageio.ImageIO;
+import javax.swing.*;
 import javax.swing.Timer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -97,6 +98,7 @@ public class VoteBox{
     boolean superOnline;
     private int superSerial;
     private String precinct;
+    private final String launchCode;
 
     /** Will keep the short code - nonce pairings to send over when the polls close */
     private HashMap<ASExpression, VotePair> plaintextAuditCommits;
@@ -112,7 +114,7 @@ public class VoteBox{
      * Default constructor: Equivalent to new VoteBox(-1) which sets a default serial of -1
      */
     public VoteBox(){
-    	this(-1);
+    	this(-1, "0000000000");
     }
     
     /**
@@ -124,10 +126,11 @@ public class VoteBox{
      * 
      * @param serial the serial number of the votebox
      */
-    public VoteBox(int serial) {
+    public VoteBox(int serial, String launchCode) {
 
         rand = new Random(System.currentTimeMillis());
         _constants = new AuditoriumParams("vb.conf");
+        this.launchCode = launchCode;
 
         /* If serial is not a good value, set mySerial to the default */
         mySerial = (serial != -1) ? serial : _constants.getDefaultSerialNumber();
@@ -319,7 +322,7 @@ public class VoteBox{
            transaction).
 
            Clean up the encrypter afterwards so as to destroy the random number needed for challenging.
-           TODO This code doesn't do anything?
+           XXX This code doesn't do anything?
          */
         currentDriver.getView().registerForCastBallot(new Observer(){
 
@@ -595,7 +598,7 @@ public class VoteBox{
 
         try {
 
-            auditorium = new VoteBoxAuditoriumConnector(mySerial, _constants,
+            auditorium = new VoteBoxAuditoriumConnector(mySerial, _constants, launchCode,
                     ActivatedEvent.getMatcher(), AssignLabelEvent.getMatcher(),
                     AuthorizedToCastEvent.getMatcher(), BallotReceivedEvent.getMatcher(),
                     OverrideCancelEvent.getMatcher(), OverrideCommitEvent.getMatcher(),
@@ -1188,8 +1191,14 @@ public class VoteBox{
      * @param args
      */
     public static void main(String[] args) {
+        String launchCode = "";
+        while (launchCode == null || launchCode.equals(""))
+            launchCode = JOptionPane.showInputDialog(null,
+                    "Please enter today's election launch code:", "Launch Code",
+                    JOptionPane.QUESTION_MESSAGE);
+
         if (args.length == 1)
-            new VoteBox(Integer.parseInt(args[0])).start();
+            new VoteBox(Integer.parseInt(args[0]), launchCode).start();
         else /* Tell VoteBox to refer to its config file for the serial number */
             new VoteBox().start();
     }

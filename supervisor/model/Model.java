@@ -570,7 +570,7 @@ public class Model {
         try {
             /* These are all the events we are expecting to hear and handle, and matchers for their formatting */
             auditorium = new VoteBoxAuditoriumConnector(mySerial,
-                    auditoriumParams, ActivatedEvent.getMatcher(),
+                    auditoriumParams, "0000000000", ActivatedEvent.getMatcher(),
                     AssignLabelEvent.getMatcher(), AuthorizedToCastEvent.getMatcher(),
                     CastCommittedBallotEvent.getMatcher(), LastPollsOpenEvent.getMatcher(),
                     OverrideCommitConfirmEvent.getMatcher(), PollsClosedEvent.getMatcher(),

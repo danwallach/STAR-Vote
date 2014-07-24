@@ -107,7 +107,7 @@ public class Booth {
 
         try {
             auditorium = new VoteBoxAuditoriumConnector(serial,
-                    auditoriumParams,  ActivatedEvent.getMatcher(), AssignLabelEvent.getMatcher(),
+                    auditoriumParams, "0000000000", ActivatedEvent.getMatcher(), AssignLabelEvent.getMatcher(),
                     AuthorizedToCastEvent.getMatcher(), BallotReceivedEvent.getMatcher(),
                     OverrideCancelEvent.getMatcher(), OverrideCommitEvent.getMatcher(),
                     PollsOpenQEvent.getMatcher(), AuthorizedToCastWithNIZKsEvent.getMatcher(),

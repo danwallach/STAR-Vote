@@ -44,7 +44,7 @@ public class LogTest {
 
     @Before
     public void setup() throws Exception {
-        log = new Log( new File( "temp" ) );
+        log = new Log( new File( "temp" ), "0000000000" );
     }
 
     @After

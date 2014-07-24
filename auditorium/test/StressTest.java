@@ -44,7 +44,7 @@ public class StressTest {
         Bugout.ERR_OUTPUT_ON = true;
         Bugout.MSG_OUTPUT_ON = true;
         AuditoriumHost host = new AuditoriumHost( /*args[0]*/ "0",
-                TestParams.Singleton );
+                TestParams.Singleton, "0000000000" );
         host.start();
         listenThread(host);
         HostPointer[] pointers = host.discover();

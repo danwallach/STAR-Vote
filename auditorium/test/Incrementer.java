@@ -34,7 +34,7 @@ import auditorium.HostPointer;
 public class Incrementer {
 
     public static void main(String[] args) throws Exception {
-        AuditoriumHost host = new AuditoriumHost(args[0], TestParams.Singleton);
+        AuditoriumHost host = new AuditoriumHost(args[0], TestParams.Singleton, "0000000000");
         host.start();
         for (HostPointer hp : host.discover())
             host.join( hp );

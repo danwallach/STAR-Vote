@@ -33,12 +33,16 @@ public class JoinEvent{
     /** the serial of the machine that is joining */
 	private int serial;
 
+    /** The election keyword to prevent unauthorized machines from joining */
+    //private String keyword;
+
     /**
      * Constructs a new JoinEvent.
      * @param serial the serial number of the joining machine
      */
-	public JoinEvent(int serial) {
+	public JoinEvent(int serial/* String keyword*/) {
 		super();
+        //this.keyword = keyword;
 		this.serial = serial;
 	}
 
@@ -48,5 +52,11 @@ public class JoinEvent{
 	public int getSerial() {
 		return serial;
 	}
+
+
+    /**
+     * @return the keyword from the joining machine
+     */
+    //public String getKeyword(){ return keyword; }
 
 }

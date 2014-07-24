@@ -21,6 +21,8 @@ public class  BallotScanner{
     private int numConnections;
     private VoteBoxAuditoriumConnector auditorium;
     private final int mySerial;
+
+    private final String launchCode;
     private boolean connected;
     private Timer statusTimer;
     private boolean isActivated;
@@ -48,7 +50,7 @@ public class  BallotScanner{
      * This is used by default when no serial number is provided.
      */
     public BallotScanner() {
-        this(-1);
+        this(-1, "0000000000");
     }
 
     /**
@@ -58,7 +60,7 @@ public class  BallotScanner{
      * @param serial the serial number to be assigned to the @BallotScanner
      *               input from the command line.
      */
-    public BallotScanner(int serial) {
+    public BallotScanner(int serial, String launchCode) {
 
         /* Reads in the configuration file for the BallotScanner */
         _constants = new AuditoriumParams("bs.conf");
@@ -78,6 +80,8 @@ public class  BallotScanner{
         /* Initialisations to set up network communication */
         numConnections = 0;
         activatedObs = new ObservableEvent();
+
+        this.launchCode = launchCode;
         
         /* Allows BallotScanner to change label on AssignLabelEvent */
         labelChangedEvent = new Event<>();
@@ -216,7 +220,7 @@ public class  BallotScanner{
 
         /* Creates a VoteBoxAuditoriumConnector which will be used to connect to Auditorium */
         try {
-            auditorium = new VoteBoxAuditoriumConnector(mySerial, _constants, 
+            auditorium = new VoteBoxAuditoriumConnector(mySerial, _constants, launchCode,
                     BallotScanAcceptedEvent.getMatcher(),
                     BallotScanRejectedEvent.getMatcher(),
                     StartScannerEvent.getMatcher(),
@@ -377,10 +381,16 @@ public class  BallotScanner{
      * @param args - arguments to be passed to the main method, from the command line
      */
     public static void main(String[] args) {
+
+        String launchCode = "";
+        while (launchCode == null || launchCode.equals(""))
+            launchCode = JOptionPane.showInputDialog(null,
+                    "Please enter today's election launch code:", "Launch Code",
+                    JOptionPane.QUESTION_MESSAGE);
         
         BallotScanner bs;
         if (args.length == 1)
-            bs = new BallotScanner(Integer.parseInt(args[0]));
+            bs = new BallotScanner(Integer.parseInt(args[0]), launchCode);
         else
             /* Tell VoteBox to refer to its config file for the serial number */
             bs = new BallotScanner();

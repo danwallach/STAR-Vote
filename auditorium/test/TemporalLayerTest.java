@@ -78,7 +78,7 @@ public class TemporalLayerTest {
     public void setup() throws Exception {
     	tmpFile = File.createTempFile("tmp", "test");
     	
-        log = new Log( tmpFile );
+        log = new Log( tmpFile, "0000000000" );
         layer = new AuditoriumTemporalLayer( AAuditoriumLayer.BOTTOM, host );
     }
 
