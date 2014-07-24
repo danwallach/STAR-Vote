@@ -22,28 +22,26 @@
 
 package tap;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
-
 import auditorium.IAuditoriumParams;
 import auditorium.NetworkException;
-
 import crypto.adder.PrivateKey;
 import crypto.adder.PublicKey;
-import sexpression.stream.ASEWriter;
-import votebox.AuditoriumParams;
-import votebox.events.*;
-
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import sexpression.stream.ASEWriter;
+import votebox.AuditoriumParams;
+import votebox.events.*;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 
 
@@ -109,11 +107,12 @@ public class Tap {
 
         HttpClient client = new DefaultHttpClient();
 
-            HttpPost post = new HttpPost("http://starvote.cs.rice.edu/3FF968A3B47CT34C");
+        HttpPost post = new HttpPost("http://starvote.cs.rice.edu/3FF968A3B47CT34C");
 
-            try {
+        try {
 
-                List<NameValuePair> nameValuePairs = new ArrayList<>(1);
+            List<NameValuePair> nameValuePairs = new ArrayList<>(1);
+
             /* For each of the ballotStrings... */
             for (String ballotString : ballotList) {
 

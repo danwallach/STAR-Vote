@@ -1,10 +1,10 @@
 package models;
 
-import java.util.*;
-
-import play.db.ebean.Model;
 import play.data.validation.Constraints.*;
+import play.db.ebean.Model;
+
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * Model of a Cast Ballot. This class is an entity of the web-server's database.
@@ -32,7 +32,7 @@ public class CastBallot extends Model {
     }
 
     /**
-     * This member object is a finder that aids in retrieving Cat Ballots by their ballot IDs
+     * This member object is a finder that aids in retrieving Cast Ballots by their ballot IDs
      */
     public static Finder<Long, CastBallot> find = new Finder<Long, CastBallot>(Long.class, CastBallot.class);
 
