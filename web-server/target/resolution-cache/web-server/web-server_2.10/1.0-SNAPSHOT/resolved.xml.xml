@@ -4,7 +4,7 @@
 		module="web-server_2.10"
 		revision="1.0-SNAPSHOT"
 		status="integration"
-		publication="20140703171727"
+		publication="20140724132550"
 	>
 		<description>
 		web-server

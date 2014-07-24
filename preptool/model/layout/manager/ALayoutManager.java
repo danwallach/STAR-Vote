@@ -403,7 +403,7 @@ public abstract class ALayoutManager implements ILayoutManager {
                     BufferedImage image = rb.execute(getImageVisitor(), false);
 
                     /* Create a subdirectory for this image */
-                    File path = new File(location + File.separator + uuid + File.separator + uid + "_" + langShortName + ".png");
+                    File path = new File(location + File.separator + uuid + File.separator + uuid  + "_review_" + langShortName + ".png");
 
                     /* Create the directory, if it isn't there */
                     //noinspection ResultOfMethodCallIgnored
