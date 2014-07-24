@@ -961,7 +961,7 @@ public class Model {
                         sup.setStatus(SupervisorMachine.INACTIVE);
                         break;
                     default:
-                        throw new IllegalStateException( "Invalid Supervisor Status: " + e.getStatus());
+                        throw new IllegalStateException("Invalid Supervisor Status: " + e.getStatus());
                 }
 
                 /* Set the mini-model to show as online */
