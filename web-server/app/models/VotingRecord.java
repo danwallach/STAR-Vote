@@ -4,7 +4,9 @@ import play.data.validation.Constraints.*;
 import play.db.ebean.Model;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.*;
+import supervisor.model.Precinct;
+
 
 /**
  * Model of a VotingRecord on the Web-Server. An entity of the database.
@@ -27,7 +29,7 @@ public class VotingRecord extends Model {
     public Map<String, Map<String, Precinct>> records;
     
     @Required
-    public boolean isConflicted;
+    public Boolean isConflicted;
 
     /**
      * Constructor
@@ -54,11 +56,11 @@ public class VotingRecord extends Model {
         
         Map.Entry<String, Map<String, Precinct>> chosenEntry = null;
         
-        for (Map.Entry<String, Map<String, Precinct>> entry : records)
-            if (entry.getKey.equals(chosenHash))
+        for (Map.Entry<String, Map<String, Precinct>> entry : records.entrySet())
+            if (entry.getKey().equals(chosenHash))
                 chosenEntry = entry;
             
-        records = new Map<String, Map<String, Precinct>>();
+        records = new HashMap<String, Map<String, Precinct>>();
         records.put(chosenEntry.getKey(), chosenEntry.getValue());
         
         isConflicted = false;
@@ -82,14 +84,14 @@ public class VotingRecord extends Model {
      * @return      the list of VotingRecords that are conflicted
      */
     public static List<VotingRecord> getConflicted() {
-        return find.where().ieq("isConflicted", true).findList();
+        return find.where().eq("isConflicted", true).findList();
     }
 
     /**
      * @return      the list of VotingRecords that are not conflicted
      */
     public static List<VotingRecord> getNonConflicted() {
-        return find.where().ieq("isConflicted", false).findList();
+        return find.where().eq("isConflicted", false).findList();
     }
 
     /**

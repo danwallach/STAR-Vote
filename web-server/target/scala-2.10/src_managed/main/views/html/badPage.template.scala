@@ -51,7 +51,7 @@ Seq[Any](_display_(Seq[Any](/*1.2*/main("Whoops!")/*1.17*/ {_display_(Seq[Any](f
 }
                 /*
                     -- GENERATED --
-                    DATE: Thu Jul 03 17:16:52 CDT 2014
+                    DATE: Mon Jul 28 15:39:17 CDT 2014
                     SOURCE: /home/mdb12/Workspace/STAR-Vote/web-server/app/views/badPage.scala.html
                     HASH: 660c46fbafa58e3a60db6d86400143cc8639818c
                     MATRIX: 866->1|889->16|928->18|1155->210|1172->219|1209->235
