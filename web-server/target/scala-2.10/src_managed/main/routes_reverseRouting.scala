@@ -1,16 +1,8 @@
 // @SOURCE:/home/mdb12/Workspace/STAR-Vote/web-server/conf/routes
-// @HASH:6d4dbf992ffb3e6a238a90207f286e8dac83f093
-// @DATE:Mon Jul 28 14:48:09 CDT 2014
+// @HASH:b5ca75a4151ba694f60f9191e0caa8929a7776be
+// @DATE:Thu Jul 03 17:21:29 CDT 2014
 
-import Routes.{prefix => _prefix, defaultPrefix => _defaultPrefix}
-import play.core._
-import play.core.Router._
-import play.core.j._
-
-import play.api.mvc._
-import play.libs.F
-
-import Router.queryString
+import Routes.{defaultPrefix => _defaultPrefix, prefix => _prefix}
 
 
 // @LINE:26

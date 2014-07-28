@@ -63,7 +63,7 @@ Seq[Any](format.raw/*2.1*/("""
 }
                 /*
                     -- GENERATED --
-                    DATE: Thu Jul 03 17:16:52 CDT 2014
+                    DATE: Mon Jul 28 15:39:17 CDT 2014
                     SOURCE: /home/mdb12/Workspace/STAR-Vote/web-server/app/views/index.scala.html
                     HASH: cb6610c47acaf23307aeb47a4c82d7aefe60bd0d
                     MATRIX: 888->34|925->37|963->67|1002->69|2581->1617
