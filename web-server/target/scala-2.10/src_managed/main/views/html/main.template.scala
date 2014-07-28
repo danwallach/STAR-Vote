@@ -1,6 +1,24 @@
+
 package views.html
 
+import play.templates._
+import play.templates.TemplateMagic._
+
+import play.api.templates._
+import play.api.templates.PlayMagic._
+import models._
 import controllers._
+import java.lang._
+import java.util._
+import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
+import play.api.i18n._
+import play.core.j.PlayMagicForJava._
+import play.mvc._
+import play.data._
+import play.api.data.Field
+import play.mvc.Http.Context.Implicit._
+import views.html._
 /**/
 object main extends BaseScalaTemplate[play.api.templates.HtmlFormat.Appendable,Format[play.api.templates.HtmlFormat.Appendable]](play.api.templates.HtmlFormat) with play.api.templates.Template2[String,Html,play.api.templates.HtmlFormat.Appendable] {
 
@@ -55,10 +73,10 @@ Seq[Any](format.raw/*1.32*/("""
 }
                 /*
                     -- GENERATED --
-                    DATE: Mon Jul 28 14:38:40 CDT 2014
-                    SOURCE: C:/Users/Matthew Kindy II/Documents/GitHub/STAR-Vote/web-server/app/views/main.scala.html
-                    HASH: f63726a7a906bcdc0a9431b5d65b80d55ee7e5d4
-                    MATRIX: 778->1|902->31|1004->98|1030->103|1143->181|1157->187|1219->227|1326->299|1340->305|1396->339|1501->408|1516->414|1582->457|1676->515|1691->521|1745->553|2552->1324|2581->1331
+                    DATE: Thu Jul 03 17:16:52 CDT 2014
+                    SOURCE: /home/mdb12/Workspace/STAR-Vote/web-server/app/views/main.scala.html
+                    HASH: ed8b5228c7e97ec7c26fabb7251762b5e82df564
+                    MATRIX: 778->1|902->31|998->92|1024->97|1136->174|1150->180|1212->220|1318->291|1332->297|1388->331|1492->399|1507->405|1573->448|1666->505|1681->511|1735->543|2522->1294|2551->1301
                     LINES: 26->1|29->1|35->7|35->7|36->8|36->8|36->8|37->9|37->9|37->9|38->10|38->10|38->10|39->11|39->11|39->11|59->31|59->31
                     -- GENERATED --
                 */

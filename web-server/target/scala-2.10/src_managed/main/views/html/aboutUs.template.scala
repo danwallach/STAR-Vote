@@ -1,4 +1,24 @@
+
 package views.html
+
+import play.templates._
+import play.templates.TemplateMagic._
+
+import play.api.templates._
+import play.api.templates.PlayMagic._
+import models._
+import controllers._
+import java.lang._
+import java.util._
+import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
+import play.api.i18n._
+import play.core.j.PlayMagicForJava._
+import play.mvc._
+import play.data._
+import play.api.data.Field
+import play.mvc.Http.Context.Implicit._
+import views.html._
 /**/
 object aboutUs extends BaseScalaTemplate[play.api.templates.HtmlFormat.Appendable,Format[play.api.templates.HtmlFormat.Appendable]](play.api.templates.HtmlFormat) with play.api.templates.Template0[play.api.templates.HtmlFormat.Appendable] {
 
@@ -47,9 +67,9 @@ Seq[Any](_display_(Seq[Any](/*1.2*/main("About Us")/*1.18*/ {_display_(Seq[Any](
 }
                 /*
                     -- GENERATED --
-                    DATE: Mon Jul 28 14:38:39 CDT 2014
-                    SOURCE: C:/Users/Matthew Kindy II/Documents/GitHub/STAR-Vote/web-server/app/views/aboutUs.scala.html
-                    HASH: 719cfb0e88d1afdaa631d66eb4bac4d6a7e30372
+                    DATE: Thu Jul 03 17:16:52 CDT 2014
+                    SOURCE: /home/mdb12/Workspace/STAR-Vote/web-server/app/views/aboutUs.scala.html
+                    HASH: d1cf4f032c61e179562af59a208f3b10e4ee0e51
                     MATRIX: 866->1|890->17|929->19
                     LINES: 29->1|29->1|29->1
                     -- GENERATED --

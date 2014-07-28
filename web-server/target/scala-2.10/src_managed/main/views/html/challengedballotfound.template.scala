@@ -1,10 +1,30 @@
+
 package views.html
+
+import play.templates._
+import play.templates.TemplateMagic._
+
+import play.api.templates._
+import play.api.templates.PlayMagic._
+import models._
+import controllers._
+import java.lang._
+import java.util._
+import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
+import play.api.i18n._
+import play.core.j.PlayMagicForJava._
+import play.mvc._
+import play.data._
+import play.api.data.Field
+import play.mvc.Http.Context.Implicit._
+import views.html._
 /**/
 object challengedballotfound extends BaseScalaTemplate[play.api.templates.HtmlFormat.Appendable,Format[play.api.templates.HtmlFormat.Appendable]](play.api.templates.HtmlFormat) with play.api.templates.Template2[ChallengedBallot,String,play.api.templates.HtmlFormat.Appendable] {
 
     /**/
     def apply/*1.2*/(ballot: ChallengedBallot)(ballotid: String):play.api.templates.HtmlFormat.Appendable = {
-        _display_ {
+        _display_ {import helper.twitterBootstrap._
 
 
 Seq[Any](format.raw/*1.46*/("""
@@ -52,10 +72,10 @@ Seq[Any](format.raw/*1.46*/("""
 }
                 /*
                     -- GENERATED --
-                    DATE: Mon Jul 28 14:38:40 CDT 2014
-                    SOURCE: C:/Users/Matthew Kindy II/Documents/GitHub/STAR-Vote/web-server/app/views/challengedballotfound.scala.html
-                    HASH: 6e6b47844c7fffc01d71e0c975422c1d4ee6c66e
-                    MATRIX: 807->1|979->45|1009->84|1050->91|1084->117|1123->119|1302->263|1331->271|2062->974|2091->975|2361->1217|2390->1218|2485->1277|2515->1285|2582->1321
+                    DATE: Thu Jul 03 17:16:52 CDT 2014
+                    SOURCE: /home/mdb12/Workspace/STAR-Vote/web-server/app/views/challengedballotfound.scala.html
+                    HASH: 89451e880f3f8c622a3381835d9b3d2a3686df4c
+                    MATRIX: 807->1|978->45|1006->81|1046->87|1080->113|1119->115|1294->255|1323->263|2040->952|2069->953|2332->1188|2361->1189|2455->1247|2485->1255|2549->1288
                     LINES: 26->1|30->1|32->4|33->5|33->5|33->5|37->9|37->9|51->23|51->23|58->30|58->30|59->31|59->31|62->34
                     -- GENERATED --
                 */

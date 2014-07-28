@@ -1,4 +1,24 @@
+
 package views.html
+
+import play.templates._
+import play.templates.TemplateMagic._
+
+import play.api.templates._
+import play.api.templates.PlayMagic._
+import models._
+import controllers._
+import java.lang._
+import java.util._
+import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
+import play.api.i18n._
+import play.core.j.PlayMagicForJava._
+import play.mvc._
+import play.data._
+import play.api.data.Field
+import play.mvc.Http.Context.Implicit._
+import views.html._
 /**/
 object badPage extends BaseScalaTemplate[play.api.templates.HtmlFormat.Appendable,Format[play.api.templates.HtmlFormat.Appendable]](play.api.templates.HtmlFormat) with play.api.templates.Template0[play.api.templates.HtmlFormat.Appendable] {
 
@@ -31,10 +51,10 @@ Seq[Any](_display_(Seq[Any](/*1.2*/main("Whoops!")/*1.17*/ {_display_(Seq[Any](f
 }
                 /*
                     -- GENERATED --
-                    DATE: Mon Jul 28 14:38:39 CDT 2014
-                    SOURCE: C:/Users/Matthew Kindy II/Documents/GitHub/STAR-Vote/web-server/app/views/badPage.scala.html
-                    HASH: 1392e12d31d3cbeeccf645a017d7f0d188a8c072
-                    MATRIX: 866->1|889->16|928->18|1163->218|1180->227|1217->243
+                    DATE: Thu Jul 03 17:16:52 CDT 2014
+                    SOURCE: /home/mdb12/Workspace/STAR-Vote/web-server/app/views/badPage.scala.html
+                    HASH: 660c46fbafa58e3a60db6d86400143cc8639818c
+                    MATRIX: 866->1|889->16|928->18|1155->210|1172->219|1209->235
                     LINES: 29->1|29->1|29->1|37->9|37->9|37->9
                     -- GENERATED --
                 */

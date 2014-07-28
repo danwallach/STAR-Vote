@@ -1,10 +1,30 @@
+
 package views.html
+
+import play.templates._
+import play.templates.TemplateMagic._
+
+import play.api.templates._
+import play.api.templates.PlayMagic._
+import models._
+import controllers._
+import java.lang._
+import java.util._
+import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
+import play.api.i18n._
+import play.core.j.PlayMagicForJava._
+import play.mvc._
+import play.data._
+import play.api.data.Field
+import play.mvc.Http.Context.Implicit._
+import views.html._
 /**/
 object index extends BaseScalaTemplate[play.api.templates.HtmlFormat.Appendable,Format[play.api.templates.HtmlFormat.Appendable]](play.api.templates.HtmlFormat) with play.api.templates.Template0[play.api.templates.HtmlFormat.Appendable] {
 
     /**/
     def apply():play.api.templates.HtmlFormat.Appendable = {
-        _display_ {
+        _display_ {import helper.twitterBootstrap._
 
 
 Seq[Any](format.raw/*2.1*/("""
@@ -43,10 +63,10 @@ Seq[Any](format.raw/*2.1*/("""
 }
                 /*
                     -- GENERATED --
-                    DATE: Mon Jul 28 14:38:40 CDT 2014
-                    SOURCE: C:/Users/Matthew Kindy II/Documents/GitHub/STAR-Vote/web-server/app/views/index.scala.html
-                    HASH: 9432fd526417a39331037985ede7e2b402c5ffb5
-                    MATRIX: 889->35|928->40|966->70|1005->72|2605->1641
+                    DATE: Thu Jul 03 17:16:52 CDT 2014
+                    SOURCE: /home/mdb12/Workspace/STAR-Vote/web-server/app/views/index.scala.html
+                    HASH: cb6610c47acaf23307aeb47a4c82d7aefe60bd0d
+                    MATRIX: 888->34|925->37|963->67|1002->69|2581->1617
                     LINES: 30->2|32->4|32->4|32->4|53->25
                     -- GENERATED --
                 */
