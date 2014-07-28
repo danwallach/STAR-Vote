@@ -41,7 +41,7 @@ public class WebPrinter extends Printer{
         final ArrayList<RaceTitlePair> actualRaceNameImagePairs = getRaceNameImagePairs(choiceToImage);
         final List<String> choices = new ArrayList<String>();
 
-        ArrayList<ChoicePair> correctedBallot = correctBallot(ballot);
+        ArrayList<ChoicePair> correctedBallot = reformBallot(ballot);
 
         /* This for loop uses the corrected ballot, which accounts for No Selections. */
         for (ChoicePair currentItem : correctedBallot)

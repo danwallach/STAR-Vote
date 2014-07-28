@@ -1,9 +1,106 @@
-2014-07-28 14:56:20,068 - [INFO] - from play in pool-12-thread-1 
+2014-07-28 17:10:50,571 - [INFO] - from play in pool-35-thread-3 
 Listening for HTTP on /0:0:0:0:0:0:0:0:9000
 
-2014-07-28 14:56:28,225 - [INFO] - from play in play-internal-execution-context-1 
+2014-07-28 17:10:57,361 - [INFO] - from play in play-internal-execution-context-1 
 database [default] connected at jdbc:h2:mem:play
 
-2014-07-28 14:56:28,706 - [INFO] - from play in play-internal-execution-context-1 
-Application started (Dev)
+2014-07-28 17:10:57,656 - [ERROR] - from com.avaje.ebeaninternal.server.deploy.BeanDescriptorManager in play-internal-execution-context-1 
+Error in deployment
+javax.persistence.PersistenceException: java.lang.NullPointerException
+	at com.avaje.ebeaninternal.server.deploy.parse.DeployCreateProperties.createProperties(DeployCreateProperties.java:164) ~[na:na]
+	at com.avaje.ebeaninternal.server.deploy.parse.DeployCreateProperties.createProperties(DeployCreateProperties.java:54) ~[na:na]
+	at com.avaje.ebeaninternal.server.deploy.BeanDescriptorManager.createDeployBeanInfo(BeanDescriptorManager.java:1036) ~[na:na]
+	at com.avaje.ebeaninternal.server.deploy.BeanDescriptorManager.readEntityDeploymentInitial(BeanDescriptorManager.java:515) ~[na:na]
+	at com.avaje.ebeaninternal.server.deploy.BeanDescriptorManager.deploy(BeanDescriptorManager.java:235) ~[na:na]
+	at com.avaje.ebeaninternal.server.core.InternalConfiguration.<init>(InternalConfiguration.java:114) [na:na]
+	at com.avaje.ebeaninternal.server.core.DefaultServerFactory.createServer(DefaultServerFactory.java:204) [na:na]
+	at com.avaje.ebeaninternal.server.core.DefaultServerFactory.createServer(DefaultServerFactory.java:65) [na:na]
+	at com.avaje.ebean.EbeanServerFactory.create(EbeanServerFactory.java:58) [na:na]
+	at play.db.ebean.EbeanPlugin.onStart(EbeanPlugin.java:79) [na:na]
+	at play.api.Play$$anonfun$start$1$$anonfun$apply$mcV$sp$1.apply(Play.scala:88) [na:na]
+	at play.api.Play$$anonfun$start$1$$anonfun$apply$mcV$sp$1.apply(Play.scala:88) [na:na]
+	at scala.collection.immutable.List.foreach(List.scala:318) [na:na]
+	at play.api.Play$$anonfun$start$1.apply$mcV$sp(Play.scala:88) [na:na]
+	at play.api.Play$$anonfun$start$1.apply(Play.scala:88) [na:na]
+	at play.api.Play$$anonfun$start$1.apply(Play.scala:88) [na:na]
+	at play.utils.Threads$.withContextClassLoader(Threads.scala:18) [na:na]
+	at play.api.Play$.start(Play.scala:87) [na:na]
+	at play.core.ReloadableApplication$$anonfun$get$1$$anonfun$apply$1$$anonfun$1.apply(ApplicationProvider.scala:139) [na:na]
+	at play.core.ReloadableApplication$$anonfun$get$1$$anonfun$apply$1$$anonfun$1.apply(ApplicationProvider.scala:112) [na:na]
+	at scala.Option.map(Option.scala:145) [na:na]
+	at play.core.ReloadableApplication$$anonfun$get$1$$anonfun$apply$1.apply(ApplicationProvider.scala:112) [na:na]
+	at play.core.ReloadableApplication$$anonfun$get$1$$anonfun$apply$1.apply(ApplicationProvider.scala:110) [na:na]
+	at scala.util.Success.flatMap(Try.scala:200) [na:na]
+	at play.core.ReloadableApplication$$anonfun$get$1.apply(ApplicationProvider.scala:110) [na:na]
+	at play.core.ReloadableApplication$$anonfun$get$1.apply(ApplicationProvider.scala:102) [na:na]
+	at scala.concurrent.impl.Future$PromiseCompletingRunnable.liftedTree1$1(Future.scala:24) [na:na]
+	at scala.concurrent.impl.Future$PromiseCompletingRunnable.run(Future.scala:24) [na:na]
+	at com.typesafe.trace.FutureRunnable.run(FutureTrace.scala:119) [na:na]
+	at scala.concurrent.forkjoin.ForkJoinTask$AdaptedRunnableAction.exec(ForkJoinTask.java:1361) [na:na]
+	at scala.concurrent.forkjoin.ForkJoinTask.doExec(ForkJoinTask.java:260) [na:na]
+	at scala.concurrent.forkjoin.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:1339) [na:na]
+	at scala.concurrent.forkjoin.ForkJoinPool.runWorker(ForkJoinPool.java:1979) [na:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:107) [na:na]
+Caused by: java.lang.NullPointerException: null
+	at java.util.concurrent.ConcurrentHashMap.hash(ConcurrentHashMap.java:333) ~[na:1.7.0_55]
+	at java.util.concurrent.ConcurrentHashMap.get(ConcurrentHashMap.java:988) ~[na:1.7.0_55]
+	at com.avaje.ebeaninternal.server.type.DefaultTypeManager.getScalarType(DefaultTypeManager.java:247) ~[na:na]
+	at com.avaje.ebeaninternal.server.deploy.parse.DeployCreateProperties.createManyType(DeployCreateProperties.java:262) ~[na:na]
+	at com.avaje.ebeaninternal.server.deploy.parse.DeployCreateProperties.createProp(DeployCreateProperties.java:290) ~[na:na]
+	at com.avaje.ebeaninternal.server.deploy.parse.DeployCreateProperties.createProp(DeployCreateProperties.java:341) ~[na:na]
+	at com.avaje.ebeaninternal.server.deploy.parse.DeployCreateProperties.createProperties(DeployCreateProperties.java:128) ~[na:na]
+	... 33 common frames omitted
+
+2014-07-28 17:10:57,698 - [ERROR] - from application in New I/O worker #1 
+
+
+! @6j37j4abj - Internal server error, for (GET) [/] ->
+
+play.api.UnexpectedException: Unexpected exception[PersistenceException: java.lang.NullPointerException]
+	at play.core.ReloadableApplication$$anonfun$get$1$$anonfun$apply$1$$anonfun$1.apply(ApplicationProvider.scala:148) ~[na:na]
+	at play.core.ReloadableApplication$$anonfun$get$1$$anonfun$apply$1$$anonfun$1.apply(ApplicationProvider.scala:112) ~[na:na]
+	at scala.Option.map(Option.scala:145) ~[na:na]
+	at play.core.ReloadableApplication$$anonfun$get$1$$anonfun$apply$1.apply(ApplicationProvider.scala:112) ~[na:na]
+	at play.core.ReloadableApplication$$anonfun$get$1$$anonfun$apply$1.apply(ApplicationProvider.scala:110) ~[na:na]
+	at scala.util.Success.flatMap(Try.scala:200) ~[na:na]
+	at play.core.ReloadableApplication$$anonfun$get$1.apply(ApplicationProvider.scala:110) ~[na:na]
+	at play.core.ReloadableApplication$$anonfun$get$1.apply(ApplicationProvider.scala:102) ~[na:na]
+	at scala.concurrent.impl.Future$PromiseCompletingRunnable.liftedTree1$1(Future.scala:24) ~[na:na]
+	at scala.concurrent.impl.Future$PromiseCompletingRunnable.run(Future.scala:24) ~[na:na]
+	at com.typesafe.trace.FutureRunnable.run(FutureTrace.scala:119) ~[na:na]
+	at scala.concurrent.forkjoin.ForkJoinTask$AdaptedRunnableAction.exec(ForkJoinTask.java:1361) ~[na:na]
+	at scala.concurrent.forkjoin.ForkJoinTask.doExec(ForkJoinTask.java:260) ~[na:na]
+	at scala.concurrent.forkjoin.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:1339) ~[na:na]
+	at scala.concurrent.forkjoin.ForkJoinPool.runWorker(ForkJoinPool.java:1979) ~[na:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:107) ~[na:na]
+Caused by: javax.persistence.PersistenceException: java.lang.NullPointerException
+	at com.avaje.ebeaninternal.server.deploy.parse.DeployCreateProperties.createProperties(DeployCreateProperties.java:164) ~[na:na]
+	at com.avaje.ebeaninternal.server.deploy.parse.DeployCreateProperties.createProperties(DeployCreateProperties.java:54) ~[na:na]
+	at com.avaje.ebeaninternal.server.deploy.BeanDescriptorManager.createDeployBeanInfo(BeanDescriptorManager.java:1036) ~[na:na]
+	at com.avaje.ebeaninternal.server.deploy.BeanDescriptorManager.readEntityDeploymentInitial(BeanDescriptorManager.java:515) ~[na:na]
+	at com.avaje.ebeaninternal.server.deploy.BeanDescriptorManager.deploy(BeanDescriptorManager.java:235) ~[na:na]
+	at com.avaje.ebeaninternal.server.core.InternalConfiguration.<init>(InternalConfiguration.java:114) ~[na:na]
+	at com.avaje.ebeaninternal.server.core.DefaultServerFactory.createServer(DefaultServerFactory.java:204) ~[na:na]
+	at com.avaje.ebeaninternal.server.core.DefaultServerFactory.createServer(DefaultServerFactory.java:65) ~[na:na]
+	at com.avaje.ebean.EbeanServerFactory.create(EbeanServerFactory.java:58) ~[na:na]
+	at play.db.ebean.EbeanPlugin.onStart(EbeanPlugin.java:79) ~[na:na]
+	at play.api.Play$$anonfun$start$1$$anonfun$apply$mcV$sp$1.apply(Play.scala:88) ~[na:na]
+	at play.api.Play$$anonfun$start$1$$anonfun$apply$mcV$sp$1.apply(Play.scala:88) ~[na:na]
+	at scala.collection.immutable.List.foreach(List.scala:318) ~[na:na]
+	at play.api.Play$$anonfun$start$1.apply$mcV$sp(Play.scala:88) ~[na:na]
+	at play.api.Play$$anonfun$start$1.apply(Play.scala:88) ~[na:na]
+	at play.api.Play$$anonfun$start$1.apply(Play.scala:88) ~[na:na]
+	at play.utils.Threads$.withContextClassLoader(Threads.scala:18) ~[na:na]
+	at play.api.Play$.start(Play.scala:87) ~[na:na]
+	at play.core.ReloadableApplication$$anonfun$get$1$$anonfun$apply$1$$anonfun$1.apply(ApplicationProvider.scala:139) ~[na:na]
+	... 15 common frames omitted
+Caused by: java.lang.NullPointerException: null
+	at java.util.concurrent.ConcurrentHashMap.hash(ConcurrentHashMap.java:333) ~[na:1.7.0_55]
+	at java.util.concurrent.ConcurrentHashMap.get(ConcurrentHashMap.java:988) ~[na:1.7.0_55]
+	at com.avaje.ebeaninternal.server.type.DefaultTypeManager.getScalarType(DefaultTypeManager.java:247) ~[na:na]
+	at com.avaje.ebeaninternal.server.deploy.parse.DeployCreateProperties.createManyType(DeployCreateProperties.java:262) ~[na:na]
+	at com.avaje.ebeaninternal.server.deploy.parse.DeployCreateProperties.createProp(DeployCreateProperties.java:290) ~[na:na]
+	at com.avaje.ebeaninternal.server.deploy.parse.DeployCreateProperties.createProp(DeployCreateProperties.java:341) ~[na:na]
+	at com.avaje.ebeaninternal.server.deploy.parse.DeployCreateProperties.createProperties(DeployCreateProperties.java:128) ~[na:na]
+	... 33 common frames omitted
 
