@@ -9,16 +9,16 @@
 		extra-scalaVersion="2.10"
 		conf="compile"
 		confs="compile, runtime, test, provided, optional, compile-internal, runtime-internal, test-internal, plugin, sources, docs, pom, scala-tool"
-		date="20140728154436"/>
+		date="20140724132546"/>
 	<dependencies>
 		<module organisation="com.github.mpeltonen" name="sbt-idea">
-			<revision name="1.5.2" status="release" pubdate="20131013080137" resolver="sbt-chain" artresolver="sbt-chain" homepage="http://your.project.url" extra-sbtVersion="0.13" extra-scalaVersion="2.10" downloaded="false" searched="false" default="false" conf="default(compile), default, compile, runtime, master" position="35">
+			<revision name="1.5.2" status="release" pubdate="20131013080137" resolver="public" artresolver="public" homepage="http://your.project.url" extra-sbtVersion="0.13" extra-scalaVersion="2.10" downloaded="true" searched="true" default="false" conf="default(compile), default, compile, runtime, master" position="35">
 				<license name="BSD-style" url="http://www.opensource.org/licenses/BSD-3-Clause"/>
-				<metadata-artifact status="no" details="" size="3023" time="0" location="C:\Users\Matthew Kindy II\.ivy2\cache\scala_2.10\sbt_0.13\com.github.mpeltonen\sbt-idea\ivy-1.5.2.xml" searched="false" origin-is-local="false" origin-location="http://repo1.maven.org/maven2/com/github/mpeltonen/sbt-idea_2.10_0.13/1.5.2/sbt-idea-1.5.2.pom"/>
+				<metadata-artifact status="successful" details="" size="1937" time="258" location="C:\Users\Matthew Kindy II\.ivy2\cache\scala_2.10\sbt_0.13\com.github.mpeltonen\sbt-idea\ivy-1.5.2.xml" searched="true" original-local-location="C:\Users\Matthew Kindy II\.ivy2\cache\scala_2.10\sbt_0.13\com.github.mpeltonen\sbt-idea\ivy-1.5.2.xml.original" origin-is-local="false" origin-location="http://repo1.maven.org/maven2/com/github/mpeltonen/sbt-idea_2.10_0.13/1.5.2/sbt-idea-1.5.2.pom"/>
 				<caller organisation="default" name="web-server-build" conf="compile" rev="1.5.2" rev-constraint-default="1.5.2" rev-constraint-dynamic="1.5.2" callerrev="0.1-SNAPSHOT" extra-sbtVersion="0.13" extra-scalaVersion="2.10"/>
 				<caller organisation="com.typesafe.play" name="sbt-plugin" conf="compile" rev="1.5.1" rev-constraint-default="1.5.1" rev-constraint-dynamic="1.5.1" callerrev="2.2.2" extra-sbtVersion="0.13" extra-scalaVersion="2.10"/>
 				<artifacts>
-					<artifact name="sbt-idea" type="jar" ext="jar" status="no" details="" size="336778" time="0" location="C:\Users\Matthew Kindy II\.ivy2\cache\scala_2.10\sbt_0.13\com.github.mpeltonen\sbt-idea\jars\sbt-idea-1.5.2.jar">
+					<artifact name="sbt-idea" type="jar" ext="jar" status="successful" details="" size="336778" time="1400" location="C:\Users\Matthew Kindy II\.ivy2\cache\scala_2.10\sbt_0.13\com.github.mpeltonen\sbt-idea\jars\sbt-idea-1.5.2.jar">
 						<origin-location is-local="false" location="http://repo1.maven.org/maven2/com/github/mpeltonen/sbt-idea_2.10_0.13/1.5.2/sbt-idea-1.5.2.jar"/>
 					</artifact>
 				</artifacts>
@@ -42,11 +42,11 @@
 			</revision>
 		</module>
 		<module organisation="com.typesafe.sbt" name="sbt-echo-play">
-			<revision name="0.1.1" status="release" pubdate="20140326112339" resolver="sbt-chain" artresolver="sbt-chain" extra-sbtVersion="0.13" extra-scalaVersion="2.10" downloaded="false" searched="false" default="false" conf="default(compile), compile" position="0">
-				<metadata-artifact status="no" details="" size="1730" time="0" location="C:\Users\Matthew Kindy II\.ivy2\cache\scala_2.10\sbt_0.13\com.typesafe.sbt\sbt-echo-play\ivy-0.1.1.xml" searched="false" origin-is-local="false" origin-location="http://repo.scala-sbt.org/scalasbt/sbt-plugin-releases/com.typesafe.sbt/sbt-echo-play/scala_2.10/sbt_0.13/0.1.1/ivys/ivy.xml"/>
+			<revision name="0.1.1" status="release" pubdate="20140326112339" resolver="sbt-plugin-releases" artresolver="sbt-plugin-releases" extra-sbtVersion="0.13" extra-scalaVersion="2.10" downloaded="true" searched="true" default="false" conf="default(compile), compile" position="0">
+				<metadata-artifact status="successful" details="" size="1728" time="580" location="C:\Users\Matthew Kindy II\.ivy2\cache\scala_2.10\sbt_0.13\com.typesafe.sbt\sbt-echo-play\ivy-0.1.1.xml" searched="true" original-local-location="C:\Users\Matthew Kindy II\.ivy2\cache\scala_2.10\sbt_0.13\com.typesafe.sbt\sbt-echo-play\ivy-0.1.1.xml.original" origin-is-local="false" origin-location="http://repo.scala-sbt.org/scalasbt/sbt-plugin-releases/com.typesafe.sbt/sbt-echo-play/scala_2.10/sbt_0.13/0.1.1/ivys/ivy.xml"/>
 				<caller organisation="default" name="web-server-build" conf="compile" rev="0.1.1" rev-constraint-default="0.1.1" rev-constraint-dynamic="0.1.1" callerrev="0.1-SNAPSHOT" extra-sbtVersion="0.13" extra-scalaVersion="2.10"/>
 				<artifacts>
-					<artifact name="sbt-echo-play" type="jar" ext="jar" status="no" details="" size="22677" time="0" location="C:\Users\Matthew Kindy II\.ivy2\cache\scala_2.10\sbt_0.13\com.typesafe.sbt\sbt-echo-play\jars\sbt-echo-play-0.1.1.jar">
+					<artifact name="sbt-echo-play" type="jar" ext="jar" status="successful" details="" size="22677" time="542" location="C:\Users\Matthew Kindy II\.ivy2\cache\scala_2.10\sbt_0.13\com.typesafe.sbt\sbt-echo-play\jars\sbt-echo-play-0.1.1.jar">
 						<origin-location is-local="false" location="http://repo.scala-sbt.org/scalasbt/sbt-plugin-releases/com.typesafe.sbt/sbt-echo-play/scala_2.10/sbt_0.13/0.1.1/jars/sbt-echo-play.jar"/>
 					</artifact>
 				</artifacts>
@@ -451,23 +451,23 @@
 			</revision>
 		</module>
 		<module organisation="com.typesafe.sbt" name="sbt-echo">
-			<revision name="0.1.1" status="release" pubdate="20140326112330" resolver="sbt-chain" artresolver="sbt-chain" extra-sbtVersion="0.13" extra-scalaVersion="2.10" downloaded="false" searched="false" default="false" conf="default(compile), compile" position="1">
-				<metadata-artifact status="no" details="" size="1517" time="0" location="C:\Users\Matthew Kindy II\.ivy2\cache\scala_2.10\sbt_0.13\com.typesafe.sbt\sbt-echo\ivy-0.1.1.xml" searched="false" origin-is-local="false" origin-location="http://repo.scala-sbt.org/scalasbt/sbt-plugin-releases/com.typesafe.sbt/sbt-echo/scala_2.10/sbt_0.13/0.1.1/ivys/ivy.xml"/>
+			<revision name="0.1.1" status="release" pubdate="20140326112330" resolver="sbt-plugin-releases" artresolver="sbt-plugin-releases" extra-sbtVersion="0.13" extra-scalaVersion="2.10" downloaded="true" searched="true" default="false" conf="default(compile), compile" position="1">
+				<metadata-artifact status="successful" details="" size="1515" time="451" location="C:\Users\Matthew Kindy II\.ivy2\cache\scala_2.10\sbt_0.13\com.typesafe.sbt\sbt-echo\ivy-0.1.1.xml" searched="true" original-local-location="C:\Users\Matthew Kindy II\.ivy2\cache\scala_2.10\sbt_0.13\com.typesafe.sbt\sbt-echo\ivy-0.1.1.xml.original" origin-is-local="false" origin-location="http://repo.scala-sbt.org/scalasbt/sbt-plugin-releases/com.typesafe.sbt/sbt-echo/scala_2.10/sbt_0.13/0.1.1/ivys/ivy.xml"/>
 				<caller organisation="com.typesafe.sbt" name="sbt-echo-play" conf="compile" rev="0.1.1" rev-constraint-default="0.1.1" rev-constraint-dynamic="0.1.1" callerrev="0.1.1" extra-sbtVersion="0.13" extra-scalaVersion="2.10"/>
 				<artifacts>
-					<artifact name="sbt-echo" type="jar" ext="jar" status="no" details="" size="88276" time="0" location="C:\Users\Matthew Kindy II\.ivy2\cache\scala_2.10\sbt_0.13\com.typesafe.sbt\sbt-echo\jars\sbt-echo-0.1.1.jar">
+					<artifact name="sbt-echo" type="jar" ext="jar" status="successful" details="" size="88276" time="588" location="C:\Users\Matthew Kindy II\.ivy2\cache\scala_2.10\sbt_0.13\com.typesafe.sbt\sbt-echo\jars\sbt-echo-0.1.1.jar">
 						<origin-location is-local="false" location="http://repo.scala-sbt.org/scalasbt/sbt-plugin-releases/com.typesafe.sbt/sbt-echo/scala_2.10/sbt_0.13/0.1.1/jars/sbt-echo.jar"/>
 					</artifact>
 				</artifacts>
 			</revision>
 		</module>
 		<module organisation="org.aspectj" name="aspectjtools">
-			<revision name="1.7.3" status="release" pubdate="20130621191804" resolver="sbt-chain" artresolver="sbt-chain" homepage="http://www.aspectj.org" downloaded="false" searched="false" default="false" conf="default(compile), default, compile, runtime, master" position="2">
+			<revision name="1.7.3" status="release" pubdate="20130621191804" resolver="public" artresolver="public" homepage="http://www.aspectj.org" downloaded="true" searched="true" default="false" conf="default(compile), default, compile, runtime, master" position="2">
 				<license name="Eclipse Public License - v 1.0" url="http://www.eclipse.org/legal/epl-v10.html"/>
-				<metadata-artifact status="no" details="" size="2395" time="0" location="C:\Users\Matthew Kindy II\.ivy2\cache\org.aspectj\aspectjtools\ivy-1.7.3.xml" searched="false" origin-is-local="false" origin-location="http://repo1.maven.org/maven2/org/aspectj/aspectjtools/1.7.3/aspectjtools-1.7.3.pom"/>
+				<metadata-artifact status="successful" details="" size="1021" time="268" location="C:\Users\Matthew Kindy II\.ivy2\cache\org.aspectj\aspectjtools\ivy-1.7.3.xml" searched="true" original-local-location="C:\Users\Matthew Kindy II\.ivy2\cache\org.aspectj\aspectjtools\ivy-1.7.3.xml.original" origin-is-local="false" origin-location="http://repo1.maven.org/maven2/org/aspectj/aspectjtools/1.7.3/aspectjtools-1.7.3.pom"/>
 				<caller organisation="com.typesafe.sbt" name="sbt-echo" conf="compile" rev="1.7.3" rev-constraint-default="1.7.3" rev-constraint-dynamic="1.7.3" callerrev="0.1.1"/>
 				<artifacts>
-					<artifact name="aspectjtools" type="jar" ext="jar" status="no" details="" size="9934446" time="0" location="C:\Users\Matthew Kindy II\.ivy2\cache\org.aspectj\aspectjtools\jars\aspectjtools-1.7.3.jar">
+					<artifact name="aspectjtools" type="jar" ext="jar" status="successful" details="" size="9934446" time="9695" location="C:\Users\Matthew Kindy II\.ivy2\cache\org.aspectj\aspectjtools\jars\aspectjtools-1.7.3.jar">
 						<origin-location is-local="false" location="http://repo1.maven.org/maven2/org/aspectj/aspectjtools/1.7.3/aspectjtools-1.7.3.jar"/>
 					</artifact>
 				</artifacts>

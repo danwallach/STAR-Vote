@@ -1,6 +1,0 @@
-These instructions are for MySQL >= 4.0.
-
-mysqladmin create adder
-mysql adder < schema.sql
-mysql adder < permissions.sql
-mysql adder < testdata.sql (optional)
