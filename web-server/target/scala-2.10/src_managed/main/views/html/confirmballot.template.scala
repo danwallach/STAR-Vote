@@ -1,30 +1,12 @@
-
 package views.html
 
-import play.templates._
-import play.templates.TemplateMagic._
-
-import play.api.templates._
-import play.api.templates.PlayMagic._
-import models._
-import controllers._
-import java.lang._
 import java.util._
-import scala.collection.JavaConversions._
-import scala.collection.JavaConverters._
-import play.api.i18n._
-import play.core.j.PlayMagicForJava._
-import play.mvc._
-import play.data._
-import play.api.data.Field
-import play.mvc.Http.Context.Implicit._
-import views.html._
 /**/
 object confirmballot extends BaseScalaTemplate[play.api.templates.HtmlFormat.Appendable,Format[play.api.templates.HtmlFormat.Appendable]](play.api.templates.HtmlFormat) with play.api.templates.Template3[List[CastBallot],Form[CastBallot],String,play.api.templates.HtmlFormat.Appendable] {
 
     /**/
     def apply/*1.2*/(ballots: List[CastBallot], confirmForm: Form[CastBallot], message: String):play.api.templates.HtmlFormat.Appendable = {
-        _display_ {import helper.twitterBootstrap._
+        _display_ {
 
 
 Seq[Any](format.raw/*1.77*/("""
@@ -95,10 +77,10 @@ Seq[Any](format.raw/*1.77*/("""
 }
                 /*
                     -- GENERATED --
-                    DATE: Thu Jul 03 17:16:52 CDT 2014
-                    SOURCE: /home/mdb12/Workspace/STAR-Vote/web-server/app/views/confirmballot.scala.html
-                    HASH: 1b9e51ccc4081803dba31d3d6dfe792d007be671
-                    MATRIX: 816->1|1018->76|1046->112|1082->114|1109->133|1148->135|1250->203|1277->222|1317->225|1453->325|1482->332|1577->396|2383->1166|2399->1173|2428->1180|2620->1336|2668->1368|2708->1370|2762->1388|2795->1412|2845->1424|2936->1479|2951->1485|2982->1494|3053->1529|3068->1535|3095->1540|3176->1589|3222->1603|3319->1672|3348->1673|3500->1798|3529->1799
+                    DATE: Mon Jul 28 14:38:40 CDT 2014
+                    SOURCE: C:/Users/Matthew Kindy II/Documents/GitHub/STAR-Vote/web-server/app/views/confirmballot.scala.html
+                    HASH: 0397b300ab1c1bfac01645abf24a671eda82cc4f
+                    MATRIX: 816->1|1019->76|1049->115|1086->118|1113->137|1152->139|1258->211|1285->230|1325->233|1465->337|1494->344|1593->412|2417->1200|2433->1207|2462->1214|2661->1377|2709->1409|2749->1411|2804->1430|2837->1454|2887->1466|2980->1523|2995->1529|3026->1538|3098->1574|3113->1580|3140->1585|3223->1636|3270->1651|3372->1725|3401->1726|3555->1853|3584->1854
                     LINES: 26->1|30->1|32->4|33->5|33->5|33->5|37->9|37->9|37->9|41->13|41->13|45->17|63->35|63->35|63->35|70->42|70->42|70->42|71->43|71->43|71->43|73->45|73->45|73->45|74->46|74->46|74->46|76->48|77->49|82->54|82->54|84->56|84->56
                     -- GENERATED --
                 */
