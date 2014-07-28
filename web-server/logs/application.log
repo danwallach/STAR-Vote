@@ -1,10 +1,10 @@
-2014-07-28 17:10:50,571 - [INFO] - from play in pool-35-thread-3 
+2014-07-28 17:28:21,089 - [INFO] - from play in pool-12-thread-6 
 Listening for HTTP on /0:0:0:0:0:0:0:0:9000
 
-2014-07-28 17:10:57,361 - [INFO] - from play in play-internal-execution-context-1 
+2014-07-28 17:28:28,696 - [INFO] - from play in play-internal-execution-context-1 
 database [default] connected at jdbc:h2:mem:play
 
-2014-07-28 17:10:57,656 - [ERROR] - from com.avaje.ebeaninternal.server.deploy.BeanDescriptorManager in play-internal-execution-context-1 
+2014-07-28 17:28:28,964 - [ERROR] - from com.avaje.ebeaninternal.server.deploy.BeanDescriptorManager in play-internal-execution-context-1 
 Error in deployment
 javax.persistence.PersistenceException: java.lang.NullPointerException
 	at com.avaje.ebeaninternal.server.deploy.parse.DeployCreateProperties.createProperties(DeployCreateProperties.java:164) ~[na:na]
@@ -51,10 +51,10 @@ Caused by: java.lang.NullPointerException: null
 	at com.avaje.ebeaninternal.server.deploy.parse.DeployCreateProperties.createProperties(DeployCreateProperties.java:128) ~[na:na]
 	... 33 common frames omitted
 
-2014-07-28 17:10:57,698 - [ERROR] - from application in New I/O worker #1 
+2014-07-28 17:28:29,000 - [ERROR] - from application in New I/O worker #1 
 
 
-! @6j37j4abj - Internal server error, for (GET) [/] ->
+! @6j37lc5ga - Internal server error, for (GET) [/aboutUs] ->
 
 play.api.UnexpectedException: Unexpected exception[PersistenceException: java.lang.NullPointerException]
 	at play.core.ReloadableApplication$$anonfun$get$1$$anonfun$apply$1$$anonfun$1.apply(ApplicationProvider.scala:148) ~[na:na]

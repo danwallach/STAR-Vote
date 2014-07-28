@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?> 
-<Layout>	
-	<Page>
-		<FocusableLabel x="100" y="101" uid="one"></FocusableLabel>
-		<FocusableLabel uid="two" x="200" y="201"></FocusableLabel>	</Page></Layout>
