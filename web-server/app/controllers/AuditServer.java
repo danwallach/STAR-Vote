@@ -10,6 +10,7 @@ import sexpression.stream.Base64;
 import supervisor.model.Precinct;
 import utilities.BallotLoader;
 import utilities.WebPrinter;
+import views.html.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
