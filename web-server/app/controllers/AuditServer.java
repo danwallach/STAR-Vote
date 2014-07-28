@@ -148,6 +148,22 @@ public class AuditServer extends Controller {
         /* If not, send to error page */
         else return ok(badPage.render());
     }
+    
+    /**
+     *  Generates and renders the page for handling conflicts
+     */
+    public static Result adminconflicts() {
+        
+        return ok(adminconflicts.render());
+    }
+
+    /**
+     * Generates and renders the page for publishing results 
+     */    
+    public static Result adminpublish() {
+        
+        return ok(adminpublish.render());
+    }
 
     /**
      * Page for requesting challenged ballot render

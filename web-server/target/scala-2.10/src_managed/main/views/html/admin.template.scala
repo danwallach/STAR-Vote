@@ -42,12 +42,34 @@ Seq[Any](format.raw/*1.19*/("""
             </div>
         </center>
     """)))})),format.raw/*16.6*/("""
-    <center>
-        <form action="/admin/cleardata" method="POST">
-            <input type="submit" value="Clear Data">
-        </form>
-    </center>
-""")))})),format.raw/*22.2*/("""
+    <div align="center">
+        <TABLE BORDER="0">
+        <TR>
+        
+        <TD>
+            <form action="/admin/cleardata" method="GET">
+                <input type="submit" value="Clear Data">
+            </form>
+        </TD>
+        
+        <TD> 
+            <form action="/admin/conflicts" method="GET">
+                <input type="submit" value="View Conflicts">
+            </form>
+        </TD>
+        
+        <TD> 
+            <form action="/admin/publish" method="GET">
+                <input type="submit" value="View Results to Publish">
+            </form>
+        </TD>
+        
+        </TR>
+        </TABLE>
+     
+       
+    </div>
+""")))})),format.raw/*44.2*/("""
 """))}
     }
     
@@ -60,11 +82,11 @@ Seq[Any](format.raw/*1.19*/("""
 }
                 /*
                     -- GENERATED --
-                    DATE: Thu Jul 03 17:16:52 CDT 2014
+                    DATE: Mon Jul 28 14:46:56 CDT 2014
                     SOURCE: /home/mdb12/Workspace/STAR-Vote/web-server/app/views/admin.scala.html
-                    HASH: 95dc322941a3b54124f4e35968b55bbb5158c055
-                    MATRIX: 774->1|885->18|922->21|957->48|996->50|1211->231|1238->250|1276->251|1412->351|1441->358|1536->422|1720->575
-                    LINES: 26->1|29->1|31->3|31->3|31->3|36->8|36->8|36->8|40->12|40->12|44->16|50->22
+                    HASH: a477d1812097737bbc67dd2fa9325f04b1de37fe
+                    MATRIX: 774->1|885->18|922->21|957->48|996->50|1211->231|1238->250|1276->251|1412->351|1441->358|1536->422|2229->1084
+                    LINES: 26->1|29->1|31->3|31->3|31->3|36->8|36->8|36->8|40->12|40->12|44->16|72->44
                     -- GENERATED --
                 */
             

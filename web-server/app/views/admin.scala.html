@@ -14,9 +14,31 @@
             </div>
         </center>
     }
-    <center>
-        <form action="/admin/cleardata" method="POST">
-            <input type="submit" value="Clear Data">
-        </form>
-    </center>
+    <div align="center">
+        <TABLE BORDER="0">
+        <TR>
+        
+        <TD>
+            <form action="/admin/cleardata" method="GET">
+                <input type="submit" value="Clear Data">
+            </form>
+        </TD>
+        
+        <TD> 
+            <form action="/admin/conflicts" method="GET">
+                <input type="submit" value="View Conflicts">
+            </form>
+        </TD>
+        
+        <TD> 
+            <form action="/admin/publish" method="GET">
+                <input type="submit" value="View Results to Publish">
+            </form>
+        </TD>
+        
+        </TR>
+        </TABLE>
+     
+       
+    </div>
 }

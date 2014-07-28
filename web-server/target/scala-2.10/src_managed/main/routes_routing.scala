@@ -1,6 +1,6 @@
 // @SOURCE:/home/mdb12/Workspace/STAR-Vote/web-server/conf/routes
-// @HASH:b5ca75a4151ba694f60f9191e0caa8929a7776be
-// @DATE:Thu Jul 03 17:21:29 CDT 2014
+// @HASH:6d4dbf992ffb3e6a238a90207f286e8dac83f093
+// @DATE:Mon Jul 28 14:48:09 CDT 2014
 
 
 import play.core._
@@ -77,17 +77,25 @@ private[this] lazy val controllers_AuditServer_adminverify11 = Route("POST", Pat
         
 
 // @LINE:20
-private[this] lazy val controllers_AuditServer_adminclear12 = Route("POST", PathPattern(List(StaticPart(Routes.prefix),StaticPart(Routes.defaultPrefix),StaticPart("admin/cleardata"))))
+private[this] lazy val controllers_AuditServer_adminclear12 = Route("GET", PathPattern(List(StaticPart(Routes.prefix),StaticPart(Routes.defaultPrefix),StaticPart("admin/cleardata"))))
         
 
-// @LINE:23
-private[this] lazy val controllers_AuditServer_getBallotHtmlFile13 = Route("GET", PathPattern(List(StaticPart(Routes.prefix),StaticPart(Routes.defaultPrefix),StaticPart("files"))))
+// @LINE:21
+private[this] lazy val controllers_AuditServer_adminconflicts13 = Route("GET", PathPattern(List(StaticPart(Routes.prefix),StaticPart(Routes.defaultPrefix),StaticPart("admin/conflicts"))))
         
 
-// @LINE:24
-private[this] lazy val controllers_Assets_at14 = Route("GET", PathPattern(List(StaticPart(Routes.prefix),StaticPart(Routes.defaultPrefix),StaticPart("assets/"),DynamicPart("file", """.+""",false))))
+// @LINE:22
+private[this] lazy val controllers_AuditServer_adminpublish14 = Route("GET", PathPattern(List(StaticPart(Routes.prefix),StaticPart(Routes.defaultPrefix),StaticPart("admin/publish"))))
         
-def documentation = List(("""GET""", prefix,"""controllers.AuditServer.index()"""),("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """confirm""","""controllers.AuditServer.confirm()"""),("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """challenge""","""controllers.AuditServer.challenge()"""),("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """confirm/submit""","""controllers.AuditServer.getCastBallot(ballotid:String ?= "none")"""),("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """challenge/submit""","""controllers.AuditServer.getChallengedBallot(ballotid:String ?= "none")"""),("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """ballot""","""controllers.AuditServer.handleBallotState(ballotid:String ?= "none")"""),("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """aboutUs""","""controllers.AuditServer.aboutUs"""),("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """api""","""controllers.AuditServer.getAPI()"""),("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """trac""","""controllers.AuditServer.getTrac()"""),("""POST""", prefix + (if(prefix.endsWith("/")) "" else "/") + """3FF968A3B47CT34C""","""controllers.AuditServer.ballotDump()"""),("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """admin""","""controllers.AuditServer.adminlogin()"""),("""POST""", prefix + (if(prefix.endsWith("/")) "" else "/") + """admin/login""","""controllers.AuditServer.adminverify()"""),("""POST""", prefix + (if(prefix.endsWith("/")) "" else "/") + """admin/cleardata""","""controllers.AuditServer.adminclear()"""),("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """files""","""controllers.AuditServer.getBallotHtmlFile(ballotid:String ?= "none")"""),("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """assets/$file<.+>""","""controllers.Assets.at(path:String = "/public", file:String)""")).foldLeft(List.empty[(String,String,String)]) { (s,e) => e.asInstanceOf[Any] match {
+
+// @LINE:25
+private[this] lazy val controllers_AuditServer_getBallotHtmlFile15 = Route("GET", PathPattern(List(StaticPart(Routes.prefix),StaticPart(Routes.defaultPrefix),StaticPart("files"))))
+        
+
+// @LINE:26
+private[this] lazy val controllers_Assets_at16 = Route("GET", PathPattern(List(StaticPart(Routes.prefix),StaticPart(Routes.defaultPrefix),StaticPart("assets/"),DynamicPart("file", """.+""",false))))
+        
+def documentation = List(("""GET""", prefix,"""controllers.AuditServer.index()"""),("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """confirm""","""controllers.AuditServer.confirm()"""),("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """challenge""","""controllers.AuditServer.challenge()"""),("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """confirm/submit""","""controllers.AuditServer.getCastBallot(ballotid:String ?= "none")"""),("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """challenge/submit""","""controllers.AuditServer.getChallengedBallot(ballotid:String ?= "none")"""),("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """ballot""","""controllers.AuditServer.handleBallotState(ballotid:String ?= "none")"""),("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """aboutUs""","""controllers.AuditServer.aboutUs"""),("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """api""","""controllers.AuditServer.getAPI()"""),("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """trac""","""controllers.AuditServer.getTrac()"""),("""POST""", prefix + (if(prefix.endsWith("/")) "" else "/") + """3FF968A3B47CT34C""","""controllers.AuditServer.ballotDump()"""),("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """admin""","""controllers.AuditServer.adminlogin()"""),("""POST""", prefix + (if(prefix.endsWith("/")) "" else "/") + """admin/login""","""controllers.AuditServer.adminverify()"""),("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """admin/cleardata""","""controllers.AuditServer.adminclear()"""),("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """admin/conflicts""","""controllers.AuditServer.adminconflicts()"""),("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """admin/publish""","""controllers.AuditServer.adminpublish()"""),("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """files""","""controllers.AuditServer.getBallotHtmlFile(ballotid:String ?= "none")"""),("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """assets/$file<.+>""","""controllers.Assets.at(path:String = "/public", file:String)""")).foldLeft(List.empty[(String,String,String)]) { (s,e) => e.asInstanceOf[Any] match {
   case r @ (_,_,_) => s :+ r.asInstanceOf[(String,String,String)]
   case l => s ++ l.asInstanceOf[List[(String,String,String)]] 
 }}
@@ -194,21 +202,37 @@ case controllers_AuditServer_adminverify11(params) => {
 // @LINE:20
 case controllers_AuditServer_adminclear12(params) => {
    call { 
-        invokeHandler(controllers.AuditServer.adminclear(), HandlerDef(this, "controllers.AuditServer", "adminclear", Nil,"POST", """""", Routes.prefix + """admin/cleardata"""))
+        invokeHandler(controllers.AuditServer.adminclear(), HandlerDef(this, "controllers.AuditServer", "adminclear", Nil,"GET", """""", Routes.prefix + """admin/cleardata"""))
    }
 }
         
 
-// @LINE:23
-case controllers_AuditServer_getBallotHtmlFile13(params) => {
+// @LINE:21
+case controllers_AuditServer_adminconflicts13(params) => {
+   call { 
+        invokeHandler(controllers.AuditServer.adminconflicts(), HandlerDef(this, "controllers.AuditServer", "adminconflicts", Nil,"GET", """""", Routes.prefix + """admin/conflicts"""))
+   }
+}
+        
+
+// @LINE:22
+case controllers_AuditServer_adminpublish14(params) => {
+   call { 
+        invokeHandler(controllers.AuditServer.adminpublish(), HandlerDef(this, "controllers.AuditServer", "adminpublish", Nil,"GET", """""", Routes.prefix + """admin/publish"""))
+   }
+}
+        
+
+// @LINE:25
+case controllers_AuditServer_getBallotHtmlFile15(params) => {
    call(params.fromQuery[String]("ballotid", Some("none"))) { (ballotid) =>
         invokeHandler(controllers.AuditServer.getBallotHtmlFile(ballotid), HandlerDef(this, "controllers.AuditServer", "getBallotHtmlFile", Seq(classOf[String]),"GET", """ Map static resources from the /public folder to the /assets URL path""", Routes.prefix + """files"""))
    }
 }
         
 
-// @LINE:24
-case controllers_Assets_at14(params) => {
+// @LINE:26
+case controllers_Assets_at16(params) => {
    call(Param[String]("path", Right("/public")), params.fromPath[String]("file", None)) { (path, file) =>
         invokeHandler(controllers.Assets.at(path, file), HandlerDef(this, "controllers.Assets", "at", Seq(classOf[String], classOf[String]),"GET", """""", Routes.prefix + """assets/$file<.+>"""))
    }

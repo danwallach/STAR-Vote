@@ -32,8 +32,6 @@ import java.util.List;
 import auditorium.IAuditoriumParams;
 import auditorium.NetworkException;
 
-import crypto.adder.PrivateKey;
-import crypto.adder.PublicKey;
 import sexpression.stream.ASEWriter;
 import votebox.AuditoriumParams;
 import votebox.events.*;
@@ -64,10 +62,8 @@ public class Tap {
     private ASEWriter _output = null;
     private OutputStream _wrappedOut = null;
     private VoteBoxAuditoriumConnector _auditorium = null;
-    private static IAuditoriumParams params;
-    private PrivateKey privateKey;
-    private PublicKey publicKey;
     private static String ballotDumpHTTPKey = "3FF968A3B47CT34C";
+
 
     /**
      * Initializes a new Trapper.<BR>
@@ -77,15 +73,13 @@ public class Tap {
      * @param serial        serial number of this machine.
      * @param out           OutputStream to send selected messages to.
      */
-    public Tap(int serial, OutputStream out, String launchCode){
+    public Tap(int serial, OutputStream out, String launchCode, IAuditoriumParams params){
 
         _mySerial = serial;
         _wrappedOut = out;
         _output = new ASEWriter(_wrappedOut);
         this.launchCode = launchCode;
 
-        publicKey = params.getKeyStore().loadAdderPublicKey();
-        privateKey = params.getKeyStore().loadAdderPrivateKey();
     }
 
     /**
@@ -107,26 +101,30 @@ public class Tap {
      * Dumps the ballots to the server TODO more refined explanation
      * @param ballotList    the list of ballotStrings to be dumped to the server
      */
-    protected void dumpBallotList(ArrayList<String> ballotList){
+    public void dumpBallotList(List<String> ballotList) {
 
         HttpClient client = new DefaultHttpClient();
 
-            HttpPost post = new HttpPost("http://starvote.cs.rice.edu/3FF968A3B47CT34C");
+        HttpPost post = new HttpPost("http://starvote.cs.rice.edu/3FF968A3B47CT34C");
 
-            try {
+        try {
 
-                List<NameValuePair> nameValuePairs = new ArrayList<>(1);
+            List<NameValuePair> nameValuePairs = new ArrayList<>(1);
+
             /* For each of the ballotStrings... */
             for (String ballotString : ballotList) {
 
                 /* Add them as a BNVP to nameValuePairs */
                 nameValuePairs.add(new BasicNameValuePair("message", ballotString));
 
+                System.out.println(nameValuePairs);
+
                 /* Set entities for each of the url encoded forms of the NVP */
                 post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
                 /* Execute the post */
                 client.execute(post);
+
             }
 
         }
@@ -250,7 +248,7 @@ public class Tap {
      */
     public static void main(String[] args){
 
-        params = new AuditoriumParams("tap.conf");
+        IAuditoriumParams params = new AuditoriumParams("tap.conf");
 
         String reportAddr;
 
@@ -339,7 +337,7 @@ public class Tap {
                     localCon.connect(addr);
 
                     /* Start the tap */
-                    (new Tap(serial, localCon.getOutputStream(), launchCode)).start();
+                    (new Tap(serial, localCon.getOutputStream(), launchCode, params)).start();
                     break;
                 }
                 catch (IOException e) { /* If no good, retry */

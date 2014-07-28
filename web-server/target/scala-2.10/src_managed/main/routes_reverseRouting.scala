@@ -1,6 +1,6 @@
 // @SOURCE:/home/mdb12/Workspace/STAR-Vote/web-server/conf/routes
-// @HASH:b5ca75a4151ba694f60f9191e0caa8929a7776be
-// @DATE:Thu Jul 03 17:21:29 CDT 2014
+// @HASH:6d4dbf992ffb3e6a238a90207f286e8dac83f093
+// @DATE:Mon Jul 28 14:48:09 CDT 2014
 
 import Routes.{prefix => _prefix, defaultPrefix => _defaultPrefix}
 import play.core._
@@ -13,8 +13,10 @@ import play.libs.F
 import Router.queryString
 
 
-// @LINE:24
-// @LINE:23
+// @LINE:26
+// @LINE:25
+// @LINE:22
+// @LINE:21
 // @LINE:20
 // @LINE:19
 // @LINE:18
@@ -30,7 +32,9 @@ import Router.queryString
 // @LINE:6
 package controllers {
 
-// @LINE:23
+// @LINE:25
+// @LINE:22
+// @LINE:21
 // @LINE:20
 // @LINE:19
 // @LINE:18
@@ -56,6 +60,12 @@ def getChallengedBallot(ballotid:String = "none"): Call = {
 // @LINE:18
 def adminlogin(): Call = {
    Call("GET", _prefix + { _defaultPrefix } + "admin")
+}
+                                                
+
+// @LINE:21
+def adminconflicts(): Call = {
+   Call("GET", _prefix + { _defaultPrefix } + "admin/conflicts")
 }
                                                 
 
@@ -95,7 +105,7 @@ def getCastBallot(ballotid:String = "none"): Call = {
 }
                                                 
 
-// @LINE:23
+// @LINE:25
 def getBallotHtmlFile(ballotid:String = "none"): Call = {
    Call("GET", _prefix + { _defaultPrefix } + "files" + queryString(List(if(ballotid == "none") None else Some(implicitly[QueryStringBindable[String]].unbind("ballotid", ballotid)))))
 }
@@ -103,7 +113,7 @@ def getBallotHtmlFile(ballotid:String = "none"): Call = {
 
 // @LINE:20
 def adminclear(): Call = {
-   Call("POST", _prefix + { _defaultPrefix } + "admin/cleardata")
+   Call("GET", _prefix + { _defaultPrefix } + "admin/cleardata")
 }
                                                 
 
@@ -130,15 +140,21 @@ def aboutUs(): Call = {
    Call("GET", _prefix + { _defaultPrefix } + "aboutUs")
 }
                                                 
+
+// @LINE:22
+def adminpublish(): Call = {
+   Call("GET", _prefix + { _defaultPrefix } + "admin/publish")
+}
+                                                
     
 }
                           
 
-// @LINE:24
+// @LINE:26
 class ReverseAssets {
     
 
-// @LINE:24
+// @LINE:26
 def at(file:String): Call = {
    Call("GET", _prefix + { _defaultPrefix } + "assets/" + implicitly[PathBindable[String]].unbind("file", file))
 }
@@ -150,8 +166,10 @@ def at(file:String): Call = {
                   
 
 
-// @LINE:24
-// @LINE:23
+// @LINE:26
+// @LINE:25
+// @LINE:22
+// @LINE:21
 // @LINE:20
 // @LINE:19
 // @LINE:18
@@ -167,7 +185,9 @@ def at(file:String): Call = {
 // @LINE:6
 package controllers.javascript {
 
-// @LINE:23
+// @LINE:25
+// @LINE:22
+// @LINE:21
 // @LINE:20
 // @LINE:19
 // @LINE:18
@@ -201,6 +221,17 @@ def adminlogin : JavascriptReverseRoute = JavascriptReverseRoute(
    """
       function() {
       return _wA({method:"GET", url:"""" + _prefix + { _defaultPrefix } + """" + "admin"})
+      }
+   """
+)
+                        
+
+// @LINE:21
+def adminconflicts : JavascriptReverseRoute = JavascriptReverseRoute(
+   "controllers.AuditServer.adminconflicts",
+   """
+      function() {
+      return _wA({method:"GET", url:"""" + _prefix + { _defaultPrefix } + """" + "admin/conflicts"})
       }
    """
 )
@@ -272,7 +303,7 @@ def getCastBallot : JavascriptReverseRoute = JavascriptReverseRoute(
 )
                         
 
-// @LINE:23
+// @LINE:25
 def getBallotHtmlFile : JavascriptReverseRoute = JavascriptReverseRoute(
    "controllers.AuditServer.getBallotHtmlFile",
    """
@@ -288,7 +319,7 @@ def adminclear : JavascriptReverseRoute = JavascriptReverseRoute(
    "controllers.AuditServer.adminclear",
    """
       function() {
-      return _wA({method:"POST", url:"""" + _prefix + { _defaultPrefix } + """" + "admin/cleardata"})
+      return _wA({method:"GET", url:"""" + _prefix + { _defaultPrefix } + """" + "admin/cleardata"})
       }
    """
 )
@@ -337,15 +368,26 @@ def aboutUs : JavascriptReverseRoute = JavascriptReverseRoute(
    """
 )
                         
+
+// @LINE:22
+def adminpublish : JavascriptReverseRoute = JavascriptReverseRoute(
+   "controllers.AuditServer.adminpublish",
+   """
+      function() {
+      return _wA({method:"GET", url:"""" + _prefix + { _defaultPrefix } + """" + "admin/publish"})
+      }
+   """
+)
+                        
     
 }
               
 
-// @LINE:24
+// @LINE:26
 class ReverseAssets {
     
 
-// @LINE:24
+// @LINE:26
 def at : JavascriptReverseRoute = JavascriptReverseRoute(
    "controllers.Assets.at",
    """
@@ -362,8 +404,10 @@ def at : JavascriptReverseRoute = JavascriptReverseRoute(
         
 
 
-// @LINE:24
-// @LINE:23
+// @LINE:26
+// @LINE:25
+// @LINE:22
+// @LINE:21
 // @LINE:20
 // @LINE:19
 // @LINE:18
@@ -380,7 +424,9 @@ def at : JavascriptReverseRoute = JavascriptReverseRoute(
 package controllers.ref {
 
 
-// @LINE:23
+// @LINE:25
+// @LINE:22
+// @LINE:21
 // @LINE:20
 // @LINE:19
 // @LINE:18
@@ -406,6 +452,12 @@ def getChallengedBallot(ballotid:String): play.api.mvc.HandlerRef[_] = new play.
 // @LINE:18
 def adminlogin(): play.api.mvc.HandlerRef[_] = new play.api.mvc.HandlerRef(
    controllers.AuditServer.adminlogin(), HandlerDef(this, "controllers.AuditServer", "adminlogin", Seq(), "GET", """""", _prefix + """admin""")
+)
+                      
+
+// @LINE:21
+def adminconflicts(): play.api.mvc.HandlerRef[_] = new play.api.mvc.HandlerRef(
+   controllers.AuditServer.adminconflicts(), HandlerDef(this, "controllers.AuditServer", "adminconflicts", Seq(), "GET", """""", _prefix + """admin/conflicts""")
 )
                       
 
@@ -445,7 +497,7 @@ def getCastBallot(ballotid:String): play.api.mvc.HandlerRef[_] = new play.api.mv
 )
                       
 
-// @LINE:23
+// @LINE:25
 def getBallotHtmlFile(ballotid:String): play.api.mvc.HandlerRef[_] = new play.api.mvc.HandlerRef(
    controllers.AuditServer.getBallotHtmlFile(ballotid), HandlerDef(this, "controllers.AuditServer", "getBallotHtmlFile", Seq(classOf[String]), "GET", """ Map static resources from the /public folder to the /assets URL path""", _prefix + """files""")
 )
@@ -453,7 +505,7 @@ def getBallotHtmlFile(ballotid:String): play.api.mvc.HandlerRef[_] = new play.ap
 
 // @LINE:20
 def adminclear(): play.api.mvc.HandlerRef[_] = new play.api.mvc.HandlerRef(
-   controllers.AuditServer.adminclear(), HandlerDef(this, "controllers.AuditServer", "adminclear", Seq(), "POST", """""", _prefix + """admin/cleardata""")
+   controllers.AuditServer.adminclear(), HandlerDef(this, "controllers.AuditServer", "adminclear", Seq(), "GET", """""", _prefix + """admin/cleardata""")
 )
                       
 
@@ -480,15 +532,21 @@ def aboutUs(): play.api.mvc.HandlerRef[_] = new play.api.mvc.HandlerRef(
    controllers.AuditServer.aboutUs(), HandlerDef(this, "controllers.AuditServer", "aboutUs", Seq(), "GET", """""", _prefix + """aboutUs""")
 )
                       
+
+// @LINE:22
+def adminpublish(): play.api.mvc.HandlerRef[_] = new play.api.mvc.HandlerRef(
+   controllers.AuditServer.adminpublish(), HandlerDef(this, "controllers.AuditServer", "adminpublish", Seq(), "GET", """""", _prefix + """admin/publish""")
+)
+                      
     
 }
                           
 
-// @LINE:24
+// @LINE:26
 class ReverseAssets {
     
 
-// @LINE:24
+// @LINE:26
 def at(path:String, file:String): play.api.mvc.HandlerRef[_] = new play.api.mvc.HandlerRef(
    controllers.Assets.at(path, file), HandlerDef(this, "controllers.Assets", "at", Seq(classOf[String], classOf[String]), "GET", """""", _prefix + """assets/$file<.+>""")
 )
