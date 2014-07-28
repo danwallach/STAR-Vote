@@ -24,25 +24,17 @@ package tap;
 
 import auditorium.IAuditoriumParams;
 import auditorium.NetworkException;
-<<<<<<< HEAD
 
 import sexpression.stream.ASEWriter;
 import votebox.AuditoriumParams;
 import votebox.events.*;
 
-=======
-import crypto.adder.PrivateKey;
-import crypto.adder.PublicKey;
->>>>>>> c80fce28c90090034ef97e5228e7b38b089616eb
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-import sexpression.stream.ASEWriter;
-import votebox.AuditoriumParams;
-import votebox.events.*;
 
 import java.io.IOException;
 import java.io.OutputStream;
