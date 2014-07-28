@@ -12,6 +12,7 @@ out
 *.zip
 *.bal
 *.conf
+*.xml
 ballotScanner/BallotScannerUITester.java
 supervisor/view/BallotScannerMachineViewTester.java
 CommandsFile.txt
