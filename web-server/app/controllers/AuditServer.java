@@ -3,23 +3,20 @@ package controllers;
 import models.CastBallot;
 import models.ChallengedBallot;
 import play.data.Form;
-import play.data.validation.ValidationError;
 import play.libs.F.*;
 import play.mvc.*;
-import sexpression.ASExpression;
 import sexpression.ListExpression;
+import sexpression.stream.Base64;
+import supervisor.model.Precinct;
 import utilities.BallotLoader;
 import utilities.WebPrinter;
-import views.html.*;
 
-import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.io.ObjectInputStream;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import static play.data.Form.form;
 
@@ -233,12 +230,31 @@ public class AuditServer extends Controller {
         *   can choose the proper Map<String,Precinct> by Supervisor-Hash to resolve the conflict.
         *
         * - When a conflicted Map is resolved, add it to the "Publish" page
+        *
+        * - Probably want to keep track of
         */
 
         /* Code for this method in handling a POST command are found at http://www.vogella.com/articles/ApacheHttpClient/article.html */
 
         final Map<String, String[]> values = request().body().asFormUrlEncoded();
         final String event = values.get("message")[0];
+
+        /* ----------------------------------------------------------------------------------------------------------------------- */
+
+        /* Decode from base64 */
+        byte[] bytes = Base64.decode(event);
+        Map<String, Map<String, Precinct>> votingRecord = null;
+
+        try {
+            ObjectInputStream o = new ObjectInputStream(new ByteArrayInputStream(bytes));
+            votingRecord = (Map<String, Map<String, Precinct>>) o.readObject();
+        }
+        catch (IOException | ClassNotFoundException | ClassCastException e) { e.printStackTrace(); }
+
+        if (votingRecord.size() > 1) { /* send this record to "conflict page" and load into database */}
+        else { /* send this record to "publish page" and load into database */}
+
+        /* ----------------------------------------------------------------------------------------------------------------------- */
 
         StringTokenizer typeParser = new StringTokenizer(event, ":");
 
@@ -261,25 +277,25 @@ public class AuditServer extends Controller {
         /* Check the ballot type -- if cast, create a new CastBallot with the info */
         if ("cast".equals(ballotType)) CastBallot.create(new CastBallot(ballotID, String.valueOf(paramParser.nextToken().hashCode())));
 
-        /* If challenged... */
-        else if ("chall".equals(ballotType)) {
+            /* If challenged... */
+            else if ("chall".equals(ballotType)) {
 
-            /* Create a new ChallengedBallot */
-            ChallengedBallot cb = new ChallengedBallot(ballotID, ballotPrecinct, String.valueOf(paramParser.nextToken().hashCode()), paramParser.nextToken());
-            ChallengedBallot.create(cb);
+                /* Create a new ChallengedBallot */
+                ChallengedBallot cb = new ChallengedBallot(ballotID, ballotPrecinct, String.valueOf(paramParser.nextToken().hashCode()), paramParser.nextToken());
+                ChallengedBallot.create(cb);
 
-            /* Set up a new WebPrinter for the race */
-            WebPrinter printer = new WebPrinter(BallotLoader.getBallotFileByPrecinct(ballotPrecinct), BallotLoader.getRaceGroupByPrecinct(ballotPrecinct));
+                /* Set up a new WebPrinter for the race */
+                WebPrinter printer = new WebPrinter(BallotLoader.getBallotFileByPrecinct(ballotPrecinct), BallotLoader.getRaceGroupByPrecinct(ballotPrecinct));
 
-            /* Create a new ListExpression from the decrypted ballot */
-            ListExpression ballot = new ListExpression(ListExpression.make(cb.decryptedBallot));
+                /* Create a new ListExpression from the decrypted ballot */
+                ListExpression ballot = new ListExpression(ListExpression.make(cb.decryptedBallot));
 
-            /* TODO related to ChallengedBallotUploadEvent */
-            ballot = (ListExpression)ballot.getArray()[0];
+                /* TODO related to ChallengedBallotUploadEvent */
+                ballot = (ListExpression)ballot.getArray()[0];
 
-            /* TODO why is this committed ballot? */
-            /* Render the ballot */
-            printer.printCommittedBallot(ballot, cb.ballotid);
+                /* TODO why is this committed ballot? */
+                /* Render the ballot */
+                printer.printCommittedBallot(ballot, cb.ballotid);
         }
 
         return ok(index.render());
