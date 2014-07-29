@@ -4,6 +4,7 @@ import crypto.adder.PublicKey;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.Map;
  *
  * Created by Matthew Kindy II on 6/20/14.
  */
-public class Precinct {
+public class Precinct implements Serializable {
 
     /** File path to the ballot style. */
     private String ballotFile;
