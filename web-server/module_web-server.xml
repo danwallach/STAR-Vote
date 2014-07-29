@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_web-server" default="compile.module.web-server">
+  <dirname property="module.web-server.basedir" file="${ant.file.module_web-server}"/>
+  
+  <property name="module.jdk.home.web-server" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.web-server" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.web-server" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.web-server" value="-encoding UTF-8 -source 1.7 ${compiler.args}"/>
+  
+  <property name="web-server.output.dir" value="${module.web-server.basedir}/../out/production/web-server"/>
+  <property name="web-server.testoutput.dir" value="${module.web-server.basedir}/../out/test/web-server"/>
+  
+  <path id="web-server.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="web-server.module.production.classpath">
+    <path refid="${module.jdk.classpath.web-server}"/>
+  </path>
+  
+  <path id="web-server.runtime.production.module.classpath">
+    <pathelement location="${web-server.output.dir}"/>
+  </path>
+  
+  <path id="web-server.module.classpath">
+    <path refid="${module.jdk.classpath.web-server}"/>
+    <pathelement location="${web-server.output.dir}"/>
+  </path>
+  
+  <path id="web-server.runtime.module.classpath">
+    <pathelement location="${web-server.testoutput.dir}"/>
+    <pathelement location="${web-server.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.web-server">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.web-server">
+    <patternset refid="compiler.excluded"/>
+    <patternset refid="excluded.from.module.web-server"/>
+  </patternset>
+  
+  
+  <target name="compile.module.web-server" depends="compile.module.web-server.production,compile.module.web-server.tests" description="Compile module web-server"/>
+  
+  <target name="compile.module.web-server.production" depends="register.custom.compilers" description="Compile module web-server; production classes"/>
+  
+  <target name="compile.module.web-server.tests" depends="register.custom.compilers,compile.module.web-server.production" description="compile module web-server; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.web-server" description="cleanup module">
+    <delete dir="${web-server.output.dir}"/>
+    <delete dir="${web-server.testoutput.dir}"/>
+  </target>
+</project>
