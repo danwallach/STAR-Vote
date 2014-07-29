@@ -13,6 +13,7 @@
       }
 
       function onSubmit(String name) {
+        alert(name);
         //   console.log(name);
         alert(get_radio_value(name));
       }
@@ -21,21 +22,22 @@
 
 <ul>
 @for(vr <- conflicts) {
+    <form onsubmit="onSubmit(@vr.id);">
     <table class ="reference" style="width:80%">
    
     
-    <form onsubmit="onSubmit(@vr.id);">
+ 
     <tbody>
     <tr>
         <th>
             @vr.id
             <input type="submit" class="button green medium" value="Resolve" style="float: right;">    
         </th>
-    </->
+    </tr>
     
     @for(hash <- vr.getHashes()) {
         <tr><td><input type="radio" id=@hash name=@vr.id value=@hash checked>
-            <label for=@hash style="width:100%">@hash</label>
+            <label for=@hash style="width:100%;">@hash</label>
         </td></tr>
     }
     </tbody>

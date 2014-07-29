@@ -38,7 +38,7 @@ table.lamp
 {
 width:100%;
 padding:0px;
-border:1px solid #00ff00;
+/*border:1px solid #00ff00;*/
 }
 
 table.lamp th
@@ -51,14 +51,14 @@ padding-right:5px;
 
 table.lamp td
 {
-padding:4px;
+/*padding:4px;*/
 padding-left:0px;
-padding-right:10px;
+/*padding-right:10px;*/
 background-color:#00ff00;
 }
 
 table.tecspec th,table.tecspec td{
-	border:1px solid #00ff00;padding:5px;padding-top:7px;padding-bottom:7px;vertical-align:top;text-align:left;
+	/*border:1px solid #00ff00;/*padding:5px;padding-top:7px;padding-bottom:7px;*/vertical-align:middle;text-align:left;
 }
 
 table.reference,table.tecspec{
@@ -71,7 +71,7 @@ table.reference,table.tecspec{
 table.reference .fixzebra			{background-color:#f1f1f1;}
 
 table.reference th{
-	color:#ffffff;background-color:#1e008c;border:1px solid #1e008c;padding:3px;vertical-align:top;text-align:left;
+	color:#ffffff;background-color:#1e008c;border:1px solid #1e008c;padding:3px;vertical-align:middle;text-align:left;
 }
 
 table.reference th a:link,table.reference th a:visited{
@@ -83,7 +83,7 @@ table.reference th a:hover,table.reference th a:active{
 }
 
 table.reference td{
-	border:1px solid #d4d4d4;padding:5px;padding-top:7px;padding-bottom:7px;vertical-align:top;
+	border:1px solid #d4d4d4;/*padding:5px;padding-top:7px;padding-bottom:7px;*/vertical-align:middle;
 }
 
 table.reference .example_code
@@ -173,7 +173,7 @@ input[type=radio] {
 input[type=radio] + label {
     display:inline-block;
     /*margin:-2px;*/
-    /*padding: 4px 12px;*/
+    padding: 4px 12px;
     background-color: #e7e7e7;
     /*border-color: #ddd;*/
 }

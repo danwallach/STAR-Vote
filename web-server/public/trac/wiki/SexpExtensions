@@ -1,8 +1,0 @@
-Because the verifier will need to provide a way for the rule writer to express wildcards in his expressions, we have to make a few extensions to the s-expression human readable format. 
-
- * '''Any Expression:''' #any
- * '''Any String:''' #string
- * '''Any List:''' #list
- * '''Any list that conforms to a pattern:''' #listof:<pattern>
-
-Which means we add ':' to the lexer grammar, and the parser must construct special expressions for each of the four cases.
