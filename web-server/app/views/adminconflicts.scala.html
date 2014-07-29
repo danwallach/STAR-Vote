@@ -1,8 +1,15 @@
+@(conflicts: List[VotingRecord])
+
 @main("Conflicts") {
 
-    <center>
+    <div align ="center">
         <h1>Election Conflict Resolution</h1>
-    </center>
+    
+    
+    @tableTemplate(conflicts)
+
+    
+    </div>
 
     <div id="wrapper"></div>
 }

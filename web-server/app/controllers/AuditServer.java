@@ -2,6 +2,7 @@ package controllers;
 
 import models.CastBallot;
 import models.ChallengedBallot;
+import models.VotingRecord;
 import play.data.Form;
 import play.libs.F.*;
 import play.mvc.*;
@@ -17,7 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.Map;
-import java.util.StringTokenizer;
+import java.util.*;
 
 
 
@@ -154,7 +155,27 @@ public class AuditServer extends Controller {
      */
     public static Result adminconflicts() {
         
-        return ok(adminconflicts.render());
+        Map<String, Map<String, Precinct>> records = new HashMap<>();
+        
+        for(int i = 0; i < 2; i++) {
+            
+            Map<String, Precinct> hashes = new HashMap<>();
+            for(int j = 0; j < 2; j++) {
+                hashes.put(j+"", new Precinct(j+"", "", null));
+            }            
+            
+            records.put("record" + i, hashes);
+        }
+        
+   
+        ArrayList<VotingRecord> vrs = new ArrayList<>();
+        
+        vrs.add(new VotingRecord("Precinct 1", records));
+        vrs.add(new VotingRecord("Precinct 2", records));
+        vrs.add(new VotingRecord("Precinct 3", records));
+        
+        
+        return ok(adminconflicts.render(vrs));
     }
 
     /**
@@ -170,7 +191,9 @@ public class AuditServer extends Controller {
      *
      * @return      the challenged ballot page with rendered ballot
      */
-    public static Result challenge() { return ok(challengeballot.render(ChallengedBallot.all(), challengeForm, null)); }
+    public static Result challenge() { 
+        return ok(challengeballot.render(ChallengedBallot.all(), challengeForm, null)); 
+    }
 
     /**
      * Retrieves challenged ballot database entry
@@ -201,8 +224,8 @@ public class AuditServer extends Controller {
 
         /* Send to the proper page based on what the ballot is */
         return bid.equals("none")                       ?   ok(index.render())       :
-               CastBallot.getBallot(bid) != null        ?   getCastBallot(bid)       :
-               ChallengedBallot.getBallot(bid) != null  ?   getChallengedBallot(bid) : ok(ballotnotfound.render(bid));
+              CastBallot.getBallot(bid) != null        ?   getCastBallot(bid)       :
+              ChallengedBallot.getBallot(bid) != null  ?   getChallengedBallot(bid) : ok(ballotnotfound.render(bid));
     }
 
     /**
@@ -280,25 +303,25 @@ public class AuditServer extends Controller {
         /* Check the ballot type -- if cast, create a new CastBallot with the info */
         if ("cast".equals(ballotType)) CastBallot.create(new CastBallot(ballotID, String.valueOf(paramParser.nextToken().hashCode())));
 
-            /* If challenged... */
-            else if ("chall".equals(ballotType)) {
+        /* If challenged... */
+        else if ("chall".equals(ballotType)) {
 
-                /* Create a new ChallengedBallot */
-                ChallengedBallot cb = new ChallengedBallot(ballotID, ballotPrecinct, String.valueOf(paramParser.nextToken().hashCode()), paramParser.nextToken());
-                ChallengedBallot.create(cb);
+            /* Create a new ChallengedBallot */
+            ChallengedBallot cb = new ChallengedBallot(ballotID, ballotPrecinct, String.valueOf(paramParser.nextToken().hashCode()), paramParser.nextToken());
+            ChallengedBallot.create(cb);
 
-                /* Set up a new WebPrinter for the race */
-                WebPrinter printer = new WebPrinter(BallotLoader.getBallotFileByPrecinct(ballotPrecinct), BallotLoader.getRaceGroupByPrecinct(ballotPrecinct));
+            /* Set up a new WebPrinter for the race */
+            WebPrinter printer = new WebPrinter(BallotLoader.getBallotFileByPrecinct(ballotPrecinct), BallotLoader.getRaceGroupByPrecinct(ballotPrecinct));
 
-                /* Create a new ListExpression from the decrypted ballot */
-                ListExpression ballot = new ListExpression(ListExpression.make(cb.decryptedBallot));
+            /* Create a new ListExpression from the decrypted ballot */
+            ListExpression ballot = new ListExpression(ListExpression.make(cb.decryptedBallot));
 
-                /* TODO related to ChallengedBallotUploadEvent */
-                ballot = (ListExpression)ballot.getArray()[0];
+            /* TODO related to ChallengedBallotUploadEvent */
+            ballot = (ListExpression)ballot.getArray()[0];
 
-                /* TODO why is this committed ballot? */
-                /* Render the ballot */
-                printer.printCommittedBallot(ballot, cb.ballotid);
+            /* TODO why is this committed ballot? */
+            /* Render the ballot */
+            printer.printCommittedBallot(ballot, cb.ballotid);
         }
 
         return ok(index.render());
@@ -327,4 +350,5 @@ public class AuditServer extends Controller {
      * @return      the API page
      */
     public static Result getAPI() { return redirect("/assets/api/index.html"); }
+    
 }
