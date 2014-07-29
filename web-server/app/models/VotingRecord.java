@@ -25,8 +25,8 @@ public class VotingRecord extends Model {
     @Id
     public String id;
 
-    @Required
-    public Map<String, Map<String, Precinct>> records;
+    //@Required
+    // public Map<String, Map<String, Precinct>> records;
     
     @Required
     public Boolean isConflicted;
@@ -41,7 +41,7 @@ public class VotingRecord extends Model {
     public VotingRecord(String precinctID, Map<String, Map<String, Precinct>> records) {
 
         id = precinctID;
-        this.records = records;
+        // this.records = records;
         isConflicted = (records.size() > 1);
     }
 
@@ -54,14 +54,14 @@ public class VotingRecord extends Model {
      */
     public void resolveConflict(String chosenHash) {
         
-        Map.Entry<String, Map<String, Precinct>> chosenEntry = null;
+        // Map.Entry<String, Map<String, Precinct>> chosenEntry = null;
         
-        for (Map.Entry<String, Map<String, Precinct>> entry : records.entrySet())
-            if (entry.getKey().equals(chosenHash))
-                chosenEntry = entry;
+        // for (Map.Entry<String, Map<String, Precinct>> entry : records.entrySet())
+        //     if (entry.getKey().equals(chosenHash))
+        //         chosenEntry = entry;
             
-        records = new HashMap<String, Map<String, Precinct>>();
-        records.put(chosenEntry.getKey(), chosenEntry.getValue());
+        // records = new HashMap<String, Map<String, Precinct>>();
+        // records.put(chosenEntry.getKey(), chosenEntry.getValue());
         
         isConflicted = false;
     }
@@ -70,7 +70,14 @@ public class VotingRecord extends Model {
      * @return      a list of the Supervisor hashes associated with their voting records
      */
     public ArrayList<String> getHashes() {
-        return new ArrayList<String>(records.keySet());
+        // return new ArrayList<String>(records.keySet());
+        ArrayList<String> hashes = new ArrayList<String>();
+        
+        hashes.add(id + "hash1");
+        hashes.add(id + "hash2");
+        hashes.add(id + "hash3");
+        
+        return hashes;
     }
 
     /**
@@ -126,6 +133,6 @@ public class VotingRecord extends Model {
      * @return appropriately formatted String representation
      */
     public String toString(){
-         return id + ":" + records;
+         return id /*+ ":" + records*/;
     }
 }
