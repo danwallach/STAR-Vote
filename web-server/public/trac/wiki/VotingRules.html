@@ -1,0 +1,38 @@
+
+<html><head><link rel="stylesheet" href="trac.css" type="text/css" />
+</head><body>
+
+<h1 id="pre-flightchecks">pre-flight checks</h1>
+<ul><li>Check for valid Auditorium message format
+</li><li>Check validity of signatures
+</li><li>Construct &amp; validate DAG (message hash checking)
+</li><li>[for Scott's verifier] ensure that, for a host A, each message Ai succeeds all messages A(k&lt;i) and precedes all messages A(k &gt; i)
+</li><li>[for Scott's verifier] There exists exactly one message with each sequence number for each host (within seq. no. bounds).
+</li></ul><h1 id="votingvalidityrules">voting validity rules</h1>
+<ul><li><strong>General</strong>
+<ul><li>For each <tt>polls-open</tt>, there is exactly one <tt>polls-closed</tt> that <strong>succeeds</strong> it. Similarly, for each <tt>polls-closed</tt>, there is exactly one <tt>polls-open</tt> that <strong>precedes</strong> it.
+</li><li>For each message of type (<tt>authorized-to-cast</tt>, <tt>override-cast</tt>, <tt>override-cancel</tt>, <tt>ballot-received</tt>, <tt>last-polls-open</tt>, <tt>cast-ballot</tt>, <tt>override-cast-confirm</tt>, <tt>override-cast-deny</tt>, <tt>override-cancel-confirm</tt>, <tt>override-cancel-deny</tt>): it must occur <strong>between</strong> the <tt>polls-open</tt> and <tt>polls-closed</tt> messages.
+</li></ul></li><li><strong>Votes</strong>
+<ul><li>Each <tt>authorized-to-cast</tt> message must contain a <em>unique</em> <tt>authorization-code</tt>.
+</li><li>For each message of type (<tt>cast-ballot</tt>, <tt>override-cast</tt>, <tt>override-cancel</tt>): 
+<ul><li>it must succeed an <tt>authorized-to-cast</tt> message with the same <tt>authorization-code</tt>.
+</li><li>there must not exist any other message of type (<tt>cast-ballot</tt>, <tt>override-cast</tt>, <tt>override-cancel</tt>) with the same <tt>authorization-code</tt>.
+</li><li>if it is of type (<tt>cast-ballot</tt> or <tt>override-cast</tt>) then it must be succeeded by a <tt>ballot-received</tt> message from the supervisor.  (Reverse: all <tt>ballot-received</tt> must succeed a <tt>cast-ballot</tt> or <tt>override-cast</tt>.)
+</li></ul></li><li>Overrides:
+<ul><li>Each <tt>override-cast</tt> must be succeeded by exactly one of (<tt>override-cast-confirm</tt>, <tt>override-cast-deny</tt>) with the same <tt>authorization-code</tt>. 
+</li><li>Each <tt>override-cancel</tt> must be succeeded by exactly one of (<tt>override-cancel-confirm</tt>, <tt>override-cancel-deny</tt>) with the same <tt>authorization-code</tt>
+</li><li>Similarly, each confirmation must succeed exactly one override message.
+</li></ul></li></ul></li><li><strong>Booths</strong>
+<ul><li>For each booth,
+<ul><li>All "vote authorization intervals" (that is, interval between <tt>authorized-to-cast</tt> and one of (<tt>cast-ballot</tt> or <tt>override-cast</tt> or <tt>override-cancel</tt>)) must be non-overlapping.
+</li></ul></li></ul></li><li><strong>Node types</strong>
+<ul><li>All <tt>supervisor</tt> messages are signed with a certificate that belongs to a <em>supervisor</em>.
+</li><li>All <tt>votebox</tt> messages are signed with a certificate that belongs to a <em>booth</em>.
+</li></ul></li></ul><hr />
+<h1 id="todo">todo</h1>
+<ul><li>Uniqueness?
+</li></ul>
+
+</body>
+</html>
+

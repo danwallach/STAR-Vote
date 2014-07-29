@@ -170,9 +170,9 @@ public class AuditServer extends Controller {
    
         ArrayList<VotingRecord> vrs = new ArrayList<>();
         
-        vrs.add(new VotingRecord("Precinct 1", records));
-        vrs.add(new VotingRecord("Precinct 2", records));
-        vrs.add(new VotingRecord("Precinct 3", records));
+        vrs.add(new VotingRecord("Precinct1", records));
+        vrs.add(new VotingRecord("Precinct2", records));
+        vrs.add(new VotingRecord("Precinct3", records));
         
         
         return ok(adminconflicts.render(vrs));

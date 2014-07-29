@@ -1,0 +1,125 @@
+
+<html><head><link rel="stylesheet" href="trac.css" type="text/css" />
+</head><body>
+
+<h1 id="ViewingRevisionLogs">Viewing Revision Logs</h1>
+<p>
+<div class="system-message"><strong>Error: Macro TracGuideToc(None) failed</strong><pre>'NoneType' object has no attribute 'find'</pre></div>
+</p>
+<p>
+When you browse the repository, it's always possible to query the 
+<em>Revision Log</em> view corresponding to the path you're currently seeing.
+This will display a list of the most recent changesets in which the 
+current path or any other path below it has been modified.
+</p>
+<h2 id="TheRevisionLogForm">The Revision Log Form</h2>
+<p>
+It's possible to set the revision at which the revision log should
+start, using the <em>View log starting at</em> field. An empty value
+or a value of <em>head</em> is taken to be the newest changeset. 
+</p>
+<p>
+It's also possible to specify the revision at which the log should
+stop, using the <em>back to</em> field. By default, it's left empty, 
+which means the revision log will stop as soon as 100 revisions have 
+been listed.
+</p>
+<p>
+Also, there are three modes of operation of the revision log.
+</p>
+<p>
+By default, the revision log <em>stops on copy</em>, which means that 
+whenever an <em>Add</em>, <em>Copy</em> or <em>Rename</em> operation is detected, 
+no older revision will be shown. That's very convenient when working
+with branches, as one only sees the history corresponding to what
+has been done on the branch.
+</p>
+<p>
+It's also possible to indicate that one wants to see what happened
+before a <em>Copy</em> or <em>Rename</em> change, by selecting the 
+<em>Follow copies</em> mode. This will cross all copies or renames changes.
+Each time the name of the path changes, there will be an additional
+indentation level. That way, the changes on the different paths
+are easily grouped together visually.
+</p>
+<p>
+It's even possible to go past an <em>Add</em> change, in order to see 
+if there has been a <em>Delete</em> change on that path, before 
+that <em>Add</em>. This mode corresponds to the mode called 
+<em>Show only adds, moves and deletes</em>. 
+While quite useful at times, be aware that this operation is quite 
+resource intensive.
+</p>
+<p>
+Finally, there's also a checkbox <em>Show full log messages</em>,
+which controls whether the full content of the commit log message
+should be displayed for each change, or only a shortened version of it.
+</p>
+<h2 id="TheRevisionLogInformation">The Revision Log Information</h2>
+<p>
+For each revision log entry, there are 7 columns:
+</p>
+<ol><li>The first column contains a pair of radio buttons and should be used 
+for selecting the <em>old</em> and the <em>new</em> revisions that will be 
+used for <a class="wiki" href="TracRevisionLog#viewingtheactualchanges.html" rel="follow">viewing the actual changes</a>.
+</li><li>A color code (similar to the one used for the
+<a class="wiki" href="TracChangeset#ChangesetHeader.html" rel="follow">changesets</a>) indicating kind of change.
+Clicking on this column refreshes the revision log so that it restarts
+with this change.
+</li><li>The <strong>Revision</strong> number, displayed as <tt>@xyz</tt>.
+This is a link to the <a class="wiki" href="TracBrowser.html" rel="follow">TracBrowser</a>, using the displayed revision as the base line.
+Next to it, you can see a little "wheel" icon <a style="padding:0; border:none" href="/chrome/site/../common/changeset.png"><img src="/chrome/site/../common/changeset.png" alt="changeset.png" title="changeset.png" /></a>,  which is clickable and leads to the <a class="wiki" href="TracChangeset.html" rel="follow">TracChangeset</a> view for that revision.
+</li><li>The <strong>Date</strong> at which the change was made.
+The date is displayed as the time elapsed from the date of the revision. The time
+elapsed is displayed as the number of hours, days, weeks, months, or years.
+</li><li>The <strong>Author</strong> of the change.
+</li><li>The <strong>Log Message</strong>, which contains either the truncated or full commit 
+log message, depending on the value of the <em>Show full log messages</em> 
+checkbox in the form above.
+</li></ol><p>
+    
+</p>
+<h2 id="InspectingChangesBetweenRevisions">Inspecting Changes Between Revisions</h2>
+<p>
+The <em>View changes...</em> buttons (placed above and below the list
+of changes, on the left side) will show the set of differences
+corresponding to the aggregated changes starting from the <em>old</em>
+revision (first radio-button) to the <em>new</em> revision (second
+radio-button), in the <a class="wiki" href="TracChangeset.html" rel="follow">TracChangeset</a> view.
+</p>
+<p>
+Note that the <em>old</em> revision doesn't need to be actually 
+<em>older</em> than the <em>new</em> revision: it simply gives a base
+for the diff. It's therefore entirely possible to easily 
+generate a <em>reverse diff</em>, for reverting what has been done
+in the given range of revisions.
+</p>
+<p>
+Finally, if the two revisions are identical, the corresponding
+changeset will be shown (same effect as clicking on the ChangeSet number).
+</p>
+<h2 id="AlternativeFormats">Alternative Formats</h2>
+<h3 id="TheChangeLogText">The ChangeLog Text</h3>
+<p>
+At the bottom of the page, there's a <em>ChangeLog</em> link
+that will show the range of revisions as currently shown,
+but as a simple text, matching the usual conventions for
+ChangeLog files.
+</p>
+<h3 id="RSSSupport">RSS Support</h3>
+<p>
+The revision log also provides a RSS feed to monitor the changes.
+To subscribe to a RSS feed for a file or directory, open its
+revision log in the browser and click the orange 'XML' icon at the bottom
+of the page. For more information on RSS support in Trac, see <a class="wiki" href="TracRss.html" rel="follow">TracRss</a>.
+</p>
+<hr />
+<p>
+See also: <a class="wiki" href="TracBrowser.html" rel="follow">TracBrowser</a>, <a class="wiki" href="TracChangeset.html" rel="follow">TracChangeset</a>, <a class="wiki" href="TracGuide.html" rel="follow">TracGuide</a>
+</p>
+
+
+</body>
+</html>
+
+

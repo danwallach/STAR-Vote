@@ -1,0 +1,35 @@
+== Full Election ==
+
+A "full election" is one where all the features of !VoteBox are employed.  More precisely, a full election involves a Supervisor, a Tap, a !ChallengeWebServer, and at least one !VoteBox.  Additionally, the Commit-Challenge model and encryption must be enabled in both the supervisor and votebox configuration files.  [wiki:Configuration The Sample] configuration files meet these requirments.  The precompiled ballot used in this walkthrough can be found [attachment:presidential-only.zip here] (the origianl .bal can be found [attachment:presidential-only.bal here]).  Note that these images are from a few seperate execution of the !VoteBox system, observed jumps in time are not in error.
+
+[[Image(Full Election Diagram.png)]]
+
+== Walkthrough ==
+ * Place supervisor.jar, votebox.jar, tap.jar, and challenge.jar on four different, networked machines.
+  * Note that the simpler the network, the better.  Ideally, the network will be homogenous with respect to IP version as well.
+ * Start the Supervisor, !VoteBox, Tap, and !ChallengeWebServer programs.
+  * Instructions for launching each can be found [wiki:VoteBoxSupervisor here], [wiki:VoteBoxRunTime here], [wiki:VoteBoxTap here], and [wiki:VoteBoxWebServer here] respectively.
+ * While the machines are discovering each other, you will see these screens on the Supervisor Console and any !VoteBoxes.
+  * [[Image(Supervisor - waiting.png, 400)]]
+  * [[Image(Votebox - waiting.png, 400)]]
+ * Once the Supervisor Console has found a !VoteBox (though not necissarily a Tap), the option to active becomes available.
+  * [[Image(Supervisor - activate.png, 400)]]
+ * Once activated, every !VoteBox will be assigned a label and the Supervisor Console will advance to a new screen.
+  * [[Image(Votebox - numbered.png, 400)]]
+  * [[Image(Supervisor - authorized.png, 400)]]
+ * Clicking "Select Ballot" will bring up a dialog that will allow you to find a ballot to use.
+  * [[Image(Supervisor - Select Ballot.png, 400)]]
+ * Once a ballot is selected, the polls may be opened by clicking "Open Polls".
+  * [[Image(Supervisor - Open Polls.png, 400)]]
+ * A voter may then be authorized to use any of the connected !VoteBoxes, by clicking the corresponding "Authorize" button.
+  * [[Image(Supervisor - Voting.png, 400)]]
+ * Once authorized, a !VoteBox is sent a copy of the ballot and a voting session begins.
+  * [[Image(Votebox - Voting.png, 400)]]
+  * [[Image(VoteBox - Challenge or Record.png, 400)]]
+   * A voter is given the option to "challenge" the system in a full election.
+  * [[Image(VoteBox - Done Voting.png, 400)]]
+ * This authorize/vote cycle continues until an election ends, at which point the "Close Polls" button will be pressed on the Supervisor Console.  This will bring up the results screen.
+ * [[Image(Supervisor - Results.png, 400)]]
+ * At any time during the election a challenged ballot may be viewed via the challenge web server.
+  * [[Image(Challenge - Challenged Ballot.png, 400)]]
+   * These ballots are not included in the final tally.

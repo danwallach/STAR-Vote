@@ -1,0 +1,371 @@
+
+<html><head><link rel="stylesheet" href="trac.css" type="text/css" />
+</head><body>
+
+<p>
+<strong> Note: this page documents the version 1.0 of Trac, see <a class="wiki" href="0.12/TracStandalone.html" rel="follow">0.12/TracStandalone</a> if you need the previous version </strong>
+</p>
+<h1 id="Tracd">Tracd</h1>
+<p>
+Tracd is a lightweight standalone Trac web server.
+It can be used in a variety of situations, from a test or development server to a multiprocess setup behind another web server used as a load balancer.
+</p>
+<h2 id="Pros">Pros</h2>
+<ul><li>Fewer dependencies: You don't need to install apache or any other web-server.
+</li><li>Fast: Should be almost as fast as the <a class="wiki" href="TracModPython.html" rel="follow">mod_python</a> version (and much faster than the <a class="wiki" href="TracCgi.html" rel="follow">CGI</a>), even more so since version 0.12 where the HTTP/1.1 version of the protocol is enabled by default
+</li><li>Automatic reloading: For development, Tracd can be used in <em>auto_reload</em> mode, which will automatically restart the server whenever you make a change to the code (in Trac itself or in a plugin).
+</li></ul><h2 id="Cons">Cons</h2>
+<ul><li>Fewer features: Tracd implements a very simple web-server and is not as configurable or as scalable as Apache httpd.
+</li><li>No native HTTPS support: <a class="ext-link" href="http://www.rickk.com/sslwrap/"><span class="icon">​</span>sslwrap</a> can be used instead,
+or <a class="ext-link" href="http://trac.edgewall.orgSTunnelTracd.html"><span class="icon">​</span>stunnel -- a tutorial on how to use stunnel with tracd</a> or Apache with mod_proxy.
+</li></ul><h2 id="Usageexamples">Usage examples</h2>
+<p>
+A single project on port 8080. (<a class="ext-link" href="http://localhost:8080/"><span class="icon">​</span>http://localhost:8080/</a>)
+</p>
+<pre class="wiki"> $ tracd -p 8080 /path/to/project
+</pre><p>
+Stricly speaking this will make your Trac accessible to everybody from your network rather than <em>localhost only</em>. To truly limit it use <em>--hostname</em> option.
+</p>
+<pre class="wiki"> $ tracd --hostname=localhost -p 8080 /path/to/project
+</pre><p>
+With more than one project. (<a class="ext-link" href="http://localhost:8080/project1/"><span class="icon">​</span>http://localhost:8080/project1/</a> and <a class="ext-link" href="http://localhost:8080/project2/"><span class="icon">​</span>http://localhost:8080/project2/</a>)
+</p>
+<pre class="wiki"> $ tracd -p 8080 /path/to/project1 /path/to/project2
+</pre><p>
+You can't have the last portion of the path identical between the projects since Trac uses that name to keep the URLs of the
+different projects unique. So if you use <tt>/project1/path/to</tt> and <tt>/project2/path/to</tt>, you will only see the second project.
+</p>
+<p>
+An alternative way to serve multiple projects is to specify a parent directory in which each subdirectory is a Trac project, using the <tt>-e</tt> option. The example above could be rewritten:
+</p>
+<pre class="wiki"> $ tracd -p 8080 -e /path/to
+</pre><p>
+To exit the server on Windows, be sure to use <tt>CTRL-BREAK</tt> -- using <tt>CTRL-C</tt> will leave a Python process running in the background.
+</p>
+<h2 id="InstallingasaWindowsService">Installing as a Windows Service</h2>
+<h3 id="Option1">Option 1</h3>
+<p>
+To install as a Windows service, get the <a class="ext-link" href="http://www.google.com/searchq=srvany.exe"><span class="icon">​</span>SRVANY</a> utility and run:
+</p>
+<pre class="wiki"> C:\path\to\instsrv.exe tracd C:\path\to\srvany.exe
+ reg add HKLM\SYSTEM\CurrentControlSet\Services\tracd\Parameters /v Application /d "\"C:\path\to\python.exe\" \"C:\path\to\python\scripts\tracd-script.py\" &lt;your tracd parameters&gt;"
+ net start tracd
+</pre><p>
+<strong>DO NOT</strong> use <tt>tracd.exe</tt>.  Instead register <tt>python.exe</tt> directly with <tt>tracd-script.py</tt> as a parameter.  If you use <tt>tracd.exe</tt>, it will spawn the python process without SRVANY's knowledge.  This python process will survive a <tt>net stop tracd</tt>.
+</p>
+<p>
+If you want tracd to start automatically when you boot Windows, do:
+</p>
+<pre class="wiki"> sc config tracd start= auto
+</pre><p>
+The spacing here is important.
+</p>
+<div class="wikipage"><p>
+Once the service is installed, it might be simpler to run the Registry Editor rather than use the <tt>reg add</tt> command documented above.  Navigate to:<br />
+<tt>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\tracd\Parameters</tt>
+</p>
+<p>
+Three (string) parameters are provided:
+</p>
+<table class="wiki">
+<tr><td style="text-align: left">AppDirectory </td><td style="text-align: left">C:\Python26\ 
+</td></tr><tr><td style="text-align: left">Application </td><td style="text-align: left">python.exe 
+</td></tr><tr><td style="text-align: left">AppParameters </td><td style="text-align: left">scripts\tracd-script.py -p 8080 ... 
+</td></tr></table>
+<p>
+Note that, if the AppDirectory is set as above, the paths of the executable <em>and</em> of the script name and parameter values are relative to the directory.  This makes updating Python a little simpler because the change can be limited, here, to a single point.
+(This is true for the path to the .htpasswd file, as well, despite the documentation calling out the /full/path/to/htpasswd; however, you may not wish to store that file under the Python directory.)
+</p>
+</div><p>
+For Windows 7 User, srvany.exe may not be an option, so you can use <a class="ext-link" href="http://www.google.com/searchq=winserv.exe"><span class="icon">​</span>WINSERV</a> utility and run:
+</p>
+<pre class="wiki">"C:\path\to\winserv.exe" install tracd -displayname "tracd" -start auto "C:\path\to\python.exe" c:\path\to\python\scripts\tracd-script.py &lt;your tracd parameters&gt;"
+
+net start tracd
+</pre><h3 id="Option2">Option 2</h3>
+<p>
+Use <a class="ext-link" href="http://trac-hacks.orgWindowsServiceScript.html"><span class="icon">​</span>WindowsServiceScript</a>, available at <a class="ext-link" href="http://trac-hacks.org/"><span class="icon">​</span>Trac Hacks</a>. Installs, removes, starts, stops, etc. your Trac service.
+</p>
+<h3 id="Option3">Option 3</h3>
+<p>
+also cygwin's cygrunsrv.exe can be used:
+</p>
+<pre class="wiki">$ cygrunsrv --install tracd --path /cygdrive/c/Python27/Scripts/tracd.exe --args '--port 8000 --env-parent-dir E:\IssueTrackers\Trac\Projects'
+$ net start tracd
+</pre><h2 id="UsingAuthentication">Using Authentication</h2>
+<p>
+Tracd provides support for both Basic and Digest authentication. Digest is considered more secure. The examples below use Digest; to use Basic authentication, replace <tt>--auth</tt> with <tt>--basic-auth</tt> in the command line.
+</p>
+<p>
+The general format for using authentication is:
+</p>
+<pre class="wiki"> $ tracd -p port --auth="base_project_dir,password_file_path,realm" project_path
+</pre><p>
+where:
+</p>
+<ul><li><strong>base_project_dir</strong>: the base directory of the project specified as follows:
+<ul><li>when serving multiple projects: <em>relative</em> to the <tt>project_path</tt>
+</li><li>when serving only a single project (<tt>-s</tt>): the name of the project directory
+</li></ul></li></ul><blockquote>
+<p>
+Don't use an absolute path here as this won't work. <em>Note:</em> This parameter is case-sensitive even for environments on Windows.
+</p>
+</blockquote>
+<ul><li><strong>password_file_path</strong>: path to the password file
+</li><li><strong>realm</strong>: the realm name (can be anything)
+</li><li><strong>project_path</strong>: path of the project
+</li></ul><ul><li><strong><tt>--auth</tt></strong> in the above means use Digest authentication, replace <tt>--auth</tt> with <tt>--basic-auth</tt> if you want to use Basic auth.  Although Basic authentication does not require a "realm", the command parser does, so the second comma is required, followed directly by the closing quote for an empty realm name.
+</li></ul><p>
+Examples:
+</p>
+<pre class="wiki"> $ tracd -p 8080 \
+   --auth="project1,/path/to/passwordfile,mycompany.com" /path/to/project1
+</pre><p>
+Of course, the password file can be be shared so that it is used for more than one project:
+</p>
+<pre class="wiki"> $ tracd -p 8080 \
+   --auth="project1,/path/to/passwordfile,mycompany.com" \
+   --auth="project2,/path/to/passwordfile,mycompany.com" \
+   /path/to/project1 /path/to/project2
+</pre><p>
+Another way to share the password file is to specify "*" for the project name:
+</p>
+<pre class="wiki"> $ tracd -p 8080 \
+   --auth="*,/path/to/users.htdigest,mycompany.com" \
+   /path/to/project1 /path/to/project2
+</pre><h3 id="BasicAuthorization:Usingahtpasswdpasswordfile">Basic Authorization: Using a htpasswd password file</h3>
+<p>
+This section describes how to use <tt>tracd</tt> with Apache .htpasswd files.
+</p>
+<blockquote>
+<p>
+Note: It is necessary (at least with Python 2.6) to install the fcrypt package in order to
+decode some htpasswd formats.  Trac source code attempt an <tt>import crypt</tt> first, but there
+is no such package for Python 2.6. Only <tt>SHA-1</tt> passwords (since Trac 1.0) work without this module.
+</p>
+</blockquote>
+<p>
+To create a .htpasswd file use Apache's <tt>htpasswd</tt> command (see <a href="/Wiki#GeneratingPasswordsWithoutApache">below</a> for a method to create these files without using Apache):
+</p>
+<pre class="wiki"> $ sudo htpasswd -c /path/to/env/.htpasswd username
+</pre><p>
+then for additional users:
+</p>
+<pre class="wiki"> $ sudo htpasswd /path/to/env/.htpasswd username2
+</pre><p>
+Then to start <tt>tracd</tt> run something like this:
+</p>
+<pre class="wiki"> $ tracd -p 8080 --basic-auth="projectdirname,/fullpath/environmentname/.htpasswd,realmname" /fullpath/environmentname
+</pre><p>
+For example:
+</p>
+<pre class="wiki"> $ tracd -p 8080 --basic-auth="testenv,/srv/tracenv/testenv/.htpasswd,My Test Env" /srv/tracenv/testenv
+</pre><p>
+<em>Note:</em> You might need to pass "-m" as a parameter to htpasswd on some platforms (OpenBSD).
+</p>
+<h3 id="Digestauthentication:Usingahtdigestpasswordfile">Digest authentication: Using a htdigest password file</h3>
+<p>
+If you have Apache available, you can use the htdigest command to generate the password file. Type 'htdigest' to get some usage instructions, or read <a class="ext-link" href="http://httpd.apache.org/docs/2.0/programs/htdigest.html"><span class="icon">​</span>this page</a> from the Apache manual to get precise instructions.  You'll be prompted for a password to enter for each user that you create.  For the name of the password file, you can use whatever you like, but if you use something like <tt>users.htdigest</tt> it will remind you what the file contains. As a suggestion, put it in your &lt;projectname&gt;/conf folder along with the <a class="wiki" href="TracIni.html" rel="follow">trac.ini</a> file.
+</p>
+<p>
+Note that you can start tracd without the <tt>--auth</tt> argument, but if you click on the <em>Login</em> link you will get an error.
+</p>
+<h3 id="GeneratingPasswordsWithoutApache">Generating Passwords Without Apache</h3>
+<p>
+Basic Authorization can be accomplished via this <a class="ext-link" href="http://aspirine.org/htpasswd_en.html"><span class="icon">​</span>online HTTP Password generator</a> which also supports <tt>SHA-1</tt>.  Copy the generated password-hash line to the .htpasswd file on your system. Note that Windows Python lacks the "crypt" module that is the default hash type for htpasswd ; Windows Python can grok MD5 password hashes just fine and you should use MD5.
+</p>
+<p>
+You can use this simple Python script to generate a <strong>digest</strong> password file:
+</p>
+<div class="code"><pre>from optparse import OptionParser
+# The md5 module is deprecated in Python 2.5
+try:
+    from hashlib import md5
+except ImportError:
+    from md5 import md5
+realm = 'trac'
+
+# build the options
+usage = "usage: %prog [options]"
+parser = OptionParser(usage=usage)
+parser.add_option("-u", "--username",action="store", dest="username", type = "string",
+                  help="the username for whom to generate a password")
+parser.add_option("-p", "--password",action="store", dest="password", type = "string",
+                  help="the password to use")
+parser.add_option("-r", "--realm",action="store", dest="realm", type = "string",
+                  help="the realm in which to create the digest")
+(options, args) = parser.parse_args()
+
+# check options
+if (options.username is None) or (options.password is None):
+   parser.error("You must supply both the username and password")
+if (options.realm is not None):
+   realm = options.realm
+   
+# Generate the string to enter into the htdigest file
+kd = lambda x: md5(':'.join(x)).hexdigest()
+print ':'.join((options.username, realm, kd([options.username, realm, options.password])))
+</pre></div><p>
+Note: If you use the above script you must set the realm in the <tt>--auth</tt> argument to <strong><tt>trac</tt></strong>. Example usage (assuming you saved the script as trac-digest.py):
+</p>
+<pre class="wiki"> $ python trac-digest.py -u username -p password &gt;&gt; c:\digest.txt
+ $ tracd --port 8000 --auth=proj_name,c:\digest.txt,trac c:\path\to\proj_name
+</pre><h4 id="Usingmd5sum">Using <tt>md5sum</tt></h4>
+<p>
+It is possible to use <tt>md5sum</tt> utility to generate digest-password file:
+</p>
+<pre class="wiki">user=
+realm=
+password=
+path_to_file=
+echo ${user}:${realm}:$(printf "${user}:${realm}:${password}" | md5sum - | sed -e 's/\s\+-//') &gt; ${path_to_file}
+</pre><h2 id="Reference">Reference</h2>
+<p>
+Here's the online help, as a reminder (<tt>tracd --help</tt>):
+</p>
+<pre class="wiki">Usage: tracd [options] [projenv] ...
+
+Options:
+  --version             show program's version number and exit
+  -h, --help            show this help message and exit
+  -a DIGESTAUTH, --auth=DIGESTAUTH
+                        [projectdir],[htdigest_file],[realm]
+  --basic-auth=BASICAUTH
+                        [projectdir],[htpasswd_file],[realm]
+  -p PORT, --port=PORT  the port number to bind to
+  -b HOSTNAME, --hostname=HOSTNAME
+                        the host name or IP address to bind to
+  --protocol=PROTOCOL   http|scgi|ajp|fcgi
+  -q, --unquote         unquote PATH_INFO (may be needed when using ajp)
+  --http10              use HTTP/1.0 protocol version instead of HTTP/1.1
+  --http11              use HTTP/1.1 protocol version (default)
+  -e PARENTDIR, --env-parent-dir=PARENTDIR
+                        parent directory of the project environments
+  --base-path=BASE_PATH
+                        the initial portion of the request URL's "path"
+  -r, --auto-reload     restart automatically when sources are modified
+  -s, --single-env      only serve a single project without the project list
+  -d, --daemonize       run in the background as a daemon
+  --pidfile=PIDFILE     when daemonizing, file to which to write pid
+  --umask=MASK          when daemonizing, file mode creation mask to use, in
+                        octal notation (default 022)
+  --group=GROUP         the group to run as
+  --user=USER           the user to run as
+</pre><p>
+Use the -d option so that tracd doesn't hang if you close the terminal window where tracd was started.
+</p>
+<h2 id="Tips">Tips</h2>
+<h3 id="Servingstaticcontent">Serving static content</h3>
+<p>
+If <tt>tracd</tt> is the only web server used for the project, 
+it can also be used to distribute static content 
+(tarballs, Doxygen documentation, etc.)
+</p>
+<p>
+This static content should be put in the <tt>$TRAC_ENV/htdocs</tt> folder,
+and is accessed by URLs like <tt>&lt;project_URL&gt;/chrome/site/...</tt>.
+</p>
+<p>
+Example: given a <tt>$TRAC_ENV/htdocs/software-0.1.tar.gz</tt> file,
+the corresponding relative URL would be <tt>/&lt;project_name&gt;/chrome/site/software-0.1.tar.gz</tt>, 
+which in turn can be written as <tt>htdocs:software-0.1.tar.gz</tt> (<a class="wiki" href="TracLinks.html" rel="follow">TracLinks</a> syntax) or <tt>[/&lt;project_name&gt;/chrome/site/software-0.1.tar.gz]</tt> (relative link syntax). 
+</p>
+<blockquote>
+<p>
+<em>Support for <tt>htdocs:</tt> <a class="wiki" href="TracLinks.html" rel="follow">TracLinks</a> syntax was added in version 0.10</em>
+</p>
+</blockquote>
+<h3 id="Usingtracdbehindaproxy">Using tracd behind a proxy</h3>
+<p>
+In some situations when you choose to use tracd behind Apache or another web server.
+</p>
+<p>
+In this situation, you might experience issues with redirects, like being redirected to URLs with the wrong host or protocol. In this case (and only in this case), setting the <tt>[trac] use_base_url_for_redirect</tt> to <tt>true</tt> can help, as this will force Trac to use the value of <tt>[trac] base_url</tt> for doing the redirects.
+</p>
+<p>
+If you're using the AJP protocol to connect with <tt>tracd</tt> (which is possible if you have flup installed), then you might experience problems with double quoting. Consider adding the <tt>--unquote</tt> parameter.
+</p>
+<p>
+See also <a class="ext-link" href="http://trac.edgewall.org/intertrac/TracOnWindowsIisAjp" title="TracOnWindowsIisAjp in Trac project trac"><span class="icon">​</span>TracOnWindowsIisAjp</a>, <a class="ext-link" href="http://trac.edgewall.org/intertrac/TracNginxRecipe" title="TracNginxRecipe in Trac project trac"><span class="icon">​</span>TracNginxRecipe</a>.
+</p>
+<h3 id="Authenticationfortracdbehindaproxy">Authentication for tracd behind a proxy</h3>
+<p>
+It is convenient to provide central external authentication to your tracd instances, instead of using <tt>--basic-auth</tt>. There is some discussion about this in <a class="missing ticket">#9206</a>.
+</p>
+<p>
+Below is example configuration based on Apache 2.2, mod_proxy, mod_authnz_ldap.
+</p>
+<p>
+First we bring tracd into Apache's location namespace.
+</p>
+<pre class="wiki">&lt;Location /project/proxified&gt;
+        Require ldap-group cn=somegroup, ou=Groups,dc=domain.com
+        Require ldap-user somespecificusertoo
+        ProxyPass http://localhost:8101/project/proxified/
+        # Turns out we don't really need complicated RewriteRules here at all
+        RequestHeader set REMOTE_USER %{REMOTE_USER}s
+&lt;/Location&gt;
+</pre><p>
+Then we need a single file plugin to recognize HTTP_REMOTE_USER header as valid authentication source. HTTP headers like <strong>HTTP_FOO_BAR</strong> will get converted to <strong>Foo-Bar</strong> during processing. Name it something like <strong>remote-user-auth.py</strong> and drop it into <strong>proxified/plugins</strong> directory:
+</p>
+<div class="code"><pre>from trac.core import *
+from trac.config import BoolOption
+from trac.web.api import IAuthenticator
+
+class MyRemoteUserAuthenticator(Component):
+
+    implements(IAuthenticator)
+
+    obey_remote_user_header = BoolOption('trac', 'obey_remote_user_header', 'false', 
+               """Whether the 'Remote-User:' HTTP header is to be trusted for user logins 
+                (''since .').""") 
+
+    def authenticate(self, req):
+        if self.obey_remote_user_header and req.get_header('Remote-User'): 
+            return req.get_header('Remote-User') 
+        return None
+
+</pre></div><p>
+Add this new parameter to your <a class="wiki" href="TracIni.html" rel="follow">TracIni</a>:
+</p>
+<pre class="wiki">...
+[trac]
+...
+obey_remote_user_header = true
+...
+</pre><p>
+Run tracd:
+</p>
+<pre class="wiki">tracd -p 8101 -r -s proxified --base-path=/project/proxified
+</pre><p>
+Note that if you want to install this plugin for all projects, you have to put it in your <a class="wiki" href="TracPlugins#Plugindiscovery.html" rel="follow">global plugins_dir</a> and enable it in your global trac.ini.
+</p>
+<p>
+Global config (e.g. <tt>/srv/trac/conf/trac.ini</tt>):
+</p>
+<pre class="wiki">[components]
+remote-user-auth.* = enabled
+[inherit]
+plugins_dir = /srv/trac/plugins
+[trac]
+obey_remote_user_header = true
+</pre><p>
+Environment config (e.g. <tt>/srv/trac/envs/myenv</tt>):
+</p>
+<pre class="wiki">[inherit]
+file = /srv/trac/conf/trac.ini
+</pre><h3 id="Servingadifferentbasepaththan">Serving a different base path than /</h3>
+<p>
+Tracd supports serving projects with different base urls than /&lt;project&gt;. The parameter name to change this is
+</p>
+<pre class="wiki"> $ tracd --base-path=/some/path
+</pre><hr />
+<p>
+See also: <a class="wiki" href="TracInstall.html" rel="follow">TracInstall</a>, <a class="wiki" href="TracCgi.html" rel="follow">TracCgi</a>, <a class="wiki" href="TracModPython.html" rel="follow">TracModPython</a>, <a class="wiki" href="TracGuide.html" rel="follow">TracGuide</a>, <a class="ext-link" href="http://trac.edgewall.org/intertrac/TracOnWindowsStandalone%23RunningTracdasservice" title="TracOnWindowsStandalone#RunningTracdasservice in Trac project trac"><span class="icon">​</span>Running tracd.exe as a Windows service</a>
+</p>
+
+
+</body>
+</html>
+
+

@@ -1,0 +1,90 @@
+
+<html><head><link rel="stylesheet" href="trac.css" type="text/css" />
+</head><body>
+
+<h1 id="SupportforInterWikilinks">Support for <a class="missing wiki" href="/wiki/InterWiki" rel="nofollow">InterWiki?</a> links</h1>
+<p>
+<em>(since <a class="ext-link" href="http://trac.edgewall.org/intertrac/milestone%3A0.10" title="milestone:0.10 in Trac project trac"><span class="icon">​</span>0.10</a>)</em>
+</p>
+<h2 id="Definition">Definition</h2>
+<p>
+An <a class="missing wiki" href="/wiki/InterWiki" rel="nofollow">InterWiki?</a> link can be used for referring to a Wiki page
+located in another Wiki system, and by extension, to any object
+located in any other Web application, provided a simple URL 
+mapping can be done.
+</p>
+<p>
+At the extreme, <a class="missing wiki" href="/wiki/InterWiki" rel="nofollow">InterWiki?</a> prefixes can even be used to simply introduce
+links to new protocols, such as <tt>tsvn:</tt> used by <a class="ext-link" href="http://trac.edgewall.org/intertrac/TortoiseSvn" title="TortoiseSvn in Trac project trac"><span class="icon">​</span>TortoiseSvn</a>.
+</p>
+<h2 id="LinkSyntax">Link Syntax</h2>
+<pre class="wiki">&lt;target_wiki&gt;(:&lt;identifier&gt;)+
+</pre><p>
+The link is composed by the targeted Wiki (or system) name,
+followed by a colon (e.g. <tt>MeatBall:</tt>),
+followed by a page specification in the target.
+Note that, as for <a class="missing wiki" href="/wiki/InterTrac" rel="nofollow">InterTrac?</a> prefixes, <strong><a class="missing wiki" href="/wiki/InterWiki" rel="nofollow">InterWiki?</a> prefixes are case insensitive</strong>.
+</p>
+<p>
+The target Wiki URL is looked up in the <tt>[interwiki]</tt> section of <a class="missing wiki" href="/wiki/TracIni" rel="nofollow">TracIni?</a> or in the <a class="missing wiki" href="/wiki/InterMapTxt" rel="nofollow">InterMapTxt?</a> wiki page, modeled after MeatBall:InterMapTxt. If a prefix is defined in both the <tt>[interwiki]</tt> section and <a class="missing wiki" href="/wiki/InterMapTxt" rel="nofollow">InterMapTxt?</a>, the <tt>[interwiki]</tt> section takes precedence.
+</p>
+<p>
+In addition to traditional <a class="missing wiki" href="/wiki/InterWiki" rel="nofollow">InterWiki?</a> links, where the target
+is simply <em>appended</em> to the URL, 
+Trac supports parametric <a class="missing wiki" href="/wiki/InterWiki" rel="nofollow">InterWiki?</a> URLs:
+identifiers <tt>$1</tt>, <tt>$2</tt>, ... in the URL
+will be replaced by corresponding arguments.
+The argument list is formed by splitting the page identifier
+using the ":" separator.
+</p>
+<h3 id="interwiki">[interwiki]</h3>
+<p>
+Every option in the <tt>[interwiki]</tt> section in <a class="missing wiki" href="/wiki/TracIni" rel="nofollow">TracIni?</a> defines one <a class="missing wiki" href="/wiki/InterWiki" rel="nofollow">InterWiki?</a> prefix. The option name defines the prefix. The option value defines the URL, optionally followed by a description separated from the URL by whitespace. Parametric URLs are supported as well.
+</p>
+<p>
+<strong>Example:</strong>
+</p>
+<pre class="wiki">[interwiki]
+MeatBall = http://www.usemod.com/cgi-bin/mb.pl?
+PEP = http://www.python.org/peps/pep-$1.html Python Enhancement Proposal $1
+tsvn = tsvn: Interact with TortoiseSvn
+</pre><h2 id="Examples">Examples</h2>
+<p>
+If the following is an excerpt of the <a class="missing wiki" href="/wiki/InterMapTxt" rel="nofollow">InterMapTxt?</a> page:
+</p>
+<pre class="wiki">= InterMapTxt =
+== This is the place for defining InterWiki prefixes ==
+
+Currently active prefixes: [[InterWiki]]
+
+This page is modelled after the MeatBall:InterMapTxt page.
+In addition, an optional comment is allowed after the mapping.
+----
+{{{
+PEP      http://www.python.org/peps/pep-$1.html           # Python Enhancement Proposal $1 
+Trac-ML  http://thread.gmane.org/gmane.comp.version-control.subversion.trac.general/$1  # Message $1 in Trac Mailing List
+
+tsvn     tsvn:                                            # Interact with TortoiseSvn
+...
+MeatBall http://www.usemod.com/cgi-bin/mb.pl?
+MetaWiki http://sunir.org/apps/meta.pl?
+MetaWikiPedia http://meta.wikipedia.org/wiki/
+MoinMoin http://moinmoin.wikiwikiweb.de/
+...
+}}}
+</pre><p>
+Then, 
+</p>
+<ul><li><tt>MoinMoin:InterWikiMap</tt> should be rendered as MoinMoin:InterWikiMap
+and the <em>title</em> for that link would be "InterWikiMap in MoinMoin"
+</li><li><tt>Trac-ML:4346</tt> should be rendered as Trac-ML:4346
+and the <em>title</em> for that link would be "Message 4346 in Trac Mailing List"
+</li></ul><hr />
+<p>
+See also: <a class="missing wiki" href="/wiki/InterTrac" rel="nofollow">InterTrac?</a>, <a class="missing wiki" href="/wiki/InterMapTxt" rel="nofollow">InterMapTxt?</a>
+</p>
+
+
+</body>
+</html>
+

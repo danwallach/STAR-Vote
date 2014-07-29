@@ -1,0 +1,45 @@
+
+<html><head><link rel="stylesheet" href="trac.css" type="text/css" />
+</head><body>
+
+<h2 id="FullElection">Full Election</h2>
+<p>
+A "full election" is one where all the features of VoteBox are employed.  More precisely, a full election involves a Supervisor, a Tap, a ChallengeWebServer, and at least one VoteBox.  Additionally, the Commit-Challenge model and encryption must be enabled in both the supervisor and votebox configuration files.  <a class="missing wiki" href="/wiki/Configuration" rel="nofollow">The Sample?</a> configuration files meet these requirments.  The precompiled ballot used in this walkthrough can be found <a class="missing attachment">here</a> (the origianl .bal can be found <a class="missing attachment">here</a>).  Note that these images are from a few seperate execution of the VoteBox system, observed jumps in time are not in error.
+</p>
+<p>
+<a style="padding:0; border:none" href="/attachment/Wiki/Full%20Election%20Diagram.png"><img src="/chrome/common/attachment.png" alt="No image &#34;Full Election Diagram.png&#34; attached to Wiki:None" title="No image &#34;Full Election Diagram.png&#34; attached to Wiki:None" /></a>
+</p>
+<h2 id="Walkthrough">Walkthrough</h2>
+<ul><li>Place supervisor.jar, votebox.jar, tap.jar, and challenge.jar on four different, networked machines.
+<ul><li>Note that the simpler the network, the better.  Ideally, the network will be homogenous with respect to IP version as well.
+</li></ul></li><li>Start the Supervisor, VoteBox, Tap, and ChallengeWebServer programs.
+<ul><li>Instructions for launching each can be found <a class="missing wiki" href="/wiki/VoteBoxSupervisor" rel="nofollow">here?</a>, <a class="missing wiki" href="/wiki/VoteBoxRunTime" rel="nofollow">here?</a>, <a class="missing wiki" href="/wiki/VoteBoxTap" rel="nofollow">here?</a>, and <a class="missing wiki" href="/wiki/VoteBoxWebServer" rel="nofollow">here?</a> respectively.
+</li></ul></li><li>While the machines are discovering each other, you will see these screens on the Supervisor Console and any VoteBoxes.
+<ul><li><a style="padding:0; border:none" href="/attachment/Wiki/Supervisor%20-%20waiting.png"><img width="400" alt="No image &#34;Supervisor - waiting.png&#34; attached to Wiki:None" title="No image &#34;Supervisor - waiting.png&#34; attached to Wiki:None" src="/chrome/common/attachment.png" /></a>
+</li><li><a style="padding:0; border:none" href="/attachment/Wiki/Votebox%20-%20waiting.png"><img width="400" alt="No image &#34;Votebox - waiting.png&#34; attached to Wiki:None" title="No image &#34;Votebox - waiting.png&#34; attached to Wiki:None" src="/chrome/common/attachment.png" /></a>
+</li></ul></li><li>Once the Supervisor Console has found a VoteBox (though not necissarily a Tap), the option to active becomes available.
+<ul><li><a style="padding:0; border:none" href="/attachment/Wiki/Supervisor%20-%20activate.png"><img width="400" alt="No image &#34;Supervisor - activate.png&#34; attached to Wiki:None" title="No image &#34;Supervisor - activate.png&#34; attached to Wiki:None" src="/chrome/common/attachment.png" /></a>
+</li></ul></li><li>Once activated, every VoteBox will be assigned a label and the Supervisor Console will advance to a new screen.
+<ul><li><a style="padding:0; border:none" href="/attachment/Wiki/Votebox%20-%20numbered.png"><img width="400" alt="No image &#34;Votebox - numbered.png&#34; attached to Wiki:None" title="No image &#34;Votebox - numbered.png&#34; attached to Wiki:None" src="/chrome/common/attachment.png" /></a>
+</li><li><a style="padding:0; border:none" href="/attachment/Wiki/Supervisor%20-%20authorized.png"><img width="400" alt="No image &#34;Supervisor - authorized.png&#34; attached to Wiki:None" title="No image &#34;Supervisor - authorized.png&#34; attached to Wiki:None" src="/chrome/common/attachment.png" /></a>
+</li></ul></li><li>Clicking "Select Ballot" will bring up a dialog that will allow you to find a ballot to use.
+<ul><li><a style="padding:0; border:none" href="/attachment/Wiki/Supervisor%20-%20Select%20Ballot.png"><img width="400" alt="No image &#34;Supervisor - Select Ballot.png&#34; attached to Wiki:None" title="No image &#34;Supervisor - Select Ballot.png&#34; attached to Wiki:None" src="/chrome/common/attachment.png" /></a>
+</li></ul></li><li>Once a ballot is selected, the polls may be opened by clicking "Open Polls".
+<ul><li><a style="padding:0; border:none" href="/attachment/Wiki/Supervisor%20-%20Open%20Polls.png"><img width="400" alt="No image &#34;Supervisor - Open Polls.png&#34; attached to Wiki:None" title="No image &#34;Supervisor - Open Polls.png&#34; attached to Wiki:None" src="/chrome/common/attachment.png" /></a>
+</li></ul></li><li>A voter may then be authorized to use any of the connected VoteBoxes, by clicking the corresponding "Authorize" button.
+<ul><li><a style="padding:0; border:none" href="/attachment/Wiki/Supervisor%20-%20Voting.png"><img width="400" alt="No image &#34;Supervisor - Voting.png&#34; attached to Wiki:None" title="No image &#34;Supervisor - Voting.png&#34; attached to Wiki:None" src="/chrome/common/attachment.png" /></a>
+</li></ul></li><li>Once authorized, a VoteBox is sent a copy of the ballot and a voting session begins.
+<ul><li><a style="padding:0; border:none" href="/attachment/Wiki/Votebox%20-%20Voting.png"><img width="400" alt="No image &#34;Votebox - Voting.png&#34; attached to Wiki:None" title="No image &#34;Votebox - Voting.png&#34; attached to Wiki:None" src="/chrome/common/attachment.png" /></a>
+</li><li><a style="padding:0; border:none" href="/attachment/Wiki/VoteBox%20-%20Challenge%20or%20Record.png"><img width="400" alt="No image &#34;VoteBox - Challenge or Record.png&#34; attached to Wiki:None" title="No image &#34;VoteBox - Challenge or Record.png&#34; attached to Wiki:None" src="/chrome/common/attachment.png" /></a>
+<ul><li>A voter is given the option to "challenge" the system in a full election.
+</li></ul></li><li><a style="padding:0; border:none" href="/attachment/Wiki/VoteBox%20-%20Done%20Voting.png"><img width="400" alt="No image &#34;VoteBox - Done Voting.png&#34; attached to Wiki:None" title="No image &#34;VoteBox - Done Voting.png&#34; attached to Wiki:None" src="/chrome/common/attachment.png" /></a>
+</li></ul></li><li>This authorize/vote cycle continues until an election ends, at which point the "Close Polls" button will be pressed on the Supervisor Console.  This will bring up the results screen.
+</li><li><a style="padding:0; border:none" href="/attachment/Wiki/Supervisor%20-%20Results.png"><img width="400" alt="No image &#34;Supervisor - Results.png&#34; attached to Wiki:None" title="No image &#34;Supervisor - Results.png&#34; attached to Wiki:None" src="/chrome/common/attachment.png" /></a>
+</li><li>At any time during the election a challenged ballot may be viewed via the challenge web server.
+<ul><li><a style="padding:0; border:none" href="/attachment/Wiki/Challenge%20-%20Challenged%20Ballot.png"><img width="400" alt="No image &#34;Challenge - Challenged Ballot.png&#34; attached to Wiki:None" title="No image &#34;Challenge - Challenged Ballot.png&#34; attached to Wiki:None" src="/chrome/common/attachment.png" /></a>
+<ul><li>These ballots are not included in the final tally.
+</li></ul></li></ul></li></ul>
+
+</body>
+</html>
+

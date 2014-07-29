@@ -1,0 +1,83 @@
+
+<html><head><link rel="stylesheet" href="trac.css" type="text/css" />
+</head><body>
+
+<h1 id="TracNavigation">Trac Navigation</h1>
+<p>
+Starting with Trac 0.11, it is now possible to customize the main and meta navigation entries in some basic ways.
+</p>
+<p>
+The new <tt>[mainnav]</tt> and <tt>[metanav]</tt> configuration sections can now be used to customize the text and link used for the navigation items, or even to disable them.  The <tt>mainnav</tt> and <tt>metanav</tt> options in the <tt>[trac]</tt> configuration section can also be used to change the order.
+</p>
+<h3 id="mainnav-bar"><tt>[mainnav]</tt></h3>
+<p>
+<tt>[mainnav]</tt> corresponds to the <strong>main navigation bar</strong>, the one containing entries such as <em>Wiki</em>, <em>Timeline</em>, <em>Roadmap</em>, <em>Browse Source</em> and so on. This navigation bar is meant to access the default page of the main modules enabled in Trac that are accessible for the current user.
+</p>
+<p>
+<strong> <span class="wikianchor" id="Example">Example</span> </strong> 
+</p>
+<p>
+In the following example, we rename the link to the Wiki start "Home", and make the "View Tickets" entry link to a specific report.  The second example (below) also hides the "Help/Guide" link.
+</p>
+<p>
+Relevant excerpt from the <a class="wiki" href="TracIni.html" rel="follow">TracIni</a>:
+</p>
+<pre class="wiki">[mainnav]
+wiki.label = Home
+tickets.href = /report/24
+</pre><h3 id="metanav-bar"><tt>[metanav]</tt></h3>
+<p>
+<tt>[metanav]</tt> corresponds to the <strong>meta navigation bar</strong>, by default positioned above the main navigation bar and below the <em>Search</em> box. It contains the <em>Log in</em>, <em>Logout</em>, <em>Help/Guide</em> etc. entries. This navigation bar is meant to access some global information about the Trac project and the current user.
+</p>
+<p>
+There is one special entry in the  <tt>[metanav]</tt> section: <tt>logout.redirect</tt> is the page the user sees after hitting the logout button. 
+
+</p>
+<p>
+<strong> Example </strong> 
+</p>
+<pre class="wiki">[metanav]
+help = disabled
+logout.redirect = wiki/Logout
+</pre><h3 id="Notes">Notes</h3>
+<p>
+Possible URL formats (for <tt>.href</tt> or <tt>.redirect</tt>):
+</p>
+<table class="wiki">
+<tr><td> <strong>config</strong> </td><td> <strong>redirect to</strong> 
+</td></tr><tr><td> <tt>wiki/Logout</tt> </td><td> <tt>/projects/envLogout</tt> 
+</td></tr><tr><td> <tt>http://hostname/</tt> </td><td> <tt>http://hostname/</tt> 
+</td></tr><tr><td> <tt>/projects</tt> </td><td> <tt>/projects</tt> 
+</td></tr></table>
+<h3 id=.html"nav-order"><tt>[trac]</tt></h3>
+<p>
+The <tt>mainnav</tt> and <tt>metanav</tt> options in the <tt>[trac]</tt> configuration section control the order in which the navigation items are displayed (left to right).  This can be useful with plugins that add navigation items.
+</p>
+<p>
+<strong> Example </strong> 
+</p>
+<p>
+In the following example, we change the order to prioritise the ticket related items further left.
+</p>
+<p>
+Relevant excerpt from the <a class="wiki" href="TracIni.html" rel="follow">TracIni</a>:
+</p>
+<pre class="wiki">[trac]
+mainnav = wiki,tickets,newticket,timeline,roadmap,browser,search,admin
+</pre><p>
+The default order and item names can be found in the source, which at the time of writing [source:trunk/trac/web/chrome.py@10883:397,402-403#L396 is here]
+</p>
+<h3 id="ctxtnav-bar">Context Navigation</h3>
+<p>
+Note that it is still not possible to customize the <strong>contextual navigation bar</strong>, i.e. the one usually placed below the main navigation bar.
+</p>
+<hr />
+<p>
+See also: <a class="wiki" href="TracInterfaceCustomization.html" rel="follow">TracInterfaceCustomization</a>, and the <a class="ext-link" href="http://trac-hacks.orgNavAddPlugin.html"><span class="icon">​</span>TracHacks:NavAddPlugin</a> or <a class="ext-link" href="http://trac-hacks.orgMenusPlugin.html"><span class="icon">​</span>TracHacks:MenusPlugin</a> (still needed for adding entries)
+</p>
+
+
+</body>
+</html>
+
+

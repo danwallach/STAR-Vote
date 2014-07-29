@@ -1,0 +1,79 @@
+
+<html><head><link rel="stylesheet" href="trac.css" type="text/css" />
+</head><body>
+
+<h1 id="TracAdmin"><a class="wiki" href="TracAdmin.html" rel="follow">TracAdmin</a></h1>
+<p>
+<div class="system-message"><strong>Error: Macro TracGuideToc(None) failed</strong><pre>'NoneType' object has no attribute 'find'</pre></div>
+</p>
+<p>
+Trac is distributed with a powerful command-line configuration tool. This tool can be used  to configure and customize your Trac-installation to better fit your needs.
+</p>
+<p>
+Some of those operations can also be performed via the <em>Admin</em> web interface, an updated version of the <a class="ext-link" href="http://trac.edgewall.org/intertrac/WebAdmin" title="WebAdmin in Trac project trac"><span class="icon">​</span>WebAdmin</a> plugin now integrated within Trac (since version 0.11).
+</p>
+<h2 id="Usage">Usage</h2>
+<p>
+For nearly every <tt>trac-admin</tt> command, you'll need to specify the path to the <a class="wiki" href="TracEnvironment.html" rel="follow">TracEnvironment</a> that you want to administer as the first argument, for example:
+</p>
+<pre class="wiki">trac-admin /path/to/projenv wiki list
+</pre><p>
+The only exception is for the <tt>help</tt> command, but even in this case if you omit the environment, you'll only get a very succinct list of commands (<tt>help</tt> and <tt>initenv</tt>), the same list you'd get when invoking <tt>trac-admin</tt> alone.
+Also, <tt>trac-admin --version</tt> will tell you about the Trac version (e.g. 0.12) corresponding to the program.
+</p>
+<p>
+If you want to get a comprehensive list of the available commands and sub-commands, you need to specify an existing environment:
+</p>
+<pre class="wiki">trac-admin /path/to/projenv help
+</pre><p>
+Some commands have a more detailed help, which you can access by specifying the command's name as a subcommand for <tt>help</tt>:
+</p>
+<pre class="wiki">trac-admin /path/to/projenv help &lt;command&gt;
+</pre><h3 id="initenv"><tt>trac-admin &lt;targetdir&gt; initenv</tt></h3>
+<p>
+This subcommand is very important as it's the one used to create a <a class="wiki" href="TracEnvironment.html" rel="follow">TracEnvironment</a> in the specified <tt>&lt;targetdir&gt;</tt>. That directory must not exist prior to the call.
+</p>
+<p>
+<a class="wiki" href="TracAdminHelp(initenv).html" rel="follow">TracAdminHelp(initenv)</a>
+</p>
+<p>
+It supports an extra <tt>--inherit</tt> option, which can be used to specify a global configuration file which can be used share settings between several environments. You can also inherit from a shared configuration afterwards, by setting the <tt>[inherit] file</tt> option in the <tt>conf/trac.ini</tt> file in your newly created environment, but the advantage of specifying the inherited configuration file at environment creation time is that only the options <em>not</em> already specified in the global configuration file will be written in the created environment's <tt>conf/trac.ini</tt> file.
+See <a class="wiki" href="TracIni#GlobalConfiguration.html" rel="follow">TracIni#GlobalConfiguration</a>.
+</p>
+<p>
+Note that in version 0.11 of Trac, <tt>initenv</tt> lost an extra last argument <tt>&lt;templatepath&gt;</tt>, which was used in previous versions to point to the <tt>templates</tt> folder. If you are using the one-liner '<tt>trac-admin /path/to/trac/ initenv &lt;projectname&gt; &lt;db&gt; &lt;repostype&gt; &lt;repospath&gt;</tt>' in the above and getting an error that reads <strong>'<tt>Wrong number of arguments to initenv: 4</tt></strong>', then this is because you're using a <tt>trac-admin</tt> script from an <strong>older</strong> version of Trac.
+</p>
+<h2 id="InteractiveMode">Interactive Mode</h2>
+<p>
+When passing the environment path as the only argument, <tt>trac-admin</tt> starts in interactive mode.
+Commands can then be executed on the selected environment using the prompt, which offers tab-completion
+(on non-Windows environments, and when the Python <tt>readline</tt> module is available) and automatic repetition of the last command issued.
+</p>
+<p>
+Once you're in interactive mode, you can also get help on specific commands or subsets of commands:
+</p>
+<p>
+For example, to get an explanation of the <tt>resync</tt> command, run:
+</p>
+<pre class="wiki">&gt; help resync
+</pre><p>
+To get help on all the Wiki-related commands, run:
+</p>
+<pre class="wiki">&gt; help wiki
+</pre><h2 id="FullCommandReference">Full Command Reference</h2>
+<p>
+You'll find below the detailed help for all the commands available by default in <tt>trac-admin</tt>. Note that this may not match the list given by <tt>trac-admin &lt;yourenv&gt; help</tt>, as the commands  pertaining to components disabled in that environment won't be available and conversely some plugins activated in the environment can add their own commands.
+</p>
+<p>
+<a class="wiki" href="TracAdminHelp().html" rel="follow">TracAdminHelp()</a>
+</p>
+<hr />
+<p>
+See also: <a class="wiki" href="TracGuide.html" rel="follow">TracGuide</a>, <a class="wiki" href="TracBackup.html" rel="follow">TracBackup</a>, <a class="wiki" href="TracPermissions.html" rel="follow">TracPermissions</a>, <a class="wiki" href="TracEnvironment.html" rel="follow">TracEnvironment</a>, <a class="wiki" href="TracIni.html" rel="follow">TracIni</a>, <a class="ext-link" href="http://trac.edgewall.org/intertrac/TracMigrate" title="TracMigrate in Trac project trac"><span class="icon">​</span>TracMigrate</a>
+</p>
+
+
+</body>
+</html>
+
+

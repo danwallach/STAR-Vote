@@ -1,0 +1,121 @@
+The interface format for log entries is fully described in:
+
+~scrosby/Documents/Research.projects/secure_logging/interfaceformat.ps
+
+A full functioning example is located in AuditorLogExample.
+
+
+There are three kinds of data to be represented in the log file:
+
+* '''Log messages''' These represent the contents of log messages. In the current implementation, Log messages are flat and cannot contain nested data. They may contain integers, blobs, strings, or other authenticators. 
+
+* '''Message precedence''' These encode the order between messages.
+
+* '''Host type bindings''' When writing audit rules, it is convenient to denote hosts with short tags `ec' for election coordinator or `v0', `v1' for voting machines. These are host types, and they need to be bound to the potential hostIDs that they may correspond to. The relationship is many-to-many.
+
+----
+
+''' Log messages '''
+
+
+Log entries are described using a named predicate or relational representation. the first three arguments are the
+implicit arguments consisting of: the head authenticator that entails
+the message, the host who signed it, and the unique serial number of
+that message. All of the arguments after that are atoms representing
+application data:
+
+
+{{{
+vote('auth_PnFncxik','host_3',4, 'goofy', 1).
+vote('auth_f2CnLuyY','host_4',8, 'daffy', 1).
+vote('auth_xCQXjeu9','host_3',5, 'donald', 0).
+}}}
+
+----
+
+''' Host type '''
+
+
+Host type bindings link hosts to host type names. Hosttype names must
+match $\id$. The hosttype for a host does not need to be unique.
+
+{{{
+hosttype('hostkey_342','any').
+hosttype('hostkey_442','any').
+hosttype('hostkey_562','any').
+
+hosttype('hostkey_342','votemachine').
+hosttype('hostkey_442','votemachine').
+hosttype('hostkey_562','electioncoordinator').
+}}}
+
+
+----
+
+''' Precedence representation -- Between log entries '''
+
+This is an alternative technique that exploits assumptions about the
+entries in the log, in particular, that a log is a linear chain and
+each log entry produced from a given host is attached to an
+incrementing counter and provably succeeds {\em all} preceeding log
+entries for that same host and provably preceeds {\em all} succeeding log
+entries for that host. It has space complexity of $O(2 n k^2)$ and
+time complexity $O(2 n k^3)$ to generate.
+
+We record for each host and each index $i$ of a log entry in its log,
+a tuple of the indexes of all of the entries in every other log that
+provably succeed this entry.
+
+We can record a mapping from a particular index $i$ in host $x$'s
+history the minimum indexes $j_0 \ldots j_n$ that provably succceed it
+in the histories of all hosts. $y_0 \ldots y_n$.
+
+First, we encode a table mapping a given host to a distinct index <
+$2^{maxhosts}$:
+
+{{{
+  hostindex('hostid=232',0).
+}}}
+
+
+The ordering relation is written with a predicate of this for, where
+the fields consist of numbers.
+
+     raworder('''host1''','''index1''','''host2''','''index2''').
+
+This asserts that for each index '''index1''' in '''host1''' 's log,
+and each host '''host2''', every entry in host '''host2''' 's log with
+an index >='''index2''' provably succeeds '''index1''' in
+'''host1''' 's log.
+
+Note that this relation must be complete. Entries must be included for
+all pairs of hosts, even for a host and itself.
+
+----
+
+''' Precedence representation -- Between an authenticator and a lot entry. '''
+
+
+PLANNED FEATURE: I plan on supporting authenticators within
+messages. To handle this, we need to support audit rules for checking
+the order between authenticators in messages and other logged messages.
+
+This will be represented as a set of relationships of the form:
+
+$$\E{rawauthbefore(} \D{auth} \E{,} \D{host2} \E{,} \D{index2} \E{)}$$
+
+Which represent, for each authenticator and each host, the message
+with the maximum index that is strictly before the authenticator.
+
+$$\E{rawauthafter(} \D{auth} \E{,} \D{host2} \E{,} \D{index2} \E{)}$$
+
+Which represent, for each authenticator and each host, the message
+with the minimum index that is provably after the authenticator.
+
+
+----
+
+''' Auxillary attributes '''
+
+PLANNED FEATURE.
+

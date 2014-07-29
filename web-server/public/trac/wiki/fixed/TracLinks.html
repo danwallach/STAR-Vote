@@ -1,0 +1,441 @@
+
+<html><head><link rel="stylesheet" href="trac.css" type="text/css" />
+</head><body>
+
+<h1 id="TracLinks">Trac Links</h1>
+<p>
+<div class="system-message"><strong>Error: Macro TracGuideToc(None) failed</strong><pre>'NoneType' object has no attribute 'find'</pre></div>
+</p>
+<p>
+<a class="wiki" href="TracLinks.html" rel="follow">TracLinks</a> are a fundamental feature of Trac, because they allow easy hyperlinking between the various entities in the systemsuch as tickets, reports, changesets, Wiki pages, milestones, and source filesfrom anywhere <a class="wiki" href="WikiFormatting.html" rel="follow">WikiFormatting</a> is used.
+</p>
+<p>
+<a class="wiki" href="TracLinks.html" rel="follow">TracLinks</a> are generally of the form <strong>type:id</strong> (where <em>id</em> represents the
+number, name or path of the item) though some frequently used kinds of items
+also have short-hand notations.
+</p>
+<h2 id="WheretouseTracLinks">Where to use <a class="wiki" href="TracLinks.html" rel="follow">TracLinks</a></h2>
+<p>
+You can use <a class="wiki" href="TracLinks.html" rel="follow">TracLinks</a> in:
+</p>
+<ul><li>Source code (Subversion) commit messages
+</li><li>Wiki pages
+</li><li>Full descriptions for tickets, reports and milestones
+</li></ul><p>
+and any other text fields explicitly marked as supporting <a class="wiki" href="WikiFormatting.html" rel="follow">WikiFormatting</a>.
+</p>
+<h2 id="Overview">Overview</h2>
+<table class="wiki">
+<tr><th> Wiki Markup </th><th> Display 
+</th></tr><tr><td><dl class="wiki"><dt>Wiki pages</dt><dd><tt>CamelCase</tt> or <tt>wiki:CamelCase</tt>
+</dd><dt>Parent page</dt><dd><tt>[..]</tt>
+</dd><dt>Tickets</dt><dd><tt>#1</tt> or <tt>ticket:1</tt>
+</dd><dt>Ticket comments</dt><dd><tt>comment:1:ticket:2</tt>
+</dd><dt>Reports</dt><dd><tt>{1}</tt> or <tt>report:1</tt>
+</dd><dt>Milestones</dt><dd><tt>milestone:1.0</tt>
+</dd><dt>Attachment</dt><dd><tt>attachment:example.tgz</tt> (for current page attachment), <tt>attachment:attachment.1073.diff:ticket:944</tt> (absolute path)
+</dd><dt>Changesets</dt><dd><tt>r1</tt>, <tt>[1]</tt>, <tt>changeset:1</tt> or (restricted) <tt>[1/trunk]</tt>, <tt>changeset:1/trunk</tt>
+</dd><dt>Revision log</dt><dd><tt>r1:3</tt>, <tt>[1:3]</tt> or <tt>log:@1:3</tt>, <tt>log:trunk@1:3</tt>, <tt>[2:5/trunk]</tt>
+</dd><dt>Diffs</dt><dd><tt>diff:@1:3</tt>, <tt>diff:plugins/0.12/mercurial-plugin@9128:9953</tt>,
+<tt>diff:tags/trac-0.9.2/wiki-default//tags/trac-0.9.3/wiki-default</tt> 
+or <tt>diff:trunk/trac@3538//sandbox/vc-refactoring@3539</tt>
+</dd><dt>Files</dt><dd><tt>source:trunk/COPYING</tt>, <tt>source:/trunk/COPYING@200</tt> (at version 200), <tt>source:/trunk/COPYING@200#L25</tt> (at version 200, line 25)
+</dd></dl>
+</td><td><dl class="wiki"><dt>Wiki pages</dt><dd><a class="wiki" href="CamelCase.html" rel="follow">CamelCase</a> or <a class="wiki" href="CamelCase.html" rel="follow">wiki:CamelCase</a>
+</dd><dt>Parent page</dt><dd><a href="/Wiki">..</a>
+</dd><dt>Tickets</dt><dd><a class="missing ticket">#1</a> or <a class="missing ticket">ticket:1</a>
+</dd><dt>Ticket comments</dt><dd><a href="/ticket/2#comment:1" title="Comment 1 for Ticket #2">comment:1:ticket:2</a> 
+</dd><dt>Reports</dt><dd>{1} or report:1
+</dd><dt>Milestones</dt><dd>milestone:1.0
+</dd><dt>Attachment</dt><dd><a class="missing attachment">attachment:example.tgz</a> (for current page attachment), <a class="missing attachment">attachment:attachment.1073.diff:ticket:944</a> (absolute path)
+</dd><dt>Changesets</dt><dd>r1, [1], changeset:1 or (restricted) [1/trunk], changeset:1/trunk
+</dd><dt>Revision log</dt><dd>r1:3, [1:3] or log:@1:3, log:trunk@1:3, [2:5/trunk]
+</dd><dt>Diffs</dt><dd>diff:@1:3, diff:plugins/0.12/mercurial-plugin@9128:9953,
+diff:tags/trac-0.9.2/wiki-default//tags/trac-0.9.3/wiki-default 
+or diff:trunk/trac@3538//sandbox/vc-refactoring@3539
+</dd><dt>Files</dt><dd>source:trunk/COPYING, source:/trunk/COPYING@200 (at version 200), source:/trunk/COPYING@200#L25 (at version 200, line 25)
+</dd></dl>
+</td></tr></table>
+<p>
+<strong>Note:</strong> The <a class="wiki" href="CamelCase.html" rel="follow">wiki:CamelCase</a> form is rarely used, but it can be convenient to refer to
+pages whose names do not follow <a class="wiki" href="WikiPageNames.html" rel="follow">WikiPageNames</a> rules, i.e., single words,
+non-alphabetic characters, etc. See <a class="wiki" href="WikiPageNames.html" rel="follow">WikiPageNames</a> for more about features specific
+to links to Wiki page names.
+</p>
+<table class=""><tr><td colspan="2"> Trac links using the full (non-shorthand) notation can also be given a custom link title like this: 
+</td></tr><tr><td><pre class="wiki">[ticket:1 This is a link to ticket number one] or
+[[ticket:1|This is another link to ticket number one]].
+</pre></td><td><p>
+<a class="missing ticket">This is a link to ticket number one</a> or
+<a class="missing ticket">This is another link to ticket number one</a>.
+</p>
+</td></tr><tr>
+<td colspan="2"> If the title is omitted, only the id (the part after the colon) is displayed:  
+</td></tr><tr><td><pre class="wiki">[ticket:1] or [[ticket:2]]
+</pre></td><td><p>
+<a class="missing ticket">1</a> or <a class="missing ticket">2</a>
+</p>
+</td></tr><tr>
+<td colspan="2"> <tt>wiki</tt> is the default if the namespace part of a full link is omitted:  
+</td></tr><tr><td><pre class="wiki">[SandBox the sandbox] or
+[[SandBox|the sandbox]]
+</pre></td><td><p>
+<a class="wiki" href="SandBox.html" rel="follow">the sandbox</a> or
+<a class="wiki" href="SandBox.html" rel="follow">the sandbox</a>
+</p>
+</td></tr><tr>
+<td colspan="2"> The short form <em>realm:target</em> can also be wrapped within a &lt;...&gt; pair, <br /> which allow for arbitrary characters (i.e. anything but &gt;)  
+</td></tr><tr><td><pre class="wiki">&lt;wiki:Strange(page@!)&gt;
+</pre></td><td><p>
+&lt;<a class="wiki" href="Strange(pageversion=!).html" rel="follow">wiki:Strange(page@!)</a>&gt;
+</p>
+</td></tr></table><p>
+<a class="wiki" href="TracLinks.html" rel="follow">TracLinks</a> are a very simple idea, but actually allow quite a complex network of information. In practice, it's very intuitive and simple to use, and we've found the "link trail" extremely helpful to better understand what's happening in a project or why a particular change was made.
+</p>
+<h2 id="AdvanceduseofTracLinks">Advanced use of <a class="wiki" href="TracLinks.html" rel="follow">TracLinks</a></h2>
+<h3 id="Relativelinks">Relative links</h3>
+<p>
+To create a link to a <a class="ext-link" href="http://trac.edgewall.org/intertrac/SubWiki" title="SubWiki in Trac project trac"><span class="icon">​</span>SubWiki</a>-page just use a '/':
+</p>
+<pre class="wiki"> WikiPage/SubWikiPage or ./SubWikiPage
+</pre><p>
+To link from a <a class="ext-link" href="http://trac.edgewall.org/intertrac/SubWiki" title="SubWiki in Trac project trac"><span class="icon">​</span>SubWiki</a> page to a parent, simply use a '..':
+</p>
+<pre class="wiki">  [..] or [[..]]
+</pre><blockquote>
+<p>
+<a href="/Wiki">..</a> or <a href="/Wiki">..</a>
+</p>
+</blockquote>
+<p>
+To link from a <a class="ext-link" href="http://trac.edgewall.org/intertrac/SubWiki" title="SubWiki in Trac project trac"><span class="icon">​</span>SubWiki</a> page to a <span class="wikianchor" id="sibling">sibling</span> page, use a '../':
+</p>
+<pre class="wiki">  [../Sibling see next sibling] or [[../Sibling|see next sibling]]
+</pre><blockquote>
+<p>
+[../Sibling see next sibling] or [[../Sibling|see next sibling]]
+</p>
+</blockquote>
+<p>
+But in practice you often won't need to add the <tt>../</tt> prefix to link to a sibling page.
+For resolving the location of a wiki link, it's the target page closest in the hierarchy
+to the page where the link is written which will be selected. So for example, within 
+a sub-hierarchy, a sibling page will be targeted in preference to a toplevel page.
+This makes it easy to copy or move pages to a sub-hierarchy by <a class="wiki" href="WikiNewPage#renaming.html" rel="follow">renaming</a> without having to adapt the links.
+</p>
+<p>
+In order to link explicitly to a <span class="wikianchor" id="toplevel">toplevel</span> Wiki page,
+use the <tt>wiki:/</tt> prefix.
+Be careful <strong>not</strong> to use the <tt>/</tt> prefix alone, as this corresponds to the
+<a href="/Wiki#Server-relativelinks">#Server-relativelinks</a> syntax and with such a link you will lack the <tt></tt> 
+part in the resulting URL.
+</p>
+<p>
+<em>(Changed in 0.11)</em> Note that in Trac 0.10, using e.g. <tt>[../newticket]</tt>  may have worked for linking to the <tt>/newticket</tt> top-level URL, but since 0.11, such a link will stay in the wiki namespace and therefore link to a sibling page. 
+See <a href=.html"/Wiki#Server-relativelinks">#Server-relativelinks</a> for the new syntax.
+</p>
+<h3 id="Linkanchors">Link anchors</h3>
+<p>
+To create a link to a specific anchor in a page, use '#':
+</p>
+<pre class="wiki"> [#Linkanchors Link anchors] or [[#Linkanchors|Link anchors]]
+</pre><blockquote>
+<p>
+<a href="/Wiki#Linkanchors">Link anchors</a> or <a href="/Wiki#Linkanchors">Link anchors</a>
+</p>
+</blockquote>
+<p>
+Hint: when you move your mouse over the title of a section, a <em> character will be displayed. This is a link to that specific section and you can use this to copy the <tt>#...</tt> part inside a relative link to an anchor.
+</em></p>
+<p>
+To create a link to the first or last occurrence of a term on a page, use a <em>pseudo anchor</em> starting with '#/' or '#':
+</p>
+<pre class="wiki"> [#/Milestone first occurrence of Milestone] or
+ [#Milestone last occurrence of Milestone]
+</pre><blockquote>
+<p>
+<a href="/Wiki#/Milestone">first occurrence of Milestone</a> or
+<a href="/Wiki#Milestone">last occurrence of Milestone</a>
+</p>
+</blockquote>
+<p>
+This will also highlight all other matches on the linked page. By default only case sensitive matches are considered. To include case insensitive matches append '/i':
+</p>
+<pre class="wiki"> [#/Milestone/i first occurrence of Milestone or milestone] or
+ [#Milestone/i last occurrence of Milestone or milestone]
+</pre><blockquote>
+<p>
+<a href="/Wiki#/Milestone/i">first occurrence of Milestone or milestone</a> or
+<a href="/Wiki#Milestone/i">last occurrence of Milestone or milestone</a>
+</p>
+</blockquote>
+<p>
+<em>(since Trac 1.0)</em>
+</p>
+<p>
+Such anchors can be very useful for linking to specific lines in a file in the source browser:
+</p>
+<pre class="wiki"> [trac:source:tags/trac-0.12/tracapi.py#L127 Line 127] or
+ [trac:source:tags/trac-0.12/trac/ticket/roadmap.py#L47 Line 47]
+</pre><blockquote>
+<p>
+<a class=.html"ext-link" href="http://trac.edgewall.org/intertrac/source%3Atags/trac-0.12/tracapi.py%23L127.html" title="source:tags/trac-0.12/tracapi.py#L127 in Trac project trac.html"><span class="icon">​</span>Line 127</a> or
+<a class="ext-link" href="http://trac.edgewall.org/intertrac/source%3Atags/trac-0.12/trac/ticket/roadmap.py%23L47" title="source:tags/trac-0.12/trac/ticket/roadmap.py#L47 in Trac project trac"><span class="icon">​</span>Line 47</a>
+</p>
+</blockquote>
+<p>
+(Hint: The line numbers displayed in the source browser are links to anchors on the respective lines.)
+</p>
+<p>
+Since such links become outdated when the file changes, it can be useful to link using a '#/' pseudo anchor instead:
+</p>
+<pre class="wiki"> [trac:source:trunk/tracapi.py#/IWikiSyntaxProvider IWikiSyntaxProvider] or
+ [trac:source:trunk/trac/env.py#/ISystemInfoProvider ISystemInfoProvider]
+</pre><blockquote>
+<p>
+<a class=.html"ext-link" href="http://trac.edgewall.org/intertrac/source%3Atrunk/tracapi.py%23/IWikiSyntaxProvider.html" title="source:trunk/tracapi.py#/IWikiSyntaxProvider in Trac project trac.html"><span class="icon">​</span>IWikiSyntaxProvider</a> or
+<a class="ext-link" href="http://trac.edgewall.org/intertrac/source%3Atrunk/trac/env.py%23/ISystemInfoProvider" title="source:trunk/trac/env.py#/ISystemInfoProvider in Trac project trac"><span class="icon">​</span>ISystemInfoProvider</a>
+</p>
+</blockquote>
+<h3 id="InterWikilinks"><a class="wiki" href="InterWiki.html" rel="follow">InterWiki</a> links</h3>
+<p>
+Other prefixes can be defined freely and made to point to resources in other Web applications. The definition of those prefixes as well as the URLs of the corresponding Web applications is defined in a special Wiki page, the <a class="wiki" href="InterMapTxt.html" rel="follow">InterMapTxt</a> page. Note that while this could be used to create links to other Trac environments, there's a more specialized way to register other Trac environments which offers greater flexibility.
+</p>
+<h3 id="InterTraclinks"><a class="wiki" href="InterTrac.html" rel="follow">InterTrac</a> links</h3>
+<p>
+This can be seen as a kind of <a class="wiki" href="InterWiki.html" rel="follow">InterWiki</a> link specialized for targeting other Trac projects.
+</p>
+<p>
+Any type of Trac link can be written in one Trac environment and actually refer to resources in another Trac environment. All that is required is to prefix the Trac link with the name of the other Trac environment followed by a colon. The other Trac environment must be registered on the <a class="wiki" href="InterTrac.html" rel="follow">InterTrac</a> page. 
+</p>
+<p>
+A distinctive advantage of <a class="wiki" href="InterTrac.html" rel="follow">InterTrac</a> links over <a class="wiki" href="InterWiki.html" rel="follow">InterWiki</a> links is that the shorthand form of Trac links (e.g. <tt>{}</tt>, <tt>r</tt>, <tt>#</tt>) can also be used. For example if T was set as an alias for Trac, links to Trac tickets can be written #T234, links to Trac changesets can be written [trac 1508].
+See <a class="wiki" href="InterTrac.html" rel="follow">InterTrac</a> for the complete details. 
+</p>
+<h3 id="Server-relativelinks">Server-relative links</h3>
+<p>
+It is often useful to be able to link to objects in your project that
+have no built-in Trac linking mechanism, such as static resources, <tt>newticket</tt>,
+a shared <tt>/register</tt> page on the server, etc.
+</p>
+<p>
+To link to resources inside the project, use either an absolute path from the project root, 
+or a relative link from the URL of the current page (<em>Changed in 0.11</em>):
+</p>
+<pre class="wiki">[/newticket Create a new ticket] or [[//newticket|Create a new ticket]]
+[/ home] or [[/|home]]
+</pre><p>
+Display: <a href="/newticket">Create a new ticket</a> or <a href="/newticket">Create a new ticket</a>
+<a href="/">home</a> or <a href="/">home</a>
+</p>
+<p>
+To link to another location on the server (possibly outside the project but on the same host), use the <tt>//</tt> prefix (<em>Changed in 0.11</em>):
+</p>
+<pre class="wiki">[//register Register Here] or [[//register|Register Here]]
+</pre><p>
+Display: <a href="/register">Register Here</a> or <a href="/register">Register Here</a>
+</p>
+<h3 id="QuotingspaceinTracLinks">Quoting space in <a class="wiki" href="TracLinks.html" rel="follow">TracLinks</a></h3>
+<p>
+Immediately after a <a class="wiki" href="TracLinks.html" rel="follow">TracLinks</a> prefix, targets containing space characters should
+be enclosed in a pair of quotes or double quotes.
+Examples:
+</p>
+<ul><li>wiki:&#34;The whitespace convention&#34;
+</li><li>attachment:'the file.txt' or
+</li><li>attachment:&#34;the file.txt&#34; 
+</li><li>attachment:&#34;the file.txt:ticket:123&#34; 
+</li></ul><p>
+Note that by using <a class="ext-link" href="http://trac.edgewall.org/intertrac/WikiCreole" title="WikiCreole in Trac project trac"><span class="icon">​</span>WikiCreole</a> style links, it's quite natural to write links containing spaces:
+</p>
+<ul><li>[[The whitespace convention]]
+</li><li>[[attachment:the file.txt]]
+</li></ul><h3 id="EscapingLinks">Escaping Links</h3>
+<p>
+To prevent parsing of a TracLink, you can escape it by preceding it with a '!' (exclamation mark).
+</p>
+<pre class="wiki"> !NoLinkHere.
+ ![42] is not a link either.
+</pre><p>
+Display:
+</p>
+<blockquote>
+<p>
+NoLinkHere.
+![42] is not a link either.
+</p>
+</blockquote>
+<h3 id="ParameterizedTraclinks">Parameterized Trac links</h3>
+<p>
+Many Trac resources have more than one way to be rendered, depending on some extra parameters. For example, a Wiki page can accept a <tt>version</tt> or a <tt>format</tt> parameter, a report can make use of dynamic variables, etc.
+</p>
+<p>
+Trac links can support an arbitrary set of parameters, written in the same way as they would be for the corresponding URL. Some examples:
+</p>
+<ul><li><tt>wiki:WikiStartformat=txt</tt>
+</li><li><tt>ticket:1version=1</tt>
+</li><li><tt>[/newticketcomponent=module1 create a ticket for module1]</tt>
+</li><li><tt>[/newticketsummary=Add+short+description+here create a ticket with URL with spaces]</tt>
+</li></ul><h2 id="TracLinksReference"><a class="wiki" href="TracLinks.html" rel="follow">TracLinks</a> Reference</h2>
+<p>
+The following sections describe the individual link types in detail, as well as notes on advanced usage of links.
+</p>
+<h3 id="attachment:links">attachment: links</h3>
+<p>
+The link syntax for attachments is as follows:
+</p>
+<ul><li>attachment:the_file.txt creates a link to the attachment the_file.txt of the current object
+</li><li>attachment:the_file.txt:wiki:MyPage creates a link to the attachment the_file.txt of the MyPage wiki page
+</li><li>attachment:the_file.txt:ticket:753 creates a link to the attachment the_file.txt of the ticket 753
+</li></ul><p>
+Note that the older way, putting the filename at the end, is still supported: attachment:ticket:753:the_file.txt.
+</p>
+<p>
+If you'd like to create a direct link to the content of the attached file instead of a link to the attachment page, simply use <tt>raw-attachment:</tt> instead of <tt>attachment:</tt>.
+</p>
+<p>
+This can be useful for pointing directly to an HTML document, for example. Note that for this use case, you'd have to allow the web browser to render the content by setting <tt>[attachment] render_unsafe_content = yes</tt> (see <a class="wiki" href="TracIni#attachment-section.html" rel="follow">TracIni#attachment-section</a>). Caveat: only do that in environments for which you're 100% confident you can trust the people who are able to attach files, as otherwise this would open up your site to [wikipedia:Cross-site_scripting cross-site scripting] attacks.
+</p>
+<p>
+See also <a href="/Wiki#export:links">#export:links</a>.
+</p>
+<h3 id="comment:links">comment: links</h3>
+<p>
+When you're inside a given ticket, you can simply write e.g. comment:3 to link to the third change comment.
+It is possible to link to a comment of a specific ticket from anywhere using one of the following syntax:
+</p>
+<ul><li><tt>comment:3:ticket:123</tt> 
+</li><li><tt>ticket:123#comment:3</tt> (note that you can't write <tt>#123#!comment:3</tt>!)
+</li></ul><p>
+It is also possible to link to the ticket's description using one of the following syntax:
+</p>
+<ul><li><tt>comment:description</tt> (within the ticket)
+</li><li><tt>comment:description:ticket:123</tt>
+</li><li><tt>ticket:123#comment:description</tt>
+</li></ul><h3 id="htdocs:links">htdocs: links</h3>
+<p>
+Use <tt>htdocs:path/to/file</tt> to reference files in the <tt>htdocs</tt> directory of the Trac environment, the <a class="wiki" href="TracEnvironment#DirectoryStructure.html" rel="follow">web resource directory</a>.
+</p>
+<h3 id="query:links">query: links</h3>
+<p>
+See <a class="wiki" href="TracQuery#UsingTracLinks.html" rel="follow">TracQuery#UsingTracLinks</a> and <a href="/Wiki#ticket:links">#ticket:links</a>.
+</p>
+<h3 id="search:links">search: links</h3>
+<p>
+See <a class="wiki" href="TracSearch#SearchLinks.html" rel="follow">TracSearch#SearchLinks</a> 
+</p>
+<h3 id="ticket:links">ticket: links</h3>
+<blockquote>
+<p>
+<em>alias:</em> <tt>bug:</tt>
+</p>
+</blockquote>
+<p>
+Besides the obvious <tt>ticket:id</tt> form, it is also possible to specify a list of tickets or even a range of tickets instead of the <tt>id</tt>. This generates a link to a custom query view containing this fixed set of tickets.
+</p>
+<p>
+Example: 
+</p>
+<ul><li><tt>ticket:5000-6000</tt>
+</li><li><tt>ticket:1,150</tt>
+</li></ul><p>
+<em>(since Trac 0.11)</em>
+</p>
+<h3 id="timeline:links">timeline: links</h3>
+<p>
+Links to the timeline can be created by specifying a date in the ISO:8601 format. The date can be optionally followed by a time specification. The time is interpreted as being UTC time, but alternatively you can specify your local time, followed by your timezone if you don't want to compute the UTC time.
+</p>
+<p>
+Examples:
+</p>
+<ul><li><tt>timeline:2008-01-29</tt>
+</li><li><tt>timeline:2008-01-29T15:48</tt>
+</li><li><tt>timeline:2008-01-29T15:48Z</tt>
+</li><li><tt>timeline:2008-01-29T16:48+01</tt>
+</li></ul><p>
+<em>(since Trac 0.11)</em>
+</p>
+<h3 id="wiki:links">wiki: links</h3>
+<p>
+See <a class="wiki" href="WikiPageNames.html" rel="follow">WikiPageNames</a> and <a href="/Wiki#QuotingspaceinTracLinks">quoting space in TracLinks</a> above. It is possible to create a link to a specific page revision using the syntax <a class="wiki" href="WikiStartversion=1.html" rel="follow">WikiStart@1</a>.
+</p>
+<h3 id="VersionControlrelatedlinks">Version Control related links</h3>
+<p>
+It should be noted that multiple repository support works by creating a kind of virtual namespace for versioned files in which the toplevel folders correspond to the repository names. Therefore, in presence of multiple repositories, a <em>/path</em> specification in the syntax of links detailed below should start with the name of the repository. If omitted, the default repository is used. In case a toplevel folder of the default repository has the same name as a repository, the latter "wins". One can always access such folder by fully qualifying it (the default repository can be an alias of a named repository, or conversely, it is always possible to create an alias for the default repository, ask your Trac administrator).
+</p>
+<p>
+For example, <tt>source:/trunk/COPYING</tt> targets the path <tt>/trunk/COPYING</tt> in the default repository, whereas <tt>source:/projectA/trunk/COPYING</tt> targets the path <tt>/trunk/COPYING</tt> in the repository named <tt>projectA</tt>. This can be the same file if <tt>'projectA'</tt> is an alias to the default repository or if <tt>''</tt> (the default repository) is an alias to <tt>'projectA'</tt>.
+</p>
+<h4 id="source:links">source: links</h4>
+<blockquote>
+<p>
+<em>aliases:</em> <tt>browser:</tt>, <tt>repos:</tt>
+</p>
+</blockquote>
+<p>
+The default behavior for a source:/some/path link is to open the browser in that directory directory 
+if the path points to a directory or to show the latest content of the file.
+</p>
+<p>
+It's also possible to link directly to a specific revision of a file like this:
+</p>
+<ul><li><tt>source:/some/file@123</tt> - link to the file's revision 123
+</li><li><tt>source:/some/file@head</tt> - link explicitly to the latest revision of the file
+</li></ul><p>
+If the revision is specified, one can even link to a specific line number:
+</p>
+<ul><li><tt>source:/some/file@123#L10</tt>
+</li><li><tt>source:/tag/0.10@head#L10</tt>
+</li></ul><p>
+Finally, one can also highlight an arbitrary set of lines:
+</p>
+<ul><li><tt>source:/some/file@123:10-20,100,103#L99</tt> - highlight lines 10 to 20, and lines 100 and 103.
+<em>(since 0.11)</em>
+</li></ul><p>
+Note that in presence of multiple repositories, the name of the repository is simply integrated in the path you specify for <tt>source:</tt> (e.g. <tt>source:reponame/trunk/README</tt>). <em>(since 0.12)</em>
+</p>
+<h4 id="export:links">export: links</h4>
+<p>
+To force the download of a file in the repository, as opposed to displaying it in the browser, use the <tt>export</tt> link.  Several forms are available:
+</p>
+<ul><li><tt>export:/some/file</tt> - get the HEAD revision of the specified file
+</li><li><tt>export:123:/some/file</tt> - get revision 123 of the specified file
+</li><li><tt>export:/some/file@123</tt> - get revision 123 of the specified file
+</li></ul><p>
+This can be very useful for displaying XML or HTML documentation with correct stylesheets and images, in case that has been checked in into the repository. Note that for this use case, you'd have to allow the web browser to render the content by setting <tt>[browser] render_unsafe_content = yes</tt> (see <a class="wiki" href="TracIni#browser-section.html" rel="follow">TracIni#browser-section</a>), otherwise Trac will force the files to be downloaded as attachments for security concerns. 
+</p>
+<p>
+If the path is to a directory in the repository instead of a specific file, the source browser will be used to display the directory (identical to the result of <tt>source:/some/dir</tt>).
+</p>
+<h4 id="log:links">log: links</h4>
+<p>
+The <tt>log:</tt> links are used to display revision ranges. In its simplest form, it can link to the latest revisions of the specified path, but it can also support displaying an arbitrary set of revisions.
+</p>
+<ul><li><tt>log:/</tt> - the latest revisions starting at the root of the repository
+</li><li><tt>log:/trunk/tools</tt> - the latest revisions in <tt>trunk/tools</tt>
+</li><li><tt>log:/trunk/tools@10000</tt> - the revisions in <tt>trunk/tools</tt> starting from  revision 10000
+</li><li><tt>log:@20788,20791:20795</tt> - list revision 20788 and the revisions from 20791 to 20795 
+</li><li><tt>log:/trunk/tools@20788,20791:20795</tt> - list revision 20788 and the revisions from 20791 to 20795 which affect the given path
+</li></ul><p>
+There are short forms for revision ranges as well:
+</p>
+<ul><li><tt>[20788,20791:20795]</tt>
+</li><li><tt>[20788,20791:20795/trunk/tools]</tt>
+</li><li><tt>r20791:20795</tt> (but not <tt>r20788,20791:20795</tt> nor <tt>r20791:20795/trunk</tt>)
+</li></ul><p>
+Finally, note that in all of the above, a revision range can be written either as <tt>x:y</tt> or <tt>x-y</tt>.
+</p>
+<p>
+In the presence of multiple repositories, the name of the repository should be specified as the first part of the path, e.g. <tt>log:repos/branches</tt> or <tt>[20-40/repos]</tt>.
+</p>
+<hr />
+<p>
+See also: <a class="wiki" href="WikiFormatting.html" rel="follow">WikiFormatting</a>, <a class="wiki" href="TracWiki.html" rel="follow">TracWiki</a>, <a class="wiki" href="WikiPageNames.html" rel="follow">WikiPageNames</a>, <a class="wiki" href="InterTrac.html" rel="follow">InterTrac</a>, <a class="wiki" href="InterWiki.html" rel="follow">InterWiki</a>
+ 
+</p>
+
+
+</body>
+</html>
+
+

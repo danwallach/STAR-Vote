@@ -1,0 +1,26 @@
+
+<html><head><link rel="stylesheet" href="trac.css" type="text/css" />
+</head><body>
+
+<p>
+These changes proposed based on the July 5 meeting.
+</p>
+<ul><li>Queue for application level messages
+<ul><li>Pair {from (host ptr), message}
+</li></ul></li><li>Events for connection-level stuff:
+<ul><li>Incomming connection
+</li><li>Lost connection
+</li></ul></li><li>Certificates need to be stored so that a later call by the application can retrieve it.
+</li></ul><p>
+Structural changes to auditorium messages based on discussion:
+</p>
+<ul><li>A certificate is a signed triple: (id, key, annotation).
+</li><li>A signature is a triple: (id, sig-data, payload).
+</li><li>A key is a pair: (mod, exp).
+</li><li>A host pointer is a triple: (id, ip, port).
+</li><li>A message pointer is a triple: (id, sequence, hash)
+</li></ul>
+
+</body>
+</html>
+

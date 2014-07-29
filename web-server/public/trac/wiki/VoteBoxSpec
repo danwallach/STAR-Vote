@@ -1,0 +1,175 @@
+= !VoteBox Software Specification =
+
+'''Vote``Box Team [in alphabetical order, by last name (and nearly reverse order by importance)]:'''
+'''Kyle Derr, Daniel Sandler, Ted Torous, Dan S. Wallach'''
+
+''written by: [mailto:derrleyATrice.edu Kyle Derr]''
+
+ Subpages:: VoteBoxRunTime
+ :: VoteBoxPrepTool
+
+[[PageOutline]]
+
+== Summary ==
+Our experiences with electronic voting machines in real elections lead us to 
+believe that administrative error and poor procedures account for a great number
+of election irregularities, including lost votes and incorrect tallies. Current
+DRE voting machines make auditing difficult, because each machine's audit data
+is trusted to reside locally throughout the course of an election. By connecting
+voting machines together on a secure, private network, we theorize that both
+problems can be ameliorated. Primarily, we suggest this network be used to
+redundantly store audit data and encrypted cast ballots. We also suggest that
+the network be an acceptable means for control and status feedback from the point of
+view of the poll worker. In summary, the network infrastructure will help to
+prevent the loss of votes due to machine failure or tampering, increase our
+ability to audit elections after they close, and improve the usability of the
+system from the point of view of a poll worker, which, we hypothesize, will
+improve his ability to correctly administer elections.
+
+It may also be the case that current production versions of voting machines from
+many vendors suffer from problems with usability. These problems raise serious human factors questions that deserve time and consideration from researchers. Indeed, voting, in general, is a serious human factors problem. There is
+a significant amount of research to be done both on the question of how human
+factors relates to the current production machines and how human factors relates
+to voting, in general. There are issues with doing research on the current
+production machines--the problems of availability and cost being most
+insidious. It is also the case that even if actual, current machines could
+be gotten, they are virtually worthless for doing human factors research in two
+fundamental ways: they do not record information that is needed to make claims
+about their usability and their user interface cannot be changed based on
+research results (this is desirable so that the results can be proved to
+improve the usability of the system). What is needed is a platform whose user
+interface is configurable to the extent of mimicking production voting machines
+(and any other configuration we feel is useful) and whose back end will record
+data about a voter's interaction with the machine, if this feature is enabled,
+while it will do nothing of the sort, otherwise (as this is an obvious anonymity
+issue in the case where the machine would be used in a real election).
+
+The system that is described in this document is a research platform for the
+ideas (both human factors related and computer science related) explained above.
+For the purpose of this document, the term "our system" refers to a set of our
+voting machines on a private network with a "controller," the machine we have
+designed whose purpose is to control voting machines that reside on its network.
+
+== Benefits of Networked Voting Systems ==
+('''placed here because of the nonexistence of a back end document...possibly move later?''') An immediate digression on networks is necessary, as it is the case that this is the most controversial part of the research that this software enables, from a computer security perspective. The common opinion of voting machines and their relation to networks seems to
+be very clear--a voting machine should have no relation to networks at all.
+This prevailing belief is most likely due to a valid security concern. Clearly,
+a machine that is networked has a much larger attack surface than one which is
+not networked. An attacker who can successfully gain access to the network on
+which networked machines live can (possibly) transparently interact with all the
+machines. Similarly, if an attacker can compromise one machine, he will have a still greater chance
+at mounting an attack on an entire polling place, as the compromised machine was likely trusted, unlike
+an unknown machine, which would not be able to imitate a trusted machine. 
+
+We feel differently. We do not downplay the gravity or the poignancy
+of these claims (and of claims which are similar in nature), however, we do feel
+that if appropriate steps are taken to deter attacks that are made possible by
+the introduction of a network, the network can provide benefits that well
+outweigh their associated risks. We have designed the general goals of our project with this in
+mind. What follows are the motivating reasons for the inclusion of a network in
+our design.
+
+=== Increased Usability From the Perspective of the Poll Worker ===
+While it might not be immediately obvious, we argue that networks can increase
+the usability of a voting system from the perspective of all parties involved.
+
+It seems to be the case that, in current production election systems, usability
+from the perspective of the poll worker is a real issue. The probability of a
+poll worker making an honest mistake that skews the outcome of an election
+is, quite possibly, higher than the probability of an election's outcome
+being skewed dramatically by the act of a malicious attacker. Indeed, there
+is evidence '''(CITE NEEDED)''' that suggests that there have already been
+cases where poorly designed interfaces, complicated election day protocols, and
+inadequate training have allowed poll workers to innocently corrupt election
+data. In the standalone machine case (where machines are not networked), poll
+workers must perform a set of repetitive tasks on all machines in the polling
+location. Examples abound. Each machine must be independently tested and
+verified to be functioning. Poll workers must physically interact with machines
+to change the perceived (by the machine) state of the election (open, closed,
+etc.). Because machines have no method of communication with one another,
+other than the age old notion of sneaker-net, the process of vote aggregation
+and tallying also requires that a poll worker physically interact with each machine. We
+propose that the existence of a network would drastically reduce the time that
+poll workers spend interacting with hardware. In the networked case, poll
+workers must only repeat the task of turning the machines on and connecting them
+to a network. The remainder of the poll workers' interaction with voting machine
+hardware is isolated to a special machine, which we have called the
+"controller." The controller offers the poll worker a single administrative
+point for the entire polling place, as well as a single reference point for
+status feedback about the state of all machines on the network. Poll workers
+will find this much more manageable, and, we argue, will be less likely to
+introduce any error into the election unknowingly (or accidentally).
+
+=== Auditability ===
+Event logs are an important part of auditability, in that they provide a
+mechanism which a third party can use to explain anomalies in data. Startlingly, in the event
+of an attack on a standalone machine, event logs can be compromised as easily as cast ballot
+data. It makes sense, then, to distribute the responsibility of event logging to
+all the machines in the network, for all machines in the network. If all
+machines are responsible for logging events that happen on all machines in the
+network, a much higher hurdle is built which the attacker must clear in order
+for his attack to be successful. To achieve this, we use a special case of
+time line entanglement '''(CITE NEEDED)'''. Ours is simplified – voting event logs are sparse, as
+events can only occur as fast as humans can interact with a machine, and, there
+are very few nodes on the network (only as many as there are voting machines and controllers at
+one polling location). We are, because of this, able to engineer a fairly simple
+system, whereby all voting machines log the events of all voting machines, and
+these logs are tamper evident. By "tamper evident," I mean that an attacker could
+not transparently change the ordering of events in a log without leaving
+evidence of his modification of the log data. I leave the implementation details
+to a later section of this document.
+
+=== Cast Ballot Box Redundancy ===
+From a security (and legal) perspective, one of the larger problems that
+present-day production machines face is the problem that vote totals are only
+stored in one place, which is neither tamper resistant nor tamper evident. If
+the result of an election is contested, there needs to be a reliable mechanism
+which experts can use to examine and verify the accuracy of the gotten result.
+For a voting system to be usable, there should be reliable mechanism for
+conducting a recount. Installing Voter Verifiable Paper Audit Trail (VVPAT) printers can help to create this mechanism--at the very least, VVPAT printouts allow for redundancy in a form that is tamper evident (even if the question as to whether voters actually read and verify data recorded on these printouts is unanswered). We claim that the VVPAT solution can be paired with a networked solution to provide a combined redundancy solution that lawyers and voters should find equally pleasing. 
+
+We have already stated that we will employ the network for vote aggregation; machines will place cast ballots on the broadcast network for the controller to collect. This benefits
+usability. To benefit redundancy, we say that the other voting machines should
+listen for and store cast ballots that are broadcast on the network as well as
+those which originate locally from direct voter interaction. This means, at the
+end of an election, there are as many copies of the final cast ballot box as
+there are voting machines on the network. An attacker wishing to transparently
+compromise the totals would have to successfully (and consistently) modify the
+data on all the machines. It is true that in the case of a compromise, it can be
+unclear which set of totals is the accurate one. An attacker could, for
+instance, consistently compromise half the machines on a network, creating two
+distinct vote totals, both of which can be claimed to have a certain amount of
+legitimacy. While we hope that other features of our system will help to
+resolve legitimacy conflicts (namely distributed event logging), it is at least
+clear that, in the case of a compromise, immediately after the election, data
+has been tampered with. The onus of malfunction detection (or tamper detection)
+is no longer solely on the voter. It is very likely that VVPAT printouts will be
+useful in resolving a dispute in the case where a digital vote tally has been
+compromised, but the detection of such a compromise can now be done digitally
+and automatically by verification tools run on the data after the election.
+
+== Software Components ==
+The Vote``Box Software project can be conceptually segmented into four concrete sub projects, each having independent security questions and design goals. These are the Vote``Box Runtime (which we further segment into [:VoteBoxRunTime:User Interface] and [:VoteBoxBackEnd:Back End], the [:VoteBoxPrepTool:Ballot Preparation Tool], and the [:VoteBoxController:VoteBox Controller]. Here, we offer a short description of each component. See [:VoteBoxMachineDiagram: this figure] if you desire a more visual explanation of how the modules interact.
+
+=== !VoteBox Runtime ===
+The “Runtime” is the software which actually runs on voting machine hardware on election day. This software has two components: it has a back end component, which is responsible for data persistence and for implementing the network infrastructure that we have alluded to, as well as a front end (or user interface) component, whose responsibility is to implement all features which are relevant to interactions with the user, including (notably) the creation of “cast” ballots.
+
+==== User Interface Module ====
+The User Interface (UI) module's design is driven by several fundamental goals. The most important of these goals are simplicity (having little complexity), and usefulness in usability studies. The goal of simplicity, we hope, will aid in any sort of security analysis. 
+		
+We have decided, based on these reasons, to design a module which, when invoked, reads a collection of organized images (which, together, represent a ballot) and draws each to a specified location on a display, some of which are inside predefined hit-rectangles. The module will then accept input, in the form of mouse or keyboard, whose intent is the selection of one of these, said, predefined hit-rectangles. Some of the hit rectangles will be specified as those which modify the state of a "ballot," which is created (and blank) along with the UI module. When the voter is finished voting, he will select a hit rectangle whose purpose is to allow the voter to communicate his intent to cast his ballot. Upon hearing this, the UI module will create an immutable cast ballot, make it available to be retrieved, and invoke a callback which was given to the module on construction. Any instance of the UI module can only iterate this process once. For a second voter, for instance, a second UI module must be constructed. 
+
+By stipulating that no rendering work is done in the voting machine runtime, we decrease the complexity of the module, as well as increase the degree to which it can be inclusive of all interface designs, because controls can be completely pre-rendered and placed in any arbitrary location
+
+==== Back End Module ====
+An instance of Back End persists throughout the duration of a run of the Vote``Box software. The back end accepts instructions from a controller, creates instances of the UI module when a vote needs to be taken from a voter and recorded, logs all events that occur locally and on the network, and copies all new events (locally and from the network) to all nodes on the network. Specification about "auditorium" (our secure broadcast network), as well as arguments for why it is secure can be found in [:VoteBoxBackEnd:the back end documentation]. A version of the back end exists, for the purpose of human factors testing, that does not implement any of the complex network features we describe in the back end specification. This "simplified" back end simply maintains that there is always an instance of the UI module running, ready to be interacted with by a voter. This is sufficient for human factors research, as all the relevant data will be written to disk by the UI module.
+
+=== Ballot Preparation Tool ===
+The Ballot Preparation Tool is a program separate from Vote``Box whose job it is to create a ballot representation which Vote``Box can understand. Specification of this representation can be found in the [:VoteBoxRunTime:VoteBox UI specification.] 
+
+Because we have chosen to draw the line of abstraction between the preparation tool and the Vote``Box software in such a way that allows the preparation tool a substantial amount of control over both the look and feel and the behavior of the ballot, we claim that it is the preparation tool (not Vote``Box, it self) whose configuration (or version) will need to vary based on statutory regulations which are in place in different states. This proves a much more manageable, as the preparation tool is scrutinized much less from a security standpoint--all that one should be concerned with is whether or not it produces a correct ballot representation. It is also much more manageable from a practical standpoint, as only one version of Vote``Box would (if it were to be used in real elections) need to be engineered and deployed. 
+
+A user of the preparation tool is able to create a ballot which represents any combination of candidates, who belong to any combination of parties, and are running in any number of races. 
+
+=== !VoteBox Controller ===
+The controller software runs on a machine that is very similar, in hardware, to a standard voting machine. The controller software serves as a control point for the entire polling place. The use of a single controller machine to control an entire polling place, we argue, is a much more manageable request of a poll worker than forcing him to have to repeat some arbitrary set of tasks on many machines. In addition, the controller can serve as a logical point of collection for cast ballots. We claim that, given a proper public key infrastructure is in place, the controller can be trusted to decrypt cast ballots, and come up with a vote total that can be certified and submitted as official.

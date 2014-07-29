@@ -1,0 +1,106 @@
+
+<html><head><link rel="stylesheet" href="trac.css" type="text/css" />
+</head><body>
+
+<h1 id="VoteBoxSoftwareSpecification:PreparationToolPsychLayout">VoteBox Software Specification: Preparation Tool PsychLayout</h1>
+<p>
+<strong>Kyle Derr, Daniel Sandler, Corey Shaw, Ted Torous</strong>
+</p>
+<p>
+<em>Written by: Corey Shaw</em>
+</p>
+<p>
+</p><div class="wiki-toc">
+<ol>
+  <li>
+    <a href="#VoteBoxSoftwareSpecification:PreparationToolPsychLayout">VoteBox Software Specification: Preparation Tool PsychLayout</a>
+    <ol>
+      <li>
+        <a href="#Introduction">Introduction</a>
+      </li>
+      <li>
+        <a href="#OverallLayoutDescription">Overall Layout Description</a>
+      </li>
+      <li>
+        <a href="#PsychLayoutFrame">PsychLayoutFrame</a>
+        <ol>
+          <li>
+            <a href="#addTitle">addTitle</a>
+          </li>
+          <li>
+            <a href="#addStatusBar">addStatusBar</a>
+          </li>
+          <li>
+            <a href="#addNextButtonaddPreviousButtonaddReturnButtonaddCastButton">addNextButton, addPreviousButton, addReturnButton, addCastButton</a>
+          </li>
+          <li>
+            <a href="#addAsEastPanel">addAsEastPanel</a>
+          </li>
+          <li>
+            <a href="#getAllComponents">getAllComponents</a>
+          </li>
+        </ol>
+      </li>
+    </ol>
+  </li>
+</ol>
+</div><p>
+</p>
+<h2 id="Introduction">Introduction</h2>
+<p>
+This page describes the user interface layout designed for the <a class="missing wiki" href="/wiki/VoteBoxRunTime" rel="nofollow">VoteBoxRunTime?</a> in 2006 in conjunction with researchers in the <a class="ext-link" href="http://chil.rice.edu/"><span class="icon">​</span>Computer-Human Interaction Lab</a> in the Rice Psychology Department: Sarah Everett, Kristen Greene, and Dr. Mike Byrne.
+</p>
+<h2 id="OverallLayoutDescription">Overall Layout Description</h2>
+<blockquote>
+<p>
+<a style="padding:0; border:none" href="/attachment/Wiki/psychlayoutpanes.png"><img width="400" alt="No image &#34;psychlayoutpanes.png&#34; attached to Wiki:None" title="No image &#34;psychlayoutpanes.png&#34; attached to Wiki:None" src="/chrome/common/attachment.png" /></a><br />
+<strong>Fig. 1.</strong> The <a class="missing wiki" href="/wiki/VoteBoxRunTime" rel="nofollow">VoteBoxRunTime?</a> user interface.
+</p>
+</blockquote>
+<p>
+This user interface is implemented by the <tt>PsychLayout</tt> class in the <a class="missing wiki" href="/wiki/VoteBoxPrepTool" rel="nofollow">VoteBoxPrepTool?</a>.  Almost all pages in the <tt>PsychLayout</tt> have four panes: north, south, east, and west.  
+</p>
+<p>
+The panes each hold the following components:
+</p>
+<dl class="wiki"><dt>North</dt><dd>
+The title of the page (and possibly status, i.e. Voted in 5 of 10)
+</dd><dt>West</dt><dd>
+Overall status description, i.e. what step the user is on
+</dd><dt>South</dt><dd>
+Navigation buttons, such as forward and back
+</dd><dt>East</dt><dd>
+The main content pane, containing a race, instructions, review screen, etc.
+</dd></dl>
+<p>
+The only exception is the Thank <a class="missing wiki" href="/wiki/You/Success" rel="nofollow">You/Success?</a> screen, which shows when the user has casted his/her vote and it was received successfully.  This page has no navigation, and thus does not need a west or south panel.
+</p>
+<h2 id="PsychLayoutFrame">PsychLayoutFrame</h2>
+<p>
+The <tt>PsychLayoutFrame</tt> is a <tt>JFrame</tt> that is used by the <tt>PsychLayoutManager</tt> to lay out the components.  When constructed, it initializes the size and the north, west, and south panels (the east panel must be added separately).  A number of utility methods have been implemented here to support shared behavior among these frames.
+</p>
+<h3 id="addTitle">addTitle</h3>
+<p>
+The <tt>addTitle</tt> method can accept a String or an already constructed Label.  The Label has its attributes updated, and is placed onto the north panel in the correct location.
+</p>
+<h3 id="addStatusBar">addStatusBar</h3>
+<p>
+The <tt>addStatusBar</tt> method places the labels for the global status on the west panel.  An integer parameter for the current step is required, and the highlighted label corresponding to this step is added (instead of the regular one).
+</p>
+<h3 id="addNextButtonaddPreviousButtonaddReturnButtonaddCastButton">addNextButton, addPreviousButton, addReturnButton, addCastButton</h3>
+<p>
+These methods add their corresponding button in its correct location.  The next button or cast button goes in the bottom right, the previous button goes in the bottom left, and the return button goes in the bottom center.  All of these buttons are added to the south pane.  Note that the addReturnButton takes an extra integer parameter that specifies the page number of the page to return to.
+</p>
+<h3 id="addAsEastPanel">addAsEastPanel</h3>
+<p>
+The <tt>PsychLayoutFrame</tt> handles all elements that are common to many pages, mainly the north, west, and south panels.  The east panel must be specifically created as a <tt>JPanel</tt>, and then added to the <tt>PsychLayoutFrame</tt> via the <tt>addAsEastPanel</tt> method.  The calls for laying out the east panel within the frame are handled here; the caller need only worry about laying out the components within the panel itself.
+</p>
+<h3 id="getAllComponents">getAllComponents</h3>
+<p>
+Once all of the components have been laid out on the PsychLayoutFrame, this method returns all of them in a single array (flattening the arrays of components in each of the panels).  This way the caller can extract the components and their positions and add them to a Page object to become part of the Layout.
+</p>
+
+
+</body>
+</html>
+

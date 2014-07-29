@@ -1,0 +1,86 @@
+
+<html><head><link rel="stylesheet" href="trac.css" type="text/css" />
+</head><body>
+
+<h1 id="InstallingTracasCGI">Installing Trac as CGI</h1>
+<div class="important"><blockquote>
+<p>
+<em>Please note that using Trac via CGI is the slowest deployment method available. It is slower than <a class="wiki" href="TracModPython.html" rel="follow">mod_python</a>, <a class="wiki" href="TracFastCgi.html" rel="follow">FastCGI</a> and even <a class="ext-link" href="http://trac.edgewall.org/intertrac/TracOnWindowsIisAjp" title="TracOnWindowsIisAjp in Trac project trac"><span class="icon">​</span>IIS/AJP</a> on Windows.</em>
+</p>
+</blockquote>
+</div><p>
+CGI script is the entrypoint that web-server calls when a web-request to an application is made. To generate the <tt>trac.cgi</tt> script run:
+</p>
+<pre class="wiki">trac-admin /path/to/env deploy /path/to/www/trac
+</pre><p>
+<tt>trac.cgi</tt> will be in the <tt>cgi-bin</tt> folder inside the given path. <em>Make sure it is executable by your web server</em>. This command also copies <tt>static resource</tt> files to a <tt>htdocs</tt> directory of a given destination.
+</p>
+<h2 id="Apacheweb-serverconfiguration">Apache web-server configuration</h2>
+<p>
+In <a class="ext-link" href="http://httpd.apache.org/"><span class="icon">​</span>Apache</a> there are two ways to run Trac as CGI:
+</p>
+<ol><li>Use a <tt>ScriptAlias</tt> directive that maps an URL to the <tt>trac.cgi</tt> script (recommended)
+</li><li>Copy the <tt>trac.cgi</tt> file into the directory for CGI executables used by your web server (commonly named <tt>cgi-bin</tt>). You can also create a symbolic link, but in that case make sure that the <tt>FollowSymLinks</tt> option is enabled for the <tt>cgi-bin</tt> directory.
+</li></ol><p>
+To make Trac available at <tt>http://yourhost.example.org/trac</tt> add <tt>ScriptAlias</tt> directive to Apache configuration file, changing <tt>trac.cgi</tt> path to match your installation:
+</p>
+<pre class="wiki">ScriptAlias /trac /path/to/www/trac/cgi-bin/trac.cgi
+</pre><blockquote>
+<p>
+<em>Note that this directive requires enabled <tt>mod_alias</tt> module.</em>
+</p>
+</blockquote>
+<p>
+If you're using Trac with a single project you need to set its location using the <tt>TRAC_ENV</tt> environment variable:
+</p>
+<pre class="wiki">&lt;Location "/trac"&gt;
+  SetEnv TRAC_ENV "/path/to/projectenv"
+&lt;/Location&gt;
+</pre><p>
+Or to use multiple projects you can specify their common parent directory using the <tt>TRAC_ENV_PARENT_DIR</tt> variable:
+</p>
+<pre class="wiki">&lt;Location "/trac"&gt;
+  SetEnv TRAC_ENV_PARENT_DIR "/path/to/project/parent/dir"
+&lt;/Location&gt;
+</pre><blockquote>
+<p>
+<em>Note that the <tt>SetEnv</tt> directive requires enabled <tt>mod_env</tt> module. It is also possible to set TRAC_ENV in trac.cgi. Just add the following code between "try:&#34; and &#34;from trac.web ...":</em>
+</p>
+</blockquote>
+<pre class="wiki">    import os
+    os.environ['TRAC_ENV'] = "/path/to/projectenv"
+</pre><blockquote>
+<p>
+<em> Or for TRAC_ENV_PARENT_DIR: </em>
+</p>
+</blockquote>
+<pre class="wiki">    import os
+    os.environ['TRAC_ENV_PARENT_DIR'] = "/path/to/project/parent/dir"
+</pre><p>
+If you are using the <a class="ext-link" href="http://httpd.apache.org/docs/suexec.html"><span class="icon">​</span>Apache suEXEC</a> feature please see <a class="ext-link" href="http://trac.edgewall.orgApacheSuexec.html"><span class="icon">​</span>http://trac.edgewall.orgApacheSuexec</a>.
+</p>
+<p>
+On some systems, you <em>may</em> need to edit the shebang line in the <tt>trac.cgi</tt> file to point to your real Python installation path. On a Windows system you may need to configure Windows to know how to execute a .cgi file (Explorer -&gt; Tools -&gt; Folder Options -&gt; File Types -&gt; CGI).
+</p>
+<h3 id=.html"UsingWSGI">Using WSGI</h3>
+<p>
+You can run a <a class="ext-link" href="http://henry.precheur.org/python/how_to_serve_cgi"><span class="icon">​</span>WSGI handler</a> <a class="ext-link" href="http://pythonweb.org/projects/webmodules/doc/0.5.3/html_multipage/lib/example-webserver-web-wsgi-simple-cgi.html"><span class="icon">​</span>under CGI</a>.  You can <a class="wiki" href="TracModWSGI#Thetrac.wsgiscript.html" rel="follow">write your own application function</a>, or use the deployed trac.wsgi's application.
+</p>
+<h2 id="MappingStaticResources">Mapping Static Resources</h2>
+<p>
+See <a class="wiki" href="TracInstall#MappingStaticResources.html" rel="follow">TracInstall#MappingStaticResources</a>.
+</p>
+<h2 id="AddingAuthentication">Adding Authentication</h2>
+<p>
+See <a class="wiki" href="TracInstall#ConfiguringAuthentication.html" rel="follow">TracInstall#ConfiguringAuthentication</a>.
+</p>
+<hr />
+<p>
+See also:  <a class="wiki" href="TracGuide.html" rel="follow">TracGuide</a>, <a class="wiki" href="TracInstall.html" rel="follow">TracInstall</a>, <a class="wiki" href="TracModWSGI.html" rel="follow">TracModWSGI</a>, <a class="wiki" href="TracFastCgi.html" rel="follow">TracFastCgi</a>, <a class="wiki" href="TracModPython.html" rel="follow">TracModPython</a>
+</p>
+
+
+</body>
+</html>
+
+

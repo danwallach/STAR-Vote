@@ -1,0 +1,19 @@
+
+<html><head><link rel="stylesheet" href="trac.css" type="text/css" />
+</head><body>
+
+<p>
+Because the verifier will need to provide a way for the rule writer to express wildcards in his expressions, we have to make a few extensions to the s-expression human readable format. 
+</p>
+<ul><li><strong>Any Expression:</strong> #any
+</li><li><strong>Any String:</strong> #string
+</li><li><strong>Any List:</strong> #list
+</li><li><strong>Any list that conforms to a pattern:</strong> #listof:&lt;pattern&gt;
+</li></ul><p>
+Which means we add ':' to the lexer grammar, and the parser must construct special expressions for each of the four cases.
+</p>
+
+
+</body>
+</html>
+

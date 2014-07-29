@@ -1,0 +1,9 @@
+#pragma section-numbers 2
+## turn on numbers for headers of level ==two== and greater
+= UML Diagram For Top Level UI Classes =
+
+''written by: [mailto:derrleyATrice.edu Kyle Derr]''
+
+This is a diagram which models the relation of the top level user interface classes. A user interface is effectively created by creating a Driver instance, then invoking run(). One interested more in the composition of "Ballot" or "Layout" should see [:VoteBoxBallotUMLDiagram:Ballot UML] and [:VoteBoxLayoutUMLDiagram:Layout UML], respectively
+
+attachment:toplevel_UML.png

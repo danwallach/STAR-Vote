@@ -1,0 +1,47 @@
+= !VoteBox Software Specification: Preparation Tool !PsychLayout =
+'''Kyle Derr, Daniel Sandler, Corey Shaw, Ted Torous'''
+
+''Written by: Corey Shaw''
+
+[[PageOutline]]
+
+== Introduction ==
+
+This page describes the user interface layout designed for the VoteBoxRunTime in 2006 in conjunction with researchers in the [http://chil.rice.edu/ Computer-Human Interaction Lab] in the Rice Psychology Department: Sarah Everett, Kristen Greene, and Dr. Mike Byrne.
+
+== Overall Layout Description ==
+  [[Image(psychlayoutpanes.png, 400)]][[BR]]
+  '''Fig. 1.''' The VoteBoxRunTime user interface.
+
+This user interface is implemented by the `PsychLayout` class in the VoteBoxPrepTool.  Almost all pages in the `PsychLayout` have four panes: north, south, east, and west.  
+
+The panes each hold the following components:
+
+ North::
+  The title of the page (and possibly status, i.e. Voted in 5 of 10)
+ West::
+  Overall status description, i.e. what step the user is on
+ South::
+  Navigation buttons, such as forward and back
+ East::
+  The main content pane, containing a race, instructions, review screen, etc.
+
+The only exception is the Thank You/Success screen, which shows when the user has casted his/her vote and it was received successfully.  This page has no navigation, and thus does not need a west or south panel.
+
+== !PsychLayoutFrame ==
+The `PsychLayoutFrame` is a `JFrame` that is used by the `PsychLayoutManager` to lay out the components.  When constructed, it initializes the size and the north, west, and south panels (the east panel must be added separately).  A number of utility methods have been implemented here to support shared behavior among these frames.
+
+=== addTitle ===
+The `addTitle` method can accept a String or an already constructed Label.  The Label has its attributes updated, and is placed onto the north panel in the correct location.
+
+=== addStatusBar ===
+The `addStatusBar` method places the labels for the global status on the west panel.  An integer parameter for the current step is required, and the highlighted label corresponding to this step is added (instead of the regular one).
+
+=== addNextButton, addPreviousButton, addReturnButton, addCastButton ===
+These methods add their corresponding button in its correct location.  The next button or cast button goes in the bottom right, the previous button goes in the bottom left, and the return button goes in the bottom center.  All of these buttons are added to the south pane.  Note that the addReturnButton takes an extra integer parameter that specifies the page number of the page to return to.
+
+=== addAsEastPanel ===
+The `PsychLayoutFrame` handles all elements that are common to many pages, mainly the north, west, and south panels.  The east panel must be specifically created as a `JPanel`, and then added to the `PsychLayoutFrame` via the `addAsEastPanel` method.  The calls for laying out the east panel within the frame are handled here; the caller need only worry about laying out the components within the panel itself.
+
+=== getAllComponents ===
+Once all of the components have been laid out on the !PsychLayoutFrame, this method returns all of them in a single array (flattening the arrays of components in each of the panels).  This way the caller can extract the components and their positions and add them to a Page object to become part of the Layout.

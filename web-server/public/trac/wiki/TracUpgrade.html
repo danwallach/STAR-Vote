@@ -1,0 +1,299 @@
+
+<html><head><link rel="stylesheet" href="trac.css" type="text/css" />
+</head><body>
+
+<h1 id="UpgradeInstructions">Upgrade Instructions</h1>
+<p>
+<div class="system-message"><strong>Error: Macro TracGuideToc(None) failed</strong><pre>'NoneType' object has no attribute 'find'</pre></div>
+</p><div class="wiki-toc-un">
+    <ol>
+      <li>
+        <a href="#Instructions">Instructions</a>
+        <ol>
+          <li>
+            <a href="#a1.Bringyourserveroff-line">1. Bring your server off-line</a>
+          </li>
+          <li>
+            <a href="#UpdatetheTracCode">2. Update the Trac Code</a>
+          </li>
+          <li>
+            <a href="#UpgradetheTracEnvironment">3. Upgrade the Trac Environment</a>
+          </li>
+          <li>
+            <a href="#UpdatetheTracDocumentation">4. Update the Trac Documentation</a>
+          </li>
+          <li>
+            <a href="#a5.Refreshstaticresources">5. Refresh static resources</a>
+          </li>
+          <li>
+            <a href="#a6.StepsspecifictoagivenTracversion">6. Steps specific to a given Trac version</a>
+            <ol>
+              <li>
+                <a href="#to1.0">Upgrading from Trac 0.12 to Trac 1.0</a>
+              </li>
+              <li>
+                <a href="#UpgradingfromTrac0.11toTrac0.12">Upgrading from Trac 0.11 to Trac 0.12</a>
+              </li>
+              <li>
+                <a href="#UpgradingfromTrac0.10toTrac0.11">Upgrading from Trac 0.10 to Trac 0.11</a>
+              </li>
+            </ol>
+          </li>
+          <li>
+            <a href="#RestarttheWebServer">7. Restart the Web Server</a>
+          </li>
+        </ol>
+      </li>
+      <li>
+        <a href="#KnownIssues">Known Issues</a>
+        <ol>
+          <li>
+            <a href="#CustomizedTemplates">Customized Templates</a>
+          </li>
+          <li>
+            <a href="#ZipImportError">ZipImportError</a>
+          </li>
+          <li>
+            <a href="#WikiUpgrade">Wiki Upgrade</a>
+          </li>
+          <li>
+            <a href="#Tracdatabaseupgrade">Trac database upgrade</a>
+          </li>
+          <li>
+            <a href="#parentdir">parent dir</a>
+          </li>
+        </ol>
+      </li>
+      <li>
+        <a href="#Relatedtopics">Related topics</a>
+        <ol>
+          <li>
+            <a href="#UpgradingPython">Upgrading Python</a>
+            <ol>
+              <li>
+                <a href="#WindowsandPython2.6">Windows and Python 2.6</a>
+              </li>
+            </ol>
+          </li>
+          <li>
+            <a href="#ChangingDatabaseBackend">Changing Database Backend</a>
+            <ol>
+              <li>
+                <a href="#SQLitetoPostgreSQL">SQLite to PostgreSQL</a>
+              </li>
+            </ol>
+          </li>
+          <li>
+            <a href="#OlderVersions">Upgrading from older versions of Trac</a>
+          </li>
+        </ol>
+      </li>
+    </ol>
+</div><p>
+</p>
+<h2 id="Instructions">Instructions</h2>
+<p>
+Typically, there are seven steps involved in upgrading to a newer version of Trac:
+</p>
+<h3 id="a1.Bringyourserveroff-line">1. Bring your server off-line</h3>
+<p>
+It is not a good idea to update a running server: the server processes may have parts of the current packages cached in memory, and updating the code will likely trigger <a href="/Wiki#ZipImportError">internal errors</a>. 
+</p>
+<h3 id="UpdatetheTracCode">2. Update the Trac Code</h3>
+<p>
+Get the new version as described in <a class="missing wiki" href="/wiki/TracInstall" rel="nofollow">TracInstall?</a>, or your operating system specific procedure.
+</p>
+<p>
+If you already have a 0.11 version of Trac installed via <tt>easy_install</tt>, it might be easiest to also use <tt>easy_install</tt> to upgrade your Trac installation:
+</p>
+<pre class="wiki"># easy_install --upgrade Trac==0.12
+</pre><p>
+If you do a manual (not operating system-specific) upgrade, you should also stop any running Trac servers before the installation. Doing "hot" upgrades is not advised, especially on Windows (<a class="ext-link" href="http://trac.edgewall.org/intertrac/%237265" title="#7265 in Trac project trac"><span class="icon">​</span>#7265</a>).
+</p>
+<p>
+You may also want to remove the pre-existing Trac code by deleting the <tt>trac</tt> directory from the Python <tt>lib/site-packages</tt> directory, or remove Trac <tt>.egg</tt> files from former versions.
+The location of the site-packages directory depends on the operating system and the location in which Python was installed. However, the following locations are typical:
+</p>
+<ul><li>on Linux: <tt>/usr/lib/python2.X/site-packages</tt>
+</li><li>on Windows: <tt>C:\Python2.X\lib\site-packages</tt>
+</li><li>on MacOSX: <tt>/Library/Python/2.X/site-packages</tt>
+</li></ul><p>
+You may also want to remove the Trac <tt>cgi-bin</tt>, <tt>htdocs</tt>, <tt>templates</tt> and <tt>wiki-default</tt> directories that are commonly found in a directory called <tt>share/trac</tt>. (The exact location depends on your platform.)
+</p>
+<p>
+This cleanup is not mandatory, but makes it easier to troubleshoot issues later on, as you won't waste your time looking at code or templates from a previous release that are not being used anymore... As usual, make a backup before actually deleting things.
+</p>
+<h3 id="UpgradetheTracEnvironment">3. Upgrade the Trac Environment</h3>
+<p>
+Environment upgrades are not necessary for minor version releases unless otherwise noted. 
+</p>
+<p>
+After restarting, Trac should show the instances which need a manual upgrade via the automated upgrade scripts to ease the pain. These scripts are run via <a class="missing wiki" href="/wiki/TracAdmin" rel="nofollow">trac-admin?</a>:
+</p>
+<pre class="wiki">trac-admin /path/to/projenv upgrade
+</pre><p>
+This command will do nothing if the environment is already up-to-date.
+</p>
+<p>
+Note that a backup of your database will be performed automatically prior to the upgrade. 
+This feature is relatively new for the PostgreSQL or MySQL database backends, so if it fails, you will have to backup the database manually. Then, to perform the actual upgrade, run:
+</p>
+<pre class="wiki">trac-admin /path/to/projenv upgrade --no-backup
+</pre><h3 id="UpdatetheTracDocumentation">4. Update the Trac Documentation</h3>
+<p>
+Every <a class="missing wiki" href="/wiki/TracEnvironment" rel="nofollow">Trac environment?</a> includes a copy of the Trac documentation for the installed version. As you probably want to keep the included documentation in sync with the installed version of Trac, <a class="missing wiki" href="/wiki/TracAdmin" rel="nofollow">trac-admin?</a> provides a command to upgrade the documentation:
+</p>
+<pre class="wiki">trac-admin /path/to/projenv wiki upgrade
+</pre><p>
+Note that this procedure will leave your <tt>WikiStart</tt> page intact.
+</p>
+<h3 id="a5.Refreshstaticresources">5. Refresh static resources</h3>
+<p>
+If you have set up a web server to give out static resources directly (accessed using the <tt>/chrome/</tt> URL) then you will need to refresh them using the same command:
+</p>
+<pre class="wiki">trac-admin /path/to/env deploy /deploy/path
+</pre><p>
+this will extract static resources and CGI scripts (<tt>trac.wsgi</tt>, etc) from new Trac version and its plugins into <tt>/deploy/path</tt>.
+</p>
+<p>
+Some web browsers (IE, Opera) cache CSS and Javascript files aggressively, so you may need to instruct your users to manually erase the contents of their browser's cache, a forced refreshed (<tt>&lt;F5&gt;</tt>) should be enough.
+</p>
+<h3 id="a6.StepsspecifictoagivenTracversion">6. Steps specific to a given Trac version</h3>
+<h4 id="to1.0">Upgrading from Trac 0.12 to Trac 1.0</h4>
+<p>
+The Trac components for Subversion support are no longer enabled by default. To enable the svn support, you need to make sure the <tt>tracopt.versioncontrol.svn</tt> components are enabled, for example by setting the following in the <a class="missing wiki" href="/wiki/TracIni" rel="nofollow">TracIni?</a>:
+</p>
+<pre class="wiki">[components]
+tracopt.versioncontrol.svn.* = enabled
+</pre><p>
+The upgrade procedure should take care of this and change the <a class="missing wiki" href="/wiki/TracIni" rel="nofollow">TracIni?</a> appropriately, unless you already had the svn components explicitly disabled.
+</p>
+<p>
+Another step in the automatic upgrade will change the way the attachments are stored. If you're a bit paranoid, you might want to take a backup of the <tt>attachments</tt> directory before upgrading (but if you are, you already did a full copy of the environment, no?). In case the <tt>attachments</tt> directory contains some files which are <em>not</em> attachments, the last step of the migration to the new layout will fail: the deletion of the now unused <tt>attachments</tt> directory can't be done if there are still files and folders in it. You may ignore this error, but better go have a look to these files, move them elsewhere and remove the <tt>attachments</tt> directory manually to cleanup the environment. The attachments themselves are now all located in your environment below the <tt>files/attachments</tt> directory.
+</p>
+<h4 id="UpgradingfromTrac0.11toTrac0.12">Upgrading from Trac 0.11 to Trac 0.12</h4>
+<h5 id="Python2.3nolongersupported">Python 2.3 no longer supported</h5>
+<p>
+The minimum supported version of python is now 2.4
+</p>
+<h5 id="SQLitev3.xrequired">SQLite v3.x required</h5>
+<p>
+SQLite v2.x is no longer supported. If you still use a Trac database of this format, you'll need to convert it to SQLite v3.x first. See <a class="ext-link" href="http://trac.edgewall.org/intertrac/PySqlite%23UpgradingSQLitefrom2.xto3.x" title="PySqlite#UpgradingSQLitefrom2.xto3.x in Trac project trac"><span class="icon">​</span>PySqlite#UpgradingSQLitefrom2.xto3.x</a> for details.
+</p>
+<h5 id="PySqlite2required"><a class="missing wiki" href="/wiki/PySqlite" rel="nofollow">PySqlite?</a> 2 required</h5>
+<p>
+<a class="missing wiki" href="/wiki/PySqlite" rel="nofollow">PySqlite?</a> 1.1.x is no longer supported. Please install 2.5.5 or later if possible (see <a href="/Wiki#Tracdatabaseupgrade">Trac database upgrade</a> below).
+</p>
+<h5 id="MultipleRepositorySupport">Multiple Repository Support</h5>
+<p>
+The latest version includes support for multiple repositories. If you plan to add more repositories to your Trac instance, please refer to <a class="missing wiki" href="/wiki/TracRepositoryAdmin#Migration" rel="nofollow">TracRepositoryAdmin#Migration?</a>.
+</p>
+<p>
+This may be of interest to users with only one repository, since there's now a way to avoid the potentially costly resync check at every request.
+</p>
+<h5 id="ResynchronizetheTracEnvironmentAgainsttheSourceCodeRepository">Resynchronize the Trac Environment Against the Source Code Repository</h5>
+<p>
+Each <a class="missing wiki" href="/wiki/TracEnvironment" rel="nofollow">Trac environment?</a> must be resynchronized against the source code repository in order to avoid errors such as "<a class="ext-link" href="http://trac.edgewall.org/ticket/6120"><span class="icon">​</span>No changeset ??? in the repository</a>" while browsing the source through the Trac interface:
+</p>
+<pre class="wiki">trac-admin /path/to/projenv repository resync '*'
+</pre><h5 id="Improvedrepositorysynchronization">Improved repository synchronization</h5>
+<p>
+In addition to supporting multiple repositories, there is now a more efficient method for synchronizing Trac and your repositories.
+</p>
+<p>
+While you can keep the same synchronization as in 0.11 adding the post-commit hook as outlined in <a class="missing wiki" href="/wiki/TracRepositoryAdmin#Synchronization" rel="nofollow">TracRepositoryAdmin#Synchronization?</a> and <a class="missing wiki" href="/wiki/TracRepositoryAdmin#ExplicitSync" rel="nofollow">TracRepositoryAdmin#ExplicitSync?</a> will allow more efficient synchronization and is more or less required for multiple repositories.
+</p>
+<p>
+Note that if you were using the <tt>trac-post-commit-hook</tt>, <em>you're strongly advised to upgrade it</em> to the new hook documented in the above references, as the old hook will not work with anything else than the default repository and even for this case, it won't trigger the appropriate notifications.
+</p>
+<h5 id="Authzpermissionchecking">Authz permission checking</h5>
+<p>
+The authz permission checking has been migrated to a fine-grained permission policy. If you use authz permissions (aka <tt>[trac] authz_file</tt> and <tt>authz_module_name</tt>), you must add <tt>AuthzSourcePolicy</tt> in front of your permission policies in <tt>[trac] permission_policies</tt>. You must also remove <tt>BROWSER_VIEW</tt>, <tt>CHANGESET_VIEW</tt>, <tt>FILE_VIEW</tt> and <tt>LOG_VIEW</tt> from your global permissions (with <tt>trac-admin $ENV permission remove</tt> or the "Permissions" admin panel).
+</p>
+<h5 id="Microsecondtimestamps">Microsecond timestamps</h5>
+<p>
+All timestamps in database tables (except the <tt>session</tt> table) have been changed from "seconds since epoch" to "microseconds since epoch" values. This change should be transparent to most users, except for custom reports. If any of your reports use date/time columns in calculations (e.g. to pass them to <tt>datetime()</tt>), you must divide the values retrieved from the database by 1'000'000. Similarly, if a report provides a calculated value to be displayed as a date/time (i.e. with a column named "time", "datetime", "changetime", "date", "created" or "modified"), you must provide a microsecond timestamp, that is, multiply your previous calculation with 1'000'000.
+</p>
+<h4 id="UpgradingfromTrac0.10toTrac0.11">Upgrading from Trac 0.10 to Trac 0.11</h4>
+<h5 id="SiteTemplatesandStyles">Site Templates and Styles</h5>
+<p>
+The templating engine has changed in 0.11 to Genshi, please look at <a class="missing wiki" href="/wiki/TracInterfaceCustomization" rel="nofollow">TracInterfaceCustomization?</a> for more information.
+</p>
+<p>
+If you are using custom CSS styles or modified templates in the <tt>templates</tt> directory of the <a class="missing wiki" href="/wiki/TracEnvironment" rel="nofollow">TracEnvironment?</a>, you will need to convert them to the Genshi way of doing things. To continue to use your style sheet, follow the instructions at <a class="missing wiki" href="/wiki/TracInterfaceCustomization#SiteAppearance" rel="nofollow">TracInterfaceCustomization#SiteAppearance?</a>.
+</p>
+<h5 id="TracMacrosPlugins">Trac Macros, Plugins</h5>
+<p>
+The Trac macros will need to be adapted, as the old-style wiki-macros are not supported anymore (due to the drop of <a class="ext-link" href="http://trac.edgewall.org/intertrac/ClearSilver" title="ClearSilver in Trac project trac"><span class="icon">​</span>ClearSilver</a> and the HDF); they need to be converted to the new-style macros, see <a class="missing wiki" href="/wiki/WikiMacros" rel="nofollow">WikiMacros?</a>. When they are converted to the new style, they need to be placed into the plugins directory instead and not wiki-macros, which is no longer scanned for macros or plugins.
+</p>
+<h5 id="ForFCGIWSGICGIusers">For FCGI/WSGI/CGI users</h5>
+<p>
+For those who run Trac under the CGI environment, run this command in order to obtain the trac.*gi file:
+</p>
+<pre class="wiki">trac-admin /path/to/env deploy /deploy/directory/path
+</pre><p>
+This will create a deploy directory with the following two subdirectories: <tt>cgi-bin</tt> and <tt>htdocs</tt>. Then update your Apache configuration file <tt>httpd.conf</tt> with this new <tt>trac.cgi</tt> location and <tt>htdocs</tt> location.
+</p>
+<h5 id="WebAdminpluginintegrated">Web Admin plugin integrated</h5>
+<p>
+If you had the webadmin plugin installed, you can uninstall it as it is part of the Trac code base since 0.11.
+</p>
+<h3 id="RestarttheWebServer">7. Restart the Web Server</h3>
+<p>
+If you are not running <a class="missing wiki" href="/wiki/TracCgi" rel="nofollow">CGI?</a>, reload the new Trac code by restarting your web server.
+</p>
+<h2 id="KnownIssues">Known Issues</h2>
+<p>
+Things you should pay attention to, while upgrading.
+</p>
+<h3 id="CustomizedTemplates">Customized Templates</h3>
+<p>
+Trac supports customization of its Genshi templates by placing copies of the templates in the <tt>&lt;env&gt;/templates</tt> folder of your <a class="missing wiki" href="/wiki/TracEnvironment" rel="nofollow">environment?</a> or in a common location specified in the <a class="missing wiki" href="/wiki/TracIni#GlobalConfiguration" rel="nofollow"> [inherit] templates_dir?</a> configuration setting. If you choose to do so, be wary that you will need to repeat your changes manually on a copy of the new templates when you upgrade to a new release of Trac (even a minor one), as the templates will likely evolve. So keep a diff around ;-)
+</p>
+<p>
+The preferred way to perform <a class="missing wiki" href="/wiki/TracInterfaceCustomization" rel="nofollow">TracInterfaceCustomization?</a> is to write a custom plugin doing an appropriate <tt>ITemplateStreamFilter</tt> transformation, as this is more robust in case of changes: we usually won't modify element <tt>id</tt>s or change CSS <tt>class</tt>es, and if we have to do so, this will be documented in the <a class="missing wiki" href="/wiki/TracDev/ApiChanges" rel="nofollow">TracDev/ApiChanges?</a> pages.
+</p>
+<h3 id="ZipImportError">ZipImportError</h3>
+<p>
+Due to internal caching of zipped packages,  whenever the content of the packages change on disk, the in-memory zip index will no longer match and you'll get irrecoverable ZipImportError errors. Better anticipate and bring your server down for maintenance before upgrading.
+See <a class="ext-link" href="http://trac.edgewall.org/intertrac/%237014" title="#7014 in Trac project trac"><span class="icon">​</span>#7014</a> for details.
+</p>
+<h3 id="WikiUpgrade">Wiki Upgrade</h3>
+<p>
+<tt>trac-admin</tt> will not delete or remove default wiki pages that were present in a previous version but are no longer in the new version.
+</p>
+<h3 id="Tracdatabaseupgrade">Trac database upgrade</h3>
+<p>
+A known issue in some versions of <a class="missing wiki" href="/wiki/PySqlite" rel="nofollow">PySqlite?</a> (2.5.2-2.5.4) prevents the trac-admin upgrade script from successfully upgrading the database format. It is advised to use either a newer or older version of the sqlite python bindings to avoid this error. For more details see ticket <a class="ext-link" href="http://trac.edgewall.org/intertrac/%239434" title="#9434 in Trac project trac"><span class="icon">​</span>#9434</a>.
+</p>
+<h3 id="parentdir">parent dir</h3>
+<p>
+If you use a trac parent env configuration and one of the plugins in one child does not work, none of the children work.
+</p>
+<h2 id="Relatedtopics">Related topics</h2>
+<h3 id="UpgradingPython">Upgrading Python</h3>
+<p>
+Upgrading Python to a newer version will require reinstallation of Python packages: Trac of course; also <a class="ext-link" href="http://pypi.python.org/pypi/setuptools"><span class="icon">​</span>easy_install</a>, if you've been using that.  Assuming you're using Subversion, you'll also need to upgrade the Python bindings for svn.
+</p>
+<h4 id="WindowsandPython2.6">Windows and Python 2.6</h4>
+<p>
+If you've been using CollabNet's Subversion package, you may need to uninstall that in favor of <a class="ext-link" href="http://alagazam.net/"><span class="icon">​</span>Alagazam</a>, which has the Python bindings readily available (see <a class="missing wiki" href="/wiki/TracSubversion" rel="nofollow">TracSubversion?</a>).  The good news is, that works with no tweaking.
+</p>
+<h3 id="ChangingDatabaseBackend">Changing Database Backend</h3>
+<h4 id="SQLitetoPostgreSQL">SQLite to PostgreSQL</h4>
+<p>
+The <a class="ext-link" href="http://trac-hacks.org/wiki/SqliteToPgScript"><span class="icon">​</span>sqlite2pg</a> script on <a class="ext-link" href="http://trac-hacks.org"><span class="icon">​</span>trac-hacks.org</a> has been written to assist in migrating a SQLite database to a PostgreSQL database
+</p>
+<h3 id="OlderVersions">Upgrading from older versions of Trac</h3>
+<p>
+For upgrades from versions older than Trac 0.10, refer first to <a class="ext-link" href="http://trac.edgewall.org/intertrac/wiki%3A0.10/TracUpgrade%23SpecificVersions" title="wiki:0.10/TracUpgrade#SpecificVersions in Trac project trac"><span class="icon">​</span>wiki:0.10/TracUpgrade#SpecificVersions</a>.
+</p>
+<hr />
+<p>
+See also: <a class="missing wiki" href="/wiki/TracGuide" rel="nofollow">TracGuide?</a>, <a class="missing wiki" href="/wiki/TracInstall" rel="nofollow">TracInstall?</a>
+</p>
+
+
+</body>
+</html>
+

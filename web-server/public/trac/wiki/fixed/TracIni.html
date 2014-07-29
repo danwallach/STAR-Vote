@@ -1,0 +1,409 @@
+
+<html><head><link rel="stylesheet" href="trac.css" type="text/css" />
+</head><body>
+
+<h1 id="TheTracConfigurationFile">The Trac Configuration File</h1>
+<blockquote>
+<p>
+<em>[Note To Editors] Please discuss documentation changes in the <a href="/Wiki#Discussion">#Discussion</a> section. Even better, send us <a class="wiki" href="TracDev/SubmittingPatches.html" rel="follow">documentation patches</a> against the </em>code<em> (i.e. where the configuration entries are documented), either on Trac-dev or on new tickets. </em>
+</p>
+</blockquote>
+<p>
+<div class="system-message"><strong>Error: Macro TracGuideToc(None) failed</strong><pre>'NoneType' object has no attribute 'find'</pre></div>
+</p><div class="wiki-toc">
+<ol>
+  <li>
+    <a href="#TheTracConfigurationFile">The Trac Configuration File</a>
+    <ol>
+      <li>
+        <a href="#GlobalConfiguration">Global Configuration</a>
+      </li>
+      <li>
+        <a href="#Referenceforsettings">Reference for settings</a>
+      </li>
+    </ol>
+  </li>
+</ol>
+</div><p>
+</p>
+<p>
+Trac configuration is done by editing the <strong><tt>trac.ini</tt></strong> config file, located in <tt>&lt;projectenv&gt;/conf/trac.ini</tt>.  Changes to the configuration are usually reflected immediately, though changes to the <tt>[components]</tt> or <tt>[logging]</tt> sections will require restarting the web server. You may also need to restart the web server after creating a global configuration file when none was previously present.
+</p>
+<p>
+The <tt>trac.ini</tt> configuration file and its parent directory should be writable by the web server, as Trac currently relies on the possibility to trigger a complete environment reload to flush its caches.
+</p>
+<h2 id="GlobalConfiguration">Global Configuration</h2>
+<p>
+In versions prior to 0.11, the global configuration was by default located in <tt>$prefix/share/trac/conf/trac.ini</tt> or /etc/trac/trac.ini, depending on the distribution. If you're upgrading, you may want to specify that file to inherit from.  Literally, when you're upgrading to 0.11, you have to add an <tt>[inherit]</tt> section to your project's <tt>trac.ini</tt> file. Additionally, you have to move your customized templates and common images from <tt>$prefix/share/trac/...</tt> to the new location.
+</p>
+<p>
+Global options will be merged with the environment-specific options, where local options override global options. The options file is specified as follows:
+</p>
+<pre class="wiki">[inherit]
+file = /path/to/global/trac.ini
+</pre><p>
+Multiple files can be specified using a comma-separated list.
+</p>
+<p>
+Note that you can also specify a global option file when creating a new project,  by adding the option <tt>--inherit=/path/to/global/trac.ini</tt> to <a class="wiki" href="TracAdmin#initenv.html" rel="follow">trac-admin</a>'s <tt>initenv</tt> command.  If you do not do this but nevertheless intend to use a global option file with your new environment, you will have to go through the newly generated <tt>conf/trac.ini</tt> file and delete the entries that will otherwise override those set in the global file.
+</p>
+<p>
+There are two more entries in the <a href="/Wiki#inherit-section"> [inherit] </a> section, <tt>templates_dir</tt> for sharing global templates and <tt>plugins_dir</tt>, for sharing plugins. Those entries can themselves be specified in the shared configuration file, and in fact, configuration files can even be chained if you specify another <tt>[inherit] file</tt> there.
+</p>
+<p>
+Note that the templates found in the <tt>templates/</tt> directory of the <a class="wiki" href="TracEnvironment.html" rel="follow">TracEnvironment</a> have precedence over those found in <tt>[inherit] templates_dir</tt>. In turn, the latter have precedence over the installed templates, so be careful about what you put there, notably if you override a default template be sure to refresh your modifications when you upgrade to a new version of Trac (the preferred way to perform <a class="wiki" href="TracInterfaceCustomization.html" rel="follow">TracInterfaceCustomization</a> being still to write a custom plugin doing an appropriate <tt>ITemplateStreamFilter</tt> transformation).
+</p>
+<h2 id="Referenceforsettings">Reference for settings</h2>
+<p>
+This is a brief reference of available configuration options, and their default settings.
+</p>
+<p>
+</p><div class="tracini"><h3 id="attachment-section"><code>[attachment]</code></h3><table class="wiki"><tbody><tr><td><tt>max_size</tt></td><td>Maximum allowed file size (in bytes) for ticket and wiki 
+attachments.</td><td class="default"><code>262144</code></td></tr><tr><td><tt>max_zip_size</tt></td><td>Maximum allowed total size (in bytes) for an attachment list to be
+downloadable as a <tt>.zip</tt>. Set this to -1 to disable download as <tt>.zip</tt>.
+(<em>since 1.0</em>)</td><td class="default"><code>2097152</code></td></tr><tr><td><tt>render_unsafe_content</tt></td><td>Whether attachments should be rendered in the browser, or
+only made downloadable.
+
+Pretty much any file may be interpreted as HTML by the browser,
+which allows a malicious user to attach a file containing cross-site
+scripting attacks.
+
+For public sites where anonymous users can create attachments it is
+recommended to leave this option disabled (which is the default).</td><td class="default"><code>false</code></td></tr></tbody></table><h3 id="components-section"><code>[components]</code></h3><p>
+This section is used to enable or disable components
+provided by plugins, as well as by Trac itself. The component
+to enable/disable is specified via the name of the
+option. Whether its enabled is determined by the option value;
+setting the value to <tt>enabled</tt> or <tt>on</tt> will enable the
+component, any other value (typically <tt>disabled</tt> or <tt>off</tt>)
+will disable the component.
+</p>
+<p>
+The option name is either the fully qualified name of the
+components or the module/package prefix of the component. The
+former enables/disables a specific component, while the latter
+enables/disables any component in the specified
+package/module.
+</p>
+<p>
+Consider the following configuration snippet:
+</p>
+<pre class="wiki">[components]
+trac.ticket.report.ReportModule = disabled
+webadmin.* = enabled
+</pre><p>
+The first option tells Trac to disable the
+<a class="wiki" href="TracReports.html" rel="follow">report module</a>. 
+The second option instructs Trac to enable all components in
+the <tt>webadmin</tt> package. Note that the trailing wildcard is
+required for module/package matching.
+</p>
+<p>
+To view the list of active components, go to the <em>Plugins</em>
+page on <em>About Trac</em> (requires <tt>CONFIG_VIEW</tt>
+<a class="wiki" href="TracPermissions.html" rel="follow">permissions</a>).
+</p>
+<p>
+See also: <a class="wiki" href="TracPlugins.html" rel="follow">TracPlugins</a>
+</p>
+<table class="wiki"><tbody></tbody></table><h3 id="header_logo-section"><code>[header_logo]</code></h3><table class="wiki"><tbody><tr><td><tt>alt</tt></td><td>Alternative text for the header logo.</td><td class="default"><code>(please configure the [header_logo] section in trac.ini)</code></td></tr><tr><td><tt>height</tt></td><td>Height of the header logo image in pixels.</td><td class="default"><code>-1</code></td></tr><tr><td><tt>link</tt></td><td>URL to link to, from the header logo.</td><td class="nodefault">(no default)</td></tr><tr><td><tt>src</tt></td><td>URL of the image to use as header logo.
+It can be absolute, server relative or relative.
+
+If relative, it is relative to one of the <tt>/chrome</tt> locations:
+<tt>site/your-logo.png</tt> if <tt>your-logo.png</tt> is located in the <tt>htdocs</tt>
+folder within your <a class="wiki" href="TracEnvironment.html" rel="follow">TracEnvironment</a>;
+<tt>common/your-logo.png</tt> if <tt>your-logo.png</tt> is located in the
+folder mapped to the <a href="/Wiki#trac-section">htdocs_location</a> URL. 
+Only specifying <tt>your-logo.png</tt> is equivalent to the latter.</td><td class="default"><code>site/your_project_logo.png</code></td></tr><tr><td><tt>width</tt></td><td>Width of the header logo image in pixels.</td><td class="default"><code>-1</code></td></tr></tbody></table><h3 id="inherit-section"><code>[inherit]</code></h3><table class="wiki"><tbody><tr><td><tt>htdocs_dir</tt></td><td>Path to the <em>shared htdocs directory</em>.
+
+Static resources in that directory are mapped to /chrome/shared
+under the environment URL, in addition to common and site locations.
+
+This can be useful in site.html for common interface customization
+of multiple Trac environments.
+
+(<em>since 1.0</em>)</td><td class="nodefault">(no default)</td></tr><tr><td><tt>plugins_dir</tt></td><td>Path to the <em>shared plugins directory</em>.
+
+Plugins in that directory are loaded in addition to those in
+the directory of the environment <tt>plugins</tt>, with this one
+taking precedence.
+
+(<em>since 0.11</em>)</td><td class="nodefault">(no default)</td></tr><tr><td><tt>templates_dir</tt></td><td>Path to the <em>shared templates directory</em>.
+
+Templates in that directory are loaded in addition to those in the
+environments <tt>templates</tt> directory, but the latter take precedence.
+
+(<em>since 0.11</em>)</td><td class="nodefault">(no default)</td></tr></tbody></table><h3 id="intertrac-section"><code>[intertrac]</code></h3><p>
+This section configures <a class="wiki" href="InterTrac.html" rel="follow">InterTrac</a> prefixes. Options in this section
+whose name contain a "." define aspects of the <a class="wiki" href="InterTrac.html" rel="follow">InterTrac</a> prefix
+corresponding to the option name up to the ".". Options whose name
+don't contain a "." define an alias.
+</p>
+<p>
+The <tt>.url</tt> is mandatory and is used for locating the other Trac.
+This can be a relative URL in case that Trac environment is located
+on the same server.
+</p>
+<p>
+The <tt>.title</tt> information is used for providing a useful tooltip when
+moving the cursor over an <a class="wiki" href="InterTrac.html" rel="follow">InterTrac</a> link.
+</p>
+<p>
+The <tt>.compat</tt> option can be used to activate or disable a
+<em>compatibility</em> mode:
+</p>
+<ul><li>If the targeted Trac is running a version below
+<a class="ext-link" href="http://trac.edgewall.org/intertrac/milestone%3A0.10" title="milestone:0.10 in Trac project trac"><span class="icon">​</span>0.10</a> (<a class="ext-link" href="http://trac.edgewall.org/intertrac/r3526" title="r3526 in Trac project trac"><span class="icon">​</span>r3526</a> to be precise), then
+it doesn't know how to dispatch an <a class="wiki" href="InterTrac.html" rel="follow">InterTrac</a> link, and it's up to
+the local Trac to prepare the correct link. Not all links will work
+that way, but the most common do. This is called the compatibility
+mode, and is <tt>true</tt> by default.
+</li><li>If you know that the remote Trac knows how to dispatch <a class="wiki" href="InterTrac.html" rel="follow">InterTrac</a>
+links, you can explicitly disable this compatibility mode and then
+<em>any</em> <a class="wiki" href="TracLinks.html" rel="follow">TracLinks</a> can become <a class="wiki" href="InterTrac.html" rel="follow">InterTrac</a> links.
+</li></ul><p>
+Example configuration:
+</p>
+<pre class="wiki">[intertrac]
+# -- Example of setting up an alias:
+t = trac
+
+# -- Link to an external Trac:
+trac.title = Edgewall's Trac for Trac
+trac.url = http://trac.edgewall.org
+</pre><table class="wiki"><tbody></tbody></table><h3 id="logging-section"><code>[logging]</code></h3><table class="wiki"><tbody><tr><td><tt>log_file</tt></td><td>If <tt>log_type</tt> is <tt>file</tt>, this should be a path to the
+log-file.  Relative paths are resolved relative to the <tt>log</tt>
+directory of the environment.</td><td class="default"><code>trac.log</code></td></tr><tr><td><tt>log_format</tt></td><td>Custom logging format.
+
+If nothing is set, the following will be used:
+
+Trac[$(module)s] $(levelname)s: $(message)s
+
+In addition to regular key names supported by the Python
+logger library (see
+<a class="ext-link" href="http://docs.python.org/library/logging.html"><span class="icon">​</span>http://docs.python.org/library/logging.html</a>), one could use:
+
+- $(path)s     the path for the current environment
+- $(basename)s the last path component of the current environment
+- $(project)s  the project name
+
+Note the usage of <tt>$(...)s</tt> instead of <tt>%(...)s</tt> as the latter form
+would be interpreted by the <a class="wiki" href="ConfigParser.html" rel="follow">ConfigParser</a> itself.
+
+Example:
+<tt>($(thread)d) Trac[$(basename)s:$(module)s] $(levelname)s: $(message)s</tt>
+
+<em>(since 0.10.5)</em></td><td class="nodefault">(no default)</td></tr><tr><td><tt>log_level</tt></td><td>Level of verbosity in log.
+
+Should be one of (<tt>CRITICAL</tt>, <tt>ERROR</tt>, <tt>WARN</tt>, <tt>INFO</tt>, <tt>DEBUG</tt>).</td><td class="default"><code>DEBUG</code></td></tr><tr><td><tt>log_type</tt></td><td>Logging facility to use.
+
+Should be one of (<tt>none</tt>, <tt>file</tt>, <tt>stderr</tt>, <tt>syslog</tt>, <tt>winlog</tt>).</td><td class="default"><code>none</code></td></tr></tbody></table><h3 id="mimeviewer-section"><code>[mimeviewer]</code></h3><table class="wiki"><tbody><tr><td><tt>max_preview_size</tt></td><td>Maximum file size for HTML preview. (<em>since 0.9</em>)</td><td class="default"><code>262144</code></td></tr><tr><td><tt>mime_map</tt></td><td>List of additional MIME types and keyword mappings.
+Mappings are comma-separated, and for each MIME type,
+there's a colon (":") separated list of associated keywords
+or file extensions. (<em>since 0.10</em>)</td><td class="default"><code>text/x-dylan:dylan, text/x-idl:ice, text/x-ada:ads:adb</code></td></tr><tr><td><tt>mime_map_patterns</tt></td><td>List of additional MIME types associated to filename patterns.
+Mappings are comma-separated, and each mapping consists of a MIME type
+and a Python regexp used for matching filenames, separated by a colon
+(":"). (<em>since 1.0</em>)</td><td class="default"><code>text/plain:README|INSTALL|COPYING.*</code></td></tr><tr><td><tt>tab_width</tt></td><td>Displayed tab width in file preview. (<em>since 0.9</em>)</td><td class="default"><code>8</code></td></tr><tr><td><tt>treat_as_binary</tt></td><td>Comma-separated list of MIME types that should be treated as
+binary data. (<em>since 0.11.5</em>)</td><td class="default"><code>application/octet-stream, application/pdf, application/postscript, application/msword,application/rtf,</code></td></tr></tbody></table><h3 id="notification-section"><code>[notification]</code></h3><table class="wiki"><tbody><tr><td><tt>admit_domains</tt></td><td>Comma-separated list of domains that should be considered as
+valid for email addresses (such as localdomain).</td><td class="nodefault">(no default)</td></tr><tr><td><tt>email_sender</tt></td><td>Name of the component implementing <tt>IEmailSender</tt>.
+
+This component is used by the notification system to send emails.
+Trac currently provides <tt>SmtpEmailSender</tt> for connecting to an SMTP
+server, and <tt>SendmailEmailSender</tt> for running a <tt>sendmail</tt>-compatible
+executable. (<em>since 0.12</em>)</td><td class="default"><code>SmtpEmailSender</code></td></tr><tr><td><tt>ignore_domains</tt></td><td>Comma-separated list of domains that should not be considered
+part of email addresses (for usernames with Kerberos domains).</td><td class="nodefault">(no default)</td></tr><tr><td><tt>mime_encoding</tt></td><td>Specifies the MIME encoding scheme for emails.
+
+Valid options are 'base64' for Base64 encoding, 'qp' for
+Quoted-Printable, and 'none' for no encoding, in which case mails will
+be sent as 7bit if the content is all ASCII, or 8bit otherwise.
+(<em>since 0.10</em>)</td><td class="default"><code>none</code></td></tr><tr><td><tt>sendmail_path</tt></td><td>Path to the sendmail executable.
+
+The sendmail program must accept the <tt>-i</tt> and <tt>-f</tt> options.
+ (<em>since 0.12</em>)</td><td class="default"><code>sendmail</code></td></tr><tr><td><tt>smtp_always_bcc</tt></td><td>Email address(es) to always send notifications to,
+addresses do not appear publicly (Bcc:). (<em>since 0.10</em>)</td><td class="nodefault">(no default)</td></tr><tr><td><tt>smtp_always_cc</tt></td><td>Email address(es) to always send notifications to,
+addresses can be seen by all recipients (Cc:).</td><td class="nodefault">(no default)</td></tr><tr><td><tt>smtp_default_domain</tt></td><td>Default host/domain to append to address that do not specify
+one.</td><td class="nodefault">(no default)</td></tr><tr><td><tt>smtp_enabled</tt></td><td>Enable email notification.</td><td class="default"><code>false</code></td></tr><tr><td><tt>smtp_from</tt></td><td>Sender address to use in notification emails.</td><td class="default"><code>trac@localhost</code></td></tr><tr><td><tt>smtp_from_author</tt></td><td>Use the action author as the sender of notification emails.
+(<em>since 1.0</em>)</td><td class="default"><code>false</code></td></tr><tr><td><tt>smtp_from_name</tt></td><td>Sender name to use in notification emails.</td><td class="nodefault">(no default)</td></tr><tr><td><tt>smtp_password</tt></td><td>Password for SMTP server. (<em>since 0.9</em>)</td><td class="nodefault">(no default)</td></tr><tr><td><tt>smtp_port</tt></td><td>SMTP server port to use for email notification.</td><td class="default"><code>25</code></td></tr><tr><td><tt>smtp_replyto</tt></td><td>Reply-To address to use in notification emails.</td><td class="default"><code>trac@localhost</code></td></tr><tr><td><tt>smtp_server</tt></td><td>SMTP server hostname to use for email notifications.</td><td class="default"><code>localhost</code></td></tr><tr><td><tt>smtp_subject_prefix</tt></td><td>Text to prepend to subject line of notification emails. 
+
+If the setting is not defined, then the [$project_name] prefix.
+If no prefix is desired, then specifying an empty option 
+will disable it. (<em>since 0.10.1</em>)</td><td class="default"><code>__default__</code></td></tr><tr><td><tt>smtp_user</tt></td><td>Username for SMTP server. (<em>since 0.9</em>)</td><td class="nodefault">(no default)</td></tr><tr><td><tt>use_public_cc</tt></td><td>Recipients can see email addresses of other CC'ed recipients.
+
+If this option is disabled (the default), recipients are put on BCC.
+(<em>since 0.10</em>)</td><td class="default"><code>false</code></td></tr><tr><td><tt>use_short_addr</tt></td><td>Permit email address without a host/domain (i.e. username only).
+
+The SMTP server should accept those addresses, and either append
+a FQDN or use local delivery. (<em>since 0.10</em>)</td><td class="default"><code>false</code></td></tr><tr><td><tt>use_tls</tt></td><td>Use SSL/TLS to send notifications over SMTP. (<em>since 0.10</em>)</td><td class="default"><code>false</code></td></tr></tbody></table><h3 id="project-section"><code>[project]</code></h3><table class="wiki"><tbody><tr><td><tt>admin</tt></td><td>E-Mail address of the project's administrator.</td><td class="nodefault">(no default)</td></tr><tr><td><tt>admin_trac_url</tt></td><td>Base URL of a Trac instance where errors in this Trac
+should be reported.
+
+This can be an absolute or relative URL, or '.' to reference
+this Trac instance. An empty value will disable the reporting
+buttons.  (<em>since 0.11.3</em>)</td><td class="default"><code>.</code></td></tr><tr><td><tt>descr</tt></td><td>Short description of the project.</td><td class="default"><code>My example project</code></td></tr><tr><td><tt>footer</tt></td><td>Page footer text (right-aligned).</td><td class="default"><code>Visit the Trac open source project at&lt;br /&gt;&lt;a href="http://trac.edgewall.org/"&gt;http://trac.edgewall.org/&lt;/a&gt;</code></td></tr><tr><td><tt>icon</tt></td><td>URL of the icon of the project.</td><td class="default"><code>common/trac.ico</code></td></tr><tr><td><tt>name</tt></td><td>Name of the project.</td><td class="default"><code>My Project</code></td></tr><tr><td><tt>url</tt></td><td>URL of the main project web site, usually the website in
+which the <tt>base_url</tt> resides. This is used in notification
+e-mails.</td><td class="nodefault">(no default)</td></tr></tbody></table><h3 id="repositories-section"><code>[repositories]</code></h3><p>
+One of the alternatives for registering new repositories is to
+populate the <tt>[repositories]</tt> section of the <tt>trac.ini</tt>.
+</p>
+<p>
+This is especially suited for setting up convenience aliases,
+short-lived repositories, or during the initial phases of an
+installation.
+</p>
+<p>
+See <a class="wiki" href="TracRepositoryAdmin#Intrac.ini.html" rel="follow">TracRepositoryAdmin</a> for details
+about the format adopted for this section and the rest of that page for
+the other alternatives.
+</p>
+<p>
+(<em>since 0.12</em>)
+</p>
+<table class="wiki"><tbody></tbody></table><h3 id="sqlite-section"><code>[sqlite]</code></h3><table class="wiki"><tbody><tr><td><tt>extensions</tt></td><td>Paths to sqlite extensions, relative to Trac environment's
+directory or absolute. (<em>since 0.12</em>)</td><td class="nodefault">(no default)</td></tr></tbody></table><h3 id="ticket-section"><code>[ticket]</code></h3><table class="wiki"><tbody><tr><td><tt>default_cc</tt></td><td>Default cc: list for newly created tickets.</td><td class="nodefault">(no default)</td></tr><tr><td><tt>default_component</tt></td><td>Default component for newly created tickets.</td><td class="nodefault">(no default)</td></tr><tr><td><tt>default_description</tt></td><td>Default description for newly created tickets.</td><td class="nodefault">(no default)</td></tr><tr><td><tt>default_keywords</tt></td><td>Default keywords for newly created tickets.</td><td class="nodefault">(no default)</td></tr><tr><td><tt>default_milestone</tt></td><td>Default milestone for newly created tickets.</td><td class="nodefault">(no default)</td></tr><tr><td><tt>default_owner</tt></td><td>Default owner for newly created tickets.</td><td class="default"><code>&lt; default &gt;</code></td></tr><tr><td><tt>default_priority</tt></td><td>Default priority for newly created tickets.</td><td class="default"><code>major</code></td></tr><tr><td><tt>default_resolution</tt></td><td>Default resolution for resolving (closing) tickets
+(<em>since 0.11</em>).</td><td class="default"><code>fixed</code></td></tr><tr><td><tt>default_severity</tt></td><td>Default severity for newly created tickets.</td><td class="nodefault">(no default)</td></tr><tr><td><tt>default_summary</tt></td><td>Default summary (title) for newly created tickets.</td><td class="nodefault">(no default)</td></tr><tr><td><tt>default_type</tt></td><td>Default type for newly created tickets (<em>since 0.9</em>).</td><td class="default"><code>defect</code></td></tr><tr><td><tt>default_version</tt></td><td>Default version for newly created tickets.</td><td class="nodefault">(no default)</td></tr><tr><td><tt>restrict_owner</tt></td><td>Make the owner field of tickets use a drop-down menu.
+Be sure to understand the performance implications before activating
+this option. See
+<a class="wiki" href="TracTickets#Assign-toasDrop-DownList.html" rel="follow">Assign-to as Drop-Down List</a>.
+
+Please note that e-mail addresses are <strong>not</strong> obfuscated in the
+resulting drop-down menu, so this option should not be used if
+e-mail addresses must remain protected.
+(<em>since 0.9</em>)</td><td class="default"><code>false</code></td></tr><tr><td><tt>workflow</tt></td><td>Ordered list of workflow controllers to use for ticket actions
+(<em>since 0.11</em>).</td><td class="default"><code>ConfigurableTicketWorkflow</code></td></tr></tbody></table><h3 id="ticket-custom-section"><code>[ticket-custom]</code></h3><p>
+In this section, you can define additional fields for tickets. See
+<a class="wiki" href="TracTicketsCustomFields.html" rel="follow">TracTicketsCustomFields</a> for more details.
+</p>
+<table class="wiki"><tbody></tbody></table><h3 id="ticket-workflow-section"><code>[ticket-workflow]</code></h3><p>
+The workflow for tickets is controlled by plugins. By default,
+there's only a <tt>ConfigurableTicketWorkflow</tt> component in charge.
+That component allows the workflow to be configured via this section
+in the <tt>trac.ini</tt> file. See <a class="wiki" href="TracWorkflow.html" rel="follow">TracWorkflow</a> for more details.
+</p>
+<p>
+(<em>since 0.11</em>)
+</p>
+<table class="wiki"><tbody></tbody></table><h3 id="trac-section"><code>[trac]</code></h3><table class="wiki"><tbody><tr><td><tt>auto_preview_timeout</tt></td><td>Inactivity timeout in seconds after which the automatic wiki preview
+triggers an update. This option can contain floating-point values. The
+lower the setting, the more requests will be made to the server. Set
+this to 0 to disable automatic preview. The default is 2.0 seconds.
+(<em>since 0.12</em>)</td><td class="default"><code>2.0</code></td></tr><tr><td><tt>auto_reload</tt></td><td>Automatically reload template files after modification.</td><td class="default"><code>false</code></td></tr><tr><td><tt>backup_dir</tt></td><td>Database backup location</td><td class="default"><code>db</code></td></tr><tr><td><tt>base_url</tt></td><td>Reference URL for the Trac deployment.
+
+This is the base URL that will be used when producing
+documents that will be used outside of the web browsing
+context, like for example when inserting URLs pointing to Trac
+resources in notification e-mails.</td><td class="nodefault">(no default)</td></tr><tr><td><tt>database</tt></td><td>Database connection
+<a class="wiki" href="TracEnvironment#DatabaseConnectionStrings.html" rel="follow">string</a> for this
+project</td><td class="default"><code>sqlite:db/trac.db</code></td></tr><tr><td><tt>debug_sql</tt></td><td>Show the SQL queries in the Trac log, at DEBUG level.
+<em>(Since 0.11.5)</em></td><td class="default"><code>false</code></td></tr><tr><td><tt>default_charset</tt></td><td>Charset to be used when in doubt.</td><td class="default"><code>utf-8</code></td></tr><tr><td><tt>default_dateinfo_format</tt></td><td>The date information format. Valid options are 'relative' for
+displaying relative format and 'absolute' for displaying absolute
+format. (<em>since 1.0</em>)</td><td class="default"><code>relative</code></td></tr><tr><td><tt>genshi_cache_size</tt></td><td>The maximum number of templates that the template loader will cache
+in memory. The default value is 128. You may want to choose a higher
+value if your site uses a larger number of templates, and you have
+enough memory to spare, or you can reduce it if you are short on
+memory.</td><td class="default"><code>128</code></td></tr><tr><td><tt>htdocs_location</tt></td><td>Base URL for serving the core static resources below 
+<tt>/chrome/common/</tt>.
+
+It can be left empty, and Trac will simply serve those resources
+itself.
+
+Advanced users can use this together with
+<a class="wiki" href="TracAdmin.html" rel="follow">trac-admin ... deploy &lt;deploydir&gt;</a> to allow serving the
+static resources for Trac directly from the web server.
+Note however that this only applies to the <tt>&lt;deploydir&gt;/htdocs/common</tt>
+directory, the other deployed resources (i.e. those from plugins) 
+will not be made available this way and additional rewrite 
+rules will be needed in the web server.</td><td class="nodefault">(no default)</td></tr><tr><td><tt>jquery_location</tt></td><td>Location of the jQuery JavaScript library (version 1.7.2).
+
+An empty value loads jQuery from the copy bundled with Trac.
+
+Alternatively, jQuery could be loaded from a CDN, for example:
+<a class="ext-link" href="http://code.jquery.com/jquery-1.7.2.min.js"><span class="icon">​</span>http://code.jquery.com/jquery-1.7.2.min.js</a>,
+<a class="ext-link" href="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.2.min.js"><span class="icon">​</span>http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.2.min.js</a> or
+<a class="ext-link" href="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"><span class="icon">​</span>https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js</a>.
+
+(<em>since 1.0</em>)</td><td class="nodefault">(no default)</td></tr><tr><td><tt>jquery_ui_location</tt></td><td>Location of the jQuery UI JavaScript library (version 1.8.21).
+
+An empty value loads jQuery UI from the copy bundled with Trac.
+
+Alternatively, jQuery UI could be loaded from a CDN, for example:
+<a class="ext-link" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js"><span class="icon">​</span>https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js</a>
+or
+<a class="ext-link" href="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.21/jquery-ui.min.js"><span class="icon">​</span>http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.21/jquery-ui.min.js</a>.
+
+(<em>since 1.0</em>)</td><td class="nodefault">(no default)</td></tr><tr><td><tt>jquery_ui_theme_location</tt></td><td>Location of the theme to be used with the jQuery UI JavaScript
+library (version 1.8.21).
+
+An empty value loads the custom Trac jQuery UI theme from the copy 
+bundled with Trac.
+
+Alternatively, a jQuery UI theme could be loaded from a CDN, for 
+example:
+<a class="ext-link" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/themes/start/jquery-ui.css"><span class="icon">​</span>https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/themes/start/jquery-ui.css</a>
+or
+<a class="ext-link" href="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.21/themes/start/jquery-ui.css"><span class="icon">​</span>http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.21/themes/start/jquery-ui.css</a>.
+
+(<em>since 1.0</em>)</td><td class="nodefault">(no default)</td></tr><tr><td><tt>mainnav</tt></td><td>Order of the items to display in the <tt>mainnav</tt> navigation bar, 
+listed by IDs. See also <a class="wiki" href="TracNavigation.html" rel="follow">TracNavigation</a>.</td><td class="default"><code>wiki, timeline, roadmap, browser, tickets, newticket, search</code></td></tr><tr><td><tt>metanav</tt></td><td>Order of the items to display in the <tt>metanav</tt> navigation bar,
+listed by IDs. See also <a class="wiki" href="TracNavigation.html" rel="follow">TracNavigation</a>.</td><td class="default"><code>login, logout, prefs, help, about</code></td></tr><tr><td><tt>mysqldump_path</tt></td><td>Location of mysqldump for MySQL database backups</td><td class="default"><code>mysqldump</code></td></tr><tr><td><tt>never_obfuscate_mailto</tt></td><td>Never obfuscate <tt>mailto:</tt> links explicitly written in the wiki, 
+even if <tt>show_email_addresses</tt> is false or the user has not the 
+EMAIL_VIEW permission (<em>since 0.11.6</em>).</td><td class="default"><code>false</code></td></tr><tr><td><tt>permission_policies</tt></td><td>List of components implementing <tt>IPermissionPolicy</tt>, in the order in
+which they will be applied. These components manage fine-grained access
+control to Trac resources.
+Defaults to the <a class="wiki" href="DefaultPermissionPolicy.html" rel="follow">DefaultPermissionPolicy</a> (pre-0.11 behavior) and
+<a class="wiki" href="LegacyAttachmentPolicy.html" rel="follow">LegacyAttachmentPolicy</a> (map ATTACHMENT_* permissions to realm specific
+ones)</td><td class="default"><code>DefaultPermissionPolicy, LegacyAttachmentPolicy</code></td></tr><tr><td><tt>permission_store</tt></td><td>Name of the component implementing <tt>IPermissionStore</tt>, which is used
+for managing user and group permissions.</td><td class="default"><code>DefaultPermissionStore</code></td></tr><tr><td><tt>pg_dump_path</tt></td><td>Location of pg_dump for Postgres database backups</td><td class="default"><code>pg_dump</code></td></tr><tr><td><tt>repository_dir</tt></td><td>Path to the default repository. This can also be a relative path
+(<em>since 0.11</em>).
+
+This option is deprecated, and repositories should be defined in the
+<a class="wiki" href="TracIni#repositories-section.html" rel="follow">repositories</a> section, or using the
+"Repositories" admin panel. (<em>since 0.12</em>)</td><td class="nodefault">(no default)</td></tr><tr><td><tt>repository_sync_per_request</tt></td><td>List of repositories that should be synchronized on every page
+request.
+
+Leave this option empty if you have set up post-commit hooks calling
+<tt>trac-admin $ENV changeset added</tt> on all your repositories
+(recommended). Otherwise, set it to a comma-separated list of
+repository names. Note that this will negatively affect performance,
+and will prevent changeset listeners from receiving events from the
+repositories specified here. The default is to synchronize the default
+repository, for backward compatibility. (<em>since 0.12</em>)</td><td class="default"><code>(default)</code></td></tr><tr><td><tt>repository_type</tt></td><td>Default repository connector type. (<em>since 0.10</em>)
+
+This is also used as the default repository type for repositories
+defined in <a class="wiki" href="TracIni#repositories-section repositories.html" rel="follow">TracIni#repositories-section repositories</a> or using the
+"Repositories" admin panel. (<em>since 0.12</em>)</td><td class="default"><code>svn</code></td></tr><tr><td><tt>resizable_textareas</tt></td><td>Make <tt>&lt;textarea&gt;</tt> fields resizable. Requires JavaScript.
+(<em>since 0.12</em>)</td><td class="default"><code>true</code></td></tr><tr><td><tt>secure_cookies</tt></td><td>Restrict cookies to HTTPS connections.
+
+When true, set the <tt>secure</tt> flag on all cookies so that they
+are only sent to the server on HTTPS connections. Use this if
+your Trac instance is only accessible through HTTPS. (<em>since
+0.11.2</em>)</td><td class="default"><code>false</code></td></tr><tr><td><tt>show_email_addresses</tt></td><td>Show email addresses instead of usernames. If false, we obfuscate
+email addresses. (<em>since 0.11</em>)</td><td class="default"><code>false</code></td></tr><tr><td><tt>show_ip_addresses</tt></td><td>Show IP addresses for resource edits (e.g. wiki).
+(<em>since 0.11.3</em>)</td><td class="default"><code>false</code></td></tr><tr><td><tt>timeout</tt></td><td>Timeout value for database connection, in seconds.
+Use '0' to specify <em>no timeout</em>. <em>(Since 0.11)</em></td><td class="default"><code>20</code></td></tr><tr><td><tt>use_base_url_for_redirect</tt></td><td>Optionally use <tt>[trac] base_url</tt> for redirects.
+
+In some configurations, usually involving running Trac behind
+a HTTP proxy, Trac can't automatically reconstruct the URL
+that is used to access it. You may need to use this option to
+force Trac to use the <tt>base_url</tt> setting also for
+redirects. This introduces the obvious limitation that this
+environment will only be usable when accessible from that URL,
+as redirects are frequently used. <em>(since 0.10.5)</em></td><td class="default"><code>false</code></td></tr></tbody></table><h3 id="wiki-section"><code>[wiki]</code></h3><table class="wiki"><tbody><tr><td><tt>ignore_missing_pages</tt></td><td>Enable/disable highlighting <a class="wiki" href="CamelCase.html" rel="follow">CamelCase</a> links to missing pages
+(<em>since 0.9</em>).</td><td class="default"><code>false</code></td></tr><tr><td><tt>render_unsafe_content</tt></td><td>Enable/disable the use of unsafe HTML tags such as <tt>&lt;script&gt;</tt> or
+<tt>&lt;embed&gt;</tt> with the HTML <a class="wiki" href="WikiProcessors.html" rel="follow">WikiProcessor</a>
+(<em>since 0.10.4</em>).
+
+For public sites where anonymous users can edit the wiki it is
+recommended to leave this option disabled (which is the default).</td><td class="default"><code>false</code></td></tr><tr><td><tt>safe_schemes</tt></td><td>List of URI schemes considered "safe", that will be rendered as
+external links even if <tt>[wiki] render_unsafe_content</tt> is <tt>false</tt>.
+(<em>since 0.11.8</em>)</td><td class="default"><code>cvs, file, ftp, git, irc, http, https, news, sftp, smb, ssh, svn, svn+ssh</code></td></tr><tr><td><tt>split_page_names</tt></td><td>Enable/disable splitting the <a class="wiki" href="WikiPageNames.html" rel="follow">WikiPageNames</a> with space characters
+(<em>since 0.10</em>).</td><td class="default"><code>false</code></td></tr></tbody></table></div><p>
+</p>
+<hr />
+<p>
+See also: <a class="wiki" href="TracGuide.html" rel="follow">TracGuide</a>, <a class="wiki" href="TracAdmin.html" rel="follow">TracAdmin</a>, <a class="wiki" href="TracEnvironment.html" rel="follow">TracEnvironment</a>
+</p>
+
+
+</body>
+</html>
+
+

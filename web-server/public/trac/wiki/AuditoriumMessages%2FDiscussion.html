@@ -1,0 +1,136 @@
+
+<html><head><link rel="stylesheet" href="trac.css" type="text/css" />
+</head><body>
+
+<pre class="wiki">AIM IM with Kyle Derr &lt;derrley&gt;.
+3:32 PM
+Kyle Derr: as a side note
+Kyle Derr: I think i sent my resume to cisco a long time ago
+Kyle Derr: for a summer internship
+Kyle Derr: a recruiter just sent me an email
+Kyle Derr: said he was looking for people with human factors experience
+Kyle Derr: for full time
+Kyle Derr: I was like "uhh.."
+Dan Sandler: heh!
+Dan Sandler: awesome
+Dan Sandler: say "I'll be graduating in a year, let's talk then"
+Kyle Derr: so, back to this message stuff.
+Kyle Derr: I've been toying with a few ideas.
+Dan Sandler: OK.
+Dan Sandler: Lay 'em on me.
+Kyle Derr: bring up the wiki
+Dan Sandler: Do you want to fire up Skype again?
+Kyle Derr: I'm in linux again
+Kyle Derr: I really wish we had a linux solution
+Kyle Derr: because my webcam works in linux
+Dan Sandler: well, but for audio
+Dan Sandler: it might be easier
+Dan Sandler: higher bandwidth
+Kyle Derr: okay.
+Kyle Derr: left my headphones at home today
+Dan Sandler: I can see if I have mine
+Kyle Derr: well if it wasn't echoing before don't worry about it
+Dan Sandler: k.
+Kyle Derr: awaiting.
+Dan Sandler: Awaiting what?
+Kyle Derr: you aren't on skype?
+3:45 PM
+Dan Sandler: (signature &lt;sigdata&gt; &lt;payload&gt;)
+Kyle Derr: (action &lt;result&gt; &lt;input&gt;)
+Kyle Derr: (action-2 &lt;result-2&gt; (action-1 &lt;result-1&gt; &lt;app-data&gt;))
+Dan Sandler: (f x -&gt; y)
+Dan Sandler: (signature &lt;input&gt; &lt;sigdata&gt;)
+Dan Sandler: (precedes &lt;data&gt; &lt;ptr1&gt; &lt;ptr2&gt; ...)
+Dan Sandler: (signature (precedes &lt;data&gt; &lt;ptr1&gt; ...) &lt;sigdata&gt;)
+Dan Sandler: (succ)
+Dan Sandler: (message [serial] [number] [hash])
+Dan Sandler: (announce nodeid seq# ())
+Dan Sandler: (announce nodeid seq# (precedes &lt;p&gt; &lt;p&gt; &lt;d&gt;)))
+Dan Sandler: (announce nodeid seq# (signature (precedes &lt;p&gt; &lt;p&gt; &lt;d&gt;) &lt;sigdata&gt;)))
+3:55 PM
+Dan Sandler: (message (from nodeid seq#) (precedes p1 p2) data)
+Dan Sandler: (message (from nodeid seq#) (precedes p1 p2) (signature data sigbytes))
+Dan Sandler: (message (from &lt;nodeid&gt; &lt;seq#&gt;) (precedes &lt;p1&gt; &lt;p2&gt;) &lt;data&gt;)
+Dan Sandler: (message (from &lt;nodeid&gt; &lt;seq#&gt;) (precedes &lt;p1&gt; &lt;p2&gt;) (signature &lt;data&gt; &lt;sigbytes&gt;))
+Dan Sandler: (message (from &lt;nodeid&gt; &lt;seq#&gt;)
+(signature 
+(precedes (&lt;p1&gt; &lt;p2&gt;) &lt;data&gt;)
+&lt;sigbytes&gt;))
+Dan Sandler: (message &lt;returnaddress&gt; &lt;payload&gt;)
+Dan Sandler: returnaddress = (from &lt;nodeid&gt; &lt;seq#&gt;)
+Dan Sandler: payload = whatever
+4:00 PM
+Kyle Derr: ([name] {data})
+Kyle Derr: (announce (source &lt;host&gt; (signature &lt;sigdata&gt; (preceeds (&lt;ptr&gt; &lt;ptr&gt; ... &lt;ptr&gt;) &lt;app-data&gt;)))))
+Kyle Derr: where host, sigdata, ptr are specific, defined data structures.
+4:05 PM
+Dan Sandler: (&lt;ptr&gt; &lt;ptr&gt; ... &lt;ptr&gt;)
+Dan Sandler: (precedes &lt;ptr&gt; &lt;ptr&gt; ... &lt;ptr&gt; &lt;data&gt;)
+Kyle Derr: (Host ip port)
+Kyle Derr: (ptr ptr ptr)
+Kyle Derr: (ptrlist &lt;ptr&gt; &lt;ptr&gt; &lt;ptr&gt;)
+Dan Sandler: (message &lt;nodeid&gt; &lt;seq&gt; &lt;hash&gt;)
+Dan Sandler: (@ &lt;nodeid&gt; &lt;seq&gt; &lt;hash&gt;)
+Dan Sandler: (ptr &lt;nodeid&gt; &lt;seq&gt; &lt;hash&gt;)
+Kyle Derr: message-ptr, host-ptr
+Dan Sandler: (host &lt;ip&gt; &lt;port&gt;)
+Dan Sandler: (ptr &lt;n&gt; &lt;s&gt; &lt;h&gt;)
+4:10 PM
+Dan Sandler: (discover (host &lt;ip&gt; &lt;port&gt;))
+Dan Sandler: (nodes ((host &lt;ip&gt; &lt;port&gt;) ...) )
+Kyle Derr: (discover-reply (&lt;host&gt; &lt;host&gt; ... ))
+Kyle Derr: (&lt;host &lt;host&gt; ...)
+Kyle Derr: ^^ type l-of-&lt;host&gt;
+Kyle Derr: (discover-reply (list-of-host &lt;host&gt; &lt;host&gt; ...))
+Kyle Derr: ([name] &lt;host&gt; {data})
+Kyle Derr: (message-name who-its-from data)
+Dan Sandler: [src] [dst] [flags] [...]
+Dan Sandler: [cks]
+4:15 PM
+Kyle Derr: (message (from &lt;nodeid&gt; &lt;seq#&gt;) (precedes &lt;p1&gt; &lt;p2&gt;) (signature &lt;data&gt; &lt;sigbytes&gt;))
+Kyle Derr: (13:55:55) dsandlerbe: (message (from &lt;nodeid&gt; &lt;seq#&gt;) (precedes &lt;p1&gt; &lt;p2&gt;) (signature &lt;data&gt; &lt;sigbytes&gt;))
+Kyle Derr: (name data)
+Dan Sandler: HEADERS + BODY
+Dan Sandler: (HEADERS (BODY))
+Kyle Derr: (discover-reply (from &lt;host&gt; (&lt;host&gt; &lt;host&gt; ...)))
+Dan Sandler: (discover-reply &lt;host&gt; (&lt;host&gt; ...))
+Dan Sandler: (name data)
+Dan Sandler: (name data data)
+Dan Sandler: (&lt;host&gt; &lt;host&gt;)
+Dan Sandler: (signature &lt;data&gt; &lt;sigbytes&gt;)
+Dan Sandler: (signature &lt;sigbytes&gt; &lt;data&gt;)
+Kyle Derr: (name host data)
+Dan Sandler: (name src data)
+Dan Sandler: (name (src (data))
+4:20 PM
+Dan Sandler: (ann &lt;nodeid&gt; &lt;sq&gt; &lt;data&gt;)
+Kyle Derr: (message {some sort of aribtrary from information that might or might not be there} &lt;data&gt;)
+4:25 PM
+Kyle Derr: ([name] [host] [data])
+Kyle Derr: host: (host &lt;ip&gt; &lt;port&gt;)
+Kyle Derr: (announce (192.168.1.100 9000) (message-id &lt;uid&gt; &lt;seq#&gt; &lt;data...&gt;))
+4:30 PM
+Kyle Derr: (announce (host 192.168.1.100 9000) (message-id &lt;uid&gt; &lt;seq#&gt; &lt;data...&gt;))
+Dan Sandler: (announce (node &lt;uid&gt; 192.168.1.100 9000) (message &lt;seq#&gt; &lt;data...&gt;))
+Dan Sandler: (&lt;uid&gt; &lt;seq#&gt; &lt;hash&gt;)
+Kyle Derr: (host &lt;uid&gt; &lt;ip&gt; &lt;port&gt;)
+Kyle Derr: (ptr &lt;uid&gt; &lt;seq#&gt; &lt;hash&gt;)
+Dan Sandler: (join &lt;my-host-triple&gt; &lt;my-cert&gt;)
+Dan Sandler: (welcome &lt;my-host-triple&gt; &lt;hash&gt;)
+Dan Sandler: (welcome &lt;my-host-triple&gt; (&lt;ptr&gt;...))
+Kyle Derr: (announce &lt;node&gt; (number &lt;int&gt; (sig &lt;sig&gt; (time (&lt;ptr&gt; &lt;ptr&gt; ...) &lt;app-data))))
+Dan Sandler: (announce &lt;node&gt; &lt;int&gt; (sig &lt;sig&gt; (time (&lt;ptr&gt; &lt;ptr&gt; ...) &lt;app-data)))
+Dan Sandler: (announce &lt;node&gt; (number &lt;int&gt; (sig &lt;sig&gt; (time (&lt;ptr&gt; &lt;ptr&gt; ...) &lt;app-data&gt;))))
+4:35 PM
+Dan Sandler: 57:52
+Dan Sandler: that's depressing
+Dan Sandler: thanks for your patience
+Kyle Derr: considering we're almost exactly where we started, I think it's you who has been patient with all of my ideas.
+Dan Sandler: well, we'll just leave it there then
+Dan Sandler: mutual appreciation of patience
+Kyle Derr: mhm
+</pre>
+
+</body>
+</html>
+

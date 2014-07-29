@@ -1,0 +1,464 @@
+
+<html><head><link rel="stylesheet" href="trac.css" type="text/css" />
+</head><body>
+
+<h1 id="Tracandmod_wsgi">Trac and mod_wsgi</h1>
+<p>
+<a class="ext-link" href="http://code.google.com/p/modwsgi/"><span class="icon">​</span>mod_wsgi</a> is an Apache module for running WSGI-compatible Python applications directly on top of the Apache webserver. The mod_wsgi adapter is written completely in C and provides very good performances.
+</p>
+<p>
+<h4>Overview</h4>
+    <ol>
+      <li>
+        <a href="#Thetrac.wsgiscript">The <tt>trac.wsgi</tt> script</a>
+        <ol>
+          <li>
+            <a href="#Averybasicscript">A very basic script</a>
+          </li>
+          <li>
+            <a href="#Amoreelaboratescript">A more elaborate script</a>
+          </li>
+          <li>
+            <a href="#Recommendedtrac.wsgiscript">Recommended <tt>trac.wsgi</tt> script</a>
+          </li>
+        </ol>
+      </li>
+      <li>
+        <a href="#Mappingrequeststothescript">Mapping requests to the script</a>
+      </li>
+      <li>
+        <a href="#ConfiguringAuthentication">Configuring Authentication</a>
+        <ol>
+          <li>
+            <a href="#UsingBasicAuthentication">Using Basic Authentication</a>
+          </li>
+          <li>
+            <a href="#UsingDigestAuthentication">Using Digest Authentication</a>
+          </li>
+          <li>
+            <a href="#UsingLDAPAuthentication">Using LDAP Authentication</a>
+          </li>
+          <li>
+            <a href="#UsingSSPIAuthentication">Using SSPI Authentication</a>
+          </li>
+          <li>
+            <a href="#UsingApacheauthenticationwiththeAccountManagerpluginsLoginform">Using Apache authentication with the Account Manager plugin's Login form</a>
+          </li>
+          <li>
+            <a href="#Example:Apachemod_wsgiwithBasicAuthenticationTracbeingattherootofavirtualhost">Example: Apache/mod_wsgi with Basic Authentication, Trac being at the root of a virtual host</a>
+          </li>
+        </ol>
+      </li>
+      <li>
+        <a href="#Troubleshooting">Troubleshooting</a>
+        <ol>
+          <li>
+            <a href="#Usearecentversion">Use a recent version</a>
+          </li>
+          <li>
+            <a href="#GettingTractoworknicelywithSSPIandRequireGroup">Getting Trac to work nicely with SSPI and 'Require Group'</a>
+          </li>
+          <li>
+            <a href="#TracwithPostgreSQL">Trac with PostgreSQL</a>
+          </li>
+          <li>
+            <a href="#Otherresources">Other resources</a>
+          </li>
+        </ol>
+      </li>
+    </ol>
+
+</p>
+<h2 id="Thetrac.wsgiscript">The <tt>trac.wsgi</tt> script</h2>
+<p>
+Trac can be run on top of mod_wsgi with the help of the following application script, which is just a Python file, though usually saved with a <tt>.wsgi</tt> extension). 
+</p>
+<h3 id="Averybasicscript">A very basic script</h3>
+<p>
+In its simplest form, the script could be:
+</p>
+<div class="code"><pre>import os
+
+os.environ['TRAC_ENV'] = '/usr/local/trac/mysite'
+os.environ['PYTHON_EGG_CACHE'] = '/usr/local/trac/mysite/eggs'
+
+import trac.web.main
+application = trac.web.main.dispatch_request
+</pre></div><p>
+The <tt>TRAC_ENV</tt> variable should naturally be the directory for your Trac environment (if you have several Trac environments in a directory, you can also use <tt>TRAC_ENV_PARENT_DIR</tt> instead), while the <tt>PYTHON_EGG_CACHE</tt> should be a directory where Python can temporarily extract Python eggs.
+</p>
+<h3 id="Amoreelaboratescript">A more elaborate script</h3>
+<p>
+If you're using multiple <tt>.wsgi</tt> files (for example one per Trac environment) you must <em>not</em> use <tt>os.environ['TRAC_ENV']</tt> to set the path to the Trac environment. Using this method may lead to Trac delivering the content of another Trac environment, as the variable may be filled with the path of a previously viewed Trac environment. 
+</p>
+<p>
+To solve this problem, use the following <tt>.wsgi</tt> file instead:
+</p>
+<div class="code"><pre>import os
+
+os.environ['PYTHON_EGG_CACHE'] = '/usr/local/trac/mysite/eggs'
+
+import trac.web.main
+def application(environ, start_response):
+  environ['trac.env_path'] = '/usr/local/trac/mysite' 
+  return trac.web.main.dispatch_request(environ, start_response)
+</pre></div><p>
+For clarity, you should give this file a <tt>.wsgi</tt> extension. You should probably put the file in its own directory, since you will expose it to Apache. 
+</p>
+<p>
+If you have installed Trac and eggs in a path different from the standard one you should add that path by adding the following code at the top of the wsgi script:
+</p>
+<div class="code"><pre>import site
+site.addsitedir('/usr/local/trac/lib/python2.4/site-packages')
+</pre></div><p>
+Change it according to the path you installed the Trac libs at.
+</p>
+<h3 id="Recommendedtrac.wsgiscript">Recommended <tt>trac.wsgi</tt> script</h3>
+<p>
+A somewhat robust and generic version of this file can be created using the <tt>trac-admin &lt;env&gt; deploy &lt;dir&gt;</tt> command which automatically substitutes the required paths (see <a class="missing wiki" href="/wiki/TracInstall#cgi-bin" rel="nofollow">TracInstall#cgi-bin?</a>).
+</p>
+<h2 id="Mappingrequeststothescript">Mapping requests to the script</h2>
+<p>
+After you've done preparing your .wsgi script, add the following to your Apache configuration file (<tt>httpd.conf</tt> for example).
+</p>
+<pre class="wiki">WSGIScriptAlias /trac /usr/local/trac/mysite/apache/mysite.wsgi
+
+&lt;Directory /usr/local/trac/mysite/apache&gt;
+    WSGIApplicationGroup %{GLOBAL}
+    Order deny,allow
+    Allow from all
+&lt;/Directory&gt;
+</pre><p>
+Here, the script is in a subdirectory of the Trac environment.
+</p>
+<p>
+If you followed the directions <a class="ext-link" href="http://trac.edgewall.org/wiki/TracInstall#cgi-bin"><span class="icon">​</span>Generating the Trac cgi-bin directory</a>, your Apache configuration file should look like following:
+</p>
+<pre class="wiki">WSGIScriptAlias /trac /usr/share/trac/cgi-bin/trac.wsgi
+
+&lt;Directory /usr/share/trac/cgi-bin&gt;
+    WSGIApplicationGroup %{GLOBAL}
+    Order deny,allow
+    Allow from all
+&lt;/Directory&gt;
+</pre><p>
+In order to let Apache run the script, access to the directory in which the script resides is opened up to all of Apache. Additionally, the <tt>WSGIApplicationGroup</tt> directive ensures that Trac is always run in the first Python interpreter created by mod_wsgi; this is necessary because the Subversion Python bindings, which are used by Trac, don't always work in other sub-interpreters and may cause requests to hang or cause Apache to crash as a result. After adding this configuration, restart Apache, and then it should work.
+</p>
+<p>
+To test the setup of Apache, mod_wsgi and Python itself (ie. without involving Trac and dependencies), this simple wsgi application can be used to make sure that requests gets served (use as only content in your <tt>.wsgi</tt> script):
+</p>
+<div class="code"><pre>def application(environ, start_response):
+        start_response('200 OK',[('Content-type','text/html')])
+        return ['&lt;html&gt;&lt;body&gt;Hello World!&lt;/body&gt;&lt;/html&gt;']
+</pre></div><p>
+For more information about using the mod_wsgi specific directives, see the <a class="ext-link" href="http://code.google.com/p/modwsgi/wiki/"><span class="icon">​</span>mod_wsgi's wiki</a> and more specifically the <a class="ext-link" href="http://code.google.com/p/modwsgi/wiki/IntegrationWithTrac"><span class="icon">​</span>IntegrationWithTrac</a> page.
+</p>
+<h2 id="ConfiguringAuthentication">Configuring Authentication</h2>
+<p>
+We describe in the the following sections different methods for setting up authentication.
+</p>
+<p>
+See also <a class="ext-link" href="http://httpd.apache.org/docs/2.2/howto/auth.html"><span class="icon">​</span>Authentication, Authorization and Access Control</a> in the Apache guide.
+</p>
+<h3 id="UsingBasicAuthentication">Using Basic Authentication</h3>
+<p>
+The simplest way to enable authentication with Apache is to create a password file. Use the <tt>htpasswd</tt> program to create the password file:
+</p>
+<pre class="wiki">$ htpasswd -c /somewhere/trac.htpasswd admin
+New password: &lt;type password&gt;
+Re-type new password: &lt;type password again&gt;
+Adding password for user admin
+</pre><p>
+After the first user, you dont need the "-c" option anymore:
+</p>
+<pre class="wiki">$ htpasswd /somewhere/trac.htpasswd john
+New password: &lt;type password&gt;
+Re-type new password: &lt;type password again&gt;
+Adding password for user john
+</pre><blockquote>
+<p>
+<em>See the man page for <tt>htpasswd</tt> for full documentation.</em>
+</p>
+</blockquote>
+<p>
+After you've created the users, you can set their permissions using <a class="missing wiki" href="/wiki/TracPermissions" rel="nofollow">TracPermissions?</a>.
+</p>
+<p>
+Now, you'll need to enable authentication against the password file in the Apache configuration:
+</p>
+<pre class="wiki">&lt;Location "/trac/login"&gt;
+  AuthType Basic
+  AuthName "Trac"
+  AuthUserFile /somewhere/trac.htpasswd
+  Require valid-user
+&lt;/Location&gt;
+</pre><p>
+If you're hosting multiple projects you can use the same password file for all of them:
+</p>
+<pre class="wiki">&lt;LocationMatch "/trac/[^/]+/login"&gt;
+  AuthType Basic
+  AuthName "Trac"
+  AuthUserFile /somewhere/trac.htpasswd
+  Require valid-user
+&lt;/LocationMatch&gt;
+</pre><p>
+Note that neither a file nor a directory named 'login' needs to exist.<br />
+See also the <a class="ext-link" href="http://httpd.apache.org/docs/2.2/mod/mod_auth_basic.html"><span class="icon">​</span>mod_auth_basic</a> documentation.
+</p>
+<h3 id="UsingDigestAuthentication">Using Digest Authentication</h3>
+<p>
+For better security, it is recommended that you either enable SSL or at least use the digest authentication scheme instead of Basic. 
+</p>
+<p>
+You'll have to create your <tt>.htpasswd</tt> file with the <tt>htdigest</tt> command instead of <tt>htpasswd</tt>, as follows:
+</p>
+<pre class="wiki"># htdigest -c /somewhere/trac.htpasswd trac admin
+</pre><p>
+The "trac" parameter above is the "realm", and will have to be reused in the Apache configuration in the AuthName directive:
+</p>
+<pre class="wiki">&lt;Location "/trac/login"&gt;
+
+    AuthType Digest
+    AuthName "trac"
+    AuthDigestDomain /trac
+    AuthUserFile /somewhere/trac.htpasswd
+    Require valid-user
+&lt;/Location&gt;
+</pre><p>
+For multiple environments, you can use the same <tt>LocationMatch</tt> as described with the previous method.
+</p>
+<p>
+Don't forget to activate the mod_auth_digest. For example, on a Debian 4.0r1 (etch) system:
+</p>
+<pre class="wiki">    LoadModule auth_digest_module /usr/lib/apache2/modules/mod_auth_digest.so
+</pre><p>
+See also the <a class="ext-link" href="http://httpd.apache.org/docs/2.2/mod/mod_auth_digest.html"><span class="icon">​</span>mod_auth_digest</a> documentation.
+</p>
+<h3 id="UsingLDAPAuthentication">Using LDAP Authentication</h3>
+<p>
+Configuration for <a class="ext-link" href="http://httpd.apache.org/docs/2.2/mod/mod_ldap.html"><span class="icon">​</span>mod_ldap</a> authentication in Apache is a bit tricky (httpd 2.2.x and OpenLDAP: slapd 2.3.19)
+</p>
+<ol><li>You need to load the following modules in Apache httpd.conf
+<pre class="wiki">LoadModule ldap_module modules/mod_ldap.so
+LoadModule authnz_ldap_module modules/mod_authnz_ldap.so
+</pre></li></ol><ol start="2"><li>Your httpd.conf also needs to look something like:
+</li></ol><pre class="wiki">&lt;Location /trac/&gt;
+  # (if you're using it, mod_python specific settings go here)
+  Order deny,allow
+  Deny from all
+  Allow from 192.168.11.0/24
+  AuthType Basic
+  AuthName "Trac"
+  AuthBasicProvider "ldap"
+  AuthLDAPURL "ldap://127.0.0.1/dc=example,dc=co,dc=ke?uid?sub?(objectClass=inetOrgPerson)"
+  authzldapauthoritative Off
+  Require valid-user
+&lt;/Location&gt;
+</pre><ol start="3"><li>You can use the LDAP interface as a way to authenticate to a Microsoft Active Directory:
+</li></ol><p>
+Use the following as your LDAP URL:
+</p>
+<pre class="wiki">    AuthLDAPURL "ldap://directory.example.com:3268/DC=example,DC=com?sAMAccountName?sub?(objectClass=user)"
+</pre><p>
+You will also need to provide an account for Apache to use when checking
+credentials. As this password will be listed in plaintext in the
+config, you should be sure to use an account specifically for this task:
+</p>
+<pre class="wiki">    AuthLDAPBindDN ldap-auth-user@example.com
+    AuthLDAPBindPassword "password"
+</pre><p>
+The whole section looks like:
+</p>
+<pre class="wiki">&lt;Location /trac/&gt;
+  # (if you're using it, mod_python specific settings go here)
+  Order deny,allow
+  Deny from all
+  Allow from 192.168.11.0/24
+  AuthType Basic
+  AuthName "Trac"
+  AuthBasicProvider "ldap"
+  AuthLDAPURL "ldap://adserver.company.com:3268/DC=company,DC=com?sAMAccountName?sub?(objectClass=user)"
+  AuthLDAPBindDN       ldap-auth-user@company.com
+  AuthLDAPBindPassword "the_password"
+  authzldapauthoritative Off
+  # require valid-user
+  require ldap-group CN=Trac Users,CN=Users,DC=company,DC=com
+&lt;/Location&gt;
+</pre><p>
+Note 1: This is the case where the LDAP search will get around the multiple OUs, conecting to Global Catalog Server portion of AD (Notice the port is 3268, not the normal LDAP 389). The GCS is basically a "flattened" tree which allows searching for a user without knowing to which OU they belong.
+</p>
+<p>
+Note 2: You can also require the user be a member of a certain LDAP group, instead of
+just having a valid login:
+</p>
+<pre class="wiki">    Require ldap-group CN=Trac Users,CN=Users,DC=example,DC=com
+</pre><p>
+See also:
+</p>
+<ul><li><a class="ext-link" href="http://httpd.apache.org/docs/2.2/mod/mod_authnz_ldap.html"><span class="icon">​</span>mod_authnz_ldap</a>, documentation for mod_authnz_ldap
+</li></ul><p>
+    
+</p>
+<ul><li><a class="ext-link" href="http://httpd.apache.org/docs/2.2/mod/mod_ldap.html"><span class="icon">​</span>mod_ldap</a>, documentation for mod_ldap, which provides connection pooling and a shared cache.
+</li><li><a class="ext-link" href="http://trac-hacks.org/wiki/LdapPlugin"><span class="icon">​</span>TracHacks:LdapPlugin</a> for storing <a class="missing wiki" href="/wiki/TracPermissions" rel="nofollow">TracPermissions?</a> in LDAP.
+</li></ul><h3 id="UsingSSPIAuthentication">Using SSPI Authentication</h3>
+<p>
+If you are using Apache on Windows, you can use mod_auth_sspi to provide
+single-sign-on. Download the module from the SourceForge <a class="ext-link" href="http://sourceforge.net/projects/mod-auth-sspi/"><span class="icon">​</span>mod-auth-sspi project</a> and then add the
+following to your VirtualHost:
+</p>
+<pre class="wiki">    &lt;Location /trac/login&gt;
+        AuthType SSPI
+        AuthName "Trac Login"
+        SSPIAuth On
+        SSPIAuthoritative On
+        SSPIDomain MyLocalDomain
+        SSPIOfferBasic On
+        SSPIOmitDomain Off
+        SSPIBasicPreferred On
+        Require valid-user
+    &lt;/Location&gt;
+</pre><p>
+Using the above, usernames in Trac will be of the form <tt>DOMAIN\username</tt>, so
+you may have to re-add permissions and such. If you do not want the domain to
+be part of the username, set <tt>SSPIOmitDomain On</tt> instead.
+</p>
+<p>
+Some common problems with SSPI authentication: <a class="ext-link" href="http://trac.edgewall.org/intertrac/%231055" title="#1055 in Trac project trac"><span class="icon">​</span>#1055</a>, <a class="ext-link" href="http://trac.edgewall.org/intertrac/%231168" title="#1168 in Trac project trac"><span class="icon">​</span>#1168</a> and <a class="ext-link" href="http://trac.edgewall.org/intertrac/%233338" title="#3338 in Trac project trac"><span class="icon">​</span>#3338</a>.
+</p>
+<p>
+See also <a class="ext-link" href="http://trac.edgewall.org/intertrac/TracOnWindows/Advanced" title="TracOnWindows/Advanced in Trac project trac"><span class="icon">​</span>TracOnWindows/Advanced</a>.
+</p>
+<h3 id="UsingApacheauthenticationwiththeAccountManagerpluginsLoginform">Using Apache authentication with the Account Manager plugin's Login form</h3>
+<p>
+To begin with, see the basic instructions for using the Account Manager plugin's <a class="ext-link" href="http://trac-hacks.org/wiki/AccountManagerPlugin/Modules#LoginModule"><span class="icon">​</span>Login module</a> and its <a class="ext-link" href="http://trac-hacks.org/wiki/AccountManagerPlugin/AuthStores#HttpAuthStore"><span class="icon">​</span>HttpAuthStore authentication module</a>.
+</p>
+<p>
+<strong>Note:</strong> If is difficult to get HttpAuthStore to work with WSGI when using any Account Manager version prior to acct_mgr-0.4. Upgrading is recommended.
+</p>
+<p>
+Here is an example (from the HttpAuthStore link) using acct_mgr-0.4 for hosting a single project:
+</p>
+<pre class="wiki">[components]
+; be sure to enable the component
+acct_mgr.http.HttpAuthStore = enabled
+
+[account-manager]
+; configure the plugin to use a page that is secured with http authentication
+authentication_url = /authFile
+password_store = HttpAuthStore
+</pre><p>
+This will generally be matched with an Apache config like:
+</p>
+<pre class="wiki">&lt;Location /authFile&gt;
+   HTTP authentication configuration
+   Require valid-user
+&lt;/Location&gt;
+</pre><p>
+Note that <strong>authFile</strong> need not exist. See the HttpAuthStore link above for examples where multiple Trac projects are hosted on a server.
+</p>
+<h3 id="Example:Apachemod_wsgiwithBasicAuthenticationTracbeingattherootofavirtualhost">Example: Apache/mod_wsgi with Basic Authentication, Trac being at the root of a virtual host</h3>
+<p>
+Per the mod_wsgi documentation linked to above, here is an example Apache configuration that a) serves the Trac instance from a virtualhost subdomain and b) uses Apache basic authentication for Trac authentication.
+</p>
+<p>
+If you want your Trac to be served from e.g. http://trac.my-proj.my-site.org, then from the folder e.g. <tt>/home/trac-for-my-proj</tt>, if you used the command <tt>trac-admin the-env initenv</tt> to create a folder <tt>the-env</tt>, and you used <tt>trac-admin the-env deploy the-deploy</tt> to create a folder <tt>the-deploy</tt>, then first:
+</p>
+<p>
+Create the htpasswd file:
+</p>
+<pre class="wiki">cd /home/trac-for-my-proj/the-env
+htpasswd -c htpasswd firstuser
+### and add more users to it as needed:
+htpasswd htpasswd seconduser
+</pre><p>
+(keep the file above your document root for security reasons)
+</p>
+<p>
+Create this file e.g. (ubuntu) <tt>/etc/apache2/sites-enabled/trac.my-proj.my-site.org.conf</tt> with the following contents:
+</p>
+<pre class="wiki">&lt;Directory /home/trac-for-my-proj/the-deploy/cgi-bin/trac.wsgi&gt;
+  WSGIApplicationGroup %{GLOBAL}
+  Order deny,allow
+  Allow from all
+&lt;/Directory&gt;
+
+&lt;VirtualHost *:80&gt;
+  ServerName trac.my-proj.my-site.org
+  DocumentRoot /home/trac-for-my-proj/the-env/htdocs/
+  WSGIScriptAlias / /home/trac-for-my-proj/the-deploy/cgi-bin/trac.wsgi
+  &lt;Location '/'&gt;
+    AuthType Basic
+    AuthName "Trac"
+    AuthUserFile /home/trac-for-my-proj/the-env/htpasswd
+    Require valid-user
+  &lt;/Location&gt;
+&lt;/VirtualHost&gt;
+
+</pre><p>
+Note: for subdomains to work you would probably also need to alter <tt>/etc/hosts</tt> and add A-Records to your host's DNS.
+</p>
+<h2 id="Troubleshooting">Troubleshooting</h2>
+<h3 id="Usearecentversion">Use a recent version</h3>
+<p>
+Please use either version 1.6, 2.4 or later of <tt>mod_wsgi</tt>. Versions prior to 2.4 in the 2.X branch have problems with some Apache configurations that use WSGI file wrapper extension. This extension is used in Trac to serve up attachments and static media files such as style sheets. If you are affected by this problem attachments will appear to be empty and formatting of HTML pages will appear not to work due to style sheet files not loading properly. Another frequent symptom is that binary attachment downloads are truncated. See mod_wsgi tickets <a class="ext-link" href="http://code.google.com/p/modwsgi/issues/detail?id=100"><span class="icon">​</span>#100</a> and <a class="ext-link" href="http://code.google.com/p/modwsgi/issues/detail?id=132"><span class="icon">​</span>#132</a>.
+</p>
+<p>
+<em>Note: using mod_wsgi 2.5 and Python 2.6.1 gave an Internal Server Error on my system (Apache 2.2.11 and Trac 0.11.2.1). Upgrading to Python 2.6.2 (as suggested <a class="ext-link" href="http://www.mail-archive.com/modwsgi@googlegroups.com/msg01917.html"><span class="icon">​</span>here</a>) solved this for me<br />-- Graham Shanks</em>
+</p>
+<p>
+If you plan to use <tt>mod_wsgi</tt> in embedded mode on Windows or with the MPM worker on Linux, then you'll even need version 0.3.4 or greater (see <a class="ext-link" href="http://trac.edgewall.org/intertrac/%2310675" title="#10675 in Trac project trac"><span class="icon">​</span>#10675</a> for details).
+</p>
+<h3 id="GettingTractoworknicelywithSSPIandRequireGroup">Getting Trac to work nicely with SSPI and 'Require Group'</h3>
+<p>
+If like me you've set Trac up on Apache, Win32 and configured SSPI, but added a 'Require group' option to your apache configuration, then the SSPIOmitDomain option is probably not working.  If its not working your usernames in trac are probably looking like 'DOMAIN\user' rather than 'user'.
+</p>
+<p>
+This WSGI script 'fixes' things, hope it helps:
+</p>
+<div class="code"><pre>import os
+import trac.web.main
+
+os.environ['TRAC_ENV'] = '/usr/local/trac/mysite'
+os.environ['PYTHON_EGG_CACHE'] = '/usr/local/trac/mysite/eggs'
+
+def application(environ, start_response):
+    if "\\" in environ['REMOTE_USER']:
+        environ['REMOTE_USER'] = environ['REMOTE_USER'].split("\\", 1)[1]
+    return trac.web.main.dispatch_request(environ, start_response)
+</pre></div><h3 id="TracwithPostgreSQL">Trac with PostgreSQL</h3>
+<p>
+When using the mod_wsgi adapter with multiple Trac instances and PostgreSQL (or MySQL?) as a database back-end, the server <em>may</em> create a lot of open database connections and thus PostgreSQL processes.
+</p>
+<p>
+A somewhat brutal workaround is to disabled connection pooling in Trac. This is done by setting <tt>poolable = False</tt> in <tt>trac.db.postgres_backend</tt> on the <tt>PostgreSQLConnection</tt> class.
+</p>
+<p>
+But it's not necessary to edit the source of Trac, the following lines in <tt>trac.wsgi</tt> will also work:
+</p>
+<pre class="wiki">import trac.db.postgres_backend
+trac.db.postgres_backend.PostgreSQLConnection.poolable = False
+</pre><p>
+or
+</p>
+<pre class="wiki">import trac.db.mysql_backend
+trac.db.mysql_backend.MySQLConnection.poolable = False
+</pre><p>
+Now Trac drops the connection after serving a page and the connection count on the database will be kept minimal.
+</p>
+<p>
+<em>This is not a recommended approach though. See also the notes at the bottom of the <a class="ext-link" href="http://code.google.com/p/modwsgi/wiki/IntegrationWithTrac"><span class="icon">​</span>mod_wsgi's IntegrationWithTrac</a> wiki page.</em>
+</p>
+<h3 id="Otherresources">Other resources</h3>
+<p>
+For more troubleshooting tips, see also the <a class="missing wiki" href="/wiki/TracModPython#Troubleshooting" rel="nofollow">mod_python troubleshooting?</a> section, as most Apache-related issues are quite similar, plus discussion of potential <a class="ext-link" href="http://code.google.com/p/modwsgi/wiki/ApplicationIssues"><span class="icon">​</span>application issues</a> when using mod_wsgi. The wsgi page also has a <a class="ext-link" href="http://code.google.com/p/modwsgi/wiki/IntegrationWithTrac"><span class="icon">​</span>Integration With Trac</a> document.
+</p>
+<hr />
+<p>
+See also:  <a class="missing wiki" href="/wiki/TracGuide" rel="nofollow">TracGuide?</a>, <a class="missing wiki" href="/wiki/TracInstall" rel="nofollow">TracInstall?</a>, <a class="missing wiki" href="/wiki/TracFastCgi" rel="nofollow">FastCGI?</a>, <a class="missing wiki" href="/wiki/TracModPython" rel="nofollow">ModPython?</a>, <a class="ext-link" href="http://trac.edgewall.org/intertrac/TracNginxRecipe" title="TracNginxRecipe in Trac project trac"><span class="icon">​</span>TracNginxRecipe</a>
+</p>
+
+
+</body>
+</html>
+

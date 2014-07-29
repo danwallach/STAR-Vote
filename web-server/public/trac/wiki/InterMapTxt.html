@@ -1,0 +1,73 @@
+
+<html><head><link rel="stylesheet" href="trac.css" type="text/css" />
+</head><body>
+
+<h1 id="InterMapTxt"><a class="missing wiki" href="/wiki/InterMapTxt" rel="nofollow">InterMapTxt?</a></h1>
+<h2 id="ThisistheplacefordefiningInterWikiprefixes">This is the place for defining <a class="missing wiki" href="/wiki/InterWiki" rel="nofollow">InterWiki?</a> prefixes</h2>
+<p>
+This page was modelled after the MeatBall:InterMapTxt page.
+In addition, an optional comment is allowed after the mapping.
+</p>
+<p>
+This page is interpreted in a special way by Trac, in order to support
+InterWiki links in a flexible and dynamic way.
+</p>
+<p>
+The code block after the first line separator in this page
+will be interpreted as a list of InterWiki specifications:
+</p>
+<pre class="wiki">prefix &lt;space&gt; URL [&lt;space&gt; # comment]
+</pre><p>
+By using <tt>$1</tt>, <tt>$2</tt>, etc. within the URL, it is possible to create 
+<a class="missing wiki" href="/wiki/InterWiki" rel="nofollow">InterWiki?</a> links which support multiple arguments, e.g. Trac:ticket:40.
+The URL itself can be optionally followed by a comment, 
+which will subsequently be used for decorating the links 
+using that prefix.
+</p>
+<p>
+New InterWiki links can be created by adding to that list, in real time.
+Note however that <em>deletions</em> are also taken into account immediately,
+so it may be better to use comments for disabling prefixes.
+</p>
+<p>
+Also note that InterWiki prefixes are case insensitive.
+</p>
+<h2 id="ListofActivePrefixes">List of Active Prefixes</h2>
+<p>
+</p><table class="wiki interwiki"><tr><th><em>Prefix</em></th><th><em>Site</em></th></tr></table><p>
+</p>
+<hr />
+<h2 id="PrefixDefinitions">Prefix Definitions</h2>
+<pre class="wiki">PEP     http://www.python.org/peps/pep-$1.html                                       # Python Enhancement Proposal 
+Trac-ML  http://thread.gmane.org/gmane.comp.version-control.subversion.trac.general/ # Message $1 in Trac Mailing List
+trac-dev http://thread.gmane.org/gmane.comp.version-control.subversion.trac.devel/   # Message $1 in Trac Development Mailing List
+
+Mercurial http://www.selenic.com/mercurial/wiki/index.cgi/ # the wiki for the Mercurial distributed SCM
+RFC       http://rfc.net/rfc$1.html # IETF's RFC $1
+
+#
+# A arbitrary pick of InterWiki prefixes...
+#
+Acronym          http://www.acronymfinder.com/af-query.asp?String=exact&amp;Acronym=
+C2find           http://c2.com/cgi/wiki?FindPage&amp;value=
+Cache            http://www.google.com/search?q=cache:
+CPAN             http://search.cpan.org/perldoc?
+DebianBug        http://bugs.debian.org/
+DebianPackage    http://packages.debian.org/
+Dictionary       http://www.dict.org/bin/Dict?Database=*&amp;Form=Dict1&amp;Strategy=*&amp;Query=
+Google           http://www.google.com/search?q=
+GoogleGroups     http://groups.google.com/group/$1/msg/$2        # Message $2 in $1 Google Group
+JargonFile       http://downlode.org/perl/jargon-redirect.cgi?term=
+MeatBall         http://www.usemod.com/cgi-bin/mb.pl?
+MetaWiki         http://sunir.org/apps/meta.pl?
+MetaWikiPedia    http://meta.wikipedia.org/wiki/
+MoinMoin         http://moinmoin.wikiwikiweb.de/
+WhoIs            http://www.whois.sc/
+Why              http://clublet.com/c/c/why?
+c2Wiki             http://c2.com/cgi/wiki?
+WikiPedia        http://en.wikipedia.org/wiki/
+</pre>
+
+</body>
+</html>
+

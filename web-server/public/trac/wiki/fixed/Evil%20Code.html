@@ -1,0 +1,35 @@
+
+<html><head><link rel="stylesheet" href="trac.css" type="text/css" />
+</head><body>
+
+<h2 id="EvilCode">Evil Code</h2>
+<p>
+VoteBox contains code meant to facilitate human factors testing.  This code allows for the observation, and subsequent recording, of all user input across multiple voting sessions.  This capability goes against the principle of voter annonminity; in a proper election setting, a user being able to identify themselves via side channels (such as this user input recording) would open the system to voter intimidation and vote buying attacks.
+</p>
+<p>
+However, the capacity to measure user interactions with new or modified UI models is of great usefulness.  Our compromise is to mark such code as "evil".  Simply searching (case insensitively) for "evil" within the codebase will turn up all the code involved in recording user input.  Additionally, our build process includes both "evil" and "good" targets which invoke a preprocessor so that stripping out the offending code is possible, in an automated manner.
+</p>
+<p>
+Build Targets:
+</p>
+<ul><li>preprocess-good
+<ul><li>strips out all evil code, copying the new source into the tmp directory
+</li></ul></li><li>preprocess-evil
+<ul><li>leaves in all evil code, copying the new source into the tmp directory
+</li></ul></li><li>compile-good
+<ul><li>preprocess-good, then compile tmp into build directory
+</li></ul></li><li>compile-evil
+<ul><li>preprocess-evil, then compile tmp into build directory
+</li></ul></li><li>jar-good
+<ul><li>compile-good, then jar build directory into votebox.jar &amp; supervisor.jar
+</li></ul></li><li>jar-evil
+<ul><li>compile-evil, then jar build directory into votebox.jar &amp; supervisor.jar
+</li></ul></li></ul><p>
+The preprocessing of VoteBox code is carried out using a custom ant task held in jpp.jar (of the ant directory in the repository).  Definitions in build.xml take the form '&lt;define name="Evil"/&gt;', with the source equiavlent being '<em>#define Evil'.  Supported control statements are '</em>#ifdef &lt;DEFINE&gt;', '<em>#ifndef &lt;DEFINE&gt;', and '</em>#endif'.
+</p>
+
+
+</body>
+</html>
+
+

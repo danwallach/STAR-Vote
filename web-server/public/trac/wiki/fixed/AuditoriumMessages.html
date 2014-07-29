@@ -1,0 +1,141 @@
+
+<html><head><link rel="stylesheet" href="trac.css" type="text/css" />
+</head><body>
+
+<p>
+See also: <a class="wiki" href="AuditoriumMessages/Discussion.html" rel="follow">AuditoriumMessages/Discussion</a>
+</p>
+<h3 id="Typographicconventions">Typographic conventions</h3>
+<ul><li><em>&lt;&gt;</em> identifies a data structure defined here.
+</li><li><em>[]</em> names a specific type of string.
+</li><li><em>{}</em> names a specific type of s-expression (which is either a string or list)
+</li></ul><h1 id="DataStructures">Data Structures</h1>
+<p>
+The following data structures can be found inside auditorium messages.
+</p>
+<h2 id="MessagePointer">Message Pointer</h2>
+<p>
+A <em>message pointer</em>, denoted <em>&lt;ptr&gt;</em>, is a reference to a particular message.
+</p>
+<pre class="wiki">(ptr [node-id] [sequence-number] [hash])
+</pre><ul><li><strong>node-id</strong>: This machine serial number uniquely identifies the machine which sent the message.
+</li><li><strong>sequence-number</strong>: This message number is an index into the sequence of messages sent by the sending machine.
+</li><li><strong>hash</strong>: This is the SHA-1 hash of the message in its complete s-expression format as it was placed on the wire.
+</li></ul><h2 id="HostPointer">Host Pointer</h2>
+<p>
+A <em>host pointer</em>, denoted <em>&lt;host&gt;</em>, is a reference to a particular host on the network.
+</p>
+<pre class="wiki">(host [node-id] [ip] [port])
+</pre><ul><li><strong>node-id</strong>: This machine serial number uniquely identifies the machine which sent the message.
+</li><li><strong>ip</strong>: This is the IP address of the referenced host in dotted-decimal format
+</li><li><strong>port</strong>: This is the port that the host is listening for incoming connections on. It is an integer formatted as a string.
+</li></ul><h2 id="CertificatesandSignatures">Certificates and Signatures</h2>
+<p>
+Currently, a certificate is (cert [x.509 PEM]).
+</p>
+<p>
+<strong>Future Work:</strong> (starting this implementation on 7/14).
+</p>
+<p>
+A <em>certificate</em>, denoted <em>&lt;cert&gt;</em>, is a signed key.
+</p>
+<pre class="wiki">(cert &lt;signature&gt;)
+</pre><p>
+A <em>key</em>, denoted <em>&lt;key&gt;</em>, is:
+</p>
+<pre class="wiki">(key [id] [annotation] [mod] [exp])
+</pre><p>
+A <em>signature</em>, denoted <em>&lt;signature&gt;</em> is:
+</p>
+<pre class="wiki">(signature [id] [sigdata] {payload})
+</pre><p>
+Therefore, a certificate signed by the CA looks like:
+</p>
+<pre class="wiki">(cert (signature ca [sig-data] (key votebox-5 booth [mod] [exp])))
+</pre><p>
+And a self-signed certificate looks like:
+</p>
+<pre class="wiki">(cert (signature votebox-5 [sig-data] (key votebox-5 booth [mod] [exp])))
+</pre><h1 id="Messages">Messages</h1>
+<p>
+All auditorium messages are formatted as follows:
+</p>
+<pre class="wiki">([name] &lt;host&gt; [sequence-number] {datum})
+</pre><ul><li><strong>name</strong>: This string is one of:
+<ul><li><tt>discover</tt>
+</li><li><tt>discover-reply</tt>
+</li><li><tt>join</tt>
+</li><li><tt>join-reply</tt>
+</li><li><tt>announce</tt>
+</li></ul></li><li><strong>host</strong>: This is a reference to the sender of the message.
+</li><li><strong>sequence-number</strong>: This is a unique identifier (across only messages from this sender) for the message.
+</li><li><strong>datum</strong>: This is the content of the message, which is different for each message.
+</li></ul><p>
+Below, we describe the format of the datum for each message.
+</p>
+<h2 id="Discover">Discover</h2>
+<p>
+This message is broadcast by a host who seeks information about other auditorium hosts nearby. Discover's datum is a host pointer to the host that the responding host should send its discover-reply to.
+</p>
+<pre class="wiki">&lt;host&gt;
+</pre><h2 id="DiscoverReply">Discover Reply</h2>
+<p>
+This message is sent as a reply to a host who broadcast a discover message. The datum consists of all known hosts.
+</p>
+<pre class="wiki">(&lt;host&gt; &lt;host&gt; ... &lt;host&gt;)
+</pre><h2 id="Join">Join</h2>
+<p>
+This message is sent by a host who wants to start a link with another host. The datum contains nothing.
+</p>
+<pre class="wiki">&lt;nothing&gt;
+</pre><h2 id="JoinReply">Join Reply</h2>
+<p>
+This message is sent in reply to a Join message in the event that the joiner is considered acceptable by the receiver of a Join message. In the event that the joiner is not considered acceptable, the socket is simply closed by the receiver of the Join message. The datum contains a list of message pointers. These point to messages that have been seen on the network but not yet referenced by a message.
+</p>
+<pre class="wiki">(&lt;ptr&gt; &lt;ptr&gt; ... &lt;ptr&gt;)
+</pre><h2 id="Announce">Announce</h2>
+<p>
+This message is the "backbone" of auditorium. All messages (shown here as the "payload") that intend to be logged and entangled are sent as announcement messages. If we assume auditorium uses an integrity layer wrapping a temporal layer, the messages are constructed as follows:
+</p>
+<pre class="wiki">(signed-message &lt;cert&gt; &lt;signature&gt;))))
+</pre><ul><li><strong>cert</strong>: This is the certificate of the party that is signing the payload.
+</li><li><strong>signature</strong>: The payload for a signed message is, of course, a signed message.
+</li></ul><p>
+Because we've assumed that the signature will wrap the output of a temporal layer, the signature portion will look like this:
+</p>
+<pre class="wiki">(signature [signer] [sigdata] (succeeds (#listof:&lt;ptr&gt;) {payload}))
+</pre><p>
+So, a complete announcement message might look like this:
+</p>
+<pre class="wiki">(announce
+    (host votebox-5 1.2.3.4 5555)
+    1
+    (signed-message
+        (cert 
+            (signature ca [sig-data] (key votebox-5 booth [mod] [exponent])))
+        (signature 
+            votebox-5
+            [sigdata]
+            (succeeds 
+                ((ptr votebox-6 1 [SHA-1 hash]) (ptr votebox-5 0 [SHA-1 hash])) 
+                Hello World!))))
+</pre><hr />
+<h1 id="Discussion">Discussion</h1>
+<p>
+I'm pretty sure "precedes" is still the wrong word.  It agrees with a singular noun subject, which doesn't work if there are multiple pointers (ptr1 and ptr2 <strong>precede</strong> the data).  Not sure what we should change it to, though. --<a class="wiki" href="dsandler.html" rel="follow">dsandler</a> 6/15/07
+</p>
+<p>
+Succeeds is probably the correct word. "This thing succeeds these things." I'll change it. -derrley 6/15/07
+</p>
+<p>
+We somehow forgot to put the message number in. I think we finally came to the conclusion that the message number is the outermost wrapped piece of data, and it only goes on an  announcement message. I'll change that too. -derrley 6/15/07
+</p>
+<p>
+I'm going to change the protocol slightly: (signature [from] [sig-data] {payload}) to make the task of verification easier, and to also decouple the sender of the message from the signer of the payload. -derrley 6/26/07
+</p>
+
+
+</body>
+</html>
+
+

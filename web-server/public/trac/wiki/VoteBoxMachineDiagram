@@ -1,0 +1,5 @@
+= Module Relational Diagram =
+
+attachment:module_components.png
+
+This diagram's intent is to model the interaction between all the software components that make up the Vote``Box project.

@@ -1,0 +1,51 @@
+@(conflicts: List[VotingRecord])      
+<!DOCTYPE html>
+    
+    
+<script type="text/javascript">
+      function get_radio_value(name) {
+        var inputs = document.getElementsByName(name);
+        for (var i = 0; i < inputs.length; i++) {
+          if (inputs[i].checked) {
+            return inputs[i].value;
+          }
+        }
+      }
+
+      function onSubmit(String name) {
+        //   console.log(name);
+        alert(get_radio_value(name));
+      }
+    </script>
+
+
+<ul>
+@for(vr <- conflicts) {
+    <table class ="reference" style="width:80%">
+   
+    
+    <form onsubmit="onSubmit(@vr.id);">
+    <tbody>
+    <tr>
+        <th>
+            @vr.id
+            <input type="submit" class="button green medium" value="Resolve" style="float: right;">    
+        </th>
+    </->
+    
+    @for(hash <- vr.getHashes()) {
+        <tr><td><input type="radio" id=@hash name=@vr.id value=@hash checked>
+            <label for=@hash style="width:100%">@hash</label>
+        </td></tr>
+    }
+    </tbody>
+    </table>
+    
+   
+    </form>  
+    
+    <br>
+    
+} 
+</ul>
+

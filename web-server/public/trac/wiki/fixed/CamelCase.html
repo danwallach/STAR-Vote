@@ -1,0 +1,36 @@
+
+<html><head><link rel="stylesheet" href="trac.css" type="text/css" />
+</head><body>
+
+<h1 id="CamelCase">CamelCase</h1>
+<p>
+New words created by smashing together capitalized words.
+</p>
+<p>
+<a class="wiki" href="CamelCase.html" rel="follow">CamelCase</a> is the original wiki convention for creating hyperlinks, with the additional requirement that the capitals are followed by a lower-case letter; hence AlabamA and ABc will not be links.
+</p>
+<h2 id="CustomizingtheWikibehavior">Customizing the Wiki behavior</h2>
+<p>
+Some people dislike linking by <a class="wiki" href="CamelCase.html" rel="follow">CamelCase</a>.  While Trac remains faithful to the original Wiki style, it provides a number of ways to accomodate users with different preferences:
+</p>
+<ul><li>There's an option (<tt>ignore_missing_pages</tt> in the <a class="wiki" href="TracIni#wiki-section.html" rel="follow">[wiki]</a> section of <a class="wiki" href="TracIni.html" rel="follow">TracIni</a>) to simply ignore links to missing pages when the link is written using the <a class="wiki" href="CamelCase.html" rel="follow">CamelCase</a> style, instead of that word being replaced by a gray link followed by a question mark.<br />
+That can be useful when <a class="wiki" href="CamelCase.html" rel="follow">CamelCase</a> style is used to name code artifacts like class names and there's no corresponding page for them.
+</li><li>There's an option (<tt>split_page_names</tt> in the  <a class="wiki" href="TracIni#wiki-section.html" rel="follow">[wiki]</a> section of <a class="wiki" href="TracIni.html" rel="follow">TracIni</a>) to automatically insert space characters between the words of a <a class="wiki" href="CamelCase.html" rel="follow">CamelCase</a> link when rendering the link.
+</li><li>Creation of explicit Wiki links is also easy, see <a class="wiki" href="WikiPageNames.html" rel="follow">WikiPageNames</a> for details.
+</li><li>In addition, Wiki formatting can be disabled completely in some places (e.g. when rendering commit log messages). See <tt>wiki_format_messages</tt> in the <a class="wiki" href="TracIni#changeset-section.html" rel="follow">[changeset]</a> section of <a class="wiki" href="TracIni.html" rel="follow">TracIni</a>.
+</li></ul><p>
+See <a class="wiki" href="TracIni.html" rel="follow">TracIni</a> for more information on the available options.
+</p>
+<h2 id="MoreinformationonCamelCase">More information on CamelCase</h2>
+<ul><li><a class="ext-link" href="http://c2.com/cgi/wikiWikiCase"><span class="icon">​</span>http://c2.com/cgi/wikiWikiCase</a>
+</li><li><a class="ext-link" href="http://en.wikipedia.orgCamelCase.html"><span class="icon">​</span>http://en.wikipedia.orgCamelCase</a>
+</li></ul><hr />
+<p>
+See also: <a class=.html"wiki" href="WikiPageNames.html" rel="follow">WikiPageNames</a>, <a class="wiki" href="WikiNewPage.html" rel="follow">WikiNewPage</a>, <a class="wiki" href="WikiFormatting.html" rel="follow">WikiFormatting</a>, <a class="wiki" href="TracWiki.html" rel="follow">TracWiki</a>
+</p>
+
+
+</body>
+</html>
+
+

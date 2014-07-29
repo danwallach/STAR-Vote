@@ -1,0 +1,133 @@
+
+<html><head><link rel="stylesheet" href="trac.css" type="text/css" />
+</head><body>
+
+<p>
+The interface format for log entries is fully described in:
+</p>
+<p>
+~scrosby/Documents/Research.projects/secure_logging/interfaceformat.ps
+</p>
+<p>
+A full functioning example is located in <a class="missing wiki" href="/wiki/AuditorLogExample" rel="nofollow">AuditorLogExample?</a>.
+</p>
+<p>
+There are three kinds of data to be represented in the log file:
+</p>
+<ul><li><strong>Log messages</strong> These represent the contents of log messages. In the current implementation, Log messages are flat and cannot contain nested data. They may contain integers, blobs, strings, or other authenticators. 
+</li></ul><ul><li><strong>Message precedence</strong> These encode the order between messages.
+</li></ul><ul><li><strong>Host type bindings</strong> When writing audit rules, it is convenient to denote hosts with short tags <tt>ec' for election coordinator or </tt>v0', `v1' for voting machines. These are host types, and they need to be bound to the potential hostIDs that they may correspond to. The relationship is many-to-many.
+</li></ul><hr />
+<p>
+<strong> Log messages </strong>
+</p>
+<p>
+Log entries are described using a named predicate or relational representation. the first three arguments are the
+implicit arguments consisting of: the head authenticator that entails
+the message, the host who signed it, and the unique serial number of
+that message. All of the arguments after that are atoms representing
+application data:
+</p>
+<pre class="wiki">vote('auth_PnFncxik','host_3',4, 'goofy', 1).
+vote('auth_f2CnLuyY','host_4',8, 'daffy', 1).
+vote('auth_xCQXjeu9','host_3',5, 'donald', 0).
+</pre><hr />
+<p>
+<strong> Host type </strong>
+</p>
+<p>
+Host type bindings link hosts to host type names. Hosttype names must
+match $\id$. The hosttype for a host does not need to be unique.
+</p>
+<pre class="wiki">hosttype('hostkey_342','any').
+hosttype('hostkey_442','any').
+hosttype('hostkey_562','any').
+
+hosttype('hostkey_342','votemachine').
+hosttype('hostkey_442','votemachine').
+hosttype('hostkey_562','electioncoordinator').
+</pre><hr />
+<p>
+<strong> Precedence representation -- Between log entries </strong>
+</p>
+<p>
+This is an alternative technique that exploits assumptions about the
+entries in the log, in particular, that a log is a linear chain and
+each log entry produced from a given host is attached to an
+incrementing counter and provably succeeds {\em all} preceeding log
+entries for that same host and provably preceeds {\em all} succeeding log
+entries for that host. It has space complexity of $O(2 n k<sup>2)$ and
+time complexity $O(2 n k</sup>3)$ to generate.
+</p>
+<p>
+We record for each host and each index $i$ of a log entry in its log,
+a tuple of the indexes of all of the entries in every other log that
+provably succeed this entry.
+</p>
+<p>
+We can record a mapping from a particular index $i$ in host $x$'s
+history the minimum indexes $j_0 \ldots j_n$ that provably succceed it
+in the histories of all hosts. $y_0 \ldots y_n$.
+</p>
+<p>
+First, we encode a table mapping a given host to a distinct index &lt;
+$2<sup>{maxhosts}$:
+</sup></p>
+<pre class="wiki">  hostindex('hostid=232',0).
+</pre><p>
+The ordering relation is written with a predicate of this for, where
+the fields consist of numbers.
+</p>
+<blockquote>
+<p>
+raworder(<strong>host1</strong>,<strong>index1</strong>,<strong>host2</strong>,<strong>index2</strong>).
+</p>
+</blockquote>
+<p>
+This asserts that for each index <strong>index1</strong> in <strong>host1</strong> 's log,
+and each host <strong>host2</strong>, every entry in host <strong>host2</strong> 's log with
+an index &gt;=<strong>index2</strong> provably succeeds <strong>index1</strong> in
+<strong>host1</strong> 's log.
+</p>
+<p>
+Note that this relation must be complete. Entries must be included for
+all pairs of hosts, even for a host and itself.
+</p>
+<hr />
+<p>
+<strong> Precedence representation -- Between an authenticator and a lot entry. </strong>
+</p>
+<p>
+PLANNED FEATURE: I plan on supporting authenticators within
+messages. To handle this, we need to support audit rules for checking
+the order between authenticators in messages and other logged messages.
+</p>
+<p>
+This will be represented as a set of relationships of the form:
+</p>
+<p>
+$$\E{rawauthbefore(} \D{auth} \E{,} \D{host2} \E{,} \D{index2} \E{)}$$
+</p>
+<p>
+Which represent, for each authenticator and each host, the message
+with the maximum index that is strictly before the authenticator.
+</p>
+<p>
+$$\E{rawauthafter(} \D{auth} \E{,} \D{host2} \E{,} \D{index2} \E{)}$$
+</p>
+<p>
+Which represent, for each authenticator and each host, the message
+with the minimum index that is provably after the authenticator.
+</p>
+<hr />
+<p>
+<strong> Auxillary attributes </strong>
+</p>
+<p>
+PLANNED FEATURE.
+</p>
+
+
+</body>
+</html>
+

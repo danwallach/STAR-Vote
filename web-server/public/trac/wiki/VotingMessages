@@ -1,0 +1,74 @@
+= Summary =
+
+Layered atop AuditoriumMessages in !VoteBox voting contexts.
+
+=== Discussion ===
+
+See VotingMessages/Discussion.  Also, for rules in the VerifierLanguage that determine the validity of a voting log, see VotingRules.
+
+= Message List =
+
+=== Sent by Supervisor ===
+ * ('''polls-open''' ''local-timestamp'' ''keyword'')
+  * The ''keyword'' is given to the poll workers on the morning of the election, in order to guarantee the results were not fabricated in advance.
+  * The ''local-timestamp'' may be unnecessary here.
+  * State change: Booths become active, and the Supervisor can begin transmitting '''authorized-to-cast''' messages.
+ * ('''authorized-to-cast''' ''node-id'' ''authorization-code'' ''ballot'')
+  * The ''authorization-code'' is a stream of random bytes determined by the supervisor.  (It cannot be guaranteed that this will be unique to the election or to any machine: is this important?)
+  * State change: The booth's state changes to "In Use", and the booth loads the ballot and prepares to accept user input.
+ * ('''override-cast''' ''node-id'' ''authorization-code'')
+  * State change: The Booth shows a message that the ballot is about to be overridden and cast, and asks for confirmation.
+ * ('''override-cancel''' ''node-id'' ''authorization-code'')
+  * State change: The Booth shows a message that the ballot is about to be overridden and cancelled, and asks for confirmation.
+ * ('''ballot-received''' ''node-id'' ''authorization-code'')
+  * reply to '''cast-ballot'''
+  * State change: The Booth informs the voter that the ballot has been successfully cast.  The machine changes to "Ready", and the ''authorization-code'' is de-authorized.
+ * ('''supervisor''' ''local-timestamp'' ''supervisor-status'')
+  * ''supervisor-status'' can be active or inactive
+  * This message is sent once when the supervisor connects to Auditorium, and periodically as a status message.
+ * ('''assign-label''' ''node-id'' ''new-label'')
+  * The supervisor shows the machine's new label.  Also, the booth should remember its label so that if a new supervisor comes on, it doesn't need to relabel every machine.
+ * ('''polls-closed''' ''local-timestamp'')
+  * State change: Booths go into inactive mode, and the Supervisor can no longer authorize voters.  Tallying functionality may become available.
+ * ('''activated''' (('''status''')*))
+  * This is sent when a supervisor console is activated by a user (user presses the big "Activate This Console" button that actually turns on the UI).  Why do we need an "active" supervisor?  Because of automatic booth labelling.  If the super is supposed to automatically assign a label to every booth as the booth appears, we can't have backup supervisors competing to assign labels!  So the only super that should be labelling is the "active" one, which is the one that ''most recently'' issued the '''activated''' message.  Also, only a supervisor that is active can authorize voters, or open and close the polls.  These UI controls are hidden on all inactive supervisors.
+  * State change: The Supervisor that sent this message becomes active and can authorize voters, and all other Supervisor machines become inactive and show an "Activate" button.
+  * This message contains a list of the last-known status of every machine on the network that the supervisor knows about.  If a machine was not in the list, or has a status update, it should in turn broadcast its own status.
+  * The '''status''' message is a wrapper for a supervisor's or votebox's status, that contains the serial number of the machine that the status corresponds to.  Since status messages are normally sent by themselves over Auditorium, they are implicitly tied to their sender.  However, when contained within the activated message, the supervisor or votebox message has no notion of who sent it, thus the status wrapper.  Status looks like: ('''status''' ''node-id'' ('''supervisor'''|'''votebox'''))
+ * ('''polls-open?''' ''keyword'')
+  * A query to ask other machines if they know whether the polls are open
+  * Sent when a supervisor is activated, and doesn't know if the polls are open
+  * Upon receiving this message, a machine will check its logs to see if it thinks the polls are open, and then will reply with a '''last-polls-open''' message if so.
+ 
+=== Sent by Booths ===
+ * ('''votebox''' ''label'' ''votebox-status'' ''battery-health'' ''protected-count'' ''public-count'')
+  * Any inconsistencies are reported to the Supervisor (maybe).
+  * ''votebox-status'' can be ready or in-use
+  * ''label'' is the machine's label if it knows it already, otherwise it will report 0 for unlabeled
+  * This message is sent once when the booth connects to Auditorium, and periodically as a status message.
+  * This allows a booth to disconnect from the network, and upon reconnecting inform the supervisor(s) that it is still in use.
+ * ('''last-polls-open''' ''polls-open-message'')
+  * This is only necessary if we want other machines to inform the new active supervisor whether the polls are open.
+  * The machines will check their own logs and report the last '''polls-open''' message they saw, iff it is not succeeded by a '''polls-closed''' message (in which case, the machine would simply not respond).
+  * reply to '''polls-open?'''
+  * If any machine responds, the supervisor will check that the message is a valid '''polls-open''' message, and that the ''keyword'' matches the one entered by the poll worker.  If these conditions are met, the supervisor will silently change to polls opened status, and allow access to the authorize button.
+ * ('''cast-ballot''' ''authorization-code'' ''encrypted-ballot'')
+  * reply to '''authorized-to-cast'''
+  * must happen between '''polls-open''' and '''polls-closed'''
+  * State change: The Booth waits for a reply from the Supervisor that the ballot was received.
+ * ('''override-cast-confirm''' ''authorization-code'' ''encrypted-ballot'')
+  * reply to '''override-cast'''
+  * must happen between '''polls-open''' and '''polls-closed'''
+  * State change: The booth changes to "Ready" on the Supervisor, and the ''authorization-code'' is de-authorized.  (If a '''ballot-received''' reply is expected, this is handled by that message instead)
+ * ('''override-cast-deny''' ''authorization-code'')
+  * reply to '''override-cast'''
+  * must happen between '''polls-open''' and '''polls-closed'''
+  * State change: The Booth allows the voter to resume voting from where he left off.
+ * ('''override-cancel-confirm''' ''authorization-code'')
+  * reply to '''override-cancel'''
+  * must happen between '''polls-open''' and '''polls-closed'''
+  * State change: The booth changes to "Ready" on the Supervisor, and the ''authorization-code'' is de-authorized.
+ * ('''override-cancel-deny''' ''authorization-code'')
+  * reply to '''override-cancel'''
+  * must happen between '''polls-open''' and '''polls-closed'''
+  * State change: The Booth allows the voter to resume voting from where he left off.

@@ -1,0 +1,58 @@
+= Voting Messages Discussion =
+
+See VotingMessages for the full list of protocols.
+
+== Machines that join after the election has started ==
+It's simple enough for now to assume that every machine has been online for the entire election, seeing every message since the beginning.  However, since the state of the election is a result of all of the messages sent previously, this can be problematic when a new machine joins the network.  Besides that, a machine may need to have its battery changed, causing it to lose power, it may drop off the network, or a software error could result.  Any of these could occur at any time, and even if a machine is offline for only a few seconds, it may miss some crucial messages, invalidating its current snapshot of the state.
+
+Because of these problems, we need a "Bring me up to date" operation, where the other machines that stayed on the network can inform the new or returning machine of all of the state information that it needs to know.  (This is, of course, assuming that at least one machine remained online - if all of the machines lose their state than that's another problem.)  We can establish the following precepts:
+ * Supervisors care about the general election status, and the status of every other machine on the network
+ * Booths care only about their own status, and the general election status
+
+The active supervisor is probably the most reliable source of up-to-date state information.  Unfortunately, we can't always guarantee that there will be an active supervisor, since its possible that that is the machine that is being replaced.  For the following questions, assume that there is no active supervisor:
+ * Who informs a new machine whether the polls are open or closed?
+
+        '''XXX''' ''derrley'': Nobody. The machine should assume the polls are closed until otherwise noted. When there is no supervisor, machines that are in the middle of voting clearly should be able to finish and cast (his vote gets broadcast on auditorium), but after that the machine should accept any more "auth to cast" messages. Machines can know there is no supervisor if they don't get the expected heartbeat.
+
+ * Who gets the final say on a booth's status?
+ * What happens if an unlabeled machine joins?
+
+        '''XXX''' ''derrley'': Nothing. It should go something like "I'm here!" and then no response. To the new machine the polls are closed and it is unlabeled.
+
+ * Can a rejoining machine retain and/or assert any state that it knows, or should it just throw it all out and get a fresh snapshot from the other machines?
+
+        '''XXX''' ''derrley'': I don't think it's ever a good idea to throw a voter off a machine, so if a machine loses and regains connection during the course of one voter, it should keep its state. If a machine loses connection when there isn't a voter on the machine, it should probably forget everything it knows and start over. It's just easier that way. Of course, if there's no supervisor, that means it'll forget everything it knows without remembering any of it.
+Also, how does having '''no''' supervisors connected affect the above questions?
+
+One goal of this operation should be to minimize the chance of a conflict as much as possible.  For instance, a supervisor might come on line at the same time as a booth is authorized to cast a ballot.  If the booth hasn't received the authorized-to-cast message yet, it will tell the new supervisor that it is in a "Ready" state, even though that's about to change and the new supervisor might never see that authorized-to-cast message.  In this case, the active supervisor knew the most up-to-date state for that machine, but in other cases, the machine itself will be the one that knows its state.  How do we know which one to believe?
+
+        '''XXX''' ''derrley'': I think to get rid of this situation, the "cast ballot" message should probably include the original auth to cast message. That way other machines can simply just check if the machine was ever auth'd (the message would be signed by *some* super from the past).
+
+=== Situations ===
+A booth is authorized to cast a ballot, but while the voter is using the machine, it leaves the network for some reason.  Notice how the result is different based on what actually happened to the machine.
+
+If the machine died because of a software or hardware problem, then it would need to be rebooted, and would lose all of the state that it had known up to this point.  When it comes back online, it's just like a fresh machine: it thinks the polls are closed, and it needs to have its label reassigned.  Would the supervisor have to tell the machine again that it is authorized (the voter would obviously start over), or just add it in as a new machine and the ballot would be implicitly or explicitly cancelled (the voter would need to get a new authorization)?
+
+If the machine just lost its connection (maybe the wire fell out), then it would stay online, remember all of the state that it saw up until it dropped from the network, and then come back online (hopefully) within the next few minutes.  Does the machine need to reset back to a ready state, or can it just tell the supervisor that it's in the process of voting?
+
+== Notes from Meeting on 6/28/07 ==
+We were able to establish and all agree on the following points:
+ * There should only be one pair of polls-open and polls-closed messages per day.  This makes it easier to audit the election, and tabulate the results using the verifier.
+ * Booths do not need to know whether the polls are open or closed.  A booth simply sits in an "inactive" state, until it is authorized to cast a ballot.  After casting the ballot, the booth would return to the inactive state.  Presumably, the supervisor should only be able to authorize voters while the polls are open (see the next section)
+ * There needs to be a verifier to look at all of the logs and report a final tally, since it's possible that the supervisor could go offline for any portion of time and miss crucial messages
+ * The nonce, keyword, or launch code needs to be entered into the supervisor upon startup
+ * Supervisors do not need to check if a cast-ballot uses a proper authorization code, simply log it and move on
+
+=== Polls open/closed ===
+There are two ways to solve the problem of the polls open/closed states:
+ * '''No State'''
+     The polls-open/closed messages are purely log sentinels (for tallying), and nothing on the supervisor acts differently based on whether the polls are open or closed.  This simplifies things greatly, reducing the types of messages sent since the supervisor doesn't need to know this info, but it requires all actions be available at all times.  This means that a poll worker could authorize a voter when the polls were closed, or open/close the polls more than once.  '''''I believe this option has merit because we are designing our system for research instead of production.'''''
+ * '''Booths look up state in logs'''
+     The booths don't care whether the polls are open or closed, but when a supervisor joins and announces its presence, the booths should look in their log for the last polls-open message, and report it to the supervisor.  If the supervisor receives any such message, it will give the poll worker an option to resume the election, or to start a fresh one.
+
+=== "Go" Button ===
+When a supervisor turns on, it waits until a "Go" button is pressed, and then joins the auditorium network and checks for any machines.  These machines would tell the supervisor if they thought an election was going on, based on an evaluation of their logs.  Is this needed if an active supervisor already exists?  Or, can this be combined with the "Activate" button?
+
+=== Booths' states that rejoin the network ===
+ * A booth that loses power and is restarted will come back online stateless - no knowledge of it is authorized to cast or if the polls are open, etc.  If it was voting before it died, it would need to be re-authorized by the supervisor after it came back online.
+ * A booth that temporarily loses connection should finish what it was doing (i.e. casting a ballot) before announcing its presence on the network

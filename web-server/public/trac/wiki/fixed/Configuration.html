@@ -1,0 +1,117 @@
+
+<html><head><link rel="stylesheet" href="trac.css" type="text/css" />
+</head><body>
+
+<h2 id="Examplevb.conf">Example vb.conf</h2>
+<pre class="wiki"># This .conf file passes parameters to the VoteBox.
+# The format of this file is:
+# KEY
+# value
+# the value MUST be on the line after the key.
+# All keys are contained (along with their defaults) in
+# votebox/AuditoriumParams.java
+
+#location of the log file to write to
+LOG_LOCATION
+log.out
+
+#when the ballot is cast, encrypt the ballot
+CAST_BALLOT_ENCRYPTION_ENABLED
+true
+
+#must have CAST_BALLOT_ENCRYPTION_ENABLED set to true
+#separates the ballot into a COMMIT, and then either a
+#CAST or a CHALLENGE
+USE_COMMIT_CHALLENGE_MODEL
+true
+
+#changes the display mechanism
+#current options are SDL (Linux) and AWT (Windows)
+VIEW_IMPLEMENTATION
+SDL
+</pre><h2 id="Examplesupervisor.conf">Example supervisor.conf</h2>
+<pre class="wiki"># This .conf file passes parameters to the Supervisor.
+# The format of this file is:
+# KEY
+# value
+# the value MUST be on the line after the key.
+# All keys are contained (along with their defaults) in
+# votebox/AuditoriumParams.java
+
+#location of the log file to write to
+LOG_LOCATION
+superlog.out
+
+#when the ballot is cast, encrypt the ballot
+CAST_BALLOT_ENCRYPTION_ENABLED
+true
+
+#must have CAST_BALLOT_ENCRYPTION_ENABLED set to true
+#separates the ballot into a COMMIT, and then either a
+#CAST or a CHALLENGE
+USE_COMMIT_CHALLENGE_MODEL
+true
+</pre><h2 id="Description">Description</h2>
+<p>
+Configuration files contain KEY/VALUE pairs, seperated by a new-line, with white-space and characters following a '#' ignored.
+</p>
+<p>
+Valid keys are:
+</p>
+<ul><li>DISCOVER_TIMEOUT
+<ul><li>Integer, milliseconds
+</li><li>Default: 4000
+</li></ul></li><li>DISCOVER_PORT
+<ul><li>Integer, port number
+</li><li>9782
+</li></ul></li><li>DISCOVER_REPLY_TIMEOUT = 1000;
+<ul><li>Integer, milliseconds
+</li><li>Default: 1000
+</li></ul></li><li>DISCOVER_REPLY_PORT = 9783;
+<ul><li>Integer, port number
+</li><li>Default: 9783
+</li></ul></li><li>LISTEN_PORT
+<ul><li>Integer, port number
+</li><li>Default: 9700
+</li></ul></li><li>JOIN_TIMEOUT
+<ul><li>Integer, millisecond
+</li><li>Default: 1000
+</li></ul></li><li>BROADCAST_ADDRESS
+<ul><li>String, network address
+</li><li>Default: 255.255.255.255
+</li></ul></li><li>LOG_LOCATION
+<ul><li>String, file path
+</li><li>Default: log.out
+</li></ul></li><li>KEYS_DIRECTORY
+<ul><li>String, directory/classloader path
+</li><li>Default: "/keys/"
+</li></ul></li><li>VIEW_IMPLEMENTATION
+<ul><li>String, one of SDL, AWT
+</li><li>Default: SDL
+</li></ul></li><li>RULE_FILE
+<ul><li>String, directoy path
+</li><li>Default: rules
+</li></ul></li><li>CAST_BALLOT_ENCRYPTION_ENABLED
+<ul><li>Boolean
+</li><li>Default: false
+</li></ul></li><li>USE_COMMIT_CHALLENGE_MODEL
+<ul><li>Boolean
+</li><li>Default: false
+</li></ul></li><li>USE_ELO_TOUCH_SCREEN
+<ul><li>Boolean
+</li><li>Default: false
+</li></ul></li><li>ELO_TOUCH_SCREEN_DEVICE
+<ul><li>String, path to device
+</li><li>Default: null
+</li></ul></li><li>VIEW_RESTART_TIMEOUT
+<ul><li>Integer, milliseconds
+</li><li>Default: 5000
+</li></ul></li><li>DEFAULT_SERIAL_NUMBER
+<ul><li>Integer
+</li><li>Default: -1 (ignored)
+</li></ul></li></ul>
+
+</body>
+</html>
+
+
