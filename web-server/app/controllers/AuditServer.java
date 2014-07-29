@@ -154,7 +154,6 @@ public class AuditServer extends Controller {
      *  Generates and renders the page for handling conflicts
      */
     public static Result adminconflicts() {
-        
         Map<String, Map<String, Precinct>> records = new HashMap<>();
         
         for(int i = 0; i < 2; i++) {
@@ -170,12 +169,15 @@ public class AuditServer extends Controller {
    
         ArrayList<VotingRecord> vrs = new ArrayList<>();
         
-        vrs.add(new VotingRecord("Precinct1", records));
-        vrs.add(new VotingRecord("Precinct2", records));
-        vrs.add(new VotingRecord("Precinct3", records));
+        VotingRecord.create(new VotingRecord("Precinct1", records));
+        VotingRecord.create(new VotingRecord("Precinct2", records));
+        VotingRecord.create(new VotingRecord("Precinct3", records));
         
-        
-        return ok(adminconflicts.render(vrs));
+        return ok(adminconflicts.render(VotingRecord.getConflicted()));
+    }
+    
+    public static Result resolveconflict(String id, String hash) {
+        return ok(adminconflicts.render(VotingRecord.getConflicted()));
     }
 
     /**

@@ -17,46 +17,46 @@
       }
 
       function onClick(event) {
-        // alert(name.toString());
-        //   console.log(name);
-        // val res = get_radio_value();
-        alert(get_radio_value(event.target.id));
+        document.location.href = "/admin/conflicts/resolve?id=" + event.target.id + "&hash=" +  get_radio_value(event.target.id).value;
       }
     </script>
 
 
-<ul>
-@for(vr <- conflicts) {
-
-    <form method="post">
+@if(conflicts.size() == 0) {
+    No conflicts!
+} else { 
+    <ul>
+    @for(vr <- conflicts) {
     
-    <input type="hidden" id="form_id" value=@vr.id />
-    
-    <table class ="reference" style="width:80%">
-   
-    
- 
-    <tbody>
-    <tr>
-        <th>
-            @vr.id
-            <input type="submit" class="button green medium" value="Resolve @vr.id" style="float: right;" id=@vr.id onClick="onClick(event);">    
-        </th>
-    </tr>
-    
-    @for(hash <- vr.getHashes()) {
-        <tr><td><input type="radio" name=@vr.id id=@vr.id value=@hash>
-            <label for=@hash>@hash</label>
-        </td></tr>
-    }
-    </tbody>
-    </table>
-    
-   
-    </form>  
-    
-    <br>
-    
-} 
-</ul>
-
+        <form method="post">
+        
+        <input type="hidden" id="form_id" value=@vr.id />
+        
+        <table class ="reference" style="width:80%">
+       
+        
+     
+        <tbody>
+        <tr>
+            <th>
+                @vr.id
+                <input type="submit" class="button green medium" value="Resolve @vr.id" style="float: right;" id=@vr.id onClick="onClick(event)">    
+            </th>
+        </tr>
+        
+        @for(hash <- vr.getHashes()) {
+            <tr><td><input type="radio" name=@vr.id id=@vr.id value=@hash>
+                <label for=@hash>@hash</label>
+            </td></tr>
+        }
+        </tbody>
+        </table>
+        
+       
+        </form>  
+        
+        <br>
+        
+    } 
+    </ul>
+}

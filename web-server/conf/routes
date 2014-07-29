@@ -19,6 +19,7 @@ GET      /admin                     controllers.AuditServer.adminlogin()
 POST     /admin/login               controllers.AuditServer.adminverify()
 POST     /admin/cleardata           controllers.AuditServer.adminclear()
 POST     /admin/conflicts           controllers.AuditServer.adminconflicts()
+POST     /admin/conflicts/resolve   controllers.AuditServer.resolveconflict(id: String ?= "none", hash: String ?= "none")
 POST     /admin/publish             controllers.AuditServer.adminpublish()
 
 # Map static resources from the /public folder to the /assets URL path
