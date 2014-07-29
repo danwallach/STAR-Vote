@@ -17,9 +17,9 @@ POST    /3FF968A3B47CT34C           controllers.AuditServer.ballotDump()
 
 GET      /admin                     controllers.AuditServer.adminlogin()
 POST     /admin/login               controllers.AuditServer.adminverify()
-GET     /admin/cleardata           controllers.AuditServer.adminclear()
-GET     /admin/conflicts           controllers.AuditServer.adminconflicts()
-GET     /admin/publish             controllers.AuditServer.adminpublish()
+POST     /admin/cleardata           controllers.AuditServer.adminclear()
+POST     /admin/conflicts           controllers.AuditServer.adminconflicts()
+POST     /admin/publish             controllers.AuditServer.adminpublish()
 
 # Map static resources from the /public folder to the /assets URL path
 GET      /files                     controllers.AuditServer.getBallotHtmlFile(ballotid: String ?= "none")

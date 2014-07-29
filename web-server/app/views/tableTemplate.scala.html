@@ -1,31 +1,34 @@
 @(conflicts: List[VotingRecord])      
-<!DOCTYPE html>
     
     
 <script type="text/javascript">
-      function get_radio_value() {
+      function get_radio_value(id) {
         
-        var form = document.getElementById("form_id");
-        var inputs = document.getElementById(form.value);
+        // var form = document.getElementById("form_id");
+        // var inputs = document.getElementById(form.value);
+        var inputs = document.getElementsByName(id);
         
-        alert(">>>>" + inputs.value);
         
-        if (inputs.checked) {
-            return inputs.value;
+        for(var i =0; i < inputs.length; i++) {
+            if (inputs[i].checked) {
+                return inputs[i].value;
+            }
         }
       }
 
-      function onSubmit() {
+      function onClick(event) {
         // alert(name.toString());
         //   console.log(name);
-        alert(get_radio_value());
+        // val res = get_radio_value();
+        alert(get_radio_value(event.target.id));
       }
     </script>
 
 
 <ul>
 @for(vr <- conflicts) {
-    <form onsubmit="JavaScript:onSubmit();">
+
+    <form method="post">
     
     <input type="hidden" id="form_id" value=@vr.id />
     
@@ -37,12 +40,12 @@
     <tr>
         <th>
             @vr.id
-            <input type="submit" class="button green medium" value="Resolve @vr.id" style="float: right;">    
+            <input type="submit" class="button green medium" value="Resolve @vr.id" style="float: right;" id=@vr.id onClick="onClick(event);">    
         </th>
     </tr>
     
     @for(hash <- vr.getHashes()) {
-        <tr><td><input type="radio" id=@vr.id value=@hash>
+        <tr><td><input type="radio" name=@vr.id id=@vr.id value=@hash>
             <label for=@hash>@hash</label>
         </td></tr>
     }
