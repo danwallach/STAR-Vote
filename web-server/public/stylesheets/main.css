@@ -185,6 +185,37 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#7db72f', endC
 /*   background-color:#d0d0d0;*/
 /*}*/
 
+/* Login fields */
+fieldset {
+    width: 70%;
+}
+
+form {
+  position: relative;
+
+  width  : 80%;
+  margin : 0 auto;
+
+  /*background: #00FF00;*/
+}
+
+.field {
+    text-align: right;
+    width: 40%;
+    float: left;
+    font-weight: bold;
+}
+
+.textbox-300 {
+    width: 200px;
+    float: left;
+}
+
+fieldset p {
+    clear: both;
+    /*padding: 5px;*/
+}
+
 
 #navBar
 {
