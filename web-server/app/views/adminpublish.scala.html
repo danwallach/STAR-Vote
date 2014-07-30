@@ -1,8 +1,12 @@
+@(records: List[VotingRecord])
+
 @main("Publish") {
 
     <center>
         <h1>Publish Election Results</h1>
     </center>
+
+    @checkTableTemplate(records)
 
     <div id="wrapper"></div>
 }

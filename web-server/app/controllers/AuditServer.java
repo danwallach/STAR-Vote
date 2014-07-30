@@ -163,9 +163,8 @@ public class AuditServer extends Controller {
     /**
      * Generates and renders the page for publishing results 
      */    
-    public static Result adminpublish() {
-        
-        return ok(adminpublish.render());
+    public static Result adminpublish() {    
+        return ok(adminpublish.render(VotingRecord.getNonConflicted()));
     }
 
     /**

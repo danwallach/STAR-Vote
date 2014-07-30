@@ -116,9 +116,9 @@ public class VotingRecord extends Model {
         // return new ArrayList<String>(records.keySet());
         ArrayList<String> hashes = new ArrayList<String>();
         
-        hashes.add(id + "hash1");
-        hashes.add(id + "hash2");
-        hashes.add(id + "hash3");
+        hashes.add(precinctID + "hash1");
+        hashes.add(precinctID + "hash2");
+        hashes.add(precinctID + "hash3");
         
         return hashes;
     }
