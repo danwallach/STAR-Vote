@@ -154,25 +154,6 @@ public class AuditServer extends Controller {
      *  Generates and renders the page for handling conflicts
      */
     public static Result adminconflicts() {
-        Map<String, Map<String, Precinct>> records = new HashMap<>();
-        
-        for(int i = 0; i < 2; i++) {
-            
-            Map<String, Precinct> hashes = new HashMap<>();
-            for(int j = 0; j < 2; j++) {
-                hashes.put(j+"", new Precinct(j+"", "", null));
-            }            
-            
-            records.put("record" + i, hashes);
-        }
-        
-   
-        ArrayList<VotingRecord> vrs = new ArrayList<>();
-        
-        VotingRecord.create(new VotingRecord("Precinct1", records));
-        VotingRecord.create(new VotingRecord("Precinct2", records));
-        VotingRecord.create(new VotingRecord("Precinct3", records));
-        
         return ok(adminconflicts.render(VotingRecord.getConflicted()));
     }
     

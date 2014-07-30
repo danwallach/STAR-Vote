@@ -31,7 +31,9 @@ public class VotingRecord extends Model {
     public static Finder<String, VotingRecord> find = new Finder<String, VotingRecord>(String.class, VotingRecord.class);
 
     @Id
-    public String id;
+    long id;
+    
+    public String precinctID;
 
     public Map<String, String> supervisorRecords = new HashMap<>();
     
@@ -46,7 +48,7 @@ public class VotingRecord extends Model {
      */
     public VotingRecord(String precinctID, Map<String, Map<String, Precinct>> records) {
 
-        id = precinctID;
+        this.precinctID = precinctID;
         isConflicted = (records.size() > 1);
         
         for (Map.Entry<String, Map<String, Precinct>> entry : records.entrySet())
@@ -149,7 +151,7 @@ public class VotingRecord extends Model {
      * @return                 the corresponding VoteRecord or null if non-existent
      */
     public static VotingRecord getRecord(String precinctID) {
-        return find.where().ieq("id", precinctID).findUnique();
+        return find.where().ieq("precinctID", precinctID).findUnique();
     }
 
     /**

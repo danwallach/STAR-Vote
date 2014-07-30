@@ -30,7 +30,7 @@
     
         <form method="post">
         
-        <input type="hidden" id="form_id" value=@vr.id />
+        <input type="hidden" id="form_id" value=@vr.precinctID />
         
         <table class ="reference" style="width:80%">
        
@@ -39,13 +39,13 @@
         <tbody>
         <tr>
             <th>
-                @vr.id
-                <input type="submit" class="button green medium" value="Resolve @vr.id" style="float: right;" id=@vr.id onClick="onClick(event)">    
+                @vr.precinctID
+                <input type="submit" class="button green medium" value="Resolve @vr.precinctID" style="float: right;" id=@vr.precinctID onClick="onClick(event)">    
             </th>
         </tr>
         
         @for(hash <- vr.getHashes()) {
-            <tr><td><input type="radio" name=@vr.id id=@vr.id value=@hash>
+            <tr><td><input type="radio" name=@vr.precinctID id=@vr.precinctID value=@hash>
                 <label for=@hash>@hash</label>
             </td></tr>
         }
