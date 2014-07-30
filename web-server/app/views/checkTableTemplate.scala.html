@@ -1,0 +1,61 @@
+@(records: List[VotingRecord])      
+    
+    
+<script type="text/javascript">
+
+      function get_checkboxes() {
+        
+        // var form = document.getElementById("form_id");
+        // var inputs = document.getElementById(form.value);
+        var inputs = document.getElementsByName("publishBox");
+        
+        var query = "";
+        
+        for(var i =0; i < inputs.length; i++) {
+            if (inputs[i].checked) {
+                query += "records=" + inputs[i].value + "&";
+            }
+        }
+        
+        return query.substring(0,query.length-2);
+      }
+
+      function onClick(event) {
+        document.location.href = "/admin/publish/publish?" +  get_checkboxes();
+      }
+      
+</script>
+
+
+@if(records.size() == 0) {
+    Currently no voting records are available for publishing!
+} else { 
+
+    <ul>
+    
+        <form method="post", id="publishForm">
+        
+        <table class ="reference" style="width:80%">
+        
+        <tbody>
+        
+        
+        @for(vr <- records) {
+            <tr><td><input type="checkbox" name="publishBox" id=@vr.precinctID value=@vr.getHashes()>
+                <label for=@vr.getHashes()>@vr.precinctID : @vr.getHashes()</label>
+            </td></tr>
+        }
+        
+        </tbody>
+        
+        </table>
+       
+       <input type="submit" class="button green medium" value="Publish" style="float: right;" id="Publish" onClick="onClick(event)">
+       
+        </form>  
+        
+        <br>
+        
+    
+    </ul>
+}
