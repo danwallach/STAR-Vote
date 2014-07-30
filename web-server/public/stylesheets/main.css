@@ -216,6 +216,35 @@ fieldset p {
     /*padding: 5px;*/
 }
 
+#adminNavBar
+{
+    list-style-type:none;
+    padding:0;
+    display:inline;
+}
+#adminNavBar
+li{
+    float:left;width:25%;
+}
+#adminNavBar
+a:link,a:visited
+{
+    display:block;
+    font-weight:bold;
+    color:#FFFFFF;
+    background-color:#Bc1e00;
+    text-align:center;
+    padding:4px;
+    text-decoration:none;
+    text-transform:uppercase;
+}
+#adminNavBar
+a:hover,a:active
+{
+    background-color:#8c1e00;
+}
+
+
 
 #navBar
 {
@@ -244,6 +273,9 @@ a:hover,a:active
 {
     background-color:#1E008C;
 }
+
+
+
 
 #ballotrender
 {

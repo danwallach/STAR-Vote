@@ -15,8 +15,8 @@ GET     /trac                       controllers.AuditServer.getTrac()
 
 POST    /3FF968A3B47CT34C           controllers.AuditServer.ballotDump()
 
-GET      /admin                     controllers.AuditServer.adminlogin()
-POST     /admin/login               controllers.AuditServer.adminverify()
+GET      /admin                     controllers.AuditServer.adminverify()
+POST     /admin                     controllers.AuditServer.authenticate()
 POST     /admin/cleardata           controllers.AuditServer.adminclear()
 POST     /admin/conflicts           controllers.AuditServer.adminconflicts()
 POST     /admin/conflicts/resolve   controllers.AuditServer.resolveconflict(id: String ?= "none", hash: String ?= "none")

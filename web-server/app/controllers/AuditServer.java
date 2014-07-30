@@ -1,9 +1,7 @@
 package controllers;
 
-import models.CastBallot;
-import models.ChallengedBallot;
-import models.VotingRecord;
-import play.data.Form;
+import models.*;
+import play.data.*;
 import play.libs.F.*;
 import play.mvc.*;
 import sexpression.ListExpression;
@@ -105,18 +103,19 @@ public class AuditServer extends Controller {
     public static Result adminverify() {
 
         /* Pull the page */
-        final Map<String, String[]> values = request().body().asFormUrlEncoded();
+        // final Map<String, String[]> values = request().body().asFormUrlEncoded();
 
-        /* Get the username and password fields */
-        final String usr  = values.get("username")[0];
-        final String pass = values.get("password")[0];
+        // /* Get the username and password fields */
+        // final String usr  = values.get("username")[0];
+        // final String pass = values.get("password")[0];
 
-        /* Check the input hash against the credentials hashes -- if good, send to admin page */
-        if (usr.equals(adminusrhash) && pass.equals(adminpasshash)) {
-            session("pass", pass);
-            return ok(admin.render(null));
-        } /* If it's no good, return the error */
-        else return ok(adminlogin.render("Username or Password is not correct"));
+        // /* Check the input hash against the credentials hashes -- if good, send to admin page */
+        // if (usr.equals(adminusrhash) && pass.equals(adminpasshash)) {
+        //     session("pass", pass);
+        //     return ok(adminmain.render());
+        // } /* If it's no good, return the error */
+        // else 
+        return ok(adminlogin.render(form(Login.class), "Username or Password is not correct"));
     }
 
     /**
@@ -125,7 +124,7 @@ public class AuditServer extends Controller {
      * @return      the admin login screen
      */
     public static Result adminlogin(){
-        return ok(adminlogin.render(null));
+        return ok(adminlogin.render(form(Login.class), ""));
     }
 
     /**
@@ -144,7 +143,7 @@ public class AuditServer extends Controller {
             for (ChallengedBallot cb: ChallengedBallot.all()) ChallengedBallot.remove(cb);
 
             /* Send to the data cleared page */
-            return ok(admin.render("**Data has been cleared***"));
+            return ok(adminclear.render("**Data has been cleared***"));
         }
         /* If not, send to error page */
         else return ok(badPage.render());
@@ -333,5 +332,31 @@ public class AuditServer extends Controller {
      * @return      the API page
      */
     public static Result getAPI() { return redirect("/assets/api/index.html"); }
+    
+    /**
+     * This will authenticate our logins
+     */
+    public static Result authenticate() {
+        Form<Login> loginForm = form(Login.class).bindFromRequest();
+        return ok();
+    }
+    
+    /** 
+     * An inner class for a login
+     */
+    public static class Login {
+
+        public String username;
+        public String password;
+        
+        /** This will validate the username and password */
+        public String validate() {
+            if (User.authenticate(username, username) == null) {
+              return "Invalid user or password";
+            }
+            return null;
+        }
+
+    }
     
 }

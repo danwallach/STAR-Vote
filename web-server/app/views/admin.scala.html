@@ -1,44 +1,35 @@
-@(message: String)
+@(title: String)(content: Html)
+
+<script language="javascript"> 
+
+   function PostClear(){
+       alert("clear");
+      $.post("/adminclear"); 
+   }
+   function PostConflicts(){
+       alert("conflict");
+      $.post("/adminconflicts"); 
+   }
+   function PostPublish(){
+       alert("publish");
+      $.post("/adminpublish"); 
+   }
+
+</script>
 
 @main("Administrator Login") {
     <h1>Administrative Page</h1>
-    <p>
-        Clicking The button below will clear ballots and ballot ids stored on the Web Server, This action can not be undone.
-    </p>
-    @if(message != null){
-        <center>
-            <div style="color:#008800;">
-                <p>
-                    @message
-                </p>
-            </div>
-        </center>
-    }
-    <div align="center">
-        <TABLE BORDER="0">
-        <TR>
-        
-        <TD>
-            <form action="/admin/cleardata" method="POST">
-                <input type="submit" value="Clear Data">
-            </form>
-        </TD>
-        
-        <TD> 
-            <form action="/admin/conflicts" method="POST">
-                <input type="submit" value="View Conflicts">
-            </form>
-        </TD>
-        
-        <TD> 
-            <form action="/admin/publish" method="POST">
-                <input type="submit" value="View Results to Publish">
-            </form>
-        </TD>
-        
-        </TR>
-        </TABLE>
-     
-       
+   
+    <div id = NBar>
+    <ul id="adminNavBar">
+            <li><a href="javascript:PostClear()">Clear</a></li>
+            <li><a href="javascript:PostConflicts()">Resolve Conflicts</a></li>
+            <li><a href="javascript:PostPublish()">Publish Results</a></li>
+        </ul>
     </div>
+    
+    @content
+    
+   
+   
 }

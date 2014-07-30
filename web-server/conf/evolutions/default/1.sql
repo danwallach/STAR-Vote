@@ -20,7 +20,8 @@ create table challenged_ballot (
 ;
 
 create table voting_record (
-  id                        varchar(255) not null,
+  id                        bigint not null,
+  precinct_id               varchar(255),
   is_conflicted             boolean,
   constraint pk_voting_record primary key (id))
 ;
