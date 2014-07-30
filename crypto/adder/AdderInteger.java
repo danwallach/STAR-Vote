@@ -1,5 +1,6 @@
 package crypto.adder;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 
 import sexpression.ASExpression;
@@ -16,7 +17,7 @@ import sexpression.StringExpression;
  * @version $LastChangedRevision$ $LastChangedDate$
  * @since 0.0.1
  */
-public class AdderInteger implements Comparable {
+public class AdderInteger implements Comparable, Serializable {
     /**
      * The AdderInteger constant zero.
      */

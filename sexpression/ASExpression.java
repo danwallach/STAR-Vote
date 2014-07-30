@@ -25,6 +25,7 @@ package sexpression;
 import java.io.ByteArrayInputStream;
 import java.io.CharArrayReader;
 import java.io.IOException;
+import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
@@ -53,7 +54,7 @@ import sexpression.stream.InvalidVerbatimStreamException;
  * @author Kyle
  * 
  */
-public abstract class ASExpression {
+public abstract class ASExpression implements Serializable {
 
     /**
      * Parse a String into an expression. This method utilizes the s-expression

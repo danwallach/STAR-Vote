@@ -4,6 +4,7 @@ import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.StringExpression;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -16,7 +17,7 @@ import java.util.StringTokenizer;
  * - Each ciphertext in the vote encrypts a 0-1 value.
  * - The total number of 1s in the vote is within the required range.
  */
-public class VoteProof {
+public class VoteProof implements Serializable {
 
     /** the list of proofs for each candidate-vote pairing */
     private List<MembershipProof> proofList;

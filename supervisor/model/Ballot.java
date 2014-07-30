@@ -7,6 +7,7 @@ import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.StringExpression;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +17,7 @@ import java.util.List;
  *
  * @author Matt Bernhard
  */
-public class Ballot {
+public class Ballot implements Serializable {
 
     /** The identifier for this ballot */
     private final String bid;

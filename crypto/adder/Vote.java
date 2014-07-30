@@ -4,6 +4,7 @@ import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.StringExpression;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -15,7 +16,7 @@ import java.util.StringTokenizer;
  A vote consists of a vector of ciphertexts. Each ciphertext
  represents the encryption of a yes/no for one candidate.
  */
-public class Vote {
+public class Vote implements Serializable {
 
     /** This vote's list of cipher texts, i.e. its encrypted selections */
     private List<ElgamalCiphertext> cipherList;

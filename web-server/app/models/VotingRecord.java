@@ -7,6 +7,14 @@ import javax.persistence.*;
 import java.util.*;
 import supervisor.model.Precinct;
 
+import org.apache.commons.codec.binary.Base64;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
 /**
  * Model of a VotingRecord on the Web-Server. An entity of the database.
@@ -25,11 +33,9 @@ public class VotingRecord extends Model {
     @Id
     public String id;
 
-    //@Required
-    // public Map<String, Map<String, Precinct>> records;
+    public Map<String, String> supervisorRecords = new HashMap<>();
     
-    @Required
-    public Boolean isConflicted;
+    public boolean isConflicted;
 
     /**
      * Constructor
@@ -41,10 +47,45 @@ public class VotingRecord extends Model {
     public VotingRecord(String precinctID, Map<String, Map<String, Precinct>> records) {
 
         id = precinctID;
-        // this.records = records;
         isConflicted = (records.size() > 1);
+        
+        for (Map.Entry<String, Map<String, Precinct>> entry : records.entrySet())
+            supervisorRecords.put(entry.getKey(), recordToString(entry.getValue()));
     }
 
+
+    private String recordToString(Map<String, Precinct> s) {
+        
+        String encoded = null;
+  
+        try {
+            
+           ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+           ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+           
+           objectOutputStream.writeObject(s);
+           objectOutputStream.close();
+           
+           encoded = new String(Base64.encodeBase64(byteArrayOutputStream.toByteArray()));
+        } 
+        catch (IOException e) { e.printStackTrace(); }
+        
+        return encoded;
+    }
+    
+    private Map<String, Precinct> StringtoRecord(String s) {
+        
+        byte[] bytes = Base64.decodeBase64(s.getBytes());
+        Map<String, Precinct> record = null;
+  
+        try {
+            ObjectInputStream objectInputStream = new ObjectInputStream(new ByteArrayInputStream(bytes));
+            record = (Map<String, Precinct>)objectInputStream.readObject();
+        } 
+        catch (IOException | ClassNotFoundException | ClassCastException e) { e.printStackTrace(); } 
+  
+        return record;
+    }
 
     /**
      * Resolves the VotingRecord by deleting all but the chosen voting record
@@ -133,6 +174,6 @@ public class VotingRecord extends Model {
      * @return appropriately formatted String representation
      */
     public String toString(){
-         return id /*+ ":" + records*/;
+         return id + ":" + supervisorRecords;
     }
 }

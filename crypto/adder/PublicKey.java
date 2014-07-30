@@ -1,5 +1,6 @@
 package crypto.adder;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -36,7 +37,7 @@ import sexpression.StringExpression;
  * @version $LastChangedRevision$ $LastChangedDate$
  * @since 0.0.1
  */
-public class PublicKey {
+public class PublicKey implements Serializable {
 
     private AdderInteger p;
     private AdderInteger q;

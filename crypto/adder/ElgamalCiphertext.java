@@ -4,6 +4,7 @@ import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.StringExpression;
 
+import java.io.Serializable;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
@@ -22,7 +23,7 @@ import java.util.StringTokenizer;
  * @version $LastChangedRevision$ $LastChangedDate$
  * @since 0.0.1
  */
-public class ElgamalCiphertext {
+public class ElgamalCiphertext implements Serializable {
 
     /** A generator for the ElGamal keys, is the generator of the group mod p */
     private AdderInteger g;

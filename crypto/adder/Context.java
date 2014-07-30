@@ -1,5 +1,6 @@
 package crypto.adder;
 
+import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Random;
@@ -18,7 +19,7 @@ import java.util.Random;
  * @see     AdderInteger#random(java.math.BigInteger)
  * @since   0.0.1
  */
-public final class Context {
+public final class Context implements Serializable {
     private Random random;
 
     /**

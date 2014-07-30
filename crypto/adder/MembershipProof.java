@@ -4,6 +4,7 @@ import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.StringExpression;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -68,7 +69,7 @@ import java.util.StringTokenizer;
  *  @version $LastChangedRevision$ $LastChangedDate$
  *  @since 0.0.1
  */
-public class MembershipProof {
+public class MembershipProof implements Serializable {
 
 	private AdderInteger p;
 	private AdderInteger q;
