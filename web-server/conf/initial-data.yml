@@ -1,0 +1,4 @@
+- !!models.User
+    username:      administrator
+    name:       Bob
+    password:   admin
