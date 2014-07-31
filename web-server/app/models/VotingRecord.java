@@ -40,6 +40,7 @@ public class VotingRecord extends Model {
     public Map<String, SupervisorRecord> supervisorRecords = new HashMap<>();
     
     public boolean isConflicted;
+    public boolean isPublished=false;
 
     /**
      * Constructor
@@ -113,6 +114,10 @@ public class VotingRecord extends Model {
         isConflicted = false;
     }
 
+    public void publish() {
+        isPublished = true;
+    }
+
     /**
      * @return      a list of the Supervisor hashes associated with their voting records
      */
@@ -135,10 +140,17 @@ public class VotingRecord extends Model {
     }
 
     /**
-     * @return      the list of VotingRecords that are not conflicted
+     * @return      the list of VotingRecords that are not conflicted and not published
      */
-    public static List<VotingRecord> getNonConflicted() {
-        return find.where().eq("isConflicted", false).findList();
+    public static List<VotingRecord> getUnpublished() {
+        return find.where().eq("isConflicted", false).eq("isPublished", false).findList();
+    }
+
+    /**
+     * @return      the list of VotingRecords that are published
+     */
+    public static List<VotingRecord> getPublished() {
+        return find.where().eq("isPublished", true).findList();
     }
 
     /**
@@ -173,7 +185,7 @@ public class VotingRecord extends Model {
      * @return appropriately formatted String representation
      */
     public String toString(){
-         return id + ":" + supervisorRecords.size();
+         return id + ":" + supervisorRecords.toString();
     }
     
 }

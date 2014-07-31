@@ -44,7 +44,7 @@ public class AuditServer extends Controller {
      * @return      the home page of the site
      */
     public static Result index() { 
-        /*
+        
         Map<String, Map<String, Precinct>> records = new HashMap<>();
         
         for(int i = 1; i < 4; i++) {
@@ -72,9 +72,6 @@ public class AuditServer extends Controller {
             VotingRecord.create(new VotingRecord("Precinct "+ i, records));
         }
         
-        for (VotingRecord v : VotingRecord.all())
-            System.out.println(v.supervisorRecords);
-        */
         return ok(index.render()); 
     }
 
@@ -189,7 +186,7 @@ public class AuditServer extends Controller {
      */    
     @Security.Authenticated(Secured.class)
     public static Result adminpublish() {    
-        return ok(adminpublish.render(VotingRecord.getNonConflicted()));
+        return ok(adminpublish.render(VotingRecord.getUnpublished()));
     }
 
     /**
@@ -229,7 +226,7 @@ public class AuditServer extends Controller {
     public static Result handleBallotState(String bid) {
 
         /* Send to the proper page based on what the ballot is */
-        return bid.equals("none")                       ?   ok(index.render())       :
+        return bid.equals("none")                      ?   ok(index.render())       :
               CastBallot.getBallot(bid) != null        ?   getCastBallot(bid)       :
               ChallengedBallot.getBallot(bid) != null  ?   getChallengedBallot(bid) : ok(ballotnotfound.render(bid));
     }
