@@ -1,9 +1,7 @@
 package controllers;
 
-import models.CastBallot;
-import models.ChallengedBallot;
-import models.VotingRecord;
-import play.data.Form;
+import models.*;
+import play.data.*;
 import play.libs.F.*;
 import play.mvc.*;
 import sexpression.ListExpression;
@@ -37,9 +35,6 @@ public class AuditServer extends Controller {
     static Form<ChallengedBallot> challengeForm = form(ChallengedBallot.class);
     static Form<CastBallot> confirmForm = form(CastBallot.class);
 
-    static String adminusrhash  = "administrator";
-    static String adminpasshash = "veryimportant";
-
     static boolean init = false;
 
 
@@ -49,7 +44,7 @@ public class AuditServer extends Controller {
      * @return      the home page of the site
      */
     public static Result index() { 
-        
+        /*
         Map<String, Map<String, Precinct>> records = new HashMap<>();
         
         for(int i = 1; i < 4; i++) {
@@ -79,7 +74,7 @@ public class AuditServer extends Controller {
         
         for (VotingRecord v : VotingRecord.all())
             System.out.println(v.supervisorRecords);
-        
+        */
         return ok(index.render()); 
     }
 
@@ -136,20 +131,7 @@ public class AuditServer extends Controller {
      * @return      the admin page of the website
      */
     public static Result adminverify() {
-
-        /* Pull the page */
-        final Map<String, String[]> values = request().body().asFormUrlEncoded();
-
-        /* Get the username and password fields */
-        final String usr  = values.get("username")[0];
-        final String pass = values.get("password")[0];
-
-        /* Check the input hash against the credentials hashes -- if good, send to admin page */
-        if (usr.equals(adminusrhash) && pass.equals(adminpasshash)) {
-            session("pass", pass);
-            return ok(admin.render(null));
-        } /* If it's no good, return the error */
-        else return ok(adminlogin.render("Username or Password is not correct"));
+        return ok(adminlogin.render(form(Login.class), null));
     }
 
     /**
@@ -158,9 +140,14 @@ public class AuditServer extends Controller {
      * @return      the admin login screen
      */
     public static Result adminlogin(){
-        return ok(adminlogin.render(null));
+        return ok(adminlogin.render(form(Login.class), ""));
     }
 
+    @Security.Authenticated(Secured.class)
+    public static Result adminmain() {
+        return ok(adminmain.render());
+    }
+    
     /**
      * Verifies that the admin is currently logged in, then clears data from the ebean database.
      * Serves up admin page with success message if admin logged in, or error page if admin not logged in.
@@ -169,27 +156,30 @@ public class AuditServer extends Controller {
      */
     public static Result adminclear() {
 
-        /* Check the password hash against the actual hash -- if good, clear data */
-        if (session("pass") != null && session("pass").equals(adminpasshash)) {
+        String message = "No data to clear!";
 
+        if(CastBallot.all().size() > 0 || ChallengedBallot.all().size() > 0) {
             /* Destroy all the cast ballot / challenged ballot info from the database */
             for (CastBallot cb: CastBallot.all())  CastBallot.remove(cb);
             for (ChallengedBallot cb: ChallengedBallot.all()) ChallengedBallot.remove(cb);
-
-            /* Send to the data cleared page */
-            return ok(admin.render("**Data has been cleared***"));
+            
+            
+            message = "";
         }
-        /* If not, send to error page */
-        else return ok(badPage.render());
+        
+        /* Send to the data cleared page */
+        return ok(adminclear.render(message));
     }
     
     /**
      *  Generates and renders the page for handling conflicts
      */
+    @Security.Authenticated(Secured.class)
     public static Result adminconflicts() {
         return ok(adminconflicts.render(VotingRecord.getConflicted()));
     }
     
+    @Security.Authenticated(Secured.class)
     public static Result resolveconflict(String id, String hash) {
         return ok(adminconflicts.render(VotingRecord.getConflicted()));
     }
@@ -197,6 +187,7 @@ public class AuditServer extends Controller {
     /**
      * Generates and renders the page for publishing results 
      */    
+    @Security.Authenticated(Secured.class)
     public static Result adminpublish() {    
         return ok(adminpublish.render(VotingRecord.getNonConflicted()));
     }
@@ -365,5 +356,55 @@ public class AuditServer extends Controller {
      * @return      the API page
      */
     public static Result getAPI() { return redirect("/assets/api/index.html"); }
+    
+     /**
+     * This will authenticate our logins
+     */
+    public static Result authenticate() {
+        Form<Login> loginForm = form(Login.class).bindFromRequest();
+        
+        if (loginForm.hasErrors()) {
+            return badRequest(adminlogin.render(loginForm, null));
+        } else {
+            session().clear();
+            session("username", loginForm.get().username);
+            return redirect(
+                routes.AuditServer.adminmain()
+            );
+        }
+    }
+    
+    /**
+     * This ends an authenticated administrator session
+     */
+    public static Result logout() {
+        session().clear();
+        flash("success", "You've been logged out");
+        return redirect(
+            routes.AuditServer.adminverify()
+        );
+    }
+    
+    public static Result adminlogout() {
+        return ok(adminlogout.render());
+    }
+    
+    /** 
+     * An inner class for a login
+     */
+    public static class Login {
+
+        public String username;
+        public String password;
+        
+        /** This will validate the username and password */
+        public String validate() {
+            if (User.authenticate(username, password) == null) {
+              return "Invalid user or password";
+            }
+            return null;
+        }
+
+    }
     
 }
