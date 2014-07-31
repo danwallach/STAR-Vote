@@ -48,7 +48,40 @@ public class AuditServer extends Controller {
      *
      * @return      the home page of the site
      */
-    public static Result index() { return ok(index.render()); }
+    public static Result index() { 
+        
+        Map<String, Map<String, Precinct>> records = new HashMap<>();
+        
+        for(int i = 1; i < 4; i++) {
+           
+            Map<String, Precinct> hashes = new HashMap<>();
+            
+            for(int j = 1; j < 4; j++)
+                hashes.put(j+"", new Precinct(j+"", "", null));
+           
+            records.put("record" + i, hashes);
+            
+            VotingRecord.create(new VotingRecord("Precinct " + i, records));
+        }
+        
+        for(int i = 4; i < 7; i++) {
+           
+            records = new HashMap<>();
+           
+            Map<String, Precinct> hashes = new HashMap<>();
+            
+            hashes.put("1", new Precinct("1", "", null));
+           
+            records.put("record" + i, hashes);
+            
+            VotingRecord.create(new VotingRecord("Precinct "+ i, records));
+        }
+        
+        for (VotingRecord v : VotingRecord.all())
+            System.out.println(v.supervisorRecords);
+        
+        return ok(index.render()); 
+    }
 
     /**
      * Page for requesting cast ballot hash lookup for confirming cast ballots.

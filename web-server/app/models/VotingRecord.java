@@ -28,14 +28,16 @@ public class VotingRecord extends Model {
     /**
      * This member object is a finder that aids in retrieving VotingRecords by their precinctIDs and conflict status
      */
-    public static Finder<String, VotingRecord> find = new Finder<String, VotingRecord>(String.class, VotingRecord.class);
+    public static Finder<Long, VotingRecord> find = new Finder<Long, VotingRecord>(Long.class, VotingRecord.class);
 
     @Id
     long id;
     
     public String precinctID;
 
-    public Map<String, String> supervisorRecords = new HashMap<>();
+    @OneToMany(mappedBy="owner", cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+    @MapKey(name="hash")
+    public Map<String, SupervisorRecord> supervisorRecords = new HashMap<>();
     
     public boolean isConflicted;
 
@@ -52,7 +54,9 @@ public class VotingRecord extends Model {
         isConflicted = (records.size() > 1);
         
         for (Map.Entry<String, Map<String, Precinct>> entry : records.entrySet())
-            supervisorRecords.put(entry.getKey(), recordToString(entry.getValue()));
+            supervisorRecords.put(entry.getKey(), new SupervisorRecord(this, entry.getKey(), "!!!!"/*recordToString(entry.getValue())*/));
+            
+        System.out.println(this);
     }
 
 
@@ -97,14 +101,14 @@ public class VotingRecord extends Model {
      */
     public void resolveConflict(String chosenHash) {
         
-        // Map.Entry<String, Map<String, Precinct>> chosenEntry = null;
+        Map.Entry<String, SupervisorRecord> chosenEntry = null;
         
-        // for (Map.Entry<String, Map<String, Precinct>> entry : records.entrySet())
-        //     if (entry.getKey().equals(chosenHash))
-        //         chosenEntry = entry;
+        for (Map.Entry<String, SupervisorRecord> entry : supervisorRecords.entrySet())
+            if (entry.getKey().equals(chosenHash))
+                chosenEntry = entry;
             
-        // records = new HashMap<String, Map<String, Precinct>>();
-        // records.put(chosenEntry.getKey(), chosenEntry.getValue());
+        supervisorRecords = new HashMap<String, SupervisorRecord>();
+        supervisorRecords.put(chosenEntry.getKey(), chosenEntry.getValue());
         
         isConflicted = false;
     }
@@ -113,14 +117,7 @@ public class VotingRecord extends Model {
      * @return      a list of the Supervisor hashes associated with their voting records
      */
     public ArrayList<String> getHashes() {
-        // return new ArrayList<String>(records.keySet());
-        ArrayList<String> hashes = new ArrayList<String>();
-        
-        hashes.add(precinctID + "hash1");
-        hashes.add(precinctID + "hash2");
-        hashes.add(precinctID + "hash3");
-        
-        return hashes;
+        return new ArrayList<String>(supervisorRecords.keySet());
     }
 
     /**
@@ -176,6 +173,7 @@ public class VotingRecord extends Model {
      * @return appropriately formatted String representation
      */
     public String toString(){
-         return id + ":" + supervisorRecords;
+         return id + ":" + supervisorRecords.size();
     }
+    
 }
