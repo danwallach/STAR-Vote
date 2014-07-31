@@ -1,0 +1,20 @@
+
+
+
+@admin("Logout") {
+
+    <center>
+        <h2>Do you wish to logout?</h2> 
+            
+        <input type="submit" value="Log Out" class="medium red button" onClick="handleForm();"/>
+        
+    </center>
+    
+     <div id="wrapper"></div>
+}
+
+<script>
+    function handleForm(){
+        document.location.href = "/logout";
+    }
+</script>

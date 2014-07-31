@@ -1,11 +1,11 @@
-@(message: String)
+@(form: Form[AuditServer.Login], message: String)
 
 @main("Administrator Login") {
 
     <center>
-        <h1>Administrator Login</h1>
-    </center>
-
+    
+    
+    
     @if(message != null)  {
     <center>
         <div style="color:#FF0000;">
@@ -15,17 +15,37 @@
         </div>
     </center>
     }
-    <p>
+    
+    @helper.form(routes.AuditServer.authenticate) {
+       <h1>Administrator Login</h1>
+       
+        <p>
         Enter administrative credentials below
-    </p>
+        </p>
 
-    <center>
-        <form action="/admin/login" method="POST">
-            Username: <input type="text" name="username"><br>
-            Password: <input type="password" name="password"><br>
-            <input type="submit" value="Login">
-        </form>
+       
+       @if(form.hasGlobalErrors) {
+            <p class="error" style="color:#FF0000;">
+                @form.globalError.message
+            </p>
+        }
+
+       <p>
+           <label for="username">Username:</label>
+           <input type="username" name="username" placeholder="Username" value="@form("email").value">
+           
+       </p>
+       <p>
+           <label for="password">Password:</label>
+           <input type="password" name="password" placeholder="Password">
+       </p>
+       <p>
+           <button type="submit">Login</button>
+       </p>
+    }
+
     </center>
+    
 
     <div id="wrapper"></div>
 }

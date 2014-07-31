@@ -1,44 +1,25 @@
-@(message: String)
+@(message: String)(content: Html)
 
-@main("Administrator Login") {
+
+
+@main("Administrator") {
     <h1>Administrative Page</h1>
-    <p>
-        Clicking The button below will clear ballots and ballot ids stored on the Web Server, This action can not be undone.
-    </p>
-    @if(message != null){
-        <center>
-            <div style="color:#008800;">
-                <p>
-                    @message
-                </p>
-            </div>
-        </center>
-    }
-    <div align="center">
-        <TABLE BORDER="0">
-        <TR>
+    
+    <center>
+        <div id = ANBar>
+            <ul id="adminNavBar">
+                    <li><a href="/admin" class ="adminNavBar">Main</a></li>
+                    <li><a href="/admin/clear" class="adminNavBar">Clear</a></li>
+                    <li><a href="/admin/conflicts" class="adminNavBar">Conflicts</a></li>
+                    <li><a href="/admin/publish" class="adminNavBar">Publish</a></li>
+                    <li><a href="/admin/logout" class="adminNavBar">Logout</a></li>
+            </ul>
+        </div>
         
-        <TD>
-            <form action="/admin/cleardata" method="POST">
-                <input type="submit" value="Clear Data">
-            </form>
-        </TD>
-        
-        <TD> 
-            <form action="/admin/conflicts" method="POST">
-                <input type="submit" value="View Conflicts">
-            </form>
-        </TD>
-        
-        <TD> 
-            <form action="/admin/publish" method="POST">
-                <input type="submit" value="View Results to Publish">
-            </form>
-        </TD>
-        
-        </TR>
-        </TABLE>
-     
-       
-    </div>
-}
+    </center>
+    
+    <br>
+    @content
+   
+}    
+
