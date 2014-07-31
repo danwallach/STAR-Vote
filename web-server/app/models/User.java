@@ -24,7 +24,7 @@ public class User extends Model {
     
     /* This will authenticate our user */
      public static User authenticate(String username, String password) {
-        return find.where().eq("email", username)
+        return find.where().eq("username", username)
             .eq("password", password).findUnique();
     }
 }

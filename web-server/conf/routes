@@ -15,12 +15,15 @@ GET     /trac                       controllers.AuditServer.getTrac()
 
 POST    /3FF968A3B47CT34C           controllers.AuditServer.ballotDump()
 
-GET      /admin                     controllers.AuditServer.adminverify()
-POST     /admin                     controllers.AuditServer.authenticate()
-POST     /admin/cleardata           controllers.AuditServer.adminclear()
-POST     /admin/conflicts           controllers.AuditServer.adminconflicts()
-POST     /admin/conflicts/resolve   controllers.AuditServer.resolveconflict(id: String ?= "none", hash: String ?= "none")
-POST     /admin/publish             controllers.AuditServer.adminpublish()
+GET     /login                      controllers.AuditServer.adminverify()
+POST    /login                      controllers.AuditServer.authenticate()
+GET     /admin                      controllers.AuditServer.adminmain()
+GET     /admin/clear                controllers.AuditServer.adminclear()
+GET     /admin/conflicts            controllers.AuditServer.adminconflicts()
+GET     /admin/conflicts/resolve    controllers.AuditServer.resolveconflict(id: String ?= "none", hash: String ?= "none")
+GET     /admin/publish              controllers.AuditServer.adminpublish()
+GET     /admin/logout               controllers.AuditServer.adminlogout()
+GET     /logout                     controllers.AuditServer.logout()
 
 # Map static resources from the /public folder to the /assets URL path
 GET      /files                     controllers.AuditServer.getBallotHtmlFile(ballotid: String ?= "none")

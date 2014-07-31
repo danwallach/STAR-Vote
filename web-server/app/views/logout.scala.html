@@ -1,0 +1,10 @@
+
+
+@main("Logout") {
+    @if(flash.contains("success")) {
+        <p class="success">
+            @flash.get("success")
+        </p>
+    }
+
+}

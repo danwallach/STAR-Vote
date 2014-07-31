@@ -157,57 +157,33 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#7db72f', endC
 }
 /* end button colors */
 
-/*
-  Hide radio button (the round disc)
-  we will use just the label to create pushbutton effect
-*/
-/*input[type=radio] {*/
-/*    display:none;*/
-/*    margin:10px;*/
-/*}*/
- 
-/*
-  Change the look'n'feel of labels (which are adjacent to radiobuttons).
-  Add some margin, padding to label
-*/
-/*input[type=radio] + label {*/
-/*    display:inherit;*/
-/*    padding: 4px 12px;*/
-/*    background-color: #e7e7e7;*/
-/*}*/
-
-/*
- Change background color for label next to checked radio button
- to make it look like highlighted button
-*/
-/*input[type=radio]:checked + label { */
-/*   background-image: none;*/
-/*   background-color:#d0d0d0;*/
-/*}*/
 
 /* Login fields */
 fieldset {
     width: 70%;
 }
 
-form {
-  position: relative;
+input {
+  /*position: relative;*/
 
-  width  : 80%;
-  margin : 0 auto;
+  width  : 200px;
+  /*margin : 0 auto;*/
+}
 
-  /*background: #00FF00;*/
+label {
+    position : inherit;
+    /*width : 100%;*/
 }
 
 .field {
     text-align: right;
-    width: 40%;
+    /*width: 100%;*/
     float: left;
     font-weight: bold;
 }
 
 .textbox-300 {
-    width: 200px;
+    /*width: 200px;*/
     float: left;
 }
 
@@ -216,36 +192,6 @@ fieldset p {
     /*padding: 5px;*/
 }
 
-#adminNavBar
-{
-    list-style-type:none;
-    padding:0;
-    display:inline;
-}
-#adminNavBar
-li{
-    float:left;width:25%;
-}
-#adminNavBar
-a:link,a:visited
-{
-    display:block;
-    font-weight:bold;
-    color:#FFFFFF;
-    background-color:#Bc1e00;
-    text-align:center;
-    padding:4px;
-    text-decoration:none;
-    text-transform:uppercase;
-}
-#adminNavBar
-a:hover,a:active
-{
-    background-color:#8c1e00;
-}
-
-
-
 #navBar
 {
     list-style-type:none;
@@ -254,7 +200,7 @@ a:hover,a:active
 }
 #navBar
 li{
-float:left;width:25%;
+float:left;width:20%;
 }
 #navBar
 a:link,a:visited
@@ -274,7 +220,37 @@ a:hover,a:active
     background-color:#1E008C;
 }
 
-
+#ANBar {
+    width:80%;
+}
+#adminNavBar
+{
+    list-style-type:none;
+    padding:0;
+    display:inline;
+}
+#adminNavBar
+li{
+    float: left; 
+    width: 20%;
+}
+#adminNavBar
+a:link,a:visited
+{
+    display:block;
+    font-weight:bold;
+    color:#FFFFFF;
+    background-color:#5A37DB;
+    text-align:center;
+    padding:4px;
+    text-decoration:none;
+    text-transform:uppercase;
+}
+#adminNavBar
+a:hover,a:active
+{
+    background-color:#1E008C;
+}
 
 
 #ballotrender

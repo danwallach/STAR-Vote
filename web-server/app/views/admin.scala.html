@@ -1,35 +1,25 @@
-@(title: String)(content: Html)
+@(message: String)(content: Html)
 
-<script language="javascript"> 
 
-   function PostClear(){
-       alert("clear");
-      $.post("/adminclear"); 
-   }
-   function PostConflicts(){
-       alert("conflict");
-      $.post("/adminconflicts"); 
-   }
-   function PostPublish(){
-       alert("publish");
-      $.post("/adminpublish"); 
-   }
 
-</script>
-
-@main("Administrator Login") {
+@main("Administrator") {
     <h1>Administrative Page</h1>
-   
-    <div id = NBar>
-    <ul id="adminNavBar">
-            <li><a href="javascript:PostClear()">Clear</a></li>
-            <li><a href="javascript:PostConflicts()">Resolve Conflicts</a></li>
-            <li><a href="javascript:PostPublish()">Publish Results</a></li>
-        </ul>
-    </div>
     
+    <center>
+        <div id = ANBar>
+            <ul id="adminNavBar">
+                    <li><a href="/admin">Admin</a></li>
+                    <li><a href="/admin/clear">Clear</a></li>
+                    <li><a href="/admin/conflicts">Conflicts</a></li>
+                    <li><a href="/admin/publish">Publish</a></li>
+                    <li><a href="/admin/logout">Logout</a></li>
+            </ul>
+        </div>
+        
+    </center>
+    
+    <br>
     @content
-    
    
-   
-}
+}    
+

@@ -1,5 +1,9 @@
 import play.*;
+import play.libs.*;
+import models.User;
+import java.util.List;
 import utilities.BallotLoader;
+import com.avaje.ebean.Ebean;
 
 /**
  * Created with IntelliJ IDEA.
@@ -21,5 +25,8 @@ public class Global extends GlobalSettings {
     public void onStart(Application app) {
         System.out.println("Initializing the Ballot Loader");
         BallotLoader.init();
+        if (models.User.find.findRowCount() == 0) {
+            Ebean.save((List) Yaml.load("initial-data.yml"));
+        }
     }
 }
