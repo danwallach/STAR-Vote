@@ -44,19 +44,18 @@ public class AuditServer extends Controller {
      * @return      the home page of the site
      */
     public static Result index() { 
+         Map<String, Map<String, Precinct>> records = new HashMap<>();
         
-        Map<String, Map<String, Precinct>> records = new HashMap<>();
-        
-        for(int i = 1; i < 4; i++) {
+        for(int i = 0; i < 3; i++) {
            
             Map<String, Precinct> hashes = new HashMap<>();
             
-            for(int j = 1; j < 4; j++)
+            for(int j = 0; j < 3; j++)
                 hashes.put(j+"", new Precinct(j+"", "", null));
            
             records.put("record" + i, hashes);
             
-            VotingRecord.create(new VotingRecord("Precinct " + i, records));
+            VotingRecord.create(new VotingRecord("Precinct" + i, records));
         }
         
         for(int i = 4; i < 7; i++) {
@@ -69,9 +68,11 @@ public class AuditServer extends Controller {
            
             records.put("record" + i, hashes);
             
-            VotingRecord.create(new VotingRecord("Precinct "+ i, records));
+            VotingRecord.create(new VotingRecord("Precinct"+ i, records));
         }
         
+        
+ 
         return ok(index.render()); 
     }
 
@@ -178,6 +179,8 @@ public class AuditServer extends Controller {
     
     @Security.Authenticated(Secured.class)
     public static Result resolveconflict(String id, String hash) {
+        VotingRecord.getRecord(id).resolveConflict(hash);
+        
         return ok(adminconflicts.render(VotingRecord.getConflicted()));
     }
 
@@ -186,6 +189,11 @@ public class AuditServer extends Controller {
      */    
     @Security.Authenticated(Secured.class)
     public static Result adminpublish() {    
+        return ok(adminpublish.render(VotingRecord.getUnpublished()));
+    }
+    
+    @Security.Authenticated(Secured.class)
+    public static Result publishresults(String res) {    
         return ok(adminpublish.render(VotingRecord.getUnpublished()));
     }
 

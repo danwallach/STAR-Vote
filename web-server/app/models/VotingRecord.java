@@ -104,14 +104,18 @@ public class VotingRecord extends Model {
         
         Map.Entry<String, SupervisorRecord> chosenEntry = null;
         
-        for (Map.Entry<String, SupervisorRecord> entry : supervisorRecords.entrySet())
-            if (entry.getKey().equals(chosenHash))
+        for (Map.Entry<String, SupervisorRecord> entry : supervisorRecords.entrySet()) {
+            if (entry.getKey().equals(chosenHash)) {
                 chosenEntry = entry;
+            }
+        }
             
         supervisorRecords = new HashMap<String, SupervisorRecord>();
         supervisorRecords.put(chosenEntry.getKey(), chosenEntry.getValue());
         
         isConflicted = false;
+        
+        VotingRecord.create(this);
     }
 
     public void publish() {
@@ -185,7 +189,7 @@ public class VotingRecord extends Model {
      * @return appropriately formatted String representation
      */
     public String toString(){
-         return id + ":" + supervisorRecords.toString();
+         return id + ":" + supervisorRecords.size() + ":" + isConflicted;
     }
     
 }

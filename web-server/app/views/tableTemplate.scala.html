@@ -1,9 +1,9 @@
 @(conflicts: List[VotingRecord])      
     
     
-<script type="text/javascript">
+<script>
       function get_radio_value(id) {
-        
+          
         // var form = document.getElementById("form_id");
         // var inputs = document.getElementById(form.value);
         var inputs = document.getElementsByName(id);
@@ -17,23 +17,20 @@
       }
 
       function onClick(event) {
-        document.location.href = "/admin/conflicts/resolve?id=" + event.target.id + "&hash=" +  get_radio_value(event.target.id).value;
+        document.location.replace("/admin/resolveconflicts?id=" + event.target.id + "&hash=" +  get_radio_value(event.target.id));
       }
     </script>
 
-
+<center>
 @if(conflicts.size() == 0) {
-    <center>
         <div style="color:#008800;">
                 No conflicts!
             </div>
        
-    </center>
 } else { 
     <ul>
     @for(vr <- conflicts) {
     
-        <form method="post">
         
         <input type="hidden" id="form_id" value=@vr.precinctID />
         
@@ -56,12 +53,11 @@
         }
         </tbody>
         </table>
-        
        
-        </form>  
         
         <br>
         
     } 
     </ul>
 }
+</center>
