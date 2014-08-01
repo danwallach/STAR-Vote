@@ -1,0 +1,9 @@
+- !!models.User
+    username:   mdb92nc
+    name:       Matt Bernhard
+    password:   admin
+    
+- !!models.User
+    username:   administrator
+    name:       STAR-Vote Administrator
+    password:   admin
