@@ -6,4 +6,4 @@
 - !!models.User
     username:   administrator
     name:       STAR-Vote Administrator
-    password:   admin
+    username:      administrator

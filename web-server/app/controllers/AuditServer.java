@@ -35,8 +35,6 @@ public class AuditServer extends Controller {
     static Form<ChallengedBallot> challengeForm = form(ChallengedBallot.class);
     static Form<CastBallot> confirmForm = form(CastBallot.class);
 
-    
-
     static boolean init = false;
 
 
@@ -45,10 +43,36 @@ public class AuditServer extends Controller {
      *
      * @return      the home page of the site
      */
-    
-    public static Result index() {
-        return ok(index.render()); 
+    public static Result index() { 
         
+        Map<String, Map<String, Precinct>> records = new HashMap<>();
+        
+        for(int i = 1; i < 4; i++) {
+           
+            Map<String, Precinct> hashes = new HashMap<>();
+            
+            for(int j = 1; j < 4; j++)
+                hashes.put(j+"", new Precinct(j+"", "", null));
+           
+            records.put("record" + i, hashes);
+            
+            VotingRecord.create(new VotingRecord("Precinct " + i, records));
+        }
+        
+        for(int i = 4; i < 7; i++) {
+           
+            records = new HashMap<>();
+           
+            Map<String, Precinct> hashes = new HashMap<>();
+            
+            hashes.put("1", new Precinct("1", "", null));
+           
+            records.put("record" + i, hashes);
+            
+            VotingRecord.create(new VotingRecord("Precinct "+ i, records));
+        }
+        
+        return ok(index.render()); 
     }
 
     /**
@@ -115,22 +139,20 @@ public class AuditServer extends Controller {
     public static Result adminlogin(){
         return ok(adminlogin.render(form(Login.class), ""));
     }
-    
+
     @Security.Authenticated(Secured.class)
     public static Result adminmain() {
         return ok(adminmain.render());
     }
-
+    
     /**
      * Verifies that the admin is currently logged in, then clears data from the ebean database.
      * Serves up admin page with success message if admin logged in, or error page if admin not logged in.
      *
      * @return      the admin page with success/error dependent on login success
      */
-     @Security.Authenticated(Secured.class)
     public static Result adminclear() {
-        
-        
+
         String message = "No data to clear!";
 
         if(CastBallot.all().size() > 0 || ChallengedBallot.all().size() > 0) {
@@ -141,6 +163,7 @@ public class AuditServer extends Controller {
             
             message = "";
         }
+        
         /* Send to the data cleared page */
         return ok(adminclear.render(message));
     }
@@ -161,9 +184,9 @@ public class AuditServer extends Controller {
     /**
      * Generates and renders the page for publishing results 
      */    
-     @Security.Authenticated(Secured.class)
+    @Security.Authenticated(Secured.class)
     public static Result adminpublish() {    
-        return ok(adminpublish.render(VotingRecord.getNonConflicted()));
+        return ok(adminpublish.render(VotingRecord.getUnpublished()));
     }
 
     /**
@@ -203,7 +226,7 @@ public class AuditServer extends Controller {
     public static Result handleBallotState(String bid) {
 
         /* Send to the proper page based on what the ballot is */
-        return bid.equals("none")                       ?   ok(index.render())       :
+        return bid.equals("none")                      ?   ok(index.render())       :
               CastBallot.getBallot(bid) != null        ?   getCastBallot(bid)       :
               ChallengedBallot.getBallot(bid) != null  ?   getChallengedBallot(bid) : ok(ballotnotfound.render(bid));
     }
@@ -331,7 +354,7 @@ public class AuditServer extends Controller {
      */
     public static Result getAPI() { return redirect("/assets/api/index.html"); }
     
-    /**
+     /**
      * This will authenticate our logins
      */
     public static Result authenticate() {
