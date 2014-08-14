@@ -22,7 +22,7 @@ GET     /admin/clear                controllers.AuditServer.adminclear()
 GET     /admin/conflicts            controllers.AuditServer.adminconflicts()
 GET     /admin/resolveconflicts     controllers.AuditServer.resolveconflict(id: String ?= "none", hash: String ?= "none")
 GET     /admin/publish              controllers.AuditServer.adminpublish()
-POST    /admin/publishresults       controllers.AuditServer.publishresults(res: String ?= null)
+POST    /admin/publishresults?res   controllers.AuditServer.publishresults(res: String)
 GET     /admin/logout               controllers.AuditServer.adminlogout()
 GET     /logout                     controllers.AuditServer.logout()
 

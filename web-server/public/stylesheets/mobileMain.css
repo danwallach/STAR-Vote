@@ -9,13 +9,12 @@
 {
     margin: 0 auto;
     background-color:#DCE1FC;
-    align:center;
     width:100%;
     height:100%;
 }
 #inner
 {   margin: 0 auto;
-    background-color:#DCE1FC;align:center;width:80%;
+    background-color:#DCE1FC;width:80%;
 }
 #NBar
 {

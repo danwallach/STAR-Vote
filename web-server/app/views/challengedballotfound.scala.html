@@ -1,10 +1,8 @@
 @(ballot: ChallengedBallot)(ballotid: String)
 
-@import helper.twitterBootstrap._
+@main("Challenging Ballot") {
 
-    @main("Challenging Ballot") {
-
-    <center><h1 style="text-align: center">STAR-Vote Ballot Challenge</h1></center>
+    <div style="text-align : center ;"><h1 style="text-align: center">STAR-Vote Ballot Challenge</h1></div>
     <p>
         The BID of your challenged ballot is @ballotid.
     </p>
@@ -21,14 +19,13 @@
         <script>
             function httpGet(theUrl)
             {
-                var xmlHttp = null;
 
-                xmlHttp = new XMLHttpRequest();
+                var xmlHttp = new XMLHttpRequest();
                 xmlHttp.open( "GET", theUrl, false );
                 xmlHttp.send( null );
                 return xmlHttp.responseText;
             }
-            document.write(httpGet("/files?ballotid=" + @ballotid))
+            document.write(httpGet("/files?ballotid=" + @ballotid ))
         </script>
     </div>
 }

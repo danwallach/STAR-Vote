@@ -1,12 +1,10 @@
-@(records: List[VotingRecord])      
-    
-    
+@(records: java.util.List[VotingRecord])
+
+
 <script type="text/javascript">
 
       function get_checkboxes() {
         
-        // var form = document.getElementById("form_id");
-        // var inputs = document.getElementById(form.value);
         var inputs = document.getElementsByName("publishBox");
         
         var query = "";
@@ -20,7 +18,7 @@
         return query.substring(0,query.length-1);
       }
 
-      function onClick(event) {
+      function onClick() {
         document.location.href = "/admin/publishresults?" +  get_checkboxes();
       }
       
@@ -28,11 +26,11 @@
 
 
 @if(records.size() == 0) {
-    <center>
+    <div style="text-align : center ;">
     <div style="color:#008800;">
         Currently no voting records are available for publishing!
     </div>
-    </center>
+    </div>
 } else { 
 
     <ul>
@@ -44,8 +42,8 @@
         
         
         @for(vr <- records) {
-            <tr><td><input type="checkbox" name="publishBox" id=@vr.precinctID value=@vr.getHashes()>
-                <label for=@vr.getHashes()>@vr.precinctID : @vr.getHashes()</label>
+            <tr><td><label for="value="></label> <input type="checkbox" name="publishBox" id=@vr.precinctID value=@vr.getHashes>
+                <label for=@vr.getHashes>@vr.precinctID : @vr.getHashes</label>
             </td></tr>
         }
         
@@ -53,7 +51,7 @@
         
         </table>
        
-        <input type="submit" class="button green medium" value="Publish" style="float: right;" id="Publish" onClick="onClick(event)">
+        <input type="submit" class="button green medium" value="Publish" style="float: right;" id="Publish" onClick="onClick()">
        
         
         <br>

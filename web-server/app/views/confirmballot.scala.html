@@ -1,19 +1,19 @@
-@(ballots: List[CastBallot], confirmForm: Form[CastBallot], message: String)
+@(ballots: java.util.List[CastBallot], confirmForm: Form[CastBallot], message: String)
 
 @import helper.twitterBootstrap._
 
 @main("Cast Ballot") {
 
-    <center><h1>STAR-Vote Ballot Confirmation</h1></center>
+    <div style="text-align : center ;"><h1>STAR-Vote Ballot Confirmation</h1></div>
 
     @if(message != null)  {
-        <center>
+        <div style="text-align : center ;">
             <div style="color:#FF0000;">
                 <p>
                     @message
                 </p>
             </div>
-        </center>
+        </div>
     }
 
     <p>
@@ -26,29 +26,23 @@
         Confirm your ballot by entering its BID in the space below.
     </p>
 
-    <center>
+    <div style="text-align : center ;">
         Enter your BID:
-        <input id="confirmidfield" type="text"/>
+        <label for="confirmidfield"></label><input id="confirmidfield" type="text"/>
         <input id="confirmidbutton" type="submit" value="Confirm" onClick="handleForm();"/>
-    </center>
+    </div>
 
     <h2 style="text-align: center">Total Ballots Cast: @ballots.size()</h2>
 
-    <!--
-        <table id="confirmtable" class="table table-striped">
+
+    @for(i <- 0 until ballots.size()) {
+        @defining(ballots.get(i)) { ballot =>
             <tr>
-                <th>hash</th>
+                <td>@ballot.ballotid</td>
+                <td>@ballot.hash</td>
             </tr>
-            @for(i <- 0 until ballots.size()) {
-                @defining(ballots.get(i)) { ballot =>
-                    <tr>
-                        <td>@ballot.ballotid</td>
-                        <td>@ballot.hash</td>
-                    </tr>
-                }
-            }
-        </table>
-    -->
+        }
+    }
 
     <script>
         function handleForm(){

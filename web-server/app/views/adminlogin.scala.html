@@ -2,18 +2,18 @@
 
 @main("Administrator Login") {
 
-    <center>
+    <div style="text-align : center ;">
     
     
     
     @if(message != null)  {
-    <center>
+    <div style="text-align : center ;">
         <div style="color:#FF0000;">
             <p>
                 @message
             </p>
         </div>
-    </center>
+    </div>
     }
     
     @helper.form(routes.AuditServer.authenticate) {
@@ -44,7 +44,7 @@
        </p>
     }
 
-    </center>
+    </div>
     
 
     <div id="wrapper"></div>

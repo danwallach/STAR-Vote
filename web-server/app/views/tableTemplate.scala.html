@@ -1,6 +1,5 @@
-@(conflicts: List[VotingRecord])      
-    
-    
+@(conflicts: java.util.List[VotingRecord])
+
 <script>
       function get_radio_value(id) {
           
@@ -21,7 +20,7 @@
       }
     </script>
 
-<center>
+<div style="text-align : center ;">
 @if(conflicts.size() == 0) {
         <div style="color:#008800;">
                 No conflicts!
@@ -32,7 +31,7 @@
     @for(vr <- conflicts) {
     
         
-        <input type="hidden" id="form_id" value=@vr.precinctID />
+        <input type="hidden" id="form_id" value=@vr.precinctID >
         
         <table class ="reference" style="width:80%">
        
@@ -46,8 +45,10 @@
             </th>
         </tr>
         
-        @for(hash <- vr.getHashes()) {
-            <tr><td><input type="radio" name=@vr.precinctID id=@vr.precinctID value=@hash>
+        @for(hash <- vr.getHashes) {
+            <tr><td><label>
+                <input type="radio" name=@vr.precinctID id=@vr.precinctID value=@hash />
+            </label>
                 <label for=@hash>@hash</label>
             </td></tr>
         }
@@ -60,4 +61,4 @@
     } 
     </ul>
 }
-</center>
+</div>

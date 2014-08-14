@@ -119,7 +119,10 @@ public class VotingRecord extends Model {
     }
 
     public void publish() {
-        isPublished = true;
+        if(!isPublished && !isConflicted)
+            isPublished = true;
+        else 
+            throw new RuntimeException("Can't publish this record " + precinctID + "!");
     }
 
     /**

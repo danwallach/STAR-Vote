@@ -2,6 +2,7 @@
     background-color:#000C57
 }
 #header{
+    margin: 0 auto;
     background-color:#DCE1FC;
     width:750px;
 }
@@ -9,23 +10,23 @@
 {
     margin: 0 auto;
     background-color:#DCE1FC;
-    align:center;
     width:750px;
 }
 #inner
 {
     margin: 0 auto;
-    background-color:#DCE1FC;align:center;width:80%;
+    background-color:#DCE1FC;width:80%;
 }
 #NBar
 {
+    margin: 0 auto;
     width:750px;
 }
 
-/* table start */
+
 html, body{
     width:100%;
-    font-family:"Arial";
+    font-family:"Arial",serif;
 }
 
 .vSpace {
@@ -37,7 +38,7 @@ html, body{
 table.lamp
 {
 width:100%;
-padding:0px;
+padding:0;
 border:1px solid #00ff00;
 }
 
@@ -45,20 +46,21 @@ table.lamp th
 {
 color:#0000FF;
 background-color:green;
-padding:10px;
-padding-right:5px;
+    padding: 10px 5px 10px 10px;
 }
 
 table.lamp td
 {
 /*padding:4px;*/
-padding-left:0px;
+padding-left:0;
 /*padding-right:10px;*/
 background-color:#00ff00;
 }
 
 table.tecspec th,table.tecspec td{
-	border:1px solid #00ff00;padding:5px;padding-top:7px;padding-bottom:7px;vertical-align:middle;text-align:left;
+	border:1px solid #00ff00;
+    padding: 7px 5px;
+    vertical-align:middle;text-align:left;
 }
 
 table.reference,table.tecspec{
@@ -83,7 +85,9 @@ table.reference th a:hover,table.reference th a:active{
 }
 
 table.reference td{
-	border:1px solid #d4d4d4;padding:5px;padding-top:7px;padding-bottom:7px;vertical-align:middle;;
+	border:1px solid #d4d4d4;
+    padding: 7px 5px;
+    vertical-align:middle;;
 }
 
 table.reference .example_code
@@ -217,6 +221,7 @@ fieldset p {
 
 
 #ANBar {
+    margin: 0 auto;
     width:80%;
 }
 #adminNavBar

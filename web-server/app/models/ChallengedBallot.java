@@ -67,8 +67,7 @@ public class ChallengedBallot extends Model {
      */
     public static ChallengedBallot getBallot(String bid) {
 
-        ChallengedBallot ballot = find.where().ieq("ballotid", bid).findUnique();
-        return ballot;
+        return find.where().ieq("ballotid", bid).findUnique();
     }
 
     /**

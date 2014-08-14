@@ -2,7 +2,6 @@ package controllers;
 
 import models.*;
 import play.data.*;
-import play.libs.F.*;
 import play.mvc.*;
 import sexpression.ListExpression;
 import sexpression.stream.Base64;
@@ -17,8 +16,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.Map;
 import java.util.*;
-
-
 
 import static play.data.Form.form;
 
@@ -94,17 +91,7 @@ public class AuditServer extends Controller {
         return ok(aboutUs.render());
     }
 
-    /**
-     * Returns the test page image render
-     *
-     * @return      the test page
-     */
-    public static Result test(){
-        /* TODO return ok(imgTest.render()); */
-        return null;
-    }
-
-    /**
+   /**
      * Confirms ballot was cast by looking for hash in cast ballot database
      *
      * @param bid       the unique ballot identifier for the ballot to get
@@ -193,7 +180,12 @@ public class AuditServer extends Controller {
     }
     
     @Security.Authenticated(Secured.class)
-    public static Result publishresults(String res) {    
+    public static Result publishresults(String res) {
+//        for(String record : res) {
+//            System.out.println(record);
+//            VotingRecord.getRecord(record).publish();
+//
+//        }
         return ok(adminpublish.render(VotingRecord.getUnpublished()));
     }
 
@@ -401,7 +393,7 @@ public class AuditServer extends Controller {
 
         public String username;
         public String password;
-        
+
         /** This will validate the username and password */
         public String validate() {
             if (User.authenticate(username, password) == null) {

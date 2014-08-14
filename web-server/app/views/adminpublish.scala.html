@@ -1,10 +1,10 @@
-@(records: List[VotingRecord])
+@(records: java.util.List[VotingRecord])
 
 @admin("Publish") {
 
-    <center>
+    <div style="text-align : center ;">
         <h2>Publish Election Results</h2>
-    </center>
+    </div>
 
     @checkTableTemplate(records)
 
