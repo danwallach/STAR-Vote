@@ -2,7 +2,6 @@ package models;
 
 import javax.persistence.*;
 import play.db.ebean.*;
-import com.avaje.ebean.*;
 
 @Entity
 public class User extends Model {
@@ -18,7 +17,7 @@ public class User extends Model {
       this.password = password;
     }
 
-    public static Finder<String,User> find = new Finder<String,User>(
+    public static Finder<String,User> find = new Finder<>(
         String.class, User.class
     ); 
     

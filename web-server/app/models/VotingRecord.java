@@ -20,7 +20,7 @@ public class VotingRecord extends Model {
     /**
      * This member object is a finder that aids in retrieving VotingRecords by their precinctIDs and conflict status
      */
-    public static Finder<Long, VotingRecord> find = new Finder<Long, VotingRecord>(Long.class, VotingRecord.class);
+    public static Finder<Long, VotingRecord> find = new Finder<>(Long.class, VotingRecord.class);
 
     @Id
     public long id;
@@ -132,8 +132,9 @@ public class VotingRecord extends Model {
     public Map<String, Precinct> getPrecinctMap() {
         
         if (isPublished) {
-            
-            List<SupervisorRecord> sr = Arrays.asList(supervisorRecords.values().toArray(new SupervisorRecord[0]));
+
+            Collection<SupervisorRecord> var = supervisorRecords.values();
+            List<SupervisorRecord> sr = Arrays.asList(var.toArray(new SupervisorRecord[var.size()]));
         
             if (sr.size()>1) return null;
             else             return StringtoRecord(sr.get(0).record);
@@ -147,7 +148,7 @@ public class VotingRecord extends Model {
     public ArrayList<String> getHashes() {
 
         System.out.println(supervisorRecords.size());
-        return new ArrayList<String>(supervisorRecords.keySet());
+        return new ArrayList<>(supervisorRecords.keySet());
     }
 
     /**

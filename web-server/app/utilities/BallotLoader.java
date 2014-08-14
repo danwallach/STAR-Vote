@@ -2,14 +2,10 @@ package utilities;
 import tap.BallotImageHelper;
 import votebox.middle.ballot.Ballot;
 import votebox.middle.ballot.BallotParserException;
-import votebox.middle.driver.Driver;
 
 import java.io.*;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 /**
  * Created with IntelliJ IDEA.
@@ -24,8 +20,8 @@ import java.util.zip.ZipFile;
  */
 public class BallotLoader {
 
-    private static HashMap<String, File> ballotMap = new HashMap<String, File>();
-    private static HashMap<String, List<List<String>>> raceMap = new HashMap<String, List<List<String>>>();
+    private static HashMap<String, File> ballotMap = new HashMap<>();
+    private static HashMap<String, List<List<String>>> raceMap = new HashMap<>();
 
     /**
      * Called by a boot-loader, startup task of play! framework. Extracts all ballot .zip files and generates
@@ -65,6 +61,7 @@ public class BallotLoader {
                     catch (IOException | BallotParserException e) { e.printStackTrace(); }
 
                     /* Map the race groups to the precinct */
+                    assert ballot != null;
                     raceMap.put(precinct, ballot.getRaceGroups());
                 }
             }

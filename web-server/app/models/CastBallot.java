@@ -34,7 +34,7 @@ public class CastBallot extends Model {
     /**
      * This member object is a finder that aids in retrieving Cast Ballots by their ballot IDs
      */
-    public static Finder<Long, CastBallot> find = new Finder<Long, CastBallot>(Long.class, CastBallot.class);
+    public static Finder<Long, CastBallot> find = new Finder<>(Long.class, CastBallot.class);
 
     /**
      * @see play.db.ebean.Model.Finder#all()

@@ -25,7 +25,6 @@
         form.action="/admin/publishresults?"+get_checkboxes();
 
         form.submit(); // Submit the page
-        return true;
       }
       
 </script>
@@ -49,7 +48,7 @@
         
         
         @for(vr <- records) {
-            <tr><td><input type="checkbox" name="publishBox" id=@vr.precinctID value=@vr.precinctID>
+            <tr><td><label for="value="></label> <input type="checkbox" name="publishBox" id=@vr.precinctID value=@vr.precinctID>
                 <label for=@vr.precinctID>@vr.precinctID : @vr.getHashes</label>
             </td></tr>
         }

@@ -17,7 +17,7 @@
       }
 
       function doIt(event) {
-        form = document.forms[event.target.id];
+        var form = document.forms[event.target.id];
 
         form.action = "/admin/resolveconflicts?id=" + event.target.id + "&hash=" +  get_radio_value(event.target.id);
         form.submit();
@@ -52,7 +52,7 @@
         
         @for(hash <- vr.getHashes) {
             <tr><td><label>
-                <input type="radio" name=@vr.precinctID id=@vr.precinctID value=@hash />
+                <input type="radio" name=@vr.precinctID id=@vr.precinctID value=@hash/>
             </label>
                 <label for=@hash>@hash</label>
             </td></tr>

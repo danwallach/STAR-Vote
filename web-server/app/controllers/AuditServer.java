@@ -273,7 +273,7 @@ public class AuditServer extends Controller {
      * Socket handling for ballot end-of-election dump/upload from each voting station
      * Parses and stores new cast and challenged ballots
      *
-     * @return
+     * @return a rendering of the home page
      */
     public static Result ballotDump() {
 

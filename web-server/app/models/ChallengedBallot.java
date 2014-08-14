@@ -22,7 +22,7 @@ public class ChallengedBallot extends Model {
     /**
      * This member object is a finder that aids in retrieving Cat Ballots by their ballot IDs
      */
-    public static Finder<Long, ChallengedBallot> find = new Finder<Long, ChallengedBallot>(Long.class, ChallengedBallot.class);
+    public static Finder<Long, ChallengedBallot> find = new Finder<>(Long.class, ChallengedBallot.class);
 
     @Id
     public Long id;
