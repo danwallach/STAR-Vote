@@ -1,20 +1,12 @@
 package models;
 
-import play.data.validation.Constraints.*;
+import org.apache.commons.codec.binary.Base64;
 import play.db.ebean.Model;
-
-import javax.persistence.*;
-import java.util.*;
 import supervisor.model.Precinct;
 
-import org.apache.commons.codec.binary.Base64;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import javax.persistence.*;
+import java.io.*;
+import java.util.*;
 
 /**
  * Model of a VotingRecord on the Web-Server. An entity of the database.
@@ -31,7 +23,7 @@ public class VotingRecord extends Model {
     public static Finder<Long, VotingRecord> find = new Finder<Long, VotingRecord>(Long.class, VotingRecord.class);
 
     @Id
-    long id;
+    public long id;
     
     public String precinctID;
 
@@ -102,33 +94,59 @@ public class VotingRecord extends Model {
      */
     public void resolveConflict(String chosenHash) {
         
-        Map.Entry<String, SupervisorRecord> chosenEntry = null;
-        
-        for (Map.Entry<String, SupervisorRecord> entry : supervisorRecords.entrySet()) {
-            if (entry.getKey().equals(chosenHash)) {
-                chosenEntry = entry;
+      /*  for (Map.Entry<String, SupervisorRecord> entry : supervisorRecords.entrySet()) {
+            if (!entry.getKey().equals(chosenHash)) {
+               SupervisorRecord.remove(entry.getValue());
             }
         }
-            
-        supervisorRecords = new HashMap<String, SupervisorRecord>();
-        supervisorRecords.put(chosenEntry.getKey(), chosenEntry.getValue());
-        
+*/
+        System.out.println("The records!" + supervisorRecords);
+
         isConflicted = false;
-        
-        VotingRecord.create(this);
+
+
+        this.save();
+
+
+        System.out.println("The record afterward!" + getRecord("Precinct1") + id);
+
+        System.out.println("Blah: " + getHashes() + id);
     }
 
+    /**
+     * Publishes this VotingRecord which makes its PrecinctMap available
+     */
     public void publish() {
-        if(!isPublished && !isConflicted)
+        
+        /* Check that it is valid to publish this */
+        if (!isConflicted) {
             isPublished = true;
-        else 
-            throw new RuntimeException("Can't publish this record " + precinctID + "!");
+            this.save();
+        }
+    }
+
+    /**
+     * Retrieves the map of Precincts for this VotingRecord if there are no conflicts
+     * and the VotingRecord has been published
+     */
+    public Map<String, Precinct> getPrecinctMap() {
+        
+        if (isPublished) {
+            
+            List<SupervisorRecord> sr = Arrays.asList(supervisorRecords.values().toArray(new SupervisorRecord[0]));
+        
+            if (sr.size()>1) return null;
+            else             return StringtoRecord(sr.get(0).record);
+        }
+        else return null;
     }
 
     /**
      * @return      a list of the Supervisor hashes associated with their voting records
      */
     public ArrayList<String> getHashes() {
+
+        System.out.println(supervisorRecords.size());
         return new ArrayList<String>(supervisorRecords.keySet());
     }
 
@@ -192,7 +210,7 @@ public class VotingRecord extends Model {
      * @return appropriately formatted String representation
      */
     public String toString(){
-         return id + ":" + supervisorRecords.size() + ":" + isConflicted;
+         return id + ":" + supervisorRecords.size() + ":" + isConflicted + ":" + isPublished;
     }
     
 }

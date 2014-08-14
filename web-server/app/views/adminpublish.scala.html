@@ -1,4 +1,4 @@
-@(records: java.util.List[VotingRecord])
+@(records: java.util.List[VotingRecord], published: java.util.List[VotingRecord])
 
 @admin("Publish") {
 
@@ -7,6 +7,14 @@
     </div>
 
     @checkTableTemplate(records)
-
+    
+    <h2>Published Results</h2>
+    
+    <ul>
+    @for(vr <- published) {
+        <li>@vr.precinctID</li>
+    }
+    </ul>
+    
     <div id="wrapper"></div>
 }

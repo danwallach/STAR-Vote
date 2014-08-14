@@ -1,8 +1,13 @@
 package controllers;
 
-import models.*;
-import play.data.*;
-import play.mvc.*;
+import models.CastBallot;
+import models.ChallengedBallot;
+import models.User;
+import models.VotingRecord;
+import play.data.Form;
+import play.mvc.Controller;
+import play.mvc.Result;
+import play.mvc.Security;
 import sexpression.ListExpression;
 import sexpression.stream.Base64;
 import supervisor.model.Precinct;
@@ -14,8 +19,9 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.*;
+import java.util.StringTokenizer;
 
 import static play.data.Form.form;
 
@@ -166,8 +172,9 @@ public class AuditServer extends Controller {
     
     @Security.Authenticated(Secured.class)
     public static Result resolveconflict(String id, String hash) {
-        VotingRecord.getRecord(id).resolveConflict(hash);
         
+        VotingRecord.getRecord(id).resolveConflict(hash);
+        System.out.println("CHECK1: " + VotingRecord.getRecord("Precinct1").getHashes());
         return ok(adminconflicts.render(VotingRecord.getConflicted()));
     }
 
@@ -175,18 +182,49 @@ public class AuditServer extends Controller {
      * Generates and renders the page for publishing results 
      */    
     @Security.Authenticated(Secured.class)
-    public static Result adminpublish() {    
-        return ok(adminpublish.render(VotingRecord.getUnpublished()));
+    public static Result adminpublish() {
+
+        System.out.println("CHECK: " + VotingRecord.getRecord("Precinct1").id);
+        return ok(adminpublish.render(VotingRecord.getUnpublished(), VotingRecord.getPublished()));
     }
     
     @Security.Authenticated(Secured.class)
-    public static Result publishresults(String res) {
-//        for(String record : res) {
-//            System.out.println(record);
-//            VotingRecord.getRecord(record).publish();
-//
-//        }
-        return ok(adminpublish.render(VotingRecord.getUnpublished()));
+    public static Result publishresults() {
+        
+        /* Reverse routing */
+        String records = request().getQueryString("records");
+        
+        int start = 0;
+        
+        /* Grab each checked precinct and publish it */
+        while(start < records.length()) {
+            
+            int end = records.indexOf(",", start);
+            
+            if (end == -1)
+                end = records.length();
+            
+            String precinctID = records.substring(start, end);
+            System.out.println(precinctID);
+            
+            VotingRecord vr = VotingRecord.getRecord(precinctID);
+            
+            /* Publish the record */
+            vr.publish();
+            
+            /* Extract the Precincts */
+            
+            
+            /* Add the Precincts' ballots to the database explicitly */
+            
+            /* Move on to the next VotingRecord to be published */
+            start = end+1;
+        }
+        
+        /* Tally ballots? */
+        
+        /* Return the webpage */
+        return ok(adminpublish.render(VotingRecord.getUnpublished(), VotingRecord.getPublished()));
     }
 
     /**
@@ -244,34 +282,16 @@ public class AuditServer extends Controller {
         * - Load the Map<String, Map<String, Precinct>>.
         *   Each Map.Entry<String, Map> is <Supervisor-Hash, PrecinctMap>
         *   Each Map.Entry<String, Precinct> is <PrecinctID, PrecinctObject>
-        *
-        * - If the size of the original map is only one, load the Ballots in the Precincts into the database
-        *   Otherwise, create a Conflict associated with the Map
-        *
-        * - Load non-conflicted Maps to a "Publish" page where they can be published publicly. After publishing, allow
-        *   verification of cast and challenged Ballots. Probably want to re-tally and publish results by physical
-        *   precinct after each new "Publish" event. (Notion of public/private information to be added to server)
-        *   May want to keep track of how many Precinct objects associated with a precinct have been published vs.
-        *   are ready to be published (e.g. 10 Precincts for P1 have existed on the server, 2 have been published and
-        *   8 are waiting to be published [on the "Publish" page], so show something like 2/10 precincts reporting)
-        *
-        * - Add all the Map.Entries for a conflicted Map to a "Conflicts" page as a single entry where the user
-        *   can choose the proper Map<String,Precinct> by Supervisor-Hash to resolve the conflict.
-        *
-        * - When a conflicted Map is resolved, add it to the "Publish" page
-        *
-        * - Probably want to keep track of
         */
 
         /* Code for this method in handling a POST command are found at http://www.vogella.com/articles/ApacheHttpClient/article.html */
 
         final Map<String, String[]> values = request().body().asFormUrlEncoded();
-        final String event = values.get("message")[0];
-
-        /* ----------------------------------------------------------------------------------------------------------------------- */
+        final String record = values.get("record")[0];
+        final String precinctID = values.get("precinctID")[0];
 
         /* Decode from base64 */
-        byte[] bytes = Base64.decode(event);
+        byte[] bytes = Base64.decode(record);
         Map<String, Map<String, Precinct>> votingRecord = null;
 
         try {
@@ -280,12 +300,17 @@ public class AuditServer extends Controller {
         }
         catch (IOException | ClassNotFoundException | ClassCastException e) { e.printStackTrace(); }
 
-        if (votingRecord.size() > 1) { /* send this record to "conflict page" and load into database */}
-        else { /* send this record to "publish page" and load into database */}
+        /* Add the record to the database */
+        VotingRecord.create(new VotingRecord(precinctID, votingRecord));
+
+
+
+
+
 
         /* ----------------------------------------------------------------------------------------------------------------------- */
 
-        StringTokenizer typeParser = new StringTokenizer(event, ":");
+        StringTokenizer typeParser = new StringTokenizer(record, ":");
 
         /*
             todo: add machine-unique keys/ids to prevent any source from dumping and/or for discarding ballots from unknown sources

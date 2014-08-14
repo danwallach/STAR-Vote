@@ -1,6 +1,7 @@
 @(conflicts: java.util.List[VotingRecord])
 
 <script>
+
       function get_radio_value(id) {
           
         // var form = document.getElementById("form_id");
@@ -15,33 +16,37 @@
         }
       }
 
-      function onClick(event) {
-        document.location.replace("/admin/resolveconflicts?id=" + event.target.id + "&hash=" +  get_radio_value(event.target.id));
+      function doIt(event) {
+        form = document.forms[event.target.id];
+
+        form.action = "/admin/resolveconflicts?id=" + event.target.id + "&hash=" +  get_radio_value(event.target.id);
+        form.submit();
+        
+        return true;
       }
-    </script>
+      
+</script>
 
 <div style="text-align : center ;">
 @if(conflicts.size() == 0) {
-        <div style="color:#008800;">
-                No conflicts!
-            </div>
        
-} else { 
-    <ul>
+        <div style="color:#008800;">
+            No conflicts!
+        </div>
+       
+} else {
+    
     @for(vr <- conflicts) {
     
-        
-        <input type="hidden" id="form_id" value=@vr.precinctID >
-        
+        <form method="POST" name=@vr.precinctID>
+        <ul>
         <table class ="reference" style="width:80%">
-       
-        
      
         <tbody>
         <tr>
             <th>
                 @vr.precinctID
-                <input type="submit" class="button green medium" value="Resolve @vr.precinctID" style="float: right;" id=@vr.precinctID onClick="onClick(event)">    
+                <input type="button" class="button green medium" value="Resolve @vr.precinctID" style="float: right;" id=@vr.precinctID onClick="doIt(event);">
             </th>
         </tr>
         
@@ -54,11 +59,11 @@
         }
         </tbody>
         </table>
-       
-        
+        </ul>
+        </form>
         <br>
         
     } 
-    </ul>
+    
 }
 </div>

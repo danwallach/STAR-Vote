@@ -1,9 +1,11 @@
 package models;
 
-import play.data.validation.Constraints.*;
+import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.util.List;
 
 /**
@@ -44,7 +46,7 @@ public class ChallengedBallot extends Model {
      * @param hash              the hash for the ballot
      * @param decryptedBallot   the decrypted version of the ballot
      */
-    public ChallengedBallot(String bid,String precinct, String hash, String decryptedBallot) {
+    public ChallengedBallot(String bid, String precinct, String hash, String decryptedBallot) {
 
         ballotid = bid;
         this.hash = hash;

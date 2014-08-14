@@ -5,21 +5,27 @@
 
       function get_checkboxes() {
         
+        // var form = document.getElementById("form_id");
+        // var inputs = document.getElementById(form.value);
         var inputs = document.getElementsByName("publishBox");
         
-        var query = "";
+        var query = "records=";
         
         for(var i =0; i < inputs.length; i++) {
             if (inputs[i].checked) {
-                query += "records=" + inputs[i].value + "&";
+                query += inputs[i].value + ",";
             }
         }
         
         return query.substring(0,query.length-1);
       }
 
-      function onClick() {
-        document.location.href = "/admin/publishresults?" +  get_checkboxes();
+      function SubmitForm(form)
+      {
+        form.action="/admin/publishresults?"+get_checkboxes();
+
+        form.submit(); // Submit the page
+        return true;
       }
       
 </script>
@@ -33,6 +39,7 @@
     </div>
 } else { 
 
+    <form method="POST" name="publish">
     <ul>
     
         
@@ -42,8 +49,8 @@
         
         
         @for(vr <- records) {
-            <tr><td><label for="value="></label> <input type="checkbox" name="publishBox" id=@vr.precinctID value=@vr.getHashes>
-                <label for=@vr.getHashes>@vr.precinctID : @vr.getHashes</label>
+            <tr><td><input type="checkbox" name="publishBox" id=@vr.precinctID value=@vr.precinctID>
+                <label for=@vr.precinctID>@vr.precinctID : @vr.getHashes</label>
             </td></tr>
         }
         
@@ -51,11 +58,11 @@
         
         </table>
        
-        <input type="submit" class="button green medium" value="Publish" style="float: right;" id="Publish" onClick="onClick()">
        
+        <input type="button" class="button green medium" value="Publish" style="float: right;" id="Publish" onClick="SubmitForm(this.form);">
         
         <br>
-        
-    
+
     </ul>
+    </form>
 }
