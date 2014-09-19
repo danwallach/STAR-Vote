@@ -1,25 +1,8 @@
 import play.*;
 import play.libs.*;
-import models.User;
-import java.util.List;
-import utilities.BallotLoader;
 import com.avaje.ebean.Ebean;
-import models.*;
-import play.data.*;
-import play.libs.F.*;
-import play.mvc.*;
-import sexpression.ListExpression;
-import sexpression.stream.Base64;
-import supervisor.model.Precinct;
 import utilities.BallotLoader;
-import utilities.WebPrinter;
-import views.html.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.util.Map;
 import java.util.*;
 
 

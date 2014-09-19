@@ -1,6 +1,5 @@
 package utilities;
 
-import printer.HTMLPrinter;
 import votebox.AuditoriumParams;
 
 import java.io.BufferedWriter;

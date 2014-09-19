@@ -39,7 +39,7 @@ public class WebPrinter extends Printer{
 
         final Map<String, Image> choiceToImage = BallotImageHelper.loadImagesForVVPAT(_currentBallotFile);
         final ArrayList<RaceTitlePair> actualRaceNameImagePairs = getRaceNameImagePairs(choiceToImage);
-        final List<String> choices = new ArrayList<String>();
+        final List<String> choices = new ArrayList<>();
 
         ArrayList<ChoicePair> correctedBallot = reformBallot(ballot);
 
@@ -81,8 +81,8 @@ public class WebPrinter extends Printer{
         catch (IOException e) { System.err.println("Could not write barcode image to a file."); }
 
         /* HTML Printing: Each column is an ArrayList of Strings. Each image is represented by its file name. */
-        ArrayList<ArrayList<String>> columnsToPrint = new ArrayList<ArrayList<String>>();
-        ArrayList<String> currentColumn = new ArrayList<String>();
+        ArrayList<ArrayList<String>> columnsToPrint = new ArrayList<>();
+        ArrayList<String> currentColumn = new ArrayList<>();
 
         int i = 0;
 
@@ -99,7 +99,7 @@ public class WebPrinter extends Printer{
             if (i % 46 == 0) {
 
                 columnsToPrint.add(currentColumn);
-                currentColumn = new ArrayList<String>();
+                currentColumn = new ArrayList<>();
 
                 /* TODO this is for two columns stopping */
                 if (i==92) break;

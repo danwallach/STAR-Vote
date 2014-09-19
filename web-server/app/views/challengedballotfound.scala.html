@@ -17,15 +17,13 @@
     </p>
     <div id="render" style = "width:600px;">
         <script>
-            function httpGet(theUrl)
-            {
 
-                var xmlHttp = new XMLHttpRequest();
-                xmlHttp.open( "GET", theUrl, false );
-                xmlHttp.send( null );
-                return xmlHttp.responseText;
-            }
-            document.write(httpGet("/files?ballotid=" + @ballotid ))
+
+            var xmlHttp = new XMLHttpRequest();
+            var str = "/files?ballotid=" + @ballotid;
+            xmlHttp.open( "GET", str, false );
+            xmlHttp.send( null );
+            document.write(xmlHttp.responseText)
         </script>
     </div>
 }
