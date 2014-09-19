@@ -172,8 +172,8 @@ public class AuditServer extends Controller {
     
     @Security.Authenticated(Secured.class)
     public static Result resolveconflict(String id, String hash) {
-        
-        VotingRecord.getRecord(id).resolveConflict(hash);
+        System.out.println("Play version!!!: " + play.core.PlayVersion.current());
+        VotingRecord.getRecord(id).resolveConflict(hash).save();
         System.out.println("CHECK1: " + VotingRecord.getRecord("Precinct1").getHashes());
         return ok(adminconflicts.render(VotingRecord.getConflicted()));
     }

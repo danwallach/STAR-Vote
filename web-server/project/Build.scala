@@ -1,6 +1,6 @@
-import sbt._
-import Keys._
 import play.Project._
+import sbt.Keys._
+import sbt._
 
 object ApplicationBuild extends Build {
 
@@ -16,7 +16,10 @@ object ApplicationBuild extends Build {
   )
 
   val main = play.Project(appName, appVersion, appDependencies).settings(
-    // Add your own project settings here      
+    libraryDependencies ++= Seq(
+      "org.avaje.ebeanorm" % "avaje-ebeanorm" % "3.3.3",
+      "com.typesafe.play" % "play-ebean-33-compat" % "1.0.0"
+    )
   )
 
 }

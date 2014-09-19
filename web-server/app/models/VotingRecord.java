@@ -92,25 +92,20 @@ public class VotingRecord extends Model {
      * @param chosenHash    the hash relating to the voting record that was chosen to resolve this
      *                      conflicted VotingRecord
      */
-    public void resolveConflict(String chosenHash) {
+    public VotingRecord resolveConflict(String chosenHash) {
         
-      /*  for (Map.Entry<String, SupervisorRecord> entry : supervisorRecords.entrySet()) {
+        for (Map.Entry<String, SupervisorRecord> entry : supervisorRecords.entrySet()) {
             if (!entry.getKey().equals(chosenHash)) {
-               SupervisorRecord.remove(entry.getValue());
+
+                SupervisorRecord.remove(entry.getValue());
             }
         }
-*/
-        System.out.println("The records!" + supervisorRecords);
 
         isConflicted = false;
 
-
         this.save();
 
-
-        System.out.println("The record afterward!" + getRecord("Precinct1") + id);
-
-        System.out.println("Blah: " + getHashes() + id);
+        return this;
     }
 
     /**
