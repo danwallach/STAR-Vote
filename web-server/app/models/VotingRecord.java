@@ -47,7 +47,7 @@ public class VotingRecord extends Model {
         isConflicted = (records.size() > 1);
         
         for (Map.Entry<String, Map<String, Precinct>> entry : records.entrySet())
-            supervisorRecords.put(entry.getKey(), new SupervisorRecord(this, entry.getKey(), "!!!"/*recordToString(entry.getValue())*/));
+            supervisorRecords.put(entry.getKey(), new SupervisorRecord(this, entry.getKey(), recordToString(entry.getValue())));
     }
 
 
