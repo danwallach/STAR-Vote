@@ -30,7 +30,7 @@ import static play.data.Form.form;
  * from the routes file. All pages are fed through this controller, and POST requests for pushing up challenged
  * and cast ballots are also handled here
  *
- * @author Mitchell Douglass
+ * @author Matt & Matt
  */
 public class AuditServer extends Controller {
 
@@ -39,7 +39,6 @@ public class AuditServer extends Controller {
     static Form<CastBallot> confirmForm = form(CastBallot.class);
 
     static boolean init = false;
-
 
     /**
      * Serves the Home Page of the site
@@ -172,9 +171,9 @@ public class AuditServer extends Controller {
     
     @Security.Authenticated(Secured.class)
     public static Result resolveconflict(String id, String hash) {
-        System.out.println("Play version!!!: " + play.core.PlayVersion.current());
-        VotingRecord.getRecord(id).resolveConflict(hash).save();
-        System.out.println("CHECK1: " + VotingRecord.getRecord("Precinct1").getHashes());
+
+        hash = hash.substring(0, hash.length()-1);
+        VotingRecord.getRecord(id).resolveConflict(hash);
         return ok(adminconflicts.render(VotingRecord.getConflicted()));
     }
 
@@ -183,8 +182,6 @@ public class AuditServer extends Controller {
      */    
     @Security.Authenticated(Secured.class)
     public static Result adminpublish() {
-
-        System.out.println("CHECK: " + VotingRecord.getRecord("Precinct1").id);
         return ok(adminpublish.render(VotingRecord.getUnpublished(), VotingRecord.getPublished()));
     }
     

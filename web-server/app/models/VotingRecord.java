@@ -47,9 +47,7 @@ public class VotingRecord extends Model {
         isConflicted = (records.size() > 1);
         
         for (Map.Entry<String, Map<String, Precinct>> entry : records.entrySet())
-            supervisorRecords.put(entry.getKey(), new SupervisorRecord(this, entry.getKey(), "!!!!"/*recordToString(entry.getValue())*/));
-            
-        System.out.println(this);
+            supervisorRecords.put(entry.getKey(), new SupervisorRecord(this, entry.getKey(), "!!!"/*recordToString(entry.getValue())*/));
     }
 
 
@@ -66,13 +64,14 @@ public class VotingRecord extends Model {
            objectOutputStream.close();
            
            encoded = new String(Base64.encodeBase64(byteArrayOutputStream.toByteArray()));
+
         } 
         catch (IOException e) { e.printStackTrace(); }
         
         return encoded;
     }
     
-    private Map<String, Precinct> StringtoRecord(String s) {
+    private Map<String, Precinct> StringToRecord(String s) {
         
         byte[] bytes = Base64.decodeBase64(s.getBytes());
         Map<String, Precinct> record = null;
@@ -96,7 +95,6 @@ public class VotingRecord extends Model {
         
         for (Map.Entry<String, SupervisorRecord> entry : supervisorRecords.entrySet()) {
             if (!entry.getKey().equals(chosenHash)) {
-
                 SupervisorRecord.remove(entry.getValue());
             }
         }
@@ -132,7 +130,7 @@ public class VotingRecord extends Model {
             List<SupervisorRecord> sr = Arrays.asList(var.toArray(new SupervisorRecord[var.size()]));
         
             if (sr.size()>1) return null;
-            else             return StringtoRecord(sr.get(0).record);
+            else             return StringToRecord(sr.get(0).record);
         }
         else return null;
     }
