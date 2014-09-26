@@ -327,7 +327,7 @@ public class Printer{
      * @param rawBallot     the vote decisions as a ListExpression
      * @return              the vote decisions as an ArrayList of ChoicePairs
      */
-    protected ArrayList<ChoicePair> gi(ListExpression rawBallot) {
+    protected ArrayList<ChoicePair> reformBallot(ListExpression rawBallot) {
 
         ArrayList<ChoicePair> reformedBallot = new ArrayList<>();
 
