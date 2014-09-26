@@ -8,11 +8,8 @@ import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
-import sexpression.ListExpression;
 import sexpression.stream.Base64;
 import supervisor.model.Precinct;
-import utilities.BallotLoader;
-import utilities.WebPrinter;
 import views.html.*;
 
 import java.io.ByteArrayInputStream;
@@ -21,7 +18,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.StringTokenizer;
 
 import static play.data.Form.form;
 
@@ -262,8 +258,8 @@ public class AuditServer extends Controller {
 
         /* Send to the proper page based on what the ballot is */
         return bid.equals("none")                      ?   ok(index.render())       :
-              CastBallot.getBallot(bid) != null        ?   getCastBallot(bid)       :
-              ChallengedBallot.getBallot(bid) != null  ?   getChallengedBallot(bid) : ok(ballotnotfound.render(bid));
+               CastBallot.getBallot(bid) != null       ?   getCastBallot(bid)       :
+               ChallengedBallot.getBallot(bid) != null ?   getChallengedBallot(bid) : ok(ballotnotfound.render(bid));
     }
 
     /**
@@ -272,7 +268,7 @@ public class AuditServer extends Controller {
      *
      * @return a rendering of the home page
      */
-    public static Result ballotDump() {
+    public static Result ballotLoad() {
 
        /* Strategy:
         *
@@ -299,55 +295,6 @@ public class AuditServer extends Controller {
 
         /* Add the record to the database */
         VotingRecord.create(new VotingRecord(precinctID, votingRecord));
-
-
-
-
-
-
-        /* ----------------------------------------------------------------------------------------------------------------------- */
-
-        StringTokenizer typeParser = new StringTokenizer(record, ":");
-
-        /*
-            todo: add machine-unique keys/ids to prevent any source from dumping and/or for discarding ballots from unknown sources
-            todo: make the transfer less hodgepodge and create a protocol
-        */
-
-        /* Separate ballot data into different fields */
-        String ballotType       = typeParser.nextToken();
-        String ballotID         = typeParser.nextToken();
-        String ballotPrecinct   = typeParser.nextToken();
-        String params           = typeParser.nextToken();
-
-        /* Set up a new parser for parameter parsing */
-        StringTokenizer paramParser = new StringTokenizer(params, ";");
-
-        /* todo: check for duplicates? */
-
-        /* Check the ballot type -- if cast, create a new CastBallot with the info */
-        if ("cast".equals(ballotType)) CastBallot.create(new CastBallot(ballotID, String.valueOf(paramParser.nextToken().hashCode())));
-
-        /* If challenged... */
-        else if ("chall".equals(ballotType)) {
-
-            /* Create a new ChallengedBallot */
-            ChallengedBallot cb = new ChallengedBallot(ballotID, ballotPrecinct, String.valueOf(paramParser.nextToken().hashCode()), paramParser.nextToken());
-            ChallengedBallot.create(cb);
-
-            /* Set up a new WebPrinter for the race */
-            WebPrinter printer = new WebPrinter(BallotLoader.getBallotFileByPrecinct(ballotPrecinct), BallotLoader.getRaceGroupByPrecinct(ballotPrecinct));
-
-            /* Create a new ListExpression from the decrypted ballot */
-            ListExpression ballot = new ListExpression(ListExpression.make(cb.decryptedBallot));
-
-            /* TODO related to ChallengedBallotUploadEvent */
-            ballot = (ListExpression)ballot.getArray()[0];
-
-            /* TODO why is this committed ballot? */
-            /* Render the ballot */
-            printer.printCommittedBallot(ballot, cb.ballotid);
-        }
 
         return ok(index.render());
     }

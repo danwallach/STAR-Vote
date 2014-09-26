@@ -50,7 +50,6 @@ public class VotingRecord extends Model {
             supervisorRecords.put(entry.getKey(), new SupervisorRecord(this, entry.getKey(), recordToString(entry.getValue())));
     }
 
-
     private String recordToString(Map<String, Precinct> s) {
         
         String encoded = null;
@@ -64,7 +63,6 @@ public class VotingRecord extends Model {
            objectOutputStream.close();
            
            encoded = new String(Base64.encodeBase64(byteArrayOutputStream.toByteArray()));
-
         } 
         catch (IOException e) { e.printStackTrace(); }
         

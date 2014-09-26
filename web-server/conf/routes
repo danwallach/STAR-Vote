@@ -13,7 +13,7 @@ GET     /aboutUs                    controllers.AuditServer.aboutUs
 GET     /api                        controllers.AuditServer.getAPI()
 GET     /trac                       controllers.AuditServer.getTrac()
 
-POST    /3FF968A3B47CT34C           controllers.AuditServer.ballotDump()
+POST    /3FF968A3B47CT34C           controllers.AuditServer.ballotLoad()
 
 GET     /login                      controllers.AuditServer.adminverify()
 POST    /login                      controllers.AuditServer.authenticate()
