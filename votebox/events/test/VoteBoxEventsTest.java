@@ -28,13 +28,16 @@ import com.sun.org.apache.xpath.internal.SourceTree;
 import crypto.interop.AdderKeyManipulator;
 import crypto.adder.PublicKey;
 import junit.framework.TestCase;
+import org.apache.commons.codec.binary.Base64;
 import sexpression.ASExpression;
 import sexpression.StringExpression;
 import sexpression.stream.InvalidVerbatimStreamException;
 import votebox.events.*;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class VoteBoxEventsTest extends TestCase {
 
@@ -66,7 +69,8 @@ public class VoteBoxEventsTest extends TestCase {
                 ProvisionalCommitEvent.getMatcher(),
                 SpoilBallotEvent.getMatcher(), StartScannerEvent.getMatcher(),
                 StatusEvent.getMatcher(), TapMachineEvent.getMatcher(), ProvisionalBallotEvent.getMatcher(),
-                CompletedUploadEvent.getMatcher(), StartUploadEvent.getMatcher());
+                CompletedUploadEvent.getMatcher(), StartUploadEvent.getMatcher(),
+                BallotUploadEvent.getMatcher());
 
         keyStore = new SimpleKeyStore("keys");
     }
@@ -291,6 +295,55 @@ public class VoteBoxEventsTest extends TestCase {
 
         assertEquals(event.getSerial(), event2.getSerial());
         assertEquals(event.getBID(), event2.getBID());
+    }
+
+    public void testBallotUpload() throws IOException, ClassNotFoundException {
+        HashMap<String, Integer> map = new HashMap<>();
+        map.put("eight", 8);
+        map.put("six", 6);
+        map.put("seven", 7);
+        map.put("five", 5);
+        map.put("three", 3);
+        map.put("zero", 0);
+        map.put("nine", 9);
+
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+
+        objectOutputStream.writeObject(map);
+        objectOutputStream.close();
+
+        String encoded = new String(Base64.encodeBase64(byteArrayOutputStream.toByteArray()));
+
+        BallotUploadEvent event = new BallotUploadEvent(0, map);
+
+        ASExpression sexp = event.toSExp();
+
+        assertEquals("(ballot-upload " + encoded + ")", sexp.toString());
+
+
+
+
+
+        BallotUploadEvent event2 = (BallotUploadEvent)matcher.match(0, sexp);
+
+
+
+        assertEquals(event.getSerial(), event2.getSerial());
+
+        //Deserialize the map to check that it worked properly
+        String data = event2.getMap().toString();
+
+        byte[] bytes = Base64.decodeBase64(data.getBytes());
+        HashMap<String, Integer> record = null;
+
+        ObjectInputStream objectInputStream = new ObjectInputStream(new ByteArrayInputStream(bytes));
+        //noinspection unchecked
+        record = (HashMap<String, Integer>)objectInputStream.readObject();
+
+
+        assertEquals(event.getMap(), record);
     }
 
     public void testCastBallotUpload(){

@@ -43,7 +43,7 @@ public interface IAnnounceEvent {
      * Converts this event to an sexpression so it can be serialized over the network.
      * @return the sexp
      */
-    public ASExpression toSExp() throws IOException;
+    public ASExpression toSExp();
     
     /**
      * Fires this event on a listener

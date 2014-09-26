@@ -31,6 +31,7 @@ public class BallotUploadEvent extends AAnnounceEvent {
         }
     };
 
+
     private Serializable map;
 
     public BallotUploadEvent(int serial, Serializable map) {
@@ -38,6 +39,11 @@ public class BallotUploadEvent extends AAnnounceEvent {
 
         this.map = map;
     }
+
+    public Serializable getMap() {
+        return map;
+    }
+
 
     /**
      * @return a MatcherRule for parsing this event type.
@@ -47,18 +53,23 @@ public class BallotUploadEvent extends AAnnounceEvent {
     }//getMatcher
 
     @Override
-    public ASExpression toSExp() throws IOException {
+    public ASExpression toSExp()  {
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+        ObjectOutputStream objectOutputStream = null;
+        try {
+            objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+            objectOutputStream.writeObject(map);
+            objectOutputStream.close();
 
-        objectOutputStream.writeObject(map);
-        objectOutputStream.close();
+
+        } catch (IOException e) {
+            throw new RuntimeException("Couldn't serialize the message!");
+        }
 
         String encoded = new String(Base64.encodeBase64(byteArrayOutputStream.toByteArray()));
 
-        return new ListExpression(StringExpression.makeString("ballot-upload"),
-                StringExpression.make(encoded));
+        return new ListExpression(StringExpression.makeString("ballot-upload"), StringExpression.make(encoded));
     }
 
     @Override
