@@ -243,6 +243,8 @@ public class Booth {
 
             }
 
+            public void uploadBallots(BallotUploadEvent ballotUploadEvent) {}
+
             @Override
             public void overrideCastConfirm(OverrideCommitConfirmEvent e) {
                 System.out.println("*** override-cast: " + e.toString());

@@ -646,6 +646,7 @@ public class VoteBox{
             public void ballotScanner(BallotScannerEvent e) {}
             public void ballotAccepted(BallotScanAcceptedEvent e){}
             public void ballotRejected(BallotScanRejectedEvent e){}
+            public void uploadBallots(BallotUploadEvent ballotUploadEvent) {}
 
             /**
              * Handler for the activated message. Look to see if this VoteBox's

@@ -127,7 +127,6 @@ public class Vote implements Serializable {
      *
      * @param numVotes          the total number of votes cast in this race
      * @param publicKey         the public key for the votes
-     * @return                  the computed sumProof
      */
     public void computeSumProof(int numVotes, PublicKey publicKey){
 

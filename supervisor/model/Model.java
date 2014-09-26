@@ -611,6 +611,7 @@ public class Model {
             public void announceProvisionalBallot(ProvisionalBallotEvent e) {}
             public void startUpload(StartUploadEvent startUploadEvent) {}
             public void completedUpload(CompletedUploadEvent completedUploadEvent) {}
+            public void uploadBallots(BallotUploadEvent ballotUploadEvent) {}
 
 
             /**

@@ -84,6 +84,12 @@ public class VoteBoxEventNotifier implements VoteBoxEventListener {
             l.completedUpload(e);
     }
 
+    @Override
+    public void uploadBallots(BallotUploadEvent ballotUploadEvent) {
+        for(VoteBoxEventListener l : listeners)
+            l.uploadBallots(ballotUploadEvent);
+    }
+
     public void joined(JoinEvent e) {
         System.out.println("Joined!");
         for (VoteBoxEventListener l : listeners)

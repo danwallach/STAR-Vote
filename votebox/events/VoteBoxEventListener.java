@@ -290,4 +290,6 @@ public interface VoteBoxEventListener {
      * @param completedUploadEvent the supervisor has finished uploading ballots
      */
     void completedUpload(CompletedUploadEvent completedUploadEvent);
+
+    void uploadBallots(BallotUploadEvent ballotUploadEvent);
 }

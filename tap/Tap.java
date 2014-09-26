@@ -205,9 +205,15 @@ public class Tap {
             public void provisionalCommitBallot(ProvisionalCommitEvent provisionalCommitEvent) {}
             public void announceProvisionalBallot(ProvisionalBallotEvent provisionalBallotEvent) {}
             public void provisionalAuthorizedToCast(ProvisionalAuthorizeEvent provisionalAuthorizeEvent) {}
+
+
             public void startUpload(StartUploadEvent startUploadEvent) {}
             public void completedUpload(CompletedUploadEvent completedUploadEvent) {}
 
+            @Override
+            public void uploadBallots(BallotUploadEvent ballotUploadEvent) {
+                /* TODO implement this */
+            }
 
 
             public void pollMachines(PollMachinesEvent pollMachinesEvent){

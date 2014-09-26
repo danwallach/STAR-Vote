@@ -268,6 +268,8 @@ public class  BallotScanner{
             public void tapMachine(TapMachineEvent tapMachineEvent) {}
             public void startUpload(StartUploadEvent startUploadEvent) {}
             public void completedUpload(CompletedUploadEvent completedUploadEvent) {}
+            public void uploadBallots(BallotUploadEvent ballotUploadEvent) {}
+
             public void ballotPrinting(BallotPrintingEvent ballotPrintingEvent) {}
             public void pinEntered(PINEnteredEvent event) {}
             public void invalidPin(InvalidPinEvent event) {}
