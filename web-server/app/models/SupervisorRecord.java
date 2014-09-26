@@ -2,10 +2,7 @@ package models;
 
 import play.db.ebean.Model;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 /**
  * Model of a SupervisorRecord on the Web-Server. An entity of the database.
@@ -18,7 +15,8 @@ public class SupervisorRecord extends Model {
     
     @Id
     long id;
-    
+
+    @Column(columnDefinition = "TEXT")
     public String record;
 
     @JoinColumn(name="hash_id")
