@@ -8,6 +8,7 @@ import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.StringExpression;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,7 +20,7 @@ import java.util.Map;
  *
  * @author Matt Bernhard
  */
-public class SupervisorTallier {
+public class SupervisorTallier implements Serializable {
 
     /**
      * Sum every vote in cast and return a ballot with encrypted sums.
