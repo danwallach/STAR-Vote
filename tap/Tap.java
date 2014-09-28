@@ -24,25 +24,25 @@ package tap;
 
 import auditorium.IAuditoriumParams;
 import auditorium.NetworkException;
-
-import sexpression.stream.ASEWriter;
-import votebox.AuditoriumParams;
-import votebox.events.*;
-
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import sexpression.stream.ASEWriter;
+import votebox.AuditoriumParams;
+import votebox.events.*;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 
 
 /**
@@ -64,6 +64,15 @@ public class Tap {
     private VoteBoxAuditoriumConnector _auditorium = null;
     private static String ballotDumpHTTPKey = "3FF968A3B47CT34C";
 
+    /** A list of all supervisors who have indicated they are uploading ballots*/
+    private ArrayList<Integer> uploadPending;
+
+    /** A list of all supervisors who have finished uploading their ballots */
+    private ArrayList<Integer> uploadComplete;
+
+    /** This precinct's supervisor record, which will be uploaded to the bulletin board */
+    private Map<Integer, Serializable> supervisorRecord;
+
 
     /**
      * Initializes a new Trapper.<BR>
@@ -79,6 +88,10 @@ public class Tap {
         _wrappedOut = out;
         _output = new ASEWriter(_wrappedOut);
         this.launchCode = launchCode;
+
+        uploadPending = new ArrayList<>();
+        uploadComplete = new ArrayList<>();
+        supervisorRecord = new HashMap<>();
 
     }
 
@@ -205,14 +218,26 @@ public class Tap {
             public void provisionalCommitBallot(ProvisionalCommitEvent provisionalCommitEvent) {}
             public void announceProvisionalBallot(ProvisionalBallotEvent provisionalBallotEvent) {}
             public void provisionalAuthorizedToCast(ProvisionalAuthorizeEvent provisionalAuthorizeEvent) {}
-
-
-            public void startUpload(StartUploadEvent startUploadEvent) {}
             public void completedUpload(CompletedUploadEvent completedUploadEvent) {}
+
+            public void startUpload(StartUploadEvent startUploadEvent) {
+                uploadPending.add(startUploadEvent.getSerial());
+            }
+
 
             @Override
             public void uploadBallots(BallotUploadEvent ballotUploadEvent) {
-                /* TODO implement this */
+                int serial = ballotUploadEvent.getSerial();
+
+
+                if(!uploadPending.contains(ballotUploadEvent.getSerial())) {
+                    System.err.println("Supervisor " + serial + " tried to upload without first indicating it would!");
+                    return;
+                }
+
+                uploadPending.remove(serial);
+                supervisorRecord.put(serial, ballotUploadEvent.getMap());
+                uploadComplete.add(serial);
             }
 
 
@@ -225,13 +250,8 @@ public class Tap {
             }
 
             public void uploadCastBallots(CastBallotUploadEvent e) {
-                System.out.println("TAP: Uploading Cast Ballots");
-                dumpBallotList(e.getDumpList());
             }
             public void uploadChallengedBallots(ChallengedBallotUploadEvent e) {
-                System.out.println("TAP: Uploading Challenged Ballots");
-                dumpBallotList(e.getDumpList());
-                /* TODO? BallotStore.clearBallots(); */
             }
         });
 
