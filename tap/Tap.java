@@ -249,9 +249,7 @@ public class Tap {
             public void pollsClosed(PollsClosedEvent e) {
             }
 
-            public void uploadCastBallots(CastBallotUploadEvent e) {
-            }
-            public void uploadChallengedBallots(ChallengedBallotUploadEvent e) {
+            public void uploadToServer() {
             }
         });
 
