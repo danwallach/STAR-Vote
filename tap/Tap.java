@@ -24,6 +24,7 @@ package tap;
 
 import auditorium.IAuditoriumParams;
 import auditorium.NetworkException;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -34,9 +35,7 @@ import sexpression.stream.ASEWriter;
 import votebox.AuditoriumParams;
 import votebox.events.*;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -115,33 +114,34 @@ public class Tap {
 
     /**
      * Dumps the ballots to the server TODO more refined explanation
-     * @param ballotList    the list of ballotStrings to be dumped to the server
      */
-    public void dumpBallotList(List<String> ballotList) {
+    public void uploadToServer() {
 
         HttpClient client = new DefaultHttpClient();
 
         HttpPost post = new HttpPost("http://starvote.cs.rice.edu/3FF968A3B47CT34C");
 
+        String encoded;
+
         try {
 
-            List<NameValuePair> nameValuePairs = new ArrayList<>(1);
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
 
-            /* For each of the ballotStrings... */
-            for (String ballotString : ballotList) {
+            objectOutputStream.writeObject(supervisorRecord);
+            objectOutputStream.close();
 
-                /* Add them as a BNVP to nameValuePairs */
-                nameValuePairs.add(new BasicNameValuePair("message", ballotString));
+            encoded = new String(Base64.encodeBase64(byteArrayOutputStream.toByteArray()));
 
-                System.out.println(nameValuePairs);
+            List bnvp = new ArrayList();
 
-                /* Set entities for each of the url encoded forms of the NVP */
-                post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+            bnvp.add(new BasicNameValuePair("message", encoded));
 
-                /* Execute the post */
-                client.execute(post);
+            /* Set entities for each of the url encoded forms of the NVP */
+            post.setEntity(new UrlEncodedFormEntity(bnvp));
 
-            }
+            /* Execute the post */
+            client.execute(post);
 
         }
         catch (IOException e) { e.printStackTrace(); }
@@ -246,7 +246,7 @@ public class Tap {
 
                 /* Start uploading if we're done making the map */
                 if(uploadPending.size()==0 && !uploading)
-                    uploadToServer();
+                    startUploadToServer();
 
             }
 
@@ -269,7 +269,7 @@ public class Tap {
         catch(NetworkException e){ throw new RuntimeException("Unable to connect to Auditorium network: "+e.getMessage(), e); }
     }
 
-    private void uploadToServer() {
+    private void startUploadToServer() {
 
         /* TODO maybe this works? */
         uploading = true;
@@ -280,6 +280,7 @@ public class Tap {
         for(threshold = cur+5000L; cur < threshold; cur = System.currentTimeMillis());
 
         /* Execute upload*/
+        uploadToServer();
 
     }
 

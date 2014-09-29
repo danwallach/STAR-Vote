@@ -2,7 +2,6 @@ package tap.test;
 
 import auditorium.IAuditoriumParams;
 import junit.framework.TestCase;
-import sexpression.stream.Base64;
 import tap.Tap;
 import votebox.AuditoriumParams;
 
@@ -46,6 +45,6 @@ public class TapTest extends TestCase {
         for(int i = 0; i < 10; i++)
             ballotList.add("ballot" + i);
 
-        tap.dumpBallotList(ballotList);
+        tap.uploadToServer(ballotList);
     }
 }
