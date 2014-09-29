@@ -64,6 +64,9 @@ public class Tap {
     private VoteBoxAuditoriumConnector _auditorium = null;
     private static String ballotDumpHTTPKey = "3FF968A3B47CT34C";
 
+    private static boolean uploading = false;
+    private static long threshold = 0L;
+
     /** A list of all supervisors who have indicated they are uploading ballots*/
     private ArrayList<Integer> uploadPending;
 
@@ -224,11 +227,16 @@ public class Tap {
                 uploadPending.add(startUploadEvent.getSerial());
             }
 
-
             @Override
             public void uploadBallots(BallotUploadEvent ballotUploadEvent) {
-                int serial = ballotUploadEvent.getSerial();
 
+                /* TODO check this edge case waiting for slow connectors */
+
+                /* If this method gets called while we're uploading, chill out for a sec or 5 */
+                if(uploading)
+                    threshold += 5000L;
+
+                int serial = ballotUploadEvent.getSerial();
 
                 if(!uploadPending.contains(ballotUploadEvent.getSerial())) {
                     System.err.println("Supervisor " + serial + " tried to upload without first indicating it would!");
@@ -237,7 +245,11 @@ public class Tap {
 
                 uploadPending.remove(serial);
                 supervisorRecord.put(serial, ballotUploadEvent.getMap());
-                uploadComplete.add(serial);
+
+                /* Start uploading if we're done making the map */
+                if(uploadPending.size()==0 && !uploading)
+                    uploadToServer();
+
             }
 
 
@@ -249,8 +261,6 @@ public class Tap {
             public void pollsClosed(PollsClosedEvent e) {
             }
 
-            public void uploadToServer() {
-            }
         });
 
         try {
@@ -259,6 +269,20 @@ public class Tap {
             _auditorium.announce(new TapMachineEvent(_mySerial));
         }
         catch(NetworkException e){ throw new RuntimeException("Unable to connect to Auditorium network: "+e.getMessage(), e); }
+    }
+
+    private void uploadToServer() {
+
+        /* TODO maybe this works? */
+        uploading = true;
+
+        long cur = System.currentTimeMillis();
+
+        /* Wait for 5 seconds */
+        for(threshold = cur+5000L; cur < threshold; cur = System.currentTimeMillis());
+
+        /* Execute upload*/
+
     }
 
     /**
