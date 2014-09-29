@@ -242,16 +242,6 @@ public interface VoteBoxEventListener {
      */
     public void ballotPrintFail(BallotPrintFailEvent ballotPrintFailEvent);
 
-    /**
-     * Will upload a ballot to the webserver once it is cast so that a voter can verify their ballot
-     */
-    public void uploadCastBallots(CastBallotUploadEvent castBallotUploadEvent);
-
-    /**
-     * Will upload a ballot upon being challenged to the webserver so that it can be reviewed
-     */
-    public void uploadChallengedBallots(ChallengedBallotUploadEvent challengedBallotUploadEvent);
-
     public void scannerStart(StartScannerEvent startScannerEvent);
 
     /**

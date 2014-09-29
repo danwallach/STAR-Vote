@@ -604,8 +604,6 @@ public class Model {
             public void ballotPrinting(BallotPrintingEvent e) {}
             public void ballotPrintSuccess(BallotPrintSuccessEvent e) {}
             public void ballotPrintFail(BallotPrintFailEvent e) {}
-            public void uploadCastBallots(CastBallotUploadEvent e) {}
-            public void uploadChallengedBallots(ChallengedBallotUploadEvent e) {}
             public void pollMachines(PollMachinesEvent e) {}
             public void spoilBallot(SpoilBallotEvent e) {}
             public void announceProvisionalBallot(ProvisionalBallotEvent e) {}
@@ -786,11 +784,6 @@ public class Model {
                     /* Challenge all the committed ballots */
                     p.closePolls();
 
-                    /* Send all of the cast ballots to Tap */
-                    auditorium.announce(new CastBallotUploadEvent(mySerial, p.getCastBallotTotal().toListExpression()));
-
-                    /* Send all of the challenged ballots to Tap */
-                   auditorium.announce(new ChallengedBallotUploadEvent(mySerial, p.getChallengedBallots()));
                 }
 
                 /* Announce that this Supervisor has completed sending ballots to Tap */

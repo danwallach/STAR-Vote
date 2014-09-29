@@ -276,8 +276,6 @@ public class  BallotScanner{
             public void pollStatus(PollStatusEvent pollStatusEvent) {}
             public void ballotPrintSuccess(BallotPrintSuccessEvent e) {}
             public void ballotPrintFail(BallotPrintFailEvent ballotPrintFailEvent) {}
-            public void uploadCastBallots(CastBallotUploadEvent castBallotUploadEvent) {}
-            public void uploadChallengedBallots(ChallengedBallotUploadEvent challengedBallotUploadEvent) {}
             public void lastPollsOpen(LastPollsOpenEvent e) {}
 
             public void assignLabel(AssignLabelEvent e) {

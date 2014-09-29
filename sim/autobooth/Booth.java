@@ -321,16 +321,6 @@ public class Booth {
             }
 
             @Override
-            public void uploadCastBallots(CastBallotUploadEvent castBallotUploadEvent) {
-
-            }
-
-            @Override
-            public void uploadChallengedBallots(ChallengedBallotUploadEvent challengedBallotUploadEvent) {
-
-            }
-
-            @Override
             public void scannerStart(StartScannerEvent startScannerEvent) {
 
             }

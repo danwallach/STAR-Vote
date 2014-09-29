@@ -227,16 +227,6 @@ public class VoteBoxEventNotifier implements VoteBoxEventListener {
             l.ballotPrintFail(e);
     }
 
-    public void uploadCastBallots(CastBallotUploadEvent castBallotUploadEvent) {
-        for(VoteBoxEventListener l : listeners)
-            l.uploadCastBallots(castBallotUploadEvent);
-    }
-
-    public void uploadChallengedBallots(ChallengedBallotUploadEvent challengedBallotUploadEvent) {
-        for(VoteBoxEventListener l : listeners)
-            l.uploadChallengedBallots(challengedBallotUploadEvent);
-    }
-
     public void scannerStart(StartScannerEvent e){
         for(VoteBoxEventListener l : listeners)
             l.scannerStart(e);

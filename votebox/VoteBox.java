@@ -633,8 +633,6 @@ public class VoteBox{
             public void commitBallot(CommitBallotEvent e) {}
             public void pinEntered(PINEnteredEvent e) {}
             public void ballotPrintFail(BallotPrintFailEvent e){}
-            public void uploadCastBallots(CastBallotUploadEvent castBallotUploadEvent) {}
-            public void uploadChallengedBallots(ChallengedBallotUploadEvent challengedBallotUploadEvent) {}
             public void scannerStart(StartScannerEvent startScannerEvent) {}
             public void spoilBallot(SpoilBallotEvent spoilBallotEvent) {}
             public void announceProvisionalBallot(ProvisionalBallotEvent e) {}
