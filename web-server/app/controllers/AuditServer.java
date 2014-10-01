@@ -206,16 +206,20 @@ public class AuditServer extends Controller {
             vr.publish();
             
             /* Extract the Precincts */
-            
-            
+
             /* Add the Precincts' ballots to the database explicitly */
-            
+
+
             /* Move on to the next VotingRecord to be published */
             start = end+1;
         }
         
-        /* Tally ballots? */
-        
+        /* Tally ballots for each precinct into another ballot */
+
+        /* Decrypt ballot */
+
+        /* Store decrypted total ballot in database */
+
         /* Return the webpage */
         return ok(adminpublish.render(VotingRecord.getUnpublished(), VotingRecord.getPublished()));
     }
@@ -280,6 +284,8 @@ public class AuditServer extends Controller {
         /* Code for this method in handling a POST command are found at http://www.vogella.com/articles/ApacheHttpClient/article.html */
 
         final Map<String, String[]> values = request().body().asFormUrlEncoded();
+
+        /* TODO get stuff from tap properly */
         final String record = values.get("record")[0];
         final String precinctID = values.get("precinctID")[0];
 
@@ -365,9 +371,10 @@ public class AuditServer extends Controller {
 
         /** This will validate the username and password */
         public String validate() {
-            if (User.authenticate(username, password) == null) {
+
+            if (User.authenticate(username, password) == null)
               return "Invalid user or password";
-            }
+
             return null;
         }
 
