@@ -274,7 +274,7 @@ public class LayoutParser {
 
             switch(childName) {
 
-                case "ToggleButton":   ToggleButton button = (ToggleButton) parseDrawable(child, group, view);
+                case "ToggleButton":        ToggleButton button = (ToggleButton) parseDrawable(child, group, view);
                                             verticals.add(button.getY());
                                             buttons.add(button);
                                             break;
@@ -290,6 +290,7 @@ public class LayoutParser {
                 case "WriteInToggleButton": WriteInToggleButton wButton = (WriteInToggleButton) parseDrawable(child, group, view);
                                             verticals.add(wButton.getY());
                                             buttons.add(wButton);
+                                            break;
 
                 default:                    throw new LayoutParserException("I don't recognize " + child.getNodeName() +
                                                                             " as a property or toggle button.", null );
