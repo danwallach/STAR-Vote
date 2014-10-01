@@ -32,7 +32,7 @@ public class TapTest extends TestCase {
         localCon.connect(addr);
 
         IAuditoriumParams params = new AuditoriumParams("tap.conf");
-        tap = new Tap(0, localCon.getOutputStream(), "launchCode", params);
+        //tap = new Tap(0, localCon.getOutputStream(), "launchCode", params);
 
 
 
@@ -45,6 +45,6 @@ public class TapTest extends TestCase {
         for(int i = 0; i < 10; i++)
             ballotList.add("ballot" + i);
 
-        tap.uploadToServer(ballotList);
+        //tap.uploadToServer(ballotList);
     }
 }

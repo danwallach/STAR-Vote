@@ -133,7 +133,7 @@ public class Tap {
 
             encoded = new String(Base64.encodeBase64(byteArrayOutputStream.toByteArray()));
 
-            List bnvp = new ArrayList();
+            List<BasicNameValuePair> bnvp = new ArrayList();
 
             bnvp.add(new BasicNameValuePair("message", encoded));
 
