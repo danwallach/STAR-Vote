@@ -168,6 +168,7 @@ public class Printer{
         String barcodeFileNameNoExtension = path + "Barcode";
         String lineSeparatorFileName = path + "LineSeparator.png";
 
+
         /* Generate a barcode of the BID */
         /* Do it here so we can use height of the barcode for laying out other components on the printout */
         BufferedImage barcode = PrintImageUtils.getBarcode(bid);
@@ -180,6 +181,8 @@ public class Printer{
             g.fillRect(0,0,10,10);
 
             File lineSeparatorFile =  new File(lineSeparatorFileName);
+            //noinspection ResultOfMethodCallIgnored
+            lineSeparatorFile.mkdirs();
             ImageIO.write(lineSeparator, "png", lineSeparatorFile);
             ImageIO.write(barcode, "png", new File(barcodeFileNameNoExtension + ".png"));
             ImageIO.write(barcode, "png", new File(barcodeFileNameNoExtension + "_flipped.png"));

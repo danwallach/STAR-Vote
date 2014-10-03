@@ -402,6 +402,19 @@ public abstract class ALayoutManager implements ILayoutManager {
                     /* Render the ReviewButton */
                     BufferedImage image = rb.execute(getImageVisitor(), false);
 
+                    /* If the card UID contains an L, it must be a party review button, so we need to generate a selection button as well */
+                    if(rb.getUID().contains("L")) {
+                        File path = new File(location + File.separator + uuid + File.separator + uuid  + "_" + langShortName + ".png");
+
+                        /* Create the directory, if it isn't there */
+                        //noinspection ResultOfMethodCallIgnored
+                        path.mkdirs();
+
+                        /* Trim the review screen image */
+                        ImageIO.write(PrintImageUtils.trimImageHorizontally(image, true, 1000), "png", path);
+
+                    }
+
                     /* Create a subdirectory for this image */
                     File path = new File(location + File.separator + uuid + File.separator + uuid  + "_review_" + langShortName + ".png");
 
