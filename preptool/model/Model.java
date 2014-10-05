@@ -446,6 +446,7 @@ public class Model {
                         File[] children = file.listFiles();
 
                         /* Go through each child */
+                        assert children != null;
                         for (File f : children) {
 
                             /* Check if the child is a directory and, if so, add them to the stack */
@@ -457,7 +458,7 @@ public class Model {
 
                         /* If the stack is too deep, get out of there */
                         if (dirStack.size() > 100)
-                            return;
+                            break;
                     }
 
                     /* All tasks completed */

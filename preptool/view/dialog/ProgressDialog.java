@@ -206,6 +206,7 @@ public class ProgressDialog extends JDialog {
     }
 
     private void finished() {
+        System.out.println("Finished.");
 
         SwingUtilities.invokeLater(new Runnable() {
 
