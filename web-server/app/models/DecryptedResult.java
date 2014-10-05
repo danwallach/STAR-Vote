@@ -23,7 +23,7 @@ import java.util.Map;
 public class DecryptedResult extends Model {
 
     /**
-     * This member object is a finder that aids in retrieving VotingRecords by their precinctIDs and conflict status
+     * This member object is a finder that aids in retrieving DecryptedResults by their precinctIDs
      */
     public static Finder<Long, DecryptedResult> find = new Finder<>(Long.class, DecryptedResult.class);
 
@@ -60,34 +60,17 @@ public class DecryptedResult extends Model {
     }
 
     /**
-     * @return      the list of VotingRecords that are conflicted
-     */
-    public static List<DecryptedResult> getConflicted() {
-        return find.where().eq("isConflicted", true).findList();
-    }
-
-    /**
-     * @return      the list of VotingRecords that are not conflicted and not published
-     */
-    public static List<DecryptedResult> getUnpublished() {
-        return find.where().eq("isConflicted", false).eq("isPublished", false).findList();
-    }
-
-    /**
-     * @return      the list of VotingRecords that are published
-     */
-    public static List<DecryptedResult> getPublished() {
-        return find.where().eq("isPublished", true).findList();
-    }
-
-    /**
      * Database lookup for a VotingRecord with the given precinctID.
      *
      * @param precinctID       the ID of the precinct from which this record was collected
      * @return                 the corresponding VoteRecord or null if non-existent
      */
-    public static DecryptedResult getRecord(String precinctID) {
-        return find.where().ieq("precinctID", precinctID).findUnique();
+    public static Map<String, BigInteger> getResults(String precinctID) {
+        return find.where().ieq("precinctID", precinctID).findUnique().candidateResults;
+    }
+
+    public static Ballot getResultsBallot(String precinctID) {
+        return find.where().ieq("precinctID", precinctID).findUnique().precinctResultsBallot;
     }
 
     /**
@@ -111,7 +94,8 @@ public class DecryptedResult extends Model {
     /**
      * @return appropriately formatted String representation
      */
-    public String toString(){return null;
+    public String toString() {
+        return "PrecinctID: " + precinctID + ", Candidate Results: " + candidateResults.toString() + ", Ballot Form: " + precinctResultsBallot.toString();
     }
 
 }

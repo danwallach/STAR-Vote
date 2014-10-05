@@ -2,10 +2,7 @@ package controllers;
 
 import auditorium.SimpleKeyStore;
 import crypto.adder.PrivateKey;
-import models.CastBallot;
-import models.ChallengedBallot;
-import models.User;
-import models.VotingRecord;
+import models.*;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -234,8 +231,6 @@ public class AuditServer extends Controller {
                 precinctTotals.get(precinctID).add(p.getCastBallotTotal());
             }
 
-            /* TODO keep track of the size of the tallied ballots */
-
             /* Move on to the next VotingRecord to be published */
             start = end+1;
         }
@@ -265,9 +260,10 @@ public class AuditServer extends Controller {
             String precinctID = entry.getKey();
 
             decryptedResults.put(precinctID, WebServerTallier.getVoteTotals(b, b.getSize(), allPrecincts.get(precinctID).getPublicKey(), privateKey));
-        }
 
-        /* Store bigTotal ballot in database */
+            /* Store totals in database */
+            DecryptedResult.create(new DecryptedResult(precinctID, decryptedResults.get(precinctID), b));
+        }
 
         /* Return the webpage */
         return ok(adminpublish.render(VotingRecord.getUnpublished(), VotingRecord.getPublished()));
