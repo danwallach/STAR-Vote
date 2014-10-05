@@ -453,10 +453,10 @@ public class VoteBox{
                     Object[] arg = (Object[]) argTemp;
 
                     /* arg1 should be the cast ballot structure, check  TODO */
-                    if (Ballot.BALLOT_PATTERN.match((ASExpression) arg[1]) == NoMatch.SINGLETON)
+                    if (Ballot.BALLOT_PATTERN.match((ASExpression) arg[0]) == NoMatch.SINGLETON)
                         throw new RuntimeException("Incorrectly expected a cast-ballot");
 
-                    ListExpression ballot = (ListExpression) arg[1];
+                    ListExpression ballot = (ListExpression) arg[0];
 
                     committedBallot = true;
 
