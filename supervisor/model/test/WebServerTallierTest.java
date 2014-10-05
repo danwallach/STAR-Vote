@@ -375,7 +375,7 @@ public class WebServerTallierTest extends TestCase {
         ASExpression ballotASE = be.encryptWithProof("000", ballot, raceGroups, publicKey, ASExpression.make("nonce"));
 
         /* Get the vote "totals" */
-        Map<String, BigInteger> voteTotals = WebServerTallier.getVoteTotals(Ballot.fromASE(ballotASE), 5, publicKey, privateKey);
+        Map<String, BigInteger> voteTotals = WebServerTallier.getVoteTotals(Ballot.fromASE(ballotASE), 1, publicKey, privateKey);
 
         /* Compare the decrypted totals with the expected totals */
         for (Map.Entry<String, BigInteger> entry : voteTotals.entrySet()) {

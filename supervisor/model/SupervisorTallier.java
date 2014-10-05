@@ -32,6 +32,8 @@ public class SupervisorTallier implements Serializable {
      */
     public static Ballot tally(String precinctID, List<Ballot> cast, PublicKey publicKey){
 
+        int size=0;
+
         /* The results of the election are stored by race ID in this map */
         Map<String, Election> results = new HashMap<>();
 
@@ -76,6 +78,8 @@ public class SupervisorTallier implements Serializable {
                     /* Now save the result until we're ready to decrypt the totals */
                     results.put(raceID, election);
                 }
+
+                size += bal.getSize();
             }
             catch (Exception e) {
                 Bugout.err("Malformed ballot received <" + e.getMessage() + ">");
@@ -113,7 +117,7 @@ public class SupervisorTallier implements Serializable {
         ASExpression nonce = StringExpression.makeString(voteList.getSHA256());
 
         /* Return the Ballot of all the summed race results */
-        return new Ballot(precinctID, votes, nonce, publicKey);
+        return new Ballot(precinctID, votes, nonce, publicKey,size);
     }
 
     /**
