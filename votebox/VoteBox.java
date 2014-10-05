@@ -858,7 +858,7 @@ public class VoteBox{
              */
                 public void overrideCancel(OverrideCancelEvent e) {
 
-                if (mySerial == e.getTargetSerial() && Arrays.equals(e.getNonce().toVerbatim(), nonce.toVerbatim())) {
+                if (mySerial == e.getTargetSerial() && e.getNonce().equals(nonce)) {
 
                     try {
                         
