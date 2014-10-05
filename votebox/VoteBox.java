@@ -856,7 +856,7 @@ public class VoteBox{
              *
              * @see votebox.events.OverrideCancelEvent
              */
-            public void overrideCancel(OverrideCancelEvent e) {
+                public void overrideCancel(OverrideCancelEvent e) {
 
                 if (mySerial == e.getTargetSerial() && e.getNonce().equals(nonce)) {
 

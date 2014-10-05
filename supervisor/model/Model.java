@@ -296,8 +296,20 @@ public class Model {
         if(error != ballot.length)
             throw new RuntimeException("Error in serializing ballot!");
 
+        if(!(getMachineForSerial(otherSerial) instanceof VoteBoxBooth)) {
+            System.err.println("Attempted to authorize a machine that was not a booth!");
+            return;
+        }
+
+        ((VoteBoxBooth) getMachineForSerial(otherSerial)).setNonce(nonce);
+
+        assert ((VoteBoxBooth) getMachineForSerial(otherSerial)).getNonce().equals(nonce);
+
+
+
         /* Put the nonce in an S-Expression to send over the network */
         ASExpression ASENonce = StringExpression.makeString(nonce);
+
 
         /*
          * Announce that we're authorizing a voting booth, depending on the crypto requirements specified in this machine's
@@ -339,6 +351,13 @@ public class Model {
         /* TODO better erroring */
         if(error != ballot.length)
             throw new RuntimeException("Error in serializing ballot!");
+
+        if(!(getMachineForSerial(targetSerial) instanceof VoteBoxBooth)) {
+            System.err.println("Attempted to authorize a machine that was not a booth!");
+            return;
+        }
+
+        ((VoteBoxBooth) getMachineForSerial(targetSerial)).setNonce(nonce);
 
         /* Send out a provisional authorize event */
         auditorium.announce(new ProvisionalAuthorizeEvent(mySerial, targetSerial, StringExpression.makeString(nonce), ballot));
@@ -659,6 +678,9 @@ public class Model {
              * that machine.
              */
             public void authorizedToCast(AuthorizedToCastEvent e) {
+                if(e.getSerial() == mySerial)
+                    return;
+
                 AMachine m = getMachineForSerial(e.getTargetSerial());
 
                 /* Set the local copy of the votebox to have the corresponding nonce value of the voting session */
@@ -1282,6 +1304,10 @@ public class Model {
              * that machine's voting session.
              */
             public void provisionalAuthorizedToCast(ProvisionalAuthorizeEvent e) {
+
+                /* Ignore authorizations from this supervisor */
+                if(e.getSerial() == mySerial)
+                    return;
 
                 AMachine m = getMachineForSerial(e.getTargetSerial());
 
