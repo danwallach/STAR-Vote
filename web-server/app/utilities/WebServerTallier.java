@@ -141,22 +141,6 @@ public class WebServerTallier {
     }
 
     /**
-     * Decrypts all the Ballots in a List.
-     *
-     * @param toDecrypt     the List of Ballots to be decrypted -- it is expected that
-     *                      these are challenged ballots
-     */
-    public static List<List<String>> decryptAll(List<Ballot> toDecrypt, PublicKey publicKey, PrivateKey privateKey) {
-
-        List<List<String>> decryptedList = new ArrayList<>();
-
-        for (Ballot ballot : toDecrypt)
-            decryptedList.add(decrypt(ballot, publicKey, privateKey));
-
-        return decryptedList;
-    }
-
-    /**
      * Calculates the individual vote totals for each of the candidates in each of the races in the Ballot
      *
      * @see crypto.adder.Election#getFinalSum(java.util.List, crypto.adder.Vote, crypto.adder.PublicKey)

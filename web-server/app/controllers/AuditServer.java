@@ -9,15 +9,17 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 import sexpression.stream.Base64;
+import supervisor.model.Ballot;
 import supervisor.model.Precinct;
+import supervisor.model.WebServerTallier;
 import views.html.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.util.HashMap;
-import java.util.Map;
+import java.math.BigInteger;
+import java.util.*;
 
 import static play.data.Form.form;
 
@@ -186,39 +188,84 @@ public class AuditServer extends Controller {
         
         /* Reverse routing */
         String records = request().getQueryString("records");
-        
+
         int start = 0;
+
+        Map<String, Ballot> bigTotal = null /* get this from database*/;
+        Map<String, List<Ballot>> precinctTotals = new TreeMap<>();
+        Map<String, Precinct> allPrecincts = new TreeMap<>();
+
+        /* For size? or add field to ballot? */Map<String, Integer> size = new TreeMap<>();
         
         /* Grab each checked precinct and publish it */
         while(start < records.length()) {
-            
+
             int end = records.indexOf(",", start);
-            
+
             if (end == -1)
                 end = records.length();
-            
+
             String precinctID = records.substring(start, end);
             System.out.println(precinctID);
-            
+
             VotingRecord vr = VotingRecord.getRecord(precinctID);
             
             /* Publish the record */
             vr.publish();
             
-            /* Extract the Precincts */
+            /* Get the Precincts */
+            Map<String, Precinct> precinctMap = vr.getPrecinctMap();
+            allPrecincts.putAll(precinctMap);
 
-            /* Add the Precincts' ballots to the database explicitly */
+            /* Get the cast ballot totals for each precinct in this voting record */
+            for (Map.Entry<String, Precinct> entry : precinctMap.entrySet()) {
 
+                Precinct p = entry.getValue();
+                precinctID = entry.getKey();
+
+                /* If we haven't yet seen this precinct, initialise the list */
+                if(precinctTotals.get(precinctID) == null)
+                    precinctTotals.put(precinctID, new ArrayList<Ballot>());
+
+                /* Store the total for that precinct in the list */
+                precinctTotals.get(precinctID).add(p.getCastBallotTotal());
+            }
+
+            /* TODO keep track of the size of the tallied ballots */
 
             /* Move on to the next VotingRecord to be published */
             start = end+1;
         }
-        
-        /* Tally ballots for each precinct into another ballot */
 
-        /* Decrypt ballot */
+        /* Update summed totals */
+        for (Map.Entry<String, Ballot> entry : bigTotal.entrySet()) {
 
-        /* Store decrypted total ballot in database */
+            String precinctID = entry.getKey();
+
+            /* Add in any pre-existing totals */
+            precinctTotals.get(precinctID).add(entry.getValue());
+
+            /* Tally the new precinctTotals using WebServerTallier*/
+            Ballot b = WebServerTallier.tally(precinctID, precinctTotals.get(precinctID), allPrecincts.get(precinctID).getPublicKey());
+
+            /* Replace old total with new total */
+            bigTotal.put(precinctID, b);
+        }
+
+        /* This will be the decrypted representation of the results by precinct */
+        Map<String, Map<String, BigInteger>> decryptedResults = new TreeMap<>();
+
+        /* Decrypt bigTotal */
+        for(Map.Entry<String, Ballot> entry : bigTotal.entrySet()) {
+
+            Ballot b = entry.getValue();
+            String precinctID = entry.getKey();
+
+            decryptedResults.put(precinctID, WebServerTallier.getVoteTotals(b, size, allPrecincts.get(precinctID).getPublicKey(), privateKey));
+
+        }
+
+        /* Store decrypted bigTotal ballot in database */
 
         /* Return the webpage */
         return ok(adminpublish.render(VotingRecord.getUnpublished(), VotingRecord.getPublished()));

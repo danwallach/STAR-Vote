@@ -128,7 +128,6 @@ public class Precinct implements Serializable {
     }
 
     /**
-     * TODO: Homomorphically tallies all the cast Ballots into one "master" Ballot
      *
      * @return          a Ballot representing the sum total of all of the votes
      *                  cast in this precinct
@@ -164,7 +163,14 @@ public class Precinct implements Serializable {
         return ballotFile;
     }
 
-    public Ballot getBallot(String bid) {
-        return allBallots.get(bid);
+    public PublicKey getPublicKey() { return publicKey; }
+
+    public Ballot getChallengedBallot(String bid) {
+
+        if(allBallots.containsKey(bid) && challenged.contains(allBallots.get(bid)))
+            return allBallots.get(bid);
+
+        /* If it's either not a challenged ballot or doesn't exist */
+        else return null;
     }
 }
