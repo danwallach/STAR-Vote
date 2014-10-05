@@ -205,8 +205,6 @@ public class LayoutParser {
      */
     private RenderPage parsePage(Node node, IView view) throws LayoutParserException {
 
-        System.out.println("In parsePage: " + node);
-
         NodeList children = node.getChildNodes();
         ArrayList<IDrawable> drawables = new ArrayList<>();
         Properties properties = new Properties();
