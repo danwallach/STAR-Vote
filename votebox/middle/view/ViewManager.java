@@ -375,8 +375,14 @@ public class ViewManager implements IViewManager {
      * Fired when the override-cast operation is confirmed on the booth.
      */
     public void overrideCastConfirm() {
-        _overrideCastConfirm.notifyObservers(_ballotLookupAdapter
-                .getCastBallot());
+
+
+        Object[] toPass = new Object[]{
+                _ballotLookupAdapter.getCastBallot(),
+                _ballotLookupAdapter.getRaceGroups()
+        };
+
+        _overrideCastConfirm.notifyObservers(toPass);
     }
 
     /**
