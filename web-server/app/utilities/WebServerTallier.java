@@ -129,13 +129,21 @@ public class WebServerTallier {
     public static List<String> decrypt(Ballot toDecrypt, PublicKey publicKey, PrivateKey privateKey) {
 
         /* Get the mapping of candidates to votes for this Ballot */
-        Map<String, BigInteger> candidatesToTotals = getVoteTotals(toDecrypt, 1, publicKey, privateKey);
+        Map<String, Map<String, BigInteger>> racesToCandidateTotals = getVoteTotals(toDecrypt, 1, publicKey, privateKey);
         List<String> selections = new ArrayList<>();
 
         /* Add the selected candidates to the list */
-        for (String s : candidatesToTotals.keySet())
-            if (candidatesToTotals.get(s).equals(BigInteger.ONE))
-                selections.add(s);
+        for (String s : racesToCandidateTotals.keySet()) {
+
+            Map<String, BigInteger> candidatesToTotals = racesToCandidateTotals.get(s);
+
+            for (String candidate : candidatesToTotals.keySet()) {
+                if (candidatesToTotals.get(s).equals(BigInteger.ONE)) {
+                    selections.add(s);
+                    break;
+                }
+            }
+        }
 
         return selections;
     }
@@ -152,16 +160,19 @@ public class WebServerTallier {
      * @param privateKey    the private key
      * @return              a mapping of candidates to vote totals for all of the races in toTotal
      */
-    public static TreeMap<String, BigInteger> getVoteTotals(Ballot toTotal, int size, PublicKey publicKey, PrivateKey privateKey) {
+    public static Map<String, Map<String,BigInteger>> getVoteTotals(Ballot toTotal, int size, PublicKey publicKey, PrivateKey privateKey) {
 
         /* Generate the final private and public keys */
         PublicKey finalPublicKey = AdderKeyManipulator.generateFinalPublicKey(publicKey);
         PrivateKey finalPrivateKey = AdderKeyManipulator.generateFinalPrivateKey(publicKey, privateKey);
 
-        TreeMap<String, BigInteger> voteTotals = new TreeMap<>();
+        Map<String, Map<String,BigInteger>> voteTotals = new TreeMap<>();
+
 
         /* Iterate over each of the races */
         for (Vote v: toTotal.getVotes()) {
+
+            String raceName = v.getRaceName();
 
             /* Get the candidates */
             List<ASExpression> raceCandidates = v.getChoices();
@@ -172,9 +183,12 @@ public class WebServerTallier {
             /* Get the final sums */
             List<AdderInteger> finalSum = getDecryptedFinalSum(partialSum, v, size, finalPublicKey);
 
+            voteTotals.put(raceName, new TreeMap<String, BigInteger>());
+
             /* Map the candidates to their results in this race */
             for(int i=0; i< raceCandidates.size(); i++)
-                voteTotals.put(raceCandidates.get(i).toString(), finalSum.get(i).bigintValue());
+                voteTotals.get(raceName).put(raceCandidates.get(i).toString(), finalSum.get(i).bigintValue());
+
         }
 
         return voteTotals;

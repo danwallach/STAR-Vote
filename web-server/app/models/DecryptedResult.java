@@ -33,7 +33,7 @@ public class DecryptedResult extends Model {
     public String precinctID;
 
     @OneToMany
-    public Map<String, BigInteger> candidateResults = new HashMap<>();
+    public Map<String, RaceResult> raceResults = new HashMap<>();
 
     public Ballot precinctResultsBallot;
 
@@ -41,16 +41,18 @@ public class DecryptedResult extends Model {
      * Constructor
      *
      * @param precinctID                the ID of the precinct of these results
-     * @param candidateResults          the map of candidates to their vote totals
+     * @param raceResults
      * @param precinctResultsBallot     the encrypted totalled ballot for this precinct
      */
-    public DecryptedResult(String precinctID, Map<String, BigInteger> candidateResults, Ballot precinctResultsBallot) {
+    public DecryptedResult(String precinctID, Map<String, Map<String, BigInteger>> raceResults, Ballot precinctResultsBallot) {
 
         this.precinctID             = precinctID;
-        this.candidateResults       = candidateResults;
         this.precinctResultsBallot  = precinctResultsBallot;
-    }
 
+
+        for(Map.Entry<String, Map<String, BigInteger>> raceResult : raceResults.entrySet())
+            this.raceResults.put(raceResult.getKey(), new RaceResult(raceResult.getKey(), raceResult.getValue()));
+    }
 
     /**
      * @see play.db.ebean.Model.Finder#all()
@@ -60,13 +62,13 @@ public class DecryptedResult extends Model {
     }
 
     /**
-     * Database lookup for a VotingRecord with the given precinctID.
+     * Database lookup for a DecryptedResult with the given precinctID.
      *
      * @param precinctID       the ID of the precinct from which this record was collected
      * @return                 the corresponding VoteRecord or null if non-existent
      */
-    public static Map<String, BigInteger> getResults(String precinctID) {
-        return find.where().ieq("precinctID", precinctID).findUnique().candidateResults;
+    public static Map<String, RaceResult> getResults(String precinctID) {
+        return find.where().ieq("precinctID", precinctID).findUnique().raceResults;
     }
 
     public static Ballot getResultsBallot(String precinctID) {
@@ -74,7 +76,7 @@ public class DecryptedResult extends Model {
     }
 
     /**
-     * Store a VotingRecord into the database.
+     * Store a DecryptedResult into the database.
      *
      * @param record        record to be stored
      */
@@ -83,7 +85,7 @@ public class DecryptedResult extends Model {
     }
 
     /**
-     * Remove a VoteRecord from a database
+     * Remove a DecryptedResult from a database
      *
      * @param record        record to be removed
      */
@@ -95,7 +97,7 @@ public class DecryptedResult extends Model {
      * @return appropriately formatted String representation
      */
     public String toString() {
-        return "PrecinctID: " + precinctID + ", Candidate Results: " + candidateResults.toString() + ", Ballot Form: " + precinctResultsBallot.toString();
+        return "PrecinctID: " + precinctID + ", Race Results: " + raceResults.toString() + ", Ballot Form: " + precinctResultsBallot.toString();
     }
 
 }
