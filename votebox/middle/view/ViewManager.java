@@ -304,7 +304,8 @@ public class ViewManager implements IViewManager {
 
     	Object[] toPass = new Object[]{
         	_ballotLookupAdapter.getCastBallot(),
-        	_ballotLookupAdapter.getRaceGroups()
+        	_ballotLookupAdapter.getRaceGroups(),
+            _ballotLookupAdapter.getTitles()
     	};
 
         _commitEvent.notifyObservers(toPass);
@@ -379,7 +380,8 @@ public class ViewManager implements IViewManager {
 
         Object[] toPass = new Object[]{
                 _ballotLookupAdapter.getCastBallot(),
-                _ballotLookupAdapter.getRaceGroups()
+                _ballotLookupAdapter.getRaceGroups(),
+                _ballotLookupAdapter.getTitles()
         };
 
         _overrideCastConfirm.notifyObservers(toPass);

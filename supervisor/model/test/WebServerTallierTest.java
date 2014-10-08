@@ -57,6 +57,8 @@ public class WebServerTallierTest extends TestCase {
 
         /* Create a new set of race groups */
         List<List<String>> raceGroups = new ArrayList<>();
+        List<String> titles = new ArrayList<>();
+
 
         /* Set up two groups in this ballot [B0 B1 B2 B3 B4] [B5 B6 B7 B8 B9] */
         for (int i=0; i<2; i++) {
@@ -69,13 +71,14 @@ public class WebServerTallierTest extends TestCase {
 
             /* Add this group to the raceGroups */
             raceGroups.add(groupList);
+            titles.add("L" + i);
         }
 
         /* Encrypt 10 new ballotsASEs (all identical) */
         for (int i=0;i<10;i++) {
 
             ListExpression ballot = new ListExpression(singleVote);
-            ballotASEList.add(be.encryptWithProof("00"+i, ballot, raceGroups, publicKey, ASExpression.make("nonce")));
+            ballotASEList.add(be.encryptWithProof("00"+i, ballot, raceGroups, publicKey, ASExpression.make("nonce"), titles));
         }
 
         List<Ballot> ballotList = new ArrayList<>();
@@ -123,6 +126,7 @@ public class WebServerTallierTest extends TestCase {
 
         /* Create a new set of race groups */
         List<List<String>> raceGroups = new ArrayList<>();
+        List<String> titles = new ArrayList<>();
 
         /* Set up two groups in this ballot [B0 B1 B2 B3 B4] [B5 B6 B7 B8 B9] */
         for (int i=0; i<2; i++) {
@@ -135,13 +139,14 @@ public class WebServerTallierTest extends TestCase {
 
             /* Add this group to the raceGroups */
             raceGroups.add(groupList);
+            titles.add("L" + i);
         }
 
         /* Encrypt 1 new ballotsASE */
         ListExpression ballot = new ListExpression(singleVote);
 
         System.out.println("-----PRE  ENCRYPTION-----");
-        ASExpression ballotASE = be.encryptWithProof("000", ballot, raceGroups, publicKey, ASExpression.make("nonce"));
+        ASExpression ballotASE = be.encryptWithProof("000", ballot, raceGroups, publicKey, ASExpression.make("nonce"), titles);
         System.out.println("-----POST ENCRYPTION-----");
 
         List<Ballot> ballotList = new ArrayList<>();
@@ -234,6 +239,7 @@ public class WebServerTallierTest extends TestCase {
 
         /* Create a new set of race groups */
         List<List<String>> raceGroups = new ArrayList<>();
+        List<String> titles = new ArrayList<>();
 
         /* Set up two groups in this ballot [B0 B1 B2 B3 B4] [B5 B6 B7 B8 B9] */
         for (int i=0; i<2; i++) {
@@ -246,13 +252,14 @@ public class WebServerTallierTest extends TestCase {
 
             /* Add this group to the raceGroups */
             raceGroups.add(groupList);
+            titles.add("L" + i);
         }
 
         /* Encrypt 1 new ballotsASE */
         ListExpression ballot = new ListExpression(singleVote);
 
         System.out.println("-----PRE  ENCRYPTION-----");
-        ASExpression ballotASE = be.encryptWithProof("000", ballot, raceGroups, publicKey, ASExpression.make("nonce"));
+        ASExpression ballotASE = be.encryptWithProof("000", ballot, raceGroups, publicKey, ASExpression.make("nonce"), titles);
         System.out.println("-----POST ENCRYPTION-----");
 
         Ballot toDecrypt = Ballot.fromASE(ballotASE);
@@ -302,6 +309,7 @@ public class WebServerTallierTest extends TestCase {
 
             /* Create a new set of race groups */
             List<List<String>> raceGroups = new ArrayList<>();
+            List<String> titles = new ArrayList<>();
 
             /* Set up two groups in this ballot [B0 B1 B2 B3 B4] [B5 B6 B7 B8 B9] */
             for (int i = 0; i < 2; i++) {
@@ -314,13 +322,14 @@ public class WebServerTallierTest extends TestCase {
 
                 /* Add this group to the raceGroups */
                 raceGroups.add(groupList);
+                titles.add("L" + i);
             }
 
             /* Encrypt 1 new ballotsASE */
             ListExpression ballot = new ListExpression(singleVote);
 
             System.out.println("-----PRE  ENCRYPTION-----");
-            ASExpression ballotASE = be.encryptWithProof("000", ballot, raceGroups, publicKey, ASExpression.make("nonce"));
+            ASExpression ballotASE = be.encryptWithProof("000", ballot, raceGroups, publicKey, ASExpression.make("nonce"), titles);
             System.out.println("-----POST ENCRYPTION-----");
 
             Ballot toDecrypt = Ballot.fromASE(ballotASE);
@@ -356,23 +365,25 @@ public class WebServerTallierTest extends TestCase {
 
         /* Create a new set of race groups */
         List<List<String>> raceGroups = new ArrayList<>();
+        List<String> titles = new ArrayList<>();
 
         /* Set up two groups in this ballot [B0 B1 B2 B3 B4] [B5 B6 B7 B8 B9] */
         for (int i=0; i<2; i++) {
 
-            /* Set up for the next group */
-            List<String> groupList = new ArrayList<>();
 
-            for (int j = 0; j < 5; j++)
-                groupList.add("B"+ (5*i+j));
+            /* Set up for the next group */
+        List<String> groupList = new ArrayList<>();
+
+        for (int j = 0; j < 5; j++)
+            groupList.add("B"+ (5*i+j));
 
             /* Add this group to the raceGroups */
-            raceGroups.add(groupList);
-        }
-
+        raceGroups.add(groupList);
+        titles.add("L" + i);
+    }
         /* Encrypt 1 new ballotsASE */
         ListExpression ballot = new ListExpression(singleVote);
-        ASExpression ballotASE = be.encryptWithProof("000", ballot, raceGroups, publicKey, ASExpression.make("nonce"));
+        ASExpression ballotASE = be.encryptWithProof("000", ballot, raceGroups, publicKey, ASExpression.make("nonce"), titles);
 
         /* Get the vote "totals" */
         Map<String, BigInteger> voteTotals = WebServerTallier.getVoteTotals(Ballot.fromASE(ballotASE), 1, publicKey, privateKey);
@@ -429,6 +440,7 @@ public class WebServerTallierTest extends TestCase {
 
             /* Create a new set of race groups */
             List<List<String>> raceGroups = new ArrayList<>();
+            List<String> titles = new ArrayList<>();
 
             /* Set up two groups in this ballot [B0 B1 B2 B3 B4] [B5 B6 B7 B8 B9] */
             for (int i = 0; i < 2; i++) {
@@ -441,11 +453,12 @@ public class WebServerTallierTest extends TestCase {
 
                 /* Add this group to the raceGroups */
                 raceGroups.add(groupList);
+                titles.add("L" + i);
             }
 
             /* Encrypt 1 new ballotASE */
             ListExpression ballot = new ListExpression(singleVote);
-            ASExpression ballotASE = be.encryptWithProof("000", ballot, raceGroups, publicKey, ASExpression.make("nonce"));
+            ASExpression ballotASE = be.encryptWithProof("000", ballot, raceGroups, publicKey, ASExpression.make("nonce"), titles);
 
             /* Get the vote "totals" */
             Map<String, BigInteger> voteTotals = WebServerTallier.getVoteTotals(Ballot.fromASE(ballotASE), 1, publicKey, privateKey);

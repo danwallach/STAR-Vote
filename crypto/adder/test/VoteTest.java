@@ -1,14 +1,15 @@
 package crypto.adder.test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import crypto.adder.*;
 import junit.framework.TestCase;
 import junit.textui.TestRunner;
-import crypto.adder.AdderInteger;
-import crypto.adder.ElgamalCiphertext;
-import crypto.adder.InvalidVoteException;
-import crypto.adder.Vote;
+import sexpression.ASExpression;
+import sexpression.ListExpression;
+import sexpression.StringExpression;
 
 /**
  * Vote test.
@@ -30,7 +31,7 @@ public class VoteTest extends TestCase {
     /**
      * The test.
      */
-    public void test() {
+    public void testString() {
         try {
             Vote vote = Vote.fromString("p123G135H246");
 
@@ -208,12 +209,41 @@ public class VoteTest extends TestCase {
         //    fail();
         //}
     }
-    /**
-     * The main method.
-     *
-     * @param args the main parameters
-     */
-    public static void main(String[] args) {
-        TestRunner.run(VoteTest.class);
+
+    public void testSEXP(){
+        ElgamalCiphertext ciphertext1 = new ElgamalCiphertext(new AdderInteger("135"),
+                new AdderInteger("246"),
+                new AdderInteger("111"),
+                new AdderInteger("123"));
+
+        List<ElgamalCiphertext> cipherList = new ArrayList<>(1);
+        cipherList.add(ciphertext1);
+
+        ListExpression choices = new ListExpression("B0", "B1", "B2");
+
+        Vote myVote= new Vote(cipherList, new ArrayList<>(Arrays.asList(choices.getArray())));
+
+        myVote.setRaceTitle("L1");
+
+        List<ASExpression> cList = new ArrayList<>();
+
+        for(ElgamalCiphertext text : cipherList)
+            cList.add(text.toASE());
+
+        ListExpression vote = new ListExpression(StringExpression.makeString("vote"), new ListExpression(cList));
+
+        ListExpression choicesExp = new ListExpression(StringExpression.makeString("vote-ids"), choices);
+
+        ListExpression titleExp = new ListExpression("title", "L1");
+
+        ListExpression expected = new ListExpression(vote, choicesExp, ListExpression.EMPTY, titleExp);
+
+        /* Test toASE*/
+        assertEquals(myVote.toASE().toString(), expected.toString());
+
+        Vote newVote = Vote.fromASE(expected);
+
+        /* Test fromASE */
+        assertEquals(myVote.toASE().toString(), newVote.toASE().toString());
     }
 }

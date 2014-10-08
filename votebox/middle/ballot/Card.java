@@ -368,4 +368,8 @@ public class Card {
         if(!secondary.equals(""))
             writeInValue += "^" + secondary;   /* Note that the carat here is a delimiter */
     }
+
+    public String getTitleLabelUID() throws IncorrectTypeException {
+        return _properties.getString("TitleLabelUID");
+    }
 }

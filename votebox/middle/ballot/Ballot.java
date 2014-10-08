@@ -28,6 +28,7 @@ import java.util.List;
 
 import sexpression.ASExpression;
 import sexpression.ListExpression;
+import votebox.middle.IncorrectTypeException;
 import votebox.middle.Properties;
 import votebox.middle.driver.*;
 
@@ -309,5 +310,19 @@ public final class Ballot {
      */
     public List<List<String>> getRaceGroups(){
     	return _raceGroups;
+    }
+
+    public List<String> getRaceTitles(){
+
+        ArrayList<String> labelUIDs = new ArrayList<>();
+        for(Card card : _cards) {
+            try {
+                labelUIDs.add(card.getTitleLabelUID());
+            } catch (IncorrectTypeException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return labelUIDs;
     }
 }

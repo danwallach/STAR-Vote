@@ -227,7 +227,7 @@ public class NIZKsPerformanceTest {
 			List<List<String>> groups = _ballot.getRaceGroups();
 
 			long encryptStart = System.currentTimeMillis();
-			ListExpression toDecrypt = BallotEncrypter.SINGLETON.encryptWithProof("0", exp, groups, _adderPublicKey, ASExpression.make("nonce"));
+			ListExpression toDecrypt = BallotEncrypter.SINGLETON.encryptWithProof("0", exp, groups, _adderPublicKey, ASExpression.make("nonce"), _ballot.getRaceTitles());
 
             System.out.println(((ListExpression)(toDecrypt.get(2))).get(0));
 
@@ -361,7 +361,8 @@ public class NIZKsPerformanceTest {
             ListExpression exp = _ballot.getCastBallot();
             List<List<String>> groups = _ballot.getRaceGroups();
 
-            ListExpression encBallot = BallotEncrypter.SINGLETON.encryptWithProof("0", exp, groups, AdderKeyManipulator.generateFinalPublicKey(_adderPublicKey), ASExpression.make("nonce"));
+            ListExpression encBallot = BallotEncrypter.SINGLETON.encryptWithProof("0", exp, groups,
+                    AdderKeyManipulator.generateFinalPublicKey(_adderPublicKey), ASExpression.make("nonce"), _ballot.getRaceTitles());
 
             ASExpression nonce = StringExpression.makeString(seed);
             String bid = (r.nextInt() + "");

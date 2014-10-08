@@ -29,7 +29,6 @@ import auditorium.NetworkException;
 import crypto.BallotEncrypter;
 import crypto.PiecemealBallotEncrypter;
 import crypto.adder.AdderInteger;
-import crypto.adder.PublicKey;
 import preptool.model.language.Language;
 import preptool.model.layout.manager.RenderingUtils;
 import printer.Printer;
@@ -273,8 +272,11 @@ public class VoteBox{
 
                         else {
 
+                            if( ((List<List<String>>) arg[1]).size() != ((List<String>)arg[2]).size())
+                                throw new RuntimeException("There were not enough titles for all the race groups!");
+
                             ASExpression encBallot = BallotEncrypter.SINGLETON.encryptWithProof(bid, ballot,
-                                    (List<List<String>>) arg[1], _constants.getKeyStore().loadAdderPublicKey(), nonce);
+                                    (List<List<String>>) arg[1],_constants.getKeyStore().loadAdderPublicKey(), nonce, (List<String>)arg[2]);
 
                             auditorium.announce(new CommitBallotEvent(mySerial, nonce,
                                     encBallot.toVerbatim(), bid, precinct));
@@ -473,8 +475,11 @@ public class VoteBox{
 
                         } else {
 
+                            if( ((List<List<String>>) arg[1]).size() != ((List<String>)arg[2]).size())
+                                throw new RuntimeException("There were not enough titles for all the race groups!");
+
                             ASExpression encBallot = BallotEncrypter.SINGLETON.encryptWithProof(bid, ballot,
-                                    (List<List<String>>) arg[1], _constants.getKeyStore().loadAdderPublicKey(), nonce);
+                                    (List<List<String>>) arg[1], _constants.getKeyStore().loadAdderPublicKey(), nonce, (List<String>)arg[2]);
 
 
                             auditorium.announce(new CommitBallotEvent(mySerial,

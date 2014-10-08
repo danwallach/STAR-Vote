@@ -92,7 +92,7 @@ public class PiecemealBallotEncrypter {
 		List<List<String>> groups = new ArrayList<>();
 		groups.add(cardGroup);
 
-		_voteCache.put(id, BallotEncrypter.SINGLETON.encryptWithProof(id, singleCard, groups, publicKey, ASExpression.make("nonce")));
+//		_voteCache.put(id, BallotEncrypter.SINGLETON.encryptWithProof(id, singleCard, groups, null, publicKey, ASExpression.make("nonce")));
 
 		List<AdderInteger> randoms = BallotEncrypter.SINGLETON.getRecentAdderRandom().get(0);
 		List<ASExpression> randomExps = new ArrayList<>();

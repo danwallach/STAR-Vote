@@ -105,6 +105,8 @@ public interface IBallotLookupAdapter {
 	 * @return a List of the groups of race-ids that make up each race.  Used to construct NIZKs.
 	 */
 	public List<List<String>> getRaceGroups();
+
+    public List<String> getTitles();
 	
 	/**
 	 * @return a Map of each affected race (UID) to its cast ballot form.

@@ -85,7 +85,8 @@ public class BallotEncrypter {
      * @param nonce
      * @return               a ListExpression in the form (((vote [vote]) (vote-ids ([id1], [id2], ...)) (proof [proof])) ... (public-key [key]) (size [size]))
      */
-    public ListExpression encryptWithProof(String bid, ListExpression ballot, List<List<String>> raceGroups, PublicKey pubKey, ASExpression nonce, Integer size){
+    public ListExpression encryptWithProof(String bid, ListExpression ballot, List<List<String>> raceGroups,
+                                           PublicKey pubKey, ASExpression nonce, List<String> titles){
         adderRandom = new ArrayList<>();
         List<ASExpression> subBallots = new ArrayList<>();
 
@@ -126,7 +127,9 @@ public class BallotEncrypter {
 
 
         /* Iterate over the races (pull out each group of candidates) */
-        for(List<String> group : raceGroups){
+        for(int i = 0; i < raceGroups.size(); i++){
+            List<String> group = raceGroups.get(i);
+            String title = titles.get(i);
 
             /* Create an ArrayList to hold the vote records for a single race */
             List<ASExpression> races = new ArrayList<>();
@@ -141,7 +144,7 @@ public class BallotEncrypter {
             System.out.println("Current subBallot: " + subBallot);
 
             /* Encrypt the mapped sub-ballot with the elGamal Public key and the random generated writeInKey */
-            ListExpression encryptedSubBallot = encryptSubBallotWithProof(subBallot, pubKey, writeInKey);
+            ListExpression encryptedSubBallot = encryptSubBallotWithProof(subBallot, pubKey, writeInKey, title);
 
             /* Add the encrypted sub-ballot to the list of sub-ballots (this will be the entire ballot eventually) */
             subBallots.add(encryptedSubBallot);
@@ -160,16 +163,9 @@ public class BallotEncrypter {
 
         ASExpression keyExp = AdderKeyManipulator.generateFinalPublicKey(pubKey).toASE();
 
-        ASExpression sizeExp = new ListExpression(StringExpression.makeString("size"), StringExpression.makeString(size.toString()));
-
-        recentBallot = new ListExpression(StringExpression.makeString("ballot"), StringExpression.makeString(bid), votes, nonce, keyExp, sizeExp);
+        recentBallot = new ListExpression(StringExpression.makeString("ballot"), StringExpression.makeString(bid), votes, nonce, keyExp);
 
         return recentBallot;
-    }
-
-    /* Overloaded version of encryptWithProof */
-    public ListExpression encryptWithProof(String bid, ListExpression ballot, List<List<String>> raceGroups, PublicKey pubKey, ASExpression nonce) {
-        return encryptWithProof(bid, ballot, raceGroups, pubKey, nonce, 1);
     }
     
     /**
@@ -181,7 +177,7 @@ public class BallotEncrypter {
      * @return                  A ListExpression of the form ((vote [vote]) (vote-ids ([id1], [id2], ...)) (proof [proof]) (public-key [key]))
      */
     @SuppressWarnings("unchecked")
-    private ListExpression encryptSubBallotWithProof(ListExpression subBallot, PublicKey pubKey, byte[] writeInKey){
+    private ListExpression encryptSubBallotWithProof(ListExpression subBallot, PublicKey pubKey, byte[] writeInKey, String title){
 
         List<AdderInteger> value    = new ArrayList<>();
         List<ASExpression> valueIds = new ArrayList<>();
@@ -240,7 +236,7 @@ public class BallotEncrypter {
 
         proof.compute(vote, finalPubKey, value, 0, 1);
 
-        Vote outVote = new Vote(vote.getCipherList(), valueIds, proof);
+        Vote outVote = new Vote(vote.getCipherList(), valueIds, proof, title);
 
         return outVote.toASE();
 

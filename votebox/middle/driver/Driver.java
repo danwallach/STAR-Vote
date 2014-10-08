@@ -151,6 +151,10 @@ public class Driver {
 			return _ballot.getRaceGroups();
 		}
 
+        public List<String> getTitles() {
+            return _ballot.getRaceTitles();
+        }
+
 		public Map<String, List<ASExpression>> getAffectedRaces(List<String> affectedUIDs) {
 			/* TODO: Implement remainder of piecemeal */
 			throw new RuntimeException("Not implemented");

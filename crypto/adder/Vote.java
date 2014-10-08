@@ -27,11 +27,20 @@ public class Vote implements Serializable {
     /** List of the race ID's of the possible choices in this race */
     private List<ASExpression> choices;
 
+    /** The title for the race corresponding to this vote. Note that it will simply be a UID */
+    private String title;
+
     /**
      * Default constructor. Use when you want to load a vote from
      * a string.
+     * @param cipherList
+     * @param valueIds
+     * @param proof
+     * @param title
      */
-    public Vote() {
+    public Vote(List<ElgamalCiphertext> cipherList, List<ASExpression> valueIds, VoteProof proof, String title) {
+        this(cipherList, valueIds, proof);
+        this.title = title;
 
     }
 
@@ -49,7 +58,7 @@ public class Vote implements Serializable {
 
         this.choices = choices;
 
-        proof = new VoteProof();
+
     }
 
     /**
@@ -81,6 +90,14 @@ public class Vote implements Serializable {
      */
     public List<ElgamalCiphertext> getCipherList() {
         return cipherList;
+    }
+
+    public String getRaceTitle() {
+        return title;
+    }
+
+    public void setRaceTitle(String title) {
+        this.title = title;
     }
 
     /**
@@ -225,14 +242,23 @@ public class Vote implements Serializable {
         ListExpression vote = new ListExpression(StringExpression.makeString("vote"), new ListExpression(cList));
 
         ListExpression choicesExp = new ListExpression(StringExpression.makeString("vote-ids"), new ListExpression(choices));
+
+        ListExpression titleExp = new ListExpression("title", title);
+
+        ASExpression proofExp;
+
+        if(proof != null)
+            proofExp = proof.toASE();
+        else
+            proofExp = ListExpression.EMPTY;
     	
-    	return new ListExpression(vote, choicesExp, proof.toASE());
+    	return new ListExpression(vote, choicesExp, proofExp, titleExp);
     }
     
     /**
      * Method for interop with VoteBox's S-Expression system.
      *
-     * Expecting an ASE of the form ((vote [vote...])(vote-ids [ids...])(vote-proof [proofs...]))
+     * Expecting an ASE of the form ((vote [vote...])(vote-ids [ids...])(vote-proof [proofs...](title [title])
      * 
      * @param ase       S-Expression representation of a Vote
      * @return          the Vote equivalent of ase
@@ -246,6 +272,7 @@ public class Vote implements Serializable {
         ListExpression voteExp = (ListExpression) exp.get(0);
         ListExpression choiceExp = (ListExpression) exp.get(1);
         ListExpression proofExp = (ListExpression) exp.get(2);
+        ListExpression titleExp = (ListExpression) exp.get(3);
 
         List<ElgamalCiphertext> vote = new ArrayList<>();
         List<ASExpression> choices = new ArrayList<>();
@@ -261,12 +288,21 @@ public class Vote implements Serializable {
         if(!(choiceExp.get(0)).toString().equals("vote-ids"))
             throw new RuntimeException("Not vote ids!");
 
+        if(!(titleExp.get(0)).toString().equals("title"))
+            throw new RuntimeException("No title!");
+
         ListExpression choiceList = (ListExpression) choiceExp.get(1);
 
         for(ASExpression choice : choiceList)
             choices.add(choice);
 
-    	return new Vote(vote, choices, VoteProof.fromASE(proofExp));
+        VoteProof proof;
+        if(proofExp.equals(ListExpression.EMPTY))
+            proof = null;
+        else
+            proof = VoteProof.fromASE(proofExp);
+
+    	return new Vote(vote, choices, proof, titleExp.get(1).toString());
     }
 
 }
