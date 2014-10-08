@@ -1,9 +1,8 @@
 package controllers;
 
-import models.CastBallot;
-import models.ChallengedBallot;
-import models.User;
-import models.VotingRecord;
+import auditorium.SimpleKeyStore;
+import crypto.adder.PrivateKey;
+import models.*;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -185,7 +184,10 @@ public class AuditServer extends Controller {
     
     @Security.Authenticated(Secured.class)
     public static Result publishresults() {
-        
+
+        SimpleKeyStore keyStore = new SimpleKeyStore("/lib/keys/");
+        PrivateKey privateKey = keyStore.loadAdderPrivateKey();
+
         /* Reverse routing */
         String records = request().getQueryString("records");
 
@@ -194,8 +196,6 @@ public class AuditServer extends Controller {
         Map<String, Ballot> bigTotal = null /* get this from database*/;
         Map<String, List<Ballot>> precinctTotals = new TreeMap<>();
         Map<String, Precinct> allPrecincts = new TreeMap<>();
-
-        /* For size? or add field to ballot? */Map<String, Integer> size = new TreeMap<>();
         
         /* Grab each checked precinct and publish it */
         while(start < records.length()) {
@@ -231,8 +231,6 @@ public class AuditServer extends Controller {
                 precinctTotals.get(precinctID).add(p.getCastBallotTotal());
             }
 
-            /* TODO keep track of the size of the tallied ballots */
-
             /* Move on to the next VotingRecord to be published */
             start = end+1;
         }
@@ -261,11 +259,11 @@ public class AuditServer extends Controller {
             Ballot b = entry.getValue();
             String precinctID = entry.getKey();
 
-            decryptedResults.put(precinctID, WebServerTallier.getVoteTotals(b, size, allPrecincts.get(precinctID).getPublicKey(), privateKey));
+            decryptedResults.put(precinctID, WebServerTallier.getVoteTotals(b, b.getSize(), allPrecincts.get(precinctID).getPublicKey(), privateKey));
 
+            /* Store totals in database */
+            DecryptedResult.create(new DecryptedResult(precinctID, decryptedResults.get(precinctID), b));
         }
-
-        /* Store decrypted bigTotal ballot in database */
 
         /* Return the webpage */
         return ok(adminpublish.render(VotingRecord.getUnpublished(), VotingRecord.getPublished()));

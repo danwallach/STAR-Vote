@@ -39,6 +39,8 @@ public class Ballot implements Serializable {
     /** public key used with the encryption of the ballot */
     private PublicKey publicKey;
 
+    private final Integer size;
+
 
     /**
      * Constructor for a ballot, takes in all of the parameters the supervisor receives on committing a ballot.
@@ -48,40 +50,49 @@ public class Ballot implements Serializable {
      * @param nonce             the nonce associated with the Votebox voting session
      */
     public Ballot(String bid, List<Vote> ballot, ASExpression nonce, PublicKey publicKey){
+        this(bid, ballot, nonce, publicKey, new Integer(1));
+    }
+
+    public Ballot(String bid, List<Vote> ballot, ASExpression nonce, PublicKey publicKey, Integer size) {
         this.bid = bid;
         this.ballot = ballot;
         this.nonce = nonce;
         this.publicKey = publicKey;
+        this.size = size;
     }
 
     /**
-     * @return the ballot identifier
+     * @return  the ballot identifier
      */
     public String getBid() {
         return bid;
     }
 
     /**
-     * @return the ballot as an array of votes
+     * @return  the ballot as an array of votes
      */
     public List<Vote> getVotes() {
         return ballot;
     }
 
     /**
-     * @return the nonce associated with this ballot's voting session
+     * @return  the nonce associated with this ballot's voting session
      */
     public ASExpression getNonce() {
         return nonce;
     }
 
-
     /**
-     * @return return the public key that was used to encrypt this ballot
+     * @return  the public key that was used to encrypt this ballot
      */
     public PublicKey getPublicKey() {
         return publicKey;
     }
+
+    /**
+     * @return  the number of ballots tallied into this ballot (default: 1)
+     */
+    public Integer getSize() { return size; }
 
     /**
      * @return a ListExpression representation of the ballot
@@ -108,6 +119,7 @@ public class Ballot implements Serializable {
         elements.add(getVoteASE());
         elements.add(nonce);
         elements.add(publicKey.toASE());
+        elements.add(StringExpression.makeString(size.toString()));
 
         /* Build a list expression based on the data here contained */
         return new ListExpression(elements);
@@ -144,6 +156,8 @@ public class Ballot implements Serializable {
 
         PublicKey key = PublicKey.fromASE(exp.get(4));
 
-        return new Ballot(bid, vList, nonce, key);
+        Integer size = Integer.parseInt(((ListExpression)exp.get(5)).get(1).toString());
+
+        return new Ballot(bid, vList, nonce, key, size);
     }
 }

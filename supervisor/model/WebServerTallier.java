@@ -29,6 +29,8 @@ public class WebServerTallier {
      */
     public static Ballot tally(String ID, List<Ballot> toSum, PublicKey publicKey){
 
+        int size=0;
+
         /* The results of the election are stored by race ID in this map */
         Map<String, Election> results = new HashMap<>();
 
@@ -77,6 +79,8 @@ public class WebServerTallier {
                     /* Now save the result until we're ready to decrypt the totals */
                     results.put(raceID, election);
                 }
+
+                size += bal.getSize();
             }
             catch (Exception e) {
                 Bugout.err("Malformed ballot received <" + e.getMessage() + ">");
@@ -116,13 +120,13 @@ public class WebServerTallier {
         ASExpression nonce = StringExpression.makeString(voteList.getSHA256());
 
         /* Return the Ballot of all the summed race results */
-        return new Ballot(ID, votes, nonce, publicKey);
+        return new Ballot(ID, votes, nonce, publicKey, size);
     }
 
     /**
      * Decrypts a Ballot.
      *
-     * @param toDecrypt     the Ballot to be decrypted -- it is expected that this is a challenged ballot
+     * @param toDecrypt     the Ballot to be decrypted -- it is expected that this is a challenged ballot with size of 1
      * @return              a list of candidates that were selected
      */
     public static List<String> decrypt(Ballot toDecrypt, PublicKey publicKey, PrivateKey privateKey) {
@@ -143,7 +147,7 @@ public class WebServerTallier {
      * Decrypts all the Ballots in a List.
      *
      * @param toDecrypt     the List of Ballots to be decrypted -- it is expected that
-     *                      these are challenged ballots
+     *                      these are challenged ballots with sizes of 1
      */
     public static List<List<String>> decryptAll(List<Ballot> toDecrypt, PublicKey publicKey, PrivateKey privateKey) {
 
@@ -162,7 +166,7 @@ public class WebServerTallier {
      * @see crypto.BallotEncrypter#adderDecryptWithKey(Election, PublicKey, PrivateKey)
      *
      * @param toTotal       the previously tallied Ballot from which to extract the candidate sums
-     * @param size          the "size" of the Ballot (the number of combined Ballots added to create this Ballot)
+     * @param size          the "size" of the Ballot (the number of combined Ballots tallied to create this Ballot)
      * @param publicKey     the public key
      * @param privateKey    the private key
      * @return              a mapping of candidates to vote totals for all of the races in toTotal
