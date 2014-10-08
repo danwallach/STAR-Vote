@@ -3,9 +3,7 @@ package models;
 import play.db.ebean.Model;
 import supervisor.model.Ballot;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
@@ -32,7 +30,8 @@ public class DecryptedResult extends Model {
 
     public String precinctID;
 
-    @OneToMany
+    @OneToMany(mappedBy="owner", cascade= CascadeType.ALL, fetch= FetchType.EAGER)
+    @MapKey(name="raceName")
     public Map<String, RaceResult> raceResults = new HashMap<>();
 
     public Ballot precinctResultsBallot;
@@ -41,7 +40,7 @@ public class DecryptedResult extends Model {
      * Constructor
      *
      * @param precinctID                the ID of the precinct of these results
-     * @param raceResults
+     * @param raceResults               the map of race names to mapping of candidates to their totals
      * @param precinctResultsBallot     the encrypted totalled ballot for this precinct
      */
     public DecryptedResult(String precinctID, Map<String, Map<String, BigInteger>> raceResults, Ballot precinctResultsBallot) {
@@ -51,7 +50,7 @@ public class DecryptedResult extends Model {
 
 
         for(Map.Entry<String, Map<String, BigInteger>> raceResult : raceResults.entrySet())
-            this.raceResults.put(raceResult.getKey(), new RaceResult(raceResult.getKey(), raceResult.getValue()));
+            this.raceResults.put(raceResult.getKey(), new RaceResult(this, raceResult.getKey(), raceResult.getValue()));
     }
 
     /**

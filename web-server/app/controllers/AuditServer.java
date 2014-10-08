@@ -10,7 +10,7 @@ import play.mvc.Security;
 import sexpression.stream.Base64;
 import supervisor.model.Ballot;
 import supervisor.model.Precinct;
-import supervisor.model.WebServerTallier;
+import utilities.WebServerTallier;
 import views.html.*;
 
 import java.io.ByteArrayInputStream;
@@ -250,19 +250,17 @@ public class AuditServer extends Controller {
             bigTotal.put(precinctID, b);
         }
 
-        /* This will be the decrypted representation of the results by precinct */
-        Map<String, Map<String, BigInteger>> decryptedResults = new TreeMap<>();
-
         /* Decrypt bigTotal */
         for(Map.Entry<String, Ballot> entry : bigTotal.entrySet()) {
 
             Ballot b = entry.getValue();
             String precinctID = entry.getKey();
 
-            decryptedResults.put(precinctID, WebServerTallier.getVoteTotals(b, b.getSize(), allPrecincts.get(precinctID).getPublicKey(), privateKey));
+            /* This will be the decrypted representation of the results by race */
+            Map<String, Map<String, BigInteger>> decryptedResults = WebServerTallier.getVoteTotals(b, b.getSize(), allPrecincts.get(precinctID).getPublicKey(), privateKey);
 
             /* Store totals in database */
-            DecryptedResult.create(new DecryptedResult(precinctID, decryptedResults.get(precinctID), b));
+            DecryptedResult.create(new DecryptedResult(precinctID, decryptedResults, b));
         }
 
         /* Return the webpage */

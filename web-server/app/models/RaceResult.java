@@ -2,9 +2,7 @@ package models;
 
 import play.db.ebean.Model;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
@@ -29,23 +27,30 @@ public class RaceResult extends Model {
     @Id
     public long id;
 
+    @JoinColumn(name="race_id")
     public String raceName;
 
-    @OneToMany
+    @ElementCollection
+    //@MapKeyColumn(name="name")
+    //@Column(name="value")
     public Map<String, BigInteger> candidateResults = new HashMap<>();
+
+    @ManyToOne
+    public DecryptedResult owner;
 
     /**
      * Constructor
      *
-     * @param raceName
-     * @param candidateResults          the map of candidates to their vote totals
+     * @param parent                the DecryptedResult (precinct) with which this RaceResult (race) is associated
+     * @param raceName              the name/id of the race for this RaceResult
+     * @param candidateResults      the map of candidates to their vote totals
      */
-    public RaceResult(String raceName, Map<String, BigInteger> candidateResults) {
+    public RaceResult(DecryptedResult parent, String raceName, Map<String, BigInteger> candidateResults) {
 
-        this.raceName             = raceName;
-        this.candidateResults       = candidateResults;
+        owner                   = parent;
+        this.raceName           = raceName;
+        this.candidateResults   = candidateResults;
     }
-
 
     /**
      * @see play.db.ebean.Model.Finder#all()

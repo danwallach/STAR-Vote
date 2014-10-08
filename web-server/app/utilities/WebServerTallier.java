@@ -158,7 +158,7 @@ public class WebServerTallier {
      * @param size          the "size" of the Ballot (the number of combined Ballots added to create this Ballot)
      * @param publicKey     the public key
      * @param privateKey    the private key
-     * @return              a mapping of candidates to vote totals for all of the races in toTotal
+     * @return              a mapping of candidates to vote totals (mapped to race names) for each race in a Ballot
      */
     public static Map<String, Map<String,BigInteger>> getVoteTotals(Ballot toTotal, int size, PublicKey publicKey, PrivateKey privateKey) {
 
@@ -172,7 +172,7 @@ public class WebServerTallier {
         /* Iterate over each of the races */
         for (Vote v: toTotal.getVotes()) {
 
-            String raceName = v.getRaceName();
+            String raceName = v.getRaceTitle();
 
             /* Get the candidates */
             List<ASExpression> raceCandidates = v.getChoices();
