@@ -126,15 +126,6 @@ public class AuditServer extends Controller {
         return ok(adminlogin.render(form(Login.class), null));
     }
 
-    /**
-     * Serves the admin login screen.
-     *
-     * @return      the admin login screen
-     */
-    public static Result adminlogin(){
-        return ok(adminlogin.render(form(Login.class), ""));
-    }
-
     @Security.Authenticated(Secured.class)
     public static Result adminmain() {
         return ok(adminmain.render());
@@ -190,17 +181,14 @@ public class AuditServer extends Controller {
     @Security.Authenticated(Secured.class)
     public static Result publishresults() {
 
-        SimpleKeyStore keyStore = new SimpleKeyStore("/lib/keys/");
-        PrivateKey privateKey = keyStore.loadAdderPrivateKey();
-
         /* Reverse routing */
         String records = request().getQueryString("records");
 
         int start = 0;
 
-        Map<String, Ballot> bigTotal = null /* get this from database*/;
+        Map<String, Ballot> summedTotals = null /* get this from database*/;
         Map<String, List<Ballot>> precinctTotals = new TreeMap<>();
-        Map<String, Precinct> allPrecincts = new TreeMap<>();
+        Map<String, Precinct> precinctMap = new TreeMap<>();
         
         /* Grab each checked precinct and publish it */
         while(start < records.length()) {
@@ -210,68 +198,118 @@ public class AuditServer extends Controller {
             if (end == -1)
                 end = records.length();
 
+            /* Get the precinct ID from the query string */
             String precinctID = records.substring(start, end);
+
             System.out.println(precinctID);
 
+            /* Pull out the current record to be published */
             VotingRecord vr = VotingRecord.getRecord(precinctID);
             
             /* Publish the record */
             vr.publish();
             
-            /* Get the Precincts */
-            Map<String, Precinct> precinctMap = vr.getPrecinctMap();
-            allPrecincts.putAll(precinctMap);
+            /* Get the Precincts from this VotingRecord*/
+            precinctMap = vr.getPrecinctMap();
 
-            /* Get the cast ballot totals for each precinct in this voting record */
-            for (Map.Entry<String, Precinct> entry : precinctMap.entrySet()) {
-
-                Precinct p = entry.getValue();
-                precinctID = entry.getKey();
-
-                /* If we haven't yet seen this precinct, initialise the list */
-                if(precinctTotals.get(precinctID) == null)
-                    precinctTotals.put(precinctID, new ArrayList<Ballot>());
-
-                /* Store the total for that precinct in the list */
-                precinctTotals.get(precinctID).add(p.getCastBallotTotal());
-            }
+            /* Add the results from the Precincts in this VotingRecord to precinctTotals */
+            precinctTotals = updatePrecinctTotals(precinctMap);
 
             /* Move on to the next VotingRecord to be published */
             start = end+1;
         }
 
-        /* Update summed totals */
-        for (Map.Entry<String, Ballot> entry : bigTotal.entrySet()) {
+        /* Combine the newly published result totals with the old totals */
+        updateSummedTotals(summedTotals, precinctTotals, precinctMap);
 
-            String precinctID = entry.getKey();
-
-            /* Add in any pre-existing totals */
-            precinctTotals.get(precinctID).add(entry.getValue());
-
-            /* Tally the new precinctTotals using WebServerTallier*/
-            Ballot b = WebServerTallier.tally(precinctID, precinctTotals.get(precinctID), allPrecincts.get(precinctID).getPublicKey());
-
-            /* Replace old total with new total */
-            bigTotal.put(precinctID, b);
-        }
-
-        /* Decrypt bigTotal */
-        for(Map.Entry<String, Ballot> entry : bigTotal.entrySet()) {
-
-            Ballot b = entry.getValue();
-            String precinctID = entry.getKey();
-
-            /* This will be the decrypted representation of the results by race */
-            Map<String, Map<String, BigInteger>> decryptedResults = WebServerTallier.getVoteTotals(b, b.getSize(), allPrecincts.get(precinctID).getPublicKey(), privateKey);
-
-            /* Store totals in database */
-            DecryptedResult.create(new DecryptedResult(precinctID, decryptedResults, b));
-        }
+        /* Decrypt and store the final updated totals for each Precinct */
+        storeDecryptedSummedTotals(summedTotals, precinctMap);
 
         /* Return the webpage */
         return ok(adminpublish.render(VotingRecord.getUnpublished(), VotingRecord.getPublished()));
     }
 
+    /**
+     * Adds the summed result Ballots for each of the Precincts in this precinctMap to precinctTotals. Helper method
+     * for publishresults()
+     * 
+     * @param precinctMap   the map of just-published Precinct result totals, mapped from precinct ID to a list of ballots
+     *                      
+     * @return the updated precinctTotals
+     */
+    private static Map<String, List<Ballot>> updatePrecinctTotals(Map<String, Precinct> precinctMap) {
+
+        Map<String, List<Ballot>> precinctTotals = new TreeMap<>();
+
+        /* Get the cast ballot totals for each precinct in this voting record */
+        for (Map.Entry<String, Precinct> entry : precinctMap.entrySet()) {
+
+            Precinct p = entry.getValue();
+            String precinctID = entry.getKey();
+
+            /* Initialise the list for this precinct if we haven't yet seen it */
+            if (precinctTotals.get(precinctID) != null)
+                precinctTotals.put(precinctID, new ArrayList<Ballot>());
+
+            /* Store the total for that precinct in the list */
+            precinctTotals.get(precinctID).add(p.getCastBallotTotal());
+        }
+
+        return precinctTotals;
+    }
+
+    /**
+     * Adds newly published results in precinctTotals to summedTotals (the public running tally). Helper method for
+     * publishresults()
+     *
+     * @param precinctTotals    the map of just-published Precinct result totals, mapped from precinct ID to a list of ballots
+     * @param precinctMap       the map of Precincts from precinct IDs
+     * @param summedTotals      the public running tally of totals mapped from precinct ID to precinct results Ballot
+     */
+    private static void updateSummedTotals(Map<String, Ballot> summedTotals, Map<String, List<Ballot>> precinctTotals, Map<String, Precinct> precinctMap) {
+
+        /* Update summed totals */
+        for (Map.Entry<String, Ballot> entry : summedTotals.entrySet()) {
+
+            /* Find for which Precinct this is */
+            String precinctID = entry.getKey();
+
+            /* Add in any pre-existing totals from summedTotals */
+            precinctTotals.get(precinctID).add(entry.getValue());
+
+            /* Tally the new precinctTotals using WebServerTallier*/
+            Ballot b = WebServerTallier.tally(precinctID, precinctTotals.get(precinctID), precinctMap.get(precinctID).getPublicKey());
+
+            /* Replace old totals with new totals */
+            summedTotals.put(precinctID, b);
+        }
+    }
+
+    /**
+     * Decrypts and stores the summed totals (the public running tally). Helper method for publishresults()
+     *
+     * @param summedTotals  the public running tally of totals mapped from precinct ID to precinct results Ballot
+     * @param precinctMap   the map of Precincts from precinct IDs
+     */
+    private static void storeDecryptedSummedTotals(Map<String, Ballot> summedTotals, Map<String, Precinct> precinctMap) {
+
+        SimpleKeyStore keyStore = new SimpleKeyStore("/lib/keys/");
+        PrivateKey privateKey = keyStore.loadAdderPrivateKey();
+
+        /* Decrypt summedTotals */
+        for(Map.Entry<String, Ballot> entry : summedTotals.entrySet()) {
+
+            Ballot b = entry.getValue();
+            String precinctID = entry.getKey();
+
+            /* This will be the decrypted representation of the results by race */
+            Map<String, Map<String, BigInteger>> decryptedResults = WebServerTallier.getVoteTotals(b, b.getSize(), precinctMap.get(precinctID).getPublicKey(), privateKey);
+
+            /* Store totals in database */
+            DecryptedResult.create(new DecryptedResult(precinctID, decryptedResults, b));
+        }
+
+    }
     /**
      * Page for requesting challenged ballot render
      *
@@ -401,7 +439,7 @@ public class AuditServer extends Controller {
         session().clear();
         flash("success", "You've been logged out");
         return redirect(
-            routes.AuditServer.adminverify()
+                routes.AuditServer.adminverify()
         );
     }
     
