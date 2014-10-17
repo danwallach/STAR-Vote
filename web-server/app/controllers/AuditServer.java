@@ -49,6 +49,9 @@ public class AuditServer extends Controller {
         return ok(index.render()); 
     }
 
+    /**
+     * Loads testing data for the webserver
+     */
     private static void loadTestRecords() {
 
         Map<String, Map<String, Precinct>> records = new HashMap<>();
@@ -186,7 +189,7 @@ public class AuditServer extends Controller {
 
         int start = 0;
 
-        Map<String, Ballot> summedTotals = null /* get this from database*/;
+        Map<String, Ballot> summedTotals = getSummedTotals();
         Map<String, List<Ballot>> precinctTotals = new TreeMap<>();
         Map<String, Precinct> precinctMap = new TreeMap<>();
         
@@ -230,6 +233,20 @@ public class AuditServer extends Controller {
     }
 
     /**
+     * @return a Map of the current summed results Ballot for each Precinct by precinct ID
+     */
+    private static Map<String, Ballot> getSummedTotals() {
+
+        Map<String, Ballot> summedTotals = new TreeMap<>();
+
+        /* Extract the precinct ID and results Ballot from each DecryptedResult */
+        for(DecryptedResult result : DecryptedResult.all())
+            summedTotals.put(result.precinctID, result.precinctResultsBallot);
+
+        return summedTotals;
+    }
+
+    /**
      * Adds the summed result Ballots for each of the Precincts in this precinctMap to precinctTotals. Helper method
      * for publishresults()
      * 
@@ -268,14 +285,18 @@ public class AuditServer extends Controller {
      */
     private static void updateSummedTotals(Map<String, Ballot> summedTotals, Map<String, List<Ballot>> precinctTotals, Map<String, Precinct> precinctMap) {
 
-        /* Update summed totals */
-        for (Map.Entry<String, Ballot> entry : summedTotals.entrySet()) {
+        /* Update summed totals that already exist */
+        for (Map.Entry<String, List<Ballot>> entry : precinctTotals.entrySet()) {
 
             /* Find for which Precinct this is */
             String precinctID = entry.getKey();
 
+            /* Pull out the preExisting total if it exists */
+            Ballot preExisting = summedTotals.get(precinctID);
+
             /* Add in any pre-existing totals from summedTotals */
-            precinctTotals.get(precinctID).add(entry.getValue());
+            if(preExisting != null)
+                precinctTotals.get(precinctID).add(preExisting);
 
             /* Tally the new precinctTotals using WebServerTallier*/
             Ballot b = WebServerTallier.tally(precinctID, precinctTotals.get(precinctID), precinctMap.get(precinctID).getPublicKey());
@@ -283,6 +304,7 @@ public class AuditServer extends Controller {
             /* Replace old totals with new totals */
             summedTotals.put(precinctID, b);
         }
+
     }
 
     /**
@@ -310,6 +332,7 @@ public class AuditServer extends Controller {
         }
 
     }
+
     /**
      * Page for requesting challenged ballot render
      *
