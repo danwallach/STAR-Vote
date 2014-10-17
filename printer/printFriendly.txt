@@ -4,11 +4,11 @@
 <div id = "right_margin" style = "background-color:#FFFFFF;width:72px;height:940px;float:right;"><br></div>
 <div id = "content" style = "background-color:#FFFFFF;width:668px;height:940px;float:left;">
 <div id = "barcode_top" style = "background-color:#FFFFFF;width:668px;height:80px;float:left;text-align:center;">
-<center><img src = "Barcode_flipped.png" alt = "Image did not load properly" width = 334"></center></div>
+<center><img src = "media/Barcode_flipped.png" alt = "Image did not load properly" width = 334"></center></div>
 <div id = "left_column" style="background-color:#FFFFFF;width:334px;height:780px;float:left;">
 *
-<img id = "line_separator" src = "LineSeparator.png" alt = "Image not found" width = "310" height = "1" align = "right"><br><br>
+<img id = "line_separator" src = "media/LineSeparator.png" alt = "Image not found" width = "310" height = "1" align = "right"><br><br>
 
 <div id = "barcode_bottom" style = "background-color:#FFFFFF;width:668px;height:80px;float:right;text-align:center;">
-<center><img src = "Barcode.png" alt = "Image did not load properly" width = "3344"></center>
+<center><img src = "media/Barcode.png" alt = "Image did not load properly" width = "334"></center>
 

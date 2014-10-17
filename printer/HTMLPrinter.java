@@ -89,7 +89,8 @@ public class HTMLPrinter {
         try
         {
             reader = new BufferedReader(new FileReader("printer/printFriendly.txt"));
-            String currentLine;
+            String currentLine, separatorLine = null, barcode = null, bottomBarcode = null;
+
             while (!(currentLine = reader.readLine()).equals("*")) {
                 writer.write(currentLine + "\n");
             }
@@ -97,6 +98,17 @@ public class HTMLPrinter {
             /* Put images in the left column. */
             ArrayList<String> left_column = imageNames.get(0);
             Boolean isSelectionImage = false;
+
+            /* Read in constant lines */
+            while((currentLine = reader.readLine()) != null) {
+                if(currentLine.contains("<img id = \"line_separator"))
+                    separatorLine = currentLine;
+                if(currentLine.contains("<div id = \"barcode_bottom"))
+                    bottomBarcode = currentLine;
+                if(currentLine.contains("<img src = \"media/Barcode.png\""))
+                    barcode = currentLine;
+
+            }
 
             for (String imageName : left_column)
             {
@@ -107,9 +119,12 @@ public class HTMLPrinter {
                 /* Leave an empty line after selection images. */
                 if (isSelectionImage)
                 {
+
+                    if(separatorLine == null)
+                        throw new RuntimeException("Could not find the specified html line for the line separator!");
+
                     /* Add selection separator.*/
-                    while ((currentLine = reader.readLine())!=null && (currentLine.startsWith("<img id = \"line_sep")))
-                        writer.write(currentLine);
+                    writer.write(separatorLine);
 
                 }
 
@@ -135,9 +150,11 @@ public class HTMLPrinter {
                     /*  Leave an empty line after selection images. */
                     if (isSelectionImage) {
 
-                        /* Add selection separator. */
-                        while ((currentLine = reader.readLine()) != null && (currentLine.startsWith("<img id = \"line_sep")))
-                            writer.write(currentLine);
+                        if(separatorLine == null)
+                            throw new RuntimeException("Could not find the specified html line for the line separator!");
+
+                        /* Add selection separator.*/
+                        writer.write(separatorLine);
 
                     }
                 /* Set the flag for selection images and reset it for label/title images. */
@@ -151,12 +168,15 @@ public class HTMLPrinter {
 
             /* Add the barcode to the container (bottom).*/
 
-            while ((currentLine = reader.readLine()) != null){
-                if(currentLine.startsWith("<div id = \"barcode_bottom"))
-                    writer.write(currentLine+"\n");
-                if(currentLine.startsWith("<center><img src = \"Barcode.png\""))
-                    writer.write(currentLine+"\n");
-            }
+            if(bottomBarcode == null)
+                throw new RuntimeException("Couldn't find a barcode for the bottom of the ballot!");
+
+            writer.write(bottomBarcode);
+
+            if(barcode == null)
+                throw new RuntimeException("Couldn't find a barcode image for the bottom of the ballot!");
+
+            writer.write(barcode);
 
             writer.write("</div>\n");
 
@@ -198,7 +218,7 @@ public class HTMLPrinter {
 
         try {
             reader = new BufferedReader(new FileReader("printer/printFriendly.txt"));
-            String currentLine;
+            String currentLine, separatorLine = null;
 
             while (!(currentLine = reader.readLine()).equals("*")) {
                 writer.write(currentLine + "\n");
@@ -216,8 +236,19 @@ public class HTMLPrinter {
 
                 /* Leave an empty line after selection images. */
                 if (isSelectionImage) {
-                    while ((currentLine = reader.readLine()) != null && (currentLine.startsWith("<img id = \"line_sep")))
-                        writer.write(currentLine);
+                    if(separatorLine == null) {
+                        /* Find the separator in the input file */
+                        while ((currentLine = reader.readLine()) != null) {
+                            if (currentLine.startsWith("<img id = \"line_sep"))
+                                separatorLine = currentLine;
+                        }
+
+                        if(separatorLine == null)
+                            throw new RuntimeException("Could not find the specified html line for the line separator!");
+                    }
+
+                    /* Add selection separator.*/
+                    writer.write(separatorLine);
                 }
                 /*  Set the flag for selection images and reset it for label/title images.*/
                 isSelectionImage = !isSelectionImage;
