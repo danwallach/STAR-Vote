@@ -43,36 +43,41 @@ public class AuditServer extends Controller {
      * @return      the home page of the site
      */
     public static Result index() { 
-         Map<String, Map<String, Precinct>> records = new HashMap<>();
-        
-        for(int i = 0; i < 3; i++) {
-           
-            Map<String, Precinct> hashes = new HashMap<>();
-            
-            for(int j = 0; j < 3; j++)
-                hashes.put(j+"", new Precinct(j+"", "", null));
-           
-            records.put("record" + i, hashes);
-            
-            VotingRecord.create(new VotingRecord("Precinct" + i, records));
-        }
-        
-        for(int i = 4; i < 7; i++) {
-           
-            records = new HashMap<>();
-           
-            Map<String, Precinct> hashes = new HashMap<>();
-            
-            hashes.put("1", new Precinct("1", "", null));
-           
-            records.put("record" + i, hashes);
-            
-            VotingRecord.create(new VotingRecord("Precinct"+ i, records));
-        }
-        
-        
+
+        loadTestRecords();
  
         return ok(index.render()); 
+    }
+
+    private static void loadTestRecords() {
+
+        Map<String, Map<String, Precinct>> records = new HashMap<>();
+
+        for(int i = 0; i < 3; i++) {
+
+            Map<String, Precinct> hashes = new HashMap<>();
+
+            for(int j = 0; j < 3; j++)
+                hashes.put(j+"", new Precinct(j+"", "", null));
+
+            records.put("record" + i, hashes);
+
+            VotingRecord.create(new VotingRecord("Precinct" + i, records));
+        }
+
+        for(int i = 4; i < 7; i++) {
+
+            records = new HashMap<>();
+
+            Map<String, Precinct> hashes = new HashMap<>();
+
+            hashes.put("1", new Precinct("1", "", null));
+
+            records.put("record" + i, hashes);
+
+            VotingRecord.create(new VotingRecord("Precinct"+ i, records));
+        }
+
     }
 
     /**

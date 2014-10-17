@@ -168,7 +168,6 @@ public class WebServerTallier {
 
         Map<String, Map<String,BigInteger>> voteTotals = new TreeMap<>();
 
-
         /* Iterate over each of the races */
         for (Vote v: toTotal.getVotes()) {
 
