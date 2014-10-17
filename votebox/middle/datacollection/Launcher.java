@@ -226,6 +226,8 @@ public class Launcher {
                         if(ballot != _lastSeenBallot)
                             printer.printCommittedBallot(ballot, "9999999999");
 
+                        printer.printedReceipt("9999999999");
+
                         _lastSeenBallot = ballot;
 
 					}

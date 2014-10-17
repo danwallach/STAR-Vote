@@ -156,8 +156,6 @@ public class Printer{
 
         if(!test) cleanFilePath = ballotPath.substring(0, ballotPath.lastIndexOf(fileChar) + 1);
 
-        cleanFilePath += "data" + File.separator;
-
         /* Print to an HTML file. Parameters to be used: */
         String htmlFileName = cleanFilePath + "PrintableBallot.html";
 
@@ -203,8 +201,8 @@ public class Printer{
 
             /* Add selection to 46 size columns */
             String title = actualRaceNameImagePairs.get(i).getLabel();
-            currentColumn.add(title + "_printable_en.png");
-            currentColumn.add(selection + "_printable_en.png");
+            currentColumn.add(title + fileChar + title + "_printable_en.png");
+            currentColumn.add(selection + fileChar + selection + "_printable_en.png");
             i++;
 
             /* Add each column to columnsToPrint */
