@@ -128,9 +128,11 @@ public class Tap {
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
 
+            /* Write the record to the stream */
             objectOutputStream.writeObject(supervisorRecord);
             objectOutputStream.close();
 
+            /* Encode the record as a string */
             encoded = new String(Base64.encodeBase64(byteArrayOutputStream.toByteArray()));
 
             List<BasicNameValuePair> bnvp = new ArrayList();
@@ -236,15 +238,19 @@ public class Tap {
 
                 int serial = ballotUploadEvent.getSerial();
 
+                /* Check if the event trying to upload ballots to Tap didn't notify first */
                 if(!uploadPending.contains(ballotUploadEvent.getSerial())) {
                     System.err.println("Supervisor " + serial + " tried to upload without first indicating it would!");
                     return;
                 }
 
+                /* Remove the serial from the pending uploads*/
                 uploadPending.remove(serial);
+
+                /* Put the serial and map into the record map */
                 supervisorRecord.put(serial, ballotUploadEvent.getMap());
 
-                /* Start uploading if we're done making the map */
+                /* Start uploading if we're done making the map (i.e. if no more pending and not currently uploading) */
                 if(uploadPending.size()==0 && !uploading)
                     startUploadToServer();
 
@@ -272,16 +278,17 @@ public class Tap {
     private void startUploadToServer() {
 
         /* TODO maybe this works? */
+
+        /* Change uploading status */
         uploading = true;
 
         long cur = System.currentTimeMillis();
 
-        /* Wait for 5 seconds */
+        /* Wait for 5 seconds, and if another call to uploadBallots() is made, it will delay 5 more seconds */
         for(threshold = cur+5000L; cur < threshold; cur = System.currentTimeMillis());
 
         /* Execute upload*/
         uploadToServer();
-
     }
 
     /**
