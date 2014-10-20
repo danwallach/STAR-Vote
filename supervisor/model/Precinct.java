@@ -100,7 +100,9 @@ public class Precinct implements Serializable {
      * @param ballot    Ballot as an ASExpression
      */
     public void commitBallot(String bid, ASExpression ballot){
+
         committed.put(bid, Ballot.fromASE(ballot));
+        allBallots.put(bid, Ballot.fromASE(ballot));
     }
 
     /**
@@ -108,13 +110,15 @@ public class Precinct implements Serializable {
      * @return          true if the BID was a committed ballot and was successfully
      *                  cast, false otherwise
      */
-    public boolean castBallot(String bid){
+    public Ballot castBallot(String bid){
 
         /* Remove the Ballot from committed */
         Ballot toCast = committed.remove(bid);
 
+        cast.add(toCast);
+
         /* Add it to cast and check */
-        return toCast != null && cast.add(toCast);
+        return toCast;
     }
 
     /**
@@ -173,4 +177,5 @@ public class Precinct implements Serializable {
         /* If it's either not a challenged ballot or doesn't exist */
         else return null;
     }
+
 }

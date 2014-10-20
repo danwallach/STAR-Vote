@@ -1117,6 +1117,8 @@ public class Model {
                         ASExpression ballot = ASExpression.makeVerbatim(e.getBallot());
 
                         thisPrecinct.commitBallot(e.getBID(), ballot);
+
+                        committedBids.put(e.getBID(), e.getNonce());
                     }
                     catch(Exception ex) { ex.printStackTrace(); }
 
@@ -1223,10 +1225,12 @@ public class Model {
                     ASExpression nonce = committedBids.remove(bid);
 
                     /* Tell the ballot store to cast the ballot */
-                    boolean wasCast = p.castBallot(bid);
+                    Ballot b = p.castBallot(bid);
+
+                    boolean wasCast = (b!=null);
 
                     if (wasCast)
-                        auditorium.announce(new EncryptedCastBallotWithNIZKsEvent(serial, nonce, e.getBallot(), bid));
+                        auditorium.announce(new EncryptedCastBallotWithNIZKsEvent(serial, nonce, b.toListExpression().toVerbatim(), bid));
                     else throw new RuntimeException("Found the precinct with the bid, but couldn't cast the ballot...");
 
                     /* Now tell the ballot scanner that this ballot was accepted */

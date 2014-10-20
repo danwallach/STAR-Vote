@@ -156,7 +156,7 @@ public class Ballot implements Serializable {
 
         PublicKey key = PublicKey.fromASE(exp.get(4));
 
-        Integer size = Integer.parseInt(((ListExpression)exp.get(5)).get(1).toString());
+        Integer size = Integer.parseInt(exp.get(5).toString());
 
         return new Ballot(bid, vList, nonce, key, size);
     }
