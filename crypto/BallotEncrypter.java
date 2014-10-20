@@ -163,7 +163,7 @@ public class BallotEncrypter {
 
         ASExpression keyExp = AdderKeyManipulator.generateFinalPublicKey(pubKey).toASE();
 
-        /* Create ASE for ballot with default size of 1 */
+        /* Create ASE for ballot with default size of 1 todo make sure this code isn't used outside of votebox */
         recentBallot = new ListExpression(StringExpression.makeString("ballot"), StringExpression.makeString(bid), votes, nonce, keyExp, StringExpression.makeString("1"));
 
         return recentBallot;
