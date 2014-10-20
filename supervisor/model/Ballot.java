@@ -128,7 +128,7 @@ public class Ballot implements Serializable {
     /**
      * Method for interop with VoteBox's S-Expression system.
      *
-     * Expecting an ase of the form (ballot bid (((vote [vote]) (vote-ids ([id1], [id2], ...)) (proof [proof]))...) (public-key [key]) nonce)
+     * Expecting an ase of the form (ballot bid (((vote [vote]) (vote-ids ([id1], [id2], ...)) (proof [proof]))...) nonce (public-key [key]) size)
      *
      * @param ase       S-Expression representation of a ballot
      * @return          the Vote equivalent of ase

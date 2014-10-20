@@ -98,6 +98,7 @@ public class Tap {
     }
 
     /**
+     * TODO is this still used?
      * Forwards the given event.
      *
      * @param event         IAnnounceEvent to forward.
@@ -233,6 +234,7 @@ public class Tap {
                 /* TODO check this edge case waiting for slow connectors */
 
                 /* If this method gets called while we're uploading, chill out for a sec or 5 */
+                /* TODO perhaps fix this so that it doesn't always increment by 5 seconds if there are multiple slow connections */
                 if(uploading)
                     threshold += 5000L;
 
@@ -277,7 +279,7 @@ public class Tap {
 
     private void startUploadToServer() {
 
-        /* TODO maybe this works? */
+        /* TODO test this */
 
         /* Change uploading status */
         uploading = true;
@@ -303,6 +305,8 @@ public class Tap {
     public static void main(String[] args){
 
         IAuditoriumParams params = new AuditoriumParams("tap.conf");
+
+        System.out.println(params.getReportAddress());
 
         String reportAddr;
 
@@ -346,7 +350,8 @@ public class Tap {
             }
 
             /* Assign the port */
-            port = params.getPort();
+            //port = params.getPort();
+            port = Integer.parseInt(args[p]);
 
             /* If the port is still bad... */
             if (port == -1) {
@@ -379,6 +384,7 @@ public class Tap {
         try {
 
             /* Create a new socket address */
+            System.out.println(reportAddr + port);
             InetSocketAddress addr = new InetSocketAddress(reportAddr, port);
 
             /* Loop until an exception or tap is started */
@@ -392,6 +398,7 @@ public class Tap {
 
                     /* Start the tap */
                     (new Tap(serial, localCon.getOutputStream(), launchCode, params)).start();
+                    System.out.println("Connection successful to " + addr);
                     break;
                 }
                 catch (IOException e) { /* If no good, retry */

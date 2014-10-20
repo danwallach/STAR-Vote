@@ -1208,7 +1208,7 @@ public class Model {
                     return;
                 }
 
-                                /* Get the ballot information from the event */
+                /* Get the ballot information from the event */
                 String bid = e.getBID();
                 int serial = e.getSerial();
 
@@ -1234,6 +1234,7 @@ public class Model {
                     System.out.println("BID: " + bid);
 
                     auditorium.announce(new BallotScanAcceptedEvent(mySerial, bid));
+
                 } catch (Exception x) {
 
                     /* IF anything went wrong, tell the ballot scanner that the ballot was rejected */
