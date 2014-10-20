@@ -10,7 +10,7 @@ import ballotscanner.BallotScannerUI;
  */
 public class PromptState extends AState {
 
-    public static final PromptState SINGLETON = new PromptState("images/waiting_ballot.png",
+    public static final PromptState SINGLETON = new PromptState("images" + System.getProperty("file.separator") + "waiting_ballot.png",
                                                                 "Prompt State",
                                                                 "Place Ballot Under Scanner to Cast Ballot",
                                                                 "BallotScannerUI: Could not locate waiting image");

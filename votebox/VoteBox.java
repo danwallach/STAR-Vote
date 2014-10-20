@@ -817,7 +817,7 @@ public class VoteBox{
                                 currentDriver.kill();
                                 currentDriver = null;
 
-                            /* Show inactive screen */
+                                /* Show inactive screen */
                                 inactiveUI.setVisible(true);
 
                                 killVBTimer = null;
@@ -981,7 +981,7 @@ public class VoteBox{
              * @see votebox.events.BallotPrintSuccessEvent
              */
             public void ballotPrintSuccess(BallotPrintSuccessEvent e){
-                if (e.getBID().equals(bid) && Arrays.equals(e.getNonce().toVerbatim(), nonce.toVerbatim())) {
+                if (e.getSerial() != mySerial && e.getBID().equals(bid) && Arrays.equals(e.getNonce().toVerbatim(), nonce.toVerbatim())) {
 
                     /* This should never happen... */
                     if (!finishedVoting)

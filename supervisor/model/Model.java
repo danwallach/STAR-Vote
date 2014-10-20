@@ -1208,27 +1208,39 @@ public class Model {
                     return;
                 }
 
-                /* Get the ballot information from the event */
+                                /* Get the ballot information from the event */
                 String bid = e.getBID();
                 int serial = e.getSerial();
 
-                /* If the ballot was actually committed, handle it */
-                Precinct p = getPrecinctWithBID(bid);
+                try {
 
-                /* First move it out of the committed list */
-                ASExpression nonce = committedBids.remove(bid);
 
-                /* Tell the ballot store to cast the ballot */
-                boolean wasCast = p.castBallot(bid);
 
-                if (wasCast) auditorium.announce(new EncryptedCastBallotWithNIZKsEvent(serial, nonce, e.getBallot(), bid));
-                else throw new RuntimeException("Found the precinct with the bid, but couldn't cast the ballot...");
+                    /* If the ballot was actually committed, handle it */
+                    Precinct p = getPrecinctWithBID(bid);
 
-                /* Now tell the ballot scanner that this ballot was accepted */
-                System.out.println("Sending scan confirmation!");
-                System.out.println("BID: " + bid);
+                    /* First move it out of the committed list */
+                    ASExpression nonce = committedBids.remove(bid);
 
-                auditorium.announce(new BallotScanAcceptedEvent(mySerial, bid));
+                    /* Tell the ballot store to cast the ballot */
+                    boolean wasCast = p.castBallot(bid);
+
+                    if (wasCast)
+                        auditorium.announce(new EncryptedCastBallotWithNIZKsEvent(serial, nonce, e.getBallot(), bid));
+                    else throw new RuntimeException("Found the precinct with the bid, but couldn't cast the ballot...");
+
+                    /* Now tell the ballot scanner that this ballot was accepted */
+                    System.out.println("Sending scan confirmation!");
+                    System.out.println("BID: " + bid);
+
+                    auditorium.announce(new BallotScanAcceptedEvent(mySerial, bid));
+                } catch (Exception x) {
+
+                    /* IF anything went wrong, tell the ballot scanner that the ballot was rejected */
+                    System.out.println("Sending scan rejection!");
+                    System.out.println("BID: " + bid);
+                    auditorium.announce(new BallotScanRejectedEvent(mySerial, bid));
+                }
             }
 
             /**

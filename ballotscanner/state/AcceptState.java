@@ -11,7 +11,7 @@ import ballotscanner.BallotScannerUI;
 public class AcceptState extends AState {
 
 
-    public static final AcceptState SINGLETON = new AcceptState("images/accept_ballot.png",
+    public static final AcceptState SINGLETON = new AcceptState("images" + System.getProperty("file.separator") + "accept_ballot.png",
                                                                 "Accept State",
                                                                 "Your ballot has been cast and will be counted.",
                                                                 "BallotScannerUI: Could not locate accept image");

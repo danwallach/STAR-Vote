@@ -11,7 +11,7 @@ import ballotscanner.BallotScannerUI;
 public class RejectState extends AState {
 
 
-    public static final RejectState SINGLETON = new RejectState("images/reject_ballot.png",
+    public static final RejectState SINGLETON = new RejectState("images" + System.getProperty("file.separator") + "reject_ballot.png",
                                                                 "Reject State",
                                                                 "Your ballot has been rejected and will not be counted.",
                                                                 "BallotScannerUI: Could not locate reject image");

@@ -11,7 +11,7 @@ import ballotscanner.BallotScannerUI;
 public class InactiveState extends AState {
 
     /** Singleton pattern */
-    public static final InactiveState SINGLETON = new InactiveState("images/inactive.png",
+    public static final InactiveState SINGLETON = new InactiveState("images" + System.getProperty("file.separator") + "inactive.png",
                                                                     "Inactive State",
                                                                     "Scanner is inactive",
                                                                     "BallotScannerUI: Could not locate inactive image");
