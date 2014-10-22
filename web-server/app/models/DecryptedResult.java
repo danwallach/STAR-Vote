@@ -62,6 +62,7 @@ public class DecryptedResult extends Model {
 
     /**
      * Database lookup for a DecryptedResult with the given precinctID.
+     * todo integrate this into the view for tallied results
      *
      * @param precinctID       the ID of the precinct from which this record was collected
      * @return                 the corresponding VoteRecord or null if non-existent
@@ -70,6 +71,11 @@ public class DecryptedResult extends Model {
         return find.where().ieq("precinctID", precinctID).findUnique().raceResults;
     }
 
+    /**
+     *
+     * @param precinctID
+     * @return
+     */
     public static Ballot getResultsBallot(String precinctID) {
         return find.where().ieq("precinctID", precinctID).findUnique().precinctResultsBallot;
     }

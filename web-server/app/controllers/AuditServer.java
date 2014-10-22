@@ -44,7 +44,7 @@ public class AuditServer extends Controller {
      */
     public static Result index() { 
 
-        loadTestRecords();
+        //loadTestRecords();
  
         return ok(index.render()); 
     }
@@ -392,9 +392,9 @@ public class AuditServer extends Controller {
 
         /* Code for this method in handling a POST command are found at http://www.vogella.com/articles/ApacheHttpClient/article.html */
 
+        /* TODO check the form encoding load */
         final Map<String, String[]> values = request().body().asFormUrlEncoded();
 
-        /* TODO get stuff from tap properly */
         final String record = values.get("record")[0];
         final String precinctID = values.get("precinctID")[0];
 

@@ -31,6 +31,7 @@ public class RaceResult extends Model {
     public String raceName;
 
     @ElementCollection
+    /* TODO use the below if the key is broken for some reason */
     //@MapKeyColumn(name="name")
     //@Column(name="value")
     public Map<String, BigInteger> candidateResults = new HashMap<>();
