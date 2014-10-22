@@ -308,6 +308,8 @@ public class VoteBox{
 
                     finishedVoting = true;
 
+                    System.out.println("\nBID: " + bid + "\n");
+
                     if (success)
                         auditorium.announce(new BallotPrintSuccessEvent(mySerial, bid, nonce));
 

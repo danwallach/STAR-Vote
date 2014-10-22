@@ -808,6 +808,8 @@ public class Model {
 
                 }
 
+                auditorium.announce(new BallotUploadEvent(mySerial, precincts));
+
                 /* Announce that this Supervisor has completed sending ballots to Tap */
                 auditorium.announce(new CompletedUploadEvent(mySerial));
             }
