@@ -395,6 +395,8 @@ public class AuditServer extends Controller {
         /* TODO check the form encoding load */
         final Map<String, String[]> values = request().body().asFormUrlEncoded();
 
+        System.out.println(request().body());
+
         final String record = values.get("record")[0];
         final String precinctID = values.get("precinctID")[0];
 
@@ -407,6 +409,8 @@ public class AuditServer extends Controller {
             votingRecord = (Map<String, Map<String, Precinct>>) o.readObject();
         }
         catch (IOException | ClassNotFoundException | ClassCastException e) { e.printStackTrace(); }
+
+        System.out.println(votingRecord);
 
         /* Add the record to the database */
         VotingRecord.create(new VotingRecord(precinctID, votingRecord));
