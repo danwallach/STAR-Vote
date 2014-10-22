@@ -265,8 +265,13 @@ public class AuditServer extends Controller {
             String precinctID = entry.getKey();
 
             /* Initialise the list for this precinct if we haven't yet seen it */
-            if (precinctTotals.get(precinctID) != null)
+            if (precinctTotals.get(precinctID) == null)
                 precinctTotals.put(precinctID, new ArrayList<Ballot>());
+
+            System.out.println("Precinct totals: " + precinctTotals);
+            System.out.println("P: " + p);
+            System.out.println("Precinct totals.get: " + precinctTotals.get(precinctID));
+            System.out.println("Precinct ID: " + precinctID);
 
             /* Store the total for that precinct in the list */
             precinctTotals.get(precinctID).add(p.getCastBallotTotal());
