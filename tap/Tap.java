@@ -38,10 +38,8 @@ import votebox.events.*;
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.nio.file.Files;
+import java.util.*;
 
 
 /**
@@ -60,7 +58,7 @@ public class Tap {
     private final String launchCode;
     private ASEWriter _output = null;
     private OutputStream _wrappedOut = null;
-    private VoteBoxAuditoriumConnector _auditorium = null;
+    private static VoteBoxAuditoriumConnector _auditorium = null;
     private static String ballotDumpHTTPKey = "3FF968A3B47CT34C";
 
     private static boolean uploading = false;
@@ -73,7 +71,7 @@ public class Tap {
     private ArrayList<Integer> uploadComplete;
 
     /** This precinct's supervisor record, which will be uploaded to the bulletin board */
-    private Map<Integer, Serializable> supervisorRecord;
+    private Map<String, Serializable> supervisorRecord;
 
 
     /**
@@ -118,14 +116,17 @@ public class Tap {
      */
     public void uploadToServer() {
 
+        System.out.println("Uploading Ballots to the server!");
+
         HttpClient client = new DefaultHttpClient();
 
-        HttpPost post = new HttpPost("http://starvote.cs.rice.edu/3FF968A3B47CT34C");
+        HttpPost post = new HttpPost("http://localhost:9000/3FF968A3B47CT34C");
 
         String encoded;
 
         try {
 
+            System.out.println("Encoding the Supervisors' records... ");
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
 
@@ -136,18 +137,29 @@ public class Tap {
             /* Encode the record as a string */
             encoded = new String(Base64.encodeBase64(byteArrayOutputStream.toByteArray()));
 
+            try {
+                PrintWriter out = new PrintWriter("testdata.txt");
+                out.print(encoded);
+                out.close();
+            } catch (Exception e) {e.printStackTrace();}
+
             List<BasicNameValuePair> bnvp = new ArrayList();
 
-            bnvp.add(new BasicNameValuePair("message", encoded));
+            bnvp.add(new BasicNameValuePair("record", encoded));
+            bnvp.add(new BasicNameValuePair("precinctID", Integer.toString((new Random()).nextInt())));
 
             /* Set entities for each of the url encoded forms of the NVP */
             post.setEntity(new UrlEncodedFormEntity(bnvp));
+
+            System.out.println("Executing post..." + post.getEntity());
 
             /* Execute the post */
             client.execute(post);
 
         }
         catch (IOException e) { e.printStackTrace(); }
+
+        System.out.println("Upload complete!");
 
         /* Shutdown the connection when done */
         client.getConnectionManager().shutdown();
@@ -167,7 +179,9 @@ public class Tap {
                     BallotReceivedEvent.getMatcher(),
                     BallotScanAcceptedEvent.getMatcher(),
                     AuthorizedToCastWithNIZKsEvent.getMatcher(),
-                    PollsClosedEvent.getMatcher()
+                    PollsClosedEvent.getMatcher(),
+                    StartUploadEvent.getMatcher(),
+                    BallotUploadEvent.getMatcher()
             );
 
         }
@@ -225,18 +239,23 @@ public class Tap {
             public void completedUpload(CompletedUploadEvent completedUploadEvent) {}
 
             public void startUpload(StartUploadEvent startUploadEvent) {
+                System.out.println("Supervisor started upload...");
                 uploadPending.add(startUploadEvent.getSerial());
             }
 
             @Override
             public void uploadBallots(BallotUploadEvent ballotUploadEvent) {
 
+                System.out.println("A Supervisor is trying to upload ballots! ");
+
                 /* TODO check this edge case waiting for slow connectors */
 
                 /* If this method gets called while we're uploading, chill out for a sec or 5 */
                 /* TODO perhaps fix this so that it doesn't always increment by 5 seconds if there are multiple slow connections */
-                if(uploading)
+                if(uploading) {
+                    System.out.println("Delaying upload for 5 seconds while we load ballots... ");
                     threshold += 5000L;
+                }
 
                 int serial = ballotUploadEvent.getSerial();
 
@@ -247,14 +266,17 @@ public class Tap {
                 }
 
                 /* Remove the serial from the pending uploads*/
-                uploadPending.remove(serial);
+                uploadPending.remove(new Integer(serial));
 
                 /* Put the serial and map into the record map */
-                supervisorRecord.put(serial, ballotUploadEvent.getMap());
+                supervisorRecord.put(Integer.toString(serial), ballotUploadEvent.getMap());
 
                 /* Start uploading if we're done making the map (i.e. if no more pending and not currently uploading) */
-                if(uploadPending.size()==0 && !uploading)
+                if(uploadPending.size()==0 && !uploading) {
+                    /* TODO collapse identical maps */
+                    System.out.println("Upload to server pending... ");
                     startUploadToServer();
+                }
 
             }
 
@@ -279,6 +301,7 @@ public class Tap {
 
     private void startUploadToServer() {
 
+        System.out.println("Starting uploading to server...");
         /* TODO test this */
 
         /* Change uploading status */
@@ -291,6 +314,38 @@ public class Tap {
 
         /* Execute upload*/
         uploadToServer();
+    }
+
+    private void testMethod() {
+        try {
+
+            String testdata = new Scanner(new File("testdata.txt")).useDelimiter("\\A").next();
+
+            System.out.println("Uploading Ballots to the server!");
+
+            HttpClient client = new DefaultHttpClient();
+
+            HttpPost post = new HttpPost("http://localhost:9000/3FF968A3B47CT34C");
+
+            List<BasicNameValuePair> bnvp = new ArrayList();
+
+            bnvp.add(new BasicNameValuePair("record", testdata));
+            bnvp.add(new BasicNameValuePair("precinctID", Integer.toString((new Random()).nextInt())));
+
+            /* Set entities for each of the url encoded forms of the NVP */
+            post.setEntity(new UrlEncodedFormEntity(bnvp));
+
+            System.out.println("Executing post..." + post.getEntity());
+
+            /* Execute the post */
+            client.execute(post);
+
+            System.out.println("Upload complete!");
+
+            /* Shutdown the connection when done */
+            client.getConnectionManager().shutdown();
+
+        } catch (Exception e) { e.printStackTrace(); }
     }
 
     /**
@@ -412,5 +467,12 @@ public class Tap {
             throw new RuntimeException("usage: Tap [serial] [report address] [port]; where port is between 1 and 65335 & [serial] is a positive integer", e);
         }
         catch (InterruptedException e) { throw new RuntimeException(e); }
+
+        /* TEST CODE */
+
+        //testMethod();
+
+        /* END TEST CODE */
+
     }
 }

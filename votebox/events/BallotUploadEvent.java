@@ -5,12 +5,11 @@ import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.NamedNoMatch;
 import sexpression.StringExpression;
+import supervisor.model.Precinct;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Matt Bernhard
@@ -24,7 +23,20 @@ public class BallotUploadEvent extends AAnnounceEvent {
         public IAnnounceEvent match(int serial, ASExpression sexp) {
             HashMap<String, ASExpression> result = pattern.namedMatch(sexp);
             if (result != NamedNoMatch.SINGLETON) {
-                return new BallotUploadEvent(serial, result.get("map"));
+
+                String map = result.get("map").toString();
+
+                byte[] bytes = sexpression.stream.Base64.decode(map);
+                Serializable precinctMap = null;
+
+                try {
+                    ObjectInputStream o = new ObjectInputStream(new ByteArrayInputStream(bytes));
+                    precinctMap = (Serializable) o.readObject();
+                }
+
+                catch (IOException | ClassNotFoundException | ClassCastException e) { e.printStackTrace(); }
+
+                return new BallotUploadEvent(serial, precinctMap);
             }
 
             return null;
