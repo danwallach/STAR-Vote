@@ -316,7 +316,7 @@ public class Tap {
         uploadToServer();
     }
 
-    private void testMethod() {
+    private static void testMethod() {
         try {
 
             String testdata = new Scanner(new File("testdata.txt")).useDelimiter("\\A").next();
@@ -470,7 +470,7 @@ public class Tap {
 
         /* TEST CODE */
 
-        //testMethod();
+        testMethod();
 
         /* END TEST CODE */
 
