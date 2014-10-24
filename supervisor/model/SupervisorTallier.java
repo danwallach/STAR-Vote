@@ -84,6 +84,7 @@ public class SupervisorTallier implements Serializable {
             catch (Exception e) {
                 Bugout.err("Malformed ballot received <" + e.getMessage() + ">");
                 Bugout.err("Rejected ballot:\n" + bal);
+                e.printStackTrace();
             }
         }
 
