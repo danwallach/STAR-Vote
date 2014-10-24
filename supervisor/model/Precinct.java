@@ -112,8 +112,12 @@ public class Precinct implements Serializable {
      */
     public Ballot castBallot(String bid){
 
+        System.out.println(committed);
+
         /* Remove the Ballot from committed */
         Ballot toCast = committed.remove(bid);
+
+        System.out.println(toCast);
 
         cast.add(toCast);
 
