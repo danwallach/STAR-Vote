@@ -102,6 +102,7 @@ public class Precinct implements Serializable {
     public void commitBallot(String bid, ASExpression ballot){
 
         committed.put(bid, Ballot.fromASE(ballot));
+
         allBallots.put(bid, Ballot.fromASE(ballot));
     }
 
