@@ -213,9 +213,11 @@ public class AuditServer extends Controller {
             vr.publish();
             
             /* Get the Precincts from this VotingRecord*/
+            System.out.println("Getting the Precinct Map: ");
             precinctMap = vr.getPrecinctMap();
 
             /* Add the results from the Precincts in this VotingRecord to precinctTotals */
+            System.out.println("Updating Precinct Totals: ");
             precinctTotals = updatePrecinctTotals(precinctMap);
 
             /* Move on to the next VotingRecord to be published */
@@ -223,9 +225,11 @@ public class AuditServer extends Controller {
         }
 
         /* Combine the newly published result totals with the old totals */
+        System.out.println("Updating Summed Totals: ");
         updateSummedTotals(summedTotals, precinctTotals, precinctMap);
 
         /* Decrypt and store the final updated totals for each Precinct */
+        System.out.println("Storing Decrypted Summed Totals: ");
         storeDecryptedSummedTotals(summedTotals, precinctMap);
 
         /* Return the webpage */
