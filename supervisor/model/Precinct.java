@@ -113,14 +113,13 @@ public class Precinct implements Serializable {
      */
     public Ballot castBallot(String bid){
 
-        System.out.println(committed);
-
         /* Remove the Ballot from committed */
         Ballot toCast = committed.remove(bid);
 
         System.out.println(toCast);
 
-        cast.add(toCast);
+        if(toCast!=null)
+            cast.add(toCast);
 
         /* Add it to cast and check */
         return toCast;
@@ -142,7 +141,12 @@ public class Precinct implements Serializable {
      *                  cast in this precinct
      */
     public Ballot getCastBallotTotal(){
+
+
+        System.out.println("Cast: " + cast);
+
         return SupervisorTallier.tally(precinctID, cast, publicKey);
+
     }
 
     /**
