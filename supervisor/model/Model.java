@@ -698,7 +698,7 @@ public class Model {
 
                 AMachine m = getMachineForSerial(e.getSerial());
 
-                if (m != null && m instanceof SupervisorMachine) {
+                if (m != null && m instanceof SupervisorMachine && e.getSerial() != mySerial) {
                     /* TODO null check? */
                     Precinct p = getPrecinctWithBID(e.getBID());
                     p.castBallot(e.getBID());
