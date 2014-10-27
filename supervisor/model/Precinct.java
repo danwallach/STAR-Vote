@@ -1,6 +1,7 @@
 package supervisor.model;
 
 import crypto.adder.PublicKey;
+import crypto.interop.AdderKeyManipulator;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 
@@ -142,10 +143,9 @@ public class Precinct implements Serializable {
      */
     public Ballot getCastBallotTotal(){
 
+        PublicKey finalPublicKey = AdderKeyManipulator.generateFinalPublicKey(publicKey);
 
-        System.out.println("Cast: " + cast);
-
-        return SupervisorTallier.tally(precinctID, cast, publicKey);
+        return SupervisorTallier.tally(precinctID, cast, finalPublicKey);
 
     }
 

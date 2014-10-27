@@ -98,7 +98,6 @@ public class Election {
 
         System.out.println("In Election.sumVotes() -- Testing single vote summed, Max expected value: " + votes.size());
         System.out.println("In Election.sumVotes() -- [Single vote summed] sumProof verfied: " + total.verifyVoteProof(publicKey, 0, votes.size()));
-
         System.out.println("-----------------");
 
         /* ------------------------------------------ */
