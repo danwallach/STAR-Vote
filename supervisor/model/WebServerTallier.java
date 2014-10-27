@@ -109,6 +109,7 @@ public class WebServerTallier {
             System.out.println("In WebserverTallier.tally() -- Verifying this vote ");
             if(vote.verifyVoteProof(publicKey, 0, thisRace.getVotes().size())) {
                 votes.add(vote);
+                System.out.println("Vote: " + vote.getRaceTitle() + "\nVote ASE: " + vote.toASE());
                 voteASE.add(vote.toASE());
                 System.out.println("This Vote was successfully added to the Ballot!");
             }

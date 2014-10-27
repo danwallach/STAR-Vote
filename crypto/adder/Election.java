@@ -73,7 +73,7 @@ public class Election {
             cipherlist.add(new ElgamalCiphertext(AdderInteger.ONE, AdderInteger.ONE, finalPublicKey.getP()));
 
         /* Create a new multiplicative identity */
-        Vote total = new Vote(cipherlist, v.getChoices(), new VoteProof(new MembershipProof(), new ArrayList<MembershipProof>()));
+        Vote total = new Vote(cipherlist, v.getChoices(), new VoteProof(new MembershipProof(), new ArrayList<MembershipProof>()), v.getRaceTitle());
 
         /* Multiply all the votes together */
         for (Vote vote : votes)

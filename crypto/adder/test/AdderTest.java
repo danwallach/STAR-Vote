@@ -144,7 +144,7 @@ public class AdderTest extends TestCase {
             System.out.println("Verifying vote " + (i + 1));
             assertTrue(proof.verify(vote, finalPubKey, 1, 1));
             System.out.println("Casting vote " + (i + 1));
-            vote = new Vote(vote.getCipherList(), vote.getChoices(), proof);
+            vote = new Vote(vote.getCipherList(), vote.getChoices(), proof, vote.getRaceTitle());
             election.castVote(vote);
             voteMap.put(choice, voteMap.get(choice) + 1);
             System.out.println("Vote " + (i + 1) + " casted");

@@ -52,6 +52,7 @@ public class Vote implements Serializable {
 
     /**
      * Initializes a vote from a vector of ciphertexts.
+     * TODO check this usage to see if we can kill this
      */
     public Vote(List<ElgamalCiphertext> cipherList, List<ASExpression> choices) {
         this.cipherList = cipherList;
@@ -62,7 +63,8 @@ public class Vote implements Serializable {
     }
 
     /**
-     * Initializes a vote from a vector of ciphertexts.
+     * Initializes a vote from a vector of ciphertexts.\
+     * TODO kill usages of this without title
      */
     public Vote(List<ElgamalCiphertext> cipherList, List<ASExpression> choices, VoteProof proof) {
         this.cipherList = cipherList;
@@ -73,9 +75,10 @@ public class Vote implements Serializable {
     /**
      * Initializes a vote from a vector of ciphertexts.
      */
-    private Vote(List<ElgamalCiphertext> cipherList, List<ASExpression> choices, List<MembershipProof> proofList) {
+    private Vote(List<ElgamalCiphertext> cipherList, List<ASExpression> choices, List<MembershipProof> proofList, String title) {
         this.cipherList = cipherList;
         this.choices = choices;
+        this.title = title;
 
         proof = new VoteProof();
         proof.setProofList(proofList);
@@ -133,7 +136,7 @@ public class Vote implements Serializable {
 
         List<MembershipProof> otherList = proof.multiply(otherVote.proof);
 
-        return new Vote(vec, choices, otherList);
+        return new Vote(vec, choices, otherList, otherVote.title);
     }
 
     /**
@@ -197,7 +200,7 @@ public class Vote implements Serializable {
             catch (InvalidElgamalCiphertextException iece) { throw new InvalidVoteException(iece.getMessage()); }
         }
 
-        /* TODO Maybe implement this constructor properly */
+        /* TODO Maybe implement this constructor properly (maybe w/o null?)*/
         return new Vote(cList, null);
     }
 
@@ -243,6 +246,7 @@ public class Vote implements Serializable {
 
         ListExpression choicesExp = new ListExpression(StringExpression.makeString("vote-ids"), new ListExpression(choices));
 
+        System.out.println("Title: " + title);
         ListExpression titleExp = new ListExpression("title", title);
 
         ASExpression proofExp;

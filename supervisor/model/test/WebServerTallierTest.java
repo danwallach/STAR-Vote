@@ -146,7 +146,9 @@ public class WebServerTallierTest extends TestCase {
         ListExpression ballot = new ListExpression(singleVote);
 
         System.out.println("-----PRE  ENCRYPTION-----");
+        System.out.println("Ballot ListExpression: " + ballot);
         ASExpression ballotASE = be.encryptWithProof("000", ballot, raceGroups, publicKey, ASExpression.make("nonce"), titles);
+        System.out.println("Ballot ASE: " + ballotASE);
         System.out.println("-----POST ENCRYPTION-----");
 
         List<Ballot> ballotList = new ArrayList<>();
@@ -178,7 +180,7 @@ public class WebServerTallierTest extends TestCase {
         System.out.println("In WebserverTallierTest.testTallySingle() -- Constructing new Vote with choices: " + total.getChoices());
 
         //[This doesn't verify!] because of no R value:
-        Vote test1 = new Vote(total.getCipherList(), total.getChoices(), vp);
+        Vote test1 = new Vote(total.getCipherList(), total.getChoices(), vp, total.getRaceTitle());
         Vote test = new Vote(total);
 
         System.out.println("In WebserverTallierTest.testTallySingle() -- Single vote computed VoteProof verified: " + test.verifyVoteProof(finalPublicKey, 0, 1));
