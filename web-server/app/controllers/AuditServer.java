@@ -2,6 +2,7 @@ package controllers;
 
 import auditorium.SimpleKeyStore;
 import crypto.adder.PrivateKey;
+import crypto.adder.PublicKey;
 import models.*;
 import play.data.Form;
 import play.mvc.Controller;
@@ -307,8 +308,12 @@ public class AuditServer extends Controller {
             if(preExisting != null)
                 precinctTotals.get(precinctID).add(preExisting);
 
+            //PublicKey finalPublicKey = AdderKeyManipulator.generateFinalPublicKey(precinctMap.get(precinctID).getPublicKey());
+
+            System.out.println("Updating the precinct totals...");
+
             /* Tally the new precinctTotals using WebServerTallier*/
-            Ballot b = WebServerTallier.tally(precinctID, precinctTotals.get(precinctID), precinctMap.get(precinctID).getPublicKey());
+            Ballot b = WebServerTallier.tally(precinctID, precinctTotals.get(precinctID), precinctMap.get(precinctID).getFinalPublicKey());
 
             /* Replace old totals with new totals */
             summedTotals.put(precinctID, b);
@@ -327,14 +332,18 @@ public class AuditServer extends Controller {
         SimpleKeyStore keyStore = new SimpleKeyStore("/lib/keys/");
         PrivateKey privateKey = keyStore.loadAdderPrivateKey();
 
+        System.out.println("Decrypting summedTotals...");
+
         /* Decrypt summedTotals */
         for(Map.Entry<String, Ballot> entry : summedTotals.entrySet()) {
 
             Ballot b = entry.getValue();
             String precinctID = entry.getKey();
 
+            PublicKey finalPublicKey = precinctMap.get(precinctID).getFinalPublicKey();
+
             /* This will be the decrypted representation of the results by race */
-            Map<String, Map<String, BigInteger>> decryptedResults = WebServerTallier.getVoteTotals(b, b.getSize(), precinctMap.get(precinctID).getPublicKey(), privateKey);
+            Map<String, Map<String, BigInteger>> decryptedResults = WebServerTallier.getVoteTotals(b, b.getSize(), finalPublicKey, privateKey);
 
             /* Store totals in database */
             DecryptedResult.create(new DecryptedResult(precinctID, decryptedResults, b));

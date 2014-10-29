@@ -46,14 +46,6 @@ public class WebServerTallier {
                     /* Get all the candidate choices */
                     List<ASExpression> possibleChoices = vote.getChoices();
 
-                    PublicKey ballotKey = bal.getPublicKey();
-
-                    /* Confirm that the keys are the same */
-                    if (!(ballotKey.equals(publicKey))) {
-                        Bugout.err("!!!Expected supplied final PublicKey to match generated\nSupplied: " + ballotKey + "\nGenerated: " + publicKey + "!!!");
-                        return null;
-                    }
-
                     /* Confirm that the vote proof is valid */
                     System.out.println("In WebserverTallier.tally() -- verifying the VoteProofs. ");
 
@@ -156,15 +148,19 @@ public class WebServerTallier {
      *
      * @param toTotal       the previously tallied Ballot from which to extract the candidate sums
      * @param size          the "size" of the Ballot (the number of combined Ballots added to create this Ballot)
-     * @param publicKey     the public key
+     * @param finalPublicKey     the public key
      * @param privateKey    the private key
      * @return              a mapping of candidates to vote totals (mapped to race names) for each race in a Ballot
      */
-    public static Map<String, Map<String,BigInteger>> getVoteTotals(Ballot toTotal, int size, PublicKey publicKey, PrivateKey privateKey) {
+    public static Map<String, Map<String,BigInteger>> getVoteTotals(Ballot toTotal, int size, PublicKey finalPublicKey, PrivateKey privateKey) {
 
-        /* Generate the final private and public keys */
-        PublicKey finalPublicKey = AdderKeyManipulator.generateFinalPublicKey(publicKey);
-        PrivateKey finalPrivateKey = AdderKeyManipulator.generateFinalPrivateKey(publicKey, privateKey);
+        /* Generate the final private key */
+        PrivateKey finalPrivateKey = AdderKeyManipulator.generateFinalPrivateKey(finalPublicKey, privateKey);
+
+        /* Currently we can't generate the proper finalPrivateKey due to AdderKeyManipulator not having generated the finalPublicKey/polynomial
+         * To fix this, somehow the finalPrivateKey needs to be generated with the same information in AdderKeyManipulator as when the
+         * finalPublicKey was generated
+         */
 
         Map<String, Map<String,BigInteger>> voteTotals = new TreeMap<>();
 
@@ -180,6 +176,7 @@ public class WebServerTallier {
             List<AdderInteger> partialSum = finalPrivateKey.partialDecrypt(v);
 
             /* Get the final sums */
+            System.out.println("I'm the size! " + size);
             List<AdderInteger> finalSum = getDecryptedFinalSum(partialSum, v, size, finalPublicKey);
 
             voteTotals.put(raceName, new TreeMap<String, BigInteger>());
@@ -236,7 +233,6 @@ public class WebServerTallier {
 
             /* Pull out the ith partial sum (equals h^y) */
             AdderInteger product = partialSums.get(i);
-
 
             /* Get the public value from the ith ciphertext (encrypted sum for ith candidate) (bigH = h' = h^y * f^m) (bigG = g^y) */
             AdderInteger bigH = (cipherList.get(i)).getH();
