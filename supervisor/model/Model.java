@@ -1121,7 +1121,7 @@ public class Model {
                         System.out.println(Ballot.fromASE(ballot).getPublicKey());
                         thisPrecinct.commitBallot(e.getBID(), ballot);
 
-                        System.out.println(thisPrecinct.getPublicKey());
+                        System.out.println(thisPrecinct.getFinalPublicKey());
 
                         committedBids.put(e.getBID(), e.getNonce());
                     }
@@ -1385,9 +1385,9 @@ public class Model {
             /* Pare off the precinct information */
             String precinctID = fileName.substring(fileName.length()-7,fileName.length()-4);
 
-            PublicKey publicKey = AdderKeyManipulator.generateFinalPublicKey(auditoriumParams.getKeyStore().loadAdderPublicKey());
+            PublicKey finalPublicKey = AdderKeyManipulator.generateFinalPublicKey(auditoriumParams.getKeyStore().loadAdderPublicKey());
 
-            Precinct precinct = new Precinct(precinctID, ballotFile.getAbsolutePath(), publicKey);
+            Precinct precinct = new Precinct(precinctID, ballotFile.getAbsolutePath(), finalPublicKey);
 
             precincts.put(precinctID, precinct);
         }

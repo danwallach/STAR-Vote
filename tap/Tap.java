@@ -470,7 +470,7 @@ public class Tap {
 
         /* TEST CODE */
 
-        testMethod();
+        //testMethod();
 
         /* END TEST CODE */
 

@@ -331,7 +331,7 @@ public class WebServerTallierTest extends TestCase {
             ListExpression ballot = new ListExpression(singleVote);
 
             System.out.println("-----PRE  ENCRYPTION-----");
-            ASExpression ballotASE = be.encryptWithProof("000", ballot, raceGroups, finalPublicKey, ASExpression.make("nonce"), titles);
+            ASExpression ballotASE = be.encryptWithProof("000", ballot, raceGroups, publicKey, ASExpression.make("nonce"), titles);
             System.out.println("-----POST ENCRYPTION-----");
 
             Ballot toDecrypt = Ballot.fromASE(ballotASE);

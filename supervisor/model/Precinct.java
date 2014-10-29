@@ -1,7 +1,6 @@
 package supervisor.model;
 
 import crypto.adder.PublicKey;
-import crypto.interop.AdderKeyManipulator;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 
@@ -37,17 +36,17 @@ public class Precinct implements Serializable {
     private List<Ballot> challenged;
 
     /** An object used to homomorphically tally ballots. */
-    private PublicKey publicKey;
+    private PublicKey finalPublicKey;
 
     /**
      * @param precinctID    Three digit precinct code
      * @param ballotFile    The zip file containing the ballot style
      */
-    public Precinct(String precinctID, String ballotFile, PublicKey publicKey){
+    public Precinct(String precinctID, String ballotFile, PublicKey finalPublicKey){
 
         this.precinctID = precinctID;
         this.ballotFile = ballotFile;
-        this.publicKey = publicKey;
+        this.finalPublicKey = finalPublicKey;
 
         allBallots = new HashMap<>();
         committed  = new HashMap<>();
@@ -143,10 +142,7 @@ public class Precinct implements Serializable {
      */
     public Ballot getCastBallotTotal(){
 
-        PublicKey finalPublicKey = AdderKeyManipulator.generateFinalPublicKey(publicKey);
-
         return SupervisorTallier.tally(precinctID, cast, finalPublicKey);
-
     }
 
     /**
@@ -176,7 +172,7 @@ public class Precinct implements Serializable {
         return ballotFile;
     }
 
-    public PublicKey getPublicKey() { return publicKey; }
+    public PublicKey getFinalPublicKey() { return finalPublicKey; }
 
     public Ballot getChallengedBallot(String bid) {
 

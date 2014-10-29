@@ -63,7 +63,7 @@ public class BallotTest extends TestCase {
         VoteProof proof = new VoteProof()   ;
         proof.compute(vote, publicKey, c, 0, 1);
 
-        vote = new Vote(vote.getCipherList(), vote.getChoices(), proof);
+        vote = new Vote(vote.getCipherList(), vote.getChoices(), proof, "falseTitle");
 
         votes.add(vote);
 

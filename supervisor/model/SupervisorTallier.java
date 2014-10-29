@@ -50,6 +50,14 @@ public class SupervisorTallier implements Serializable {
                     /* Get all the candidate choices */
                     List<ASExpression> possibleChoices = vote.getChoices();
 
+                    PublicKey ballotKey = bal.getPublicKey();
+
+                    /* Confirm that the keys are the same */
+                    if (!(ballotKey.equals(publicKey))) {
+                        Bugout.err("!!!Expected supplied final PublicKey to match generated\nSupplied: " + ballotKey + "\nGenerated: " + publicKey + "!!!");
+                        return null;
+                    }
+
                     /* Confirm that the vote proof is valid */
                     if (!vote.verifyVoteProof(publicKey, 0, 1)) {
                         Bugout.err("!!!Ballot failed NIZK test!!!");
