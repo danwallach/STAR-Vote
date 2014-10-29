@@ -27,10 +27,10 @@ public class SupervisorTallier implements Serializable {
      *
      * @param precinctID    the ID of the precinct constructing this tallied Ballot, used as a ballot id
      * @param cast          the list of cast ballots that should be homomorphically summed
-     * @param publicKey     the public key used for vote proofs
+     * @param finalPublicKey     the public key used for vote proofs
      * @return              a Ballot containing the encrypted sums for each race
      */
-    public static Ballot tally(String precinctID, List<Ballot> cast, PublicKey publicKey){
+    public static Ballot tally(String precinctID, List<Ballot> cast, PublicKey finalPublicKey){
 
         int size=0;
 
@@ -53,13 +53,13 @@ public class SupervisorTallier implements Serializable {
                     PublicKey ballotKey = bal.getPublicKey();
 
                     /* Confirm that the keys are the same */
-                    if (!(ballotKey.equals(publicKey))) {
-                        Bugout.err("!!!Expected supplied final PublicKey to match generated\nSupplied: " + ballotKey + "\nGenerated: " + publicKey + "!!!");
+                    if (!(ballotKey.equals(finalPublicKey))) {
+                        Bugout.err("!!!Expected supplied final PublicKey to match generated\nSupplied: " + ballotKey + "\nGenerated: " + finalPublicKey + "!!!");
                         return null;
                     }
 
                     /* Confirm that the vote proof is valid */
-                    if (!vote.verifyVoteProof(publicKey, 0, 1)) {
+                    if (!vote.verifyVoteProof(finalPublicKey, 0, 1)) {
                         Bugout.err("!!!Ballot failed NIZK test!!!");
                         return null;
                     }
@@ -70,7 +70,7 @@ public class SupervisorTallier implements Serializable {
 
                     /* If we haven't seen this specific race before, initialize it */
                     if (election == null)
-                        election = new Election(publicKey, possibleChoices);
+                        election = new Election(finalPublicKey, possibleChoices);
 
                     /* This will ready election to homomorphically tally the vote */
                     election.castVote(vote);
@@ -105,7 +105,7 @@ public class SupervisorTallier implements Serializable {
 
 
             /* Verify the voteProof and error off if bad */
-            if(vote.verifyVoteProof(publicKey, 0, thisRace.getVotes().size())) {
+            if(vote.verifyVoteProof(finalPublicKey, 0, thisRace.getVotes().size())) {
                 votes.add(vote);
                 voteASE.add(vote.toASE());
             }
@@ -118,7 +118,7 @@ public class SupervisorTallier implements Serializable {
         ASExpression nonce = StringExpression.makeString(voteList.getSHA256());
 
         /* Return the Ballot of all the summed race results */
-        return new Ballot(precinctID, votes, nonce, publicKey,size);
+        return new Ballot(precinctID, votes, nonce, finalPublicKey,size);
     }
 
     /**

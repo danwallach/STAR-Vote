@@ -1,6 +1,5 @@
 package crypto.adder;
 
-import crypto.interop.AdderKeyManipulator;
 import sexpression.ASExpression;
 
 import java.util.ArrayList;
@@ -16,7 +15,7 @@ import java.util.List;
 public class Election {
 
     /** The public key used to encrypt and tally */
-    private PublicKey publicKey;
+    private PublicKey finalPublicKey;
 
     /** The List of all Votes cast in this Election */
     private List<Vote> votes;
@@ -30,7 +29,7 @@ public class Election {
      * @param publicKey         the public key
      */
     public Election(PublicKey publicKey, List<ASExpression> choices) {
-        this.publicKey = publicKey;
+        this.finalPublicKey = publicKey;
         this.votes = new ArrayList<>();
         this.choices = choices;
     }
@@ -61,8 +60,6 @@ public class Election {
      */
     public Vote sumVotes() {
 
-        PublicKey finalPublicKey = AdderKeyManipulator.generateFinalPublicKey(publicKey);
-
         /* Pull out the first vote */
         Vote v = votes.get(0);
 
@@ -82,7 +79,7 @@ public class Election {
         /* These are aliasing checks */
 
         /* Compute the sumProof for this totalled Vote and put it into total */
-        //MembershipProof sumProof = total.computeSumProof(votes.size(), publicKey);
+        //MembershipProof sumProof = total.computeSumProof(votes.size(), finalPublicKey);
         total.computeSumProof(votes.size(), finalPublicKey);
 
         /*
@@ -97,7 +94,7 @@ public class Election {
         /* ---------------- TESTING ---------------- */
 
         System.out.println("In Election.sumVotes() -- Testing single vote summed, Max expected value: " + votes.size());
-        System.out.println("In Election.sumVotes() -- [Single vote summed] sumProof verfied: " + total.verifyVoteProof(publicKey, 0, votes.size()));
+        System.out.println("In Election.sumVotes() -- [Single vote summed] sumProof verfied: " + total.verifyVoteProof(finalPublicKey, 0, votes.size()));
         System.out.println("-----------------");
 
         /* ------------------------------------------ */
