@@ -83,5 +83,9 @@ public class AdderKeyManipulator {
         ciphertexts.add(ciphertext);
 
         return privateKey.getFinalPrivKey(ciphertexts);
-	}	
+	}
+
+    public static void setPolynomial(Polynomial poly) {
+        _poly = poly;
+    }
 }
