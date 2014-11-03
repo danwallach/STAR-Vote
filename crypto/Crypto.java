@@ -5,15 +5,16 @@ package crypto;
  */
 public class Crypto {
 
+
+
+
+
     public byte[] decrypt(){ }
 
     public byte[] encrypt(){ }
 
+    public boolean loadPublicKey(String filePath) {}
 
-
-
-
-
-
+    public boolean loadPublicKey(String filePath) {}
 
 }
