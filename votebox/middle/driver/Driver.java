@@ -528,7 +528,7 @@ public class Driver {
             {
                 InputStream in = zipFile.getInputStream(entry);
 
-                /* Create the file path, using the proper seperator char */
+                /* Create the file path, using the proper separator char */
                 File outFile = new File(dest, entry.getName().replace('/', File.separatorChar));
 
                 OutputStream out = new BufferedOutputStream(new FileOutputStream(outFile));

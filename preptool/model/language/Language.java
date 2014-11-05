@@ -22,9 +22,16 @@
 
 package preptool.model.language;
 
+import org.apache.commons.codec.language.bm.Lang;
+import preptool.view.View;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 /**
  * The Language class encapsulates an icon (flag), name, and short name
@@ -49,7 +56,7 @@ public class Language {
 	 */
 	private String shortName;
 
-	/**
+    /**
 	 * Constructs a new language with given name, short name, and icon
      *
 	 * @param name the name of the language
@@ -99,16 +106,16 @@ public class Language {
 
 		allLanguages = new ArrayList<>();
 
-		allLanguages.add(new Language("English", "en", new ImageIcon("images/en.png")));
-		allLanguages.add(new Language("Español", "es", new ImageIcon("images/es.png")));
-		allLanguages.add(new Language("Français", "fr", new ImageIcon("images/fr.png")));
-		allLanguages.add(new Language("Deutsch", "de", new ImageIcon("images/de.png")));
-		allLanguages.add(new Language("Italiano", "it", new ImageIcon("images/it.png")));
-		allLanguages.add(new Language("Русский", "ru", new ImageIcon("images/ru.png")));
-		allLanguages.add(new Language("中文", "zh", new ImageIcon("images/zh.png")));
-		allLanguages.add(new Language("日本語", "jp", new ImageIcon("images/jp.png")));
-		allLanguages.add(new Language("한국말", "kr", new ImageIcon("images/kr.png")));
-		allLanguages.add(new Language("العربية", "sa", new ImageIcon("images/sa.png")));
+		allLanguages.add(new Language("English", "en", View.loadImage("en.png")));
+		allLanguages.add(new Language("Español", "es", View.loadImage("es.png")));
+		allLanguages.add(new Language("Français", "fr", View.loadImage("fr.png")));
+		allLanguages.add(new Language("Deutsch", "de", View.loadImage("de.png")));
+		allLanguages.add(new Language("Italiano", "it", View.loadImage("it.png")));
+		allLanguages.add(new Language("Русский", "ru", View.loadImage("ru.png")));
+		allLanguages.add(new Language("中文", "zh", View.loadImage("zh.png")));
+		allLanguages.add(new Language("日本語", "jp", View.loadImage("jp.png")));
+		allLanguages.add(new Language("한국말", "kr", View.loadImage("kr.png")));
+		allLanguages.add(new Language("العربية", "sa", View.loadImage("sa.png")));
 
 		return allLanguages;
 	}
@@ -136,5 +143,6 @@ public class Language {
 
 		return allLanguagesMap.get(name);
 	}
+
 
 }

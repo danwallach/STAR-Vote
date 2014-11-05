@@ -31,9 +31,13 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import javax.swing.event.ListSelectionEvent;
@@ -213,6 +217,8 @@ public class View extends JFrame {
 
         /* Setup */
         super("VoteBox Preparation Tool");
+
+
         model = m;
         languageChangeListeners = new ArrayList<>();
 
@@ -1018,7 +1024,7 @@ public class View extends JFrame {
 
         /* Try and set the image and text */
         try {
-            icon = new ImageIcon("rsrc/preptool/images/list-add.png");
+            icon = loadImage("list-add.png");
             text = "";
         }
         catch (Exception e) {
@@ -1040,7 +1046,7 @@ public class View extends JFrame {
 
         /* Try and set the image and text */
         try {
-            icon = new ImageIcon("rsrc/preptool/images/list-remove.png");
+            icon =loadImage("list-remove.png");
             text = "";
         }
         catch (Exception e) {
@@ -1066,7 +1072,7 @@ public class View extends JFrame {
 
         /* Try and set the image and text */
         try {
-            icon = new ImageIcon("rsrc/preptool/images/go-up.png");
+            icon = loadImage("go-up.png");
             text = "";
         }
         catch (Exception e) {
@@ -1090,7 +1096,7 @@ public class View extends JFrame {
 
         /* Try to set the image and text */
         try {
-            icon = new ImageIcon("rsrc/preptool/images/go-down.png");
+            icon = loadImage("go-down.png");
             text = "";
         }
         catch (Exception e) {
@@ -1149,14 +1155,14 @@ public class View extends JFrame {
         fileMenu.add(exportBallotMenuItem);
 
         /* Create a new "preview" menu item and add it to the file menu */
-        JMenuItem previewMenuItem = new JMenuItem(previewButton.getAction());
-        fileMenu.add(previewMenuItem);
+//        JMenuItem previewMenuItem = new JMenuItem(previewButton.getAction());
+//        fileMenu.add(previewMenuItem);
 
         /* Add a separator */
         fileMenu.addSeparator();
 
         /* Try to load the image */
-        icon = new ImageIcon("rsrc/preptool/images/system-log-out.png");
+        icon = loadImage("system-log-out.png");
         
 
         /* Create a new "quit" menu item and add it to the file menu */
@@ -1178,7 +1184,7 @@ public class View extends JFrame {
         cutMenuItem.setText("Cut");
 
         /* Try to load the image */
-        icon = new ImageIcon("rsrc/preptool/images/edit-cut.png");
+        icon = loadImage("edit-cut.png");
         
 
         /* Set the icon and try to add this to the edit menu */
@@ -1191,7 +1197,7 @@ public class View extends JFrame {
         copyMenuItem.setText("Copy");
 
         /* Try to load the image */
-        icon = new ImageIcon("rsrc/preptool/images/edit-copy.png");
+        icon = loadImage("edit-copy.png");
         
 
         /* Set the icon and add this to the edit menu */
@@ -1204,7 +1210,7 @@ public class View extends JFrame {
         pasteMenuItem.setText("Paste");
 
         /* Try to load the image */
-        icon = new ImageIcon("rsrc/preptool/images/edit-paste.png");
+        icon = loadImage("edit-paste.png");
         
 
         /* Set the icon and add this to the edit menu */
@@ -1280,11 +1286,19 @@ public class View extends JFrame {
         toolbar = new JToolBar();
         toolbar.setFloatable(false);
 
+
+
+        String newImage = "document-new.png";
+        String openImage = "document-open.png";
+        String saveImage= "document-save.png";
+        String exportImage = "media-flash.png";
+        String previewImage = "system-search.png";
+        String preferencesImage = "system-options.png";
+
         ImageIcon icon;
 
         /* Try to load the new icon */
-        icon = new ImageIcon("rsrc/preptool/images/document-new.png");
-        
+        icon = loadImage(newImage);
 
         /* Create a "new ballot" button */
         newBallotButton = new JButton(new AbstractAction("New Ballot", icon) {
@@ -1300,7 +1314,7 @@ public class View extends JFrame {
         toolbar.add(newBallotButton);
 
         /* Try to load the image */
-        icon = new ImageIcon("rsrc/preptool/images/document-open.png");
+        icon = loadImage(openImage);
         
 
         /* Create a "open ballot" button */
@@ -1317,7 +1331,7 @@ public class View extends JFrame {
         toolbar.add(openBallotButton);
 
         /* Try to load the image */
-        icon = new ImageIcon("rsrc/preptool/images/document-save.png");
+        icon = loadImage(saveImage);
 
         /* Create a "save ballot" button */
         saveBallotButton = new JButton(new AbstractAction("Save Ballot", icon) {
@@ -1333,7 +1347,7 @@ public class View extends JFrame {
         toolbar.add(saveBallotButton);
 
         /* Try to load the image */
-        icon = new ImageIcon("rsrc/preptool/images/media-flash.png");
+        icon = loadImage(exportImage);
 
         /* Create a "export" button */
         exportBallotButton = new JButton(new AbstractAction("Export to VoteBox", icon) {
@@ -1350,26 +1364,26 @@ public class View extends JFrame {
         toolbar.add(exportBallotButton);
 
         /* Try to load the image */
-        icon = new ImageIcon("rsrc/preptool/images/system-search.png");
-
-        /* Create a "preview" button */
-        previewButton = new JButton(new AbstractAction("Preview in VoteBox", icon) {
-
-            private static final long serialVersionUID = 1L;
-            public void actionPerformed(ActionEvent e) {
-                previewButtonPressed();
-            }
-
-        } );
-
-        /* FIXME This button is annoying, so disable it for now */
-        previewButton.setEnabled(false);
-
-        /* Add the "preview" button to the toolbar */
-        toolbar.add(previewButton);
+//        icon = loadImage(previewImage);
+//
+//        /* Create a "preview" button */
+//        previewButton = new JButton(new AbstractAction("Preview in VoteBox", icon) {
+//
+//            private static final long serialVersionUID = 1L;
+//            public void actionPerformed(ActionEvent e) {
+//                previewButtonPressed();
+//            }
+//
+//        } );
+//
+//        /* FIXME This button is annoying, so disable it for now */
+//        previewButton.setEnabled(false);
+//
+//        /* Add the "preview" button to the toolbar */
+//        toolbar.add(previewButton);
 
         /* Try to load the image */
-        icon = new ImageIcon("rsrc/preptool/images/system-options.png");
+        icon = loadImage(preferencesImage);
 
         /* Create a "preferences" button */
         prefButton = new JButton(new AbstractAction("Preferences", icon ) {
@@ -1473,5 +1487,36 @@ public class View extends JFrame {
 
         /* Add the text-to-speech menu item to the preference menu */
         prefMenu.add(sound);
+    }
+
+    public static ImageIcon loadImage(String name) {
+
+        try {
+
+
+            String resourcePath = "rsrc/preptool/images/";
+            if(!View.class.getResource("View.class").toString().contains("jar"))
+                return new ImageIcon(resourcePath + name);
+
+            ZipFile file = new ZipFile(System.getProperty("user.dir") + "/Preptool.jar");
+            Enumeration<? extends ZipEntry> entries = file.entries();
+
+            /* Cycle through all the entries */
+            while (entries.hasMoreElements()) {
+
+                ZipEntry entry = entries.nextElement();
+
+                /* Make sure it's the type of file we want */
+                if (entry.getName().endsWith(".png") && entry.getName().contains(resourcePath + name)) {
+
+                   return new ImageIcon(ImageIO.read(file.getInputStream(entry)));
+                }
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }
