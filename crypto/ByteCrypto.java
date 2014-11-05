@@ -1,9 +1,11 @@
 package crypto;
 
 import crypto.exceptions.BadKeyException;
+import crypto.exceptions.KeyNotLoadedException;
 import crypto.exceptions.UninitialisedException;
 
-import java.nio.file.NoSuchFileException;
+import java.io.FileNotFoundException;
+import java.security.InvalidKeyException;
 
 /**
  * A crypto class used as a black box operating over byte arrays performing
@@ -21,26 +23,26 @@ public class ByteCrypto {
     private ByteCrypto(){
     }
 
-    public byte[] decrypt(byte[] cipherText) throws UninitialisedException {
+    public byte[] decrypt(byte[] cipherText) throws UninitialisedException, KeyNotLoadedException, InvalidKeyException, CipherException {
 
         if (cryptoType != null)
             return cryptoType.decrypt(cipherText);
-        else throw new UninitialisedException("The crypto type was not properly loaded.");
+        else throw new UninitialisedException("The crypto type has not yet been loaded.");
     }
 
-    public byte[] encrypt(byte[] plainText) throws UninitialisedException {
+    public byte[] encrypt(byte[] plainText) throws UninitialisedException, KeyNotLoadedException, InvalidKeyException, CipherException {
 
         if (cryptoType != null)
-            return cryptoType.encrypt(plainText);
-        else throw new UninitialisedException("The crypto type was not properly loaded.");
+                return cryptoType.encrypt(plainText);
+        else throw new UninitialisedException("The crypto type has not yet been loaded.");
     }
 
-    public void loadKeys(String... filePaths) throws NoSuchFileException, BadKeyException, UninitialisedException {
+    public void loadKeys(String... filePaths) throws FileNotFoundException, BadKeyException, UninitialisedException {
 
         if (cryptoType != null) {
                 cryptoType.loadKeys(filePaths);
         }
-        else throw new UninitialisedException("The crypto type was not properly loaded.");
+        else throw new UninitialisedException("The crypto type has not yet been loaded.");
     }
 
     public void setCryptoType(ICryptoType cryptoType) throws UninitialisedException{
