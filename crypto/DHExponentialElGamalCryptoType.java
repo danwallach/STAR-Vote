@@ -1,5 +1,6 @@
 package crypto;
 
+import crypto.adder.SearchSpaceExhaustedException;
 import crypto.exceptions.BadKeyException;
 import crypto.exceptions.KeyNotLoadedException;
 import crypto.exceptions.UninitialisedException;
@@ -8,10 +9,15 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import javax.crypto.interfaces.DHPrivateKey;
+import javax.crypto.interfaces.DHPublicKey;
+import javax.crypto.spec.DHParameterSpec;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.math.BigInteger;
+import java.nio.ByteBuffer;
 import java.security.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,14 +25,14 @@ import java.util.List;
 /**
  * Created by Matthew Kindy II on 11/5/2014.
  */
-public class ElGamalCryptoType implements ICryptoType {
+public class DHExponentialElGamalCryptoType implements ICryptoType {
 
     private final Cipher cipher;
-    private PrivateKey privateKey;
-    private PublicKey publicKey;
+    private DHPrivateKey privateKey;
+    private DHPublicKey publicKey;
     private final SecureRandom random = new SecureRandom();
 
-    public ElGamalCryptoType() throws UninitialisedException {
+    public DHExponentialElGamalCryptoType() throws UninitialisedException {
 
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
 
@@ -45,8 +51,27 @@ public class ElGamalCryptoType implements ICryptoType {
 
         cipher.init(Cipher.DECRYPT_MODE, privateKey);
 
-        try { return cipher.doFinal(cipherText);  }
+        try {
+
+            /* Partially decrypt to get g^m */
+            BigInteger mappedPlainText = new BigInteger(cipher.doFinal(cipherText));
+
+            /* Get g */
+            DHParameterSpec spec = publicKey.getParams();
+            BigInteger g = spec.getG();
+
+            /* Guess the value! -- TODO 100 is chosen arbitrarily because we don't wanna pass the upper limit in */
+            for(int i=0; i<100; i++) {
+                if (g.pow(i).equals(mappedPlainText)) {
+                    return ByteBuffer.allocate(4).putInt(i).array();
+                }
+            }
+
+        }
         catch (BadPaddingException | IllegalBlockSizeException e) { throw new CipherException(e.getClass() + ": " + e.getMessage()); }
+
+        throw new SearchSpaceExhaustedException("The decryption could not find a number of votes within the probable search space!");
+
     }
 
     /**
@@ -59,7 +84,13 @@ public class ElGamalCryptoType implements ICryptoType {
 
         cipher.init(Cipher.ENCRYPT_MODE, publicKey, random);
 
-        try { return cipher.doFinal(plainText);  }
+        DHParameterSpec spec = publicKey.getParams();
+        BigInteger g = spec.getG();
+
+        /* This maps the message into the group for homomorphic purposes (makes it exponential Elgamal) */
+        byte[] mappedPlaintext = g.modPow(new BigInteger(plainText), spec.getP()).toByteArray();
+
+        try { return cipher.doFinal(mappedPlaintext);  }
         catch (BadPaddingException | IllegalBlockSizeException e) { throw new CipherException(e.getClass() + ": " + e.getMessage()); }
     }
 
@@ -88,10 +119,10 @@ public class ElGamalCryptoType implements ICryptoType {
      * @throws BadKeyException
      */
     public void loadPrivateKey(Key privateKey) throws BadKeyException {
-        if (!(privateKey instanceof PrivateKey))
+        if (!(privateKey instanceof DHPrivateKey))
             throw new BadKeyException("This key was not a PrivateKey!");
 
-        this.privateKey = (PrivateKey)privateKey;
+        this.privateKey = (DHPrivateKey)privateKey;
     }
 
     /**
@@ -119,10 +150,10 @@ public class ElGamalCryptoType implements ICryptoType {
      * @throws BadKeyException
      */
     public void loadPublicKey(Key publicKey) throws BadKeyException {
-        if (!(publicKey instanceof PublicKey))
+        if (!(publicKey instanceof DHPublicKey))
             throw new BadKeyException("This key was not a PublicKey!");
 
-        this.publicKey = (PublicKey)publicKey;
+        this.publicKey = (DHPublicKey)publicKey;
     }
 
     /**
@@ -164,8 +195,8 @@ public class ElGamalCryptoType implements ICryptoType {
             throw new BadKeyException("At least one of the keys was not of the correct type! [PrivateKey, PublicKey]");
         }
 
-        privateKey = (PrivateKey)keys[0];
-        publicKey = (PublicKey)keys[1];
+        privateKey = (DHPrivateKey)keys[0];
+        publicKey = (DHPublicKey)keys[1];
     }
 
 }

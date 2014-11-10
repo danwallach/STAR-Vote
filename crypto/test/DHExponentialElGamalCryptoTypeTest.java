@@ -5,7 +5,7 @@ import junit.framework.TestCase;
 /**
  * Created by Matthew Kindy II on 11/9/2014.
  */
-public class ElGamalCryptoTypeTest extends TestCase {
+public class DHExponentialElGamalCryptoTypeTest extends TestCase {
 
     protected void setUp() throws Exception {
 

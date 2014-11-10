@@ -4,7 +4,6 @@ import crypto.exceptions.BadKeyException;
 import crypto.exceptions.KeyNotLoadedException;
 
 import java.io.FileNotFoundException;
-import java.nio.file.NoSuchFileException;
 import java.security.InvalidKeyException;
 import java.security.Key;
 
@@ -22,9 +21,9 @@ public interface ICryptoType {
      * @param cipherText    a byte array to be decrypted
      * @return              the plaintext decrypted from the ciphertext
      *
-     * @throws javax.crypto.IllegalBlockSizeException
      * @throws java.security.InvalidKeyException
-     * @throws javax.crypto.BadPaddingException
+     * @throws CipherException
+     * @throws crypto.exceptions.KeyNotLoadedException
      */
     public byte[] decrypt(byte[] cipherText) throws InvalidKeyException, KeyNotLoadedException, CipherException;
 
@@ -34,9 +33,9 @@ public interface ICryptoType {
      * @param plainText     a byte array to be encrypted
      * @return              the ciphertext of the plaintext according to the protocol
      *
-     * @throws javax.crypto.IllegalBlockSizeException
      * @throws java.security.InvalidKeyException
-     * @throws javax.crypto.BadPaddingException
+     * @throws CipherException
+     * @throws crypto.exceptions.KeyNotLoadedException
      */
     public byte[] encrypt(byte[] plainText) throws InvalidKeyException, KeyNotLoadedException, CipherException;
 
@@ -47,7 +46,7 @@ public interface ICryptoType {
      * @param filePaths      a String array specifying the locations of the IKeys to be loaded
      *
      * @throws BadKeyException if the ICryptoType does not support the type of Key that was loaded
-     * @throws NoSuchFileException if the file could not be found
+     * @throws java.io.FileNotFoundException
      */
     public void loadKeys(String[] filePaths) throws BadKeyException, FileNotFoundException;
 
