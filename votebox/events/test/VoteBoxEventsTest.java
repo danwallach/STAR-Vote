@@ -24,7 +24,6 @@ package votebox.events.test;
 
 import auditorium.IKeyStore;
 import auditorium.SimpleKeyStore;
-import com.sun.org.apache.xpath.internal.SourceTree;
 import crypto.interop.AdderKeyManipulator;
 import crypto.adder.PublicKey;
 import junit.framework.TestCase;
@@ -370,7 +369,7 @@ public class VoteBoxEventsTest extends TestCase {
     public void testCastCommittedBallot(){
         ASExpression nonce = getBlob();
 
-        CastCommittedBallotEvent event = new CastCommittedBallotEvent(0, nonce, "123456789");
+        CastCommittedBallotEvent event = new CastCommittedBallotEvent(0, nonce, "123456789", 0);
 
         ASExpression sexp = event.toSExp();
 
@@ -424,7 +423,7 @@ public class VoteBoxEventsTest extends TestCase {
         ASExpression nonce = getBlob();
         byte[] ballot = getBlob().toVerbatim();
 
-        EncryptedCastBallotEvent event = new EncryptedCastBallotEvent(0, nonce, ballot, "123456789");
+        EncryptedCastBallotEvent event = new EncryptedCastBallotEvent(0, nonce, ballot, "123456789", 0);
 
         ASExpression sexp = event.toSExp();
 
@@ -442,7 +441,7 @@ public class VoteBoxEventsTest extends TestCase {
         ASExpression nonce = getBlob();
         byte[] ballot = getBlob().toVerbatim();
 
-        EncryptedCastBallotWithNIZKsEvent event = new EncryptedCastBallotWithNIZKsEvent(0, nonce, ballot, "123456789");
+        EncryptedCastBallotWithNIZKsEvent event = new EncryptedCastBallotWithNIZKsEvent(0, nonce, ballot, "123456789", 0);
 
         ASExpression sexp = event.toSExp();
 

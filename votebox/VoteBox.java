@@ -198,6 +198,8 @@ public class VoteBox{
         /* Create the status */
         String status = voting ? ( isProvisional ? "provisional-in-use" : "in-use" ) : "ready";
 
+        System.out.println("Protected count: " + protectedCount + " Public count: " + publicCount);
+
         /* Create the event corresponding to the status */
         return new VoteBoxEvent(mySerial, label, status, battery, protectedCount, publicCount);
     }
@@ -328,35 +330,35 @@ public class VoteBox{
            Clean up the encrypter afterwards so as to destroy the random number needed for challenging.
            XXX This code doesn't do anything?
          */
-        currentDriver.getView().registerForCastBallot(new Observer(){
-
-            /**
-             * Handles the updating procedure after a ballot gets cast
-             * @see java.util.Observer#update(java.util.Observable, Object)
-             */
-            public void update(Observable o, Object argTemp) {
-
-                if (!connected)
-                    throw new RuntimeException("Attempted to cast ballot when not connected to any machines");
-
-                if (!voting || currentDriver == null)
-                    throw new RuntimeException("VoteBox attempted to cast ballot, but was not currently voting");
-
-                if (finishedVoting)
-                    throw new RuntimeException("This machine has already finished voting, but attempted to vote again");
-
-                finishedVoting = true;
-                publicCount++;
-                protectedCount++;
-
-                auditorium.announce(new CastCommittedBallotEvent(mySerial, nonce, bid));
-
-                /* Clears for randomness */
-                BallotEncrypter.SINGLETON.clear();
-
-            }
-
-        });
+//        currentDriver.getView().registerForCastBallot(new Observer(){
+//
+//            /**
+//             * Handles the updating procedure after a ballot gets cast
+//             * @see java.util.Observer#update(java.util.Observable, Object)
+//             */
+//            public void update(Observable o, Object argTemp) {
+//
+//                if (!connected)
+//                    throw new RuntimeException("Attempted to cast ballot when not connected to any machines");
+//
+//                if (!voting || currentDriver == null)
+//                    throw new RuntimeException("VoteBox attempted to cast ballot, but was not currently voting");
+//
+//                if (finishedVoting)
+//                    throw new RuntimeException("This machine has already finished voting, but attempted to vote again");
+//
+//                finishedVoting = true;
+//                publicCount++;
+//                protectedCount++;
+//
+//                auditorium.announce(new CastCommittedBallotEvent(mySerial, nonce, bid));
+//
+//                /* Clears for randomness */
+//                BallotEncrypter.SINGLETON.clear();
+//
+//            }
+//
+//        });
 
         /*  If we're using piecemeal encryption, we need to listen for each page change. TODO might get rid of this */
         if (_constants.getUsePiecemealEncryption()) {
@@ -452,8 +454,7 @@ public class VoteBox{
                 /* Check to see if voting is still in progress after the override commit selection */
                 if (voting && override && !finishedVoting && currentDriver != null) {
 
-                    publicCount++;
-                    protectedCount++;
+
                     Object[] arg = (Object[]) argTemp;
 
                     /* arg1 should be the cast ballot structure, check  TODO */
@@ -628,7 +629,12 @@ public class VoteBox{
 
             /* These are all NO-OPs because we don't respond to these */
             public void ballotPrinting(BallotPrintingEvent ballotPrintingEvent) {}
-            public void castCommittedBallot(CastCommittedBallotEvent e) {}
+            public void castCommittedBallot(CastCommittedBallotEvent e) {
+                if(e.getSource() == mySerial) {
+                    publicCount++;
+                    protectedCount++;
+                }
+            }
             public void overrideCancelConfirm(OverrideCancelConfirmEvent e) {}
             public void overrideCancelDeny(OverrideCancelDenyEvent e) {}
             public void lastPollsOpen(LastPollsOpenEvent e) {}
