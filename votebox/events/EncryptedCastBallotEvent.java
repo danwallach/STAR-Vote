@@ -54,7 +54,9 @@ public class EncryptedCastBallotEvent extends CastCommittedBallotEvent{
 
                 String bid = lsexp.get(3).toString();
 
-                return new EncryptedCastBallotEvent(serial, nonce, ballot, bid);
+                int source = Integer.parseInt(lsexp.get(4).toString());
+
+                return new EncryptedCastBallotEvent(serial, nonce, ballot, bid, source);
             }
             return null;
         }
@@ -74,8 +76,8 @@ public class EncryptedCastBallotEvent extends CastCommittedBallotEvent{
      * @param nonce the nonce
      * @param ballot the encrypted ballot, as an array of bytes
      */
-    public EncryptedCastBallotEvent(int serial, ASExpression nonce, byte[] ballot, String bid) {
-        super(serial, nonce, ballot, bid);
+    public EncryptedCastBallotEvent(int serial, ASExpression nonce, byte[] ballot, String bid, int source) {
+        super(serial, nonce, ballot, bid, source);
 
     }
 
@@ -86,6 +88,7 @@ public class EncryptedCastBallotEvent extends CastCommittedBallotEvent{
         return new ListExpression(StringExpression.makeString("encrypted-cast-ballot"),
                 getNonce(),
                 StringExpression.makeString(getBallot()),
-                StringExpression.makeString(getBID()));
+                StringExpression.makeString(getBID()),
+                StringExpression.makeString(getSource() + ""));
     }
 }

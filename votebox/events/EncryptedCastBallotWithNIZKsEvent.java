@@ -27,7 +27,9 @@ public class EncryptedCastBallotWithNIZKsEvent extends EncryptedCastBallotEvent 
 
                 String bid = lsexp.get(3).toString();
 
-                return new EncryptedCastBallotWithNIZKsEvent(serial, nonce, ballot, bid);
+                int source = Integer.parseInt(lsexp.get(4).toString());
+
+                return new EncryptedCastBallotWithNIZKsEvent(serial, nonce, ballot, bid, source);
             }
 
             return null;
@@ -42,14 +44,15 @@ public class EncryptedCastBallotWithNIZKsEvent extends EncryptedCastBallotEvent 
         return MATCHER;
     }//getMatcher
 
-    public EncryptedCastBallotWithNIZKsEvent(int serial, ASExpression nonce, byte[] ballot, String bid){
-        super(serial, nonce, ballot, bid);
+    public EncryptedCastBallotWithNIZKsEvent(int serial, ASExpression nonce, byte[] ballot, String bid, int source){
+        super(serial, nonce, ballot, bid, source);
     }
 
     public ASExpression toSExp(){
         return new ListExpression(StringExpression.makeString("encrypted-cast-ballot-with-nizks"),
                 getNonce(),
                 StringExpression.makeString(getBallot()),
-                StringExpression.makeString(getBID()));
+                StringExpression.makeString(getBID()),
+                StringExpression.makeString(getSource() + ""));
     }
 }

@@ -96,7 +96,7 @@ public class Booth {
 
 
         auditorium.announce(new CastCommittedBallotEvent(serial, StringExpression
-                .makeString(ballotNonce), "bid"));
+                .makeString(ballotNonce), "bid", 0));
         protectedCount++;
         publicCount++;
         voting = false;

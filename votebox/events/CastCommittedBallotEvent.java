@@ -56,7 +56,9 @@ public class CastCommittedBallotEvent extends ABallotEvent {
 
                 String bid = list.get(2).toString();
 
-                return new CastCommittedBallotEvent(serial, nonce, bid);
+                int source = Integer.parseInt(list.get(3).toString());
+
+                return new CastCommittedBallotEvent(serial, nonce, bid, source);
             }
 
             return null;
@@ -64,8 +66,15 @@ public class CastCommittedBallotEvent extends ABallotEvent {
         }
     };
 
-    public CastCommittedBallotEvent(int serial, ASExpression nonce, byte[] ballot, String bid) {
+    /**
+     * The serial of the machine who committed this ballot in the first place
+     */
+    private int source;
+
+    public CastCommittedBallotEvent(int serial, ASExpression nonce, byte[] ballot, String bid, int source) {
         super(serial, nonce, bid, ballot);
+
+        this.source = source;
     }
 
     /**
@@ -75,15 +84,17 @@ public class CastCommittedBallotEvent extends ABallotEvent {
         return MATCHER;
     }//getMatcher
 
+
     /**
      * Constructs a new CastCommittedBallotEvent
-     *
      * @param serial the serial number of the sender
      * @param nonce  the nonce
      * @param bid identifies the ballot that is cast
+     * @param source
      */
-    public CastCommittedBallotEvent(int serial, ASExpression nonce, String bid) {
+    public CastCommittedBallotEvent(int serial, ASExpression nonce, String bid, int source) {
         super(serial, bid, nonce);
+        this.source = source;
     }
 
     /**
@@ -99,6 +110,11 @@ public class CastCommittedBallotEvent extends ABallotEvent {
     public ASExpression toSExp() {
         return new ListExpression(StringExpression.makeString("cast-ballot"),
                 getNonce(),
-                StringExpression.makeString(getBID()));
+                StringExpression.makeString(getBID()),
+                StringExpression.makeString(getSource() + ""));
+    }
+
+    public int getSource() {
+        return source;
     }
 }

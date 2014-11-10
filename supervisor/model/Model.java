@@ -97,6 +97,9 @@ public class Model {
     /** A Map of Precinct IDs to Precincts */
     private TreeMap<String, Precinct> precincts;
 
+    /** A mapping of committed ballots to the machines that committed them */
+    private HashMap<ASExpression, Integer> machinesToCommits;
+
     /** Keeps track of the last heard polls open event so that new machines can be updated when they come online */
     private PollsOpenEvent lastPollsOpenHeard;
 
@@ -156,6 +159,8 @@ public class Model {
         });
 
         hashChain = new HashChain();
+
+        machinesToCommits = new HashMap<>();
     }
 
     /**
@@ -1108,8 +1113,8 @@ public class Model {
                     VoteBoxBooth booth = (VoteBoxBooth) m;
 
                     /* Update the public and protected counts of the machine */
-                    booth.setPublicCount(booth.getPublicCount() + 1);
-                    booth.setProtectedCount(booth.getProtectedCount() + 1);
+//                    booth.setPublicCount(booth.getPublicCount() + 1);
+//                    booth.setProtectedCount(booth.getProtectedCount() + 1);
 
                     /* Put the committed ballot in the ballot store, in all the proper places */
                     Precinct thisPrecinct = precincts.get(e.getPrecinct());
@@ -1120,6 +1125,8 @@ public class Model {
 
                         System.out.println(Ballot.fromASE(ballot).getPublicKey());
                         thisPrecinct.commitBallot(e.getBID(), ballot);
+
+                        machinesToCommits.put(ballot, e.getSerial());
 
                         System.out.println(thisPrecinct.getFinalPublicKey());
 
@@ -1154,8 +1161,8 @@ public class Model {
                     VoteBoxBooth booth = (VoteBoxBooth) m;
 
                     /* Update the counts */
-                    booth.setPublicCount(booth.getPublicCount() + 1);
-                    booth.setProtectedCount(booth.getProtectedCount() + 1);
+//                    booth.setPublicCount(booth.getPublicCount() + 1);
+//                    booth.setProtectedCount(booth.getProtectedCount() + 1);
 
                     Precinct thisPrecinct = getPrecinctWithBID(e.getBID());
 
@@ -1235,7 +1242,9 @@ public class Model {
                     boolean wasCast = (b!=null);
 
                     if (wasCast)
-                        auditorium.announce(new EncryptedCastBallotWithNIZKsEvent(serial, nonce, b.toListExpression().toVerbatim(), bid));
+                        auditorium.announce(
+                                new EncryptedCastBallotWithNIZKsEvent(serial, nonce, b.toListExpression().toVerbatim(),
+                                        bid, machinesToCommits.get(b.toListExpression())));
                     else throw new RuntimeException("Found the precinct with the bid, but couldn't cast the ballot...");
 
                     /* Now tell the ballot scanner that this ballot was accepted */
