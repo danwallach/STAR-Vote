@@ -49,6 +49,7 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
         if(privateKey == null)
             throw new KeyNotLoadedException("The private key has not yet been loaded! [Decryption]");
 
+        /* Put the cipher in decrypt mode */
         cipher.init(Cipher.DECRYPT_MODE, privateKey);
 
         try {
@@ -56,11 +57,12 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
             /* Partially decrypt to get g^m */
             BigInteger mappedPlainText = new BigInteger(cipher.doFinal(cipherText));
 
-            /* Get g */
+            /* Get g from the public key*/
             DHParameterSpec spec = publicKey.getParams();
             BigInteger g = spec.getG();
 
-            /* Guess the value! -- TODO 100 is chosen arbitrarily because we don't wanna pass the upper limit in */
+            /* Guess the value of m by comparing g^i to g^m and return if/when they're the same --
+                TODO 100 is chosen arbitrarily because we don't wanna pass the upper limit in */
             for(int i=0; i<100; i++) {
                 if (g.pow(i).equals(mappedPlainText)) {
                     return ByteBuffer.allocate(4).putInt(i).array();
@@ -82,14 +84,17 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
         if(publicKey == null)
             throw new KeyNotLoadedException("The public key has not yet been loaded! [Encryption]");
 
+        /* Put the cipher in encrypt mode */
         cipher.init(Cipher.ENCRYPT_MODE, publicKey, random);
 
+        /* Get g from the public key */
         DHParameterSpec spec = publicKey.getParams();
         BigInteger g = spec.getG();
 
-        /* This maps the message into the group for homomorphic purposes (makes it exponential Elgamal) */
+        /* Get g^m where m is our plaintext */
         byte[] mappedPlaintext = g.modPow(new BigInteger(plainText), spec.getP()).toByteArray();
 
+        /* Encrypt g^m */
         try { return cipher.doFinal(mappedPlaintext);  }
         catch (BadPaddingException | IllegalBlockSizeException e) { throw new CipherException(e.getClass() + ": " + e.getMessage()); }
     }
