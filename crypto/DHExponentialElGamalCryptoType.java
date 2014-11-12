@@ -123,9 +123,9 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
      * @param privateKey
      * @throws BadKeyException
      */
-    public void loadPrivateKey(Key privateKey) throws BadKeyException {
+    private void loadPrivateKey(Key privateKey) throws BadKeyException {
         if (!(privateKey instanceof DHPrivateKey))
-            throw new BadKeyException("This key was not a PrivateKey!");
+            throw new BadKeyException("This key was not a DHPrivateKey!");
 
         this.privateKey = (DHPrivateKey)privateKey;
     }
@@ -154,9 +154,9 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
      * @param publicKey
      * @throws BadKeyException
      */
-    public void loadPublicKey(Key publicKey) throws BadKeyException {
+    private void loadPublicKey(Key publicKey) throws BadKeyException {
         if (!(publicKey instanceof DHPublicKey))
-            throw new BadKeyException("This key was not a PublicKey!");
+            throw new BadKeyException("This key was not a DHPublicKey!");
 
         this.publicKey = (DHPublicKey)publicKey;
     }
@@ -185,10 +185,8 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
         loadKeys(keys.toArray(new Key[keys.size()]));
     }
 
-    /**
-     * @see crypto.ICryptoType#loadKeys(java.security.Key...)
-     */
-    public void loadKeys(Key[] keys) throws BadKeyException {
+
+    private void loadKeys(Key[] keys) throws BadKeyException {
 
         /* Check to make sure we're only getting two keys */
         if(keys.length != 2) {
@@ -197,7 +195,7 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
 
         /* Check to make sure that the keys are in the correct order / of the correct type */
         else if (!(keys[0] instanceof PrivateKey) || !(keys[1] instanceof PublicKey)) {
-            throw new BadKeyException("At least one of the keys was not of the correct type! [PrivateKey, PublicKey]");
+            throw new BadKeyException("At least one of the keys was not of the correct type! [DHPrivateKey, DHPublicKey]");
         }
 
         privateKey = (DHPrivateKey)keys[0];

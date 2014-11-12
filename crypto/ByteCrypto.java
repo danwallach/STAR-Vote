@@ -16,11 +16,10 @@ import java.security.InvalidKeyException;
  */
 public class ByteCrypto {
 
-    public static ByteCrypto SINGLETON = new ByteCrypto();
+    private final ICryptoType cryptoType;
 
-    private ICryptoType cryptoType;
-
-    private ByteCrypto(){
+    public ByteCrypto(ICryptoType cryptoType){
+        this.cryptoType = cryptoType;
     }
 
     public byte[] decrypt(byte[] cipherText) throws UninitialisedException, KeyNotLoadedException, InvalidKeyException, CipherException {
@@ -43,14 +42,6 @@ public class ByteCrypto {
                 cryptoType.loadKeys(filePaths);
         }
         else throw new UninitialisedException("The crypto type has not yet been loaded.");
-    }
-
-    public void setCryptoType(ICryptoType cryptoType) throws UninitialisedException{
-
-        if (cryptoType != null)
-            this.cryptoType = cryptoType;
-        else
-            throw new UninitialisedException("The crypto type was not properly loaded!");
     }
 
     public String toString() {

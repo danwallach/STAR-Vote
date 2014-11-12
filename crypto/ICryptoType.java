@@ -5,7 +5,6 @@ import crypto.exceptions.KeyNotLoadedException;
 
 import java.io.FileNotFoundException;
 import java.security.InvalidKeyException;
-import java.security.Key;
 
 /**
  * A wrapper for basic cryptographic functionality found in Java APIs, e.g.
@@ -50,15 +49,6 @@ public interface ICryptoType {
      */
     public void loadKeys(String[] filePaths) throws BadKeyException, FileNotFoundException;
 
-    /**
-     * Given an array of Keys, checks if they are proper keys for the protocol. If they are, calls the
-     * proper submethod, else throws a BadKeyException.
-     *
-     * @param keys      a Key or Key array
-     *
-     * @throws BadKeyException if the ICryptoType does not support the type of Key that was loaded
-     */
-    public void loadKeys(Key... keys) throws BadKeyException;
 
     public String toString();
 
