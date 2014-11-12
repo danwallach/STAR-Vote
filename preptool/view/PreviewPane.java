@@ -116,7 +116,7 @@ public class PreviewPane extends JPanel {
         ImageIcon icon;
 
         /* Try to load the image icon */
-        icon = new ImageIcon("rsrc/preptool/images/view-refresh.png");
+        icon = View.loadImage("view-refresh.png");
 
         /* Initialise the button */
         refreshButton = new JButton(new AbstractAction("Refresh", icon) {

@@ -3,7 +3,7 @@ package crypto.test;
 import junit.framework.TestCase;
 
 /**
- * Created by Matthew Kindy II on 11/9/2014.
+ * @author Matt Bernhard and Matt Kindy
  */
 public class DHExponentialElGamalCryptoTypeTest extends TestCase {
 

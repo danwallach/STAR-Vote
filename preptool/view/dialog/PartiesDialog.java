@@ -362,7 +362,7 @@ public class PartiesDialog extends JDialog implements IMultiLanguageEditor {
         partiesToolbar.setFloatable(false);
 
         /* Load the image and text (text blank because we only need image)*/
-        ImageIcon icon = new ImageIcon("rsrc/preptool/images/list-add.png");
+        ImageIcon icon = View.loadImage("list-add.png");
         String text = "";
 
         /* Create a new button for adding */
@@ -375,7 +375,7 @@ public class PartiesDialog extends JDialog implements IMultiLanguageEditor {
         partiesToolbar.add(addButton);
 
         /* Load the image and text (text blank because we only need image) */
-        icon = new ImageIcon("rsrc/preptool/images/list-remove.png");
+        icon  = View.loadImage("list-remove.png");
         text = "";
 
         /* Create a new button for deleting */
