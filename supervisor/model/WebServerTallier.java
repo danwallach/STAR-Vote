@@ -39,10 +39,10 @@ public class WebServerTallier {
 
             try {
 
-                List<Vote> votes = bal.getVotes();
+                List<AdderVote> votes = bal.getVotes();
 
                 /* Cycle through each of the races */
-                for(Vote vote: votes){
+                for(AdderVote vote: votes){
 
                     /* Get all the candidate choices */
                     List<ASExpression> possibleChoices = vote.getChoices();
@@ -81,7 +81,7 @@ public class WebServerTallier {
         }
 
         /* This will hold the final list of summed Votes to be put into a Ballot */
-        ArrayList<Vote> votes = new ArrayList<>();
+        ArrayList<AdderVote> votes = new ArrayList<>();
 
         /* This will be used to create the nonce eventually */
         ArrayList<ASExpression> voteASE = new ArrayList<>();
@@ -94,7 +94,7 @@ public class WebServerTallier {
 
             /* Get the homomorphically tallied vote for this race */
             System.out.println("Entering Election.sumVotes(): ");
-            Vote vote = results.get(id).sumVotes();
+            AdderVote vote = results.get(id).sumVotes();
 
             /* Verify the voteProof and error off if bad */
 
@@ -155,7 +155,7 @@ public class WebServerTallier {
     /**
      * Calculates the individual vote totals for each of the candidates in each of the races in the Ballot
      *
-     * @see Election#getFinalSum(List, Vote, PublicKey)
+     * @see Election#getFinalSum(List, crypto.adder.AdderVote, PublicKey)
      * @see crypto.BallotEncrypter#adderDecryptWithKey(Election, PublicKey, PrivateKey)
      *
      * @param toTotal       the previously tallied Ballot from which to extract the candidate sums
@@ -173,7 +173,7 @@ public class WebServerTallier {
         TreeMap<String, BigInteger> voteTotals = new TreeMap<>();
 
         /* Iterate over each of the races */
-        for (Vote v: toTotal.getVotes()) {
+        for (AdderVote v: toTotal.getVotes()) {
 
             /* Get the candidates */
             List<ASExpression> raceCandidates = v.getChoices();
@@ -200,7 +200,7 @@ public class WebServerTallier {
      * @param masterKey             the public key
      * @return                      a vector of vote totals for each candidate in this Vote (race)
      */
-    private static List<AdderInteger> getDecryptedFinalSum(List<AdderInteger> partialSums, Vote sum, int size, PublicKey masterKey) {
+    private static List<AdderInteger> getDecryptedFinalSum(List<AdderInteger> partialSums, AdderVote sum, int size, PublicKey masterKey) {
 
         /*
 

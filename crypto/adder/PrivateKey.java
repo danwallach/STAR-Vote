@@ -51,7 +51,7 @@ public class PrivateKey {
      *
      * @return          the partial decryption of the given vote
      */
-    public List<AdderInteger> partialDecrypt(Vote vote) {
+    public List<AdderInteger> partialDecrypt(AdderVote vote) {
         List<ElgamalCiphertext> cipherList = vote.getCipherList();
         List<AdderInteger> resultList = new ArrayList<>(cipherList.size());
 

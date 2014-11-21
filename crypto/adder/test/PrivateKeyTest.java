@@ -3,14 +3,9 @@ package crypto.adder.test;
 import java.util.ArrayList;
 import java.util.List;
 
+import crypto.adder.*;
 import junit.framework.TestCase;
 import junit.textui.TestRunner;
-import crypto.adder.AdderInteger;
-import crypto.adder.ElgamalCiphertext;
-import crypto.adder.InvalidPrivateKeyException;
-import crypto.adder.InvalidVoteException;
-import crypto.adder.PrivateKey;
-import crypto.adder.Vote;
 
 /**
  * Private key test.
@@ -125,8 +120,8 @@ public class PrivateKeyTest extends TestCase {
                 = PrivateKey.
                   fromString("p1045854189839g696796413029x125538416498f74554249"
                              + "804");
-            Vote vote1
-                = Vote.fromString("p1045854189839G733227695096H407210523871");
+            AdderVote vote1
+                = AdderVote.fromString("p1045854189839G733227695096H407210523871");
             List/*<AdderInteger>*/ list1 = new ArrayList/*<AdderInteger>*/(1);
             list1.add(new AdderInteger("696993318894"));
             assertEquals(list1, privateKey3.partialDecrypt(vote1));
@@ -134,8 +129,8 @@ public class PrivateKeyTest extends TestCase {
                 = PrivateKey.
                   fromString(
                   "p1045854189839g696796413029x17670762055f74554249804");
-            Vote vote2
-                = Vote.fromString("p1045854189839G733227695096H407210523871");
+            AdderVote vote2
+                = AdderVote.fromString("p1045854189839G733227695096H407210523871");
             List/*<AdderInteger>*/ list2 = new ArrayList/*<AdderInteger>*/(1);
             list2.add(new  AdderInteger("695327169426"));
             assertEquals(list2, privateKey4.partialDecrypt(vote2));

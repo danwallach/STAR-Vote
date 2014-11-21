@@ -18,7 +18,7 @@ public class Election {
     private PublicKey finalPublicKey;
 
     /** The List of all Votes cast in this Election */
-    private List<Vote> votes;
+    private List<AdderVote> votes;
 
     /** The List of all candidates in this Election (race) */
     private List<ASExpression> choices;
@@ -39,7 +39,7 @@ public class Election {
      *
      * @return          the votes
      */
-    public List<Vote> getVotes() {
+    public List<AdderVote> getVotes() {
         return votes;
     }
 
@@ -48,7 +48,7 @@ public class Election {
      *
      * @param vote      the vote
      */
-    public void castVote(Vote vote) {
+    public void castVote(AdderVote vote) {
         votes.add(vote);
     }
 
@@ -58,10 +58,10 @@ public class Election {
      *
      * @return          a vote representing the total of the given list of votes
      */
-    public Vote sumVotes() {
+    public AdderVote sumVotes() {
 
         /* Pull out the first vote */
-        Vote v = votes.get(0);
+        AdderVote v = votes.get(0);
 
         List<ElgamalCiphertext> cipherlist = new ArrayList<>();
 
@@ -70,10 +70,10 @@ public class Election {
             cipherlist.add(new ElgamalCiphertext(AdderInteger.ONE, AdderInteger.ONE, finalPublicKey.getP()));
 
         /* Create a new multiplicative identity */
-        Vote total = new Vote(cipherlist, v.getChoices(), new VoteProof(new MembershipProof(), new ArrayList<MembershipProof>()), v.getRaceTitle());
+        AdderVote total = new AdderVote(cipherlist, v.getChoices(), new VoteProof(new MembershipProof(), new ArrayList<MembershipProof>()), v.getRaceTitle());
 
         /* Multiply all the votes together */
-        for (Vote vote : votes)
+        for (AdderVote vote : votes)
             total = vote.multiply(total);
 
         /* These are aliasing checks */
@@ -116,7 +116,7 @@ public class Election {
      *
      * @return                  the final vote tally
      */
-    public List<AdderInteger> getFinalSum(List<AdderInteger> partialSums, Vote sum, PublicKey masterKey) {
+    public List<AdderInteger> getFinalSum(List<AdderInteger> partialSums, AdderVote sum, PublicKey masterKey) {
 
         /*
 

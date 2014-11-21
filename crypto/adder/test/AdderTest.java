@@ -5,17 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import crypto.adder.*;
 import junit.framework.TestCase;
 import junit.textui.TestRunner;
-import crypto.adder.AdderInteger;
-import crypto.adder.ElgamalCiphertext;
-import crypto.adder.Election;
-import crypto.adder.Polynomial;
-import crypto.adder.PrivateKey;
-import crypto.adder.PublicKey;
-import crypto.adder.SearchSpaceExhaustedException;
-import crypto.adder.Vote;
-import crypto.adder.VoteProof;
 
 /**
  * Adder test.
@@ -137,14 +129,14 @@ public class AdderTest extends TestCase {
            
             System.out.println("Encrypting vote " + (i + 1));
             /* TODO Fix this null? */
-            Vote vote = finalPubKey.encrypt(choices, null);
+            AdderVote vote = finalPubKey.encrypt(choices, null);
             System.out.println("Proving vote " + (i + 1));
             VoteProof proof = new VoteProof();
             proof.compute(vote, finalPubKey, choices, 1, 1);
             System.out.println("Verifying vote " + (i + 1));
             assertTrue(proof.verify(vote, finalPubKey, 1, 1));
             System.out.println("Casting vote " + (i + 1));
-            vote = new Vote(vote.getCipherList(), vote.getChoices(), proof, vote.getRaceTitle());
+            vote = new AdderVote(vote.getCipherList(), vote.getChoices(), proof, vote.getRaceTitle());
             election.castVote(vote);
             voteMap.put(choice, voteMap.get(choice) + 1);
             System.out.println("Vote " + (i + 1) + " casted");
@@ -152,7 +144,7 @@ public class AdderTest extends TestCase {
 
         System.out.println("Voters end");
         
-        Vote cipherSum = election.sumVotes();
+        AdderVote cipherSum = election.sumVotes();
 
         System.out.println("cipherSum = " + cipherSum);
 

@@ -16,7 +16,7 @@ import java.util.StringTokenizer;
  A vote consists of a vector of ciphertexts. Each ciphertext
  represents the encryption of a yes/no for one candidate.
  */
-public class Vote implements Serializable {
+public class AdderVote implements Serializable {
 
     /** This vote's list of cipher texts, i.e. its encrypted selections */
     private List<ElgamalCiphertext> cipherList;
@@ -38,13 +38,13 @@ public class Vote implements Serializable {
      * @param proof
      * @param title
      */
-    public Vote(List<ElgamalCiphertext> cipherList, List<ASExpression> valueIds, VoteProof proof, String title) {
+    public AdderVote(List<ElgamalCiphertext> cipherList, List<ASExpression> valueIds, VoteProof proof, String title) {
         this(cipherList, valueIds, proof);
         this.title = title;
 
     }
 
-    public Vote(Vote vote) {
+    public AdderVote(AdderVote vote) {
        cipherList = vote.cipherList;
        proof = vote.proof;
        choices = vote.choices;
@@ -54,7 +54,7 @@ public class Vote implements Serializable {
      * Initializes a vote from a vector of ciphertexts.
      * TODO check this usage to see if we can kill this
      */
-    public Vote(List<ElgamalCiphertext> cipherList, List<ASExpression> choices) {
+    public AdderVote(List<ElgamalCiphertext> cipherList, List<ASExpression> choices) {
         this.cipherList = cipherList;
 
         this.choices = choices;
@@ -66,7 +66,7 @@ public class Vote implements Serializable {
      * Initializes a vote from a vector of ciphertexts.\
      * TODO kill usages of this without title
      */
-    public Vote(List<ElgamalCiphertext> cipherList, List<ASExpression> choices, VoteProof proof) {
+    public AdderVote(List<ElgamalCiphertext> cipherList, List<ASExpression> choices, VoteProof proof) {
         this.cipherList = cipherList;
         this.choices = choices;
         this.proof = proof;
@@ -75,7 +75,7 @@ public class Vote implements Serializable {
     /**
      * Initializes a vote from a vector of ciphertexts.
      */
-    private Vote(List<ElgamalCiphertext> cipherList, List<ASExpression> choices, List<MembershipProof> proofList, String title) {
+    private AdderVote(List<ElgamalCiphertext> cipherList, List<ASExpression> choices, List<MembershipProof> proofList, String title) {
         this.cipherList = cipherList;
         this.choices = choices;
         this.title = title;
@@ -122,7 +122,7 @@ public class Vote implements Serializable {
      * @param otherVote     the Vote to multiply against
      * @return              the product of the two votes.
      */
-    public Vote multiply(Vote otherVote) {
+    public AdderVote multiply(AdderVote otherVote) {
 
         List<ElgamalCiphertext> vec = new ArrayList<>();
 
@@ -136,7 +136,7 @@ public class Vote implements Serializable {
 
         List<MembershipProof> otherList = proof.multiply(otherVote.proof);
 
-        return new Vote(vec, choices, otherList, otherVote.title);
+        return new AdderVote(vec, choices, otherList, otherVote.title);
     }
 
     /**
@@ -185,7 +185,7 @@ public class Vote implements Serializable {
     *
     * @see ElgamalCiphertext#fromString(String)
     */
-    public static Vote fromString(String s) {
+    public static AdderVote fromString(String s) {
 
         StringTokenizer st = new StringTokenizer(s, " ");
         List<ElgamalCiphertext> cList = new ArrayList<>(25); // XXX: what size?
@@ -201,7 +201,7 @@ public class Vote implements Serializable {
         }
 
         /* TODO Maybe implement this constructor properly (maybe w/o null?)*/
-        return new Vote(cList, null);
+        return new AdderVote(cList, null);
     }
 
     /**
@@ -269,7 +269,7 @@ public class Vote implements Serializable {
      *
      * @see ElgamalCiphertext#fromASE(sexpression.ASExpression)
      */
-    public static Vote fromASE(ASExpression ase){
+    public static AdderVote fromASE(ASExpression ase){
 
     	ListExpression exp = (ListExpression)ase;
 
@@ -306,7 +306,7 @@ public class Vote implements Serializable {
         else
             proof = VoteProof.fromASE(proofExp);
 
-    	return new Vote(vote, choices, proof, titleExp.get(1).toString());
+    	return new AdderVote(vote, choices, proof, titleExp.get(1).toString());
     }
 
 }

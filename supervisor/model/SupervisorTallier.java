@@ -1,9 +1,9 @@
 package supervisor.model;
 
 import auditorium.Bugout;
+import crypto.adder.AdderVote;
 import crypto.adder.Election;
 import crypto.adder.PublicKey;
-import crypto.adder.Vote;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.StringExpression;
@@ -42,10 +42,10 @@ public class SupervisorTallier implements Serializable {
 
             try {
 
-                List<Vote> votes = bal.getVotes();
+                List<AdderVote> votes = bal.getVotes();
 
                 /* Cycle through each of the races */
-                for(Vote vote: votes){
+                for(AdderVote vote: votes){
 
                     /* Get all the candidate choices */
                     List<ASExpression> possibleChoices = vote.getChoices();
@@ -89,7 +89,7 @@ public class SupervisorTallier implements Serializable {
         }
 
         /* This will hold the final list of summed Votes to be put into a Ballot */
-        ArrayList<Vote> votes = new ArrayList<>();
+        ArrayList<AdderVote> votes = new ArrayList<>();
 
         /* This will be used to create the nonce eventually */
         ArrayList<ASExpression> voteASE = new ArrayList<>();
@@ -101,7 +101,7 @@ public class SupervisorTallier implements Serializable {
             Election thisRace = results.get(id);
 
             /* Get the homomorphically tallied vote for this race */
-            Vote vote = results.get(id).sumVotes();
+            AdderVote vote = results.get(id).sumVotes();
 
 
             /* Verify the voteProof and error off if bad */

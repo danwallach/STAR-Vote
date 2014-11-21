@@ -69,7 +69,7 @@ public class VoteProof implements Serializable {
      *
      * @see MembershipProof#compute(ElgamalCiphertext, PublicKey, AdderInteger, List)
      */
-        public void compute(Vote vote, PublicKey pubKey, List<AdderInteger> choices, int min, int max) {
+        public void compute(AdderVote vote, PublicKey pubKey, List<AdderInteger> choices, int min, int max) {
 
         List<ElgamalCiphertext> cipherList = vote.getCipherList();
 
@@ -138,7 +138,7 @@ public class VoteProof implements Serializable {
      *
      * @see MembershipProof#verify(ElgamalCiphertext, PublicKey, java.util.List)
      */
-    public boolean verify(Vote vote, PublicKey pubKey, int min, int max) {
+    public boolean verify(AdderVote vote, PublicKey pubKey, int min, int max) {
 
         List<ElgamalCiphertext> cipherList = vote.getCipherList();
         List<AdderInteger> cipherDomain = new ArrayList<>(max+1);
@@ -184,7 +184,7 @@ public class VoteProof implements Serializable {
      * A method used for constructing a new proof based on two previous proofs, for use
      * when homomorphically adding two Votes together.
      *
-     * @see Vote#multiply(Vote)
+     * @see AdderVote#multiply(AdderVote)
      *
      * @param otherProof        the proof to multiply with this one
      * @return                  the concatenated membership proofs of this VoteProof

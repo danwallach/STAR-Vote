@@ -218,7 +218,7 @@ public class BallotEncrypter {
 
         PublicKey finalPubKey = AdderKeyManipulator.generateFinalPublicKey(pubKey);
 
-        Vote vote = finalPubKey.encrypt(value, valueIds);
+        AdderVote vote = finalPubKey.encrypt(value, valueIds);
 
         /* Important data from the ElGamal Encryption */
         List<ElgamalCiphertext> ciphers = vote.getCipherList();
@@ -237,7 +237,7 @@ public class BallotEncrypter {
 
         proof.compute(vote, finalPubKey, value, 0, 1);
 
-        Vote outVote = new Vote(vote.getCipherList(), valueIds, proof, title);
+        AdderVote outVote = new AdderVote(vote.getCipherList(), valueIds, proof, title);
 
         return outVote.toASE();
 
@@ -377,7 +377,7 @@ public class BallotEncrypter {
     	PublicKey finalPublicKey = AdderKeyManipulator.generateFinalPublicKey(publicKey);
 
         /* Homomorphically tally the encrypted votes  */
-    	Vote cipherSum = election.sumVotes();
+    	AdderVote cipherSum = election.sumVotes();
 
         /* Partially Decrypt the partial sums */
         List<AdderInteger> partialSum = finalPrivateKey.partialDecrypt(cipherSum);
@@ -394,7 +394,7 @@ public class BallotEncrypter {
      * @return Decrypted ballot, of the form ((race-id [adder integer]) ...)
      */
     public ListExpression adderDecrypt(ListExpression ballot, List<List<AdderInteger>> rVals){
-    	Map<String, Vote> idsToVote = new HashMap<>();
+    	Map<String, AdderVote> idsToVote = new HashMap<>();
     	Map<String, PublicKey> idsToPubKey = new HashMap<>();
     	Map<String, List<AdderInteger>> idsToRs = new HashMap<>();
     	Map<String, List<AdderInteger>> idsToPlaintext = new HashMap<>();
@@ -406,7 +406,7 @@ public class BallotEncrypter {
     		ListExpression race = (ListExpression)votes.get(i);
 
             System.out.println(race);
-            Vote vote = Vote.fromASE(race);
+            AdderVote vote = AdderVote.fromASE(race);
     		ListExpression voteIds = (ListExpression)(race.get(1));
 
             PublicKey finalPubKey = PublicKey.fromASE(ballot.get(4));
@@ -417,7 +417,7 @@ public class BallotEncrypter {
     	}
         /* Iterate over the set of ids and decrypt the adder integer using their corresponding public keys */
     	for(String ids : idsToVote.keySet()){
-    		Vote vote = idsToVote.get(ids);
+    		AdderVote vote = idsToVote.get(ids);
     		List<AdderInteger> rs = idsToRs.get(ids);
     		PublicKey finalPubKey = idsToPubKey.get(ids);
 
@@ -478,7 +478,7 @@ public class BallotEncrypter {
      * @return Decrypted vote as a list of integers
      */
     @SuppressWarnings("unchecked")
-	public List<AdderInteger> adderDecryptSublist(Vote vote, List<AdderInteger> rVals, PublicKey key){
+	public List<AdderInteger> adderDecryptSublist(AdderVote vote, List<AdderInteger> rVals, PublicKey key){
 
 
     	

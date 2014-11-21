@@ -163,7 +163,7 @@ public class WebServerTallierTest extends TestCase {
 
         /* For testing */
         List<AdderInteger> choices = new ArrayList<>();
-        Vote total = toTally.getVotes().get(0);
+        AdderVote total = toTally.getVotes().get(0);
 
         /* For testing: set this to what the totalled vote should be */
         choices.add(AdderInteger.ZERO);
@@ -180,8 +180,8 @@ public class WebServerTallierTest extends TestCase {
         System.out.println("In WebserverTallierTest.testTallySingle() -- Constructing new Vote with choices: " + total.getChoices());
 
         //[This doesn't verify!] because of no R value:
-        Vote test1 = new Vote(total.getCipherList(), total.getChoices(), vp, total.getRaceTitle());
-        Vote test = new Vote(total);
+        AdderVote test1 = new AdderVote(total.getCipherList(), total.getChoices(), vp, total.getRaceTitle());
+        AdderVote test = new AdderVote(total);
 
         System.out.println("In WebserverTallierTest.testTallySingle() -- Single vote computed VoteProof verified: " + test.verifyVoteProof(finalPublicKey, 0, 1));
 
@@ -197,7 +197,7 @@ public class WebServerTallierTest extends TestCase {
 
         //[This doesn't verify!]:
         // test = new Vote(total.getCipherList(), total.getChoices(), vp);
-        test = new Vote(total);
+        test = new AdderVote(total);
 
         System.out.println("In WebserverTallierTest.testTallySingle() -- Single vote computed VoteProof verified: " + test.verifyVoteProof(finalPublicKey, 0, 1));
         System.out.println("-----------------");

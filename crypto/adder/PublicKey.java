@@ -185,7 +185,7 @@ public class PublicKey implements Serializable {
      * @param choices          list of candidate IDs for a race
      * @return                 the encrypted vote
      */
-    public Vote encrypt(List<AdderInteger> selections, List<ASExpression> choices) {
+    public AdderVote encrypt(List<AdderInteger> selections, List<ASExpression> choices) {
 
         List<ElgamalCiphertext> voteList = new ArrayList<>(selections.size());
 
@@ -198,7 +198,7 @@ public class PublicKey implements Serializable {
 
         System.out.println("\tVoteList: \t" + voteList.size() + " elements");
 
-        return new Vote(voteList, choices);
+        return new AdderVote(voteList, choices);
     }
 
     /**

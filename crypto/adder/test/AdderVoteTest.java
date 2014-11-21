@@ -6,7 +6,6 @@ import java.util.List;
 
 import crypto.adder.*;
 import junit.framework.TestCase;
-import junit.textui.TestRunner;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.StringExpression;
@@ -18,13 +17,13 @@ import sexpression.StringExpression;
  * @since 0.0.1
  * @author David Walluck
  */
-public class VoteTest extends TestCase {
+public class AdderVoteTest extends TestCase {
     /**
      * Constructs a new vote test.
      *
      * @param name the name of the test
      */
-    public VoteTest(String name) {
+    public AdderVoteTest(String name) {
         super(name);
     }
 
@@ -33,7 +32,7 @@ public class VoteTest extends TestCase {
      */
     public void testString() {
         try {
-            Vote vote = Vote.fromString("p123G135H246");
+            AdderVote vote = AdderVote.fromString("p123G135H246");
 
             assertEquals(new AdderInteger("123"),
                          vote.getCipherList().get(0).getP());
@@ -54,7 +53,7 @@ public class VoteTest extends TestCase {
 
         List<ElgamalCiphertext> cipherList = new ArrayList<>(1);
         cipherList.add(ciphertext1);
-        Vote vote1 = new Vote(cipherList, null);
+        AdderVote vote1 = new AdderVote(cipherList, null);
 
         assertEquals(new AdderInteger("123"),
                      vote1.getCipherList().get(0).getP());
@@ -74,7 +73,7 @@ public class VoteTest extends TestCase {
                                     new AdderInteger("123"));
         cipherList.clear();
         cipherList.add(ciphertext2);
-        Vote vote2 = new Vote(cipherList, null);
+        AdderVote vote2 = new AdderVote(cipherList, null);
 
         assertEquals("p123G12H0",
                      vote2.getCipherList().get(0).toString());
@@ -86,84 +85,84 @@ public class VoteTest extends TestCase {
                                     new AdderInteger("123"));
         cipherList.clear();
         cipherList.add(ciphertext3);
-        Vote vote3 = new Vote(cipherList, null);
+        AdderVote vote3 = new AdderVote(cipherList, null);
 
         assertEquals("3b589",
                      vote3.getCipherList().get(0).shortHash());
 
         try {
-            Vote.fromString("p123G123");
+            AdderVote.fromString("p123G123");
             fail();
         } catch (InvalidVoteException ignored) {
 
         }
 
         try {
-            Vote.fromString("qGH");
+            AdderVote.fromString("qGH");
             fail();
         } catch (InvalidVoteException ignored) {
 
         }
 
         try {
-            Vote.fromString("p123H123H123");
+            AdderVote.fromString("p123H123H123");
             fail();
         } catch (InvalidVoteException ignored) {
 
         }
         try {
-            Vote.fromString("p123G123G123");
-            fail();
-        } catch (InvalidVoteException ignored) {
-
-        }
-
-        try {
-            Vote.fromString("p123G123H12a");
+            AdderVote.fromString("p123G123G123");
             fail();
         } catch (InvalidVoteException ignored) {
 
         }
 
         try {
-            Vote.fromString("p123G123H123p123");
+            AdderVote.fromString("p123G123H12a");
             fail();
         } catch (InvalidVoteException ignored) {
 
         }
 
         try {
-            Vote.
+            AdderVote.fromString("p123G123H123p123");
+            fail();
+        } catch (InvalidVoteException ignored) {
+
+        }
+
+        try {
+            AdderVote.
                 fromString("p1045854189839G17609338705H264688728687 q10458541"
-                           + "89839y634399786697y449024425938y211966529664z4986"
-                           + "42099355z161654952943z408688746982s50028254339s40"
-                           + "5915557693s360340621934c222506129443c148756415697"
-                           + "c387464678922");
+                        + "89839y634399786697y449024425938y211966529664z4986"
+                        + "42099355z161654952943z408688746982s50028254339s40"
+                        + "5915557693s360340621934c222506129443c148756415697"
+                        + "c387464678922");
             fail();
         } catch (InvalidVoteException ignored) {
 
         }
 
         try {
-            Vote.
+            AdderVote.
                   fromString("p1045854189839G17609338705H264688728687 p104585"
-                             + "4189839y634399786697y449024425938y211966529664z"
-                             + "498642099355z161654952943z408688746982s50028254"
-                             + "339s405915557693s360340621934c222506129443c1487"
-                             + "56415697c387464678922 xyz");
+                          + "4189839y634399786697y449024425938y211966529664z"
+                          + "498642099355z161654952943z408688746982s50028254"
+                          + "339s405915557693s360340621934c222506129443c1487"
+                          + "56415697c387464678922 xyz");
             fail();
         } catch (InvalidVoteException ignored) {
 
         }
 
         try {
-            Vote vote
-                = Vote.fromString("p1045854189839G17609338705H264688728687 p1"
-                                  + "045854189839y634399786697y449024425938y211"
-                                  + "966529664z498642099355z161654952943z408688"
-                                  + "746982s50028254339s405915557693s3603406219"
-                                  + "34c222506129443c148756415697c387464678922"
-                                  );
+            AdderVote vote
+                = AdderVote.fromString("p1045854189839G17609338705H264688728687 p1"
+                            + "045854189839y634399786697y449024425938y211"
+                            + "966529664z498642099355z161654952943z408688"
+                            + "746982s50028254339s405915557693s3603406219"
+                            + "34c222506129443c148756415697c387464678922"
+            );
             assertTrue(vote != null);
             fail();
         } catch (InvalidVoteException ignored) {
@@ -171,12 +170,12 @@ public class VoteTest extends TestCase {
         }
 
         try {
-            Vote.
+            AdderVote.
                   fromString("p1045854189839G17609338705H264688728687 p104585"
-                             + "4189839y634399786697y449024425938y211966529664z"
-                             + "498642099355z161654952943z408688746982s50028254"
-                             + "339s405915557693s360340621934c222506129443c1487"
-                             + "56415697c387464678922 xyz");
+                          + "4189839y634399786697y449024425938y211966529664z"
+                          + "498642099355z161654952943z408688746982s50028254"
+                          + "339s405915557693s360340621934c222506129443c1487"
+                          + "56415697c387464678922 xyz");
             fail();
         } catch (InvalidVoteException ignored) {
 
@@ -221,7 +220,7 @@ public class VoteTest extends TestCase {
 
         ListExpression choices = new ListExpression("B0", "B1", "B2");
 
-        Vote myVote= new Vote(cipherList, new ArrayList<>(Arrays.asList(choices.getArray())));
+        AdderVote myVote= new AdderVote(cipherList, new ArrayList<>(Arrays.asList(choices.getArray())));
 
         myVote.setRaceTitle("L1");
 
@@ -241,7 +240,7 @@ public class VoteTest extends TestCase {
         /* Test toASE*/
         assertEquals(myVote.toASE().toString(), expected.toString());
 
-        Vote newVote = Vote.fromASE(expected);
+        AdderVote newVote = AdderVote.fromASE(expected);
 
         /* Test fromASE */
         assertEquals(myVote.toASE().toString(), newVote.toASE().toString());

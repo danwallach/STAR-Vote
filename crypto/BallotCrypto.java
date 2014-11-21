@@ -3,6 +3,7 @@ package crypto;
 import crypto.exceptions.BadKeyException;
 import crypto.exceptions.KeyNotLoadedException;
 import crypto.exceptions.UninitialisedException;
+import supervisor.model.Ballot;
 
 import java.io.FileNotFoundException;
 import java.security.InvalidKeyException;
@@ -47,7 +48,7 @@ public class BallotCrypto {
         }
 
         /* Create a new Ballot<PlaintextVote> from the original ballot data */
-        return new Ballot<PlaintextVote>(ballot.getBid(), votes, ballot.getNonce(), ballot.getSize());
+        return new Ballot<>(ballot.getBid(), votes, ballot.getNonce(), ballot.getSize());
     }
 
     /**
@@ -68,7 +69,7 @@ public class BallotCrypto {
         }
 
         /* Create a new Ballot<EncryptedVote> from the original ballot data */
-        return new Ballot<EncryptedVote>(ballot.getBid(), votes, ballot.getNonce(), ballot.getSize());
+        return new Ballot<>(ballot.getBid(), votes, ballot.getNonce(), ballot.getSize());
     }
 
     /**

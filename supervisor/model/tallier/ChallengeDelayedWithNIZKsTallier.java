@@ -92,7 +92,7 @@ public class ChallengeDelayedWithNIZKsTallier extends EncryptedTallierWithNIZKs 
                 confirmValid(voteASE, voteIdsE, proofE, publicKeyE);
 
                 //Vote vote = Vote.fromString(voteE.get(1).toString());
-                Vote vote = Vote.fromASE(voteE);
+                AdderVote vote = AdderVote.fromASE(voteE);
                 List<ASExpression> voteIds = new ArrayList<>();
                 for(int j = 0; j < voteIdsE.get(1).size(); j++)
                     voteIds.add(((ListExpression)voteIdsE.get(1)).get(j));

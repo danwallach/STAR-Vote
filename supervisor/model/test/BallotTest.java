@@ -52,18 +52,18 @@ public class BallotTest extends TestCase {
         choices.add(StringExpression.makeString("B0"));
         choices.add(StringExpression.makeString("B1"));
 
-        List<Vote> votes = new ArrayList<>();
+        List<AdderVote> votes = new ArrayList<>();
         List<AdderInteger> c = new ArrayList<>();
 
         c.add(AdderInteger.ZERO);
         c.add(AdderInteger.ONE);
 
-        Vote vote = publicKey.encrypt(c, choices);
+        AdderVote vote = publicKey.encrypt(c, choices);
 
         VoteProof proof = new VoteProof()   ;
         proof.compute(vote, publicKey, c, 0, 1);
 
-        vote = new Vote(vote.getCipherList(), vote.getChoices(), proof, "falseTitle");
+        vote = new AdderVote(vote.getCipherList(), vote.getChoices(), proof, "falseTitle");
 
         votes.add(vote);
 
@@ -94,7 +94,7 @@ public class BallotTest extends TestCase {
 
         List<AdderInteger> c = new ArrayList<>();
 
-        Vote vote = new Vote(cTexts, choices);
+        AdderVote vote = new AdderVote(cTexts, choices);
 
         c.add(AdderInteger.ZERO);
         c.add(AdderInteger.ONE);
@@ -102,9 +102,9 @@ public class BallotTest extends TestCase {
         VoteProof proof = new VoteProof();
         proof.compute(vote, publicKey, c, 0, 1);
 
-        vote = new Vote(cTexts, choices, proof);
+        vote = new AdderVote(cTexts, choices, proof);
 
-        List<Vote> votes = new ArrayList<>();
+        List<AdderVote> votes = new ArrayList<>();
         votes.add(vote);
 
         ballot = new Ballot("0", votes, nonce, publicKey);

@@ -1,42 +1,51 @@
 package crypto;
 
 import crypto.adder.InvalidVoteException;
+import sexpression.ASExpression;
+import sexpression.ListExpression;
 
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Created by Matthew Kindy II on 11/19/2014.
  */
-public class EncryptedVote {
-
-    /** This vote's list of cipher texts, i.e. its encrypted selections */
-    private Map<String, ICiphertext> cipherMap;
+public class EncryptedVote extends AVote {
 
     /** The proof representing the validity of this vote */
     private IProof proof;
 
-    /** The title for the race corresponding to this vote. Note that it will simply be a UID */
-    private String title;
+    private Map<String, ICiphertext> cipherMap;
 
     public EncryptedVote(Map<String, ICiphertext> cipherMap, String title) {
+        super(title);
 
-        if (createVoteProof(cipherMap)) {
-            this.cipherMap = cipherMap;
-            this.title = title;
-        }
-        else
+        this.cipherMap = cipherMap;
+
+        if (!createVoteProof(cipherMap))
             throw new InvalidVoteException("An attempt to construct an EncryptedVote with bad values was attempted!");
 
     }
 
-    public Map<String, ICiphertext> getCipherMap(){
+    public Map<String, ICiphertext> getVoteMap(){
         return cipherMap;
     }
 
     public String getTitle(){
-        return title;
+        return super.getTitle();
+    }
+
+    public IProof getProof(){
+        return proof;
     }
 
     boolean createVoteProof(Map<String, ICiphertext> cipherMap) { return false; }
+
+    public ASExpression toASE(){
+        return new ListExpression("");
+    }
+
+    public String toString() {
+        return "";
+    }
 }

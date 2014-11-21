@@ -77,7 +77,7 @@ public class EncryptedTallierWithNIZKs implements ITallier {
             Election election = _results.get(group);
 
             /* From the election, we can get the sum of cipher texts */
-            Vote cipherSum = election.sumVotes();
+            AdderVote cipherSum = election.sumVotes();
 
             /*
              * As per the Adder decryption process, partially decrypt the ciphertext to generate some necessary
@@ -149,7 +149,7 @@ public class EncryptedTallierWithNIZKs implements ITallier {
                 confirmValid(voteE, voteIdsE, proofE, publicKeyE);
 
                 /* Now that we know the vote is valid, read it in as an Adder Vote object */
-                Vote vote = Vote.fromASE(voteE.get(1));
+                AdderVote vote = AdderVote.fromASE(voteE.get(1));
                 List<ASExpression> voteIds = new ArrayList<>();
 
                 /* Add the candidates to a list */
