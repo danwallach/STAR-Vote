@@ -23,17 +23,17 @@ public class ByteCrypto {
         this.cryptoType = cryptoType;
     }
 
-    public byte[] decrypt(byte[] cipherText) throws UninitialisedException, KeyNotLoadedException, InvalidKeyException, CipherException {
+    public byte[] decrypt(ICiphertext cipherText) throws KeyNotLoadedException, InvalidKeyException, CipherException {
 
        return cryptoType.decrypt(cipherText);
     }
 
-    public byte[] encrypt(byte[] plainText) throws UninitialisedException, KeyNotLoadedException, InvalidKeyException, CipherException {
+    public ICiphertext encrypt(byte[] plainText) throws KeyNotLoadedException, InvalidKeyException, CipherException {
 
         return cryptoType.encrypt(plainText);
     }
 
-    public void loadKeys(String... filePaths) throws FileNotFoundException, BadKeyException, UninitialisedException {
+    public void loadKeys(String... filePaths) throws FileNotFoundException, BadKeyException {
 
          cryptoType.loadKeys(filePaths);
     }

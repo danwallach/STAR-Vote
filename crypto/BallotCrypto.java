@@ -47,7 +47,7 @@ public class BallotCrypto {
         }
 
         /* Create a new Ballot<PlaintextVote> from the original ballot data */
-        return new Ballot<PlaintextVote>(votes,...);
+        return new Ballot<PlaintextVote>(ballot.getBid(), votes, ballot.getNonce(), ballot.getSize());
     }
 
     /**
@@ -68,7 +68,7 @@ public class BallotCrypto {
         }
 
         /* Create a new Ballot<EncryptedVote> from the original ballot data */
-        return new Ballot<EncryptedVote>(votes,...);
+        return new Ballot<EncryptedVote>(ballot.getBid(), votes, ballot.getNonce(), ballot.getSize());
     }
 
     /**

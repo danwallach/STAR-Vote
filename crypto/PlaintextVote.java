@@ -12,10 +12,10 @@ public class PlaintextVote {
     /** The title for the race corresponding to this vote. Note that it will simply be a UID */
     private String title;
 
-    Map<String, Integer> vote;
+    private Map<String, Integer> voteMap;
 
-    public PlaintextVote(Map<String, Integer> vote, String title) {
-        this.vote = vote;
+    public PlaintextVote(Map<String, Integer> voteMap, String title) {
+        this.voteMap = voteMap;
         this.title = title;
     }
 
@@ -24,7 +24,7 @@ public class PlaintextVote {
     }
 
     public Map<String, Integer> getVoteMap(){
-        return vote;
+        return voteMap;
     }
 
     public String getTitle(){

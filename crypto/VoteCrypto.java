@@ -5,7 +5,12 @@ import crypto.exceptions.KeyNotLoadedException;
 import crypto.exceptions.UninitialisedException;
 
 import java.io.FileNotFoundException;
+import java.nio.ByteBuffer;
 import java.security.InvalidKeyException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A crypto class used as a black box operating over Votes performing
@@ -25,14 +30,48 @@ public class VoteCrypto {
 
     public PlaintextVote decrypt(EncryptedVote vote) {
 
+        /* Get the map from the vote */
+        Map<String, ICiphertext> cipherMap = vote.getCipherMap();
+        Map<String, Integer> voteMap = new HashMap<>();
+
+        /* Cycle over each of the candidates in the cipherMap */
+        for(Map.Entry<String, ICiphertext> cur : cipherMap.entrySet()) {
+
+            ICiphertext encryptedChoice = cur.getValue();
+            String candidate = cur.getKey();
+
+            /* Encrypt each choice and put into a ciphertext */
+            Integer decryptedChoice = byteCrypter.decrypt(encryptedChoice);
+
+            /* Put the ciphertexts into a map */
+            voteMap.put(candidate, decryptedChoice);
+        }
+
         /* Pull out parts from ICiphertext in vote to pass to byteCrypter in order to contstruct new PlaintextVote */
-        return null;
+        return new PlaintextVote(voteMap, vote.getTitle());
     }
 
     public EncryptedVote encrypt(PlaintextVote vote) throws UninitialisedException, KeyNotLoadedException, InvalidKeyException, CipherException {
 
-        /* Pull out parts needed to create proper ICipherText for the EncryptedVote and pass to byteCrypter to encrypt one by one */
-        return null;
+        /* Get the map from the PlaintextVote */
+        Map<String, Integer> voteMap = vote.getVoteMap();
+        Map<String, ICiphertext> cipherMap = new HashMap<>();
+
+        /* Cycle over each of the candidates in the voteMap */
+        for(Map.Entry<String, Integer> cur : voteMap.entrySet()) {
+
+            int choice = cur.getValue();
+            String candidate = cur.getKey();
+
+            /* Encrypt each choice and put into a ciphertext */
+            ICiphertext encryptedChoice = byteCrypter.encrypt(ByteBuffer.allocate(4).putInt(choice).array());
+
+            /* Put the ciphertexts into a map */
+            cipherMap.put(candidate, encryptedChoice);
+        }
+
+        /* Create a new EncryptedVote from the new ciphertexts */
+        return new EncryptedVote(cipherMap, vote.getTitle());
     }
 
     public void loadKeys(String... filePaths) throws FileNotFoundException, BadKeyException, UninitialisedException {

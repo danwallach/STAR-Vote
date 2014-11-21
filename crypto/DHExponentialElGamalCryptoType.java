@@ -44,7 +44,7 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
     /**
      * @see crypto.ICryptoType#decrypt(byte[])
      */
-    public byte[] decrypt(byte[] cipherText) throws CipherException, InvalidKeyException, KeyNotLoadedException {
+    public byte[] decrypt(ExponentialElGamalCiphertext cipherText) throws CipherException, InvalidKeyException, KeyNotLoadedException {
 
         if(privateKey == null)
             throw new KeyNotLoadedException("The private key has not yet been loaded! [Decryption]");
@@ -54,7 +54,7 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
 
         try {
 
-            /* Partially decrypt to get g^m */
+            /* Partially decrypt to get g^m */ /* TODO: convert the ICiphertext into byte[] */
             BigInteger mappedPlainText = new BigInteger(cipher.doFinal(cipherText));
 
             /* Get g from the public key*/
@@ -79,7 +79,7 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
     /**
      * @see crypto.ICryptoType#encrypt(byte[])
      */
-    public byte[] encrypt(byte[] plainText) throws CipherException, InvalidKeyException, KeyNotLoadedException {
+    public ExponentialElGamalCiphertext encrypt(byte[] plainText) throws CipherException, InvalidKeyException, KeyNotLoadedException {
 
         if(publicKey == null)
             throw new KeyNotLoadedException("The public key has not yet been loaded! [Encryption]");
@@ -94,7 +94,7 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
         /* Get g^m where m is our plaintext */
         byte[] mappedPlaintext = g.modPow(new BigInteger(plainText), spec.getP()).toByteArray();
 
-        /* Encrypt g^m */
+        /* Encrypt g^m */ /* TODO: convert these bytes into the proper ICiphertext */
         try { return cipher.doFinal(mappedPlaintext);  }
         catch (BadPaddingException | IllegalBlockSizeException e) { throw new CipherException(e.getClass() + ": " + e.getMessage()); }
     }

@@ -24,7 +24,7 @@ public interface ICryptoType {
      * @throws CipherException
      * @throws crypto.exceptions.KeyNotLoadedException
      */
-    public byte[] decrypt(byte[] cipherText) throws InvalidKeyException, KeyNotLoadedException, CipherException;
+    public byte[] decrypt(ICiphertext cipherText) throws InvalidKeyException, KeyNotLoadedException, CipherException;
 
     /**
      * Encrypts a plainText according to the ICryptoType's protocol.
@@ -36,7 +36,7 @@ public interface ICryptoType {
      * @throws CipherException
      * @throws crypto.exceptions.KeyNotLoadedException
      */
-    public byte[] encrypt(byte[] plainText) throws InvalidKeyException, KeyNotLoadedException, CipherException;
+    public ICiphertext encrypt(byte[] plainText) throws InvalidKeyException, KeyNotLoadedException, CipherException;
 
     /**
      * Given a filePath, extracts the Keys from the file and checks if they are proper keys for the
