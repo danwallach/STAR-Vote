@@ -1123,12 +1123,11 @@ public class Model {
 
                         ASExpression ballot = ASExpression.makeVerbatim(e.getBallot());
 
-                        System.out.println(Ballot.fromASE(ballot).getPublicKey());
+                        /* TODO parse ballot */
+
                         thisPrecinct.commitBallot(e.getBID(), ballot);
 
                         machinesToCommits.put(ballot, e.getSerial());
-
-                        System.out.println(thisPrecinct.getFinalPublicKey());
 
                         committedBids.put(e.getBID(), e.getNonce());
                     }
@@ -1396,7 +1395,7 @@ public class Model {
 
             PublicKey finalPublicKey = AdderKeyManipulator.generateFinalPublicKey(auditoriumParams.getKeyStore().loadAdderPublicKey());
 
-            Precinct precinct = new Precinct(precinctID, ballotFile.getAbsolutePath(), finalPublicKey);
+            Precinct precinct = new Precinct(precinctID, ballotFile.getAbsolutePath());
 
             precincts.put(precinctID, precinct);
         }
@@ -1412,7 +1411,7 @@ public class Model {
      */
     public boolean spoilBallot(String bid) {
 
-        ASExpression nonce;
+        String nonce;
         Ballot ballot;
         Precinct p = getPrecinctWithBID(bid);
 
@@ -1421,7 +1420,7 @@ public class Model {
             ballot = p.challengeBallot(bid);
 
             /* Announce that a ballot was spoiled */
-            auditorium.announce(new SpoilBallotEvent(mySerial, nonce, bid, ballot.toListExpression().toVerbatim()));
+            auditorium.announce(new SpoilBallotEvent(mySerial, StringExpression.make(nonce), bid, ballot.toListExpression().toVerbatim()));
 
             return true;
         }
