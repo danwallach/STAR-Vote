@@ -1,5 +1,6 @@
 package supervisor.model;
 
+import crypto.EncryptedVote;
 import crypto.adder.PublicKey;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * The Precinct class is a data structure to hold encrypted ballots and ballot style and handle manipulation of the ballots.
@@ -24,29 +26,25 @@ public class Precinct implements Serializable {
     private final String precinctID;
 
     /** Map of all the bids to the corresponding ballot. */
-    private Map<String,Ballot> allBallots;
+    private Map<String,Ballot<EncryptedVote>> allBallots;
 
     /** Map of bids to ballots that have been committed but not cast or challenged.*/
-    private Map<String, Ballot> committed;
+    private Map<String, Ballot<EncryptedVote>> committed;
 
     /** List of ballots that have been cast, not committed or challenged.*/
-    private List<Ballot> cast;
+    private List<Ballot<EncryptedVote>> cast;
 
     /** List of ballots that have been challenged but not cast or committed.*/
-    private List<Ballot> challenged;
-
-    /** An object used to homomorphically tally ballots. */
-    private PublicKey finalPublicKey;
+    private List<Ballot<EncryptedVote>> challenged;
 
     /**
      * @param precinctID    Three digit precinct code
      * @param ballotFile    The zip file containing the ballot style
      */
-    public Precinct(String precinctID, String ballotFile, PublicKey finalPublicKey){
+    public Precinct(String precinctID, String ballotFile){
 
         this.precinctID = precinctID;
         this.ballotFile = ballotFile;
-        this.finalPublicKey = finalPublicKey;
 
         allBallots = new HashMap<>();
         committed  = new HashMap<>();
@@ -70,7 +68,7 @@ public class Precinct implements Serializable {
      * @param bid       Ballot Identification Number
      * @return          Returns the nonce as ASExpressions
      */
-    public ASExpression getNonce(String bid){
+    public String getNonce(String bid){
         return allBallots.get(bid).getNonce();
     }
 
@@ -81,7 +79,7 @@ public class Precinct implements Serializable {
      * @param bid       Ballot Identification Number
      * @return          the ballot that was challenged
      */
-    public Ballot challengeBallot(String bid){
+    public Ballot<EncryptedVote> challengeBallot(String bid){
 
         /* Remove the Ballot from committed */
         Ballot toChallenge = committed.remove(bid);
@@ -99,11 +97,11 @@ public class Precinct implements Serializable {
      * @param bid       Ballot Identification Number
      * @param ballot    Ballot as an ASExpression
      */
-    public void commitBallot(String bid, ASExpression ballot){
+    public void commitBallot(String bid, Ballot<EncryptedVote> ballot){
 
-        committed.put(bid, Ballot.fromASE(ballot));
+        committed.put(bid, ballot);
 
-        allBallots.put(bid, Ballot.fromASE(ballot));
+        allBallots.put(bid, ballot);
     }
 
     /**
@@ -131,8 +129,7 @@ public class Precinct implements Serializable {
     public void closePolls() {
 
         /* Challenge each committed Ballot */
-        for(String bid : committed.keySet())
-            challengeBallot(bid);
+        committed.keySet().forEach(this::challengeBallot);
     }
 
     /**
@@ -142,7 +139,7 @@ public class Precinct implements Serializable {
      */
     public Ballot getCastBallotTotal(){
 
-        return SupervisorTallier.tally(precinctID, cast, finalPublicKey);
+        return SupervisorTallier.tally(precinctID, cast);
     }
 
     /**
@@ -152,16 +149,15 @@ public class Precinct implements Serializable {
      * @return          the list of challenged Ballots as a ListExpression of
      *                  ListExpressions
      */
-    public ListExpression getChallengedBallots(){
+    public List<Ballot<EncryptedVote>> getChallengedBallots(){
 
-        List<ASExpression> ballotList = new ArrayList<>();
+        List<Ballot<EncryptedVote>> ballotList = new ArrayList<>();
 
-        /* Add each challenged ballot to the List of ListExpressions */
-        for(Ballot b : challenged)
-            ballotList.add(b.toListExpression());
+        /* Add each challenged ballot to the List */
+        ballotList.addAll(challenged.stream().collect(Collectors.toList()));
 
         /* Construct a ListExpression from the List and return */
-        return new ListExpression(ballotList);
+        return ballotList;
     }
 
     public String getPrecinctID(){
@@ -172,9 +168,7 @@ public class Precinct implements Serializable {
         return ballotFile;
     }
 
-    public PublicKey getFinalPublicKey() { return finalPublicKey; }
-
-    public Ballot getChallengedBallot(String bid) {
+    public Ballot<EncryptedVote> getChallengedBallot(String bid) {
 
         if(allBallots.containsKey(bid) && challenged.contains(allBallots.get(bid)))
             return allBallots.get(bid);
