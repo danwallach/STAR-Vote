@@ -257,7 +257,6 @@ public class ElgamalCiphertext implements Serializable {
 
         StringExpression label = StringExpression.makeString("elgamal-ciphertext");
 
-        /* TODO check if this can be simplified to just proofString = proof == null ? "" : proof.toASE() */
         return (proof == null) ? new ListExpression(label, p.toASE(), g.toASE(), r.toASE(), h.toASE()) :
     	                         new ListExpression(label, p.toASE(), g.toASE(), r.toASE(), h.toASE(), proof.toASE());
     }

@@ -2,6 +2,7 @@ package crypto;
 
 import crypto.adder.SearchSpaceExhaustedException;
 import crypto.exceptions.BadKeyException;
+import crypto.exceptions.CiphertextException;
 import crypto.exceptions.KeyNotLoadedException;
 import crypto.exceptions.UninitialisedException;
 
@@ -42,10 +43,15 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
     }
 
     /**
-     * @see crypto.ICryptoType#decrypt(byte[])
+     * @see crypto.ICryptoType#decrypt(ICiphertext)
      */
-    public byte[] decrypt(ExponentialElGamalCiphertext cipherText) throws CipherException, InvalidKeyException, KeyNotLoadedException {
+    public byte[] decrypt(ICiphertext ciphertext) throws InvalidKeyException, KeyNotLoadedException, CipherException, CiphertextException {
 
+        /* Check if this is the right type of ICiphertext */
+        if(!(ciphertext instanceof ExponentialElGamalCiphertext))
+            throw new CiphertextException("The ciphertext type did not match the crypto type!");
+
+        /* Check if the private key has been loaded */
         if(privateKey == null)
             throw new KeyNotLoadedException("The private key has not yet been loaded! [Decryption]");
 
@@ -54,8 +60,8 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
 
         try {
 
-            /* Partially decrypt to get g^m */ /* TODO: convert the ICiphertext into byte[] */
-            BigInteger mappedPlainText = new BigInteger(cipher.doFinal(cipherText));
+            /* Partially decrypt to get g^m */
+            BigInteger mappedPlainText = new BigInteger(cipher.doFinal(ciphertext.asBytes()));
 
             /* Get g from the public key*/
             DHParameterSpec spec = publicKey.getParams();
@@ -79,7 +85,7 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
     /**
      * @see crypto.ICryptoType#encrypt(byte[])
      */
-    public ExponentialElGamalCiphertext encrypt(byte[] plainText) throws CipherException, InvalidKeyException, KeyNotLoadedException {
+    public ICiphertext encrypt(byte[] plainText) throws CipherException, InvalidKeyException, KeyNotLoadedException {
 
         if(publicKey == null)
             throw new KeyNotLoadedException("The public key has not yet been loaded! [Encryption]");
@@ -94,13 +100,16 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
         /* Get g^m where m is our plaintext */
         byte[] mappedPlaintext = g.modPow(new BigInteger(plainText), spec.getP()).toByteArray();
 
-        /* Encrypt g^m */ /* TODO: convert these bytes into the proper ICiphertext */
-        try { return cipher.doFinal(mappedPlaintext);  }
+        /* Encrypt g^m */
+        try { byte[] cipherBytes = cipher.doFinal(mappedPlaintext); }
         catch (BadPaddingException | IllegalBlockSizeException e) { throw new CipherException(e.getClass() + ": " + e.getMessage()); }
+
+        /* TODO convert the ciphertext byte[] into fields for ExponentialElGamalCipherText */
+        return new ExponentialElGamalCiphertext(cipherBytes);
     }
 
     /**
-     *
+     * Loads the private key from a filepath
      * @param filePath
      * @throws BadKeyException
      * @throws FileNotFoundException
@@ -119,7 +128,6 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
     }
 
     /**
-     *
      * @param privateKey
      * @throws BadKeyException
      */
@@ -131,7 +139,7 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
     }
 
     /**
-     *
+     * Loads the public key from a filepath
      * @param filePath
      * @throws BadKeyException
      * @throws FileNotFoundException
@@ -150,7 +158,6 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
     }
 
     /**
-     *
      * @param publicKey
      * @throws BadKeyException
      */

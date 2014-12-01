@@ -9,7 +9,6 @@ package crypto;
  */
 public interface IHomomorphicCiphertext<T extends IHomomorphicCiphertext> extends ICiphertext {
 
-
     /**
      * Will perform some arity 2 homomorphic operation on the ciphertexts, depending on
      * how the operation is specified in the concrete (e.g. multiplication for exponential

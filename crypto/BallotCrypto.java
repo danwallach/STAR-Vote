@@ -43,6 +43,7 @@ public class BallotCrypto {
 
         List<PlaintextVote> votes = new ArrayList<>();
 
+        /* Go through each of the EncryptedVotes and decrypt, then add to the list of PlaintextVotes*/
         for(EncryptedVote ev : ballot.getVotes()) {
             votes.add(voteCrypter.decrypt(ev));
         }

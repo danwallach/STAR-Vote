@@ -1,6 +1,7 @@
 package crypto;
 
 import crypto.exceptions.BadKeyException;
+import crypto.exceptions.CiphertextException;
 import crypto.exceptions.KeyNotLoadedException;
 
 import java.io.FileNotFoundException;
@@ -24,7 +25,7 @@ public interface ICryptoType {
      * @throws CipherException
      * @throws crypto.exceptions.KeyNotLoadedException
      */
-    public byte[] decrypt(ICiphertext cipherText) throws InvalidKeyException, KeyNotLoadedException, CipherException;
+    public byte[] decrypt(ICiphertext cipherText) throws InvalidKeyException, KeyNotLoadedException, CipherException, CiphertextException;
 
     /**
      * Encrypts a plainText according to the ICryptoType's protocol.

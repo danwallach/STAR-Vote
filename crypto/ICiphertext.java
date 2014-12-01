@@ -8,9 +8,9 @@ package crypto;
  */
 public interface ICiphertext {
 
-
     /**
      * @return the data contained in this ciphertext
      */
-    public byte[] getData();
+    public byte[] asBytes();
+
 }
