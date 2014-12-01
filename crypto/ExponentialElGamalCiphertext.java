@@ -5,7 +5,7 @@ package crypto;
  */
 public class ExponentialElGamalCiphertext implements IHomomorphicCiphertext<ExponentialElGamalCiphertext> {
 
-
+    /* TODO figure out constructor + fields */
 
     public ExponentialElGamalCiphertext operate(ExponentialElGamalCiphertext operand) {
         return null;
