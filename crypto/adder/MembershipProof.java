@@ -275,7 +275,7 @@ public class MembershipProof implements Serializable {
             /* Map the value into the group via f */
 			AdderInteger fpow = f.pow(d);
 
-            /* extract the commit value and cr + t (or the random values */
+            /* extract the commit value and cr + t (or the random values) */
 			AdderInteger s = sList.get(i);
 			AdderInteger c = cList.get(i);
 

@@ -35,9 +35,10 @@ public class BallotCrypto {
     }
 
     /**
+     * Decrypts a Ballot containing EncryptedVotes
      *
-     * @param ballot
-     * @return
+     * @param ballot    a Ballot containing EncryptedVotes
+     * @return          a Ballot containing PlaintextVotes which are the decrypted EncryptedVotes
      */
     public static Ballot<PlaintextVote> decrypt(Ballot<EncryptedVote> ballot) {
 
@@ -53,13 +54,10 @@ public class BallotCrypto {
     }
 
     /**
+     * Encrypts a Ballot containing PlaintextVotes
      *
-     * @param ballot
-     * @return
-     * @throws UninitialisedException
-     * @throws KeyNotLoadedException
-     * @throws InvalidKeyException
-     * @throws CipherException
+     * @param ballot    a Ballot containing PlaintextVotes
+     * @return          a Ballot containing EncryptedVotes which are the encrypted PlaintextVotes
      */
     public static Ballot<EncryptedVote> encrypt(Ballot<PlaintextVote> ballot) throws UninitialisedException, KeyNotLoadedException, InvalidKeyException, CipherException {
 
@@ -76,9 +74,6 @@ public class BallotCrypto {
     /**
      *
      * @param filePaths
-     * @throws FileNotFoundException
-     * @throws BadKeyException
-     * @throws UninitialisedException
      */
     public void loadKeys(String... filePaths) throws FileNotFoundException, BadKeyException, UninitialisedException {
         voteCrypter.loadKeys(filePaths);

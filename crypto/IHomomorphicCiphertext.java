@@ -1,5 +1,7 @@
 package crypto;
 
+import java.io.Serializable;
+
 /**
  * This is a class of all homomorphic ciphertexts, i.e. ciphertexts that have
  * some arity 2 operation that can be performed on them to produce a new ciphertext
@@ -7,7 +9,7 @@ package crypto;
  *
  * @author Matt Bernhard
  */
-public interface IHomomorphicCiphertext<T extends IHomomorphicCiphertext> extends ICiphertext {
+public interface IHomomorphicCiphertext<T extends IHomomorphicCiphertext> extends ICiphertext, Serializable {
 
     /**
      * Will perform some arity 2 homomorphic operation on the ciphertexts, depending on

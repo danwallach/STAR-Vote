@@ -7,9 +7,7 @@ import crypto.exceptions.UninitialisedException;
 import java.io.FileNotFoundException;
 import java.nio.ByteBuffer;
 import java.security.InvalidKeyException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -41,7 +39,7 @@ public class VoteCrypto {
             String candidate = cur.getKey();
 
             /* Encrypt each choice and put into a ciphertext */
-            Integer decryptedChoice = byteCrypter.decrypt(encryptedChoice);
+            Integer decryptedChoice = ByteBuffer.wrap(byteCrypter.decrypt(encryptedChoice)).getInt();
 
             /* Put the ciphertexts into a map */
             voteMap.put(candidate, decryptedChoice);

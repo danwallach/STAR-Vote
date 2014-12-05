@@ -58,6 +58,7 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
         /* Put the cipher in decrypt mode */
         cipher.init(Cipher.DECRYPT_MODE, privateKey);
 
+
         try {
 
             /* Partially decrypt to get g^m */
@@ -100,11 +101,10 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
         /* Get g^m where m is our plaintext */
         byte[] mappedPlaintext = g.modPow(new BigInteger(plainText), spec.getP()).toByteArray();
 
-        /* Encrypt g^m */
+        /* Encrypt g^m */ /* NOTE: bouncycastle makes half the bytes c1 = g^y = bigG, half the bytes c2 = (h^y)(m') = bigH */
         try { byte[] cipherBytes = cipher.doFinal(mappedPlaintext); }
         catch (BadPaddingException | IllegalBlockSizeException e) { throw new CipherException(e.getClass() + ": " + e.getMessage()); }
 
-        /* TODO convert the ciphertext byte[] into fields for ExponentialElGamalCipherText */
         return new ExponentialElGamalCiphertext(cipherBytes);
     }
 
