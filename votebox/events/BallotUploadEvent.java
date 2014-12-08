@@ -5,11 +5,9 @@ import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.NamedNoMatch;
 import sexpression.StringExpression;
-import supervisor.model.Precinct;
 
 import java.io.*;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Matt Bernhard
@@ -79,7 +77,7 @@ public class BallotUploadEvent extends AAnnounceEvent {
             throw new RuntimeException("Couldn't serialize the message!");
         }
 
-        String encoded = new String(Base64.encodeBase64(byteArrayOutputStream.toByteArray()));
+        String encoded = Base64.encodeBase64String(byteArrayOutputStream.toByteArray());
 
         return new ListExpression(StringExpression.makeString("ballot-upload"), StringExpression.make(encoded));
     }
