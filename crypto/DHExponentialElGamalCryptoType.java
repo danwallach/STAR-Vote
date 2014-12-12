@@ -102,10 +102,12 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
         byte[] mappedPlaintext = g.modPow(new BigInteger(plainText), spec.getP()).toByteArray();
 
         /* Encrypt g^m */ /* NOTE: bouncycastle makes half the bytes c1 = g^y = bigG, half the bytes c2 = (h^y)(m') = bigH */
-        try { byte[] cipherBytes = cipher.doFinal(mappedPlaintext); }
-        catch (BadPaddingException | IllegalBlockSizeException e) { throw new CipherException(e.getClass() + ": " + e.getMessage()); }
+        try {
+            byte[] cipherBytes = cipher.doFinal(mappedPlaintext);
+            /*return new ExponentialElGamalCiphertext(new AdderInteger(new BigInteger(cipherBytes)));*/
+        } catch (BadPaddingException | IllegalBlockSizeException e) { throw new CipherException(e.getClass() + ": " + e.getMessage()); }
 
-        return new ExponentialElGamalCiphertext(cipherBytes);
+    return null;
     }
 
     /**

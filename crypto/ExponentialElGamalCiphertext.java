@@ -35,6 +35,8 @@ public class ExponentialElGamalCiphertext implements IHomomorphicCiphertext<Expo
 
     public byte[] asBytes() {
 
-        byte[] gbytes = g.bigintValue().toByteArray();
+        /*byte[] gbytes = g.bigintValue().toByteArray();*/
+
+        return null;
     }
 }

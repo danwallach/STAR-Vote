@@ -1,6 +1,7 @@
 package crypto;
 
 import crypto.exceptions.BadKeyException;
+import crypto.exceptions.CiphertextException;
 import crypto.exceptions.KeyNotLoadedException;
 import crypto.exceptions.UninitialisedException;
 
@@ -26,7 +27,7 @@ public class VoteCrypto {
         byteCrypter = new ByteCrypto(cryptoType);
     }
 
-    public PlaintextVote decrypt(EncryptedVote vote) {
+    public PlaintextVote decrypt(EncryptedVote vote) throws UninitialisedException, KeyNotLoadedException, InvalidKeyException, CipherException, CiphertextException {
 
         /* Get the map from the vote */
         Map<String, ICiphertext> cipherMap = vote.getCipherMap();
@@ -49,7 +50,7 @@ public class VoteCrypto {
         return new PlaintextVote(voteMap, vote.getTitle());
     }
 
-    public EncryptedVote encrypt(PlaintextVote vote) throws UninitialisedException, KeyNotLoadedException, InvalidKeyException, CipherException {
+    public EncryptedVote encrypt(PlaintextVote vote) throws UninitialisedException, KeyNotLoadedException, InvalidKeyException, CipherException, CiphertextException {
 
         /* Get the map from the PlaintextVote */
         Map<String, Integer> voteMap = vote.getVoteMap();

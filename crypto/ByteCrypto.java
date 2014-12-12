@@ -1,8 +1,8 @@
 package crypto;
 
 import crypto.exceptions.BadKeyException;
+import crypto.exceptions.CiphertextException;
 import crypto.exceptions.KeyNotLoadedException;
-import crypto.exceptions.UninitialisedException;
 
 import java.io.FileNotFoundException;
 import java.security.InvalidKeyException;
@@ -23,9 +23,9 @@ public class ByteCrypto {
         this.cryptoType = cryptoType;
     }
 
-    public byte[] decrypt(ICiphertext cipherText) throws KeyNotLoadedException, InvalidKeyException, CipherException {
+    public byte[] decrypt(ICiphertext cipherText) throws KeyNotLoadedException, InvalidKeyException, CipherException, CiphertextException {
 
-       return cryptoType.decrypt(cipherText);
+        return cryptoType.decrypt(cipherText);
     }
 
     public ICiphertext encrypt(byte[] plainText) throws KeyNotLoadedException, InvalidKeyException, CipherException {

@@ -1,6 +1,7 @@
 package crypto;
 
 import crypto.exceptions.BadKeyException;
+import crypto.exceptions.CiphertextException;
 import crypto.exceptions.KeyNotLoadedException;
 import crypto.exceptions.UninitialisedException;
 import supervisor.model.Ballot;
@@ -40,7 +41,8 @@ public class BallotCrypto {
      * @param ballot    a Ballot containing EncryptedVotes
      * @return          a Ballot containing PlaintextVotes which are the decrypted EncryptedVotes
      */
-    public static Ballot<PlaintextVote> decrypt(Ballot<EncryptedVote> ballot) {
+    public static Ballot<PlaintextVote> decrypt(Ballot<EncryptedVote> ballot)
+            throws UninitialisedException, KeyNotLoadedException, InvalidKeyException, CipherException, CiphertextException {
 
         List<PlaintextVote> votes = new ArrayList<>();
 
@@ -59,7 +61,8 @@ public class BallotCrypto {
      * @param ballot    a Ballot containing PlaintextVotes
      * @return          a Ballot containing EncryptedVotes which are the encrypted PlaintextVotes
      */
-    public static Ballot<EncryptedVote> encrypt(Ballot<PlaintextVote> ballot) throws UninitialisedException, KeyNotLoadedException, InvalidKeyException, CipherException {
+    public static Ballot<EncryptedVote> encrypt(Ballot<PlaintextVote> ballot)
+            throws UninitialisedException, KeyNotLoadedException, InvalidKeyException, CipherException, CiphertextException {
 
         List<EncryptedVote> votes = new ArrayList<>();
 
