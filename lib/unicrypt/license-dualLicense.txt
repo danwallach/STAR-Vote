@@ -1,0 +1,45 @@
+<#if licenseFirst??>
+${licenseFirst}
+</#if>
+${licensePrefix}UniCrypt
+${licensePrefix}
+${licensePrefix} UniCrypt(tm) : Cryptographical framework allowing the implementation of cryptographic protocols e.g. e-voting
+${licensePrefix} Copyright (C) ${date?date?string("yyyy")} Bern University of Applied Sciences (BFH), Research Institute for
+${licensePrefix} Security in the Information Society (RISIS), E-Voting Group (EVG)
+${licensePrefix} Quellgasse 21, CH-2501 Biel, Switzerland
+${licensePrefix}
+${licensePrefix} Licensed under Dual License consisting of:
+${licensePrefix} 1. GNU Affero General Public License (AGPL) v3
+${licensePrefix} and
+${licensePrefix} 2. Commercial license
+${licensePrefix}
+${licensePrefix?replace(" +$", "", "r")}
+${licensePrefix} 1. This program is free software: you can redistribute it and/or modify
+${licensePrefix}  it under the terms of the GNU Affero General Public License as published by
+${licensePrefix}  the Free Software Foundation, either version 3 of the License, or
+${licensePrefix}  (at your option) any later version.
+${licensePrefix?replace(" +$", "", "r")}
+${licensePrefix}  This program is distributed in the hope that it will be useful,
+${licensePrefix}  but WITHOUT ANY WARRANTY; without even the implied warranty of
+${licensePrefix}  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+${licensePrefix}  GNU Affero General Public License for more details.
+${licensePrefix?replace(" +$", "", "r")}
+${licensePrefix}  You should have received a copy of the GNU Affero General Public License
+${licensePrefix}  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+${licensePrefix}
+${licensePrefix?replace(" +$", "", "r")}
+${licensePrefix} 2. Licensees holding valid commercial licenses for UniCrypt may use this file in
+${licensePrefix}  accordance with the commercial license agreement provided with the
+${licensePrefix}  Software or, alternatively, in accordance with the terms contained in
+${licensePrefix}  a written agreement between you and Bern University of Applied Sciences (BFH), Research Institute for
+${licensePrefix}  Security in the Information Society (RISIS), E-Voting Group (EVG)
+${licensePrefix}  Quellgasse 21, CH-2501 Biel, Switzerland.
+${licensePrefix}
+${licensePrefix?replace(" +$", "", "r")}
+${licensePrefix}  For further information contact <e-mail: unicrypt@bfh.ch>
+${licensePrefix}
+${licensePrefix?replace(" +$", "", "r")}
+${licensePrefix}Redistributions of files must retain the above copyright notice.
+<#if licenseLast??>
+${licenseLast}
+</#if>

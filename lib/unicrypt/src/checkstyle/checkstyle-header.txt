@@ -1,0 +1,12 @@
+^/\*$
+^ \* Copyright \(c\) 201[23] Berner Fachhochschule, Switzerland\.$
+^ \* Bern University of Applied Sciences, Engineering and Information Technology,$
+^ \* Research Institute for Security in the Information Society, E-Voting Group,$
+^ \* Biel, Switzerland.$
+^ \*$
+^ \* Project Uni[Vv]ote.$
+^ \*$
+^ \* Distributable under GPL license\.$
+^ \* See terms of license at gnu\.org\.$
+^ \*/$
+^package 
