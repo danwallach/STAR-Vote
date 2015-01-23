@@ -21,6 +21,7 @@ import java.util.Map;
  */
 public class VoteCrypto {
 
+
     private ByteCrypto byteCrypter;
 
     public VoteCrypto(ICryptoType cryptoType) {

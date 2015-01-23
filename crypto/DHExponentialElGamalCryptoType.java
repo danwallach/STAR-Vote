@@ -101,7 +101,9 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
         /* Get g^m where m is our plaintext */
         byte[] mappedPlaintext = g.modPow(new BigInteger(plainText), spec.getP()).toByteArray();
 
-        /* Encrypt g^m */ /* NOTE: bouncycastle makes half the bytes c1 = g^y = bigG, half the bytes c2 = (h^y)(m') = bigH */
+        /* Encrypt g^m */
+        /* Need to encrypt with unicrypt and create ciphertext */
+
         try {
             byte[] cipherBytes = cipher.doFinal(mappedPlaintext);
             /*return new ExponentialElGamalCiphertext(new AdderInteger(new BigInteger(cipherBytes)));*/
