@@ -28,7 +28,7 @@ public class WebServerTallier {
      * @param publicKey     the public key used for vote proofs
      * @return              a Ballot containing the encrypted sums for each race
      */
-    public static Ballot tally(String ID, List<Ballot> toSum, PublicKey publicKey){
+    public static Ballot tally(String ID, List<Ballot> toSum, AdderPublicKey publicKey){
 
         /* The results of the election are stored by race ID in this map */
         Map<String, Election> results = new HashMap<>();
@@ -118,7 +118,7 @@ public class WebServerTallier {
      * @param toDecrypt     the Ballot to be decrypted -- it is expected that this is a challenged ballot
      * @return              a list of candidates that were selected
      */
-    public static List<String> decrypt(Ballot toDecrypt, PublicKey publicKey, PrivateKey privateKey) {
+    public static List<String> decrypt(Ballot toDecrypt, AdderPublicKey publicKey, AdderPrivateKey privateKey) {
 
         /* Get the mapping of candidates to votes for this Ballot */
         Map<String, Map<String, BigInteger>> racesToCandidateTotals = getVoteTotals(toDecrypt, 1, publicKey, privateKey);
@@ -143,8 +143,8 @@ public class WebServerTallier {
     /**
      * Calculates the individual vote totals for each of the candidates in each of the races in the Ballot
      *
-     * @see crypto.adder.Election#getFinalSum(java.util.List, crypto.adder.AdderVote, crypto.adder.PublicKey)
-     * @see crypto.BallotEncrypter#adderDecryptWithKey(crypto.adder.Election, crypto.adder.PublicKey, crypto.adder.PrivateKey)
+     * @see crypto.adder.Election#getFinalSum(java.util.List, crypto.adder.AdderVote, crypto.adder.AdderPublicKey)
+     * @see crypto.BallotEncrypter#adderDecryptWithKey(crypto.adder.Election, crypto.adder.AdderPublicKey, crypto.adder.AdderPrivateKey)
      *
      * @param toTotal       the previously tallied Ballot from which to extract the candidate sums
      * @param size          the "size" of the Ballot (the number of combined Ballots added to create this Ballot)
@@ -152,10 +152,10 @@ public class WebServerTallier {
      * @param privateKey    the private key
      * @return              a mapping of candidates to vote totals (mapped to race names) for each race in a Ballot
      */
-    public static Map<String, Map<String,BigInteger>> getVoteTotals(Ballot toTotal, int size, PublicKey finalPublicKey, PrivateKey privateKey) {
+    public static Map<String, Map<String,BigInteger>> getVoteTotals(Ballot toTotal, int size, AdderPublicKey finalPublicKey, AdderPrivateKey privateKey) {
 
         /* Generate the final private key */
-        PrivateKey finalPrivateKey = AdderKeyManipulator.generateFinalPrivateKey(finalPublicKey, privateKey);
+        AdderPrivateKey finalPrivateKey = AdderKeyManipulator.generateFinalPrivateKey(finalPublicKey, privateKey);
 
         /* Currently we can't generate the proper finalPrivateKey due to AdderKeyManipulator not having generated the finalPublicKey/polynomial
          * To fix this, somehow the finalPrivateKey needs to be generated with the same information in AdderKeyManipulator as when the
@@ -198,7 +198,7 @@ public class WebServerTallier {
      * @param masterKey             the public key
      * @return                      a vector of vote totals for each candidate in this Vote (race)
      */
-    private static List<AdderInteger> getDecryptedFinalSum(List<AdderInteger> partialSums, AdderVote sum, int size, PublicKey masterKey) {
+    private static List<AdderInteger> getDecryptedFinalSum(List<AdderInteger> partialSums, AdderVote sum, int size, AdderPublicKey masterKey) {
 
         /*
 

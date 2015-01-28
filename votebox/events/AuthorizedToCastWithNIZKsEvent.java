@@ -1,6 +1,6 @@
 package votebox.events;
 
-import crypto.adder.PublicKey;
+import crypto.adder.AdderPublicKey;
 
 import sexpression.*;
 import crypto.interop.AdderKeyManipulator;
@@ -45,7 +45,7 @@ public class AuthorizedToCastWithNIZKsEvent extends AuthorizedToCastEvent {
                         .toString();
 
                 /* This is the public key with which all votes are encrypted so they can be verified by NIZKs */
-                PublicKey finalPubKey = PublicKey.fromASE(((ListExpression) res).get(4));
+                AdderPublicKey finalPubKey = AdderPublicKey.fromASE(((ListExpression) res).get(4));
 
                 /* De-serialize and return an object representation of the aforementioned data */
                 return new AuthorizedToCastWithNIZKsEvent(serial, otherSerial, nonce, precinct, ballot, finalPubKey);
@@ -62,7 +62,7 @@ public class AuthorizedToCastWithNIZKsEvent extends AuthorizedToCastEvent {
     }
 
     /** The public key to use for encryption and NIZKs */
-    private PublicKey finalPubKey;
+    private AdderPublicKey finalPubKey;
 
 
 
@@ -70,7 +70,7 @@ public class AuthorizedToCastWithNIZKsEvent extends AuthorizedToCastEvent {
      * @see votebox.events.AuthorizedToCastEvent#AuthorizedToCastEvent(int, int, sexpression.ASExpression, String, byte[])
      * @param finalPubKey the public key that will be used to encrypt ballots
      */
-    public AuthorizedToCastWithNIZKsEvent(int serial, int node, ASExpression nonce, String precinct, byte[] ballot,  PublicKey finalPubKey){
+    public AuthorizedToCastWithNIZKsEvent(int serial, int node, ASExpression nonce, String precinct, byte[] ballot,  AdderPublicKey finalPubKey){
     	super(serial, node, nonce, precinct, ballot);
 
         this.finalPubKey = finalPubKey;
@@ -80,7 +80,7 @@ public class AuthorizedToCastWithNIZKsEvent extends AuthorizedToCastEvent {
     }
 
     /** @return the public key used to encrypt ballots sent with this authorization method */
-    public PublicKey getFinalPubKey() {
+    public AdderPublicKey getFinalPubKey() {
         return finalPubKey;
     }
 

@@ -1,5 +1,6 @@
 package crypto;
 
+import ch.bfh.unicrypt.math.algebra.general.interfaces.Element;
 import crypto.exceptions.BadKeyException;
 import crypto.exceptions.CiphertextException;
 import crypto.exceptions.KeyNotLoadedException;

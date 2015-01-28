@@ -24,8 +24,8 @@ public class WebServerTallierTest extends TestCase {
 
     private BallotEncrypter be;
 
-    private PublicKey publicKey;
-    private PrivateKey privateKey;
+    private AdderPublicKey publicKey;
+    private AdderPrivateKey privateKey;
 
     protected void setUp() throws Exception {
         super.setUp();
@@ -41,7 +41,7 @@ public class WebServerTallierTest extends TestCase {
      */
     public void testTally(){
 
-        PublicKey finalPublicKey = AdderKeyManipulator.generateFinalPublicKey(publicKey);
+        AdderPublicKey finalPublicKey = AdderKeyManipulator.generateFinalPublicKey(publicKey);
 
         /* ((B0 0)(B1 0)(B2 1)...) */
         List<ASExpression> singleVote = new ArrayList<>();
@@ -110,7 +110,7 @@ public class WebServerTallierTest extends TestCase {
      */
     public void testTallySingle(){
 
-        PublicKey finalPublicKey = AdderKeyManipulator.generateFinalPublicKey(publicKey);
+        AdderPublicKey finalPublicKey = AdderKeyManipulator.generateFinalPublicKey(publicKey);
 
         /* ((B0 0)(B1 0)(B2 1)...) */
         List<ASExpression> singleVote = new ArrayList<>();
@@ -223,8 +223,8 @@ public class WebServerTallierTest extends TestCase {
      */
     public void testDecrypt(){
 
-        PublicKey finalPublicKey = AdderKeyManipulator.generateFinalPublicKey(publicKey);
-        PrivateKey finalPrivateKey = AdderKeyManipulator.generateFinalPrivateKey(publicKey, privateKey);
+        AdderPublicKey finalPublicKey = AdderKeyManipulator.generateFinalPublicKey(publicKey);
+        AdderPrivateKey finalPrivateKey = AdderKeyManipulator.generateFinalPrivateKey(publicKey, privateKey);
 
 
         /* ((B0 0)(B1 0)(B2 1)...) */
@@ -281,8 +281,8 @@ public class WebServerTallierTest extends TestCase {
      */
     public void testDecryptAll(){
 
-        PublicKey finalPublicKey = AdderKeyManipulator.generateFinalPublicKey(publicKey);
-        PrivateKey finalPrivateKey = AdderKeyManipulator.generateFinalPrivateKey(publicKey, privateKey);
+        AdderPublicKey finalPublicKey = AdderKeyManipulator.generateFinalPublicKey(publicKey);
+        AdderPrivateKey finalPrivateKey = AdderKeyManipulator.generateFinalPrivateKey(publicKey, privateKey);
         Random r = new Random();
 
         List<List<String>> expected = new ArrayList<>();
@@ -384,7 +384,7 @@ public class WebServerTallierTest extends TestCase {
             titles.add("L" + i);
         }
 
-        PublicKey finalPublicKey = AdderKeyManipulator.generateFinalPublicKey(publicKey);
+        AdderPublicKey finalPublicKey = AdderKeyManipulator.generateFinalPublicKey(publicKey);
 
         /* Encrypt 1 new ballotsASE */
         ListExpression ballot = new ListExpression(singleVote);

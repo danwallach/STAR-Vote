@@ -37,7 +37,7 @@ import sexpression.StringExpression;
  * @version $LastChangedRevision$ $LastChangedDate$
  * @since 0.0.1
  */
-public class PublicKey implements Serializable {
+public class AdderPublicKey implements Serializable {
 
     private AdderInteger p;
     private AdderInteger q;
@@ -52,7 +52,7 @@ public class PublicKey implements Serializable {
      * @param g     the generator of the key
      * @param f     the message base, generator used for homomorphic encryption
      */
-    public PublicKey(AdderInteger p, AdderInteger g, AdderInteger f) {
+    public AdderPublicKey(AdderInteger p, AdderInteger g, AdderInteger f) {
 
         this.p = p;
         this.q = p.subtract(AdderInteger.ONE).divide(AdderInteger.TWO);
@@ -68,7 +68,7 @@ public class PublicKey implements Serializable {
      * @param h     the public value
      * @param f     the message base, generator used for homomorphic encryption
      */
-    public PublicKey(AdderInteger p, AdderInteger g, AdderInteger h, AdderInteger f) {
+    public AdderPublicKey(AdderInteger p, AdderInteger g, AdderInteger h, AdderInteger f) {
 
         this.p = p;
         this.q = p.subtract(AdderInteger.ONE).divide(AdderInteger.TWO);
@@ -86,8 +86,8 @@ public class PublicKey implements Serializable {
      * @param h     the public value
      * @param f     the message base, generator used for homomorphic encryption
      */
-    private PublicKey(AdderInteger p, AdderInteger q, AdderInteger g,
-                      AdderInteger h, AdderInteger f) {
+    private AdderPublicKey(AdderInteger p, AdderInteger q, AdderInteger g,
+                           AdderInteger h, AdderInteger f) {
         this.p = p;
         this.q = q;
         this.g = g;
@@ -101,7 +101,7 @@ public class PublicKey implements Serializable {
      * @param p     the prime
      * @return      the public key
      */
-   public static PublicKey makePartialKey(AdderInteger p) {
+   public static AdderPublicKey makePartialKey(AdderInteger p) {
         AdderInteger t;
         AdderInteger a;
 
@@ -119,7 +119,7 @@ public class PublicKey implements Serializable {
 
         AdderInteger f = g.pow(a);
 
-        return new PublicKey(p, q, g, null, f);
+        return new AdderPublicKey(p, q, g, null, f);
     }
 
     /**
@@ -130,7 +130,7 @@ public class PublicKey implements Serializable {
      *                      be chosen to be a \e length - bit prime number.
      * @return              the public key
      */
-    public static PublicKey makePartialKey(int length) {
+    public static AdderPublicKey makePartialKey(int length) {
         return makePartialKey(AdderInteger.safePrime(length));
     }
 
@@ -139,12 +139,12 @@ public class PublicKey implements Serializable {
      *
      * @return      the private key
      */
-    public PrivateKey genKeyPair() {
+    public AdderPrivateKey genKeyPair() {
         AdderInteger x = AdderInteger.random(q);
 
         this.h = g.pow(x);
 
-        return new PrivateKey(p, g, x, f);
+        return new AdderPrivateKey(p, g, x, f);
     }
 
     /**
@@ -155,7 +155,7 @@ public class PublicKey implements Serializable {
      * @param m     the message
      * @return      the encrypted of the message
      */
-    private ElgamalCiphertext encrypt(AdderInteger m) {
+    public ElgamalCiphertext encrypt(AdderInteger m) {
         AdderInteger r = AdderInteger.random(q);
         AdderInteger bigG = g.pow(r);
         AdderInteger bigH = h.pow(r).multiply(f.pow(m));
@@ -275,7 +275,7 @@ public class PublicKey implements Serializable {
      * @param  s a string that specifies a <tt>PublicKey</tt>
      * @return a <tt>PublicKey</tt> with the specified values
      */
-    public static PublicKey fromString(String s) {
+    public static AdderPublicKey fromString(String s) {
         StringTokenizer st = new StringTokenizer(s, "pghf", true);
 
         try {
@@ -309,7 +309,7 @@ public class PublicKey implements Serializable {
                 throw new InvalidPublicKeyException("too many tokens");
             }
 
-            return new PublicKey(p, q, g, h, f);
+            return new AdderPublicKey(p, q, g, h, f);
         } catch (NoSuchElementException | NumberFormatException nsee) {
             throw new InvalidPublicKeyException(nsee.getMessage());
         }
@@ -365,7 +365,7 @@ public class PublicKey implements Serializable {
      * @param ase - S-Expression representation of a PublicKey
      * @return the PublicKey equivalent of ase
      */
-    public static PublicKey fromASE(ASExpression ase){
+    public static AdderPublicKey fromASE(ASExpression ase){
     	ListExpression exp = (ListExpression)ase;
     	if(!(exp.get(0).toString()).equals("public-key"))
     		throw new RuntimeException("Not public-key");
@@ -377,7 +377,7 @@ public class PublicKey implements Serializable {
     	
     	AdderInteger q = p.subtract(AdderInteger.ONE).divide(AdderInteger.TWO);
     	
-    	return new PublicKey(p, q, g, h, f);
+    	return new AdderPublicKey(p, q, g, h, f);
     }
     
     /**
@@ -388,7 +388,7 @@ public class PublicKey implements Serializable {
     @Override
     public boolean equals(Object o){
 
-        return o instanceof PublicKey && o.toString().equals(toString());
+        return o instanceof AdderPublicKey && o.toString().equals(toString());
 
     }
 }

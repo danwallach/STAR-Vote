@@ -24,8 +24,8 @@ package votebox.events.test;
 
 import auditorium.IKeyStore;
 import auditorium.SimpleKeyStore;
+import crypto.adder.AdderPublicKey;
 import crypto.interop.AdderKeyManipulator;
-import crypto.adder.PublicKey;
 import junit.framework.TestCase;
 import org.apache.commons.codec.binary.Base64;
 import sexpression.ASExpression;
@@ -167,7 +167,7 @@ public class VoteBoxEventsTest extends TestCase {
 
     public void testAuthorizedToCastWithNIZKs() {
 
-        PublicKey key = AdderKeyManipulator.generateFinalPublicKey((PublicKey) keyStore.loadAdderPublicKey());
+        AdderPublicKey key = AdderKeyManipulator.generateFinalPublicKey((AdderPublicKey) keyStore.loadAdderPublicKey());
 
         ASExpression nonce = getBlob();
 

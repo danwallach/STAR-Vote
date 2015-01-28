@@ -8,10 +8,10 @@ import java.util.List;
 import java.util.Map;
 
 import auditorium.Key;
+import crypto.adder.AdderPublicKey;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import crypto.adder.AdderInteger;
-import crypto.adder.PublicKey;
 
 /**
  * Wrapper around BallotEncrypter to allow for concealing
@@ -65,7 +65,7 @@ public class PiecemealBallotEncrypter {
 	 * @param cardGroup - the grouping to provide a NIZK for (redundant, but helpful for debugging)
 	 * @param publicKey - the key to use to encrypt the ballot
 	 */
-	public void adderUpdate(final String id, final List<ASExpression> singleCard, final List<String> cardGroup, final PublicKey publicKey){
+	public void adderUpdate(final String id, final List<ASExpression> singleCard, final List<String> cardGroup, final AdderPublicKey publicKey){
 		if(_pureMode)
 			throw new RuntimeException("Cannot mix Adder and VoteBox style ballots");
 
@@ -88,7 +88,7 @@ public class PiecemealBallotEncrypter {
 	 * 
 	 * @see PiecemealBallotEncrypter
 	 */
-	protected void adderUpdateImpl(String id, ListExpression singleCard, List<String> cardGroup, PublicKey publicKey){
+	protected void adderUpdateImpl(String id, ListExpression singleCard, List<String> cardGroup, AdderPublicKey publicKey){
 		List<List<String>> groups = new ArrayList<>();
 		groups.add(cardGroup);
 

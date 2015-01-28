@@ -22,16 +22,16 @@ import java.util.Map;
 public class EncryptedTallierWithNIZKs implements ITallier {
 
     /** An ElGamal private key for the decryption of votes and for the NIZK proof process */
-    protected PrivateKey _privateKey = null;
+    protected AdderPrivateKey _privateKey = null;
 
     /** The ElGamal public key for the NIZK proof process */
-    protected PublicKey _publicKey = null;
+    protected AdderPublicKey _publicKey = null;
 
     /** The final public key, to ensure that the public key remains the same throughout the election process */
-    protected PublicKey _finalPublicKey = null;
+    protected AdderPublicKey _finalPublicKey = null;
 
     /** The final private key, to ensure that the same private key is used througout the election */
-    protected PrivateKey _finalPrivateKey = null;
+    protected AdderPrivateKey _finalPrivateKey = null;
 
     /** The results of the election are stored by race ID in this map */
     protected Map<String, Election> _results = new HashMap<String, Election>();
@@ -42,7 +42,7 @@ public class EncryptedTallierWithNIZKs implements ITallier {
      * @param pub - The PublicKey used to encrypt votes to be tallied.
      * @param priv - The PrivateKey to be used to decrypt the totals.
      */
-    public EncryptedTallierWithNIZKs(PublicKey pub, PrivateKey priv){
+    public EncryptedTallierWithNIZKs(AdderPublicKey pub, AdderPrivateKey priv){
         _privateKey = priv;
         _publicKey = pub;
     }
@@ -110,7 +110,7 @@ public class EncryptedTallierWithNIZKs implements ITallier {
         if(_finalPublicKey == null)
             _finalPublicKey = AdderKeyManipulator.generateFinalPublicKey(_publicKey);
         else{
-            PublicKey copy = AdderKeyManipulator.generateFinalPublicKey(_publicKey);
+            AdderPublicKey copy = AdderKeyManipulator.generateFinalPublicKey(_publicKey);
 
             if(!_finalPublicKey.equals(copy))
                 //throw new RuntimeException("Final public key changed!\n"+_finalPublicKey+"\n\n"+copy);
@@ -160,7 +160,7 @@ public class EncryptedTallierWithNIZKs implements ITallier {
                 VoteProof voteProof = VoteProof.fromASE(proofE.get(1));
 
                 /* Grab the supplied public key */
-                PublicKey suppliedPublicKey = PublicKey.fromASE(publicKeyE.get(1));
+                AdderPublicKey suppliedPublicKey = AdderPublicKey.fromASE(publicKeyE.get(1));
 
                 /* Confirm that the keys are the same */
                 if(!(suppliedPublicKey.toString().trim().equals(_finalPublicKey.toString().trim()))){

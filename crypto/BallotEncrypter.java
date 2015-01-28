@@ -86,7 +86,7 @@ public class BallotEncrypter {
      * @return               a ListExpression in the form (((vote [vote]) (vote-ids ([id1], [id2], ...)) (proof [proof])) ... (public-key [key]) (size [size]))
      */
     public ListExpression encryptWithProof(String bid, ListExpression ballot, List<List<String>> raceGroups,
-                                           PublicKey pubKey, ASExpression nonce, List<String> titles){
+                                           AdderPublicKey pubKey, ASExpression nonce, List<String> titles){
         adderRandom = new ArrayList<>();
         List<ASExpression> subBallots = new ArrayList<>();
 
@@ -178,7 +178,7 @@ public class BallotEncrypter {
      * @return                  A ListExpression of the form ((vote [vote]) (vote-ids ([id1], [id2], ...)) (proof [proof]) (public-key [key]))
      */
     @SuppressWarnings("unchecked")
-    private ListExpression encryptSubBallotWithProof(ListExpression subBallot, PublicKey pubKey, byte[] writeInKey, String title){
+    private ListExpression encryptSubBallotWithProof(ListExpression subBallot, AdderPublicKey pubKey, byte[] writeInKey, String title){
 
         List<AdderInteger> value    = new ArrayList<>();
         List<ASExpression> valueIds = new ArrayList<>();
@@ -216,7 +216,7 @@ public class BallotEncrypter {
 
         System.out.println("Inside encryptSubBallotWithProof: \n\tValues: \t" + value + "\n\tValueIDs: \t" + valueIds);
 
-        PublicKey finalPubKey = AdderKeyManipulator.generateFinalPublicKey(pubKey);
+        AdderPublicKey finalPubKey = AdderKeyManipulator.generateFinalPublicKey(pubKey);
 
         AdderVote vote = finalPubKey.encrypt(value, valueIds);
 
@@ -354,7 +354,7 @@ public class BallotEncrypter {
      * @return              List of decrypted vote counters
      */
     @SuppressWarnings("unchecked")
-	public List<AdderInteger> adderDecryptWithKey(Election election, PublicKey publicKey, PrivateKey privateKey){
+	public List<AdderInteger> adderDecryptWithKey(Election election, AdderPublicKey publicKey, AdderPrivateKey privateKey){
 
         /*
 
@@ -373,8 +373,8 @@ public class BallotEncrypter {
 
 
         /* Generate the final private and public keys */
-    	PrivateKey finalPrivateKey = AdderKeyManipulator.generateFinalPrivateKey(publicKey, privateKey);
-    	PublicKey finalPublicKey = AdderKeyManipulator.generateFinalPublicKey(publicKey);
+    	AdderPrivateKey finalPrivateKey = AdderKeyManipulator.generateFinalPrivateKey(publicKey, privateKey);
+    	AdderPublicKey finalPublicKey = AdderKeyManipulator.generateFinalPublicKey(publicKey);
 
         /* Homomorphically tally the encrypted votes  */
     	AdderVote cipherSum = election.sumVotes();
@@ -395,7 +395,7 @@ public class BallotEncrypter {
      */
     public ListExpression adderDecrypt(ListExpression ballot, List<List<AdderInteger>> rVals){
     	Map<String, AdderVote> idsToVote = new HashMap<>();
-    	Map<String, PublicKey> idsToPubKey = new HashMap<>();
+    	Map<String, AdderPublicKey> idsToPubKey = new HashMap<>();
     	Map<String, List<AdderInteger>> idsToRs = new HashMap<>();
     	Map<String, List<AdderInteger>> idsToPlaintext = new HashMap<>();
 
@@ -409,7 +409,7 @@ public class BallotEncrypter {
             AdderVote vote = AdderVote.fromASE(race);
     		ListExpression voteIds = (ListExpression)(race.get(1));
 
-            PublicKey finalPubKey = PublicKey.fromASE(ballot.get(4));
+            AdderPublicKey finalPubKey = AdderPublicKey.fromASE(ballot.get(4));
     		
     		idsToVote.put(voteIds.toString(), vote);
     		idsToRs.put(voteIds.toString(), rVals.get(i));
@@ -419,7 +419,7 @@ public class BallotEncrypter {
     	for(String ids : idsToVote.keySet()){
     		AdderVote vote = idsToVote.get(ids);
     		List<AdderInteger> rs = idsToRs.get(ids);
-    		PublicKey finalPubKey = idsToPubKey.get(ids);
+    		AdderPublicKey finalPubKey = idsToPubKey.get(ids);
 
     		List<AdderInteger> d = adderDecryptSublist(vote, rs, finalPubKey);
 
@@ -478,7 +478,7 @@ public class BallotEncrypter {
      * @return Decrypted vote as a list of integers
      */
     @SuppressWarnings("unchecked")
-	public List<AdderInteger> adderDecryptSublist(AdderVote vote, List<AdderInteger> rVals, PublicKey key){
+	public List<AdderInteger> adderDecryptSublist(AdderVote vote, List<AdderInteger> rVals, AdderPublicKey key){
 
 
     	

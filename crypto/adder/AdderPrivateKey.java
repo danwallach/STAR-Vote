@@ -16,7 +16,7 @@ import sexpression.StringExpression;
  * @version $LastChangedRevision$ $LastChangedDate$
  * @since 0.0.1
  */
-public class PrivateKey {
+public class AdderPrivateKey {
 
     private AdderInteger p;
     private AdderInteger q;
@@ -32,7 +32,7 @@ public class PrivateKey {
      * @param x     the private value
      * @param f     the message base
      */
-    public PrivateKey(AdderInteger p, AdderInteger g, AdderInteger x, AdderInteger f) {
+    public AdderPrivateKey(AdderInteger p, AdderInteger g, AdderInteger x, AdderInteger f) {
 
         this.p = p;
         this.q = p.subtract(AdderInteger.ONE).divide(AdderInteger.TWO);
@@ -87,7 +87,7 @@ public class PrivateKey {
      * @param polyList      the polynomial list
      * @return the final private key
      */
-    public PrivateKey getFinalPrivKey(List<ElgamalCiphertext> polyList) {
+    public AdderPrivateKey getFinalPrivKey(List<ElgamalCiphertext> polyList) {
         AdderInteger total = new AdderInteger(AdderInteger.ZERO, q);
 
         for (Object aPolyList : polyList) {
@@ -112,7 +112,7 @@ public class PrivateKey {
             total = total.add(inverse);
         }
 
-        return new PrivateKey(p, g, total, f);
+        return new AdderPrivateKey(p, g, total, f);
     }
 
     /**
@@ -167,7 +167,7 @@ public class PrivateKey {
      * @param  s a string that specifies a <tt>PrivateKey</tt>
      * @return a <tt>PrivateKey</tt> with the specified values
      */
-    public static PrivateKey fromString(String s) {
+    public static AdderPrivateKey fromString(String s) {
         StringTokenizer st = new StringTokenizer(s, "pgxf", true);
 
         try {
@@ -201,7 +201,7 @@ public class PrivateKey {
                 throw new InvalidPrivateKeyException("too many tokens");
             }
 
-            return new PrivateKey(p, g, x, f);
+            return new AdderPrivateKey(p, g, x, f);
         } catch (NoSuchElementException | NumberFormatException nsee) {
             throw new InvalidPrivateKeyException(nsee.getMessage());
         }
@@ -238,7 +238,7 @@ public class PrivateKey {
      * @param ase - S-Expression representation of a PrivateKey
      * @return the PrivateKey equivalent of ase
      */
-    public static PrivateKey fromASE(ASExpression ase){
+    public static AdderPrivateKey fromASE(ASExpression ase){
     	ListExpression exp = (ListExpression)ase;
     	
     	if(!(exp.get(0).toString()).equals("private-key"))
@@ -249,6 +249,6 @@ public class PrivateKey {
     	AdderInteger x = AdderInteger.fromASE(exp.get(3));
     	AdderInteger f = AdderInteger.fromASE(exp.get(4));
     	
-    	return new PrivateKey(p, g, x, f);
+    	return new AdderPrivateKey(p, g, x, f);
     }
 }

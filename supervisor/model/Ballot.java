@@ -1,9 +1,6 @@
 package supervisor.model;
 
 import crypto.AVote;
-import crypto.adder.AdderVote;
-import crypto.adder.ElgamalCiphertext;
-import crypto.adder.PublicKey;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.StringExpression;

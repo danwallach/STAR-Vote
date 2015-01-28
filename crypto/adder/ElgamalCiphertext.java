@@ -1,5 +1,6 @@
 package crypto.adder;
 
+import crypto.ICiphertext;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.StringExpression;
@@ -17,13 +18,13 @@ import java.util.StringTokenizer;
  * \rangle = \langle g^r, h^r f^m\rangle \in \mathrm{Z}_p \times \mathrm{Z}_p\f$.
  *
  * To form a ciphertext, you probably want to
- * @see PublicKey#encrypt(AdderInteger) function.
+ * @see AdderPublicKey#encrypt(AdderInteger) function.
  *
  * @author David Walluck
  * @version $LastChangedRevision$ $LastChangedDate$
  * @since 0.0.1
  */
-public class ElgamalCiphertext implements Serializable {
+public class ElgamalCiphertext implements Serializable, ICiphertext {
 
     /** A generator for the ElGamal keys, is the generator of the group mod p */
     private AdderInteger g;

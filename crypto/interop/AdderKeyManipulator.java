@@ -8,7 +8,7 @@ import java.util.List;
 public class AdderKeyManipulator {
 
     /** A cached key that will let us compare the public key that is used throughout the election process */
-	private static PublicKey _cachedKey = null;
+	private static AdderPublicKey _cachedKey = null;
 
     /** A LaGrange polynomial for the Exponential-ElGamal homomorphic process. */
 	private static Polynomial _poly = null;
@@ -20,7 +20,7 @@ public class AdderKeyManipulator {
 	 *
 	 * @param newKey - the key to load into the cache.
 	 */
-	public static void setCachedKey(PublicKey newKey){
+	public static void setCachedKey(AdderPublicKey newKey){
 		
 		_cachedKey = newKey;
 	}
@@ -34,7 +34,7 @@ public class AdderKeyManipulator {
 	 * @param publicKey - the pre-calculated public key.
 	 * @return the new PublicKey
 	 */
-	public static PublicKey generateFinalPublicKey(PublicKey publicKey){
+	public static AdderPublicKey generateFinalPublicKey(AdderPublicKey publicKey){
 		if(_cachedKey != null)
 			return _cachedKey;
 		
@@ -52,7 +52,7 @@ public class AdderKeyManipulator {
 	 * @param pubKey - the pre-calculated public key.
 	 * @return the new PublicKey
 	 */
-	protected static PublicKey generateFinalPublicKeyNoCache(PublicKey pubKey){
+	protected static AdderPublicKey generateFinalPublicKeyNoCache(AdderPublicKey pubKey){
 		_poly = new Polynomial(pubKey.getP(), pubKey.getG(), pubKey.getF(), 0);
 
         AdderInteger p = pubKey.getP();
@@ -64,7 +64,7 @@ public class AdderKeyManipulator {
 		AdderInteger gvalue = g.pow((_poly).evaluate(new AdderInteger(AdderInteger.ZERO, q)));
 		finalH = finalH.multiply(gvalue);
 		
-		_cachedKey = new PublicKey(p, g, finalH, f);
+		_cachedKey = new AdderPublicKey(p, g, finalH, f);
 		
 		return _cachedKey;
 	}
@@ -75,7 +75,7 @@ public class AdderKeyManipulator {
 	 * 
 	 * @return the new PrivateKey
 	 */
-	public static PrivateKey generateFinalPrivateKey(PublicKey publicKey, PrivateKey privateKey){
+	public static AdderPrivateKey generateFinalPrivateKey(AdderPublicKey publicKey, AdderPrivateKey privateKey){
 
 		/* Generate the final private key */
 		List<ElgamalCiphertext> ciphertexts = new ArrayList<>();

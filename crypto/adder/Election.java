@@ -15,7 +15,7 @@ import java.util.List;
 public class Election {
 
     /** The public key used to encrypt and tally */
-    private PublicKey finalPublicKey;
+    private AdderPublicKey finalPublicKey;
 
     /** The List of all Votes cast in this Election */
     private List<AdderVote> votes;
@@ -28,7 +28,7 @@ public class Election {
      *
      * @param publicKey         the public key
      */
-    public Election(PublicKey publicKey, List<ASExpression> choices) {
+    public Election(AdderPublicKey publicKey, List<ASExpression> choices) {
         this.finalPublicKey = publicKey;
         this.votes = new ArrayList<>();
         this.choices = choices;
@@ -116,7 +116,7 @@ public class Election {
      *
      * @return                  the final vote tally
      */
-    public List<AdderInteger> getFinalSum(List<AdderInteger> partialSums, AdderVote sum, PublicKey masterKey) {
+    public List<AdderInteger> getFinalSum(List<AdderInteger> partialSums, AdderVote sum, AdderPublicKey masterKey) {
 
         /*
 

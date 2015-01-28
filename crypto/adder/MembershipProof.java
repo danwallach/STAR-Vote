@@ -122,7 +122,7 @@ public class MembershipProof implements Serializable {
 	 * @param value         the plaintext value of the ciphertext.
 	 * @param domain        the domain of possible values of the plaintext.
 	 */
-	public void compute(ElgamalCiphertext ciphertext, PublicKey pubKey, AdderInteger value, List domain) {
+	public void compute(ElgamalCiphertext ciphertext, AdderPublicKey pubKey, AdderInteger value, List domain) {
 
         /* Get p and q from the key */
 		this.p = pubKey.getP();
@@ -241,7 +241,7 @@ public class MembershipProof implements Serializable {
 	 * @param domain        the domain
 	 * @return              true if the proof is valid
 	 */
-	public boolean verify(ElgamalCiphertext ciphertext, PublicKey pubKey, List<AdderInteger> domain) {
+	public boolean verify(ElgamalCiphertext ciphertext, AdderPublicKey pubKey, List<AdderInteger> domain) {
 
         /* Extract necessary key components for computation */
 		p = pubKey.getP();

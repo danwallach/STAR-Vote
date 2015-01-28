@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import crypto.adder.AdderPublicKey;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -22,7 +23,6 @@ import votebox.middle.driver.*;
 import auditorium.Key;
 import auditorium.SimpleKeyStore;
 import crypto.adder.AdderInteger;
-import crypto.adder.PublicKey;
 import votebox.middle.view.IView;
 
 public class PiecemealEncrypterTest {
@@ -47,7 +47,7 @@ public class PiecemealEncrypterTest {
 
 	private static  List<byte[]> _seeds = null;
 	private static  Key _publicKey = null;
-	private static PublicKey _adderPublicKey = null;
+	private static AdderPublicKey _adderPublicKey = null;
 
 	protected static void generateRandom(){
 		assert _seeds == null;

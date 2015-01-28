@@ -1,13 +1,12 @@
 package verifier.test;
 
 import auditorium.*;
-import crypto.adder.PublicKey;
+import crypto.adder.AdderPublicKey;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.StringExpression;
 import verifier.InvalidLogEntryException;
 import verifier.auditoriumverifierplugins.IncrementalAuditoriumLog;
-import verifier.auditoriumverifierplugins.IncrementalAuditoriumLogFast;
 import votebox.AuditoriumParams;
 import votebox.events.*;
 
@@ -46,7 +45,7 @@ public class IncrementalAuditoriumLogGenerator {
     private static DecimalFormat format = new DecimalFormat("00000");
 
     /** Necessary for initializing our integrity layer as well as logging certain kinds of events, like EncryptedCastWithNIZKs */
-    private static PublicKey publicKey;
+    private static AdderPublicKey publicKey;
 
 
     /**

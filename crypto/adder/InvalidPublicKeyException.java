@@ -6,8 +6,8 @@ package crypto.adder;
  *
  * @author  David Walluck
  * @version $LastChangedRevision$ $LastChangedDate$
- * @see     PublicKey
- * @see     PublicKey#fromString(String)
+ * @see     AdderPublicKey
+ * @see     AdderPublicKey#fromString(String)
  * @since   0.0.1
  */
 public class InvalidPublicKeyException extends RuntimeException {

@@ -1,8 +1,8 @@
 package controllers;
 
 import auditorium.SimpleKeyStore;
-import crypto.adder.PrivateKey;
-import crypto.adder.PublicKey;
+import crypto.adder.AdderPrivateKey;
+import crypto.adder.AdderPublicKey;
 import models.*;
 import play.data.Form;
 import play.mvc.Controller;
@@ -330,7 +330,7 @@ public class AuditServer extends Controller {
     private static void storeDecryptedSummedTotals(Map<String, Ballot> summedTotals, Map<String, Precinct> precinctMap) {
 
         SimpleKeyStore keyStore = new SimpleKeyStore("/lib/keys/");
-        PrivateKey privateKey = keyStore.loadAdderPrivateKey();
+        AdderPrivateKey privateKey = keyStore.loadAdderPrivateKey();
 
         System.out.println("Decrypting summedTotals...");
 
@@ -340,7 +340,7 @@ public class AuditServer extends Controller {
             Ballot b = entry.getValue();
             String precinctID = entry.getKey();
 
-            PublicKey finalPublicKey = precinctMap.get(precinctID).getFinalPublicKey();
+            AdderPublicKey finalPublicKey = precinctMap.get(precinctID).getFinalPublicKey();
 
             /* This will be the decrypted representation of the results by race */
             Map<String, Map<String, BigInteger>> decryptedResults = WebServerTallier.getVoteTotals(b, b.getSize(), finalPublicKey, privateKey);

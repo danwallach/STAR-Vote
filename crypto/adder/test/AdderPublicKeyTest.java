@@ -1,10 +1,10 @@
 package crypto.adder.test;
 
+import crypto.adder.AdderPublicKey;
 import junit.framework.TestCase;
 import junit.textui.TestRunner;
 import crypto.adder.AdderInteger;
 import crypto.adder.InvalidPublicKeyException;
-import crypto.adder.PublicKey;
 
 /**
  * Public key test.
@@ -13,13 +13,13 @@ import crypto.adder.PublicKey;
  * @since 0.0.1
  * @author David Walluck
  */
-public class PublicKeyTest extends TestCase {
+public class AdderPublicKeyTest extends TestCase {
     /**
      * Constructs a new public key test.
      *
      * @param name the name of the test.
      */
-    public PublicKeyTest(String name) {
+    public AdderPublicKeyTest(String name) {
         super(name);
     }
 
@@ -28,7 +28,7 @@ public class PublicKeyTest extends TestCase {
      */
     public void test() {
         try {
-            PublicKey publicKey = PublicKey.fromString("p123g135h246f234");
+            AdderPublicKey publicKey = AdderPublicKey.fromString("p123g135h246f234");
 
             assertEquals(new AdderInteger("123"), publicKey.getP());
             assertEquals(new AdderInteger("135", publicKey.getP()),
@@ -41,7 +41,7 @@ public class PublicKeyTest extends TestCase {
             fail();
         }
 
-        PublicKey publicKey1 = new PublicKey(new AdderInteger("123"),
+        AdderPublicKey publicKey1 = new AdderPublicKey(new AdderInteger("123"),
                                                 new AdderInteger("135"),
                                                 new AdderInteger("246"),
                                                 new AdderInteger("234"));
@@ -51,7 +51,7 @@ public class PublicKeyTest extends TestCase {
         assertEquals(new AdderInteger("246"), publicKey1.getH());
         assertEquals(new AdderInteger("234"), publicKey1.getF());
 
-        PublicKey publicKey2 = new PublicKey(new AdderInteger("123"),
+        AdderPublicKey publicKey2 = new AdderPublicKey(new AdderInteger("123"),
                                                 new AdderInteger("135"),
                                                 new AdderInteger("246"),
                                                 new AdderInteger("234"));
@@ -59,49 +59,49 @@ public class PublicKeyTest extends TestCase {
         assertEquals("p123g135h246f234", publicKey2.toString());
 
         try {
-            PublicKey.fromString("pghf");
+            AdderPublicKey.fromString("pghf");
             fail();
         } catch (InvalidPublicKeyException ignored) {
 
         }
 
         try {
-            PublicKey.fromString("p123g123h123f12a");
+            AdderPublicKey.fromString("p123g123h123f12a");
             fail();
         } catch (InvalidPublicKeyException ignored) {
 
         }
 
         try {
-            PublicKey.fromString("p123g123h123p123");
+            AdderPublicKey.fromString("p123g123h123p123");
             fail();
         } catch (InvalidPublicKeyException ignored) {
 
         }
 
         try {
-            PublicKey.fromString("g123g123h123p123");
+            AdderPublicKey.fromString("g123g123h123p123");
             fail();
         } catch (InvalidPublicKeyException ignored) {
 
         }
 
         try {
-            PublicKey.fromString("p123h123h123p123");
+            AdderPublicKey.fromString("p123h123h123p123");
             fail();
         } catch (InvalidPublicKeyException ignored) {
 
         }
 
         try {
-            PublicKey.fromString("p123g123g123");
+            AdderPublicKey.fromString("p123g123g123");
             fail();
         } catch (InvalidPublicKeyException ignored) {
 
         }
 
         try {
-            PublicKey.fromString("p123g135h246f234p123");
+            AdderPublicKey.fromString("p123g135h246f234p123");
             fail();
         } catch (InvalidPublicKeyException ignored) {
 
@@ -114,6 +114,6 @@ public class PublicKeyTest extends TestCase {
      * @param args the main parameters
      */
     public static void main(String[] args) {
-        TestRunner.run(PublicKeyTest.class);
+        TestRunner.run(AdderPublicKeyTest.class);
     }
 }

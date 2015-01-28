@@ -31,8 +31,8 @@ import java.util.HashMap;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import crypto.adder.PrivateKey;
-import crypto.adder.PublicKey;
+import crypto.adder.AdderPrivateKey;
+import crypto.adder.AdderPublicKey;
 
 import sexpression.*;
 import sexpression.stream.*;
@@ -121,7 +121,7 @@ public class SimpleKeyStore implements IKeyStore {
      *
      * @return the adder key
      */
-    public PublicKey loadAdderPublicKey() {
+    public AdderPublicKey loadAdderPublicKey() {
         try{
             InputStream in = getInput("public.adder.key");
 
@@ -132,7 +132,7 @@ public class SimpleKeyStore implements IKeyStore {
                 byteArrayOutputStream.write(i);
             }
 
-            return PublicKey.fromASE(ASExpression.makeVerbatim(byteArrayOutputStream.toByteArray()));
+            return AdderPublicKey.fromASE(ASExpression.makeVerbatim(byteArrayOutputStream.toByteArray()));
 
         }catch(Exception e){
             throw new RuntimeException(e);
@@ -145,7 +145,7 @@ public class SimpleKeyStore implements IKeyStore {
      *
      * @return the adder key
      */
-    public PrivateKey loadAdderPrivateKey() {
+    public AdderPrivateKey loadAdderPrivateKey() {
         try{
             InputStream in = getInput("private.adder.key");
 
@@ -156,7 +156,7 @@ public class SimpleKeyStore implements IKeyStore {
                 byteArrayOutputStream.write(i);
             }
 
-            return PrivateKey.fromASE(ASExpression.makeVerbatim(byteArrayOutputStream.toByteArray()));
+            return AdderPrivateKey.fromASE(ASExpression.makeVerbatim(byteArrayOutputStream.toByteArray()));
 
         }catch(Exception e){
             throw new RuntimeException(e);

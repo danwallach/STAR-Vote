@@ -20,7 +20,7 @@ public class BallotTest extends TestCase {
 
     private Ballot ballot;
 
-    private PublicKey publicKey;
+    private AdderPublicKey publicKey;
 
     protected void setUp() throws Exception {
         super.setUp();

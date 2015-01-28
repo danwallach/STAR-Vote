@@ -30,7 +30,7 @@ public class AdderTest extends TestCase {
      * Test.
      */
     public void test() {
-        PublicKey pubKey = PublicKey.makePartialKey(128);
+        AdderPublicKey pubKey = AdderPublicKey.makePartialKey(128);
 
         System.out.println("pubKey = " + pubKey);
 
@@ -59,14 +59,14 @@ public class AdderTest extends TestCase {
 
         System.out.println("Authorities start");
 
-        List<PublicKey>/*<PublicKey>*/ pubKeys = new ArrayList<>/*<PublicKey>*/(numAuths);
-        List<PrivateKey>/*<PrivateKey>*/ privKeys = new ArrayList<>/*<PrivateKey>*/(numAuths);
+        List<AdderPublicKey>/*<PublicKey>*/ pubKeys = new ArrayList<>/*<PublicKey>*/(numAuths);
+        List<AdderPrivateKey>/*<PrivateKey>*/ privKeys = new ArrayList<>/*<PrivateKey>*/(numAuths);
         List<Polynomial>/*<Polynomial>*/ polys = new ArrayList<>/*<Polynomial>*/(numAuths);
 
         for (int i = 0; i < numAuths; i++) {
-            PublicKey authPubKey = new PublicKey(p, g, f);
+            AdderPublicKey authPubKey = new AdderPublicKey(p, g, f);
             pubKeys.add(authPubKey);
-            PrivateKey authPrivKey = authPubKey.genKeyPair();
+            AdderPrivateKey authPrivKey = authPubKey.genKeyPair();
             privKeys.add(authPrivKey);
             Polynomial authPoly = new Polynomial(p, g, f, numAuths - 1);
             polys.add(authPoly);
@@ -86,12 +86,12 @@ public class AdderTest extends TestCase {
             polyMap.put(i, ciphertexts);
         }
 
-        List<PrivateKey>/*<PrivateKey>*/ finprivKeys
+        List<AdderPrivateKey>/*<PrivateKey>*/ finprivKeys
             = new ArrayList<>/*<PrivateKey>*/(numAuths);
         AdderInteger finalH = new AdderInteger(AdderInteger.ONE, p);
 
         for (int i = 0; i < numAuths; i++) {
-            PrivateKey authFinPrivKey
+            AdderPrivateKey authFinPrivKey
                 = (privKeys.get(i))
                   .getFinalPrivKey(polyMap.get(i));
             finprivKeys.add(authFinPrivKey);
@@ -101,7 +101,7 @@ public class AdderTest extends TestCase {
             finalH = finalH.multiply(gvalue);
         }
 
-        PublicKey finalPubKey = new PublicKey(p, g, finalH, f);
+        AdderPublicKey finalPubKey = new AdderPublicKey(p, g, finalH, f);
 
         System.out.println("finalPubKey = " + finalPubKey);
 

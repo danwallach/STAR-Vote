@@ -3,10 +3,7 @@ package crypto.interop;
 import auditorium.Key;
 import auditorium.SimpleKeyStore;
 import crypto.BallotEncrypter;
-import crypto.adder.AdderInteger;
-import crypto.adder.PrivateKey;
-import crypto.adder.PublicKey;
-import crypto.adder.SearchSpaceExhaustedException;
+import crypto.adder.*;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -55,8 +52,8 @@ public class NIZKsPerformanceTest {
 
 	private static  List<byte[]> _seeds = null;
 	private static  Key _publicKey = null;
-	private static PublicKey _adderPublicKey = null;
-    private static PrivateKey _adderPrivateKey = null;
+	private static AdderPublicKey _adderPublicKey = null;
+    private static AdderPrivateKey _adderPrivateKey = null;
 	
 	private static List<Pair> _toDecryptWithoutNIZKs = new ArrayList<>();
 	private static List<Pair> _toDecryptWithNIZKs = new ArrayList<>();

@@ -1,9 +1,9 @@
 package supervisor.model;
 
 import auditorium.Bugout;
+import crypto.adder.AdderPublicKey;
 import crypto.adder.AdderVote;
 import crypto.adder.Election;
-import crypto.adder.PublicKey;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.StringExpression;
@@ -30,7 +30,7 @@ public class SupervisorTallier implements Serializable {
      * @param finalPublicKey     the public key used for vote proofs
      * @return              a Ballot containing the encrypted sums for each race
      */
-    public static Ballot tally(String precinctID, List<Ballot> cast, PublicKey finalPublicKey){
+    public static Ballot tally(String precinctID, List<Ballot> cast, AdderPublicKey finalPublicKey){
 
         int size=0;
 
@@ -50,7 +50,7 @@ public class SupervisorTallier implements Serializable {
                     /* Get all the candidate choices */
                     List<ASExpression> possibleChoices = vote.getChoices();
 
-                    PublicKey ballotKey = bal.getPublicKey();
+                    AdderPublicKey ballotKey = bal.getPublicKey();
 
                     /* Confirm that the keys are the same */
                     if (!(ballotKey.equals(finalPublicKey))) {

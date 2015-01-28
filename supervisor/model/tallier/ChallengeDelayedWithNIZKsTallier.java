@@ -28,7 +28,7 @@ public class ChallengeDelayedWithNIZKsTallier extends EncryptedTallierWithNIZKs 
      * @param pub  - The PublicKey used to encrypt votes to be tallied.
      * @param priv - The PrivateKey to be used to decrypt the totals.
      */
-    public ChallengeDelayedWithNIZKsTallier(PublicKey pub, PrivateKey priv) {
+    public ChallengeDelayedWithNIZKsTallier(AdderPublicKey pub, AdderPrivateKey priv) {
         super(pub, priv);
     }
 
@@ -45,7 +45,7 @@ public class ChallengeDelayedWithNIZKsTallier extends EncryptedTallierWithNIZKs 
         if(_finalPublicKey == null)
             _finalPublicKey = AdderKeyManipulator.generateFinalPublicKey(_publicKey);
         else{
-            PublicKey copy = AdderKeyManipulator.generateFinalPublicKey(_publicKey);
+            AdderPublicKey copy = AdderKeyManipulator.generateFinalPublicKey(_publicKey);
 
             if(!_finalPublicKey.equals(copy))
                 Bugout.err("Final public key changed!\n"+_finalPublicKey+"\n\n"+copy);
@@ -101,7 +101,7 @@ public class ChallengeDelayedWithNIZKsTallier extends EncryptedTallierWithNIZKs 
 //                VoteProof voteProof = VoteProof.fromASE(proofE.get(1));
 
                 //PublicKey suppliedPublicKey = PublicKey.fromString(publicKeyE.get(1).toString());
-                PublicKey suppliedPublicKey = PublicKey.fromASE(publicKeyE);
+                AdderPublicKey suppliedPublicKey = AdderPublicKey.fromASE(publicKeyE);
 
                 if(!(suppliedPublicKey.toString().trim().equals(_finalPublicKey.toString().trim()))){
                     Bugout.err("!!!Expected supplied final PublicKey to match generated\nSupplied: "+suppliedPublicKey+"\nGenerated: "+_finalPublicKey+"!!!");

@@ -110,7 +110,7 @@ public class AdderVote implements Serializable {
      * @param max
      * @return
      */
-    public boolean verifyVoteProof(PublicKey publicKey, int min, int max){
+    public boolean verifyVoteProof(AdderPublicKey publicKey, int min, int max){
         return proof.verify(this, publicKey, min, max);
     }
 
@@ -148,7 +148,7 @@ public class AdderVote implements Serializable {
      * @param numVotes          the total number of votes cast in this race
      * @param publicKey         the public key for the votes
      */
-    public void computeSumProof(int numVotes, PublicKey publicKey){
+    public void computeSumProof(int numVotes, AdderPublicKey publicKey){
 
         /* Create a multiplicative identity */
         ElgamalCiphertext sumCipher = new ElgamalCiphertext(AdderInteger.ONE, AdderInteger.ONE, publicKey.getP());

@@ -1,9 +1,6 @@
 package supervisor.model;
 
 import crypto.EncryptedVote;
-import crypto.adder.PublicKey;
-import sexpression.ASExpression;
-import sexpression.ListExpression;
 
 import java.io.Serializable;
 import java.util.ArrayList;

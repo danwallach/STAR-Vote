@@ -1,6 +1,6 @@
 package crypto;
 
-import crypto.adder.SearchSpaceExhaustedException;
+import crypto.adder.*;
 import crypto.exceptions.BadKeyException;
 import crypto.exceptions.CiphertextException;
 import crypto.exceptions.KeyNotLoadedException;
@@ -20,6 +20,8 @@ import java.io.ObjectInputStream;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.security.*;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,8 +31,8 @@ import java.util.List;
 public class DHExponentialElGamalCryptoType implements ICryptoType {
 
     private final Cipher cipher;
-    private DHPrivateKey privateKey;
-    private DHPublicKey publicKey;
+    private AdderPrivateKey privateKey;
+    private AdderPublicKey publicKey;
     private final SecureRandom random = new SecureRandom();
 
     public DHExponentialElGamalCryptoType() throws UninitialisedException {
@@ -55,21 +57,16 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
         if(privateKey == null)
             throw new KeyNotLoadedException("The private key has not yet been loaded! [Decryption]");
 
-        /* Put the cipher in decrypt mode */
-        cipher.init(Cipher.DECRYPT_MODE, privateKey);
-
 
         try {
 
             /* Partially decrypt to get g^m */
-            BigInteger mappedPlainText = new BigInteger(cipher.doFinal(ciphertext.asBytes()));
+            BigInteger mappedPlainText = new BigInteger(AdderPrivateKey.(ciphertext.asBytes()));
 
-            /* Get g from the public key*/
-            DHParameterSpec spec = publicKey.getParams();
-            BigInteger g = spec.getG();
+
 
             /* Guess the value of m by comparing g^i to g^m and return if/when they're the same --
-                TODO 100 is chosen arbitrarily because we don't wanna pass the upper limit in */
+                TODO 100 is chosen arbitrarily for now */
             for(int i=0; i<100; i++) {
                 if (g.pow(i).equals(mappedPlainText)) {
                     return ByteBuffer.allocate(4).putInt(i).array();
@@ -91,25 +88,10 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
         if(publicKey == null)
             throw new KeyNotLoadedException("The public key has not yet been loaded! [Encryption]");
 
-        /* Put the cipher in encrypt mode */
-        cipher.init(Cipher.ENCRYPT_MODE, publicKey, random);
+        /* Encrypt our plaintext and store as ICiphertext *//* TODO change this to return ExponentialElgamalCiphertext */
+        ICiphertext c = publicKey.encrypt(new AdderInteger(new BigInteger(plainText)));
 
-        /* Get g from the public key */
-        DHParameterSpec spec = publicKey.getParams();
-        BigInteger g = spec.getG();
-
-        /* Get g^m where m is our plaintext */
-        byte[] mappedPlaintext = g.modPow(new BigInteger(plainText), spec.getP()).toByteArray();
-
-        /* Encrypt g^m */
-        /* Need to encrypt with unicrypt and create ciphertext */
-
-        try {
-            byte[] cipherBytes = cipher.doFinal(mappedPlaintext);
-            /*return new ExponentialElGamalCiphertext(new AdderInteger(new BigInteger(cipherBytes)));*/
-        } catch (BadPaddingException | IllegalBlockSizeException e) { throw new CipherException(e.getClass() + ": " + e.getMessage()); }
-
-    return null;
+        return c;
     }
 
     /**
