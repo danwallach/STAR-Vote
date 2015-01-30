@@ -1,13 +1,13 @@
 package crypto.adder;
 
+import sexpression.ASExpression;
+import sexpression.ListExpression;
+import sexpression.StringExpression;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
-
-import sexpression.ASExpression;
-import sexpression.ListExpression;
-import sexpression.StringExpression;
 
 /**
  * Represents an Elgamal private key.
@@ -16,13 +16,9 @@ import sexpression.StringExpression;
  * @version $LastChangedRevision$ $LastChangedDate$
  * @since 0.0.1
  */
-public class AdderPrivateKey {
+public class AdderPrivateKey extends AdderKey {
 
-    private AdderInteger p;
-    private AdderInteger q;
-    private AdderInteger g;
     private AdderInteger x;
-    private AdderInteger f;
 
     /**
      * Creates a new PrivateKey with the specified parameter values.
@@ -34,11 +30,8 @@ public class AdderPrivateKey {
      */
     public AdderPrivateKey(AdderInteger p, AdderInteger g, AdderInteger x, AdderInteger f) {
 
-        this.p = p;
-        this.q = p.subtract(AdderInteger.ONE).divide(AdderInteger.TWO);
-        this.g = g;
+        super(p, g, f);
         this.x = x;
-        this.f = f;
     }
 
     /**

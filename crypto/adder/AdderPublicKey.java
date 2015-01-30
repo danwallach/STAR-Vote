@@ -1,15 +1,11 @@
 package crypto.adder;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.StringTokenizer;
-
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.StringExpression;
+
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * Elgamal public key.
@@ -37,13 +33,9 @@ import sexpression.StringExpression;
  * @version $LastChangedRevision$ $LastChangedDate$
  * @since 0.0.1
  */
-public class AdderPublicKey implements Serializable {
+public class AdderPublicKey extends AdderKey implements Serializable {
 
-    private AdderInteger p;
-    private AdderInteger q;
-    private AdderInteger g;
     private AdderInteger h;
-    private AdderInteger f;
 
     /**
      * Creates a new PublicKey with the specified parameter values.
@@ -53,11 +45,7 @@ public class AdderPublicKey implements Serializable {
      * @param f     the message base, generator used for homomorphic encryption
      */
     public AdderPublicKey(AdderInteger p, AdderInteger g, AdderInteger f) {
-
-        this.p = p;
-        this.q = p.subtract(AdderInteger.ONE).divide(AdderInteger.TWO);
-        this.g = g;
-        this.f = f;
+        super(p,g,f);
     }
 
     /**
@@ -70,11 +58,8 @@ public class AdderPublicKey implements Serializable {
      */
     public AdderPublicKey(AdderInteger p, AdderInteger g, AdderInteger h, AdderInteger f) {
 
-        this.p = p;
-        this.q = p.subtract(AdderInteger.ONE).divide(AdderInteger.TWO);
-        this.g = g;
+        super(p,g,f);
         this.h = h;
-        this.f = f;
     }
 
     /**
@@ -86,13 +71,8 @@ public class AdderPublicKey implements Serializable {
      * @param h     the public value
      * @param f     the message base, generator used for homomorphic encryption
      */
-    private AdderPublicKey(AdderInteger p, AdderInteger q, AdderInteger g,
-                           AdderInteger h, AdderInteger f) {
-        this.p = p;
-        this.q = q;
-        this.g = g;
-        this.h = h;
-        this.f = f;
+    private AdderPublicKey(AdderInteger p, AdderInteger q, AdderInteger g, AdderInteger h, AdderInteger f) {
+        super(p,q,g, f);
     }
 
     /**
