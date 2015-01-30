@@ -17,6 +17,7 @@ import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.security.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -25,7 +26,7 @@ import java.util.List;
 public class DHExponentialElGamalCryptoType implements ICryptoType {
 
     private final Cipher cipher;
-    private AdderPrivateKey privateKey;
+    private AdderPrivateKeyShare[] privateKeyShares;
     private AdderPublicKey publicKey;
     private final SecureRandom random = new SecureRandom();
 
@@ -47,15 +48,15 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
         if(!(ciphertext instanceof ExponentialElGamalCiphertext))
             throw new CiphertextException("The ciphertext type did not match the crypto type!");
 
-        /* Check if the private key has been loaded */
-        if(privateKey == null)
-            throw new KeyNotLoadedException("The private key has not yet been loaded! [Decryption]");
+        /* Check if the private key shares have been loaded */
+        if(privateKeyShares == null)
+            throw new KeyNotLoadedException("The private key shares have not yet been loaded! [Decryption]");
 
 
         try {
 
             /* Partially decrypt to get g^m */
-            BigInteger mappedPlainText = new BigInteger(AdderPrivateKey.(ciphertext.asBytes()));
+            BigInteger mappedPlainText = partialDecrypt(ciphertext);
 
             /* Guess the value of m by comparing g^i to g^m and return if/when they're the same --
                 TODO 100 is chosen arbitrarily for now */
@@ -70,6 +71,22 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
 
         throw new SearchSpaceExhaustedException("The decryption could not find a number of votes within the probable search space!");
 
+    }
+
+    /**
+     *
+     * @param ciphertext
+     * @return
+     */
+    private BigInteger partialDecrypt(ICiphertext ciphertext) {
+
+        for(AdderPrivateKeyShare pks : privateKeyShares) {
+            /* Partially decrypt for each share */
+            /* Combine output */
+        }
+
+        /* Convert this into BigInteger */
+        return new BigInteger("0");
     }
 
     /**
@@ -91,7 +108,7 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
      * @param filePath
      * @throws FileNotFoundException
      */
-    public void loadPrivateKey(String filePath) throws FileNotFoundException {
+    public void loadPrivateKeyShares(String filePath) throws FileNotFoundException {
 
         FileInputStream fileInputStream = new FileInputStream(filePath);
 
@@ -99,7 +116,7 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
 
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
 
-            loadPrivateKey((AdderPrivateKey) objectInputStream.readObject());
+            loadPrivateKeyShares((AdderPrivateKeyShare[]) objectInputStream.readObject());
 
         } catch (ClassNotFoundException | IOException e) { e.printStackTrace(); }
     }
@@ -107,9 +124,8 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
     /**
      * @param privateKey
      */
-    private void loadPrivateKey(AdderPrivateKey privateKey) {
-
-        this.privateKey = privateKey;
+    private void loadPrivateKeyShares(AdderPrivateKeyShare privateKey[]) {
+        this.privateKeyShares = privateKey;
     }
 
     /**
@@ -143,7 +159,7 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
     public void loadKeys(String[] filePaths) throws FileNotFoundException {
 
         /* List to load the keys into */
-        List<Key> keys = new ArrayList<>();
+        List<AdderKey> keys = new ArrayList<>();
 
         /* Load the keys from the file paths */
         for(String path : filePaths) {
@@ -162,20 +178,34 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
     }
 
 
-    private void loadKeys(AdderKey[] keys) throws BadKeyException {
+    private void loadKeys(AdderKey[] keys) {
 
-        /* Check to make sure we're only getting two keys */
-        if(keys.length != 2) {
+        /* Check to make sure we're getting at least */
+        if(keys.length > 2) {
             throw new BadKeyException("Invalid number of keys!");
         }
 
+        int privateKeySharesNum = 0;
+        int publicKeyNum = 0;
+
         /* Check to make sure that the keys are in the correct order / of the correct type */
-        else if (!(keys[0] instanceof AdderPrivateKey) || !(keys[1] instanceof AdderPublicKey)) {
-            throw new BadKeyException("At least one of the keys was not of the correct type! [DHPrivateKey, DHPublicKey]");
+        for (AdderKey key : keys) {
+
+            if (key instanceof AdderPrivateKeyShare) privateKeySharesNum++;
+
+            if (key instanceof AdderPublicKey) publicKeyNum++;
         }
 
-        privateKey = (AdderPrivateKey)keys[0];
-        publicKey = (AdderPublicKey)keys[1];
+        if (privateKeySharesNum < 1)
+            throw new BadKeyException("Not enough private key shares found!");
+        if (publicKeyNum != 1)
+            throw new BadKeyException("Wrong number of public keys!");
+        if (!(keys[0] instanceof AdderPublicKey))
+            throw new BadKeyException("Public key didn't come first!");
+
+
+        publicKey = (AdderPublicKey)keys[0];
+        privateKeyShares = (AdderPrivateKeyShare[]) Arrays.copyOfRange(keys,1,privateKeySharesNum+2);
     }
 
 }

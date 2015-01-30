@@ -30,7 +30,7 @@ public class VoteCrypto {
     public PlaintextVote decrypt(EncryptedVote vote) throws UninitialisedException, KeyNotLoadedException, InvalidKeyException, CipherException, CiphertextException {
 
         /* Get the map from the vote */
-        Map<String, ICiphertext> cipherMap = vote.getCipherMap();
+        Map<String, ICiphertext> cipherMap = vote.getVoteMap();
         Map<String, Integer> voteMap = new HashMap<>();
 
         /* Cycle over each of the candidates in the cipherMap */
