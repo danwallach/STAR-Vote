@@ -1,7 +1,6 @@
 package crypto;
 
 import crypto.adder.*;
-import crypto.exceptions.BadKeyException;
 import crypto.exceptions.CiphertextException;
 import crypto.exceptions.KeyNotLoadedException;
 import crypto.exceptions.UninitialisedException;
@@ -10,9 +9,6 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import javax.crypto.interfaces.DHPrivateKey;
-import javax.crypto.interfaces.DHPublicKey;
-import javax.crypto.spec.DHParameterSpec;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -20,8 +16,6 @@ import java.io.ObjectInputStream;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.security.*;
-import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,8 +57,6 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
             /* Partially decrypt to get g^m */
             BigInteger mappedPlainText = new BigInteger(AdderPrivateKey.(ciphertext.asBytes()));
 
-
-
             /* Guess the value of m by comparing g^i to g^m and return if/when they're the same --
                 TODO 100 is chosen arbitrarily for now */
             for(int i=0; i<100; i++) {
@@ -97,10 +89,9 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
     /**
      * Loads the private key from a filepath
      * @param filePath
-     * @throws BadKeyException
      * @throws FileNotFoundException
      */
-    public void loadPrivateKey(String filePath) throws BadKeyException, FileNotFoundException {
+    public void loadPrivateKey(String filePath) throws FileNotFoundException {
 
         FileInputStream fileInputStream = new FileInputStream(filePath);
 
@@ -108,29 +99,25 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
 
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
 
-            loadPrivateKey((Key) objectInputStream.readObject());
+            loadPrivateKey((AdderPrivateKey) objectInputStream.readObject());
 
         } catch (ClassNotFoundException | IOException e) { e.printStackTrace(); }
     }
 
     /**
      * @param privateKey
-     * @throws BadKeyException
      */
-    private void loadPrivateKey(Key privateKey) throws BadKeyException {
-        if (!(privateKey instanceof DHPrivateKey))
-            throw new BadKeyException("This key was not a DHPrivateKey!");
+    private void loadPrivateKey(AdderPrivateKey privateKey) {
 
-        this.privateKey = (DHPrivateKey)privateKey;
+        this.privateKey = privateKey;
     }
 
     /**
      * Loads the public key from a filepath
      * @param filePath
-     * @throws BadKeyException
      * @throws FileNotFoundException
      */
-    public void loadPublicKey(String filePath) throws BadKeyException, FileNotFoundException {
+    public void loadPublicKey(String filePath) throws FileNotFoundException {
 
         FileInputStream fileInputStream = new FileInputStream(filePath);
 
@@ -138,26 +125,22 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
 
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
 
-            loadPublicKey((Key) objectInputStream.readObject());
+            loadPublicKey((AdderPublicKey) objectInputStream.readObject());
 
         } catch (ClassNotFoundException | IOException e) { e.printStackTrace(); }
     }
 
     /**
      * @param publicKey
-     * @throws BadKeyException
      */
-    private void loadPublicKey(Key publicKey) throws BadKeyException {
-        if (!(publicKey instanceof DHPublicKey))
-            throw new BadKeyException("This key was not a DHPublicKey!");
-
-        this.publicKey = (DHPublicKey)publicKey;
+    private void loadPublicKey(AdderPublicKey publicKey) {
+        this.publicKey = publicKey;
     }
 
     /**
      *@see crypto.ICryptoType#loadKeys(String[])
      */
-    public void loadKeys(String[] filePaths) throws BadKeyException, FileNotFoundException {
+    public void loadKeys(String[] filePaths) throws FileNotFoundException {
 
         /* List to load the keys into */
         List<Key> keys = new ArrayList<>();
@@ -169,17 +152,17 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
 
                 FileInputStream fileInputStream = new FileInputStream(path);
                 ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-                keys.add((Key) objectInputStream.readObject());
+                keys.add((AdderKey) objectInputStream.readObject());
 
             } catch (ClassNotFoundException | IOException e) { e.printStackTrace(); }
 
         }
 
-        loadKeys(keys.toArray(new Key[keys.size()]));
+        loadKeys(keys.toArray(new AdderKey[keys.size()]));
     }
 
 
-    private void loadKeys(Key[] keys) throws BadKeyException {
+    private void loadKeys(AdderKey[] keys) throws BadKeyException {
 
         /* Check to make sure we're only getting two keys */
         if(keys.length != 2) {
@@ -187,12 +170,12 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
         }
 
         /* Check to make sure that the keys are in the correct order / of the correct type */
-        else if (!(keys[0] instanceof PrivateKey) || !(keys[1] instanceof PublicKey)) {
+        else if (!(keys[0] instanceof AdderPrivateKey) || !(keys[1] instanceof AdderPublicKey)) {
             throw new BadKeyException("At least one of the keys was not of the correct type! [DHPrivateKey, DHPublicKey]");
         }
 
-        privateKey = (DHPrivateKey)keys[0];
-        publicKey = (DHPublicKey)keys[1];
+        privateKey = (AdderPrivateKey)keys[0];
+        publicKey = (AdderPublicKey)keys[1];
     }
 
 }
