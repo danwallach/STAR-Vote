@@ -22,20 +22,16 @@
 
 package auditorium;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import crypto.adder.AdderPrivateKeyShare;
+import crypto.adder.AdderPublicKey;
+import sexpression.ASExpression;
+import sexpression.stream.ASEInputStreamReader;
+import sexpression.stream.InvalidVerbatimStreamException;
+
+import java.io.*;
 import java.util.HashMap;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-
-import crypto.adder.AdderPrivateKey;
-import crypto.adder.AdderPublicKey;
-
-import sexpression.*;
-import sexpression.stream.*;
 
 /**
  * Simple keystore implementation which looks for keys and certificates in a
@@ -145,7 +141,7 @@ public class SimpleKeyStore implements IKeyStore {
      *
      * @return the adder key
      */
-    public AdderPrivateKey loadAdderPrivateKey() {
+    public AdderPrivateKeyShare loadAdderPrivateKey() {
         try{
             InputStream in = getInput("private.adder.key");
 
@@ -156,7 +152,7 @@ public class SimpleKeyStore implements IKeyStore {
                 byteArrayOutputStream.write(i);
             }
 
-            return AdderPrivateKey.fromASE(ASExpression.makeVerbatim(byteArrayOutputStream.toByteArray()));
+            return AdderPrivateKeyShare.fromASE(ASExpression.makeVerbatim(byteArrayOutputStream.toByteArray()));
 
         }catch(Exception e){
             throw new RuntimeException(e);

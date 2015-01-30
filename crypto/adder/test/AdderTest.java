@@ -1,13 +1,13 @@
 package crypto.adder.test;
 
+import crypto.adder.*;
+import junit.framework.TestCase;
+import junit.textui.TestRunner;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import crypto.adder.*;
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
 
 /**
  * Adder test.
@@ -60,13 +60,13 @@ public class AdderTest extends TestCase {
         System.out.println("Authorities start");
 
         List<AdderPublicKey>/*<PublicKey>*/ pubKeys = new ArrayList<>/*<PublicKey>*/(numAuths);
-        List<AdderPrivateKey>/*<PrivateKey>*/ privKeys = new ArrayList<>/*<PrivateKey>*/(numAuths);
+        List<AdderPrivateKeyShare>/*<PrivateKey>*/ privKeys = new ArrayList<>/*<PrivateKey>*/(numAuths);
         List<Polynomial>/*<Polynomial>*/ polys = new ArrayList<>/*<Polynomial>*/(numAuths);
 
         for (int i = 0; i < numAuths; i++) {
             AdderPublicKey authPubKey = new AdderPublicKey(p, g, f);
             pubKeys.add(authPubKey);
-            AdderPrivateKey authPrivKey = authPubKey.genKeyPair();
+            AdderPrivateKeyShare authPrivKey = authPubKey.genKeyPair();
             privKeys.add(authPrivKey);
             Polynomial authPoly = new Polynomial(p, g, f, numAuths - 1);
             polys.add(authPoly);
@@ -86,12 +86,12 @@ public class AdderTest extends TestCase {
             polyMap.put(i, ciphertexts);
         }
 
-        List<AdderPrivateKey>/*<PrivateKey>*/ finprivKeys
+        List<AdderPrivateKeyShare>/*<PrivateKey>*/ finprivKeys
             = new ArrayList<>/*<PrivateKey>*/(numAuths);
         AdderInteger finalH = new AdderInteger(AdderInteger.ONE, p);
 
         for (int i = 0; i < numAuths; i++) {
-            AdderPrivateKey authFinPrivKey
+            AdderPrivateKeyShare authFinPrivKey
                 = (privKeys.get(i))
                   .getFinalPrivKey(polyMap.get(i));
             finprivKeys.add(authFinPrivKey);

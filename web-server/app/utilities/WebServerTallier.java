@@ -118,7 +118,7 @@ public class WebServerTallier {
      * @param toDecrypt     the Ballot to be decrypted -- it is expected that this is a challenged ballot
      * @return              a list of candidates that were selected
      */
-    public static List<String> decrypt(Ballot toDecrypt, AdderPublicKey publicKey, AdderPrivateKey privateKey) {
+    public static List<String> decrypt(Ballot toDecrypt, AdderPublicKey publicKey, AdderPrivateKeyShare privateKey) {
 
         /* Get the mapping of candidates to votes for this Ballot */
         Map<String, Map<String, BigInteger>> racesToCandidateTotals = getVoteTotals(toDecrypt, 1, publicKey, privateKey);
@@ -144,7 +144,7 @@ public class WebServerTallier {
      * Calculates the individual vote totals for each of the candidates in each of the races in the Ballot
      *
      * @see crypto.adder.Election#getFinalSum(java.util.List, crypto.adder.AdderVote, crypto.adder.AdderPublicKey)
-     * @see crypto.BallotEncrypter#adderDecryptWithKey(crypto.adder.Election, crypto.adder.AdderPublicKey, crypto.adder.AdderPrivateKey)
+     * @see crypto.BallotEncrypter#adderDecryptWithKey(crypto.adder.Election, crypto.adder.AdderPublicKey, crypto.adder.AdderPrivateKeyShare)
      *
      * @param toTotal       the previously tallied Ballot from which to extract the candidate sums
      * @param size          the "size" of the Ballot (the number of combined Ballots added to create this Ballot)
@@ -152,10 +152,10 @@ public class WebServerTallier {
      * @param privateKey    the private key
      * @return              a mapping of candidates to vote totals (mapped to race names) for each race in a Ballot
      */
-    public static Map<String, Map<String,BigInteger>> getVoteTotals(Ballot toTotal, int size, AdderPublicKey finalPublicKey, AdderPrivateKey privateKey) {
+    public static Map<String, Map<String,BigInteger>> getVoteTotals(Ballot toTotal, int size, AdderPublicKey finalPublicKey, AdderPrivateKeyShare privateKey) {
 
         /* Generate the final private key */
-        AdderPrivateKey finalPrivateKey = AdderKeyManipulator.generateFinalPrivateKey(finalPublicKey, privateKey);
+        AdderPrivateKeyShare finalPrivateKey = AdderKeyManipulator.generateFinalPrivateKey(finalPublicKey, privateKey);
 
         /* Currently we can't generate the proper finalPrivateKey due to AdderKeyManipulator not having generated the finalPublicKey/polynomial
          * To fix this, somehow the finalPrivateKey needs to be generated with the same information in AdderKeyManipulator as when the

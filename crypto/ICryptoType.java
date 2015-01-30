@@ -40,15 +40,13 @@ public interface ICryptoType extends Serializable {
     public ICiphertext encrypt(byte[] plainText) throws InvalidKeyException, KeyNotLoadedException, CipherException;
 
     /**
-     * Given a filePath, extracts the Keys from the file and checks if they are proper keys for the
-     * protocol. If they are, calls the proper submethod, else throws a BadKeyException.
+     * Given a filePath, extracts the keys from the file
      *
-     * @param filePaths      a String array specifying the locations of the IKeys to be loaded
+     * @param filePaths      a String array specifying the locations of the keys to be loaded
      *
-     * @throws BadKeyException if the ICryptoType does not support the type of Key that was loaded
      * @throws java.io.FileNotFoundException
      */
-    public void loadKeys(String[] filePaths) throws BadKeyException, FileNotFoundException;
+    public void loadKeys(String[] filePaths) throws FileNotFoundException;
 
 
     public String toString();

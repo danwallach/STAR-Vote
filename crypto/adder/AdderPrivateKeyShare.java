@@ -16,7 +16,7 @@ import java.util.StringTokenizer;
  * @version $LastChangedRevision$ $LastChangedDate$
  * @since 0.0.1
  */
-public class AdderPrivateKey extends AdderKey {
+public class AdderPrivateKeyShare extends AdderKey {
 
     private AdderInteger x;
 
@@ -28,7 +28,7 @@ public class AdderPrivateKey extends AdderKey {
      * @param x     the private value
      * @param f     the message base
      */
-    public AdderPrivateKey(AdderInteger p, AdderInteger g, AdderInteger x, AdderInteger f) {
+    public AdderPrivateKeyShare(AdderInteger p, AdderInteger g, AdderInteger x, AdderInteger f) {
 
         super(p, g, f);
         this.x = x;
@@ -80,7 +80,7 @@ public class AdderPrivateKey extends AdderKey {
      * @param polyList      the polynomial list
      * @return the final private key
      */
-    public AdderPrivateKey getFinalPrivKey(List<ElgamalCiphertext> polyList) {
+    public AdderPrivateKeyShare getFinalPrivKey(List<ElgamalCiphertext> polyList) {
         AdderInteger total = new AdderInteger(AdderInteger.ZERO, q);
 
         for (Object aPolyList : polyList) {
@@ -105,7 +105,7 @@ public class AdderPrivateKey extends AdderKey {
             total = total.add(inverse);
         }
 
-        return new AdderPrivateKey(p, g, total, f);
+        return new AdderPrivateKeyShare(p, g, total, f);
     }
 
     /**
@@ -160,7 +160,7 @@ public class AdderPrivateKey extends AdderKey {
      * @param  s a string that specifies a <tt>PrivateKey</tt>
      * @return a <tt>PrivateKey</tt> with the specified values
      */
-    public static AdderPrivateKey fromString(String s) {
+    public static AdderPrivateKeyShare fromString(String s) {
         StringTokenizer st = new StringTokenizer(s, "pgxf", true);
 
         try {
@@ -194,7 +194,7 @@ public class AdderPrivateKey extends AdderKey {
                 throw new InvalidPrivateKeyException("too many tokens");
             }
 
-            return new AdderPrivateKey(p, g, x, f);
+            return new AdderPrivateKeyShare(p, g, x, f);
         } catch (NoSuchElementException | NumberFormatException nsee) {
             throw new InvalidPrivateKeyException(nsee.getMessage());
         }
@@ -231,7 +231,7 @@ public class AdderPrivateKey extends AdderKey {
      * @param ase - S-Expression representation of a PrivateKey
      * @return the PrivateKey equivalent of ase
      */
-    public static AdderPrivateKey fromASE(ASExpression ase){
+    public static AdderPrivateKeyShare fromASE(ASExpression ase){
     	ListExpression exp = (ListExpression)ase;
     	
     	if(!(exp.get(0).toString()).equals("private-key"))
@@ -242,6 +242,6 @@ public class AdderPrivateKey extends AdderKey {
     	AdderInteger x = AdderInteger.fromASE(exp.get(3));
     	AdderInteger f = AdderInteger.fromASE(exp.get(4));
     	
-    	return new AdderPrivateKey(p, g, x, f);
+    	return new AdderPrivateKeyShare(p, g, x, f);
     }
 }

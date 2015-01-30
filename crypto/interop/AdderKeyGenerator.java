@@ -1,10 +1,10 @@
 package crypto.interop;
 
+import crypto.adder.AdderPrivateKeyShare;
+import crypto.adder.AdderPublicKey;
+
 import java.io.File;
 import java.io.FileOutputStream;
-
-import crypto.adder.AdderPrivateKey;
-import crypto.adder.AdderPublicKey;
 
 /**
  * Using this class, specify a destination directory, you can generate a single public/private key-pair
@@ -45,7 +45,7 @@ public class AdderKeyGenerator {
 		
 		System.out.println("Generating keys");
 		AdderPublicKey pubKey = AdderPublicKey.makePartialKey(512);
-		AdderPrivateKey privKey = pubKey.genKeyPair();
+		AdderPrivateKeyShare privKey = pubKey.genKeyPair();
 		
 		File pubFile = new File(destDir, "public.adder.key");
 		File privFile = new File(destDir, "private.adder.key");

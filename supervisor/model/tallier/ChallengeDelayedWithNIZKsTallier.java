@@ -1,16 +1,20 @@
 package supervisor.model.tallier;
 
-import java.io.ByteArrayInputStream;
-import java.util.*;
-
 import auditorium.Bugout;
-
-import crypto.adder.*;
-
+import crypto.adder.AdderPrivateKeyShare;
+import crypto.adder.AdderPublicKey;
+import crypto.adder.AdderVote;
+import crypto.adder.Election;
+import crypto.interop.AdderKeyManipulator;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.stream.ASEInputStreamReader;
-import crypto.interop.AdderKeyManipulator;
+
+import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Tallier for elections with both NIZKs and the challenge-commit model enabled.
@@ -28,7 +32,7 @@ public class ChallengeDelayedWithNIZKsTallier extends EncryptedTallierWithNIZKs 
      * @param pub  - The PublicKey used to encrypt votes to be tallied.
      * @param priv - The PrivateKey to be used to decrypt the totals.
      */
-    public ChallengeDelayedWithNIZKsTallier(AdderPublicKey pub, AdderPrivateKey priv) {
+    public ChallengeDelayedWithNIZKsTallier(AdderPublicKey pub, AdderPrivateKeyShare priv) {
         super(pub, priv);
     }
 

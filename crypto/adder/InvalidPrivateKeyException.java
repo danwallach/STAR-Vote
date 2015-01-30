@@ -6,8 +6,8 @@ package crypto.adder;
  *
  * @author  David Walluck
  * @version $LastChangedRevision$ $LastChangedDate$
- * @see     AdderPrivateKey
- * @see     AdderPrivateKey#fromString(String)
+ * @see     AdderPrivateKeyShare
+ * @see     AdderPrivateKeyShare#fromString(String)
  * @since   0.0.1
  */
 public class InvalidPrivateKeyException extends RuntimeException {

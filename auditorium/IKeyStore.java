@@ -22,7 +22,7 @@
 
 package auditorium;
 
-import crypto.adder.AdderPrivateKey;
+import crypto.adder.AdderPrivateKeyShare;
 import crypto.adder.AdderPublicKey;
 
 /**
@@ -57,5 +57,5 @@ public interface IKeyStore {
     /**
      * Load the adder private key associated with the given ID.
      */
-    AdderPrivateKey loadAdderPrivateKey() throws RuntimeException;
+    AdderPrivateKeyShare loadAdderPrivateKey() throws RuntimeException;
 }

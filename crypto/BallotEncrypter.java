@@ -354,7 +354,7 @@ public class BallotEncrypter {
      * @return              List of decrypted vote counters
      */
     @SuppressWarnings("unchecked")
-	public List<AdderInteger> adderDecryptWithKey(Election election, AdderPublicKey publicKey, AdderPrivateKey privateKey){
+	public List<AdderInteger> adderDecryptWithKey(Election election, AdderPublicKey publicKey, AdderPrivateKeyShare privateKey){
 
         /*
 
@@ -373,7 +373,7 @@ public class BallotEncrypter {
 
 
         /* Generate the final private and public keys */
-    	AdderPrivateKey finalPrivateKey = AdderKeyManipulator.generateFinalPrivateKey(publicKey, privateKey);
+    	AdderPrivateKeyShare finalPrivateKey = AdderKeyManipulator.generateFinalPrivateKey(publicKey, privateKey);
     	AdderPublicKey finalPublicKey = AdderKeyManipulator.generateFinalPublicKey(publicKey);
 
         /* Homomorphically tally the encrypted votes  */

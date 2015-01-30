@@ -75,7 +75,7 @@ public class AdderKeyManipulator {
 	 * 
 	 * @return the new PrivateKey
 	 */
-	public static AdderPrivateKey generateFinalPrivateKey(AdderPublicKey publicKey, AdderPrivateKey privateKey){
+	public static AdderPrivateKeyShare generateFinalPrivateKey(AdderPublicKey publicKey, AdderPrivateKeyShare privateKey){
 
 		/* Generate the final private key */
 		List<ElgamalCiphertext> ciphertexts = new ArrayList<>();

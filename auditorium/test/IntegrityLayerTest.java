@@ -22,15 +22,15 @@
 
 package auditorium.test;
 
-import static org.junit.Assert.*;
-
-import crypto.adder.AdderPrivateKey;
-import crypto.adder.AdderPublicKey;
-import org.junit.*;
-
-import sexpression.*;
 import auditorium.*;
 import auditorium.Generator.Keys;
+import crypto.adder.AdderPrivateKeyShare;
+import crypto.adder.AdderPublicKey;
+import org.junit.Before;
+import org.junit.Test;
+import sexpression.*;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests the Auditorium integrity layer
@@ -87,7 +87,7 @@ public class IntegrityLayerTest {
         }
 
         @Override
-        public AdderPrivateKey loadAdderPrivateKey() throws RuntimeException {
+        public AdderPrivateKeyShare loadAdderPrivateKey() throws RuntimeException {
             return null;
         }
 

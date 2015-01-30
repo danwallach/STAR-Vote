@@ -22,7 +22,7 @@ import java.util.Map;
 public class EncryptedTallierWithNIZKs implements ITallier {
 
     /** An ElGamal private key for the decryption of votes and for the NIZK proof process */
-    protected AdderPrivateKey _privateKey = null;
+    protected AdderPrivateKeyShare _privateKey = null;
 
     /** The ElGamal public key for the NIZK proof process */
     protected AdderPublicKey _publicKey = null;
@@ -31,7 +31,7 @@ public class EncryptedTallierWithNIZKs implements ITallier {
     protected AdderPublicKey _finalPublicKey = null;
 
     /** The final private key, to ensure that the same private key is used througout the election */
-    protected AdderPrivateKey _finalPrivateKey = null;
+    protected AdderPrivateKeyShare _finalPrivateKey = null;
 
     /** The results of the election are stored by race ID in this map */
     protected Map<String, Election> _results = new HashMap<String, Election>();
@@ -42,7 +42,7 @@ public class EncryptedTallierWithNIZKs implements ITallier {
      * @param pub - The PublicKey used to encrypt votes to be tallied.
      * @param priv - The PrivateKey to be used to decrypt the totals.
      */
-    public EncryptedTallierWithNIZKs(AdderPublicKey pub, AdderPrivateKey priv){
+    public EncryptedTallierWithNIZKs(AdderPublicKey pub, AdderPrivateKeyShare priv){
         _privateKey = priv;
         _publicKey = pub;
     }

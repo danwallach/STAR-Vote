@@ -119,12 +119,12 @@ public class AdderPublicKey extends AdderKey implements Serializable {
      *
      * @return      the private key
      */
-    public AdderPrivateKey genKeyPair() {
+    public AdderPrivateKeyShare genKeyPair() {
         AdderInteger x = AdderInteger.random(q);
 
         this.h = g.pow(x);
 
-        return new AdderPrivateKey(p, g, x, f);
+        return new AdderPrivateKeyShare(p, g, x, f);
     }
 
     /**

@@ -3,7 +3,10 @@ package crypto.interop;
 import auditorium.Key;
 import auditorium.SimpleKeyStore;
 import crypto.BallotEncrypter;
-import crypto.adder.*;
+import crypto.adder.AdderInteger;
+import crypto.adder.AdderPrivateKeyShare;
+import crypto.adder.AdderPublicKey;
+import crypto.adder.SearchSpaceExhaustedException;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -53,7 +56,7 @@ public class NIZKsPerformanceTest {
 	private static  List<byte[]> _seeds = null;
 	private static  Key _publicKey = null;
 	private static AdderPublicKey _adderPublicKey = null;
-    private static AdderPrivateKey _adderPrivateKey = null;
+    private static AdderPrivateKeyShare _adderPrivateKeyShare = null;
 	
 	private static List<Pair> _toDecryptWithoutNIZKs = new ArrayList<>();
 	private static List<Pair> _toDecryptWithNIZKs = new ArrayList<>();
@@ -83,7 +86,7 @@ public class NIZKsPerformanceTest {
 
 		_publicKey = store.loadKey("0");
 		_adderPublicKey = store.loadAdderPublicKey();
-        _adderPrivateKey = store.loadAdderPrivateKey();
+        _adderPrivateKeyShare = store.loadAdderPrivateKey();
 
 		File tempBallotPath = File.createTempFile("ballot", "path");
 		tempBallotPath.delete();
@@ -326,7 +329,7 @@ public class NIZKsPerformanceTest {
         System.out.println("tallyWithNIZKs:");
         List<Card> cards = _ballot.getCards();
 
-        ChallengeDelayedWithNIZKsTallier tallier = new ChallengeDelayedWithNIZKsTallier(_adderPublicKey, _adderPrivateKey);
+        ChallengeDelayedWithNIZKsTallier tallier = new ChallengeDelayedWithNIZKsTallier(_adderPublicKey, _adderPrivateKeyShare);
 
         long elapsedTime = 0;
 

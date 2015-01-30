@@ -122,7 +122,7 @@ public class WebServerTallier {
      * @param toDecrypt     the Ballot to be decrypted -- it is expected that this is a challenged ballot with size of 1
      * @return              a list of candidates that were selected
      */
-    public static List<String> decrypt(Ballot toDecrypt, AdderPublicKey publicKey, AdderPrivateKey privateKey) {
+    public static List<String> decrypt(Ballot toDecrypt, AdderPublicKey publicKey, AdderPrivateKeyShare privateKey) {
 
         /* Get the mapping of candidates to votes for this Ballot */
         Map<String, BigInteger> candidatesToTotals = getVoteTotals(toDecrypt, 1, publicKey, privateKey);
@@ -142,7 +142,7 @@ public class WebServerTallier {
      * @param toDecrypt     the List of Ballots to be decrypted -- it is expected that
      *                      these are challenged ballots with sizes of 1
      */
-    public static List<List<String>> decryptAll(List<Ballot> toDecrypt, AdderPublicKey publicKey, AdderPrivateKey privateKey) {
+    public static List<List<String>> decryptAll(List<Ballot> toDecrypt, AdderPublicKey publicKey, AdderPrivateKeyShare privateKey) {
 
         List<List<String>> decryptedList = new ArrayList<>();
 
@@ -156,7 +156,7 @@ public class WebServerTallier {
      * Calculates the individual vote totals for each of the candidates in each of the races in the Ballot
      *
      * @see Election#getFinalSum(List, crypto.adder.AdderVote, crypto.adder.AdderPublicKey)
-     * @see crypto.BallotEncrypter#adderDecryptWithKey(Election, crypto.adder.AdderPublicKey, crypto.adder.AdderPrivateKey)
+     * @see crypto.BallotEncrypter#adderDecryptWithKey(Election, crypto.adder.AdderPublicKey, crypto.adder.AdderPrivateKeyShare)
      *
      * @param toTotal       the previously tallied Ballot from which to extract the candidate sums
      * @param size          the "size" of the Ballot (the number of combined Ballots tallied to create this Ballot)
@@ -164,11 +164,11 @@ public class WebServerTallier {
      * @param privateKey    the private key
      * @return              a mapping of candidates to vote totals for all of the races in toTotal
      */
-    public static TreeMap<String, BigInteger> getVoteTotals(Ballot toTotal, int size, AdderPublicKey publicKey, AdderPrivateKey privateKey) {
+    public static TreeMap<String, BigInteger> getVoteTotals(Ballot toTotal, int size, AdderPublicKey publicKey, AdderPrivateKeyShare privateKey) {
 
         /* Generate the final private and public keys */
         AdderPublicKey finalPublicKey = AdderKeyManipulator.generateFinalPublicKey(publicKey);
-        AdderPrivateKey finalPrivateKey = AdderKeyManipulator.generateFinalPrivateKey(publicKey, privateKey);
+        AdderPrivateKeyShare finalPrivateKey = AdderKeyManipulator.generateFinalPrivateKey(publicKey, privateKey);
 
         TreeMap<String, BigInteger> voteTotals = new TreeMap<>();
 

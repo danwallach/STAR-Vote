@@ -1,11 +1,11 @@
 package crypto.adder.test;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import crypto.adder.*;
 import junit.framework.TestCase;
 import junit.textui.TestRunner;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Private key test.
@@ -14,13 +14,13 @@ import junit.textui.TestRunner;
  * @since 0.0.1
  * @author David Walluck
  */
-public class AdderPrivateKeyTest extends TestCase {
+public class AdderPrivateKeyShareTest extends TestCase {
     /**
      * Constructs a new private key test.
      *
      * @param name the name of the test
      */
-    public AdderPrivateKeyTest(String name) {
+    public AdderPrivateKeyShareTest(String name) {
         super(name);
     }
 
@@ -29,7 +29,7 @@ public class AdderPrivateKeyTest extends TestCase {
      */
     public void test() {
         try {
-            AdderPrivateKey privateKey = AdderPrivateKey.fromString("p123g135x246f234");
+            AdderPrivateKeyShare privateKey = AdderPrivateKeyShare.fromString("p123g135x246f234");
 
             assertEquals(new AdderInteger("123"), privateKey.getP());
             assertEquals(new AdderInteger("135", privateKey.getP()),
@@ -42,7 +42,7 @@ public class AdderPrivateKeyTest extends TestCase {
             fail();
         }
 
-        AdderPrivateKey privateKey1 = new AdderPrivateKey(new AdderInteger("123"),
+        AdderPrivateKeyShare privateKey1 = new AdderPrivateKeyShare(new AdderInteger("123"),
                                                 new AdderInteger("135"),
                                                 new AdderInteger("246"),
                                                 new AdderInteger("234"));
@@ -52,7 +52,7 @@ public class AdderPrivateKeyTest extends TestCase {
         assertEquals(new AdderInteger("246"), privateKey1.getX());
         assertEquals(new AdderInteger("234"), privateKey1.getF());
 
-        AdderPrivateKey privateKey2 = new AdderPrivateKey(new AdderInteger("123"),
+        AdderPrivateKeyShare privateKey2 = new AdderPrivateKeyShare(new AdderInteger("123"),
                                                 new AdderInteger("135"),
                                                 new AdderInteger("246"),
                                                 new AdderInteger("234"));
@@ -60,64 +60,64 @@ public class AdderPrivateKeyTest extends TestCase {
         assertEquals("p123g135x246f234", privateKey2.toString());
 
         try {
-            AdderPrivateKey.fromString("pgxf");
+            AdderPrivateKeyShare.fromString("pgxf");
             fail();
         } catch (InvalidPrivateKeyException ignored) {
 
         }
 
         try {
-            AdderPrivateKey.fromString("x123g123x123f123");
+            AdderPrivateKeyShare.fromString("x123g123x123f123");
             fail();
         } catch (InvalidPrivateKeyException ignored) {
 
         }
 
         try {
-            AdderPrivateKey.fromString("p123x123x123f123");
+            AdderPrivateKeyShare.fromString("p123x123x123f123");
             fail();
         } catch (InvalidPrivateKeyException ignored) {
 
         }
 
         try {
-            AdderPrivateKey.fromString("p123g123g123f123");
+            AdderPrivateKeyShare.fromString("p123g123g123f123");
             fail();
         } catch (InvalidPrivateKeyException ignored) {
 
         }
 
         try {
-            AdderPrivateKey.fromString("p123g123x123x123");
+            AdderPrivateKeyShare.fromString("p123g123x123x123");
             fail();
         } catch (InvalidPrivateKeyException ignored) {
 
         }
 
         try {
-            AdderPrivateKey.fromString("p123g123x123f123p123");
+            AdderPrivateKeyShare.fromString("p123g123x123f123p123");
             fail();
         } catch (InvalidPrivateKeyException ignored) {
 
         }
 
         try {
-            AdderPrivateKey.fromString("p123g123x123f12a");
+            AdderPrivateKeyShare.fromString("p123g123x123f12a");
             fail();
         } catch (InvalidPrivateKeyException ignored) {
 
         }
 
         try {
-            AdderPrivateKey.fromString("p123g123x123p123");
+            AdderPrivateKeyShare.fromString("p123g123x123p123");
             fail();
         } catch (InvalidPrivateKeyException ignored) {
 
         }
 
         try {
-            AdderPrivateKey privateKey3
-                = AdderPrivateKey.
+            AdderPrivateKeyShare privateKey3
+                = AdderPrivateKeyShare.
                   fromString("p1045854189839g696796413029x125538416498f74554249"
                           + "804");
             AdderVote vote1
@@ -125,8 +125,8 @@ public class AdderPrivateKeyTest extends TestCase {
             List/*<AdderInteger>*/ list1 = new ArrayList/*<AdderInteger>*/(1);
             list1.add(new AdderInteger("696993318894"));
             assertEquals(list1, privateKey3.partialDecrypt(vote1));
-            AdderPrivateKey privateKey4
-                = AdderPrivateKey.
+            AdderPrivateKeyShare privateKey4
+                = AdderPrivateKeyShare.
                   fromString(
                           "p1045854189839g696796413029x17670762055f74554249804");
             AdderVote vote2
@@ -165,18 +165,18 @@ public class AdderPrivateKeyTest extends TestCase {
             poly2.add(poly12);
             poly2.add(poly22);
 
-            AdderPrivateKey authPrivKey1 =
-                AdderPrivateKey.
+            AdderPrivateKeyShare authPrivKey1 =
+                AdderPrivateKeyShare.
                 fromString(
                         "p553417232063g15044079079x187988315695f419757826339");
 
-            AdderPrivateKey authPrivKey2 =
-                AdderPrivateKey.
+            AdderPrivateKeyShare authPrivKey2 =
+                AdderPrivateKeyShare.
                 fromString(
                         "p553417232063g15044079079x227043662924f419757826339");
 
-            AdderPrivateKey authFinPrivKey1 = authPrivKey1.getFinalPrivKey(poly1);
-            AdderPrivateKey authFinPrivKey2 = authPrivKey2.getFinalPrivKey(poly2);
+            AdderPrivateKeyShare authFinPrivKey1 = authPrivKey1.getFinalPrivKey(poly1);
+            AdderPrivateKeyShare authFinPrivKey2 = authPrivKey2.getFinalPrivKey(poly2);
 
             assertEquals("p553417232063g15044079079x143494327621f419757826339",
                           authFinPrivKey1.toString());
@@ -193,6 +193,6 @@ public class AdderPrivateKeyTest extends TestCase {
      * @param args the main parameters
      */
     public static void main(String[] args) {
-        TestRunner.run(AdderPrivateKeyTest.class);
+        TestRunner.run(AdderPrivateKeyShareTest.class);
     }
 }

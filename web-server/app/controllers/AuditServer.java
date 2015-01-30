@@ -1,7 +1,7 @@
 package controllers;
 
 import auditorium.SimpleKeyStore;
-import crypto.adder.AdderPrivateKey;
+import crypto.adder.AdderPrivateKeyShare;
 import crypto.adder.AdderPublicKey;
 import models.*;
 import play.data.Form;
@@ -330,7 +330,7 @@ public class AuditServer extends Controller {
     private static void storeDecryptedSummedTotals(Map<String, Ballot> summedTotals, Map<String, Precinct> precinctMap) {
 
         SimpleKeyStore keyStore = new SimpleKeyStore("/lib/keys/");
-        AdderPrivateKey privateKey = keyStore.loadAdderPrivateKey();
+        AdderPrivateKeyShare privateKey = keyStore.loadAdderPrivateKey();
 
         System.out.println("Decrypting summedTotals...");
 

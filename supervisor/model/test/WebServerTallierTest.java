@@ -25,7 +25,7 @@ public class WebServerTallierTest extends TestCase {
     private BallotEncrypter be;
 
     private AdderPublicKey publicKey;
-    private AdderPrivateKey privateKey;
+    private AdderPrivateKeyShare privateKey;
 
     protected void setUp() throws Exception {
         super.setUp();
@@ -224,7 +224,7 @@ public class WebServerTallierTest extends TestCase {
     public void testDecrypt(){
 
         AdderPublicKey finalPublicKey = AdderKeyManipulator.generateFinalPublicKey(publicKey);
-        AdderPrivateKey finalPrivateKey = AdderKeyManipulator.generateFinalPrivateKey(publicKey, privateKey);
+        AdderPrivateKeyShare finalPrivateKey = AdderKeyManipulator.generateFinalPrivateKey(publicKey, privateKey);
 
 
         /* ((B0 0)(B1 0)(B2 1)...) */
@@ -282,7 +282,7 @@ public class WebServerTallierTest extends TestCase {
     public void testDecryptAll(){
 
         AdderPublicKey finalPublicKey = AdderKeyManipulator.generateFinalPublicKey(publicKey);
-        AdderPrivateKey finalPrivateKey = AdderKeyManipulator.generateFinalPrivateKey(publicKey, privateKey);
+        AdderPrivateKeyShare finalPrivateKey = AdderKeyManipulator.generateFinalPrivateKey(publicKey, privateKey);
         Random r = new Random();
 
         List<List<String>> expected = new ArrayList<>();
