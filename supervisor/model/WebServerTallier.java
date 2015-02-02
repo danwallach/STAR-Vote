@@ -1,6 +1,7 @@
 package supervisor.model;
 
 import auditorium.Bugout;
+import crypto.EncryptedVote;
 import crypto.adder.*;
 import crypto.interop.AdderKeyManipulator;
 import sexpression.ASExpression;
@@ -113,7 +114,7 @@ public class WebServerTallier {
         ASExpression nonce = StringExpression.makeString(voteList.getSHA256());
 
         /* Return the Ballot of all the summed race results */
-        return new Ballot(ID, votes, nonce, publicKey, size);
+        return new Ballot(ID, votes, nonce.toString(), size);
     }
 
     /**
@@ -164,13 +165,19 @@ public class WebServerTallier {
      * @param privateKey    the private key
      * @return              a mapping of candidates to vote totals for all of the races in toTotal
      */
-    public static TreeMap<String, BigInteger> getVoteTotals(Ballot toTotal, int size, AdderPublicKey publicKey, AdderPrivateKeyShare privateKey) {
+    public static TreeMap<String, BigInteger> getVoteTotals(Ballot<EncryptedVote> toTotal, int size, AdderPublicKey publicKey, AdderPrivateKeyShare privateKey) {
 
         /* Generate the final private and public keys */
         AdderPublicKey finalPublicKey = AdderKeyManipulator.generateFinalPublicKey(publicKey);
         AdderPrivateKeyShare finalPrivateKey = AdderKeyManipulator.generateFinalPrivateKey(publicKey, privateKey);
 
         TreeMap<String, BigInteger> voteTotals = new TreeMap<>();
+
+        /* TODO decryption of totalled ballot */
+
+        /* Partially decrypt the Ballots */
+
+        /* Combine all of the partial decryptions */
 
         /* Iterate over each of the races */
         for (AdderVote v: toTotal.getVotes()) {

@@ -41,17 +41,19 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
         if(privateKeyShares == null)
             throw new KeyNotLoadedException("The private key shares have not yet been loaded! [Decryption]");
 
-            /* Partially decrypt to get g^m */
-            BigInteger mappedPlainText = partialDecrypt(ciphertext);
-            BigInteger g = publicKey.getG().bigintValue();
+        /* TODO fix this ... should get many partial decryptions and combine, then decrypt */
 
-            /* Guess the value of m by comparing g^i to g^m and return if/when they're the same --
-                TODO 100 is chosen arbitrarily for now */
-            for(int i=0; i<100; i++) {
-                if (g.pow(i).equals(mappedPlainText)) {
-                    return ByteBuffer.allocate(4).putInt(i).array();
-                }
+        /* Partially decrypt to get g^m */
+        BigInteger mappedPlainText = partialDecrypt(ciphertext);
+        BigInteger g = publicKey.getG().bigintValue();
+
+        /* Guess the value of m by comparing g^i to g^m and return if/when they're the same --
+            TODO 100 is chosen arbitrarily for now */
+        for(int i=0; i<100; i++) {
+            if (g.pow(i).equals(mappedPlainText)) {
+                return ByteBuffer.allocate(4).putInt(i).array();
             }
+        }
 
         throw new SearchSpaceExhaustedException("The decryption could not find a number of votes within the probable search space!");
 
