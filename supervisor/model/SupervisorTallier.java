@@ -50,6 +50,7 @@ public class SupervisorTallier implements Serializable {
                     /* Get all the candidate choices */
                     List<ASExpression> possibleChoices = vote.getChoices();
 
+                    /* TODO just get PEK */
                     AdderPublicKey ballotKey = bal.getPublicKey();
 
                     /* Confirm that the keys are the same */
