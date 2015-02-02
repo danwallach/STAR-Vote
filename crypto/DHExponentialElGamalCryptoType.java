@@ -4,19 +4,15 @@ import crypto.adder.*;
 import crypto.exceptions.BadKeyException;
 import crypto.exceptions.CiphertextException;
 import crypto.exceptions.KeyNotLoadedException;
-import crypto.exceptions.UninitialisedException;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
-import java.security.*;
+import java.security.InvalidKeyException;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -26,19 +22,11 @@ import java.util.List;
  */
 public class DHExponentialElGamalCryptoType implements ICryptoType {
 
-    private final Cipher cipher;
     private AdderPrivateKeyShare[] privateKeyShares;
     private AdderPublicKey publicKey;
     private final SecureRandom random = new SecureRandom();
 
-    public DHExponentialElGamalCryptoType() throws UninitialisedException {
-
-        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-
-        try { cipher = Cipher.getInstance("ElGamal/None/NoPadding", "BC"); }
-        catch (NoSuchAlgorithmException | NoSuchProviderException | NoSuchPaddingException e)
-        { throw new UninitialisedException("The cipher could not be successfully initialised! (" + e.getClass() + ")"); }
-    }
+    public DHExponentialElGamalCryptoType() {}
 
     /**
      * @see crypto.ICryptoType#decrypt(ICiphertext)
@@ -53,9 +41,6 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
         if(privateKeyShares == null)
             throw new KeyNotLoadedException("The private key shares have not yet been loaded! [Decryption]");
 
-
-        try {
-
             /* Partially decrypt to get g^m */
             BigInteger mappedPlainText = partialDecrypt(ciphertext);
             BigInteger g = publicKey.getG().bigintValue();
@@ -67,9 +52,6 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
                     return ByteBuffer.allocate(4).putInt(i).array();
                 }
             }
-
-        }
-        catch (BadPaddingException | IllegalBlockSizeException e) { throw new CipherException(e.getClass() + ": " + e.getMessage()); }
 
         throw new SearchSpaceExhaustedException("The decryption could not find a number of votes within the probable search space!");
 
@@ -100,9 +82,7 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
             throw new KeyNotLoadedException("The public key has not yet been loaded! [Encryption]");
 
         /* Encrypt our plaintext and store as ICiphertext *//* TODO change this to return ExponentialElgamalCiphertext */
-        ICiphertext c = publicKey.encrypt(new AdderInteger(new BigInteger(plainText)));
-
-        return c;
+        return publicKey.encrypt(new AdderInteger(new BigInteger(plainText)));
     }
 
     /**
@@ -187,9 +167,9 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
     private void loadKeys(AdderKey[] keys) throws BadKeyException {
 
         /* Check to make sure we're getting at least */
-        if(keys.length > 2) {
+        if(keys.length > 2)
             throw new BadKeyException("Invalid number of keys!");
-        }
+
 
         int privateKeySharesNum = 0;
         int publicKeyNum = 0;
@@ -204,8 +184,10 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
 
         if (privateKeySharesNum < 1)
             throw new BadKeyException("Not enough private key shares found!");
+
         if (publicKeyNum != 1)
             throw new BadKeyException("Wrong number of public keys!");
+
         if (!(keys[0] instanceof AdderPublicKey))
             throw new BadKeyException("Public key didn't come first!");
 
