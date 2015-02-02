@@ -1,6 +1,7 @@
 package crypto;
 
 import crypto.adder.*;
+import crypto.exceptions.BadKeyException;
 import crypto.exceptions.CiphertextException;
 import crypto.exceptions.KeyNotLoadedException;
 import crypto.exceptions.UninitialisedException;
@@ -57,6 +58,7 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
 
             /* Partially decrypt to get g^m */
             BigInteger mappedPlainText = partialDecrypt(ciphertext);
+            BigInteger g = publicKey.getG().bigintValue();
 
             /* Guess the value of m by comparing g^i to g^m and return if/when they're the same --
                 TODO 100 is chosen arbitrarily for now */
@@ -174,11 +176,15 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
 
         }
 
-        loadKeys(keys.toArray(new AdderKey[keys.size()]));
+        try {
+            loadKeys(keys.toArray(new AdderKey[keys.size()]));
+        } catch (BadKeyException e) {
+            e.printStackTrace();
+        }
     }
 
 
-    private void loadKeys(AdderKey[] keys) {
+    private void loadKeys(AdderKey[] keys) throws BadKeyException {
 
         /* Check to make sure we're getting at least */
         if(keys.length > 2) {
