@@ -46,7 +46,7 @@ public interface ICryptoType extends Serializable {
      *
      * @throws java.io.FileNotFoundException
      */
-    public void loadKeys(String[] filePaths) throws FileNotFoundException;
+    public void loadAllKeys(String[] filePaths) throws FileNotFoundException;
 
 
     public String toString();

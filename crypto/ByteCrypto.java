@@ -34,7 +34,7 @@ public class ByteCrypto {
 
     public void loadKeys(String... filePaths) throws FileNotFoundException, BadKeyException {
 
-         cryptoType.loadKeys(filePaths);
+         cryptoType.loadAllKeys(filePaths);
     }
 
     public String toString() {

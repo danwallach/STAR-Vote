@@ -12,7 +12,6 @@ import java.io.ObjectInputStream;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.security.InvalidKeyException;
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -24,9 +23,6 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
 
     private AdderPrivateKeyShare[] privateKeyShares;
     private AdderPublicKey publicKey;
-    private final SecureRandom random = new SecureRandom();
-
-    public DHExponentialElGamalCryptoType() {}
 
     /**
      * @see crypto.ICryptoType#decrypt(ICiphertext)
@@ -41,14 +37,11 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
         if(privateKeyShares == null)
             throw new KeyNotLoadedException("The private key shares have not yet been loaded! [Decryption]");
 
-        /* TODO fix this ... should get many partial decryptions and combine, then decrypt */
-
         /* Partially decrypt to get g^m */
         BigInteger mappedPlainText = partialDecrypt(ciphertext);
         BigInteger g = publicKey.getG().bigintValue();
 
-        /* Guess the value of m by comparing g^i to g^m and return if/when they're the same --
-            TODO 100 is chosen arbitrarily for now */
+        /* Guess the value of m by comparing g^i to g^m and return if/when they're the same -- TODO 100 is chosen arbitrarily for now */
         for(int i=0; i<100; i++) {
             if (g.pow(i).equals(mappedPlainText)) {
                 return ByteBuffer.allocate(4).putInt(i).array();
@@ -60,19 +53,26 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
     }
 
     /**
-     *
+     * Partially decrypts the ciphertext for each private key share and then combines them
      * @param ciphertext
      * @return
      */
     private BigInteger partialDecrypt(ICiphertext ciphertext) {
 
-        for(AdderPrivateKeyShare pks : privateKeyShares) {
-            /* Partially decrypt for each share */
-            /* Combine output */
-        }
+        List<AdderInteger> partials = new ArrayList<>();
+
+        /* Partially decrypt for each share */
+        for(AdderPrivateKeyShare pks : privateKeyShares)
+            partials.add(pks.partialDecrypt(ciphertext));
+
+        /* Combine output */
+        AdderInteger total = AdderInteger.ONE;
+
+        for(AdderInteger partial : partials)
+            total = total.multiply(partial);
 
         /* Convert this into BigInteger */
-        return new BigInteger("0");
+        return total.bigintValue();
     }
 
     /**
@@ -88,7 +88,7 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
     }
 
     /**
-     * Loads the private key from a filepath
+     * Loads the private key shares from a single filepath
      * @param filePath
      * @throws FileNotFoundException
      */
@@ -138,9 +138,9 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
     }
 
     /**
-     *@see crypto.ICryptoType#loadKeys(String[])
+     *@see ICryptoType#loadAllKeys(String[])
      */
-    public void loadKeys(String[] filePaths) throws FileNotFoundException {
+    public void loadAllKeys(String[] filePaths) throws FileNotFoundException {
 
         /* List to load the keys into */
         List<AdderKey> keys = new ArrayList<>();
@@ -154,19 +154,22 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
                 ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
                 keys.add((AdderKey) objectInputStream.readObject());
 
-            } catch (ClassNotFoundException | IOException e) { e.printStackTrace(); }
+            }
+            catch (ClassNotFoundException | IOException e) { e.printStackTrace(); }
 
         }
 
-        try {
-            loadKeys(keys.toArray(new AdderKey[keys.size()]));
-        } catch (BadKeyException e) {
-            e.printStackTrace();
-        }
+        try { loadAllKeys(keys.toArray(new AdderKey[keys.size()])); }
+        catch (BadKeyException e) { e.printStackTrace(); }
     }
 
 
-    private void loadKeys(AdderKey[] keys) throws BadKeyException {
+    /**
+     *
+     * @param keys
+     * @throws BadKeyException
+     */
+    private void loadAllKeys(AdderKey[] keys) throws BadKeyException {
 
         /* Check to make sure we're getting at least */
         if(keys.length > 2)

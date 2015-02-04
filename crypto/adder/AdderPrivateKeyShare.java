@@ -56,6 +56,13 @@ public class AdderPrivateKeyShare extends AdderKey {
         return resultList;
     }
 
+    public AdderInteger partialDecrypt(ElgamalCiphertext ciphertext) {
+
+            AdderInteger bigG = ciphertext.getG();
+            return bigG.pow(x);
+    }
+
+
     /**
      * Returns the full decryption of an ElgamalCiphertext
      * @param cipher    the encrypted AdderInteger
