@@ -48,10 +48,9 @@ public class AdderPrivateKeyShare extends AdderKey {
         List<ElgamalCiphertext> cipherList = vote.getCipherList();
         List<AdderInteger> resultList = new ArrayList<>(cipherList.size());
 
-        for (ElgamalCiphertext ciphertext : cipherList) {
-            AdderInteger bigG = (ciphertext).getG();
-            resultList.add(bigG.pow(x));
-        }
+        for (ElgamalCiphertext ciphertext : cipherList)
+            resultList.add(partialDecrypt(ciphertext));
+
 
         return resultList;
     }
