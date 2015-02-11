@@ -1,5 +1,6 @@
 package crypto.adder;
 
+import crypto.ExponentialElGamalCiphertext;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.StringExpression;
@@ -136,12 +137,12 @@ public class AdderPublicKey extends AdderKey implements Serializable {
      * @param m     the message
      * @return      the encrypted of the message
      */
-    public ElgamalCiphertext encrypt(AdderInteger m) {
+    public ExponentialElGamalCiphertext encrypt(AdderInteger m) {
         AdderInteger r = AdderInteger.random(q);
         AdderInteger bigG = g.pow(r);
         AdderInteger bigH = h.pow(r).multiply(f.pow(m));
 
-        return new ElgamalCiphertext(bigG, bigH, r, p);
+        return new ExponentialElGamalCiphertext(bigG, bigH, r, p);
     }
 
 
