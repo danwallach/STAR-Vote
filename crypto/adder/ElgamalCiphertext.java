@@ -1,6 +1,5 @@
 package crypto.adder;
 
-import crypto.ICiphertext;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.StringExpression;
@@ -24,7 +23,7 @@ import java.util.StringTokenizer;
  * @version $LastChangedRevision$ $LastChangedDate$
  * @since 0.0.1
  */
-public class ElgamalCiphertext implements Serializable, ICiphertext {
+public class ElgamalCiphertext implements Serializable {
 
     /** A generator for the ElGamal keys, is the generator of the group mod p */
     private AdderInteger g;

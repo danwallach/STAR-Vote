@@ -57,7 +57,7 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
      * @param ciphertext
      * @return
      */
-    private BigInteger partialDecrypt(ICiphertext ciphertext) {
+    private BigInteger partialDecrypt(ExponentialElGamalCiphertext ciphertext) {
 
         List<AdderInteger> partials = new ArrayList<>();
 
