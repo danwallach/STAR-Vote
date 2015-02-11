@@ -1,13 +1,13 @@
 package crypto.adder;
 
+import crypto.EncryptedVote;
+import crypto.ExponentialElGamalCiphertext;
+import crypto.ICiphertext;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.StringExpression;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.StringTokenizer;
+import java.util.*;
 
 /**
  * Represents an Elgamal private key.
@@ -44,18 +44,17 @@ public class AdderPrivateKeyShare extends AdderKey {
      *
      * @return          the partial decryption of the given vote
      */
-    public List<AdderInteger> partialDecrypt(AdderVote vote) {
-        List<ElgamalCiphertext> cipherList = vote.getCipherList();
+    public List<AdderInteger> partialDecrypt(EncryptedVote vote) {
+        Map<String, ICiphertext> cipherList = vote.getVoteMap();
         List<AdderInteger> resultList = new ArrayList<>(cipherList.size());
 
-        for (ElgamalCiphertext ciphertext : cipherList)
-            resultList.add(partialDecrypt(ciphertext));
-
+        for (ICiphertext ciphertext : cipherList.values())
+            resultList.add(partialDecrypt((ExponentialElGamalCiphertext)ciphertext));
 
         return resultList;
     }
 
-    public AdderInteger partialDecrypt(ElgamalCiphertext ciphertext) {
+    public AdderInteger partialDecrypt(ExponentialElGamalCiphertext ciphertext) {
 
             AdderInteger bigG = ciphertext.getG();
             return bigG.pow(x);

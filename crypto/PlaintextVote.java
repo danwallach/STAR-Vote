@@ -10,9 +10,6 @@ import java.util.Map;
  */
 public class PlaintextVote extends AVote {
 
-    /** The title for the race corresponding to this vote. Note that it will simply be a UID */
-    private String title;
-
     private Map<String, Integer> voteMap;
 
     public PlaintextVote(Map<String, Integer> voteMap, String title) {
@@ -25,7 +22,7 @@ public class PlaintextVote extends AVote {
     }
 
     public String getTitle(){
-        return title;
+        return super.getTitle();
     }
 
     public ASExpression toASE(){

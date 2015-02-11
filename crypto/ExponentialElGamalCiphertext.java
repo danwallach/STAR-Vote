@@ -71,6 +71,24 @@ public class ExponentialElGamalCiphertext implements IHomomorphicCiphertext<Expo
     }
 
     /**
+     * Returns the generator <tt>g</tt>.
+     *
+     * @return the generator <tt>g</tt>
+     */
+    public AdderInteger getG() {
+        return g;
+    }
+
+    /**
+     * Returns the public value <tt>h</tt>.
+     *
+     * @return the public value <tt>h</tt>
+     */
+    public AdderInteger getH() {
+        return h;
+    }
+
+    /**
      * Sets the proof to the given proof.
      *
      * @param proof         the proof

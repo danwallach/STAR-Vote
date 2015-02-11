@@ -5,7 +5,8 @@ import sexpression.ListExpression;
 import sexpression.StringExpression;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.NoSuchElementException;
+import java.util.StringTokenizer;
 
 /**
  * Elgamal public key.
@@ -143,43 +144,6 @@ public class AdderPublicKey extends AdderKey implements Serializable {
         return new ElgamalCiphertext(bigG, bigH, r, p);
     }
 
-    /**
-     * Encrypts data that is passed in without homomorphic tally functionality.
-     * This is used for things that don't need to be mapped into G.
-     *
-     * @param m the message
-     * @return a ciphertext for the message
-     */
-    public ElgamalCiphertext encryptNoHomo(AdderInteger m){
-
-        AdderInteger r = AdderInteger.random(q);
-        AdderInteger bigG = g.pow(r);
-        AdderInteger bigH = h.pow(r).multiply(m);
-
-        return new ElgamalCiphertext(bigG, bigH, r, p);
-    }
-    /**
-     * Encrypts a vote from a vector of AdderIntegers.
-     *
-     * @param selections       the vector of 0's and 1's for a race
-     * @param choices          list of candidate IDs for a race
-     * @return                 the encrypted vote
-     */
-    public AdderVote encrypt(List<AdderInteger> selections, List<ASExpression> choices) {
-
-        List<ElgamalCiphertext> voteList = new ArrayList<>(selections.size());
-
-        Iterator it;
-
-        for (it = selections.iterator(); it.hasNext();) {
-            AdderInteger choice = (AdderInteger) it.next();
-            voteList.add(encrypt(choice));
-        }
-
-        System.out.println("\tVoteList: \t" + voteList.size() + " elements");
-
-        return new AdderVote(voteList, choices);
-    }
 
     /**
      * Encrypts a polynomial value destined for an authority. The

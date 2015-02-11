@@ -4,7 +4,6 @@ import crypto.adder.InvalidVoteException;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -27,24 +26,49 @@ public class EncryptedVote extends AVote {
 
     }
 
+    /**
+     *
+     * @return
+     */
     public Map<String, ICiphertext> getVoteMap(){
         return cipherMap;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getTitle(){
         return super.getTitle();
     }
 
+    /**
+     *
+     * @return
+     */
     public IProof getProof(){
         return proof;
     }
 
-    boolean createVoteProof(Map<String, ICiphertext> cipherMap) { return false; }
+    /**
+     *
+     * @param cipherMap
+     * @return
+     */
+    private boolean createVoteProof(Map<String, ICiphertext> cipherMap) { return false; }
 
+    /**
+     *
+     * @return
+     */
     public ASExpression toASE(){
         return new ListExpression("");
     }
 
+    /**
+     *
+     * @return
+     */
     public String toString() {
         return "";
     }

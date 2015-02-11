@@ -9,6 +9,7 @@ import java.util.Map;
  */
 public abstract class AVote {
 
+    /** The title for the race corresponding to this vote. Note that it will simply be a UID */
     private String title;
 
     protected AVote(String title) {
@@ -19,7 +20,7 @@ public abstract class AVote {
         return title;
     }
 
-    public abstract Map getVoteMap();
+    public abstract Map<String,?> getVoteMap();
 
     public abstract ASExpression toASE();
 

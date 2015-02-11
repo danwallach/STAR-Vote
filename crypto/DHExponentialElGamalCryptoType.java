@@ -38,7 +38,8 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
             throw new KeyNotLoadedException("The private key shares have not yet been loaded! [Decryption]");
 
         /* Partially decrypt to get g^m */
-        BigInteger mappedPlainText = partialDecrypt(ciphertext);
+        try { BigInteger mappedPlainText = partialDecrypt((ExponentialElGamalCiphertext) ciphertext);
+
         BigInteger g = publicKey.getG().bigintValue();
 
         /* Guess the value of m by comparing g^i to g^m and return if/when they're the same -- TODO 100 is chosen arbitrarily for now */
@@ -47,6 +48,9 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
                 return ByteBuffer.allocate(4).putInt(i).array();
             }
         }
+
+        }
+        catch (ClassCastException e) { System.err.println("The ICiphertext given could not be casted to an ExponentialElGamalCiphertext."); }
 
         throw new SearchSpaceExhaustedException("The decryption could not find a number of votes within the probable search space!");
 
