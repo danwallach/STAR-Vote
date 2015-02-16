@@ -23,5 +23,7 @@ public abstract class AVote {
     public abstract Map<String,?> getVoteMap();
 
     public abstract ASExpression toASE();
+    
+    public abstract String toString();
 
 }

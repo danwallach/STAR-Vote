@@ -175,6 +175,7 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
      */
     private void loadAllKeys(AdderKey[] keys) throws BadKeyException {
 
+        /* TODO take a careful look at this, should we allow if current keys exist? If so, how to replace? */
         /* Check to make sure we're getting at least */
         if(keys.length > 2)
             throw new BadKeyException("Invalid number of keys!");
