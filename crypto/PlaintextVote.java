@@ -30,6 +30,6 @@ public class PlaintextVote extends AVote {
     }
 
     public String toString() {
-        return "";
+        return "Title: [" + getTitle() + "]\n" + "VoteMap: [" + voteMap.toString() + "]";
     }
 }
