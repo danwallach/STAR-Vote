@@ -1,6 +1,7 @@
 package supervisor.model;
 
 import crypto.AVote;
+import crypto.adder.PublicKey;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.StringExpression;
@@ -109,5 +110,37 @@ public class Ballot<T extends AVote> implements Serializable {
         /* Build a list expression based on the data here contained */
         return new ListExpression(elements);
     }
+
+        /**
+         * Method for interop with VoteBox's S-Expression system.
+         *
+         * @param ase       S-Expression representation of a ballot
+         * @return          the Vote equivalent of ase
+         *
+         */
+        public static <V extends AVote> Ballot<V>  fromASE(ASExpression ase){
+
+            ListExpression exp = (ListExpression)ase;
+
+            System.out.println(exp.get(0));
+
+            if(!(exp.get(0)).toString().equals("ballot"))
+                throw new RuntimeException("Not ballot");
+
+            String bid = exp.get(1).toString();
+
+            ListExpression vListE = (ListExpression)exp.get(2);
+
+            ArrayList<V> vList = new ArrayList<>();
+
+            for(ASExpression vote : vListE)
+                vList.add(V.fromASE(vote));
+
+            StringExpression nonce = (StringExpression)exp.get(3);
+
+            Integer size = Integer.parseInt(exp.get(4).toString());
+
+            return new Ballot<>(bid, vList, nonce.toString(), size);
+        }
 
 }

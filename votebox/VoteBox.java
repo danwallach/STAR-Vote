@@ -26,8 +26,7 @@ import auditorium.AuditoriumCryptoException;
 import auditorium.Bugout;
 import auditorium.Event;
 import auditorium.NetworkException;
-import crypto.BallotEncrypter;
-import crypto.PiecemealBallotEncrypter;
+import crypto.*;
 import crypto.adder.AdderInteger;
 import preptool.model.language.Language;
 import preptool.model.layout.manager.RenderingUtils;
@@ -265,11 +264,16 @@ public class VoteBox{
                         /* Check if NIZKs are enabled and choose announcement format */
                         if (!_constants.getEnableNIZKs()) {
 
-                            ASExpression encBallot =  BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey(mySerial + ""));
 
-                            auditorium.announce(new CommitBallotEvent(mySerial, nonce,
-                                    encBallot.toVerbatim(),
-                                    bid, precinct));
+                            /* Convert Ballot from ASE to Ballot object */
+                            supervisor.model.Ballot<PlaintextVote> b = supervisor.model.Ballot.fromASE(ballot);
+
+                            /* Encrypt Ballot */
+                            try {
+                                supervisor.model.Ballot<EncryptedVote> encBallot = BallotCrypto.encrypt(b);
+                                auditorium.announce(new CommitBallotEvent(mySerial, nonce, encBallot.toVerbatim(), bid, precinct));
+                            }
+                            catch (Exception e) { e.printStackTrace(); }
                         }
 
                         else {
