@@ -248,14 +248,20 @@ public class VoteBox{
 
                 committedBallot = true;
 
+                /* Can we just get Ballot<Plaintext> type objects? */
                 Object[] arg = (Object[]) argTemp;
 
                 /* arg0 should be the cast ballot structure, check. TODO Fix handling */
                 if (Ballot.BALLOT_PATTERN.match((ASExpression) arg[0]) == NoMatch.SINGLETON)
                     throw new RuntimeException("Incorrectly expected a cast-ballot");
 
-                ListExpression ballot = (ListExpression) arg[0];
+                /* Convert Ballot from ASE to Ballot object TODO check if this is right, should be able to do something similar */
+                supervisor.model.Ballot<PlaintextVote> ballot = supervisor.model.Ballot.fromASE((ListExpression) arg[0]);
 
+                /* Encrypt Ballot */
+                supervisor.model.Ballot<EncryptedVote> encBallot = BallotCrypto.encrypt(ballot);
+
+                /* TODO talk about whether this is necessary */
                 try {
 
                     /* Check if provisional and choose announcement format */
@@ -263,38 +269,30 @@ public class VoteBox{
 
                         /* Check if NIZKs are enabled and choose announcement format */
                         if (!_constants.getEnableNIZKs()) {
-
-
-                            /* Convert Ballot from ASE to Ballot object */
-                            supervisor.model.Ballot<PlaintextVote> b = supervisor.model.Ballot.fromASE(ballot);
-
-                            /* Encrypt Ballot */
-                            try {
-                                supervisor.model.Ballot<EncryptedVote> encBallot = BallotCrypto.encrypt(b);
-                                auditorium.announce(new CommitBallotEvent(mySerial, nonce, encBallot.toVerbatim(), bid, precinct));
-                            }
-                            catch (Exception e) { e.printStackTrace(); }
+                           auditorium.announce(new CommitBallotEvent(mySerial, nonce, encBallot, bid, precinct));
                         }
 
+                        /* Not NIZK */
                         else {
 
                             if( ((List<List<String>>) arg[1]).size() != ((List<String>)arg[2]).size())
                                 throw new RuntimeException("There were not enough titles for all the race groups!");
 
-                            ASExpression encBallot = BallotEncrypter.SINGLETON.encryptWithProof(bid, ballot,
-                                    (List<List<String>>) arg[1],_constants.getKeyStore().loadAdderPublicKey(), nonce, (List<String>)arg[2]);
+                            auditorium.announce(new CommitBallotEvent(mySerial, nonce, encBallot, bid, precinct));\\
 
-                            auditorium.announce(new CommitBallotEvent(mySerial, nonce,
-                                    encBallot.toVerbatim(), bid, precinct));
+                            /* TODO what is the difference between this and previous? */
+                            //ASExpression encBallot = BallotEncrypter.SINGLETON.encryptWithProof(bid, ballot,
+                            //        (List<List<String>>) arg[1],_constants.getKeyStore().loadAdderPublicKey(), nonce, (List<String>)arg[2]);
+
+                            //auditorium.announce(new CommitBallotEvent(mySerial, nonce, encBallot.toVerbatim(), bid, precinct));
                         }
 
                     }
 
+                    /* Provisional */
                     else {
 
-                        auditorium.announce(new ProvisionalCommitEvent(mySerial, nonce,
-                                BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey(mySerial + "")).toVerbatim(),
-                                bid));
+                        auditorium.announce(new ProvisionalCommitEvent(mySerial, nonce, encBallot, bid));
                     }
 
                     /* Announce ballot printing and print */
@@ -465,36 +463,29 @@ public class VoteBox{
                     if (Ballot.BALLOT_PATTERN.match((ASExpression) arg[0]) == NoMatch.SINGLETON)
                         throw new RuntimeException("Incorrectly expected a cast-ballot");
 
-                    ListExpression ballot = (ListExpression) arg[0];
+                    /* Convert Ballot from ASE to Ballot object TODO check if this is right, should be able to do something similar */
+                    supervisor.model.Ballot<PlaintextVote> ballot = supervisor.model.Ballot.fromASE((ListExpression) arg[0]);
+
+                    /* Encrypt Ballot */
+                    supervisor.model.Ballot<EncryptedVote> encBallot = BallotCrypto.encrypt(ballot);
 
                     committedBallot = true;
 
                     /* Announce the event to auditorium */
-                    auditorium.announce(new OverrideCommitConfirmEvent(mySerial, nonce, ballot.toVerbatim()));
+                    auditorium.announce(new OverrideCommitConfirmEvent(mySerial, nonce, ballot));
 
                     try {
                         /* Check to see if NIZKs are enabled or not and format event accordingly*/
                         if (!_constants.getEnableNIZKs()) {
 
-                            auditorium.announce(new CommitBallotEvent(mySerial, nonce,
-                                    BallotEncrypter.SINGLETON.encrypt(ballot, _constants.getKeyStore().loadKey(mySerial + "")).toVerbatim(),
-                                    bid, precinct));
+                            auditorium.announce(new CommitBallotEvent(mySerial, nonce, encBallot, bid, precinct));
 
                         } else {
 
                             if( ((List<List<String>>) arg[1]).size() != ((List<String>)arg[2]).size())
                                 throw new RuntimeException("There were not enough titles for all the race groups!");
 
-                            ASExpression encBallot = BallotEncrypter.SINGLETON.encryptWithProof(bid, ballot,
-                                    (List<List<String>>) arg[1], _constants.getKeyStore().loadAdderPublicKey(), nonce, (List<String>)arg[2]);
-
-
-                            auditorium.announce(new CommitBallotEvent(mySerial,
-                                    nonce,
-                                    encBallot.toVerbatim(),
-                                    bid,
-                                    precinct));
-
+                            auditorium.announce(new CommitBallotEvent(mySerial, nonce, encBallot, bid, precinct));
                         }
                     } catch (AuditoriumCryptoException e) {
                         Bugout.err("Crypto error trying to commit ballot: " + e.getMessage());
