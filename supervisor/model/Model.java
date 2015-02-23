@@ -24,6 +24,7 @@ package supervisor.model;
 
 import auditorium.IAuditoriumParams;
 import auditorium.NetworkException;
+import crypto.EncryptedVote;
 import crypto.adder.AdderPublicKey;
 import crypto.interop.AdderKeyManipulator;
 import sexpression.ASExpression;
@@ -1123,9 +1124,7 @@ public class Model {
 
                         ASExpression ballot = ASExpression.makeVerbatim(e.getBallot());
 
-                        /* TODO parse ballot */
-
-                        thisPrecinct.commitBallot(e.getBID(), ballot);
+                        thisPrecinct.commitBallot(e.getBID(), Ballot.fromASE(ballot));
 
                         machinesToCommits.put(ballot, e.getSerial());
 
@@ -1163,6 +1162,7 @@ public class Model {
 //                    booth.setPublicCount(booth.getPublicCount() + 1);
 //                    booth.setProtectedCount(booth.getProtectedCount() + 1);
 
+                    /* TODO check if this is supposed to move this ballot somewhere */
                     Precinct thisPrecinct = getPrecinctWithBID(e.getBID());
 
                     /* Announce that the provisional ballot was received */
@@ -1236,7 +1236,7 @@ public class Model {
                     ASExpression nonce = committedBids.remove(bid);
 
                     /* Tell the ballot store to cast the ballot */
-                    Ballot b = p.castBallot(bid);
+                    Ballot<EncryptedVote> b = p.castBallot(bid);
 
                     boolean wasCast = (b!=null);
 

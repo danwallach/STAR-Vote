@@ -1,6 +1,7 @@
 package supervisor.model;
 
 import auditorium.Bugout;
+import crypto.EncryptedVote;
 import crypto.adder.AdderPublicKey;
 import crypto.adder.AdderVote;
 import crypto.adder.Election;
@@ -30,7 +31,7 @@ public class SupervisorTallier implements Serializable {
      * @param finalPublicKey     the public key used for vote proofs
      * @return              a Ballot containing the encrypted sums for each race
      */
-    public static Ballot tally(String precinctID, List<Ballot> cast, AdderPublicKey finalPublicKey){
+    public static Ballot<EncryptedVote> tally(String precinctID, List<Ballot<EncryptedVote>> cast){
 
         int size=0;
 

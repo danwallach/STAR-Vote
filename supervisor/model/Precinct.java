@@ -79,7 +79,7 @@ public class Precinct implements Serializable {
     public Ballot<EncryptedVote> challengeBallot(String bid){
 
         /* Remove the Ballot from committed */
-        Ballot toChallenge = committed.remove(bid);
+        Ballot<EncryptedVote> toChallenge = committed.remove(bid);
 
         /* Add the Ballot to challenged */
         if(toChallenge != null) challenged.add(toChallenge);
@@ -106,10 +106,10 @@ public class Precinct implements Serializable {
      * @return          true if the BID was a committed ballot and was successfully
      *                  cast, false otherwise
      */
-    public Ballot castBallot(String bid){
+    public Ballot<EncryptedVote> castBallot(String bid){
 
         /* Remove the Ballot from committed */
-        Ballot toCast = committed.remove(bid);
+        Ballot<EncryptedVote> toCast = committed.remove(bid);
 
         System.out.println(toCast);
 
@@ -134,7 +134,7 @@ public class Precinct implements Serializable {
      * @return          a Ballot representing the sum total of all of the votes
      *                  cast in this precinct
      */
-    public Ballot getCastBallotTotal(){
+    public Ballot<EncryptedVote> getCastBallotTotal(){
 
         return SupervisorTallier.tally(precinctID, cast);
     }
