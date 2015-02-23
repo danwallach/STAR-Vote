@@ -259,68 +259,63 @@ public class VoteBox{
                 supervisor.model.Ballot<PlaintextVote> ballot = supervisor.model.Ballot.fromASE((ListExpression) arg[0]);
 
                 /* Encrypt Ballot */
-                supervisor.model.Ballot<EncryptedVote> encBallot = BallotCrypto.encrypt(ballot);
+                supervisor.model.Ballot<EncryptedVote> encBallot;
 
-                /* TODO talk about whether this is necessary */
-                try {
+                try { encBallot = BallotCrypto.encrypt(ballot); }
+                catch (Exception e) { e.printStackTrace(); throw new RuntimeException("Could not encrypt the ballot because of "+e.getClass()); }
 
-                    /* Check if provisional and choose announcement format */
-                    if (!isProvisional) {
 
-                        /* Check if NIZKs are enabled and choose announcement format */
-                        if (!_constants.getEnableNIZKs()) {
-                           auditorium.announce(new CommitBallotEvent(mySerial, nonce, encBallot, bid, precinct));
-                        }
+                /* Check if provisional and choose announcement format */
+                if (!isProvisional) {
 
-                        /* Not NIZK */
-                        else {
+                    auditorium.announce(new CommitBallotEvent(mySerial, nonce, encBallot.toListExpression().toVerbatim(), bid, precinct));
 
-                            if( ((List<List<String>>) arg[1]).size() != ((List<String>)arg[2]).size())
-                                throw new RuntimeException("There were not enough titles for all the race groups!");
+                    /* Check if NIZKs are enabled and choose announcement format */
+                    //if (!_constants.getEnableNIZKs()) {
 
-                            auditorium.announce(new CommitBallotEvent(mySerial, nonce, encBallot, bid, precinct));\\
+                    //}
 
-                            /* TODO what is the difference between this and previous? */
-                            //ASExpression encBallot = BallotEncrypter.SINGLETON.encryptWithProof(bid, ballot,
-                            //        (List<List<String>>) arg[1],_constants.getKeyStore().loadAdderPublicKey(), nonce, (List<String>)arg[2]);
+                    /* Not NIZK */
+                    //else {
 
-                            //auditorium.announce(new CommitBallotEvent(mySerial, nonce, encBallot.toVerbatim(), bid, precinct));
-                        }
+                        //auditorium.announce(new CommitBallotEvent(mySerial, nonce, encBallot, bid, precinct));
 
-                    }
+                        /* TODO what is the difference between this and previous? */
+                       //ASExpression encBallot = BallotEncrypter.SINGLETON.encryptWithProof(bid, ballot,
+                        //        (List<List<String>>) arg[1],_constants.getKeyStore().loadAdderPublicKey(), nonce, (List<String>)arg[2]);
 
-                    /* Provisional */
-                    else {
+                        //auditorium.announce(new CommitBallotEvent(mySerial, nonce, encBallot.toVerbatim(), bid, prect));
+                    //}
 
-                        auditorium.announce(new ProvisionalCommitEvent(mySerial, nonce, encBallot, bid));
-                    }
-
-                    /* Announce ballot printing and print */
-                    List<List<String>> races = currentDriver.getBallotAdapter().getRaceGroups();
-                    auditorium.announce(new BallotPrintingEvent(mySerial, bid, nonce));
-                    printer = new Printer(_currentBallotFile, races);
-
-                    boolean success = printer.printCommittedBallot(ballot, bid);
-                    printer.printedReceipt(bid);
-
-                    /* By this time, the voter is done voting */
-                    /* Wait before returning to inactive */
-
-                    long start = System.currentTimeMillis();
-
-                    while (System.currentTimeMillis() - start < 5000) ;
-
-                    finishedVoting = true;
-
-                    System.out.println("\nBID: " + bid + "\n");
-
-                    if (success)
-                        auditorium.announce(new BallotPrintSuccessEvent(mySerial, bid, nonce));
-
-                } catch (AuditoriumCryptoException e) {
-                    Bugout.err("Crypto error trying to commit ballot: " + e.getMessage());
-                    e.printStackTrace();
                 }
+
+                /* Provisional */
+                else {
+                    auditorium.announce(new ProvisionalCommitEvent(mySerial, nonce, encBallot.toListExpression().toVerbatim(), bid));
+                }
+
+                /* Announce ballot printing and print */
+                List<List<String>> races = currentDriver.getBallotAdapter().getRaceGroups();
+                auditorium.announce(new BallotPrintingEvent(mySerial, bid, nonce));
+                printer = new Printer(_currentBallotFile, races);
+
+                boolean success = printer.printCommittedBallot(ballot.toListExpression(), bid);
+                printer.printedReceipt(bid);
+
+                /* By this time, the voter is done voting */
+                /* Wait before returning to inactive */
+
+                long start = System.currentTimeMillis();
+
+                while (System.currentTimeMillis() - start < 5000) ;
+
+                finishedVoting = true;
+
+                System.out.println("\nBID: " + bid + "\n");
+
+                if (success)
+                    auditorium.announce(new BallotPrintSuccessEvent(mySerial, bid, nonce));
+
             }
         });
         	
@@ -467,30 +462,25 @@ public class VoteBox{
                     supervisor.model.Ballot<PlaintextVote> ballot = supervisor.model.Ballot.fromASE((ListExpression) arg[0]);
 
                     /* Encrypt Ballot */
-                    supervisor.model.Ballot<EncryptedVote> encBallot = BallotCrypto.encrypt(ballot);
+                    supervisor.model.Ballot<EncryptedVote> encBallot;
+
+                    try { encBallot = BallotCrypto.encrypt(ballot); }
+                    catch (Exception e) { e.printStackTrace(); throw new RuntimeException("Could not encrypt the ballot because of "+e.getClass()); }
 
                     committedBallot = true;
 
-                    /* Announce the event to auditorium */
-                    auditorium.announce(new OverrideCommitConfirmEvent(mySerial, nonce, ballot));
+                    /* Announce that we're commiting this ballot as override to auditorium and commit it */
+                    auditorium.announce(new OverrideCommitConfirmEvent(mySerial, nonce, ballot.toListExpression().toVerbatim()));
+                    auditorium.announce(new CommitBallotEvent(mySerial, nonce, encBallot.toListExpression().toVerbatim(), bid, precinct));
 
-                    try {
-                        /* Check to see if NIZKs are enabled or not and format event accordingly*/
-                        if (!_constants.getEnableNIZKs()) {
-
-                            auditorium.announce(new CommitBallotEvent(mySerial, nonce, encBallot, bid, precinct));
-
-                        } else {
-
-                            if( ((List<List<String>>) arg[1]).size() != ((List<String>)arg[2]).size())
-                                throw new RuntimeException("There were not enough titles for all the race groups!");
-
-                            auditorium.announce(new CommitBallotEvent(mySerial, nonce, encBallot, bid, precinct));
-                        }
-                    } catch (AuditoriumCryptoException e) {
-                        Bugout.err("Crypto error trying to commit ballot: " + e.getMessage());
-                        e.printStackTrace();
-                    }
+                    /* Check to see if NIZKs are enabled or not and format event accordingly*/
+                    //if (!_constants.getEnableNIZKs()) {
+                    //}
+                    //else {
+                    //    if( ((List<List<String>>) arg[1]).size() != ((List<String>)arg[2]).size())
+                    //        throw new RuntimeException("There were not enough titles for all the race groups!");
+                    //    auditorium.announce(new CommitBallotEvent(mySerial, nonce, encBallot.toListExpression().toVerbatim(), bid, precinct));
+                    //}
 
                     /* Broadcast new status */
                     broadcastStatus();
@@ -501,7 +491,7 @@ public class VoteBox{
                     printer = new Printer(_currentBallotFile, races);
 
                     /* Check for success */
-                    boolean success = printer.printCommittedBallot(ballot, bid);
+                    boolean success = printer.printCommittedBallot(ballot.toListExpression(), bid);
                     printer.printedReceipt(bid);
 
                     /* By this time, the voter is done voting. Wait before returning to inactive. */
@@ -517,8 +507,8 @@ public class VoteBox{
 
                 }
 
-                else { /* TODO runtime error */
-                    throw new RuntimeException("Received an override-cast-confirm event at the incorrect time");
+                else { /* TODO runtime error should be graceful */
+                    throw new RuntimeException("Received an override-commit-confirm event at the incorrect time");
                 }
             }
         });
