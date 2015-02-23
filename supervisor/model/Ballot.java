@@ -1,7 +1,7 @@
 package supervisor.model;
 
 import crypto.AVote;
-import crypto.adder.PublicKey;
+import crypto.EncryptedVote;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.StringExpression;
@@ -118,7 +118,7 @@ public class Ballot<T extends AVote> implements Serializable {
          * @return          the Vote equivalent of ase
          *
          */
-        public static <V extends AVote> Ballot<V>  fromASE(ASExpression ase){
+        public static Ballot<EncryptedVote>  fromASE(ASExpression ase){
 
             ListExpression exp = (ListExpression)ase;
 
@@ -131,10 +131,10 @@ public class Ballot<T extends AVote> implements Serializable {
 
             ListExpression vListE = (ListExpression)exp.get(2);
 
-            ArrayList<V> vList = new ArrayList<>();
+            ArrayList<EncryptedVote> vList = new ArrayList<>();
 
             for(ASExpression vote : vListE)
-                vList.add(V.fromASE(vote));
+                vList.add(EncryptedVote.fromASE(vote));
 
             StringExpression nonce = (StringExpression)exp.get(3);
 
