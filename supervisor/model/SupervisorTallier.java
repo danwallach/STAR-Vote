@@ -28,40 +28,39 @@ public class SupervisorTallier implements Serializable {
      *
      * @param precinctID    the ID of the precinct constructing this tallied Ballot, used as a ballot id
      * @param cast          the list of cast ballots that should be homomorphically summed
-     * @param finalPublicKey     the public key used for vote proofs
      * @return              a Ballot containing the encrypted sums for each race
      */
     public static Ballot<EncryptedVote> tally(String precinctID, List<Ballot<EncryptedVote>> cast){
 
         int size=0;
 
+        /* TODO just get Adder PEK */
+        AdderPublicKey PEK = null /* load the PEK */;
+
         /* The results of the election are stored by race ID in this map */
         Map<String, Election> results = new HashMap<>();
 
         /* For each ballot, get each vote and build a results mapping between race ids and elections */
-        for (Ballot bal : cast) {
+        for (Ballot<EncryptedVote> bal : cast) {
 
             try {
 
-                List<AdderVote> votes = bal.getVotes();
+                List<EncryptedVote> votes = bal.getVotes();
 
                 /* Cycle through each of the races */
-                for(AdderVote vote: votes){
+                for(EncryptedVote vote: votes){
 
                     /* Get all the candidate choices */
                     List<ASExpression> possibleChoices = vote.getChoices();
 
-                    /* TODO just get PEK */
-                    AdderPublicKey ballotKey = bal.getPublicKey();
-
                     /* Confirm that the keys are the same */
-                    if (!(ballotKey.equals(finalPublicKey))) {
-                        Bugout.err("!!!Expected supplied final PublicKey to match generated\nSupplied: " + ballotKey + "\nGenerated: " + finalPublicKey + "!!!");
-                        return null;
-                    }
+                    //if (!(PEK.equals(finalPublicKey))) {
+                    //    Bugout.err("!!!Expected supplied final PublicKey to match generated\nSupplied: " + PEK + "\nGenerated: " + finalPublicKey + "!!!");
+                    //    return null;
+                    //}
 
                     /* Confirm that the vote proof is valid */
-                    if (!vote.verifyVoteProof(finalPublicKey, 0, 1)) {
+                    if (!vote.verifyVoteProof(PEK, 0, 1)) {
                         Bugout.err("!!!Ballot failed NIZK test!!!");
                         return null;
                     }
@@ -72,7 +71,7 @@ public class SupervisorTallier implements Serializable {
 
                     /* If we haven't seen this specific race before, initialize it */
                     if (election == null)
-                        election = new Election(finalPublicKey, possibleChoices);
+                        election = new Election(PEK, possibleChoices);
 
                     /* This will ready election to homomorphically tally the vote */
                     election.castVote(vote);
@@ -102,12 +101,12 @@ public class SupervisorTallier implements Serializable {
             /* Get the race */
             Election thisRace = results.get(id);
 
-            /* Get the homomorphically tallied vote for this race */
-            AdderVote vote = results.get(id).sumVotes();
+            /* Get the homomorphically tallied vote for this race TODO make sure Election handles AVotes */
+            EncryptedVote vote = results.get(id).sumVotes();
 
 
             /* Verify the voteProof and error off if bad */
-            if(vote.verifyVoteProof(finalPublicKey, 0, thisRace.getVotes().size())) {
+            if(vote.verifyVoteProof(PEK, 0, thisRace.getVotes().size())) {
                 votes.add(vote);
                 voteASE.add(vote.toASE());
             }
@@ -117,10 +116,10 @@ public class SupervisorTallier implements Serializable {
 
         /* Create the nonce */
         ListExpression voteList = new ListExpression(voteASE);
-        ASExpression nonce = StringExpression.makeString(voteList.getSHA256());
+        String nonce = StringExpression.makeString(voteList.getSHA256()).toString();
 
         /* Return the Ballot of all the summed race results */
-        return new Ballot(precinctID, votes, nonce, finalPublicKey,size);
+        return new Ballot<EncryptedVote>(precinctID, votes, nonce, size);
     }
 
     /**
