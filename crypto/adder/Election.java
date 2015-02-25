@@ -1,9 +1,13 @@
 package crypto.adder;
 
+import crypto.EncryptedVote;
+import crypto.IHomomorphicCiphertext;
 import sexpression.ASExpression;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Represents an election.
@@ -15,10 +19,10 @@ import java.util.List;
 public class Election {
 
     /** The public key used to encrypt and tally */
-    private AdderPublicKey finalPublicKey;
+    private AdderPublicKey PEK;
 
     /** The List of all Votes cast in this Election */
-    private List<AdderVote> votes;
+    private List<EncryptedVote> votes;
 
     /** The List of all candidates in this Election (race) */
     private List<ASExpression> choices;
@@ -29,7 +33,7 @@ public class Election {
      * @param publicKey         the public key
      */
     public Election(AdderPublicKey publicKey, List<ASExpression> choices) {
-        this.finalPublicKey = publicKey;
+        this.PEK = publicKey;
         this.votes = new ArrayList<>();
         this.choices = choices;
     }
@@ -39,7 +43,7 @@ public class Election {
      *
      * @return          the votes
      */
-    public List<AdderVote> getVotes() {
+    public List<EncryptedVote> getVotes() {
         return votes;
     }
 
@@ -48,7 +52,7 @@ public class Election {
      *
      * @param vote      the vote
      */
-    public void castVote(AdderVote vote) {
+    public void castVote(EncryptedVote vote) {
         votes.add(vote);
     }
 
@@ -58,29 +62,32 @@ public class Election {
      *
      * @return          a vote representing the total of the given list of votes
      */
-    public AdderVote sumVotes() {
+    public <T extends IHomomorphicCiphertext> EncryptedVote sumVotes() {
 
         /* Pull out the first vote */
-        AdderVote v = votes.get(0);
+        EncryptedVote v = votes.get(0);
 
-        List<ElgamalCiphertext> cipherlist = new ArrayList<>();
+        Map<String, T> cipherMap = new HashMap<>();
+
+        cipherMap.putAll(v.getVoteMap());
 
         /* Construct a bunch of individual multiplicative identities */
-        for (int i=0; i<v.getCipherList().size(); i++)
-            cipherlist.add(new ElgamalCiphertext(AdderInteger.ONE, AdderInteger.ONE, finalPublicKey.getP()));
+        for (String name: v.getVoteMap().keySet())
+            cipherMap.put(name, T.getHomomorphicIdentity(PEK.getP()));
+
 
         /* Create a new multiplicative identity */
-        AdderVote total = new AdderVote(cipherlist, v.getChoices(), new VoteProof(new MembershipProof(), new ArrayList<MembershipProof>()), v.getRaceTitle());
+        EncryptedVote total = new EncryptedVote(cipherMap, v.getTitle());
 
         /* Multiply all the votes together */
-        for (AdderVote vote : votes)
-            total = vote.multiply(total);
+        for (EncryptedVote vote : votes)
+            total = vote.operate(total);
 
         /* These are aliasing checks */
 
         /* Compute the sumProof for this totalled Vote and put it into total */
-        //MembershipProof sumProof = total.computeSumProof(votes.size(), finalPublicKey);
-        total.computeSumProof(votes.size(), finalPublicKey);
+        //MembershipProof sumProof = total.computeSumProof(votes.size(), PEK);
+        total.computeSumProof(votes.size(), PEK);
 
         /*
           Create an empty ArrayList for proofList. This doesn't seem to need to be filled out
@@ -94,7 +101,7 @@ public class Election {
         /* ---------------- TESTING ---------------- */
 
         System.out.println("In Election.sumVotes() -- Testing single vote summed, Max expected value: " + votes.size());
-        System.out.println("In Election.sumVotes() -- [Single vote summed] sumProof verfied: " + total.verifyVoteProof(finalPublicKey, 0, votes.size()));
+        System.out.println("In Election.sumVotes() -- [Single vote summed] sumProof verfied: " + total.verifyVoteProof(PEK, 0, votes.size()));
         System.out.println("-----------------");
 
         /* ------------------------------------------ */
@@ -116,7 +123,7 @@ public class Election {
      *
      * @return                  the final vote tally
      */
-    public List<AdderInteger> getFinalSum(List<AdderInteger> partialSums, AdderVote sum, AdderPublicKey masterKey) {
+    public List<AdderInteger> getFinalSum(List<AdderInteger> partialSums, EncryptedVote sum, AdderPublicKey masterKey) {
 
         /*
 
