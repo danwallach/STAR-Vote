@@ -2,7 +2,6 @@ package crypto.adder;
 
 import crypto.EncryptedVote;
 import crypto.IHomomorphicCiphertext;
-import sexpression.ASExpression;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,14 +24,14 @@ public class Election {
     private List<EncryptedVote> votes;
 
     /** The List of all candidates in this Election (race) */
-    private List<ASExpression> choices;
+    private List<String> choices;
 
     /**
      * Creates a new election.
      *
      * @param publicKey         the public key
      */
-    public Election(AdderPublicKey publicKey, List<ASExpression> choices) {
+    public Election(AdderPublicKey publicKey, List<String> choices) {
         this.PEK = publicKey;
         this.votes = new ArrayList<>();
         this.choices = choices;
@@ -72,7 +71,7 @@ public class Election {
         cipherMap.putAll(v.getVoteMap());
 
         /* Construct a bunch of individual multiplicative identities */
-        for (String name: v.getVoteMap().keySet())
+        for (String name: choices)
             cipherMap.put(name, T.getHomomorphicIdentity(PEK.getP()));
 
 

@@ -59,7 +59,7 @@ public class SupervisorTallier implements Serializable {
                     //}
 
                     /* Confirm that the vote proof is valid */
-                    if (!vote.verifyVoteProof(PEK, 0, 1)) {
+                    if (!vote.verifyVoteProof(0, 1)) {
                         Bugout.err("!!!Ballot failed NIZK test!!!");
                         return null;
                     }
@@ -99,12 +99,12 @@ public class SupervisorTallier implements Serializable {
             /* Get the race */
             Election thisRace = results.get(id);
 
-            /* Get the homomorphically tallied vote for this race TODO make sure Election handles AVotes */
+            /* Get the homomorphically tallied vote for this race */
             EncryptedVote vote = results.get(id).sumVotes();
 
 
             /* Verify the voteProof and error off if bad */
-            if(vote.verifyVoteProof(PEK, 0, thisRace.getVotes().size())) {
+            if(vote.verifyVoteProof(0, thisRace.getVotes().size())) {
                 votes.add(vote);
                 voteASE.add(vote.toASE());
             }

@@ -10,10 +10,10 @@ import java.util.Map;
 /**
  * Created by Matthew Kindy II on 11/19/2014.
  */
-public class EncryptedVote extends AVote {
+public class EncryptedVote extends AVote implements Provable {
 
     /** The proof representing the validity of this vote */
-    private IProof proof;
+    private VoteProof<IHomomorphicCiphertext> proof;
 
     private Map<String, IHomomorphicCiphertext> cipherMap;
 
@@ -23,7 +23,7 @@ public class EncryptedVote extends AVote {
         this.cipherMap = cipherMap;
 
         if (!createVoteProof(cipherMap))
-            throw new InvalidVoteException("An attempt to construct an EncryptedVote with bad values was attempted!");
+            throw new InvalidVoteException("An attempt to construct an EncryptedVote with invalid values was attempted!");
 
     }
 
@@ -70,7 +70,8 @@ public class EncryptedVote extends AVote {
      *
      * @return
      */
-    public IProof getProof(){
+    /* Does this need to be typed or will it just have to be homomorphic? */
+    public VoteProof<IHomomorphicCiphertext> getProof(){
         return proof;
     }
 
@@ -79,7 +80,18 @@ public class EncryptedVote extends AVote {
      * @param cipherMap
      * @return
      */
-    private boolean createVoteProof(Map<String, IHomomorphicCiphertext> cipherMap) { return false; }
+    private boolean createVoteProof(Map<String, IHomomorphicCiphertext> cipherMap) {
+
+        /* Should each Ciphertext have proofs inside or just have all their proofs inside VoteProof (or both)? */
+        /* Should each Vote have to pass itself to its proof for verification? */
+        /* VoteProof should probably contain Ciphertext proofs and Ciphertexts */
+
+        return false;
+    }
+
+    public boolean verifyVoteProof(int min, int max) {
+        return proof.verify(min, max);
+    }
 
     /**
      *
