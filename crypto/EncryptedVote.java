@@ -4,6 +4,7 @@ import crypto.adder.InvalidVoteException;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -32,6 +33,29 @@ public class EncryptedVote extends AVote {
      */
     public Map<String, IHomomorphicCiphertext> getVoteMap(){
         return cipherMap;
+    }
+
+    /**
+     * Wrapper for ciphertext operations that combines votesand returns
+     * the result
+     *
+     * @param other    the other vote to be combined with this one
+     * @return the result of the operation
+     */
+    public EncryptedVote operate(EncryptedVote other) {
+        HashMap<String, IHomomorphicCiphertext> resultMap = new HashMap<>();
+
+        resultMap.putAll(other.cipherMap);
+        resultMap.putAll(cipherMap);
+
+        for(String title : other.getVoteMap().keySet()) {
+            if(cipherMap.containsKey(title)) {
+                resultMap.put(title, cipherMap.get(title).operate(other.cipherMap.get(title)));
+            }
+
+        }
+
+        return new EncryptedVote(resultMap, getTitle());
     }
 
     /**

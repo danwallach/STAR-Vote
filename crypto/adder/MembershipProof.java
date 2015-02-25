@@ -170,7 +170,7 @@ public class MembershipProof implements Serializable {
 
                 /* If it is, fill c_i and s_i with dummy values for now */
 				sList.add(AdderInteger.ZERO);
-				cList.add(AdderInteger.ZERO);
+                cList.add(AdderInteger.ZERO);
 
                 /* Compute random group member */
 				y = g.pow(t);
