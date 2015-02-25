@@ -3,7 +3,6 @@ package supervisor.model;
 import auditorium.Bugout;
 import crypto.EncryptedVote;
 import crypto.adder.AdderPublicKey;
-import crypto.adder.AdderVote;
 import crypto.adder.Election;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
@@ -51,7 +50,7 @@ public class SupervisorTallier implements Serializable {
                 for(EncryptedVote vote: votes){
 
                     /* Get all the candidate choices */
-                    List<ASExpression> possibleChoices = vote.getChoices();
+                    String raceID = vote.getTitle();
 
                     /* Confirm that the keys are the same */
                     //if (!(PEK.equals(finalPublicKey))) {
@@ -66,12 +65,11 @@ public class SupervisorTallier implements Serializable {
                     }
 
                     /* Code these results as a subelection so the ciphers can be summed homomorphically */
-                    String raceID = makeId(possibleChoices);
                     Election election = results.get(raceID);
 
                     /* If we haven't seen this specific race before, initialize it */
                     if (election == null)
-                        election = new Election(PEK, possibleChoices);
+                        election = new Election(PEK, new ArrayList<String>(vote.getVoteMap().keySet()));
 
                     /* This will ready election to homomorphically tally the vote */
                     election.castVote(vote);
@@ -90,7 +88,7 @@ public class SupervisorTallier implements Serializable {
         }
 
         /* This will hold the final list of summed Votes to be put into a Ballot */
-        ArrayList<AdderVote> votes = new ArrayList<>();
+        ArrayList<EncryptedVote> votes = new ArrayList<>();
 
         /* This will be used to create the nonce eventually */
         ArrayList<ASExpression> voteASE = new ArrayList<>();
@@ -119,7 +117,7 @@ public class SupervisorTallier implements Serializable {
         String nonce = StringExpression.makeString(voteList.getSHA256()).toString();
 
         /* Return the Ballot of all the summed race results */
-        return new Ballot<EncryptedVote>(precinctID, votes, nonce, size);
+        return new Ballot<>(precinctID, votes, nonce, size);
     }
 
     /**
@@ -139,17 +137,4 @@ public class SupervisorTallier implements Serializable {
             throw new RuntimeException("Missing \"public-key\"");
     }
 
-    /**
-     * Using NIZKs, imposes structure on our race format we haven't had before.
-     *
-     * @param voteIds       a list of strings representing vote identifiers
-     * @return              a string representation of the list of voteIDs
-     */
-    private static String makeId(List<ASExpression> voteIds){
-        String str = voteIds.get(0).toString();
-        for(int i = 1; i < voteIds.size(); i++)
-            str+=","+voteIds.get(i);
-
-        return str;
-    }
 }

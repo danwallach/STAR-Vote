@@ -31,13 +31,13 @@ public class VoteCrypto {
     public PlaintextVote decrypt(EncryptedVote vote) throws UninitialisedException, KeyNotLoadedException, InvalidKeyException, CipherException, CiphertextException {
 
         /* Get the map from the vote */
-        Map<String, ICiphertext> cipherMap = vote.getVoteMap();
+        Map<String, IHomomorphicCiphertext> cipherMap = vote.getVoteMap();
         Map<String, Integer> voteMap = new HashMap<>();
 
         /* Cycle over each of the candidates in the cipherMap */
-        for(Map.Entry<String, ICiphertext> cur : cipherMap.entrySet()) {
+        for(Map.Entry<String, IHomomorphicCiphertext> cur : cipherMap.entrySet()) {
 
-            ICiphertext encryptedChoice = cur.getValue();
+            IHomomorphicCiphertext encryptedChoice = cur.getValue();
             String candidate = cur.getKey();
 
             /* Encrypt each choice and put into a ciphertext */
@@ -47,7 +47,7 @@ public class VoteCrypto {
             voteMap.put(candidate, decryptedChoice);
         }
 
-        /* Pull out parts from ICiphertext in vote to pass to byteCrypter in order to contstruct new PlaintextVote */
+        /* Pull out parts from IHomomorphicCiphertext in vote to pass to byteCrypter in order to contstruct new PlaintextVote */
         return new PlaintextVote(voteMap, vote.getTitle());
     }
 
@@ -55,7 +55,7 @@ public class VoteCrypto {
 
         /* Get the map from the PlaintextVote */
         Map<String, Integer> voteMap = vote.getVoteMap();
-        Map<String, ICiphertext> cipherMap = new HashMap<>();
+        Map<String, IHomomorphicCiphertext> cipherMap = new HashMap<>();
 
         /* Cycle over each of the candidates in the voteMap */
         for(Map.Entry<String, Integer> cur : voteMap.entrySet()) {
@@ -64,7 +64,7 @@ public class VoteCrypto {
             String candidate = cur.getKey();
 
             /* Encrypt each choice and put into a ciphertext */
-            ICiphertext encryptedChoice = byteCrypter.encrypt(ByteBuffer.allocate(4).putInt(choice).array());
+            IHomomorphicCiphertext encryptedChoice = byteCrypter.encrypt(ByteBuffer.allocate(4).putInt(choice).array());
 
             /* Put the ciphertexts into a map */
             cipherMap.put(candidate, encryptedChoice);

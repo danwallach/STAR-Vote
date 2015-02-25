@@ -9,7 +9,7 @@ import java.io.Serializable;
  *
  * @author Matt Bernhard
  */
-public interface IHomomorphicCiphertext<T extends IHomomorphicCiphertext> extends ICiphertext, Serializable {
+public interface IHomomorphicCiphertext<T extends IHomomorphicCiphertext> extends Serializable {
 
     /**
      * Will perform some arity 2 homomorphic operation on the ciphertexts, depending on

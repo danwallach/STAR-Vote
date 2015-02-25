@@ -14,9 +14,9 @@ public class EncryptedVote extends AVote {
     /** The proof representing the validity of this vote */
     private IProof proof;
 
-    private Map<String, ICiphertext> cipherMap;
+    private Map<String, IHomomorphicCiphertext> cipherMap;
 
-    public EncryptedVote(Map<String, ICiphertext> cipherMap, String title) {
+    public EncryptedVote(Map<String, IHomomorphicCiphertext> cipherMap, String title) {
         super(title);
 
         this.cipherMap = cipherMap;
@@ -30,7 +30,7 @@ public class EncryptedVote extends AVote {
      *
      * @return
      */
-    public Map<String, ICiphertext> getVoteMap(){
+    public Map<String, IHomomorphicCiphertext> getVoteMap(){
         return cipherMap;
     }
 
@@ -55,7 +55,7 @@ public class EncryptedVote extends AVote {
      * @param cipherMap
      * @return
      */
-    private boolean createVoteProof(Map<String, ICiphertext> cipherMap) { return false; }
+    private boolean createVoteProof(Map<String, IHomomorphicCiphertext> cipherMap) { return false; }
 
     /**
      *

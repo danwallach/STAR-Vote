@@ -25,11 +25,11 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
     private AdderPublicKey publicKey;
 
     /**
-     * @see crypto.ICryptoType#decrypt(ICiphertext)
+     * @see crypto.ICryptoType#decrypt(IHomomorphicCiphertext)
      */
-    public byte[] decrypt(ICiphertext ciphertext) throws InvalidKeyException, KeyNotLoadedException, CipherException, CiphertextException {
+    public byte[] decrypt(IHomomorphicCiphertext ciphertext) throws InvalidKeyException, KeyNotLoadedException, CipherException, CiphertextException {
 
-        /* Check if this is the right type of ICiphertext */
+        /* Check if this is the right type of IHomomorphicCiphertext */
         if(!(ciphertext instanceof ExponentialElGamalCiphertext))
             throw new CiphertextException("The ciphertext type did not match the crypto type!");
 
@@ -50,7 +50,7 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
         }
 
         }
-        catch (ClassCastException e) { System.err.println("The ICiphertext given could not be casted to an ExponentialElGamalCiphertext."); }
+        catch (ClassCastException e) { System.err.println("The IHomomorphicCiphertext given could not be casted to an ExponentialElGamalCiphertext."); }
 
         throw new SearchSpaceExhaustedException("The decryption could not find a number of votes within the probable search space!");
 
@@ -82,12 +82,12 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
     /**
      * @see crypto.ICryptoType#encrypt(byte[])
      */
-    public ICiphertext encrypt(byte[] plainText) throws CipherException, InvalidKeyException, KeyNotLoadedException {
+    public IHomomorphicCiphertext encrypt(byte[] plainText) throws CipherException, InvalidKeyException, KeyNotLoadedException {
 
         if(publicKey == null)
             throw new KeyNotLoadedException("The public key has not yet been loaded! [Encryption]");
 
-        /* Encrypt our plaintext and store as ICiphertext *//* TODO change this to return ExponentialElgamalCiphertext */
+        /* Encrypt our plaintext and store as IHomomorphicCiphertext *//* TODO change this to return ExponentialElgamalCiphertext */
         return publicKey.encrypt(new AdderInteger(new BigInteger(plainText)));
     }
 

@@ -22,12 +22,12 @@ public class ByteCrypto {
         this.cryptoType = cryptoType;
     }
 
-    public byte[] decrypt(ICiphertext cipherText) throws KeyNotLoadedException, InvalidKeyException, CipherException, CiphertextException {
+    public byte[] decrypt(IHomomorphicCiphertext cipherText) throws KeyNotLoadedException, InvalidKeyException, CipherException, CiphertextException {
 
         return cryptoType.decrypt(cipherText);
     }
 
-    public ICiphertext encrypt(byte[] plainText) throws KeyNotLoadedException, InvalidKeyException, CipherException {
+    public IHomomorphicCiphertext encrypt(byte[] plainText) throws KeyNotLoadedException, InvalidKeyException, CipherException {
 
         return cryptoType.encrypt(plainText);
     }
