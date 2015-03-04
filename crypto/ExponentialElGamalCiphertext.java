@@ -5,20 +5,7 @@ import crypto.adder.AdderInteger;
 /**
  * Created by Matthew Kindy II on 12/1/2014.
  */
-public final class ExponentialElGamalCiphertext implements IHomomorphicCiphertext<ExponentialElGamalCiphertext> {
-
-
-    public static ExponentialElGamalCiphertext newCiphertext(AdderInteger g, AdderInteger h, AdderInteger r, AdderInteger p) {
-        return new ExponentialElGamalCiphertext(g, h, r, p);
-    }
-
-    public static ExponentialElGamalCiphertext newCiphertext(AdderInteger g, AdderInteger h, AdderInteger p) {
-        return new ExponentialElGamalCiphertext(g, h, p);
-    }
-
-    public static ExponentialElGamalCiphertext identity(AdderInteger p){
-        return new ExponentialElGamalCiphertext(AdderInteger.ONE, AdderInteger.ONE, PEK.getP());
-    }
+public class ExponentialElGamalCiphertext implements IHomomorphicCiphertext<ExponentialElGamalCiphertext> {
 
     /** A generator for the ElGamal keys, is the generator of the group mod p */
     private AdderInteger g;
@@ -35,14 +22,14 @@ public final class ExponentialElGamalCiphertext implements IHomomorphicCiphertex
     /** A proof of the membership of an element to group G */
     private IProof proof;
 
-    private ExponentialElGamalCiphertext(AdderInteger g, AdderInteger h, AdderInteger r, AdderInteger p) {
+    public ExponentialElGamalCiphertext(AdderInteger g, AdderInteger h, AdderInteger r, AdderInteger p) {
         this.p = p;
         this.g = new AdderInteger(g, p);
         this.h = new AdderInteger(h, p);
         this.r = r;
     }
 
-    private ExponentialElGamalCiphertext(AdderInteger g, AdderInteger h, AdderInteger p) {
+    public ExponentialElGamalCiphertext(AdderInteger g, AdderInteger h, AdderInteger p) {
         this(g,h, AdderInteger.ZERO, p);
     }
 
@@ -51,7 +38,7 @@ public final class ExponentialElGamalCiphertext implements IHomomorphicCiphertex
      * @param operand The ciphertext to "add" yourself to
      * @return
      */
-    public ExponentialElGamalCiphertext operate(ExponentialElGamalCiphertext operand) {
+    public  ExponentialElGamalCiphertext operate(ExponentialElGamalCiphertext operand) {
         return this.multiply(operand);
     }
 

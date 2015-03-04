@@ -29,8 +29,9 @@ public class EncryptedVote<T extends IHomomorphicCiphertext> extends AVote imple
 
     }
 
-    public static <S extends IHomomorphicCiphertext> EncryptedVote<S> identity(EncryptedVote<S> v, APublicKey PEK) {
+    public static <S extends IHomomorphicCiphertext> EncryptedVote<S> identity(EncryptedVote v, APublicKey PEK) {
 
+        /* This will hold the map of identity ciphertexts to put into the identity vote */
         Map<String, S> identityMap = new HashMap<>();
 
         /* Fill in all the entries with identities of type S */

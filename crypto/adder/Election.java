@@ -64,11 +64,9 @@ public class Election <T extends IHomomorphicCiphertext> {
     public EncryptedVote<T> sumVotes() {
 
         /* Pull out the first vote */
-        EncryptedVote<IHomomorphicCiphertext> v = (EncryptedVote<IHomomorphicCiphertext>)votes.get(0);
+        EncryptedVote<T> v = votes.get(0);
 
         /* Create a new multiplicative identity */
-        /* TODO maybe get the class from the entryset and pass class and keyset individually to avoid type issue, then
-        *  don't cast above */
         EncryptedVote<T> total = EncryptedVote.identity(v, PEK);
 
         /* Multiply all the votes together */
