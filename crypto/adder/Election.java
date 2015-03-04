@@ -1,7 +1,7 @@
 package crypto.adder;
 
-import crypto.EncryptedVote;
 import crypto.IHomomorphicCiphertext;
+import crypto.EncryptedVote;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,13 +15,13 @@ import java.util.Map;
  * @version $LastChangedRevision$ $LastChangedDate$
  * @since 0.0.1
  */
-public class Election {
+public class Election <T extends IHomomorphicCiphertext> {
 
     /** The public key used to encrypt and tally */
     private AdderPublicKey PEK;
 
     /** The List of all Votes cast in this Election */
-    private List<EncryptedVote> votes;
+    private List<EncryptedVote<T>> votes;
 
     /** The List of all candidates in this Election (race) */
     private List<String> choices;
@@ -42,7 +42,7 @@ public class Election {
      *
      * @return          the votes
      */
-    public List<EncryptedVote> getVotes() {
+    public List<EncryptedVote<T>> getVotes() {
         return votes;
     }
 
@@ -61,25 +61,18 @@ public class Election {
      *
      * @return          a vote representing the total of the given list of votes
      */
-    public <T extends IHomomorphicCiphertext> EncryptedVote sumVotes() {
+    public EncryptedVote<T> sumVotes() {
 
         /* Pull out the first vote */
-        EncryptedVote v = votes.get(0);
-
-        Map<String, T> cipherMap = new HashMap<>();
-
-        cipherMap.putAll(v.getVoteMap());
-
-        /* Construct a bunch of individual multiplicative identities */
-        for (String name: choices)
-            cipherMap.put(name, T.getHomomorphicIdentity(PEK.getP()));
-
+        EncryptedVote<IHomomorphicCiphertext> v = (EncryptedVote<IHomomorphicCiphertext>)votes.get(0);
 
         /* Create a new multiplicative identity */
-        EncryptedVote total = new EncryptedVote(cipherMap, v.getTitle());
+        /* TODO maybe get the class from the entryset and pass class and keyset individually to avoid type issue, then
+        *  don't cast above */
+        EncryptedVote<T> total = EncryptedVote.identity(v, PEK);
 
         /* Multiply all the votes together */
-        for (EncryptedVote vote : votes)
+        for (EncryptedVote<T> vote : votes)
             total = vote.operate(total);
 
         /* These are aliasing checks */

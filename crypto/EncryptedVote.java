@@ -3,21 +3,23 @@ package crypto;
 import crypto.adder.InvalidVoteException;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
+import sexpression.lexer.Hash;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Matthew Kindy II on 11/19/2014.
  */
-public class EncryptedVote extends AVote implements Provable {
+public class EncryptedVote<T extends IHomomorphicCiphertext> extends AVote implements Provable {
 
     /** The proof representing the validity of this vote */
-    private VoteProof<IHomomorphicCiphertext> proof;
+    private VoteProof<T> proof;
 
-    private Map<String, IHomomorphicCiphertext> cipherMap;
+    private Map<String, T> cipherMap;
 
-    public EncryptedVote(Map<String, IHomomorphicCiphertext> cipherMap, String title) {
+    public EncryptedVote(Map<String, T> cipherMap, String title) {
         super(title);
 
         this.cipherMap = cipherMap;
@@ -27,11 +29,23 @@ public class EncryptedVote extends AVote implements Provable {
 
     }
 
+    public static <S extends IHomomorphicCiphertext> EncryptedVote<S> identity(EncryptedVote<S> v, APublicKey PEK) {
+
+        Map<String, S> identityMap = new HashMap<>();
+
+        /* Fill in all the entries with identities of type S */
+        for(Map.Entry<String, S> entry : v.cipherMap.entrySet())
+                identityMap.put(entry.getKey(), CiphertextFactory.identity(entry.getValue().getClass(),PEK.getP()));
+
+        /*  */
+        return new EncryptedVote<>(identityMap, v.getTitle());
+    }
+
     /**
      *
      * @return
      */
-    public Map<String, IHomomorphicCiphertext> getVoteMap(){
+    public Map<String, T> getVoteMap(){
         return cipherMap;
     }
 
@@ -42,8 +56,10 @@ public class EncryptedVote extends AVote implements Provable {
      * @param other    the other vote to be combined with this one
      * @return the result of the operation
      */
-    public EncryptedVote operate(EncryptedVote other) {
-        HashMap<String, IHomomorphicCiphertext> resultMap = new HashMap<>();
+    public EncryptedVote<T> operate(EncryptedVote<T> other) {
+
+        Map<String, T> resultMap = new HashMap<>();
+
 
         resultMap.putAll(other.cipherMap);
         resultMap.putAll(cipherMap);
@@ -55,7 +71,7 @@ public class EncryptedVote extends AVote implements Provable {
 
         }
 
-        return new EncryptedVote(resultMap, getTitle());
+        return new EncryptedVote<>(resultMap, getTitle());
     }
 
     /**
@@ -71,7 +87,7 @@ public class EncryptedVote extends AVote implements Provable {
      * @return
      */
     /* Does this need to be typed or will it just have to be homomorphic? */
-    public VoteProof<IHomomorphicCiphertext> getProof(){
+    public VoteProof<T> getProof(){
         return proof;
     }
 
@@ -80,7 +96,7 @@ public class EncryptedVote extends AVote implements Provable {
      * @param cipherMap
      * @return
      */
-    private boolean createVoteProof(Map<String, IHomomorphicCiphertext> cipherMap) {
+    private boolean createVoteProof(Map<String, T> cipherMap) {
 
         /* Should each Ciphertext have proofs inside or just have all their proofs inside VoteProof (or both)? */
         /* Should each Vote have to pass itself to its proof for verification? */

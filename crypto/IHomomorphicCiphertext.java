@@ -9,7 +9,7 @@ import java.io.Serializable;
  *
  * @author Matt Bernhard
  */
-public interface IHomomorphicCiphertext<T extends IHomomorphicCiphertext> extends Serializable {
+public interface IHomomorphicCiphertext extends Serializable {
 
     /**
      * Will perform some arity 2 homomorphic operation on the ciphertexts, depending on
@@ -19,5 +19,6 @@ public interface IHomomorphicCiphertext<T extends IHomomorphicCiphertext> extend
      * @param operand The ciphertext to "add" yourself to
      * @return the result of computing  the arity two function between this object and the parameter operand
      */
-    public T operate(T operand);
+    public abstract <T extends IHomomorphicCiphertext> T operate(T operand);
+
 }

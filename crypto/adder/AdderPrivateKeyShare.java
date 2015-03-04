@@ -1,8 +1,8 @@
 package crypto.adder;
 
+import crypto.IHomomorphicCiphertext;
 import crypto.EncryptedVote;
 import crypto.ExponentialElGamalCiphertext;
-import crypto.IHomomorphicCiphertext;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.StringExpression;

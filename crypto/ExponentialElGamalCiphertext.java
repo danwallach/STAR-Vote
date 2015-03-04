@@ -5,7 +5,20 @@ import crypto.adder.AdderInteger;
 /**
  * Created by Matthew Kindy II on 12/1/2014.
  */
-public class ExponentialElGamalCiphertext implements IHomomorphicCiphertext<ExponentialElGamalCiphertext> {
+public final class ExponentialElGamalCiphertext implements IHomomorphicCiphertext<ExponentialElGamalCiphertext> {
+
+
+    public static ExponentialElGamalCiphertext newCiphertext(AdderInteger g, AdderInteger h, AdderInteger r, AdderInteger p) {
+        return new ExponentialElGamalCiphertext(g, h, r, p);
+    }
+
+    public static ExponentialElGamalCiphertext newCiphertext(AdderInteger g, AdderInteger h, AdderInteger p) {
+        return new ExponentialElGamalCiphertext(g, h, p);
+    }
+
+    public static ExponentialElGamalCiphertext identity(AdderInteger p){
+        return new ExponentialElGamalCiphertext(AdderInteger.ONE, AdderInteger.ONE, PEK.getP());
+    }
 
     /** A generator for the ElGamal keys, is the generator of the group mod p */
     private AdderInteger g;
@@ -22,14 +35,14 @@ public class ExponentialElGamalCiphertext implements IHomomorphicCiphertext<Expo
     /** A proof of the membership of an element to group G */
     private IProof proof;
 
-    public ExponentialElGamalCiphertext(AdderInteger g, AdderInteger h, AdderInteger r, AdderInteger p) {
+    private ExponentialElGamalCiphertext(AdderInteger g, AdderInteger h, AdderInteger r, AdderInteger p) {
         this.p = p;
         this.g = new AdderInteger(g, p);
         this.h = new AdderInteger(h, p);
         this.r = r;
     }
 
-    public ExponentialElGamalCiphertext(AdderInteger g, AdderInteger h, AdderInteger p) {
+    private ExponentialElGamalCiphertext(AdderInteger g, AdderInteger h, AdderInteger p) {
         this(g,h, AdderInteger.ZERO, p);
     }
 
