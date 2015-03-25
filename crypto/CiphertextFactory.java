@@ -16,9 +16,10 @@ public class CiphertextFactory {
 
 
     /* TODO maybe this should return type T...*/
+    /* TODO this will eventually reflect a constructor based on c */
     public static <T extends IHomomorphicCiphertext> IHomomorphicCiphertext identity(Class<T> c, APublicKey PEK){
         if (c == ExponentialElGamalCiphertext.class)
-            return new ExponentialElGamalCiphertext(AdderInteger.ONE, AdderInteger.ONE, PEK.getP());
+            return new ExponentialElGamalCiphertext(AdderInteger.ONE, AdderInteger.ONE, PEK);
         else
             return null;
     }
