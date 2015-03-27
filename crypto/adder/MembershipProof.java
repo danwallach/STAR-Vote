@@ -1,5 +1,6 @@
 package crypto.adder;
 
+import crypto.AProof;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.StringExpression;
@@ -69,7 +70,7 @@ import java.util.StringTokenizer;
  *  @version $LastChangedRevision$ $LastChangedDate$
  *  @since 0.0.1
  */
-public class MembershipProof implements Serializable {
+public class MembershipProof extends AProof {
 
 	private AdderInteger p;
 	private AdderInteger q;

@@ -1,10 +1,12 @@
 package crypto;
 
+import crypto.adder.AdderPublicKey;
 import crypto.adder.InvalidVoteException;
 import crypto.adder.MembershipProof;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,10 +16,15 @@ import java.util.Map;
 public class EncryptedVote<T extends IHomomorphicCiphertext> extends AVote implements Provable {
 
     /** The sumProof representing the validity of this vote */
-    private MembershipProof<T> sumProof;
+    private MembershipProof sumProof;
 
     private Map<String, T> cipherMap;
 
+    /**
+     *
+     * @param cipherMap
+     * @param title
+     */
     public EncryptedVote(Map<String, T> cipherMap, String title) {
         super(title);
 
@@ -28,6 +35,13 @@ public class EncryptedVote<T extends IHomomorphicCiphertext> extends AVote imple
 
     }
 
+    /**
+     *
+     * @param v
+     * @param PEK
+     * @param <S>
+     * @return
+     */
     public static <S extends IHomomorphicCiphertext> EncryptedVote<S> identity(EncryptedVote<S> v, APublicKey PEK) {
 
         /* This will hold the map of identity ciphertexts to put into the identity vote */
@@ -100,15 +114,22 @@ public class EncryptedVote<T extends IHomomorphicCiphertext> extends AVote imple
         return false;
     }
 
-    public boolean verify(int min, int max) {
+    /**
+     *
+     * @param min
+     * @param max
+     * @return
+     */
+    public boolean verify(int min, int max, APublicKey PEK) {
 
         for (Map.Entry<String, T> entry : cipherMap.entrySet()) {
-            if (!entry.getValue().verify()) {
+            if (!entry.getValue().verify(min, max, PEK)) {
                 return false;
             }
         }
-
-        return sumProof.verify(min, max);
+        /* TODO type membershipProof to handle types */
+        /* Create a domain */
+        return sumProof.verify(this, new ArrayList(), PEK);
     }
 
     /**

@@ -1,6 +1,7 @@
 package crypto;
 
 import crypto.adder.AdderInteger;
+import crypto.adder.MembershipProof;
 
 /**
  * Created by Matthew Kindy II on 12/1/2014.
@@ -20,7 +21,7 @@ public class ExponentialElGamalCiphertext implements IHomomorphicCiphertext<Expo
     private AdderInteger p;
 
     /** A proof of the membership of an element to group G */
-    private IProof proof;
+    private MembershipProof proof;
 
     public ExponentialElGamalCiphertext(AdderInteger g, AdderInteger h, AdderInteger r, AdderInteger p) {
         this.p = p;
@@ -62,15 +63,6 @@ public class ExponentialElGamalCiphertext implements IHomomorphicCiphertext<Expo
     }
 
     /**
-     * Returns the proof associated with this vote.
-     *
-     * @return the proof
-     */
-    public IProof getProof() {
-        return proof;
-    }
-
-    /**
      * Returns the generator <tt>g</tt>.
      *
      * @return the generator <tt>g</tt>
@@ -93,8 +85,12 @@ public class ExponentialElGamalCiphertext implements IHomomorphicCiphertext<Expo
      *
      * @param proof         the proof
      */
-    public void setProof(IProof proof) {
+    public void setProof(MembershipProof proof) {
         this.proof = proof;
+    }
+
+    public boolean verify(int min, int max, APublicKey PEK) {
+        return proof.verify(min, max, PEK);
     }
 
     public byte[] asBytes() {
