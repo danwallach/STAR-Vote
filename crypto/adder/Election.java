@@ -68,29 +68,14 @@ public class Election <T extends IHomomorphicCiphertext> {
         /* Create a new multiplicative identity */
         EncryptedVote<T> total = EncryptedVote.identity(v, PEK);
 
-        /* Multiply all the votes together */
+        /* Multiply all the votes together and recompute proof */
         for (EncryptedVote<T> vote : votes)
             total = vote.operate(total);
-
-        /* These are aliasing checks */
-
-        /* Compute the sumProof for this totalled Vote and put it into total */
-        //MembershipProof sumProof = total.computeSumProof(votes.size(), PEK);
-        total.computeSumProof(votes.size(), PEK);
-
-        /*
-          Create an empty ArrayList for proofList. This doesn't seem to need to be filled out
-          because individual NIZKs are checked pre-sum and we check the sum post-sum
-        */
-        //List<MembershipProof> proofList = new ArrayList<>();
-
-        /* Construct a new vote with the proofs and all the information */
-        //Vote summedVote = new Vote(total.getCipherList(), total.getChoices(), new VoteProof(sumProof, proofList));
 
         /* ---------------- TESTING ---------------- */
 
         System.out.println("In Election.sumVotes() -- Testing single vote summed, Max expected value: " + votes.size());
-        System.out.println("In Election.sumVotes() -- [Single vote summed] sumProof verfied: " + total.verifyVoteProof(PEK, 0, votes.size()));
+        System.out.println("In Election.sumVotes() -- [Single vote summed] sumProof verfied: " + total.verify(0, votes.size(),PEK));
         System.out.println("-----------------");
 
         /* ------------------------------------------ */
