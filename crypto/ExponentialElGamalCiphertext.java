@@ -3,6 +3,9 @@ package crypto;
 import crypto.adder.AdderInteger;
 import crypto.adder.MembershipProof;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Matthew Kindy II on 12/1/2014.
  */
@@ -89,8 +92,15 @@ public class ExponentialElGamalCiphertext implements IHomomorphicCiphertext<Expo
         this.proof = proof;
     }
 
-    public boolean verify(int min, int max, APublicKey PEK) {
-        return proof.verify(min, max, PEK);
+    public boolean verify(int min, int max, IPublicKey PEK) {
+
+        List<Integer> domain = new ArrayList<>();
+
+        for(int i=min; i<=max; i++) {
+            domain.add(i);
+        }
+
+        return proof.verify(this, PEK, domain);
     }
 
     public byte[] asBytes() {

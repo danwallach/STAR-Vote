@@ -12,10 +12,8 @@ public abstract class AProof implements Serializable {
 
     /* Fields? */
 
-    /* Compute? */
-
     /* Verify */
-    public abstract boolean verify(Provable p, APublicKey PEK, List domain);
+    public abstract boolean verify(Provable p, IPublicKey PEK, List<Integer> domain);
 
     /* Multiply? Homomorphic Proof? */
 }

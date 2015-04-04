@@ -2,6 +2,7 @@ package crypto.adder;
 
 import crypto.EncryptedVote;
 import crypto.IHomomorphicCiphertext;
+import crypto.IPublicKey;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.List;
 public class Election <T extends IHomomorphicCiphertext> {
 
     /** The public key used to encrypt and tally */
-    private APublicKey PEK;
+    private IPublicKey PEK;
 
     /** The List of all Votes cast in this Election */
     private List<EncryptedVote<T>> votes;
@@ -29,7 +30,7 @@ public class Election <T extends IHomomorphicCiphertext> {
      *
      * @param publicKey         the public key
      */
-    public Election(APublicKey publicKey, List<String> choices) {
+    public Election(IPublicKey publicKey, List<String> choices) {
         this.PEK = publicKey;
         this.votes = new ArrayList<>();
         this.choices = choices;

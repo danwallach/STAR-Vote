@@ -8,6 +8,6 @@ import java.io.Serializable;
  */
 public interface Provable extends Serializable {
 
-    public boolean verify(int min, int max, APublicKey PEK);
+    public boolean verify(int min, int max, IPublicKey PEK);
 
 }
