@@ -42,7 +42,7 @@ public class ExponentialElGamalCiphertext implements IHomomorphicCiphertext<Expo
      * @param operand The ciphertext to "add" yourself to
      * @return
      */
-    public  ExponentialElGamalCiphertext operate(ExponentialElGamalCiphertext operand) {
+    public ExponentialElGamalCiphertext operate(ExponentialElGamalCiphertext operand) {
         return this.multiply(operand);
     }
 

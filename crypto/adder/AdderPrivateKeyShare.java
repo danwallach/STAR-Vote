@@ -1,8 +1,8 @@
 package crypto.adder;
 
-import crypto.IHomomorphicCiphertext;
 import crypto.EncryptedVote;
 import crypto.ExponentialElGamalCiphertext;
+import crypto.IHomomorphicCiphertext;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.StringExpression;
@@ -67,7 +67,7 @@ public class AdderPrivateKeyShare extends AdderKey {
      *
      * @return          plaintext the decryption
      */
-    public AdderInteger decrypt(ElgamalCiphertext cipher){
+    public AdderInteger decrypt(AdderElgamalCiphertext cipher){
 
         AdderInteger plaintext = cipher.getH();
 
@@ -85,12 +85,12 @@ public class AdderPrivateKeyShare extends AdderKey {
      * @param polyList      the polynomial list
      * @return the final private key
      */
-    public AdderPrivateKeyShare getFinalPrivKey(List<ElgamalCiphertext> polyList) {
+    public AdderPrivateKeyShare getFinalPrivKey(List<AdderElgamalCiphertext> polyList) {
         AdderInteger total = new AdderInteger(AdderInteger.ZERO, q);
 
         for (Object aPolyList : polyList) {
 
-            ElgamalCiphertext ciphertext = (ElgamalCiphertext) aPolyList;
+            AdderElgamalCiphertext ciphertext = (AdderElgamalCiphertext) aPolyList;
             AdderInteger eL = ciphertext.getG();
             AdderInteger eR = ciphertext.getH();
             AdderInteger product = eL.pow(x.negate()).multiply(eR);

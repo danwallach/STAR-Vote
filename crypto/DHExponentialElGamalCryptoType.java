@@ -22,7 +22,7 @@ import java.util.List;
 public class DHExponentialElGamalCryptoType implements ICryptoType {
 
     private AdderPrivateKeyShare[] privateKeyShares;
-    private AdderPublicKey publicKey;
+    private AdderPublicKey PEK;
 
     /**
      * @see crypto.ICryptoType#decrypt(IHomomorphicCiphertext)
@@ -40,7 +40,7 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
         /* Partially decrypt to get g^m */
         try { BigInteger mappedPlainText = partialDecrypt((ExponentialElGamalCiphertext) ciphertext);
 
-        BigInteger g = publicKey.getG().bigintValue();
+        BigInteger g = PEK.getG().bigintValue();
 
         /* Guess the value of m by comparing g^i to g^m and return if/when they're the same -- TODO 100 is chosen arbitrarily for now */
         for(int i=0; i<100; i++) {
@@ -84,11 +84,25 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
      */
     public IHomomorphicCiphertext encrypt(byte[] plainText) throws CipherException, InvalidKeyException, KeyNotLoadedException {
 
-        if(publicKey == null)
+        if(PEK == null)
             throw new KeyNotLoadedException("The public key has not yet been loaded! [Encryption]");
 
+        AdderInteger plaintextValue = new AdderInteger(new BigInteger(plainText));
+
         /* Encrypt our plaintext and store as IHomomorphicCiphertext *//* TODO change this to return ExponentialElgamalCiphertext */
-        return publicKey.encrypt(new AdderInteger(new BigInteger(plainText)));
+        ExponentialElGamalCiphertext ctext = PEK.encrypt(plaintextValue);
+
+        /* Create MembershipProof */
+        MembershipProof proof = new MembershipProof();
+        proof.compute(ctext, PEK, plaintextValue, Arrays.asList(AdderInteger.ZERO, AdderInteger.ONE));
+
+        /* Stick it in */
+        ctext.setProof();
+
+        /* Verify the ciphertext */
+        ctext.verify(0,1,PEK);
+
+        return ctext;
     }
 
     /**
@@ -138,7 +152,7 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
      * @param publicKey
      */
     private void loadPublicKey(AdderPublicKey publicKey) {
-        this.publicKey = publicKey;
+        this.PEK = publicKey;
     }
 
     /**
@@ -201,7 +215,7 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
             throw new BadKeyException("Public key didn't come first!");
 
 
-        publicKey = (AdderPublicKey)keys[0];
+        PEK = (AdderPublicKey)keys[0];
         privateKeyShares = (AdderPrivateKeyShare[]) Arrays.copyOfRange(keys,1,privateKeySharesNum+2);
     }
 

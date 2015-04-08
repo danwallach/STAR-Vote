@@ -72,13 +72,13 @@ public class AdderTest extends TestCase {
             polys.add(authPoly);
         }
 
-        Map<Integer, List<ElgamalCiphertext>> polyMap= new HashMap<> (numAuths);
+        Map<Integer, List<AdderElgamalCiphertext>> polyMap= new HashMap<> (numAuths);
 
         for (int i = 0; i < numAuths; i++) {
-            List<ElgamalCiphertext> ciphertexts = new ArrayList<> (numAuths);
+            List<AdderElgamalCiphertext> ciphertexts = new ArrayList<> (numAuths);
 
             for (int j = 0; j < numAuths; j++) {
-                ElgamalCiphertext ciphertext
+                AdderElgamalCiphertext ciphertext
                     = (pubKeys.get(j)).encryptPoly((polys.get(i)).evaluate(new AdderInteger(j, q)));
                 ciphertexts.add(ciphertext);
             }

@@ -19,7 +19,7 @@ import java.util.StringTokenizer;
 public class AdderVote implements Serializable {
 
     /** This vote's list of cipher texts, i.e. its encrypted selections */
-    private List<ElgamalCiphertext> cipherList;
+    private List<AdderElgamalCiphertext> cipherList;
 
     /** The proof representing the validity of this vote */
     private VoteProof proof;
@@ -38,7 +38,7 @@ public class AdderVote implements Serializable {
      * @param proof
      * @param title
      */
-    public AdderVote(List<ElgamalCiphertext> cipherList, List<ASExpression> valueIds, VoteProof proof, String title) {
+    public AdderVote(List<AdderElgamalCiphertext> cipherList, List<ASExpression> valueIds, VoteProof proof, String title) {
         this(cipherList, valueIds, proof);
         this.title = title;
 
@@ -54,7 +54,7 @@ public class AdderVote implements Serializable {
      * Initializes a vote from a vector of ciphertexts.
      * TODO check this usage to see if we can kill this
      */
-    public AdderVote(List<ElgamalCiphertext> cipherList, List<ASExpression> choices) {
+    public AdderVote(List<AdderElgamalCiphertext> cipherList, List<ASExpression> choices) {
         this.cipherList = cipherList;
 
         this.choices = choices;
@@ -66,7 +66,7 @@ public class AdderVote implements Serializable {
      * Initializes a vote from a vector of ciphertexts.\
      * TODO kill usages of this without title
      */
-    public AdderVote(List<ElgamalCiphertext> cipherList, List<ASExpression> choices, VoteProof proof) {
+    public AdderVote(List<AdderElgamalCiphertext> cipherList, List<ASExpression> choices, VoteProof proof) {
         this.cipherList = cipherList;
         this.choices = choices;
         this.proof = proof;
@@ -75,7 +75,7 @@ public class AdderVote implements Serializable {
     /**
      * Initializes a vote from a vector of ciphertexts.
      */
-    private AdderVote(List<ElgamalCiphertext> cipherList, List<ASExpression> choices, List<MembershipProof> proofList, String title) {
+    private AdderVote(List<AdderElgamalCiphertext> cipherList, List<ASExpression> choices, List<MembershipProof> proofList, String title) {
         this.cipherList = cipherList;
         this.choices = choices;
         this.title = title;
@@ -91,7 +91,7 @@ public class AdderVote implements Serializable {
      * Accessor function to retrieve the cipherList.
      * @return the vector of ciphertexts.
      */
-    public List<ElgamalCiphertext> getCipherList() {
+    public List<AdderElgamalCiphertext> getCipherList() {
         return cipherList;
     }
 
@@ -124,12 +124,12 @@ public class AdderVote implements Serializable {
      */
     public AdderVote multiply(AdderVote otherVote) {
 
-        List<ElgamalCiphertext> vec = new ArrayList<>();
+        List<AdderElgamalCiphertext> vec = new ArrayList<>();
 
         for (int i = 0; i < this.getCipherList().size(); i++) {
 
-            ElgamalCiphertext ciphertext1 = this.getCipherList().get(i);
-            ElgamalCiphertext ciphertext2 = otherVote.getCipherList().get(i);
+            AdderElgamalCiphertext ciphertext1 = this.getCipherList().get(i);
+            AdderElgamalCiphertext ciphertext2 = otherVote.getCipherList().get(i);
 
             vec.add(ciphertext1.multiply(ciphertext2));
         }
@@ -151,12 +151,12 @@ public class AdderVote implements Serializable {
     public void computeSumProof(int numVotes, AdderPublicKey publicKey){
 
         /* Create a multiplicative identity */
-        ElgamalCiphertext sumCipher = new ElgamalCiphertext(AdderInteger.ONE, AdderInteger.ONE, publicKey.getP());
+        AdderElgamalCiphertext sumCipher = new AdderElgamalCiphertext(AdderInteger.ONE, AdderInteger.ONE, publicKey.getP());
 
         System.out.println("Cipherlist size in computeSumProof: " + cipherList.size());
 
         /* Multiply all the ciphertexts together - needed for sumProof.compute() */
-        for (ElgamalCiphertext ciphertext : cipherList)
+        for (AdderElgamalCiphertext ciphertext : cipherList)
             sumCipher = ciphertext.multiply(sumCipher);
 
         List<AdderInteger> totalDomain = new ArrayList<>(numVotes + 1);
@@ -183,18 +183,18 @@ public class AdderVote implements Serializable {
     *
     * @param s      the string representation of a Vote.
     *
-    * @see ElgamalCiphertext#fromString(String)
+    * @see AdderElgamalCiphertext#fromString(String)
     */
     public static AdderVote fromString(String s) {
 
         StringTokenizer st = new StringTokenizer(s, " ");
-        List<ElgamalCiphertext> cList = new ArrayList<>(25); // XXX: what size?
+        List<AdderElgamalCiphertext> cList = new ArrayList<>(25); // XXX: what size?
 
         while (st.hasMoreTokens()) {
             String s2 = st.nextToken();
 
             try {
-                ElgamalCiphertext ciphertext = ElgamalCiphertext.fromString(s2);
+                AdderElgamalCiphertext ciphertext = AdderElgamalCiphertext.fromString(s2);
                 cList.add(ciphertext);
             }
             catch (InvalidElgamalCiphertextException iece) { throw new InvalidVoteException(iece.getMessage()); }
@@ -211,7 +211,7 @@ public class AdderVote implements Serializable {
      *
      * @return      the string representation of the vote.
      *
-     * @see crypto.adder.ElgamalCiphertext#toString()
+     * @see AdderElgamalCiphertext#toString()
      */
     public String toString() {
 
@@ -219,7 +219,7 @@ public class AdderVote implements Serializable {
 
         StringBuilder sb = new StringBuilder(4096);
 
-        for (ElgamalCiphertext ciphertext : cipherList) {
+        for (AdderElgamalCiphertext ciphertext : cipherList) {
             sb.append(ciphertext.toString());
             sb.append(" ");
         }
@@ -233,13 +233,13 @@ public class AdderVote implements Serializable {
      * 
      * @return      the S-Expression equivalent of this Vote
      *
-     * @see ElgamalCiphertext#toASE()
+     * @see AdderElgamalCiphertext#toASE()
      */
     public ListExpression toASE(){
 
     	List<ASExpression> cList = new ArrayList<>();
 
-    	for(ElgamalCiphertext text : cipherList)
+    	for(AdderElgamalCiphertext text : cipherList)
     		cList.add(text.toASE());
 
         ListExpression vote = new ListExpression(StringExpression.makeString("vote"), new ListExpression(cList));
@@ -267,7 +267,7 @@ public class AdderVote implements Serializable {
      * @param ase       S-Expression representation of a Vote
      * @return          the Vote equivalent of ase
      *
-     * @see ElgamalCiphertext#fromASE(sexpression.ASExpression)
+     * @see AdderElgamalCiphertext#fromASE(sexpression.ASExpression)
      */
     public static AdderVote fromASE(ASExpression ase){
 
@@ -278,7 +278,7 @@ public class AdderVote implements Serializable {
         ListExpression proofExp = (ListExpression) exp.get(2);
         ListExpression titleExp = (ListExpression) exp.get(3);
 
-        List<ElgamalCiphertext> vote = new ArrayList<>();
+        List<AdderElgamalCiphertext> vote = new ArrayList<>();
         List<ASExpression> choices = new ArrayList<>();
 
         if(!(voteExp.get(0)).toString().equals("vote"))
@@ -287,7 +287,7 @@ public class AdderVote implements Serializable {
         ListExpression votesE = (ListExpression) voteExp.get(1);
 
         for(int i = 0; i < votesE.size(); i++)
-            vote.add(ElgamalCiphertext.fromASE(votesE.get(i)));
+            vote.add(AdderElgamalCiphertext.fromASE(votesE.get(i)));
 
         if(!(choiceExp.get(0)).toString().equals("vote-ids"))
             throw new RuntimeException("Not vote ids!");

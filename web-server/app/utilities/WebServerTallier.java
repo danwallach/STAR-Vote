@@ -220,7 +220,7 @@ public class WebServerTallier {
         AdderInteger f = masterKey.getF();
 
         /* Extract the ciphertexts */
-        List<ElgamalCiphertext> cipherList = sum.getCipherList();
+        List<AdderElgamalCiphertext> cipherList = sum.getCipherList();
 
         /* Figure out how many ciphertexts there are */
         int csize = cipherList.size();

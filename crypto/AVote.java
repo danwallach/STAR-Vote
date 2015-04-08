@@ -10,14 +10,12 @@ import java.util.Map;
 public abstract class AVote {
 
     /** The title for the race corresponding to this vote. Note that it will simply be a UID */
-    private String title;
+    protected String title;
+    protected int size;
 
-    protected AVote(String title) {
+    protected AVote(String title, int size) {
         this.title = title;
-    }
-
-    public String getTitle() {
-        return title;
+        this.size = size;
     }
 
     public abstract Map<String,?> getVoteMap();

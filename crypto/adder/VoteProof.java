@@ -67,11 +67,11 @@ public class VoteProof implements Serializable {
      * @param min           the minimum number of candidates required to be selected.
      * @param max           the maximum number of candidates required to be selected.
      *
-     * @see MembershipProof#compute(ElgamalCiphertext, AdderPublicKey, AdderInteger, List)
+     * @see MembershipProof#compute(AdderElgamalCiphertext, AdderPublicKey, AdderInteger, List)
      */
         public void compute(AdderVote vote, AdderPublicKey pubKey, List<AdderInteger> choices, int min, int max) {
 
-        List<ElgamalCiphertext> cipherList = vote.getCipherList();
+        List<AdderElgamalCiphertext> cipherList = vote.getCipherList();
 
         /* Create the domain of possible selection options */
         List<AdderInteger> cipherDomain = new ArrayList<>(2);
@@ -81,7 +81,7 @@ public class VoteProof implements Serializable {
         cipherDomain.add(AdderInteger.ONE);
 
         /* Set this up as a multiplicative identity */
-        ElgamalCiphertext sumCipher = new ElgamalCiphertext(AdderInteger.ONE, AdderInteger.ONE, pubKey.getP());
+        AdderElgamalCiphertext sumCipher = new AdderElgamalCiphertext(AdderInteger.ONE, AdderInteger.ONE, pubKey.getP());
 
         int numChoices = 0;
 
@@ -94,7 +94,7 @@ public class VoteProof implements Serializable {
         for (int i = 0; i < size; i++) {
 
             /* Get the encrypted vote and the plaintext */
-            ElgamalCiphertext ciphertext = cipherList.get(i);
+            AdderElgamalCiphertext ciphertext = cipherList.get(i);
 
             /* Pull out the plaintext for this choice */
             AdderInteger choice = choices.get(i);
@@ -136,11 +136,11 @@ public class VoteProof implements Serializable {
      * @param max           the maximum number of candidates required to be selected.
      * @return              \b true if the proof is valid, \b false otherwise.
      *
-     * @see MembershipProof#verify(ElgamalCiphertext, AdderPublicKey, java.util.List)
+     * @see MembershipProof#verify(AdderElgamalCiphertext, AdderPublicKey, java.util.List)
      */
     public boolean verify(AdderVote vote, AdderPublicKey pubKey, int min, int max) {
 
-        List<ElgamalCiphertext> cipherList = vote.getCipherList();
+        List<AdderElgamalCiphertext> cipherList = vote.getCipherList();
         List<AdderInteger> cipherDomain = new ArrayList<>(max+1);
 
         /* Number of selections must be in the domain */
@@ -148,20 +148,20 @@ public class VoteProof implements Serializable {
             cipherDomain.add(new AdderInteger(i));
 
         /* Create a multiplicative identity */
-        ElgamalCiphertext sumCipher = new ElgamalCiphertext(AdderInteger.ONE, AdderInteger.ONE, pubKey.getP());
+        AdderElgamalCiphertext sumCipher = new AdderElgamalCiphertext(AdderInteger.ONE, AdderInteger.ONE, pubKey.getP());
 
         int size = this.proofList.size();
 
         System.out.println("In VoteProof.verify() -- Prooflist size: " + proofList.size());
 
-        for (ElgamalCiphertext ciphertext : cipherList)
+        for (AdderElgamalCiphertext ciphertext : cipherList)
             sumCipher = sumCipher.multiply(ciphertext);
 
         /* Check each of the proofs and associated ciphertexts */
         for (int i = 0; i < size; i++) {
 
             MembershipProof proof = this.proofList.get(i);
-            ElgamalCiphertext ciphertext = cipherList.get(i);
+            AdderElgamalCiphertext ciphertext = cipherList.get(i);
 
             /* Return false if the proof couldn't be verified */
             if (!proof.verify(ciphertext, pubKey, cipherDomain)) {

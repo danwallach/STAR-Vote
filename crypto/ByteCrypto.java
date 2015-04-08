@@ -32,7 +32,7 @@ public class ByteCrypto {
         return cryptoType.encrypt(plainText);
     }
 
-    public void loadKeys(String... filePaths) throws FileNotFoundException, BadKeyException {
+    public void loadKeys(String... filePaths) throws FileNotFoundException {
 
          cryptoType.loadAllKeys(filePaths);
     }

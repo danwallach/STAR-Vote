@@ -12,8 +12,8 @@ public class PlaintextVote extends AVote {
 
     private Map<String, Integer> voteMap;
 
-    public PlaintextVote(Map<String, Integer> voteMap, String title) {
-        super(title);
+    public PlaintextVote(Map<String, Integer> voteMap, String title, int size) {
+        super(title,size);
         this.voteMap = voteMap;
     }
 
@@ -22,7 +22,7 @@ public class PlaintextVote extends AVote {
     }
 
     public String getTitle(){
-        return super.getTitle();
+        return title;
     }
 
     public ASExpression toASE(){

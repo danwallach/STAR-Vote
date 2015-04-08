@@ -156,7 +156,7 @@ public class AdderPublicKey extends AdderKey implements IPublicKey, Serializable
      * @param m         the destination authority's ID
      * @return          the encrypted ID
      */
-    public ElgamalCiphertext encryptPoly(AdderInteger m) {
+    public AdderElgamalCiphertext encryptPoly(AdderInteger m) {
 
         AdderInteger r = AdderInteger.random(q);
         AdderInteger bigG = g.pow(r);
@@ -165,7 +165,7 @@ public class AdderPublicKey extends AdderKey implements IPublicKey, Serializable
 
         /*TODO  This is a VoteBox related change.  We need to keep r around, but not send it over the wire*/
 
-        return new ElgamalCiphertext(bigG, bigH, r, p);
+        return new AdderElgamalCiphertext(bigG, bigH, r, p);
     }
 
 

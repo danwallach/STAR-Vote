@@ -1,14 +1,17 @@
 package crypto.adder.test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import crypto.adder.*;
+import crypto.adder.AdderElgamalCiphertext;
+import crypto.adder.AdderInteger;
+import crypto.adder.AdderVote;
+import crypto.adder.InvalidVoteException;
 import junit.framework.TestCase;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.StringExpression;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Vote test.
@@ -46,12 +49,12 @@ public class AdderVoteTest extends TestCase {
             fail();
         }
 
-        ElgamalCiphertext ciphertext1 = new ElgamalCiphertext(new AdderInteger("135"),
+        AdderElgamalCiphertext ciphertext1 = new AdderElgamalCiphertext(new AdderInteger("135"),
                               new AdderInteger("246"),
                               new AdderInteger("111"),
                               new AdderInteger("123"));
 
-        List<ElgamalCiphertext> cipherList = new ArrayList<>(1);
+        List<AdderElgamalCiphertext> cipherList = new ArrayList<>(1);
         cipherList.add(ciphertext1);
         AdderVote vote1 = new AdderVote(cipherList, null);
 
@@ -66,8 +69,8 @@ public class AdderVoteTest extends TestCase {
         assertEquals(new AdderInteger("111"),
                      vote1.getCipherList().get(0).getR());
 
-        ElgamalCiphertext ciphertext2
-            = new ElgamalCiphertext(new AdderInteger("135"),
+        AdderElgamalCiphertext ciphertext2
+            = new AdderElgamalCiphertext(new AdderInteger("135"),
                                     new AdderInteger("246"),
                                     new AdderInteger("111"),
                                     new AdderInteger("123"));
@@ -78,8 +81,8 @@ public class AdderVoteTest extends TestCase {
         assertEquals("p123G12H0",
                      vote2.getCipherList().get(0).toString());
 
-        ElgamalCiphertext ciphertext3
-            = new ElgamalCiphertext(new AdderInteger("135"),
+        AdderElgamalCiphertext ciphertext3
+            = new AdderElgamalCiphertext(new AdderInteger("135"),
                                     new AdderInteger("246"),
                                     new AdderInteger("111"),
                                     new AdderInteger("123"));
@@ -210,12 +213,12 @@ public class AdderVoteTest extends TestCase {
     }
 
     public void testSEXP(){
-        ElgamalCiphertext ciphertext1 = new ElgamalCiphertext(new AdderInteger("135"),
+        AdderElgamalCiphertext ciphertext1 = new AdderElgamalCiphertext(new AdderInteger("135"),
                 new AdderInteger("246"),
                 new AdderInteger("111"),
                 new AdderInteger("123"));
 
-        List<ElgamalCiphertext> cipherList = new ArrayList<>(1);
+        List<AdderElgamalCiphertext> cipherList = new ArrayList<>(1);
         cipherList.add(ciphertext1);
 
         ListExpression choices = new ListExpression("B0", "B1", "B2");
@@ -226,7 +229,7 @@ public class AdderVoteTest extends TestCase {
 
         List<ASExpression> cList = new ArrayList<>();
 
-        for(ElgamalCiphertext text : cipherList)
+        for(AdderElgamalCiphertext text : cipherList)
             cList.add(text.toASE());
 
         ListExpression vote = new ListExpression(StringExpression.makeString("vote"), new ListExpression(cList));

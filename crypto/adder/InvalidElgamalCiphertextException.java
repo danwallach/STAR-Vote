@@ -6,8 +6,8 @@ package crypto.adder;
  *
  * @author  David Walluck
  * @version $LastChangedRevision$ $LastChangedDate$
- * @see     ElgamalCiphertext
- * @see     ElgamalCiphertext#fromString(String)
+ * @see     AdderElgamalCiphertext
+ * @see     AdderElgamalCiphertext#fromString(String)
  * @since   0.0.1
  */
 public class InvalidElgamalCiphertextException extends RuntimeException {

@@ -1,11 +1,11 @@
 package crypto.adder;
 
 import crypto.AProof;
+import crypto.ExponentialElGamalCiphertext;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.StringExpression;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -13,49 +13,49 @@ import java.util.StringTokenizer;
 
 /**
  *  Zero-knowledge proof of set membership.
- * 
+ *
  * Suppose we have a ciphertext \f$\langle G, H \rangle = \langle
  * g^r, h^r f^m \rangle\f$ and we wish to prove that \f$m \in
  * \{i_1, \ldots, i_n\}\f$. Furthermore, suppose that \f$m =
  * i_x\f$. We can use the following OR-composition proof of
  * knowledge.
- * 
+ *
  * <table border=0>
  * <tr><th>Prover</th><th></th><th>Verifier</th>
  * <tr><td>\f$c_1, \ldots, c_n \stackrel{\texttt{r}}{\leftarrow}
  * \mathrm{Z}_q\f$</td><td></td><td></td></tr>
- * 
+ *
  * <tr><td>\f$s_1, \ldots, s_n \stackrel{\texttt{r}}{\leftarrow}
  * \mathrm{Z}_q\f$</td><td></td><td></td></tr>
- * 
+ *
  * <tr><td>if \f$i \neq x\f$, then \f$y_i \leftarrow g^{s_i}G^{-c_i}\f$ and \f$z_i \leftarrow h^{s_i}(H / f^{i_i})^{-c_i}\f$<br> otherwise, \f$y_i = g^t\f$ and \f$z_i
  *  = h^t\f$</td><td></td><td></td></tr>
- * 
+ *
  * <tr><td></td><td>\f$\stackrel{y_1, \ldots, y_n, z_1, \ldots,
  * z_n}{\longrightarrow}\f$</td><td></td></tr>
- * 
+ *
  * <tr><td></td><td></td><td>\f$c \stackrel{\texttt{r}}{\leftarrow}
  * \mathrm{Z}_q\f$</td></tr>
- * 
+ *
  * <tr><td></td><td>\f$\stackrel{c}{\longleftarrow}\f$</td><td></td></tr>
- * 
+ *
  * <tr><td>\f$c_x = c - c_1 - \cdots -
  * c_n\f$</td><td></td><td></td></tr>
- * 
+ *
  * <tr><td>\f$s_x = t + c_x r\f$</td><td></td><td></td></tr>
- * 
+ *
  * <tr><td></td><td>\f$\stackrel{s_1, \ldots, s_n, c_1, \ldots,
  * c_n}{\longrightarrow}\f$</td><td></td></tr>
- * 
+ *
  * <tr><td></td><td></td>
  * <td>
  * \f$g^{s_i} \stackrel{?}{=} y_i G^{c_i}\f$ <br>
  * \f$h^{s_i} \stackrel{?}{=} z_i (H/f^{i_i})^{c_i}, i \in
  * \{i_1, \ldots, i_n\}\f$<br>
  * \f$c \stackrel{?}{=} c_1 + \cdots + c_n\f$ </td></tr>
- * 
+ *
  * </table>
- * 
+ *
  * Now, we can make this proof non-interactive by employing the
  * Fiat-Shamir heuristic.  Then, the prover will send the tuple
  * \f$\langle y_1, z_1, \ldots, y_n, z_n, c, s_1, \ldots, s_n,
@@ -65,7 +65,7 @@ import java.util.StringTokenizer;
  * testing that \f$c_1 + \cdots + c_n = \mathcal{H}(g, h, G, H,
  * g^{s_1}G^{-c_1}, h^{s_1}(H/f^{i_1})^{-c_1}, \ldots,
  * g^{s_n}G^{-c_n}, h^{s_n}(H/f^{i_n})^{-c_n})\f$.
- * 
+ *
  *  @author David Walluck
  *  @version $LastChangedRevision$ $LastChangedDate$
  *  @since 0.0.1
@@ -123,7 +123,7 @@ public class MembershipProof extends AProof {
 	 * @param value         the plaintext value of the ciphertext.
 	 * @param domain        the domain of possible values of the plaintext.
 	 */
-	public void compute(ElgamalCiphertext ciphertext, AdderPublicKey pubKey, AdderInteger value, List domain) {
+	public void compute(ExponentialElGamalCiphertext ciphertext, AdderPublicKey pubKey, AdderInteger value, List domain) {
 
         /* Get p and q from the key */
 		this.p = pubKey.getP();
@@ -192,7 +192,7 @@ public class MembershipProof extends AProof {
 
                 /* This will be needed for computing z_i */
 				AdderInteger negC = c.negate();
-				             
+
 			    /* This is essentially the message corresponding to domain member d mapped into G */
                 AdderInteger fpow = f.pow(d);
 
@@ -242,7 +242,7 @@ public class MembershipProof extends AProof {
 	 * @param domain        the domain
 	 * @return              true if the proof is valid
 	 */
-	public boolean verify(ElgamalCiphertext ciphertext, AdderPublicKey pubKey, List<AdderInteger> domain) {
+	public boolean verify(ExponentialElGamalCiphertext ciphertext, AdderPublicKey pubKey, List<AdderInteger> domain) {
 
         /* Extract necessary key components for computation */
 		p = pubKey.getP();

@@ -23,7 +23,7 @@ import java.util.StringTokenizer;
  * @version $LastChangedRevision$ $LastChangedDate$
  * @since 0.0.1
  */
-public class ElgamalCiphertext implements Serializable {
+public class AdderElgamalCiphertext implements Serializable {
 
     /** A generator for the ElGamal keys, is the generator of the group mod p */
     private AdderInteger g;
@@ -47,7 +47,7 @@ public class ElgamalCiphertext implements Serializable {
      * @param g         the generator, first component of the ciphertext
      * @param h         the public value, second component of the ciphertext
      */
-    public ElgamalCiphertext(AdderInteger g, AdderInteger h, AdderInteger p) {
+    public AdderElgamalCiphertext(AdderInteger g, AdderInteger h, AdderInteger p) {
         this.p = p;
         this.g = new AdderInteger(g, p);
         this.h = new AdderInteger(h, p);
@@ -62,7 +62,7 @@ public class ElgamalCiphertext implements Serializable {
      * @param h         the public value, second component of the ciphertext
      * @param r         the private random value, random component of the ciphertext
      */
-    public ElgamalCiphertext(AdderInteger g, AdderInteger h, AdderInteger r, AdderInteger p) {
+    public AdderElgamalCiphertext(AdderInteger g, AdderInteger h, AdderInteger r, AdderInteger p) {
 
         this.p = p;
         this.g = new AdderInteger(g, p);
@@ -94,7 +94,7 @@ public class ElgamalCiphertext implements Serializable {
      * @param ciphertext        the ciphertext to multiply against this
      * @return                  the product of the two ciphertexts.
      */
-    ElgamalCiphertext multiply(ElgamalCiphertext ciphertext) {
+    AdderElgamalCiphertext multiply(AdderElgamalCiphertext ciphertext) {
 
         /* Get the requisite numbers and multiply */
         AdderInteger p = this.getP();
@@ -103,7 +103,7 @@ public class ElgamalCiphertext implements Serializable {
         AdderInteger r = this.getR().add(ciphertext.getR());
 
         /* Create a new ciphertext */
-        return new ElgamalCiphertext(g, h, r, p);
+        return new AdderElgamalCiphertext(g, h, r, p);
     }
 
     /**
@@ -167,7 +167,7 @@ public class ElgamalCiphertext implements Serializable {
      * @param  s        a string that specifies a <tt>ElgamalCiphertext</tt>
      * @return a        <tt>ElgamalCiphertext</tt> with the specified values
      */
-    public static ElgamalCiphertext fromString(String s) {
+    public static AdderElgamalCiphertext fromString(String s) {
 
         /* Set up the StringTokenizer */
         StringTokenizer st0 = new StringTokenizer(s, " ");
@@ -203,7 +203,7 @@ public class ElgamalCiphertext implements Serializable {
                 throw new InvalidElgamalCiphertextException("too many tokens");
 
             /* Create a new vote from g, h, p */
-            ElgamalCiphertext vote = new ElgamalCiphertext(g, h, p);
+            AdderElgamalCiphertext vote = new AdderElgamalCiphertext(g, h, p);
 
             /* If there are more tokens for the other one, look for the vote proof */
             if (st0.hasMoreTokens())
@@ -267,7 +267,7 @@ public class ElgamalCiphertext implements Serializable {
      * @param ASE       S-Expression representation of an ElgamalCiphertext
      * @return          the ElgamalCiphertext equivalent of ase
      */
-    public static ElgamalCiphertext fromASE(ASExpression ASE){
+    public static AdderElgamalCiphertext fromASE(ASExpression ASE){
 
         /* Cast ASE to a ListExpression */
     	ListExpression list = (ListExpression)ASE;
@@ -293,7 +293,7 @@ public class ElgamalCiphertext implements Serializable {
     		proof = MembershipProof.fromASE(list.get(5));
 
         /* Create a new ciphertext from the numbers */
-    	ElgamalCiphertext text = new ElgamalCiphertext(g,h,r,p);
+    	AdderElgamalCiphertext text = new AdderElgamalCiphertext(g,h,r,p);
 
         /* Set the proof if we got one */
     	if(proof != null)

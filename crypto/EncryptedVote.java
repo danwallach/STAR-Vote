@@ -1,24 +1,16 @@
 package crypto;
 
-import crypto.adder.AdderInteger;
-import crypto.adder.AdderPublicKey;
-import crypto.adder.InvalidVoteException;
-import crypto.adder.MembershipProof;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Matthew Kindy II on 11/19/2014.
  */
 public class EncryptedVote<T extends IHomomorphicCiphertext> extends AVote implements Provable {
-
-    /** The sumProof representing the validity of this vote */
-    private MembershipProof sumProof;
 
     private Map<String, T> cipherMap;
 
@@ -27,13 +19,14 @@ public class EncryptedVote<T extends IHomomorphicCiphertext> extends AVote imple
      * @param cipherMap
      * @param title
      */
-    public EncryptedVote(Map<String, T> cipherMap, String title) {
-        super(title);
+    public EncryptedVote(Map<String, T> cipherMap, String title, int size) {
+        super(title, size);
 
         this.cipherMap = cipherMap;
 
-        if (!createVoteProof(cipherMap))
-            throw new InvalidVoteException("An attempt to construct an EncryptedVote with invalid values was attempted!");
+        /* TODO move this into DHExponentialElGamalCryptoType*/
+        //if (!verifySum(cipherMap, 0, size, PEK))
+        //    throw new InvalidVoteException("An attempt to construct an EncryptedVote with invalid values was attempted!");
 
     }
 
@@ -53,8 +46,8 @@ public class EncryptedVote<T extends IHomomorphicCiphertext> extends AVote imple
         for(Map.Entry<String, S> entry : v.cipherMap.entrySet())
                 identityMap.put(entry.getKey(), (S) CiphertextFactory.identity(entry.getValue().getClass(), PEK));
 
-        /*  */
-        return new EncryptedVote<>(identityMap, v.getTitle());
+        /* Create new identity with size 0 (i.e. no votes cast) */
+        return new EncryptedVote<>(identityMap, v.getTitle(), 0);
     }
 
     /**
@@ -91,7 +84,7 @@ public class EncryptedVote<T extends IHomomorphicCiphertext> extends AVote imple
 
         }
 
-        return new EncryptedVote<>(resultMap, getTitle());
+        return new EncryptedVote<>(resultMap, getTitle(), this.size+other.size);
     }
 
     /**
@@ -99,7 +92,7 @@ public class EncryptedVote<T extends IHomomorphicCiphertext> extends AVote imple
      * @return
      */
     public String getTitle(){
-        return super.getTitle();
+        return title;
     }
 
     /**
@@ -107,13 +100,25 @@ public class EncryptedVote<T extends IHomomorphicCiphertext> extends AVote imple
      * @param cipherMap
      * @return
      */
-    private boolean createVoteProof(Map<String, T> cipherMap) {
+    private boolean verifySum(Map<String, T> cipherMap, int min, int max, IPublicKey PEK) {
 
         /* Should each Ciphertext have proofs inside or just have all their proofs inside VoteProof (or both)? */
         /* Should each Vote have to pass itself to its sumProof for verification? */
         /* VoteProof should probably contain Ciphertext proofs and Ciphertexts */
 
-        return false;
+        Set<Map.Entry<String,T>> eSet = cipherMap.entrySet();
+
+        /* Pull out an arbitrary ciphertext to get an instance of T */
+        T arbitraryCiphertext = (T)(eSet.toArray(new Map.Entry[eSet.size()])[0].getValue());
+
+        /* Create an identity for T */
+        T summed = (T)(CiphertextFactory.identity(arbitraryCiphertext.getClass(),PEK));
+
+        for(Map.Entry<String, T> entry : cipherMap.entrySet()) {
+            summed = (T)(summed.operate(entry.getValue()));
+        }
+
+        return summed.verify(min, max, PEK);
     }
 
     /**
@@ -130,13 +135,7 @@ public class EncryptedVote<T extends IHomomorphicCiphertext> extends AVote imple
             }
         }
 
-        List<Integer> domain = new ArrayList<>();
-
-        for(int i=min; i<=max; i++) {
-            domain.add(i);
-        }
-
-        return sumProof.verify(this, PEK, domain);
+        return verifySum(cipherMap, min, max, PEK);
     }
 
     /**

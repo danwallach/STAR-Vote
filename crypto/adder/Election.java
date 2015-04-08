@@ -122,7 +122,7 @@ public class Election <T extends IHomomorphicCiphertext> {
         coeffs.add(AdderInteger.ZERO);
 
         /* Extract the ciphertexts */
-        List<ElgamalCiphertext> cipherList = sum.getCipherList();
+        List<AdderElgamalCiphertext> cipherList = sum.getCipherList();
 
         /* Figure out how many ciphertexts there are */
         int csize = cipherList.size();

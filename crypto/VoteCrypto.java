@@ -71,7 +71,7 @@ public class VoteCrypto {
         }
 
         /* Create a new EncryptedVote from the new ciphertexts */
-        return new EncryptedVote(cipherMap, vote.getTitle());
+        return new EncryptedVote<>(cipherMap, vote.getTitle(), 1);
     }
 
     public void loadKeys(String... filePaths) throws FileNotFoundException, BadKeyException, UninitialisedException {

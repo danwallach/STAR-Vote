@@ -142,11 +142,11 @@ public class AdderPrivateKeyShareTest extends TestCase {
             List/*<ElgamalCiphertext>*/ poly1
                 = new ArrayList/*<ElgamalCiphertext>*/(2);
 
-            ElgamalCiphertext poly11 =
-                ElgamalCiphertext.
+            AdderElgamalCiphertext poly11 =
+                AdderElgamalCiphertext.
                 fromString("p553417232063G493554648720H419663070136");
-            ElgamalCiphertext poly21 =
-                ElgamalCiphertext.
+            AdderElgamalCiphertext poly21 =
+                AdderElgamalCiphertext.
                 fromString("p553417232063G472527834841H115611499483");
 
             poly1.add(poly11);
@@ -155,11 +155,11 @@ public class AdderPrivateKeyShareTest extends TestCase {
             List/*<ElgamalCiphertext>*/ poly2
                 = new ArrayList/*<ElgamalCiphertext>*/(2);
 
-            ElgamalCiphertext poly12 =
-                ElgamalCiphertext
+            AdderElgamalCiphertext poly12 =
+                AdderElgamalCiphertext
                 .fromString("p553417232063G523509046398H219311764844");
-            ElgamalCiphertext poly22 =
-                ElgamalCiphertext
+            AdderElgamalCiphertext poly22 =
+                AdderElgamalCiphertext
                 .fromString("p553417232063G92746876741H526564771384");
 
             poly2.add(poly12);

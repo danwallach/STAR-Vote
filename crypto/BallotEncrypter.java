@@ -221,12 +221,12 @@ public class BallotEncrypter {
         AdderVote vote = finalPubKey.encrypt(value, valueIds);
 
         /* Important data from the ElGamal Encryption */
-        List<ElgamalCiphertext> ciphers = vote.getCipherList();
+        List<AdderElgamalCiphertext> ciphers = vote.getCipherList();
 		
 		List<AdderInteger> subRandom = new ArrayList<>();
 
         /* Building a list of random values that are used to encrypt the vote counters. */
-		for(ElgamalCiphertext cipher : ciphers)
+		for(AdderElgamalCiphertext cipher : ciphers)
 			subRandom.add(cipher.getR());
 
 		/* Add this list of random values for the subBallot to the entire ballot list. */
@@ -482,12 +482,12 @@ public class BallotEncrypter {
 
 
     	
-    	List<ElgamalCiphertext> ciphers = vote.getCipherList();
+    	List<AdderElgamalCiphertext> ciphers = vote.getCipherList();
     	List<AdderInteger> ret = new ArrayList<>();
     	
     	int i = 0;
     	
-    	for(ElgamalCiphertext cipher : ciphers){
+    	for(AdderElgamalCiphertext cipher : ciphers){
     		AdderInteger r = rVals.get(i);
     		
     		AdderInteger gPrime = cipher.getG();

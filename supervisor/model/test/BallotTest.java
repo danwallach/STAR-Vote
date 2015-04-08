@@ -83,7 +83,7 @@ public class BallotTest extends TestCase {
 
         ASExpression nonce = getBlob();
 
-        List<ElgamalCiphertext> cTexts = new ArrayList<>();
+        List<AdderElgamalCiphertext> cTexts = new ArrayList<>();
 
         cTexts.add(publicKey.encryptPoly(AdderInteger.ZERO));
         cTexts.add(publicKey.encryptPoly(AdderInteger.ONE));

@@ -1,7 +1,6 @@
 package crypto;
 
 import crypto.adder.AdderInteger;
-import crypto.adder.AdderKey;
 import crypto.adder.AdderPublicKey;
 
 /**
