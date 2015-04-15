@@ -1,7 +1,7 @@
 package crypto.adder;
 
 import crypto.EncryptedRaceSelection;
-import crypto.IHomomorphicCiphertext;
+import crypto.AHomomorphicCiphertext;
 import crypto.IPublicKey;
 
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ import java.util.List;
  * @version $LastChangedRevision$ $LastChangedDate$
  * @since 0.0.1
  */
-public class Election <T extends IHomomorphicCiphertext> {
+public class Election <T extends AHomomorphicCiphertext> {
 
     /** The public key used to encrypt and tally */
     private IPublicKey PEK;

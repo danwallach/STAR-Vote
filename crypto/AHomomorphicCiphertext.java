@@ -9,7 +9,13 @@ import java.io.Serializable;
  *
  * @author Matt Bernhard
  */
-public interface IHomomorphicCiphertext <T extends IHomomorphicCiphertext> extends Provable, Serializable {
+public abstract class AHomomorphicCiphertext<T extends AHomomorphicCiphertext> implements Provable, Serializable {
+
+    protected int size;
+
+    public AHomomorphicCiphertext(int size){
+        this.size = size;
+    }
 
     /**
      * Will perform some arity 2 homomorphic operation on the ciphertexts, depending on
@@ -19,6 +25,11 @@ public interface IHomomorphicCiphertext <T extends IHomomorphicCiphertext> exten
      * @param operand   the ciphertext to "add" yourself to
      * @return          the result of computing  the arity two function between this object and the parameter operand
      */
-    public abstract T operate(T operand);
+    public abstract T operate(T operand, IPublicKey PEK);
 
+    /**
+     *
+     * @return
+     */
+    public abstract int getSize();
 }

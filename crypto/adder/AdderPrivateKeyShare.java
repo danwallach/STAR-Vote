@@ -2,7 +2,7 @@ package crypto.adder;
 
 import crypto.EncryptedRaceSelection;
 import crypto.ExponentialElGamalCiphertext;
-import crypto.IHomomorphicCiphertext;
+import crypto.AHomomorphicCiphertext;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.StringExpression;
@@ -45,10 +45,10 @@ public class AdderPrivateKeyShare extends AdderKey {
      * @return          the partial decryption of the given vote
      */
     public List<AdderInteger> partialDecrypt(EncryptedRaceSelection vote) {
-        Map<String, IHomomorphicCiphertext> cipherList = vote.getRaceSelectionsMap();
+        Map<String, AHomomorphicCiphertext> cipherList = vote.getRaceSelectionsMap();
         List<AdderInteger> resultList = new ArrayList<>(cipherList.size());
 
-        for (IHomomorphicCiphertext ciphertext : cipherList.values())
+        for (AHomomorphicCiphertext ciphertext : cipherList.values())
             resultList.add(partialDecrypt((ExponentialElGamalCiphertext)ciphertext));
 
         return resultList;

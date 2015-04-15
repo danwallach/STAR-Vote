@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Created by Matthew Kindy II on 12/1/2014.
  */
-public class ExponentialElGamalCiphertext implements IHomomorphicCiphertext<ExponentialElGamalCiphertext> {
+public class ExponentialElGamalCiphertext extends AHomomorphicCiphertext<ExponentialElGamalCiphertext> {
 
     /** A generator for the ElGamal keys, is the generator of the group mod p */
     private AdderInteger g;
@@ -27,7 +27,8 @@ public class ExponentialElGamalCiphertext implements IHomomorphicCiphertext<Expo
     /** A proof of the membership of an element to group G */
     private EEGMembershipProof proof;
 
-    public ExponentialElGamalCiphertext(AdderInteger g, AdderInteger h, AdderInteger r, AdderInteger p, EEGMembershipProof proof) {
+    public ExponentialElGamalCiphertext(AdderInteger g, AdderInteger h, AdderInteger r, AdderInteger p, EEGMembershipProof proof, int size) {
+        super(size);
         this.p = p;
         this.g = new AdderInteger(g, p);
         this.h = new AdderInteger(h, p);
@@ -35,8 +36,16 @@ public class ExponentialElGamalCiphertext implements IHomomorphicCiphertext<Expo
         this.proof = proof;
     }
 
+    public ExponentialElGamalCiphertext(AdderInteger g, AdderInteger h, AdderInteger r, AdderInteger p, EEGMembershipProof proof) {
+        this(g,h,r,p,proof,1);
+    }
+
     public ExponentialElGamalCiphertext(AdderInteger g, AdderInteger h, AdderInteger p, EEGMembershipProof proof) {
-        this(g,h, AdderInteger.ZERO, p, proof);
+        this(g,h, AdderInteger.ZERO, p, proof,1);
+    }
+
+    public ExponentialElGamalCiphertext(AdderInteger g, AdderInteger h, AdderInteger p, EEGMembershipProof proof, int size) {
+        this(g,h, AdderInteger.ZERO, p, proof, size);
     }
 
     /**
@@ -53,8 +62,14 @@ public class ExponentialElGamalCiphertext implements IHomomorphicCiphertext<Expo
         AdderInteger h = this.h.multiply(operand.h);
         AdderInteger r = this.r.add(operand.r);
 
-        /* Operate the proofs on each other */
-        EEGMembershipProof proof = new EEGMembershipProof(g, h, r, (AdderPublicKey) PEK, )
+        List<AdderInteger> domain = new ArrayList<>();
+
+        for(int i=0; i<=size; i++){
+            domain.add(new AdderInteger(i));
+        }
+
+        /* Compute a new proof */
+        EEGMembershipProof proof = new EEGMembershipProof(g, h, r, (AdderPublicKey) PEK, new AdderInteger(size), domain);
 
         /* Create a new ciphertext with the updated values and proof */
         return new ExponentialElGamalCiphertext(g, h, r, p, proof);
@@ -78,14 +93,10 @@ public class ExponentialElGamalCiphertext implements IHomomorphicCiphertext<Expo
         return h;
     }
 
-    /**
-     * Sets the proof to the given proof.
-     *
-     * @param proof         the proof
-     */
-    public void setProof(EEGMembershipProof proof) {
-        this.proof = proof;
+    public int getSize(){
+        return size;
     }
+
 
     /**
      * Verifies this ciphertext encodes a value between min and max and was encrypted with this PEK

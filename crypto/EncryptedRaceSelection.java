@@ -10,7 +10,7 @@ import java.util.Set;
 /**
  * Created by Matthew Kindy II on 11/19/2014.
  */
-public class EncryptedRaceSelection<T extends IHomomorphicCiphertext> extends ARaceSelection implements Provable {
+public class EncryptedRaceSelection<T extends AHomomorphicCiphertext> extends ARaceSelection implements Provable {
 
     private Map<String, T> selectionsMap;
 
@@ -34,7 +34,7 @@ public class EncryptedRaceSelection<T extends IHomomorphicCiphertext> extends AR
      * @param <S>
      * @return
      */
-    public static <S extends IHomomorphicCiphertext> EncryptedRaceSelection<S> identity(EncryptedRaceSelection<S> v, IPublicKey PEK) {
+    public static <S extends AHomomorphicCiphertext> EncryptedRaceSelection<S> identity(EncryptedRaceSelection<S> v, IPublicKey PEK) {
 
         /* This will hold the map of identity ciphertexts to put into the identity vote */
         Map<String, S> identityMap = new HashMap<>();

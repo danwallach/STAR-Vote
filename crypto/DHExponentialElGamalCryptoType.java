@@ -25,11 +25,11 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
     private AdderPublicKey PEK;
 
     /**
-     * @see crypto.ICryptoType#decrypt(IHomomorphicCiphertext)
+     * @see crypto.ICryptoType#decrypt(AHomomorphicCiphertext)
      */
-    public byte[] decrypt(IHomomorphicCiphertext ciphertext) throws InvalidKeyException, KeyNotLoadedException, CipherException, CiphertextException {
+    public byte[] decrypt(AHomomorphicCiphertext ciphertext) throws InvalidKeyException, KeyNotLoadedException, CipherException, CiphertextException {
 
-        /* Check if this is the right type of IHomomorphicCiphertext */
+        /* Check if this is the right type of AHomomorphicCiphertext */
         if(!(ciphertext instanceof ExponentialElGamalCiphertext))
             throw new CiphertextException("The ciphertext type did not match the crypto type!");
 
@@ -50,7 +50,7 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
         }
 
         }
-        catch (ClassCastException e) { System.err.println("The IHomomorphicCiphertext given could not be casted to an ExponentialElGamalCiphertext."); }
+        catch (ClassCastException e) { System.err.println("The AHomomorphicCiphertext given could not be casted to an ExponentialElGamalCiphertext."); }
 
         throw new SearchSpaceExhaustedException("The decryption could not find a number of votes within the probable search space!");
 
@@ -82,7 +82,7 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
     /**
      * @see crypto.ICryptoType#encrypt(byte[])
      */
-    public IHomomorphicCiphertext encrypt(byte[] plainText) throws CipherException, InvalidKeyException, KeyNotLoadedException {
+    public AHomomorphicCiphertext encrypt(byte[] plainText) throws CipherException, InvalidKeyException, KeyNotLoadedException {
 
         if(PEK == null)
             throw new KeyNotLoadedException("The public key has not yet been loaded! [Encryption]");
