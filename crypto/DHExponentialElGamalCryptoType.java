@@ -90,7 +90,7 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
         AdderInteger plaintextValue = new AdderInteger(new BigInteger(plainText));
 
         /* Encrypt our plaintext and store as IHomomorphicCiphertext *//* TODO change this to return ExponentialElgamalCiphertext */
-        ExponentialElGamalCiphertext ctext = PEK.encrypt(plaintextValue);
+        ExponentialElGamalCiphertext ctext = PEK.encrypt(plaintextValue, Arrays.asList(AdderInteger.ZERO, AdderInteger.ONE));
 
         /* Create MembershipProof */
         EEGMembershipProof proof = new EEGMembershipProof();

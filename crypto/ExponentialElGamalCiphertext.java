@@ -26,15 +26,16 @@ public class ExponentialElGamalCiphertext implements IHomomorphicCiphertext<Expo
     /** A proof of the membership of an element to group G */
     private EEGMembershipProof proof;
 
-    public ExponentialElGamalCiphertext(AdderInteger g, AdderInteger h, AdderInteger r, AdderInteger p) {
+    public ExponentialElGamalCiphertext(AdderInteger g, AdderInteger h, AdderInteger r, AdderInteger p, EEGMembershipProof proof) {
         this.p = p;
         this.g = new AdderInteger(g, p);
         this.h = new AdderInteger(h, p);
         this.r = r;
+        this.proof = proof;
     }
 
-    public ExponentialElGamalCiphertext(AdderInteger g, AdderInteger h, AdderInteger p) {
-        this(g,h, AdderInteger.ZERO, p);
+    public ExponentialElGamalCiphertext(AdderInteger g, AdderInteger h, AdderInteger p, EEGMembershipProof proof) {
+        this(g,h, AdderInteger.ZERO, p, proof);
     }
 
     /**
@@ -65,7 +66,7 @@ public class ExponentialElGamalCiphertext implements IHomomorphicCiphertext<Expo
         EEGMembershipProof proof = this.proof.multiply(ciphertext.proof);
 
         /* Create a new ciphertext and set its proof */
-        ExponentialElGamalCiphertext ctext = new ExponentialElGamalCiphertext(g, h, r, p);
+        ExponentialElGamalCiphertext ctext = new ExponentialElGamalCiphertext(g, h, r, p, proof);
         ctext.setProof(proof);
 
         return ctext;

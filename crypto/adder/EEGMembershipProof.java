@@ -1,7 +1,8 @@
 package crypto.adder;
 
-import crypto.AProof;
 import crypto.ExponentialElGamalCiphertext;
+import crypto.IProof;
+import crypto.IPublicKey;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.StringExpression;
@@ -70,7 +71,7 @@ import java.util.StringTokenizer;
  *  @version $LastChangedRevision$ $LastChangedDate$
  *  @since 0.0.1
  */
-public class EEGMembershipProof extends AProof {
+public class EEGMembershipProof implements IProof<ExponentialElGamalCiphertext> {
 
 	private AdderInteger p;
 	private AdderInteger q;
@@ -83,12 +84,14 @@ public class EEGMembershipProof extends AProof {
 	/**
 	 * Constructs a new <code>MembershipProof</code> object with the specified prime.
 	 */
-	public EEGMembershipProof() {
+	public EEGMembershipProof(AdderInteger bigG, AdderInteger bigH, AdderInteger r, AdderPublicKey pubKey, AdderInteger value, List domain) {
 
 		yList = new ArrayList<>();
 		zList = new ArrayList<>();
 		sList = new ArrayList<>();
 		cList = new ArrayList<>();
+
+        compute(bigG, bigH, r, pubKey, value, domain);
 	}
 
 	/**
@@ -118,12 +121,14 @@ public class EEGMembershipProof extends AProof {
      * element of the domain. All but one of the proofs (the one corresponding
      * to \em value) will be fake.
      *
-	 * @param ciphertext    the ciphertext that the proof is being performed on.
-	 * @param pubKey        the public key used to encrypt the message.
+	 * @param bigG
+     * @param bigH
+     * @param r
+     * @param pubKey        the public key used to encrypt the message.
 	 * @param value         the plaintext value of the ciphertext.
 	 * @param domain        the domain of possible values of the plaintext.
 	 */
-	public void compute(ExponentialElGamalCiphertext ciphertext, AdderPublicKey pubKey, AdderInteger value, List domain) {
+	private void compute(AdderInteger bigG, AdderInteger bigH, AdderInteger r, AdderPublicKey pubKey, AdderInteger value, List domain) {
 
         /* Get p and q from the key */
 		this.p = pubKey.getP();
@@ -134,10 +139,7 @@ public class EEGMembershipProof extends AProof {
 		AdderInteger h = pubKey.getH();
 		AdderInteger f = pubKey.getF();
 
-        /* Get bigG (g^r), bigH (g^(rx) * f^m), and r */
-		AdderInteger bigG = ciphertext.getG();
-		AdderInteger bigH = ciphertext.getH();
-		AdderInteger r = ciphertext.getR();
+        /* bigG (g^r), bigH (g^(rx) * f^m), and r */
 
         /* Generate a random value t */
 		AdderInteger t = AdderInteger.random(q);
@@ -238,11 +240,12 @@ public class EEGMembershipProof extends AProof {
 	 * domain.
 	 *
 	 * @param ciphertext    the ciphertext
-	 * @param pubKey        the public key
 	 * @param domain        the domain
 	 * @return              true if the proof is valid
 	 */
-	public boolean verify(ExponentialElGamalCiphertext ciphertext, AdderPublicKey pubKey, List<AdderInteger> domain) {
+	public boolean verify(ExponentialElGamalCiphertext ciphertext, IPublicKey PEK, List<Integer> domain) {
+
+        AdderPublicKey pubKey = (AdderPublicKey) PEK;
 
         /* Extract necessary key components for computation */
 		p = pubKey.getP();
@@ -271,7 +274,7 @@ public class EEGMembershipProof extends AProof {
 		for (int i = 0; i < cList.size(); i++) {
 
             /* Get out the domain value (i.e. the possible message m) */
-			AdderInteger d = domain.get(i);
+			AdderInteger d = new AdderInteger(domain.get(i));
 
             /* Map the value into the group via f */
 			AdderInteger fpow = f.pow(d);
@@ -306,6 +309,25 @@ public class EEGMembershipProof extends AProof {
         /* Ensure that cChoices (i.e. the real commit) matches the hashed value of the commit string */
 		return (cChoices.equals(newC));
 	}
+
+    /**
+     *
+     * @param p
+     * @return
+     */
+    public IProof<ExponentialElGamalCiphertext> operate(IProof<ExponentialElGamalCiphertext> p) {
+        EEGMembershipProof proof = (EEGMembershipProof) p;
+        return multiply(proof);
+    }
+
+    /**
+     *
+     * @param proof
+     * @return
+     */
+    private EEGMembershipProof multiply(EEGMembershipProof proof) {
+        return proof;
+    }
 
 	/**
 	 * Creates a <tt>MembershipProof</tt> from the string standard representation
