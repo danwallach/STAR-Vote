@@ -16,8 +16,8 @@ public interface IHomomorphicCiphertext <T extends IHomomorphicCiphertext> exten
      * how the operation is specified in the concrete (e.g. multiplication for exponential
      * ElGamal or addition for standard ElGamal.
      *
-     * @param operand The ciphertext to "add" yourself to
-     * @return the result of computing  the arity two function between this object and the parameter operand
+     * @param operand   the ciphertext to "add" yourself to
+     * @return          the result of computing  the arity two function between this object and the parameter operand
      */
     public abstract T operate(T operand);
 

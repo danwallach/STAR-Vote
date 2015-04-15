@@ -39,37 +39,24 @@ public class ExponentialElGamalCiphertext implements IHomomorphicCiphertext<Expo
     }
 
     /**
-     *
-     * @param operand The ciphertext to "add" yourself to
-     * @return
-     */
-    public ExponentialElGamalCiphertext operate(ExponentialElGamalCiphertext operand) {
-        return this.multiply(operand);
-    }
-
-    /**
      * Multiply this and another ciphertext together. This is accomplished by
      * multiplying them component-wise.
      *
-     * @param ciphertext        the ciphertext to multiply against this
-     * @return                  the product of the two ciphertexts.
+     * @param operand   the ciphertext to "add" yourself to
+     * @return          the result of the homomorphic operation on the two ciphertexts
      */
-    private ExponentialElGamalCiphertext multiply(ExponentialElGamalCiphertext ciphertext) {
-
+    public ExponentialElGamalCiphertext operate(ExponentialElGamalCiphertext operand) {
         /* Get the requisite numbers and multiply */
         AdderInteger p = this.p;
-        AdderInteger g = this.g.multiply(ciphertext.g);
-        AdderInteger h = this.h.multiply(ciphertext.h);
-        AdderInteger r = this.r.add(ciphertext.r);
+        AdderInteger g = this.g.multiply(operand.g);
+        AdderInteger h = this.h.multiply(operand.h);
+        AdderInteger r = this.r.add(operand.r);
 
-        /* TODO implement multiply (in interface too) */
-        EEGMembershipProof proof = this.proof.multiply(ciphertext.proof);
+        /* Operate the proofs on each other */
+        EEGMembershipProof proof = (EEGMembershipProof) this.proof.operate(operand.proof);
 
-        /* Create a new ciphertext and set its proof */
-        ExponentialElGamalCiphertext ctext = new ExponentialElGamalCiphertext(g, h, r, p, proof);
-        ctext.setProof(proof);
-
-        return ctext;
+        /* Create a new ciphertext with the updated values and proof */
+        return new ExponentialElGamalCiphertext(g, h, r, p, proof);
     }
 
     /**
