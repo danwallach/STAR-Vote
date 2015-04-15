@@ -24,7 +24,7 @@ package supervisor.model;
 
 import auditorium.IAuditoriumParams;
 import auditorium.NetworkException;
-import crypto.EncryptedVote;
+import crypto.EncryptedRaceSelection;
 import crypto.adder.AdderPublicKey;
 import crypto.interop.AdderKeyManipulator;
 import sexpression.ASExpression;
@@ -1236,7 +1236,7 @@ public class Model {
                     ASExpression nonce = committedBids.remove(bid);
 
                     /* Tell the ballot store to cast the ballot */
-                    Ballot<EncryptedVote> b = p.castBallot(bid);
+                    Ballot<EncryptedRaceSelection> b = p.castBallot(bid);
 
                     boolean wasCast = (b!=null);
 

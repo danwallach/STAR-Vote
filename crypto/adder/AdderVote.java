@@ -75,7 +75,7 @@ public class AdderVote implements Serializable {
     /**
      * Initializes a vote from a vector of ciphertexts.
      */
-    private AdderVote(List<AdderElgamalCiphertext> cipherList, List<ASExpression> choices, List<MembershipProof> proofList, String title) {
+    private AdderVote(List<AdderElgamalCiphertext> cipherList, List<ASExpression> choices, List<EEGMembershipProof> proofList, String title) {
         this.cipherList = cipherList;
         this.choices = choices;
         this.title = title;
@@ -134,7 +134,7 @@ public class AdderVote implements Serializable {
             vec.add(ciphertext1.multiply(ciphertext2));
         }
 
-        List<MembershipProof> otherList = proof.multiply(otherVote.proof);
+        List<EEGMembershipProof> otherList = proof.multiply(otherVote.proof);
 
         return new AdderVote(vec, choices, otherList, otherVote.title);
     }
@@ -166,14 +166,14 @@ public class AdderVote implements Serializable {
             totalDomain.add(new AdderInteger(i));
 
         /* Compute the sumProof so that we can make a proof for the homomorphically tallied votes */
-        MembershipProof sumProof = new MembershipProof();
+        EEGMembershipProof sumProof = new EEGMembershipProof();
         sumProof.compute(sumCipher, publicKey, new AdderInteger(numVotes), totalDomain);
 
 
         /* Todo check that compute and verify handle values greater than 1 */
         System.out.println("In Vote.computeSumProof() -- verifying the sumProof post calculation: " + sumProof.verify(sumCipher, publicKey, totalDomain));
 
-        proof = new VoteProof(sumProof, new ArrayList<MembershipProof>());
+        proof = new VoteProof(sumProof, new ArrayList<EEGMembershipProof>());
         //return sumProof;
     }
 

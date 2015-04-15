@@ -1,7 +1,7 @@
 package crypto;
 
 import crypto.adder.AdderInteger;
-import crypto.adder.MembershipProof;
+import crypto.adder.EEGMembershipProof;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +24,7 @@ public class ExponentialElGamalCiphertext implements IHomomorphicCiphertext<Expo
     private AdderInteger p;
 
     /** A proof of the membership of an element to group G */
-    private MembershipProof proof;
+    private EEGMembershipProof proof;
 
     public ExponentialElGamalCiphertext(AdderInteger g, AdderInteger h, AdderInteger r, AdderInteger p) {
         this.p = p;
@@ -61,8 +61,14 @@ public class ExponentialElGamalCiphertext implements IHomomorphicCiphertext<Expo
         AdderInteger h = this.h.multiply(ciphertext.h);
         AdderInteger r = this.r.add(ciphertext.r);
 
-        /* Create a new ciphertext */
-        return new ExponentialElGamalCiphertext(g, h, r, p);
+        /* TODO implement multiply (in interface too) */
+        EEGMembershipProof proof = this.proof.multiply(ciphertext.proof);
+
+        /* Create a new ciphertext and set its proof */
+        ExponentialElGamalCiphertext ctext = new ExponentialElGamalCiphertext(g, h, r, p);
+        ctext.setProof(proof);
+
+        return ctext;
     }
 
     /**
@@ -88,18 +94,28 @@ public class ExponentialElGamalCiphertext implements IHomomorphicCiphertext<Expo
      *
      * @param proof         the proof
      */
-    public void setProof(MembershipProof proof) {
+    public void setProof(EEGMembershipProof proof) {
         this.proof = proof;
     }
 
+    /**
+     * Verifies this ciphertext encodes a value between min and max and was encrypted with this PEK
+     * @param min
+     * @param max
+     * @param PEK
+     * @return
+     */
     public boolean verify(int min, int max, IPublicKey PEK) {
 
+        /* Create the container for the domain */
         List<Integer> domain = new ArrayList<>();
 
+        /* Add in from min to max in the domain */
         for(int i=min; i<=max; i++) {
             domain.add(i);
         }
 
+        /* Call the proof's verify method on the domain */
         return proof.verify(this, PEK, domain);
     }
 

@@ -20,10 +20,10 @@ import java.util.StringTokenizer;
 public class VoteProof implements Serializable {
 
     /** the list of proofs for each candidate-vote pairing */
-    private List<MembershipProof> proofList;
+    private List<EEGMembershipProof> proofList;
 
     /** The proof for ths sum of candidate-vote pairings */
-    private MembershipProof sumProof;
+    private EEGMembershipProof sumProof;
 
     /**
      * Default constructor.
@@ -37,7 +37,7 @@ public class VoteProof implements Serializable {
      * @param sumProof      the MembershipProof for the summed ciphertexts
      * @param proofList     the list of MembershipProofs for each of the ciphertexts
      */
-    public VoteProof(MembershipProof sumProof, List<MembershipProof> proofList) {
+    public VoteProof(EEGMembershipProof sumProof, List<EEGMembershipProof> proofList) {
         this.sumProof = sumProof;
         this.proofList = proofList;
     }
@@ -46,7 +46,7 @@ public class VoteProof implements Serializable {
     /**
      * @return the list of proofs for each candidate-vote pairing
      */
-    public List<MembershipProof> getProofList() {
+    public List<EEGMembershipProof> getProofList() {
         return proofList;
     }
 
@@ -67,7 +67,7 @@ public class VoteProof implements Serializable {
      * @param min           the minimum number of candidates required to be selected.
      * @param max           the maximum number of candidates required to be selected.
      *
-     * @see MembershipProof#compute(AdderElgamalCiphertext, AdderPublicKey, AdderInteger, List)
+     * @see EEGMembershipProof#compute(AdderElgamalCiphertext, AdderPublicKey, AdderInteger, List)
      */
         public void compute(AdderVote vote, AdderPublicKey pubKey, List<AdderInteger> choices, int min, int max) {
 
@@ -99,7 +99,7 @@ public class VoteProof implements Serializable {
             /* Pull out the plaintext for this choice */
             AdderInteger choice = choices.get(i);
 
-            MembershipProof proof = new MembershipProof();
+            EEGMembershipProof proof = new EEGMembershipProof();
 
             /* Compute the NIZK and add it to the proofList */
             proof.compute(ciphertext, pubKey, choice, cipherDomain);
@@ -123,7 +123,7 @@ public class VoteProof implements Serializable {
             totalDomain.add(new AdderInteger(j));
 
         /* Compute the sumProof */
-        this.sumProof = new MembershipProof();
+        this.sumProof = new EEGMembershipProof();
         this.sumProof.compute(sumCipher, pubKey, new AdderInteger(numChoices), totalDomain);
     }
 
@@ -136,7 +136,7 @@ public class VoteProof implements Serializable {
      * @param max           the maximum number of candidates required to be selected.
      * @return              \b true if the proof is valid, \b false otherwise.
      *
-     * @see MembershipProof#verify(AdderElgamalCiphertext, AdderPublicKey, java.util.List)
+     * @see EEGMembershipProof#verify(AdderElgamalCiphertext, AdderPublicKey, java.util.List)
      */
     public boolean verify(AdderVote vote, AdderPublicKey pubKey, int min, int max) {
 
@@ -160,7 +160,7 @@ public class VoteProof implements Serializable {
         /* Check each of the proofs and associated ciphertexts */
         for (int i = 0; i < size; i++) {
 
-            MembershipProof proof = this.proofList.get(i);
+            EEGMembershipProof proof = this.proofList.get(i);
             AdderElgamalCiphertext ciphertext = cipherList.get(i);
 
             /* Return false if the proof couldn't be verified */
@@ -189,9 +189,9 @@ public class VoteProof implements Serializable {
      * @param otherProof        the proof to multiply with this one
      * @return                  the concatenated membership proofs of this VoteProof
      */
-    public List<MembershipProof> multiply(VoteProof otherProof) {
+    public List<EEGMembershipProof> multiply(VoteProof otherProof) {
 
-        List<MembershipProof> otherList = new ArrayList<>();
+        List<EEGMembershipProof> otherList = new ArrayList<>();
 
         otherList.addAll(this.proofList);
         otherList.addAll(otherProof.proofList);
@@ -205,17 +205,17 @@ public class VoteProof implements Serializable {
      * @param s             the string representation of a proof.
      * @return              the VoteProof constructed from the string
      *
-     * @see MembershipProof#fromString(String)
+     * @see EEGMembershipProof#fromString(String)
      */
     public static VoteProof fromString(String s) {
         StringTokenizer st = new StringTokenizer(s, " ");
-        List<MembershipProof> pList
+        List<EEGMembershipProof> pList
             = new ArrayList<>(25); // XXX: what size?
-        MembershipProof sumProof = MembershipProof.fromString(st.nextToken());
+        EEGMembershipProof sumProof = EEGMembershipProof.fromString(st.nextToken());
 
         while (st.hasMoreTokens()) {
             String s2 = st.nextToken();
-            MembershipProof proof = MembershipProof.fromString(s2);
+            EEGMembershipProof proof = EEGMembershipProof.fromString(s2);
             pList.add(proof);
         }
 
@@ -232,14 +232,14 @@ public class VoteProof implements Serializable {
      *
      * @return          the string representation of the proof.
      *
-     * @see MembershipProof::str
+     * @see EEGMembershipProof ::str
      */
     public String toString() {
         StringBuilder sb = new StringBuilder(4096);
 
         sb.append(sumProof.toString());
 
-        for (MembershipProof proof : proofList) {
+        for (EEGMembershipProof proof : proofList) {
             sb.append(" ");
             sb.append(proof.toString());
         }
@@ -255,7 +255,7 @@ public class VoteProof implements Serializable {
     public ASExpression toASE(){
     	List<ASExpression> proofListL = new ArrayList<>();
 
-    	for(MembershipProof proof : proofList)
+    	for(EEGMembershipProof proof : proofList)
     		proofListL.add(proof.toASE());
     	
     	return new ListExpression(StringExpression.makeString("vote-proof"), 
@@ -274,18 +274,18 @@ public class VoteProof implements Serializable {
     	if(!exp.get(0).toString().equals("vote-proof"))
     		throw new RuntimeException("Not vote-proof");
     	
-    	MembershipProof sumProof = MembershipProof.fromASE(exp.get(1));
+    	EEGMembershipProof sumProof = EEGMembershipProof.fromASE(exp.get(1));
     	
-    	List<MembershipProof> proofList = new ArrayList<>();
+    	List<EEGMembershipProof> proofList = new ArrayList<>();
     	ListExpression proofListE = (ListExpression)exp.get(2);
     	
     	for(int i = 0; i < proofListE.size(); i++)
-    		proofList.add(MembershipProof.fromASE(proofListE.get(i)));
+    		proofList.add(EEGMembershipProof.fromASE(proofListE.get(i)));
     	
     	return new VoteProof(sumProof, proofList);
     }
 
-    public void setProofList(List<MembershipProof> proofList) {
+    public void setProofList(List<EEGMembershipProof> proofList) {
         this.proofList = proofList;
     }
 }

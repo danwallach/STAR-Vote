@@ -93,14 +93,15 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
         ExponentialElGamalCiphertext ctext = PEK.encrypt(plaintextValue);
 
         /* Create MembershipProof */
-        MembershipProof proof = new MembershipProof();
+        EEGMembershipProof proof = new EEGMembershipProof();
         proof.compute(ctext, PEK, plaintextValue, Arrays.asList(AdderInteger.ZERO, AdderInteger.ONE));
 
         /* Stick it in */
-        ctext.setProof();
+        ctext.setProof(proof);
 
         /* Verify the ciphertext */
-        ctext.verify(0,1,PEK);
+        if (!ctext.verify(0,1,PEK))
+            throw new InvalidVoteException("We got a bad plaintext!");
 
         return ctext;
     }

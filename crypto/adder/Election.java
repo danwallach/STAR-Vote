@@ -1,6 +1,6 @@
 package crypto.adder;
 
-import crypto.EncryptedVote;
+import crypto.EncryptedRaceSelection;
 import crypto.IHomomorphicCiphertext;
 import crypto.IPublicKey;
 
@@ -20,7 +20,7 @@ public class Election <T extends IHomomorphicCiphertext> {
     private IPublicKey PEK;
 
     /** The List of all Votes cast in this Election */
-    private List<EncryptedVote<T>> votes;
+    private List<EncryptedRaceSelection<T>> votes;
 
     /** The List of all candidates in this Election (race) */
     private List<String> choices;
@@ -41,7 +41,7 @@ public class Election <T extends IHomomorphicCiphertext> {
      *
      * @return          the votes
      */
-    public List<EncryptedVote<T>> getVotes() {
+    public List<EncryptedRaceSelection<T>> getVotes() {
         return votes;
     }
 
@@ -50,7 +50,7 @@ public class Election <T extends IHomomorphicCiphertext> {
      *
      * @param vote      the vote
      */
-    public void castVote(EncryptedVote vote) {
+    public void castVote(EncryptedRaceSelection vote) {
         votes.add(vote);
     }
 
@@ -60,16 +60,16 @@ public class Election <T extends IHomomorphicCiphertext> {
      *
      * @return          a vote representing the total of the given list of votes
      */
-    public EncryptedVote<T> sumVotes() {
+    public EncryptedRaceSelection<T> sumVotes() {
 
         /* Pull out the first vote */
-        EncryptedVote<T> v = votes.get(0);
+        EncryptedRaceSelection<T> v = votes.get(0);
 
         /* Create a new multiplicative identity */
-        EncryptedVote<T> total = EncryptedVote.identity(v, PEK);
+        EncryptedRaceSelection<T> total = EncryptedRaceSelection.identity(v, PEK);
 
         /* Multiply all the votes together and recompute proof */
-        for (EncryptedVote<T> vote : votes)
+        for (EncryptedRaceSelection<T> vote : votes)
             total = vote.operate(total);
 
         /* ---------------- TESTING ---------------- */
@@ -97,7 +97,7 @@ public class Election <T extends IHomomorphicCiphertext> {
      *
      * @return                  the final vote tally
      */
-    public List<AdderInteger> getFinalSum(List<AdderInteger> partialSums, EncryptedVote sum, AdderPublicKey masterKey) {
+    public List<AdderInteger> getFinalSum(List<AdderInteger> partialSums, EncryptedRaceSelection sum, AdderPublicKey masterKey) {
 
         /*
 

@@ -21,7 +21,7 @@ import java.util.List;
  */
 public class BallotCrypto {
 
-    private static VoteCrypto voteCrypter = null;
+    private static RaceSelectionCrypto raceSelectionCrypter = null;
 
     /**
      *
@@ -29,10 +29,10 @@ public class BallotCrypto {
      */
     public static void setCryptoType(ICryptoType cryptoType){
 
-        if(voteCrypter != null)
+        if(raceSelectionCrypter != null)
             System.err.println("[WARNING]: CryptoType change in BallotCrypto unadvised!");
 
-        voteCrypter = new VoteCrypto(cryptoType);
+        raceSelectionCrypter = new RaceSelectionCrypto(cryptoType);
     }
 
     /**
@@ -41,14 +41,14 @@ public class BallotCrypto {
      * @param ballot    a Ballot containing EncryptedVotes
      * @return          a Ballot containing PlaintextVotes which are the decrypted EncryptedVotes
      */
-    public static Ballot<PlaintextVote> decrypt(Ballot<EncryptedVote> ballot)
+    public static Ballot<PlaintextRaceSelection> decrypt(Ballot<EncryptedRaceSelection> ballot)
             throws UninitialisedException, KeyNotLoadedException, InvalidKeyException, CipherException, CiphertextException {
 
-        List<PlaintextVote> votes = new ArrayList<>();
+        List<PlaintextRaceSelection> votes = new ArrayList<>();
 
         /* Go through each of the EncryptedVotes and decrypt, then add to the list of PlaintextVotes*/
-        for(EncryptedVote ev : ballot.getVotes()) {
-            votes.add(voteCrypter.decrypt(ev));
+        for(EncryptedRaceSelection ev : ballot.getVotes()) {
+            votes.add(raceSelectionCrypter.decrypt(ev));
         }
 
         /* Create a new Ballot<PlaintextVote> from the original ballot data */
@@ -61,13 +61,13 @@ public class BallotCrypto {
      * @param ballot    a Ballot containing PlaintextVotes
      * @return          a Ballot containing EncryptedVotes which are the encrypted PlaintextVotes
      */
-    public static Ballot<EncryptedVote> encrypt(Ballot<PlaintextVote> ballot)
+    public static Ballot<EncryptedRaceSelection> encrypt(Ballot<PlaintextRaceSelection> ballot)
             throws UninitialisedException, KeyNotLoadedException, InvalidKeyException, CipherException, CiphertextException {
 
-        List<EncryptedVote> votes = new ArrayList<>();
+        List<EncryptedRaceSelection> votes = new ArrayList<>();
 
-        for(PlaintextVote pv : ballot.getVotes()) {
-            votes.add(voteCrypter.encrypt(pv));
+        for(PlaintextRaceSelection pv : ballot.getVotes()) {
+            votes.add(raceSelectionCrypter.encrypt(pv));
         }
 
         /* Create a new Ballot<EncryptedVote> from the original ballot data */
@@ -79,11 +79,11 @@ public class BallotCrypto {
      * @param filePaths
      */
     public void loadKeys(String... filePaths) throws FileNotFoundException, BadKeyException, UninitialisedException {
-        voteCrypter.loadKeys(filePaths);
+        raceSelectionCrypter.loadKeys(filePaths);
     }
 
     public String toString() {
-        return "BallotCrypto: " + voteCrypter.toString();
+        return "BallotCrypto: " + raceSelectionCrypter.toString();
     }
 
 }

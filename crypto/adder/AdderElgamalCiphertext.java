@@ -38,7 +38,7 @@ public class AdderElgamalCiphertext implements Serializable {
     private AdderInteger p;
 
     /** A proof of the membership of an element to group G */
-    private MembershipProof proof;
+    private EEGMembershipProof proof;
 
     /**
      * Creates a new ElgamalCiphertext with the specified parameter values.
@@ -147,7 +147,7 @@ public class AdderElgamalCiphertext implements Serializable {
      *
      * @return the proof
      */
-    public MembershipProof getProof() {
+    public EEGMembershipProof getProof() {
         return proof;
     }
 
@@ -156,7 +156,7 @@ public class AdderElgamalCiphertext implements Serializable {
      *
      * @param proof         the proof
      */
-    public void setProof(MembershipProof proof) {
+    public void setProof(EEGMembershipProof proof) {
         this.proof = proof;
     }
 
@@ -207,7 +207,7 @@ public class AdderElgamalCiphertext implements Serializable {
 
             /* If there are more tokens for the other one, look for the vote proof */
             if (st0.hasMoreTokens())
-                try { vote.setProof(MembershipProof.fromString(st0.nextToken())); }
+                try { vote.setProof(EEGMembershipProof.fromString(st0.nextToken())); }
                 catch (InvalidMembershipProofException ibpe) { throw new InvalidElgamalCiphertextException(ibpe.getMessage()); }
 
             /* Error if there are still more tokens */
@@ -286,11 +286,11 @@ public class AdderElgamalCiphertext implements Serializable {
     	AdderInteger r = AdderInteger.fromASE(list.get(3));
         AdderInteger h = AdderInteger.fromASE(list.get(4));
 
-    	MembershipProof proof = null;
+    	EEGMembershipProof proof = null;
 
         /* Expect a proof if of size 5 -- then extract it */
     	if(list.size() == 6)
-    		proof = MembershipProof.fromASE(list.get(5));
+    		proof = EEGMembershipProof.fromASE(list.get(5));
 
         /* Create a new ciphertext from the numbers */
     	AdderElgamalCiphertext text = new AdderElgamalCiphertext(g,h,r,p);

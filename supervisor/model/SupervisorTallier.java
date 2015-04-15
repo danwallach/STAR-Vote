@@ -1,7 +1,7 @@
 package supervisor.model;
 
 import auditorium.Bugout;
-import crypto.EncryptedVote;
+import crypto.EncryptedRaceSelection;
 import crypto.adder.AdderPublicKey;
 import crypto.adder.Election;
 import sexpression.ASExpression;
@@ -29,7 +29,7 @@ public class SupervisorTallier implements Serializable {
      * @param cast          the list of cast ballots that should be homomorphically summed
      * @return              a Ballot containing the encrypted sums for each race
      */
-    public static Ballot<EncryptedVote> tally(String precinctID, List<Ballot<EncryptedVote>> cast){
+    public static Ballot<EncryptedRaceSelection> tally(String precinctID, List<Ballot<EncryptedRaceSelection>> cast){
 
         int size=0;
 
@@ -40,14 +40,14 @@ public class SupervisorTallier implements Serializable {
         Map<String, Election> results = new HashMap<>();
 
         /* For each ballot, get each vote and build a results mapping between race ids and elections */
-        for (Ballot<EncryptedVote> bal : cast) {
+        for (Ballot<EncryptedRaceSelection> bal : cast) {
 
             try {
 
-                List<EncryptedVote> votes = bal.getVotes();
+                List<EncryptedRaceSelection> votes = bal.getVotes();
 
                 /* Cycle through each of the races */
-                for(EncryptedVote vote: votes){
+                for(EncryptedRaceSelection vote: votes){
 
                     /* Get all the candidate choices */
                     String raceID = vote.getTitle();
@@ -69,7 +69,7 @@ public class SupervisorTallier implements Serializable {
 
                     /* If we haven't seen this specific race before, initialize it */
                     if (election == null)
-                        election = new Election(PEK, new ArrayList<String>(vote.getVoteMap().keySet()));
+                        election = new Election(PEK, new ArrayList<String>(vote.getRaceSelectionsMap().keySet()));
 
                     /* This will ready election to homomorphically tally the vote */
                     election.castVote(vote);
@@ -88,7 +88,7 @@ public class SupervisorTallier implements Serializable {
         }
 
         /* This will hold the final list of summed Votes to be put into a Ballot */
-        ArrayList<EncryptedVote> votes = new ArrayList<>();
+        ArrayList<EncryptedRaceSelection> votes = new ArrayList<>();
 
         /* This will be used to create the nonce eventually */
         ArrayList<ASExpression> voteASE = new ArrayList<>();
@@ -100,7 +100,7 @@ public class SupervisorTallier implements Serializable {
             Election thisRace = results.get(id);
 
             /* Get the homomorphically tallied vote for this race */
-            EncryptedVote vote = results.get(id).sumVotes();
+            EncryptedRaceSelection vote = results.get(id).sumVotes();
 
 
             /* Verify the voteProof and error off if bad */

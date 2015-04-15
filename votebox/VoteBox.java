@@ -26,7 +26,10 @@ import auditorium.AuditoriumCryptoException;
 import auditorium.Bugout;
 import auditorium.Event;
 import auditorium.NetworkException;
-import crypto.*;
+import crypto.BallotCrypto;
+import crypto.EncryptedRaceSelection;
+import crypto.PiecemealBallotEncrypter;
+import crypto.PlaintextRaceSelection;
 import crypto.adder.AdderInteger;
 import preptool.model.language.Language;
 import preptool.model.layout.manager.RenderingUtils;
@@ -256,10 +259,10 @@ public class VoteBox{
                     throw new RuntimeException("Incorrectly expected a cast-ballot");
 
                 /* Convert Ballot from ASE to Ballot object TODO check if this is right, should be able to do something similar */
-                supervisor.model.Ballot<PlaintextVote> ballot = supervisor.model.Ballot.fromASE((ListExpression) arg[0]);
+                supervisor.model.Ballot<PlaintextRaceSelection> ballot = supervisor.model.Ballot.fromASE((ListExpression) arg[0]);
 
                 /* Encrypt Ballot */
-                supervisor.model.Ballot<EncryptedVote> encBallot;
+                supervisor.model.Ballot<EncryptedRaceSelection> encBallot;
 
                 try { encBallot = BallotCrypto.encrypt(ballot); }
                 catch (Exception e) { e.printStackTrace(); throw new RuntimeException("Could not encrypt the ballot because of "+e.getClass()); }
@@ -459,10 +462,10 @@ public class VoteBox{
                         throw new RuntimeException("Incorrectly expected a cast-ballot");
 
                     /* Convert Ballot from ASE to Ballot object TODO check if this is right, should be able to do something similar */
-                    supervisor.model.Ballot<PlaintextVote> ballot = supervisor.model.Ballot.fromASE((ListExpression) arg[0]);
+                    supervisor.model.Ballot<PlaintextRaceSelection> ballot = supervisor.model.Ballot.fromASE((ListExpression) arg[0]);
 
                     /* Encrypt Ballot */
-                    supervisor.model.Ballot<EncryptedVote> encBallot;
+                    supervisor.model.Ballot<EncryptedRaceSelection> encBallot;
 
                     try { encBallot = BallotCrypto.encrypt(ballot); }
                     catch (Exception e) { e.printStackTrace(); throw new RuntimeException("Could not encrypt the ballot because of "+e.getClass()); }

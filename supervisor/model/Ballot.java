@@ -1,6 +1,6 @@
 package supervisor.model;
 
-import crypto.AVote;
+import crypto.ARaceSelection;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.StringExpression;
@@ -15,7 +15,7 @@ import java.util.List;
  *
  * @author Matt Bernhard
  */
-public class Ballot<T extends AVote> implements Serializable {
+public class Ballot<T extends ARaceSelection> implements Serializable {
 
     /** The identifier for this ballot */
     private final String bid;
@@ -117,7 +117,7 @@ public class Ballot<T extends AVote> implements Serializable {
          * @return          the Vote equivalent of ase
          *
          */
-        public static <V extends AVote> Ballot<V> fromASE(ASExpression ase){
+        public static <V extends ARaceSelection> Ballot<V> fromASE(ASExpression ase){
 
             ListExpression exp = (ListExpression)ase;
 

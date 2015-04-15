@@ -70,7 +70,7 @@ import java.util.StringTokenizer;
  *  @version $LastChangedRevision$ $LastChangedDate$
  *  @since 0.0.1
  */
-public class MembershipProof extends AProof {
+public class EEGMembershipProof extends AProof {
 
 	private AdderInteger p;
 	private AdderInteger q;
@@ -83,7 +83,7 @@ public class MembershipProof extends AProof {
 	/**
 	 * Constructs a new <code>MembershipProof</code> object with the specified prime.
 	 */
-	public MembershipProof() {
+	public EEGMembershipProof() {
 
 		yList = new ArrayList<>();
 		zList = new ArrayList<>();
@@ -102,8 +102,8 @@ public class MembershipProof extends AProof {
 	 * @param sList         List of values of the form cr + t used to compute the ZK proof
 	 * @param cList          List of commitments, including several random numbers and by one computation on the hash of the commitment string
 	 */
-	private MembershipProof(AdderInteger p, AdderInteger q, List<AdderInteger> yList, List<AdderInteger> zList,
-                            List<AdderInteger> sList, List<AdderInteger> cList) {
+	private EEGMembershipProof(AdderInteger p, AdderInteger q, List<AdderInteger> yList, List<AdderInteger> zList,
+                               List<AdderInteger> sList, List<AdderInteger> cList) {
 
 		this.p = p;
 		this.q = q;
@@ -314,7 +314,7 @@ public class MembershipProof extends AProof {
 	 * @param  s        a string that specifies a <tt>MembershipProof</tt>
 	 * @return a        <tt>MembershipProof</tt> with the specified values
 	 */
-	public static MembershipProof fromString(String s) {
+	public static EEGMembershipProof fromString(String s) {
 		StringTokenizer st = new StringTokenizer(s, "pyzsc", true);
 		int numTokens = st.countTokens() - 2;
 
@@ -383,7 +383,7 @@ public class MembershipProof extends AProof {
 				cList.add(new AdderInteger(st.nextToken(), q));
 			}
 
-			return new MembershipProof(p, q, yList, zList, sList, cList);
+			return new EEGMembershipProof(p, q, yList, zList, sList, cList);
 		}
         catch (NoSuchElementException | NumberFormatException nsee) { throw new InvalidMembershipProofException(nsee.getMessage()); }
     }
@@ -459,7 +459,7 @@ public class MembershipProof extends AProof {
      * @param ase    S-Expression representation of a MembershipProof
      * @return       the MembershipProof equivalent of ase
      */
-	public static MembershipProof fromASE(ASExpression ase){
+	public static EEGMembershipProof fromASE(ASExpression ase){
 		ListExpression exp = (ListExpression)ase;
 
 		if(!(exp.get(0)).toString().equals("membership-proof"))
@@ -484,6 +484,6 @@ public class MembershipProof extends AProof {
 
 		AdderInteger q = p.subtract(AdderInteger.ONE).divide(AdderInteger.TWO);
 
-		return new MembershipProof(p, q, yList, zList, sList, cList);
+		return new EEGMembershipProof(p, q, yList, zList, sList, cList);
 	}
 }

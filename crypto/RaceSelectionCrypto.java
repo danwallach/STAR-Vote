@@ -19,20 +19,20 @@ import java.util.Map;
  *
  * Created by Matthew Kindy II on 11/9/2014.
  */
-public class VoteCrypto {
+public class RaceSelectionCrypto {
 
 
     private ByteCrypto byteCrypter;
 
-    public VoteCrypto(ICryptoType cryptoType) {
+    public RaceSelectionCrypto(ICryptoType cryptoType) {
         byteCrypter = new ByteCrypto(cryptoType);
     }
 
-    public PlaintextVote decrypt(EncryptedVote vote) throws UninitialisedException, KeyNotLoadedException, InvalidKeyException, CipherException, CiphertextException {
+    public PlaintextRaceSelection decrypt(EncryptedRaceSelection raceSelection) throws UninitialisedException, KeyNotLoadedException, InvalidKeyException, CipherException, CiphertextException {
 
         /* Get the map from the vote */
-        Map<String, IHomomorphicCiphertext> cipherMap = vote.getVoteMap();
-        Map<String, Integer> voteMap = new HashMap<>();
+        Map<String, IHomomorphicCiphertext> cipherMap = raceSelection.getRaceSelectionsMap();
+        Map<String, Integer> raceSelectionMap = new HashMap<>();
 
         /* Cycle over each of the candidates in the cipherMap */
         for(Map.Entry<String, IHomomorphicCiphertext> cur : cipherMap.entrySet()) {
@@ -44,17 +44,17 @@ public class VoteCrypto {
             Integer decryptedChoice = ByteBuffer.wrap(byteCrypter.decrypt(encryptedChoice)).getInt();
 
             /* Put the ciphertexts into a map */
-            voteMap.put(candidate, decryptedChoice);
+            raceSelectionMap.put(candidate, decryptedChoice);
         }
 
         /* Pull out parts from IHomomorphicCiphertext in vote to pass to byteCrypter in order to contstruct new PlaintextVote */
-        return new PlaintextVote(voteMap, vote.getTitle());
+        return new PlaintextRaceSelection(raceSelectionMap, raceSelection.getTitle(), raceSelection.size);
     }
 
-    public EncryptedVote encrypt(PlaintextVote vote) throws UninitialisedException, KeyNotLoadedException, InvalidKeyException, CipherException, CiphertextException {
+    public EncryptedRaceSelection encrypt(PlaintextRaceSelection vote) throws UninitialisedException, KeyNotLoadedException, InvalidKeyException, CipherException, CiphertextException {
 
         /* Get the map from the PlaintextVote */
-        Map<String, Integer> voteMap = vote.getVoteMap();
+        Map<String, Integer> voteMap = vote.getRaceSelectionsMap();
         Map<String, IHomomorphicCiphertext> cipherMap = new HashMap<>();
 
         /* Cycle over each of the candidates in the voteMap */
@@ -71,7 +71,7 @@ public class VoteCrypto {
         }
 
         /* Create a new EncryptedVote from the new ciphertexts */
-        return new EncryptedVote<>(cipherMap, vote.getTitle(), 1);
+        return new EncryptedRaceSelection<>(cipherMap, vote.getTitle(), 1);
     }
 
     public void loadKeys(String... filePaths) throws FileNotFoundException, BadKeyException, UninitialisedException {

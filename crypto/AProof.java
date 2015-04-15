@@ -13,7 +13,7 @@ public abstract class AProof implements Serializable {
     /* Fields? */
 
     /* Verify */
-    public abstract boolean verify(Provable p, IPublicKey PEK, List<Integer> domain);
+    public abstract boolean verify(IHomomorphicCiphertext p, IPublicKey PEK, List<Integer> domain);
 
     /* Multiply? Homomorphic Proof? */
 }
