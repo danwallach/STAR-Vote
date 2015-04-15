@@ -1,6 +1,7 @@
 package crypto;
 
 import crypto.adder.AdderInteger;
+import crypto.adder.AdderPublicKey;
 import crypto.adder.EEGMembershipProof;
 
 import java.util.ArrayList;
@@ -45,7 +46,7 @@ public class ExponentialElGamalCiphertext implements IHomomorphicCiphertext<Expo
      * @param operand   the ciphertext to "add" yourself to
      * @return          the result of the homomorphic operation on the two ciphertexts
      */
-    public ExponentialElGamalCiphertext operate(ExponentialElGamalCiphertext operand) {
+    public ExponentialElGamalCiphertext operate(ExponentialElGamalCiphertext operand, IPublicKey PEK) {
         /* Get the requisite numbers and multiply */
         AdderInteger p = this.p;
         AdderInteger g = this.g.multiply(operand.g);
@@ -53,7 +54,7 @@ public class ExponentialElGamalCiphertext implements IHomomorphicCiphertext<Expo
         AdderInteger r = this.r.add(operand.r);
 
         /* Operate the proofs on each other */
-        EEGMembershipProof proof = (EEGMembershipProof) this.proof.operate(operand.proof);
+        EEGMembershipProof proof = new EEGMembershipProof(g, h, r, (AdderPublicKey) PEK, )
 
         /* Create a new ciphertext with the updated values and proof */
         return new ExponentialElGamalCiphertext(g, h, r, p, proof);

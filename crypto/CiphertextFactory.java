@@ -19,9 +19,13 @@ public class CiphertextFactory {
     /* TODO maybe this should return type T...*/
     /* TODO this will eventually reflect a constructor based on c */
     public static <T extends IHomomorphicCiphertext> IHomomorphicCiphertext identity(Class<T> c, IPublicKey PEK){
-        if (c == ExponentialElGamalCiphertext.class)
-            return new ExponentialElGamalCiphertext(AdderInteger.ONE, AdderInteger.ONE, ((AdderPublicKey)PEK).getP());
-        else
+        if (c == ExponentialElGamalCiphertext.class) {
+
+            AdderPublicKey publicKey = (AdderPublicKey) PEK;
+
+            /* This has a null proof because it will force return for multiply. Always use this as operand */
+            return new ExponentialElGamalCiphertext(AdderInteger.ONE, AdderInteger.ONE, publicKey.getP(), null);
+        } else
             return null;
     }
 }

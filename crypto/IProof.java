@@ -9,9 +9,20 @@ import java.util.List;
  */
 public interface IProof<T extends IHomomorphicCiphertext> extends Serializable {
 
-    /* Verify */
+    /**
+     *
+     * @param p
+     * @param PEK
+     * @param domain
+     * @return
+     */
     public abstract boolean verify(T p, IPublicKey PEK, List<Integer> domain);
 
-    /* Operate */
+    /**
+     *
+     * @param proof
+     * @return
+     */
     public abstract IProof<T> operate(IProof<T> proof);
+
 }

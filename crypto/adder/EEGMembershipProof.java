@@ -75,8 +75,7 @@ public class EEGMembershipProof implements IProof<ExponentialElGamalCiphertext> 
 
 	private AdderInteger p;
 	private AdderInteger q;
-	private AdderInteger c;
-	private List<AdderInteger> yList;
+    private List<AdderInteger> yList;
 	private List<AdderInteger> zList;
 	private List<AdderInteger> sList;
 	private List<AdderInteger> cList;
@@ -219,8 +218,8 @@ public class EEGMembershipProof implements IProof<ExponentialElGamalCiphertext> 
 		String cHash = Util.sha1(s);
 
         /* From the hash, construct a numerical value */
-		this.c = new AdderInteger(cHash, q, 16).mod(q);
-		AdderInteger realC = new AdderInteger(this.c, q);
+        AdderInteger c1 = new AdderInteger(cHash, q, 16).mod(q);
+		AdderInteger realC = new AdderInteger(c1, q);
 
         /* Now subtract all of the generated fake commits off the hash value (note, the valid value will still be 0 here) */
         for (AdderInteger fakeC : cList)
@@ -315,8 +314,13 @@ public class EEGMembershipProof implements IProof<ExponentialElGamalCiphertext> 
      * @param p
      * @return
      */
-    public IProof<ExponentialElGamalCiphertext> operate(IProof<ExponentialElGamalCiphertext> p) {
-        EEGMembershipProof proof = (EEGMembershipProof) p;
+    public IProof<ExponentialElGamalCiphertext> operate(IProof<ExponentialElGamalCiphertext> pf) {
+
+        if (pf==null)
+            return new EEGMembershipProof(p, q, yList, zList, sList, cList);
+
+        EEGMembershipProof proof = (EEGMembershipProof) pf;
+
         return multiply(proof);
     }
 
@@ -326,7 +330,7 @@ public class EEGMembershipProof implements IProof<ExponentialElGamalCiphertext> 
      * @return
      */
     private EEGMembershipProof multiply(EEGMembershipProof proof) {
-        return proof;
+        compute()
     }
 
 	/**

@@ -25,10 +25,6 @@ public class EncryptedRaceSelection<T extends IHomomorphicCiphertext> extends AR
 
         this.selectionsMap = selectionsMap;
 
-        /* TODO move this into DHExponentialElGamalCryptoType*/
-        //if (!verifySum(selectionsMap, 0, size, PEK))
-        //    throw new InvalidVoteException("An attempt to construct an EncryptedVote with invalid values was attempted!");
-
     }
 
     /**
@@ -116,7 +112,7 @@ public class EncryptedRaceSelection<T extends IHomomorphicCiphertext> extends AR
         T summed = (T)(CiphertextFactory.identity(arbitraryCiphertext.getClass(),PEK));
 
         for(Map.Entry<String, T> entry : selectionsMap.entrySet()) {
-            summed = (T)(summed.operate(entry.getValue()));
+            summed = (T)(summed.operate(entry.getValue(), PEK));
         }
 
         return summed.verify(min, max, PEK);
