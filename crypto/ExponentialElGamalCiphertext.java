@@ -68,11 +68,11 @@ public class ExponentialElGamalCiphertext extends AHomomorphicCiphertext<Exponen
             domain.add(new AdderInteger(i));
         }
 
-        /* Compute a new proof */
+        /* Compute a new proof -- size works because "empty" votes have their own spot, so the sum of 2 votes is always 2, etc. */
         EEGMembershipProof proof = new EEGMembershipProof(g, h, r, (AdderPublicKey) PEK, new AdderInteger(size), domain);
 
         /* Create a new ciphertext with the updated values and proof */
-        return new ExponentialElGamalCiphertext(g, h, r, p, proof);
+        return new ExponentialElGamalCiphertext(g, h, r, p, proof, this.size+operand.size);
     }
 
     /**

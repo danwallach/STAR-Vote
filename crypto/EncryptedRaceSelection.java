@@ -62,7 +62,7 @@ public class EncryptedRaceSelection<T extends AHomomorphicCiphertext> extends AR
      * @param other    the other vote to be combined with this one
      * @return the result of the operation
      */
-    public EncryptedRaceSelection<T> operate(EncryptedRaceSelection<T> other) {
+    public EncryptedRaceSelection<T> operate(EncryptedRaceSelection<T> other, IPublicKey PEK) {
 
         Map<String, T> resultMap = new HashMap<>();
 
@@ -76,7 +76,7 @@ public class EncryptedRaceSelection<T extends AHomomorphicCiphertext> extends AR
                 T thisCiphertext = this.selectionsMap.get(title);
                 T otherCiphertext = other.selectionsMap.get(title);
 
-                resultMap.put(title, (T) thisCiphertext.operate(otherCiphertext));
+                resultMap.put(title, (T) thisCiphertext.operate(otherCiphertext, PEK));
             }
 
         }

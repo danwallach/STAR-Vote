@@ -70,7 +70,7 @@ public class Election <T extends AHomomorphicCiphertext> {
 
         /* Multiply all the votes together and recompute proof */
         for (EncryptedRaceSelection<T> vote : votes)
-            total = vote.operate(total);
+            total = vote.operate(total, PEK);
 
         /* ---------------- TESTING ---------------- */
 
@@ -122,7 +122,7 @@ public class Election <T extends AHomomorphicCiphertext> {
         coeffs.add(AdderInteger.ZERO);
 
         /* Extract the ciphertexts */
-        List<AdderElgamalCiphertext> cipherList = sum.getCipherList();
+        List<AdderElgamalCiphertext> cipherList = sum.getRaceSelectionsMap();
 
         /* Figure out how many ciphertexts there are */
         int csize = cipherList.size();
