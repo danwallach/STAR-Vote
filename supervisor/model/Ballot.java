@@ -33,7 +33,7 @@ public class Ballot<T extends ARaceSelection> implements Serializable {
     /** The nonce associated with the voting session when this ballot was committed */
     private final String nonce;
 
-    private final Integer size;
+    private final int size;
 
 
     /**
@@ -64,7 +64,7 @@ public class Ballot<T extends ARaceSelection> implements Serializable {
     /**
      * @return  the ballot as an array of votes
      */
-    public List<T> getVotes() {
+    public List<T> getRaceSelections() {
         return ballot;
     }
 
@@ -83,7 +83,7 @@ public class Ballot<T extends ARaceSelection> implements Serializable {
     /**
      * @return a ListExpression representation of the ballot
      */
-    public ListExpression getVoteASE(){
+    public ListExpression getRaceSelectionsASE(){
         ArrayList<ASExpression> votes = new ArrayList<>();
 
         for(T v : ballot)
@@ -102,9 +102,9 @@ public class Ballot<T extends ARaceSelection> implements Serializable {
 
         elements.add(StringExpression.makeString("ballot"));
         elements.add(StringExpression.makeString(bid));
-        elements.add(getVoteASE());
+        elements.add(getRaceSelectionsASE());
         elements.add(StringExpression.makeString(nonce));
-        elements.add(StringExpression.makeString(size.toString()));
+        elements.add(StringExpression.makeString(Integer.toString(size)));
 
         /* Build a list expression based on the data here contained */
         return new ListExpression(elements);

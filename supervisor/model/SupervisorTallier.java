@@ -3,7 +3,7 @@ package supervisor.model;
 import auditorium.Bugout;
 import crypto.EncryptedRaceSelection;
 import crypto.adder.AdderPublicKey;
-import crypto.adder.Election;
+import crypto.adder.Race;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.StringExpression;
@@ -37,7 +37,7 @@ public class SupervisorTallier implements Serializable {
         AdderPublicKey PEK = null /* load the PEK */;
 
         /* The results of the election are stored by race ID in this map */
-        Map<String, Election> results = new HashMap<>();
+        Map<String, Race> results = new HashMap<>();
 
         /* For each ballot, get each vote and build a results mapping between race ids and elections */
         for (Ballot<EncryptedRaceSelection> bal : cast) {
@@ -65,17 +65,17 @@ public class SupervisorTallier implements Serializable {
                     }
 
                     /* Code these results as a subelection so the ciphers can be summed homomorphically */
-                    Election election = results.get(raceID);
+                    Race race = results.get(raceID);
 
                     /* If we haven't seen this specific race before, initialize it */
-                    if (election == null)
-                        election = new Election(PEK, new ArrayList<String>(vote.getRaceSelectionsMap().keySet()));
+                    if (race == null)
+                        race = new Race(PEK, new ArrayList<String>(vote.getRaceSelectionsMap().keySet()));
 
-                    /* This will ready election to homomorphically tally the vote */
-                    election.castVote(vote);
+                    /* This will ready race to homomorphically tally the vote */
+                    race.castRaceSelection(vote);
 
                     /* Now save the result until we're ready to decrypt the totals */
-                    results.put(raceID, election);
+                    results.put(raceID, race);
                 }
 
                 size += bal.getSize();
@@ -97,14 +97,14 @@ public class SupervisorTallier implements Serializable {
         for(String id :  results.keySet()) {
 
             /* Get the race */
-            Election thisRace = results.get(id);
+            Race thisRace = results.get(id);
 
             /* Get the homomorphically tallied vote for this race */
-            EncryptedRaceSelection vote = results.get(id).sumVotes();
+            EncryptedRaceSelection vote = results.get(id).sumRaceSelections();
 
 
             /* Verify the voteProof and error off if bad */
-            if(vote.verifyVoteProof(0, thisRace.getVotes().size())) {
+            if(vote.verifyVoteProof(0, thisRace.getRaceSelections().size())) {
                 votes.add(vote);
                 voteASE.add(vote.toASE());
             }

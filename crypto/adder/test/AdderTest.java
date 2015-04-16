@@ -52,10 +52,10 @@ public class AdderTest extends TestCase {
              voteMap.put(choice, 0);
         }
 
-        System.out.println("Creating an election with " + maxVoters
+        System.out.println("Creating an race with " + maxVoters
                            + " maximum voters and " + numChoices + " choices");
         
-        Election election = new Election(pubKey, null);
+        Race race = new Race(pubKey, null);
 
         System.out.println("Authorities start");
 
@@ -137,14 +137,14 @@ public class AdderTest extends TestCase {
             assertTrue(proof.verify(vote, finalPubKey, 1, 1));
             System.out.println("Casting vote " + (i + 1));
             vote = new AdderVote(vote.getCipherList(), vote.getChoices(), proof, vote.getRaceTitle());
-            election.castVote(vote);
+            race.castRaceSelection(vote);
             voteMap.put(choice, voteMap.get(choice) + 1);
             System.out.println("Vote " + (i + 1) + " casted");
         }
 
         System.out.println("Voters end");
         
-        AdderVote cipherSum = election.sumVotes();
+        AdderVote cipherSum = race.sumRaceSelections();
 
         System.out.println("cipherSum = " + cipherSum);
 
@@ -152,10 +152,10 @@ public class AdderTest extends TestCase {
         List<AdderInteger>/*<AdderInteger>*/ partial
             = (finprivKeys.get(0)).partialDecrypt(cipherSum);
 
-        assertEquals(numVoters, election.getVotes().size());
+        assertEquals(numVoters, race.getRaceSelections().size());
         assertEquals(numChoices, numChoices);
 
-        System.out.println("Election performed with " + numChoices
+        System.out.println("Race performed with " + numChoices
                            + " / " + maxChoices + " choices and "
                            + numVoters + " / " + maxVoters + " voters and "
                            + numAuths + " / " + maxAuths + " authorities");
@@ -164,7 +164,7 @@ public class AdderTest extends TestCase {
 
         try {
             List<AdderInteger>/*<AdderInteger>*/ results =
-                election.getFinalSum(partial, cipherSum, finalPubKey);
+                race.getFinalSum(partial, cipherSum, finalPubKey);
             System.out.println("Got " + results.size() + " results");
             
             System.out.println("++++++\nResult\n++++++\n");

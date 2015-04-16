@@ -44,15 +44,15 @@ public class BallotCrypto {
     public static Ballot<PlaintextRaceSelection> decrypt(Ballot<EncryptedRaceSelection> ballot)
             throws UninitialisedException, KeyNotLoadedException, InvalidKeyException, CipherException, CiphertextException {
 
-        List<PlaintextRaceSelection> votes = new ArrayList<>();
+        List<PlaintextRaceSelection> raceSelections = new ArrayList<>();
 
         /* Go through each of the EncryptedVotes and decrypt, then add to the list of PlaintextVotes*/
-        for(EncryptedRaceSelection ev : ballot.getVotes()) {
-            votes.add(raceSelectionCrypter.decrypt(ev));
+        for(EncryptedRaceSelection ev : ballot.getRaceSelections()) {
+            raceSelections.add(raceSelectionCrypter.decrypt(ev));
         }
 
         /* Create a new Ballot<PlaintextVote> from the original ballot data */
-        return new Ballot<>(ballot.getBid(), votes, ballot.getNonce(), ballot.getSize());
+        return new Ballot<>(ballot.getBid(), raceSelections, ballot.getNonce(), ballot.getSize());
     }
 
     /**
@@ -64,14 +64,14 @@ public class BallotCrypto {
     public static Ballot<EncryptedRaceSelection> encrypt(Ballot<PlaintextRaceSelection> ballot)
             throws UninitialisedException, KeyNotLoadedException, InvalidKeyException, CipherException, CiphertextException {
 
-        List<EncryptedRaceSelection> votes = new ArrayList<>();
+        List<EncryptedRaceSelection> raceSelections = new ArrayList<>();
 
-        for(PlaintextRaceSelection pv : ballot.getVotes()) {
-            votes.add(raceSelectionCrypter.encrypt(pv));
+        for(PlaintextRaceSelection pv : ballot.getRaceSelections()) {
+            raceSelections.add(raceSelectionCrypter.encrypt(pv));
         }
 
         /* Create a new Ballot<EncryptedVote> from the original ballot data */
-        return new Ballot<>(ballot.getBid(), votes, ballot.getNonce(), ballot.getSize());
+        return new Ballot<>(ballot.getBid(), raceSelections, ballot.getNonce(), ballot.getSize());
     }
 
     /**

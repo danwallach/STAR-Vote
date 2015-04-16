@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A crypto class used as a black box operating over Votes performing
+ * A crypto class used as a black box operating over RaceSelections performing
  * cryptographic functions. Behaviour depends on a specified cryptographic
  * protocol contained within the byteEncrypter field which is set upon construction of
  * BallotCrypto.
@@ -30,7 +30,7 @@ public class RaceSelectionCrypto {
 
     public PlaintextRaceSelection decrypt(EncryptedRaceSelection raceSelection) throws UninitialisedException, KeyNotLoadedException, InvalidKeyException, CipherException, CiphertextException {
 
-        /* Get the map from the vote */
+        /* Get the map from the race selection */
         Map<String, AHomomorphicCiphertext> cipherMap = raceSelection.getRaceSelectionsMap();
         Map<String, Integer> raceSelectionMap = new HashMap<>();
 
@@ -47,18 +47,18 @@ public class RaceSelectionCrypto {
             raceSelectionMap.put(candidate, decryptedChoice);
         }
 
-        /* Pull out parts from AHomomorphicCiphertext in vote to pass to byteCrypter in order to contstruct new PlaintextVote */
+        /* Pull out parts from AHomomorphicCiphertext in race selection to pass to byteCrypter in order to contstruct new PlaintextVote */
         return new PlaintextRaceSelection(raceSelectionMap, raceSelection.getTitle(), raceSelection.size);
     }
 
-    public EncryptedRaceSelection encrypt(PlaintextRaceSelection vote) throws UninitialisedException, KeyNotLoadedException, InvalidKeyException, CipherException, CiphertextException {
+    public EncryptedRaceSelection encrypt(PlaintextRaceSelection raceSelection) throws UninitialisedException, KeyNotLoadedException, InvalidKeyException, CipherException, CiphertextException {
 
         /* Get the map from the PlaintextVote */
-        Map<String, Integer> voteMap = vote.getRaceSelectionsMap();
+        Map<String, Integer> raceSelectionsMap = raceSelection.getRaceSelectionsMap();
         Map<String, AHomomorphicCiphertext> cipherMap = new HashMap<>();
 
-        /* Cycle over each of the candidates in the voteMap */
-        for(Map.Entry<String, Integer> cur : voteMap.entrySet()) {
+        /* Cycle over each of the candidates in the raceSelectionMap */
+        for(Map.Entry<String, Integer> cur : raceSelectionsMap.entrySet()) {
 
             int choice = cur.getValue();
             String candidate = cur.getKey();
@@ -70,8 +70,8 @@ public class RaceSelectionCrypto {
             cipherMap.put(candidate, encryptedChoice);
         }
 
-        /* Create a new EncryptedVote from the new ciphertexts */
-        return new EncryptedRaceSelection<>(cipherMap, vote.getTitle(), 1);
+        /* Create a new EncryptedRaceSelection from the new ciphertexts */
+        return new EncryptedRaceSelection<>(cipherMap, raceSelection.getTitle(), 1);
     }
 
     public void loadKeys(String... filePaths) throws FileNotFoundException, BadKeyException, UninitialisedException {

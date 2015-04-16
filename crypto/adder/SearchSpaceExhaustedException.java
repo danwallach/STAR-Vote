@@ -1,13 +1,13 @@
 package crypto.adder;
 
 /**
- * Thrown by the <tt>getFinalSum</tt> method of a <code>Election</code>
+ * Thrown by the <tt>getFinalSum</tt> method of a <code>Race</code>
  * to indicate that the search space has been exhausted.
  *
  * @author  David Walluck
  * @version $LastChangedRevision$ $LastChangedDate$
- * @see     Election
- * @see     Election#getFinalSum
+ * @see     Race
+ * @see     Race#getFinalSum
  * @since   0.0.1
  */
 public class SearchSpaceExhaustedException extends RuntimeException {

@@ -196,7 +196,7 @@ public class Tap {
             }
 
             public void commitBallot(CommitBallotEvent e) {
-			    /* TODO? BallotStore.addPrecinct(e.getBID().toString(), e.getVotes()); */
+			    /* TODO? BallotStore.addPrecinct(e.getBID().toString(), e.getRaceSelections()); */
             }
 
             public void ballotReceived(BallotReceivedEvent e){

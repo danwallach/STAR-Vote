@@ -4,7 +4,7 @@ import auditorium.Bugout;
 import crypto.adder.AdderPrivateKeyShare;
 import crypto.adder.AdderPublicKey;
 import crypto.adder.AdderVote;
-import crypto.adder.Election;
+import crypto.adder.Race;
 import crypto.interop.AdderKeyManipulator;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
@@ -120,14 +120,14 @@ public class ChallengeDelayedWithNIZKsTallier extends EncryptedTallierWithNIZKs 
 
                 String subElectionId = makeId(voteIds);
 
-                Election election = _results.get(subElectionId);
+                Race race = _results.get(subElectionId);
 
-                if(election == null)
-                    election = new Election(_publicKey, voteIds);
+                if(race == null)
+                    race = new Race(_publicKey, voteIds);
 
-                election.castVote(vote);
+                race.castRaceSelection(vote);
 
-                _results.put(subElectionId, election);
+                _results.put(subElectionId, race);
             }//for
         }catch(Exception e){
             e.printStackTrace();

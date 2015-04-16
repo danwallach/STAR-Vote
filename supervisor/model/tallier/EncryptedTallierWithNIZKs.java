@@ -34,7 +34,7 @@ public class EncryptedTallierWithNIZKs implements ITallier {
     protected AdderPrivateKeyShare _finalPrivateKey = null;
 
     /** The results of the election are stored by race ID in this map */
-    protected Map<String, Election> _results = new HashMap<String, Election>();
+    protected Map<String, Race> _results = new HashMap<String, Race>();
 
     /**
      * Constructor.
@@ -74,10 +74,10 @@ public class EncryptedTallierWithNIZKs implements ITallier {
         for(String group : _results.keySet()){
 
             /* Here our races are represented as "Elections", a class provided in the UConn encryption code */
-            Election election = _results.get(group);
+            Race race = _results.get(group);
 
-            /* From the election, we can get the sum of cipher texts */
-            AdderVote cipherSum = election.sumVotes();
+            /* From the race, we can get the sum of cipher texts */
+            AdderVote cipherSum = race.sumRaceSelections();
 
             /*
              * As per the Adder decryption process, partially decrypt the ciphertext to generate some necessary
@@ -88,8 +88,8 @@ public class EncryptedTallierWithNIZKs implements ITallier {
             /* This is a LaGrange coefficient used as part of the decryption computations */
             AdderInteger coeff = AdderInteger.ZERO;
 
-            /* Rely on the Adder election class to perform the final decryption of the election sums */
-            List<AdderInteger> results = election.getFinalSum(partialSum, cipherSum, _finalPublicKey);
+            /* Rely on the Adder race class to perform the final decryption of the race sums */
+            List<AdderInteger> results = race.getFinalSum(partialSum, cipherSum, _finalPublicKey);
 
             /* Split off the results by candidate ID*/
             String[] ids = group.split(",");
@@ -177,17 +177,17 @@ public class EncryptedTallierWithNIZKs implements ITallier {
 
                 /* Code these results as a subelection so the ciphers can be summed homomorphically */
                 String subElectionId = makeId(voteIds);
-                Election election = _results.get(subElectionId);
+                Race race = _results.get(subElectionId);
 
-                /* If we haven't seen this specific election before, initialize it */
-                if(election == null)
-                    election = new Election(_publicKey, voteIds);
+                /* If we haven't seen this specific race before, initialize it */
+                if(race == null)
+                    race = new Race(_publicKey, voteIds);
 
                 /* This will homomorphically tally the vote */
-                election.castVote(vote);
+                race.castRaceSelection(vote);
 
                 /* Now save the result until we're ready to decrypt the totals */
-                _results.put(subElectionId, election);
+                _results.put(subElectionId, race);
             }
         }catch(Exception e){
             Bugout.err("Malformed ballot received <"+e.getMessage()+">");
