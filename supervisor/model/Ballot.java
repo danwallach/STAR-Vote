@@ -117,7 +117,7 @@ public class Ballot<T extends ARaceSelection> implements Serializable {
          * @return          the Vote equivalent of ase
          *
          */
-        public static <V extends ARaceSelection> Ballot<V> fromASE(ASExpression ase){
+        public static <A extends ARaceSelection> Ballot<A> fromASE(ASExpression ase){
 
             ListExpression exp = (ListExpression)ase;
 
@@ -130,16 +130,16 @@ public class Ballot<T extends ARaceSelection> implements Serializable {
 
             ListExpression vListE = (ListExpression)exp.get(2);
 
-            ArrayList<V> vList = new ArrayList<>();
+            ArrayList<A> aList = new ArrayList<>();
 
             for(ASExpression vote : vListE)
-                vList.add(V.fromASE(vote));
+                aList.add(A.fromASE(vote));
 
             StringExpression nonce = (StringExpression)exp.get(3);
 
             Integer size = Integer.parseInt(exp.get(4).toString());
 
-            return new Ballot<>(bid, vList, nonce.toString(), size);
+            return new Ballot<>(bid, aList, nonce.toString(), size);
         }
 
 }
