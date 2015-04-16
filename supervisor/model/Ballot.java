@@ -35,7 +35,6 @@ public class Ballot<T extends ARaceSelection> implements Serializable {
 
     private final int size;
 
-
     /**
      * Constructor for a ballot, takes in all of the parameters the supervisor receives on committing a ballot.
      *

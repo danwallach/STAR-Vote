@@ -32,30 +32,26 @@ public class ASEParser {
         /* Convert this expression to a ListExpression */
         ListExpression object = (ListExpression) exp;
 
-        /* Make sure that this is in fact an "object" */
-        if ((object.get(0)).toString().equals("object")){
+        for (int i=3; i<object.size(); i++) {
 
-            for (int i=2; i<object.size(); i++) {
+            /* Get the ASExpression */
+            ASExpression cur = object.get(i);
 
-                /* Get the ASExpression */
-                ASExpression cur = object.get(i);
+            /* If this is an instance of ListExpression, convert to object */
+            if (cur instanceof ListExpression) {
 
-                /* If this is an instance of ListExpression, convert to object */
-                if (cur instanceof ListExpression) {
+                Object field = ASEParser.convert(cur);
 
-                    Object field = ASEParser.convert(cur);
-
-                    /* Add the field to parameters and type to paramtypes*/
-                    paramTypes.add(field.getClass());
-                    params.add(field);
-                }
+                /* Add the field to parameters and type to paramtypes */
+                paramTypes.add(field.getClass());
+                params.add(field);
             }
         }
 
-        try{
+        try {
             Constructor<T> constructor = c.getConstructor(paramTypes.toArray(new Class[paramTypes.size()]));
-            return constructor.newInstance(params);}
-        catch(Exception e) { return null; }
+            return constructor.newInstance(params);
+        } catch(Exception e) { return null; }
     }
 
     /**
@@ -65,6 +61,7 @@ public class ASEParser {
      * @return
      */
     public static <T> T convert(ListExpression exp) {
+
         return convert(exp, getClass(exp));
     }
 
@@ -81,16 +78,25 @@ public class ASEParser {
     }
 
     /**
-     * Converts the given object into an ASExpression
+     * Converts the given object into an ASExpression, used for primary object
      * @param obj
      * @return
      */
     public static ASExpression convert(Object obj) {
-        
+       return ASEParser.convert(obj, "object");
+    }
+
+    /**
+     * Converts the given object (field-derived) into an ASExpression
+     * @param obj
+     * @return
+     */
+    private static ASExpression convert(Object obj, String fieldName) {
+
         List<ASExpression> expList = new ArrayList<>();
-        
+
         /* Write the name of the Object */
-        expList.add(StringExpression.make("object"));
+        expList.add(StringExpression.make(fieldName));
         expList.add(StringExpression.make(obj.getClass().getName()));
 
         /* Get the list of parameters*/
@@ -98,13 +104,14 @@ public class ASEParser {
 
         /* Get each field object and convert */
         for (Field f : fields) {
-            f.setAccessible(true);
 
             /* Convert this field to an ASE */
-            try { expList.add(ASEParser.convert(f.get(obj))); }
+            try {
+                f.setAccessible(true);
+                expList.add(ASEParser.convert(f.get(obj), f.getName()));
+            }
             catch (Exception e) { e.printStackTrace(); }
         }
-
 
         return new ListExpression(expList);
     }
