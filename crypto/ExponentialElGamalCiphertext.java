@@ -41,7 +41,7 @@ public class ExponentialElGamalCiphertext extends AHomomorphicCiphertext<Exponen
     }
 
     public ExponentialElGamalCiphertext(AdderInteger g, AdderInteger h, AdderInteger p, EEGMembershipProof proof) {
-        this(g,h, AdderInteger.ZERO, p, proof,1);
+        this(g,h, AdderInteger.ZERO, p, proof, 1);
     }
 
     public ExponentialElGamalCiphertext(AdderInteger g, AdderInteger h, AdderInteger p, EEGMembershipProof proof, int size) {
