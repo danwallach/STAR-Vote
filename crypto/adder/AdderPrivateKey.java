@@ -1,13 +1,12 @@
 package crypto.adder;
 
-import crypto.AHomomorphicCiphertext;
-import crypto.EncryptedRaceSelection;
 import crypto.ExponentialElGamalCiphertext;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.StringExpression;
 
-import java.util.*;
+import java.util.NoSuchElementException;
+import java.util.StringTokenizer;
 
 /**
  * Represents an Elgamal private key.
@@ -16,7 +15,7 @@ import java.util.*;
  * @version $LastChangedRevision$ $LastChangedDate$
  * @since 0.0.1
  */
-public class AdderPrivateKeyShare extends AdderKey {
+public class AdderPrivateKey extends AdderKey {
 
     private AdderInteger x;
 
@@ -28,72 +27,31 @@ public class AdderPrivateKeyShare extends AdderKey {
      * @param x     the private value
      * @param f     the message base
      */
-    public AdderPrivateKeyShare(AdderInteger p, AdderInteger g, AdderInteger x, AdderInteger f) {
+    public AdderPrivateKey(AdderInteger p, AdderInteger g, AdderInteger x, AdderInteger f) {
 
         super(p, g, f);
         this.x = x;
     }
 
-    /**
-     * Computes the authority's partial decryption of a sum. The
-     * \f$i\f$th component of the partial decryption is computed
-     * as \f$G_i ^ x\f$, where \f$G_i\f$ is the first component of
-     * the \f$i\f$ th ciphertext in the sum.
-     *
-     * @param vote      the vote
-     *
-     * @return          the partial decryption of the given vote
-     */
-    public List<AdderInteger> partialDecrypt(EncryptedRaceSelection vote) {
-        Map<String, AHomomorphicCiphertext> cipherList = vote.getRaceSelectionsMap();
-        List<AdderInteger> resultList = new ArrayList<>(cipherList.size());
-
-        for (AHomomorphicCiphertext ciphertext : cipherList.values())
-            resultList.add(partialDecrypt((ExponentialElGamalCiphertext)ciphertext));
-
-        return resultList;
-    }
-
-    public AdderInteger partialDecrypt(ExponentialElGamalCiphertext ciphertext) {
-
-            AdderInteger bigG = ciphertext.getG();
-            return bigG.pow(x);
-    }
-
 
     /**
-     * Computes the final private key for each authority.
+     * Returns the full decryption of an ElgamalCiphertext
+     * @param cipher    the encrypted AdderInteger
      *
-     * @param polyList      the polynomial list
-     * @return the final private key
+     * @return          plaintext the decryption
      */
-    public AdderPrivateKey getFinalPrivKey(List<ExponentialElGamalCiphertext> polyList) {
+    public AdderInteger decrypt(ExponentialElGamalCiphertext cipher){
 
-        AdderInteger total = new AdderInteger(AdderInteger.ZERO, q);
+        AdderInteger plaintext = cipher.getH();
 
-        for (ExponentialElGamalCiphertext coefficient : polyList) {
+        /*calculate the shared secret*/
+        AdderInteger s = cipher.getG().pow(x);
 
-            AdderInteger eL = coefficient.getG();
-            AdderInteger eR = coefficient.getH();
-            AdderInteger product = eL.pow(x.negate()).multiply(eR);
-            AdderInteger qPlusOneOverTwo = q.add(AdderInteger.ONE).divide(AdderInteger.TWO);
-            AdderInteger posInverse = product.pow(qPlusOneOverTwo);
-            AdderInteger negInverse = posInverse.negate();
-            AdderInteger inverse;
+        plaintext = plaintext.divide(s);
 
-            if (posInverse.compareTo(negInverse) < 0) {
-                inverse = posInverse;
-            } else {
-                inverse = negInverse;
-            }
-
-            inverse = inverse.subtract(AdderInteger.ONE);
-
-            total = total.add(inverse);
-        }
-
-        return new AdderPrivateKey(p, g, total, f);
+        return plaintext;
     }
+
 
     /**
      * Returns the prime <tt>p</tt>.
@@ -127,7 +85,7 @@ public class AdderPrivateKeyShare extends AdderKey {
      *
      * @return the private value <tt>x</tt>
      */
-    public AdderInteger getX() {
+    private AdderInteger getX() {
         return x;
     }
 
@@ -147,7 +105,7 @@ public class AdderPrivateKeyShare extends AdderKey {
      * @param  s a string that specifies a <tt>PrivateKey</tt>
      * @return a <tt>PrivateKey</tt> with the specified values
      */
-    public static AdderPrivateKeyShare fromString(String s) {
+    public static AdderPrivateKey fromString(String s) {
         StringTokenizer st = new StringTokenizer(s, "pgxf", true);
 
         try {
@@ -181,7 +139,7 @@ public class AdderPrivateKeyShare extends AdderKey {
                 throw new InvalidPrivateKeyException("too many tokens");
             }
 
-            return new AdderPrivateKeyShare(p, g, x, f);
+            return new AdderPrivateKey(p, g, x, f);
         } catch (NoSuchElementException | NumberFormatException nsee) {
             throw new InvalidPrivateKeyException(nsee.getMessage());
         }
@@ -218,7 +176,7 @@ public class AdderPrivateKeyShare extends AdderKey {
      * @param ase - S-Expression representation of a PrivateKey
      * @return the PrivateKey equivalent of ase
      */
-    public static AdderPrivateKeyShare fromASE(ASExpression ase){
+    public static AdderPrivateKey fromASE(ASExpression ase){
     	ListExpression exp = (ListExpression)ase;
     	
     	if(!(exp.get(0).toString()).equals("private-key"))
@@ -229,6 +187,6 @@ public class AdderPrivateKeyShare extends AdderKey {
     	AdderInteger x = AdderInteger.fromASE(exp.get(3));
     	AdderInteger f = AdderInteger.fromASE(exp.get(4));
     	
-    	return new AdderPrivateKeyShare(p, g, x, f);
+    	return new AdderPrivateKey(p, g, x, f);
     }
 }

@@ -49,6 +49,9 @@ public class ASEParser {
         }
 
         try {
+
+            /* TODO this assumes that each field is used in the constructor, which may not be the case
+            *  need to see if it's possible to just set fields manually - objenesis? */
             Constructor<T> constructor = c.getConstructor(paramTypes.toArray(new Class[paramTypes.size()]));
             return constructor.newInstance(params);
         } catch(Exception e) { return null; }

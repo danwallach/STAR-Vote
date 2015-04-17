@@ -1,5 +1,6 @@
 package crypto.interop;
 
+import crypto.ExponentialElGamalCiphertext;
 import crypto.adder.*;
 
 import java.util.ArrayList;
@@ -53,6 +54,7 @@ public class AdderKeyManipulator {
 	 * @return the new PublicKey
 	 */
 	protected static AdderPublicKey generateFinalPublicKeyNoCache(AdderPublicKey pubKey){
+
 		_poly = new Polynomial(pubKey.getP(), pubKey.getG(), pubKey.getF(), 0);
 
         AdderInteger p = pubKey.getP();
@@ -60,8 +62,11 @@ public class AdderKeyManipulator {
 		AdderInteger g = pubKey.getG();
 		AdderInteger f = pubKey.getF();
 		AdderInteger finalH = new AdderInteger(AdderInteger.ONE, p);
-		
+
+        /* Theoretically this is g^x, where x is in R Z_q or something*/
 		AdderInteger gvalue = g.pow((_poly).evaluate(new AdderInteger(AdderInteger.ZERO, q)));
+
+        /* set h = gvalue, where gvalue = g^x */
 		finalH = finalH.multiply(gvalue);
 		
 		_cachedKey = new AdderPublicKey(p, g, finalH, f);
@@ -75,14 +80,14 @@ public class AdderKeyManipulator {
 	 * 
 	 * @return the new PrivateKey
 	 */
-	public static AdderPrivateKeyShare generateFinalPrivateKey(AdderPublicKey publicKey, AdderPrivateKeyShare privateKey){
+	public static AdderPrivateKey generateFinalPrivateKey(AdderPublicKey publicKey, AdderPrivateKeyShare privateKeyShare){
 
 		/* Generate the final private key */
-		List<AdderElgamalCiphertext> ciphertexts = new ArrayList<>();
-        AdderElgamalCiphertext ciphertext = publicKey.encryptPoly(_poly.evaluate(new AdderInteger(0, publicKey.getQ())));
+		List<ExponentialElGamalCiphertext> ciphertexts = new ArrayList<>();
+        ExponentialElGamalCiphertext ciphertext = publicKey.encryptPoly(_poly.evaluate(new AdderInteger(0, publicKey.getQ())));
         ciphertexts.add(ciphertext);
 
-        return privateKey.getFinalPrivKey(ciphertexts);
+        return privateKeyShare.getFinalPrivKey(ciphertexts);
 	}
 
     public static void setPolynomial(Polynomial poly) {
