@@ -309,30 +309,6 @@ public class EEGMembershipProof implements IProof<ExponentialElGamalCiphertext> 
 		return (cChoices.equals(newC));
 	}
 
-    /**
-     *
-     * @param p
-     * @return
-     */
-    public IProof<ExponentialElGamalCiphertext> operate(IProof<ExponentialElGamalCiphertext> pf) {
-
-        if (pf==null)
-            return new EEGMembershipProof(p, q, yList, zList, sList, cList);
-
-        EEGMembershipProof proof = (EEGMembershipProof) pf;
-
-        return multiply(proof);
-    }
-
-    /**
-     *
-     * @param proof
-     * @return
-     */
-    private EEGMembershipProof multiply(EEGMembershipProof proof) {
-        compute()
-    }
-
 	/**
 	 * Creates a <tt>MembershipProof</tt> from the string standard representation
 	 * as described in the {@link #toString} method.

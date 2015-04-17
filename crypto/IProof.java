@@ -18,11 +18,4 @@ public interface IProof<T extends AHomomorphicCiphertext> extends Serializable {
      */
     public abstract boolean verify(T p, IPublicKey PEK, List<Integer> domain);
 
-    /**
-     *
-     * @param proof
-     * @return
-     */
-    public abstract IProof<T> operate(IProof<T> proof);
-
 }
