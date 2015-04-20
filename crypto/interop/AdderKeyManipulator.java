@@ -167,9 +167,9 @@ public class AdderKeyManipulator {
      *
      * @return
      */
-    public static AdderPublicKey getPublicEncryptionKey(){
+    public static AdderPublicKey generatePublicEncryptionKey(){
 
-        if (stage3participants.size() < safetyThreshold) {
+        if (stage3participants.size() >= safetyThreshold) {
 
             AdderInteger finalH = new AdderInteger(AdderInteger.ONE, seedKey.getP());
 
