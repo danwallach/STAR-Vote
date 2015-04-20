@@ -7,7 +7,6 @@ import sexpression.ListExpression;
 import sexpression.StringExpression;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
@@ -85,7 +84,8 @@ public class AdderPublicKeyShare extends AdderKey implements IPublicKey, Seriali
      * @param p     the prime
      * @return      the public key
      */
-   public static AdderPublicKeyShare makePartialKey(AdderInteger p) {
+   public static AdderPublicKeyShare makePublicKeyShare(AdderInteger p) {
+
         AdderInteger t;
         AdderInteger a;
 
@@ -114,8 +114,8 @@ public class AdderPublicKeyShare extends AdderKey implements IPublicKey, Seriali
      *                      be chosen to be a \e length - bit prime number.
      * @return              the public key
      */
-    public static AdderPublicKeyShare makePartialKey(int length) {
-        return makePartialKey(AdderInteger.safePrime(length));
+    public static AdderPublicKeyShare makePublicKeyShare(int length) {
+        return makePublicKeyShare(AdderInteger.safePrime(length));
     }
 
     /**
@@ -129,24 +129,6 @@ public class AdderPublicKeyShare extends AdderKey implements IPublicKey, Seriali
         this.h = g.pow(x);
 
         return new AdderPrivateKeyShare(p, g, x, f);
-    }
-
-    /**
-     * Encrypts a message as an additive homomorphic Elgamal ciphertext.
-     * The ciphertext returned is of the form \f$\langle g^r, h^r
-     * f^m\rangle\f$, where \f$m\f$ is the message.
-     *
-     * @param m     the message
-     * @return      the encrypted of the message
-     */
-    public ExponentialElGamalCiphertext encrypt(AdderInteger m, List<AdderInteger> domain) {
-        AdderInteger r = AdderInteger.random(q);
-        AdderInteger bigG = g.pow(r);
-        AdderInteger bigH = h.pow(r).multiply(f.pow(m));
-
-        EEGMembershipProof proof = new EEGMembershipProof(bigG, bigH, r, this, m, domain);
-
-        return new ExponentialElGamalCiphertext(bigG, bigH, r, p, proof);
     }
 
 
