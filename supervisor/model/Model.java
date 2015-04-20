@@ -25,7 +25,6 @@ package supervisor.model;
 import auditorium.IAuditoriumParams;
 import auditorium.NetworkException;
 import crypto.EncryptedRaceSelection;
-import crypto.adder.AdderPublicKey;
 import crypto.interop.AdderKeyManipulator;
 import sexpression.ASExpression;
 import sexpression.StringExpression;
@@ -1392,8 +1391,6 @@ public class Model {
 
             /* Pare off the precinct information */
             String precinctID = fileName.substring(fileName.length()-7,fileName.length()-4);
-
-            AdderPublicKey finalPublicKey = AdderKeyManipulator.generateFinalPublicKey(auditoriumParams.getKeyStore().loadAdderPublicKey());
 
             Precinct precinct = new Precinct(precinctID, ballotFile.getAbsolutePath());
 

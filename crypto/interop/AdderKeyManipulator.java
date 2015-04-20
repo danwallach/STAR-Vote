@@ -1,7 +1,10 @@
 package crypto.interop;
 
 import crypto.ExponentialElGamalCiphertext;
-import crypto.adder.*;
+import crypto.adder.AdderInteger;
+import crypto.adder.AdderPrivateKeyShare;
+import crypto.adder.AdderPublicKey;
+import crypto.adder.Polynomial;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +16,17 @@ public class AdderKeyManipulator {
 
     /** A LaGrange polynomial for the Exponential-ElGamal homomorphic process. */
 	private static Polynomial _poly = null;
-	
+
+
+
+
+    /* 1. somewhere need to have authorities generate public/private keyshare
+     * 2. The public keyshare is saved here
+     * 3. Each of the authorities will create a polynomial
+     * 4. The polynomial will create a ciphertext for _every_ other authority's (j)
+     *    published publickeyshare at j mod q: pubKeys.get(j)).encryptPoly((polys.get(i)).evaluate(new AdderInteger(j, q)))
+     * 5. */
+
 	/**
 	 * Sets the cached final public key.
 	 * This is used so VoteBoxes and Supervisors can coordinate their
@@ -80,14 +93,14 @@ public class AdderKeyManipulator {
 	 * 
 	 * @return the new PrivateKey
 	 */
-	public static AdderPrivateKey generateFinalPrivateKey(AdderPublicKey publicKey, AdderPrivateKeyShare privateKeyShare){
+	public static AdderPrivateKeyShare generateFinalPrivateKey(AdderPublicKey publicKey, AdderPrivateKeyShare privateKeyShare){
 
 		/* Generate the final private key */
 		List<ExponentialElGamalCiphertext> ciphertexts = new ArrayList<>();
         ExponentialElGamalCiphertext ciphertext = publicKey.encryptPoly(_poly.evaluate(new AdderInteger(0, publicKey.getQ())));
         ciphertexts.add(ciphertext);
 
-        return privateKeyShare.getFinalPrivKey(ciphertexts);
+        return privateKeyShare.getRealPrivateKeyShare(ciphertexts);
 	}
 
     public static void setPolynomial(Polynomial poly) {

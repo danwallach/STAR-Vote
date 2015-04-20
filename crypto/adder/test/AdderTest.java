@@ -93,7 +93,7 @@ public class AdderTest extends TestCase {
         for (int i = 0; i < numAuths; i++) {
             AdderPrivateKeyShare authFinPrivKey
                 = (privKeys.get(i))
-                  .getFinalPrivKey(polyMap.get(i));
+                  .getRealPrivateKeyShare(polyMap.get(i));
             finprivKeys.add(authFinPrivKey);
             AdderInteger gvalue
                 = g.pow((polys.get(i)).

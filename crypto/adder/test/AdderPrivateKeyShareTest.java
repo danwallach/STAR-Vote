@@ -1,6 +1,9 @@
 package crypto.adder.test;
 
-import crypto.adder.*;
+import crypto.adder.AdderInteger;
+import crypto.adder.AdderPrivateKeyShare;
+import crypto.adder.InvalidPrivateKeyException;
+import crypto.adder.InvalidVoteException;
 import junit.framework.TestCase;
 import junit.textui.TestRunner;
 
@@ -175,8 +178,8 @@ public class AdderPrivateKeyShareTest extends TestCase {
                 fromString(
                         "p553417232063g15044079079x227043662924f419757826339");
 
-            AdderPrivateKeyShare authFinPrivKey1 = authPrivKey1.getFinalPrivKey(poly1);
-            AdderPrivateKeyShare authFinPrivKey2 = authPrivKey2.getFinalPrivKey(poly2);
+            AdderPrivateKeyShare authFinPrivKey1 = authPrivKey1.getRealPrivateKeyShare(poly1);
+            AdderPrivateKeyShare authFinPrivKey2 = authPrivKey2.getRealPrivateKeyShare(poly2);
 
             assertEquals("p553417232063g15044079079x143494327621f419757826339",
                           authFinPrivKey1.toString());

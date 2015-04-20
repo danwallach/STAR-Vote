@@ -29,7 +29,6 @@ public class AdderPrivateKeyShare extends AdderKey {
      * @param f     the message base
      */
     public AdderPrivateKeyShare(AdderInteger p, AdderInteger g, AdderInteger x, AdderInteger f) {
-
         super(p, g, f);
         this.x = x;
     }
@@ -62,19 +61,22 @@ public class AdderPrivateKeyShare extends AdderKey {
 
 
     /**
-     * Computes the final private key for each authority.
+     * Computes the real private key for each authority. The original AdderPrivateKeyShare
+     * was sourced from a random initial AdderPublicKeyShare.
      *
      * @param polyList      the polynomial list
      * @return the final private key
      */
-    public AdderPrivateKey getFinalPrivKey(List<ExponentialElGamalCiphertext> polyList) {
+    /* TODO make this static in AdderKeyManipulator? */
+    public AdderPrivateKeyShare getRealPrivateKeyShare(List<ExponentialElGamalCiphertext> polyList) {
 
         AdderInteger total = new AdderInteger(AdderInteger.ZERO, q);
 
-        for (ExponentialElGamalCiphertext coefficient : polyList) {
+        for (ExponentialElGamalCiphertext authorityPoly : polyList) {
 
-            AdderInteger eL = coefficient.getG();
-            AdderInteger eR = coefficient.getH();
+            /* Decrypt the polynomial manually (reverse polynomial operation) */
+            AdderInteger eL = authorityPoly.getG();
+            AdderInteger eR = authorityPoly.getH();
             AdderInteger product = eL.pow(x.negate()).multiply(eR);
             AdderInteger qPlusOneOverTwo = q.add(AdderInteger.ONE).divide(AdderInteger.TWO);
             AdderInteger posInverse = product.pow(qPlusOneOverTwo);
@@ -92,7 +94,7 @@ public class AdderPrivateKeyShare extends AdderKey {
             total = total.add(inverse);
         }
 
-        return new AdderPrivateKey(p, g, total, f);
+        return new AdderPrivateKeyShare(p, g, total, f);
     }
 
     /**
