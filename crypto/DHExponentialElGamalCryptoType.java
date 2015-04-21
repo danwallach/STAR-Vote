@@ -38,21 +38,64 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
             throw new KeyNotLoadedException("The private key shares have not yet been loaded! [Decryption]");
 
         /* Partially decrypt to get g^m */
-        try { BigInteger mappedPlainText = partialDecrypt((ExponentialElGamalCiphertext) ciphertext);
+        AdderInteger mappedPlaintext = partialDecrypt((ExponentialElGamalCiphertext) ciphertext);
 
-        BigInteger g = PEK.getG().bigintValue();
+        return decryptMappedPlaintext(mappedPlaintext, ciphertext.size);
 
-        /* Guess the value of m by comparing g^i to g^m and return if/when they're the same -- TODO 100 is chosen arbitrarily for now */
-        for(int i=0; i<100; i++) {
-            if (g.pow(i).equals(mappedPlainText)) {
-                return ByteBuffer.allocate(4).putInt(i).array();
+
+    }
+
+    /**
+     *
+     * @param mappedPlaintext
+     * @return
+     */
+    private byte[] decryptMappedPlaintext(AdderInteger mappedPlaintext, int size) {
+
+        /*
+
+    	  Adder encrypt is of m (public initial g, p, h) [inferred from code]
+    	                    m = {0, 1} for one vote
+    	                    g' = g^r = g^y
+    	                    h' = h^r * f^m = h^y * m'
+
+    	  Quick decrypt (given r) [puzzled out by Kevin Montrose]
+    	                    confirm g^r = g'
+    	                    m' = (h' / (h^r)) = h' / h^y
+    	                    if(m' == f) m = 1
+    	                    if(m' == 1) m = 0
+    	                    etc.
+
+    	*/
+
+        AdderInteger f = PEK.getF();
+        AdderInteger p = PEK.getP();
+        AdderInteger q = PEK.getQ();
+
+        /* Indicates if we have successfully resolved the ciphertext */
+        boolean gotResult = false;
+
+        AdderInteger j = new AdderInteger(0, q);
+
+        /* Iterate over the number of votes to try to guess n */
+        for (int k = 0; k <= size; k++) {
+
+            /* Create a guess */
+            j = new AdderInteger(k, q);
+
+            System.out.println("DOES " + new AdderInteger(f,p).pow(j) + " equal " + mappedPlaintext + "?");
+
+            /* Check the guess and get out when found */
+            if (f.pow(j).equals(mappedPlaintext)) {
+                gotResult = true;
+                break;
             }
         }
 
-        }
-        catch (ClassCastException e) { System.err.println("The AHomomorphicCiphertext given could not be casted to an ExponentialElGamalCiphertext."); }
-
-        throw new SearchSpaceExhaustedException("The decryption could not find a number of votes within the probable search space!");
+        /* Keep track of found result, otherwise error */
+        if (gotResult) return ByteBuffer.allocate(4).putInt(j.intValue()).array();
+        else throw new SearchSpaceExhaustedException("The decryption could not find a number of votes " +
+                                                     "within the probable search space for " + mappedPlaintext + "!");
 
     }
 
@@ -61,22 +104,35 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
      * @param ciphertext
      * @return
      */
-    private BigInteger partialDecrypt(ExponentialElGamalCiphertext ciphertext) {
+    private AdderInteger partialDecrypt(ExponentialElGamalCiphertext ciphertext) {
+
+        List<AdderInteger> coeffs = new ArrayList<>();
+
+        for (int i=0; i<privateKeyShares.length; i++) {
+            coeffs.add(new AdderInteger(i));
+        }
 
         List<AdderInteger> partials = new ArrayList<>();
+        Polynomial poly = new Polynomial(PEK.getP(), PEK.getG(), PEK.getF(), coeffs);
+        List<AdderInteger> lagrangeCoeffs = poly.lagrange();
 
         /* Partially decrypt for each share */
-        for(AdderPrivateKeyShare pks : privateKeyShares)
-            partials.add(pks.partialDecrypt(ciphertext));
+        for(int i=0; i<lagrangeCoeffs.size(); i++ ) {
 
-        /* Combine output */
+            AdderInteger partial = privateKeyShares[i].partialDecrypt(ciphertext);
+            partials.add(partial.pow(lagrangeCoeffs.get(i)));
+        }
+
+        /* Use this to multiply all the values together */
         AdderInteger total = AdderInteger.ONE;
 
-        for(AdderInteger partial : partials)
+        for (AdderInteger partial : partials) {
             total = total.multiply(partial);
+        }
 
-        /* Convert this into BigInteger */
-        return total.bigintValue();
+        /* This will be the mapped ciphertext */
+        /* total = h^y, H = h' = h^y * f^m, so this is f^m */
+        return ciphertext.getH().divide(total);
     }
 
     /**
