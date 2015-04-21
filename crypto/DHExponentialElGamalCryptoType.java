@@ -33,24 +33,28 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
         if(!(ciphertext instanceof ExponentialElGamalCiphertext))
             throw new CiphertextException("The ciphertext type did not match the crypto type!");
 
+        ExponentialElGamalCiphertext eegCiphertext = ((ExponentialElGamalCiphertext) ciphertext);
+
         /* Check if the private key shares have been loaded */
         if(privateKeyShares == null)
             throw new KeyNotLoadedException("The private key shares have not yet been loaded! [Decryption]");
 
         /* Partially decrypt to get g^m */
-        AdderInteger mappedPlaintext = partialDecrypt((ExponentialElGamalCiphertext) ciphertext);
+        List<AdderInteger> partialDecryptions = partialDecrypt(eegCiphertext);
 
-        return decryptMappedPlaintext(mappedPlaintext, ciphertext.size);
+        return decryptMappedPlaintext(partialDecryptions, eegCiphertext.size, eegCiphertext.getH());
 
 
     }
 
     /**
      *
-     * @param mappedPlaintext
+     * @param partials
+     * @param size
+     * @param H
      * @return
      */
-    private byte[] decryptMappedPlaintext(AdderInteger mappedPlaintext, int size) {
+    private byte[] decryptMappedPlaintext(List<AdderInteger> partials, int size, AdderInteger H) {
 
         /*
 
@@ -67,6 +71,17 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
     	                    etc.
 
     	*/
+
+        /* Use this to multiply all the values together */
+        AdderInteger total = AdderInteger.ONE;
+
+        for (AdderInteger partial : partials) {
+            total = total.multiply(partial);
+        }
+
+        /* This will be the mapped ciphertext */
+        /* total = h^y, H = h' = h^y * f^m, so this is f^m */
+        AdderInteger mappedPlaintext = H.divide(total);
 
         AdderInteger f = PEK.getF();
         AdderInteger p = PEK.getP();
@@ -100,11 +115,11 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
     }
 
     /**
-     * Partially decrypts the ciphertext for each private key share and then combines them
+     * Partially decrypts the ciphertext for each private key share and then returns them
      * @param ciphertext
      * @return
      */
-    private AdderInteger partialDecrypt(ExponentialElGamalCiphertext ciphertext) {
+    private List<AdderInteger> partialDecrypt(ExponentialElGamalCiphertext ciphertext) {
 
         List<AdderInteger> coeffs = new ArrayList<>();
 
@@ -123,16 +138,7 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
             partials.add(partial.pow(lagrangeCoeffs.get(i)));
         }
 
-        /* Use this to multiply all the values together */
-        AdderInteger total = AdderInteger.ONE;
-
-        for (AdderInteger partial : partials) {
-            total = total.multiply(partial);
-        }
-
-        /* This will be the mapped ciphertext */
-        /* total = h^y, H = h' = h^y * f^m, so this is f^m */
-        return ciphertext.getH().divide(total);
+        return partials;
     }
 
     /**
