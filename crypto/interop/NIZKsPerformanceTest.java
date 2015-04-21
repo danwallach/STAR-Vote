@@ -85,7 +85,7 @@ public class NIZKsPerformanceTest {
 		SimpleKeyStore store = new SimpleKeyStore("keys");
 
 		_publicKey = store.loadKey("0");
-		_adderPublicKey = store.loadAdderPublicKey();
+		_adderPublicKey = store.loadAdderPublicKeyShare();
         _adderPrivateKeyShare = store.loadAdderPrivateKey();
 
 		File tempBallotPath = File.createTempFile("ballot", "path");

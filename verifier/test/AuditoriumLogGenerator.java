@@ -54,7 +54,7 @@ public class AuditoriumLogGenerator {
         log = host.getLog();
 
         IKeyStore ks = new SimpleKeyStore("keys");
-        publicKey = ks.loadAdderPublicKey();
+        publicKey = ks.loadAdderPublicKeyShare();
         topLayer = new AuditoriumIntegrityLayer(AAuditoriumLayer.BOTTOM, host, ks);
 
 

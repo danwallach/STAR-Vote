@@ -113,7 +113,7 @@ public class AdderKeyManipulator {
      * @param authKeyShare
      * @return the final private key
      */
-    private static AdderPrivateKeyShare generateRealPrivateKeyShare(int authNum, AdderPrivateKeyShare authKeyShare) {
+    public static AdderPrivateKeyShare generateRealPrivateKeyShare(int authNum, AdderPrivateKeyShare authKeyShare) {
 
         if (stage2participants.size() >= safetyThreshold) {
 

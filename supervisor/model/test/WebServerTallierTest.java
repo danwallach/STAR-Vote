@@ -32,7 +32,7 @@ public class WebServerTallierTest extends TestCase {
         be = BallotEncrypter.SINGLETON;
 
         SimpleKeyStore keyStore = new SimpleKeyStore("keys");
-        publicKey = keyStore.loadAdderPublicKey();
+        publicKey = keyStore.loadAdderPublicKeyShare();
         privateKey = keyStore.loadAdderPrivateKey();
     }
 

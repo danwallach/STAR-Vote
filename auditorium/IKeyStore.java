@@ -24,6 +24,7 @@ package auditorium;
 
 import crypto.adder.AdderPrivateKeyShare;
 import crypto.adder.AdderPublicKey;
+import crypto.adder.AdderPublicKeyShare;
 
 /**
  * The auditorium integrity layer interfaces with an instance of this type in
@@ -52,7 +53,7 @@ public interface IKeyStore {
     /**
      * Load the adder public key associated with the given ID.
      */
-    AdderPublicKey loadAdderPublicKey() throws RuntimeException;
+    AdderPublicKeyShare loadAdderPublicKeyShare() throws RuntimeException;
 
     /**
      * Load the adder private key associated with the given ID.
