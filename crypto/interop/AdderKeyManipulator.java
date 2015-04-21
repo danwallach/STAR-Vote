@@ -31,14 +31,6 @@ public class AdderKeyManipulator {
 
     private static AdderPublicKeyShare seedKey;
 
-
-    /* 1. Generate public/private keyshare for each authority
-     * 2. Each public keyshare is saved here
-     * 3. Each of the authorities will create a polynomial
-     * 4. The polynomial will create a ciphertext for _every_ other authority's (j)
-     *    published publickeyshare at j mod q: pubKeys.get(j)).encryptPoly((polys.get(i)).evaluate(new AdderInteger(j, q)))
-     * 5. */
-
     /**
      *
      * @param seed
