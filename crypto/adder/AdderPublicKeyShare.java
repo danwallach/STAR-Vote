@@ -7,7 +7,6 @@ import sexpression.ListExpression;
 import sexpression.StringExpression;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
@@ -75,7 +74,7 @@ public class AdderPublicKeyShare extends AdderKey implements IPublicKey, Seriali
      * @param h     the public value
      * @param f     the message base, generator used for homomorphic encryption
      */
-    private AdderPublicKeyShare(AdderInteger p, AdderInteger q, AdderInteger g, AdderInteger h, AdderInteger f) {
+    public AdderPublicKeyShare(AdderInteger p, AdderInteger q, AdderInteger g, AdderInteger h, AdderInteger f) {
         super(p,q,g, f);
     }
 
@@ -130,25 +129,6 @@ public class AdderPublicKeyShare extends AdderKey implements IPublicKey, Seriali
 
         return new AdderPrivateKeyShare(p, g, x, f);
     }
-
-    /**
-     * Encrypts a message as an additive homomorphic Elgamal ciphertext.
-     * The ciphertext returned is of the form \f$\langle g^r, h^r
-     * f^m\rangle\f$, where \f$m\f$ is the message.
-     *
-     * @param m     the message
-     * @return      the encrypted of the message
-     */
-    public ExponentialElGamalCiphertext encrypt(AdderInteger m, List<AdderInteger> domain) {
-        AdderInteger r = AdderInteger.random(q);
-        AdderInteger bigG = g.pow(r);
-        AdderInteger bigH = h.pow(r).multiply(f.pow(m));
-
-        EEGMembershipProof proof = new EEGMembershipProof(bigG, bigH, r, this, m, domain);
-
-        return new ExponentialElGamalCiphertext(bigG, bigH, r, p, proof);
-    }
-
 
     /**
      * Encrypts a polynomial value destined for an authority. The

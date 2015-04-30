@@ -85,7 +85,7 @@ public class AdderPublicKey extends AdderKey implements IPublicKey, Serializable
      * @param p     the prime
      * @return      the public key
      */
-   public static AdderPublicKey makePartialKey(AdderInteger p) {
+   public static AdderPublicKeyShare makePartialKey(AdderInteger p) {
         AdderInteger t;
         AdderInteger a;
 
@@ -103,7 +103,7 @@ public class AdderPublicKey extends AdderKey implements IPublicKey, Serializable
 
         AdderInteger f = g.pow(a);
 
-        return new AdderPublicKey(p, q, g, null, f);
+        return new AdderPublicKeyShare(p, q, g, null, f);
     }
 
     /**
@@ -114,21 +114,8 @@ public class AdderPublicKey extends AdderKey implements IPublicKey, Serializable
      *                      be chosen to be a \e length - bit prime number.
      * @return              the public key
      */
-    public static AdderPublicKey makePartialKey(int length) {
+    public static AdderPublicKeyShare makePartialKey(int length) {
         return makePartialKey(AdderInteger.safePrime(length));
-    }
-
-    /**
-     * Creates the corresponding private key of this public key.
-     *
-     * @return      the private key
-     */
-    public AdderPrivateKeyShare genKeyPair() {
-        AdderInteger x = AdderInteger.random(q);
-
-        this.h = g.pow(x);
-
-        return new AdderPrivateKeyShare(p, g, x, f);
     }
 
     /**
