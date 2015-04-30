@@ -127,7 +127,7 @@ public class AdderKeyManipulator {
 
             for (ExponentialElGamalCiphertext encryptedAuthorityPoly : polyMap.get(authNum)) {
 
-            /* Decrypt the polynomial manually (reverse polynomial operation) */
+                /* Decrypt the polynomial manually (reverse polynomial operation) */
                 AdderInteger eL = encryptedAuthorityPoly.getG();
                 AdderInteger eR = encryptedAuthorityPoly.getH();
                 AdderInteger product = eL.pow(x.negate()).multiply(eR);
