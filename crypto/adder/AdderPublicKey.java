@@ -80,45 +80,6 @@ public class AdderPublicKey extends AdderKey implements IPublicKey, Serializable
     }
 
     /**
-     * Generates key parameters \f$g, f\f$ given a prime \f$p\f$.
-     *
-     * @param p     the prime
-     * @return      the public key
-     */
-   public static AdderPublicKeyShare makePartialKey(AdderInteger p) {
-        AdderInteger t;
-        AdderInteger a;
-
-        do {
-            t = AdderInteger.random(p);
-        } while (t.compareTo(AdderInteger.ONE) <= 0);
-
-        AdderInteger g = t.pow(AdderInteger.TWO);
-
-        AdderInteger q = p.subtract(AdderInteger.ONE).divide(AdderInteger.TWO);
-
-        do {
-            a = AdderInteger.random(q);
-        } while (a.compareTo(AdderInteger.ONE) <= 0);
-
-        AdderInteger f = g.pow(a);
-
-        return new AdderPublicKeyShare(p, q, g, null, f);
-    }
-
-    /**
-     * Generates key parameters \f$p, g, f\f$ given a key length.
-     * This function generates a safe prime \f$p\f$.
-     *
-     * @param length        the length of the key in bits.  That is, \f$p\f$ will
-     *                      be chosen to be a \e length - bit prime number.
-     * @return              the public key
-     */
-    public static AdderPublicKeyShare makePartialKey(int length) {
-        return makePartialKey(AdderInteger.safePrime(length));
-    }
-
-    /**
      * Encrypts a message as an additive homomorphic Elgamal ciphertext.
      * The ciphertext returned is of the form \f$\langle g^r, h^r
      * f^m\rangle\f$, where \f$m\f$ is the message.
