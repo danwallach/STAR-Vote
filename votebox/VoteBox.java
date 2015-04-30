@@ -285,7 +285,7 @@ public class VoteBox{
 
                         /* TODO what is the difference between this and previous? */
                        //ASExpression encBallot = BallotEncrypter.SINGLETON.encryptWithProof(bid, ballot,
-                        //        (List<List<String>>) arg[1],_constants.getKeyStore().loadAdderPublicKey(), nonce, (List<String>)arg[2]);
+                        //        (List<List<String>>) arg[1],_constants.getKeyStore().loadAdderPublicKeyShare(), nonce, (List<String>)arg[2]);
 
                         //auditorium.announce(new CommitBallotEvent(mySerial, nonce, encBallot.toVerbatim(), bid, prect));
                     //}
@@ -361,33 +361,33 @@ public class VoteBox{
 //        });
 
         /*  If we're using piecemeal encryption, we need to listen for each page change. TODO might get rid of this */
-        if (_constants.getUsePiecemealEncryption()) {
-
-            currentDriver.getView().registerForPageChanged(new Observer(){
-
-                public void update(Observable o, Object args){
-
-                    List<String> affectedUIDs = (List<String>)args;
-
-                    Map<String, List<ASExpression>> needUpdate = currentDriver.getBallotAdapter().getAffectedRaces(affectedUIDs);
-
-                    for (String uid : needUpdate.keySet()) {
-
-                        if (!_constants.getEnableNIZKs()) {
-                            try { PiecemealBallotEncrypter.SINGELTON.update(uid, needUpdate.get(uid), _constants.getKeyStore().loadKey("public")); }
-                            catch(AuditoriumCryptoException e) { throw new RuntimeException(e); }
-                        }
-
-                        else {
-
-                            List<String> raceGroup = currentDriver.getBallotAdapter().getRaceGroupContaining(needUpdate.get(uid));
-                            PiecemealBallotEncrypter.SINGELTON.adderUpdate(uid, needUpdate.get(uid), raceGroup, _constants.getKeyStore().loadAdderPublicKey());
-
-                        }
-                    }
-                }
-            });
-        }
+//        if (_constants.getUsePiecemealEncryption()) {
+//
+//            currentDriver.getView().registerForPageChanged(new Observer(){
+//
+//                public void update(Observable o, Object args){
+//
+//                    List<String> affectedUIDs = (List<String>)args;
+//
+//                    Map<String, List<ASExpression>> needUpdate = currentDriver.getBallotAdapter().getAffectedRaces(affectedUIDs);
+//
+//                    for (String uid : needUpdate.keySet()) {
+//
+//                        if (!_constants.getEnableNIZKs()) {
+//                            try { PiecemealBallotEncrypter.SINGELTON.update(uid, needUpdate.get(uid), _constants.getKeyStore().loadKey("public")); }
+//                            catch(AuditoriumCryptoException e) { throw new RuntimeException(e); }
+//                        }
+//
+//                        else {
+//
+//                            List<String> raceGroup = currentDriver.getBallotAdapter().getRaceGroupContaining(needUpdate.get(uid));
+//                            PiecemealBallotEncrypter.SINGELTON.adderUpdate(uid, needUpdate.get(uid), raceGroup, _constants.getKeyStore().loadAdderPublicKeyShare());
+//
+//                        }
+//                    }
+//                }
+//            });
+//        }
 
         currentDriver.getView().registerForOverrideCancelConfirm( new Observer() {
                     /**
@@ -468,7 +468,7 @@ public class VoteBox{
                     supervisor.model.Ballot<EncryptedRaceSelection> encBallot;
 
                     try { encBallot = BallotCrypto.encrypt(ballot); }
-                    catch (Exception e) { e.printStackTrace(); throw new RuntimeException("Could not encrypt the ballot because of "+e.getClass()); }
+                    catch (Exception e) { e.printStackTrace(); throw new RuntimeException("Could not encrypt the ballot because of "+ e.getClass()); }
 
                     committedBallot = true;
 
@@ -799,7 +799,7 @@ public class VoteBox{
 
                         /* Show printing page */
 
-                        BallotEncrypter.SINGLETON.clear();
+                        //BallotEncrypter.SINGLETON.clear();
                         nonce = null;
                         voting = false;
                         finishedVoting = false;

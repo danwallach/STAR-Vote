@@ -74,7 +74,7 @@ public class AdderPublicKeyShare extends AdderKey implements IPublicKey, Seriali
      * @param h     the public value
      * @param f     the message base, generator used for homomorphic encryption
      */
-    public AdderPublicKeyShare(AdderInteger p, AdderInteger q, AdderInteger g, AdderInteger h, AdderInteger f) {
+    private AdderPublicKeyShare(AdderInteger p, AdderInteger q, AdderInteger g, AdderInteger h, AdderInteger f) {
         super(p,q,g, f);
     }
 
@@ -84,7 +84,8 @@ public class AdderPublicKeyShare extends AdderKey implements IPublicKey, Seriali
      * @param p     the prime
      * @return      the public key
      */
-   public static AdderPublicKeyShare makePartialKey(AdderInteger p) {
+   public static AdderPublicKeyShare makePublicKeyShare(AdderInteger p) {
+
         AdderInteger t;
         AdderInteger a;
 
@@ -113,8 +114,8 @@ public class AdderPublicKeyShare extends AdderKey implements IPublicKey, Seriali
      *                      be chosen to be a \e length - bit prime number.
      * @return              the public key
      */
-    public static AdderPublicKeyShare makePartialKey(int length) {
-        return makePartialKey(AdderInteger.safePrime(length));
+    public static AdderPublicKeyShare makePublicKeyShare(int length) {
+        return makePublicKeyShare(AdderInteger.safePrime(length));
     }
 
     /**
@@ -129,6 +130,7 @@ public class AdderPublicKeyShare extends AdderKey implements IPublicKey, Seriali
 
         return new AdderPrivateKeyShare(p, g, x, f);
     }
+
 
     /**
      * Encrypts a polynomial value destined for an authority. The

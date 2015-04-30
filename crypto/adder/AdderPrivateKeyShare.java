@@ -61,43 +61,6 @@ public class AdderPrivateKeyShare extends AdderKey {
 
 
     /**
-     * Computes the real private key for each authority. The original AdderPrivateKeyShare
-     * was sourced from a random initial AdderPublicKeyShare.
-     *
-     * @param polyList      the polynomial list
-     * @return the final private key
-     */
-    /* TODO make this static in AdderKeyManipulator? */
-    public AdderPrivateKeyShare getRealPrivateKeyShare(List<ExponentialElGamalCiphertext> polyList) {
-
-        AdderInteger total = new AdderInteger(AdderInteger.ZERO, q);
-
-        for (ExponentialElGamalCiphertext authorityPoly : polyList) {
-
-            /* Decrypt the polynomial manually (reverse polynomial operation) */
-            AdderInteger eL = authorityPoly.getG();
-            AdderInteger eR = authorityPoly.getH();
-            AdderInteger product = eL.pow(x.negate()).multiply(eR);
-            AdderInteger qPlusOneOverTwo = q.add(AdderInteger.ONE).divide(AdderInteger.TWO);
-            AdderInteger posInverse = product.pow(qPlusOneOverTwo);
-            AdderInteger negInverse = posInverse.negate();
-            AdderInteger inverse;
-
-            if (posInverse.compareTo(negInverse) < 0) {
-                inverse = posInverse;
-            } else {
-                inverse = negInverse;
-            }
-
-            inverse = inverse.subtract(AdderInteger.ONE);
-
-            total = total.add(inverse);
-        }
-
-        return new AdderPrivateKeyShare(p, g, total, f);
-    }
-
-    /**
      * Returns the prime <tt>p</tt>.
      *
      * @return the prime <tt>p</tt>

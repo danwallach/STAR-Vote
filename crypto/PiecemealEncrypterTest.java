@@ -71,7 +71,7 @@ public class PiecemealEncrypterTest {
 		SimpleKeyStore store = new SimpleKeyStore("keys");
 
 		_publicKey = store.loadKey("public");
-		_adderPublicKey = store.loadAdderPublicKey();
+		_adderPublicKey = store.loadAdderPublicKeyShare();
 
 		File tempBallotPath = File.createTempFile("ballot", "path");
 		tempBallotPath.delete();

@@ -26,7 +26,7 @@ public class BallotTest extends TestCase {
         super.setUp();
 
         SimpleKeyStore ks = new SimpleKeyStore("keys");
-        publicKey = ks.loadAdderPublicKey();
+        publicKey = ks.loadAdderPublicKeyShare();
     }
 
     /**

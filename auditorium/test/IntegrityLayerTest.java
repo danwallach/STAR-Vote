@@ -26,6 +26,7 @@ import auditorium.*;
 import auditorium.Generator.Keys;
 import crypto.adder.AdderPrivateKeyShare;
 import crypto.adder.AdderPublicKey;
+import crypto.adder.AdderPublicKeyShare;
 import org.junit.Before;
 import org.junit.Test;
 import sexpression.*;
@@ -82,7 +83,7 @@ public class IntegrityLayerTest {
         }
 
         @Override
-        public AdderPublicKey loadAdderPublicKey() throws RuntimeException {
+        public AdderPublicKeyShare loadAdderPublicKeyShare() throws RuntimeException {
             return null;
         }
 

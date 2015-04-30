@@ -24,6 +24,7 @@ package auditorium;
 
 import crypto.adder.AdderPrivateKeyShare;
 import crypto.adder.AdderPublicKey;
+import crypto.adder.AdderPublicKeyShare;
 import sexpression.ASExpression;
 import sexpression.stream.ASEInputStreamReader;
 import sexpression.stream.InvalidVerbatimStreamException;
@@ -117,7 +118,7 @@ public class SimpleKeyStore implements IKeyStore {
      *
      * @return the adder key
      */
-    public AdderPublicKey loadAdderPublicKey() {
+    public AdderPublicKeyShare loadAdderPublicKeyShare() {
         try{
             InputStream in = getInput("public.adder.key");
 
@@ -128,7 +129,7 @@ public class SimpleKeyStore implements IKeyStore {
                 byteArrayOutputStream.write(i);
             }
 
-            return AdderPublicKey.fromASE(ASExpression.makeVerbatim(byteArrayOutputStream.toByteArray()));
+            return AdderPublicKeyShare.fromASE(ASExpression.makeVerbatim(byteArrayOutputStream.toByteArray()));
 
         }catch(Exception e){
             throw new RuntimeException(e);
