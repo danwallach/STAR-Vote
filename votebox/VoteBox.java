@@ -27,8 +27,8 @@ import auditorium.Bugout;
 import auditorium.Event;
 import auditorium.NetworkException;
 import crypto.BallotCrypto;
+import crypto.DHExponentialElGamalCryptoType;
 import crypto.EncryptedRaceSelection;
-import crypto.PiecemealBallotEncrypter;
 import crypto.PlaintextRaceSelection;
 import crypto.adder.AdderInteger;
 import preptool.model.language.Language;
@@ -273,23 +273,6 @@ public class VoteBox{
 
                     auditorium.announce(new CommitBallotEvent(mySerial, nonce, encBallot.toListExpression().toVerbatim(), bid, precinct));
 
-                    /* Check if NIZKs are enabled and choose announcement format */
-                    //if (!_constants.getEnableNIZKs()) {
-
-                    //}
-
-                    /* Not NIZK */
-                    //else {
-
-                        //auditorium.announce(new CommitBallotEvent(mySerial, nonce, encBallot, bid, precinct));
-
-                        /* TODO what is the difference between this and previous? */
-                       //ASExpression encBallot = BallotEncrypter.SINGLETON.encryptWithProof(bid, ballot,
-                        //        (List<List<String>>) arg[1],_constants.getKeyStore().loadAdderPublicKeyShare(), nonce, (List<String>)arg[2]);
-
-                        //auditorium.announce(new CommitBallotEvent(mySerial, nonce, encBallot.toVerbatim(), bid, prect));
-                    //}
-
                 }
 
                 /* Provisional */
@@ -321,73 +304,6 @@ public class VoteBox{
 
             }
         });
-        	
-        /*
-           Listen for cast UI events.
-           Rather than actually send the ballot out, just send the nonce (which can identify the whole
-           transaction).
-
-           Clean up the encrypter afterwards so as to destroy the random number needed for challenging.
-           XXX This code doesn't do anything?
-         */
-//        currentDriver.getView().registerForCastBallot(new Observer(){
-//
-//            /**
-//             * Handles the updating procedure after a ballot gets cast
-//             * @see java.util.Observer#update(java.util.Observable, Object)
-//             */
-//            public void update(Observable o, Object argTemp) {
-//
-//                if (!connected)
-//                    throw new RuntimeException("Attempted to cast ballot when not connected to any machines");
-//
-//                if (!voting || currentDriver == null)
-//                    throw new RuntimeException("VoteBox attempted to cast ballot, but was not currently voting");
-//
-//                if (finishedVoting)
-//                    throw new RuntimeException("This machine has already finished voting, but attempted to vote again");
-//
-//                finishedVoting = true;
-//                publicCount++;
-//                protectedCount++;
-//
-//                auditorium.announce(new CastCommittedBallotEvent(mySerial, nonce, bid));
-//
-//                /* Clears for randomness */
-//                BallotEncrypter.SINGLETON.clear();
-//
-//            }
-//
-//        });
-
-        /*  If we're using piecemeal encryption, we need to listen for each page change. TODO might get rid of this */
-//        if (_constants.getUsePiecemealEncryption()) {
-//
-//            currentDriver.getView().registerForPageChanged(new Observer(){
-//
-//                public void update(Observable o, Object args){
-//
-//                    List<String> affectedUIDs = (List<String>)args;
-//
-//                    Map<String, List<ASExpression>> needUpdate = currentDriver.getBallotAdapter().getAffectedRaces(affectedUIDs);
-//
-//                    for (String uid : needUpdate.keySet()) {
-//
-//                        if (!_constants.getEnableNIZKs()) {
-//                            try { PiecemealBallotEncrypter.SINGELTON.update(uid, needUpdate.get(uid), _constants.getKeyStore().loadKey("public")); }
-//                            catch(AuditoriumCryptoException e) { throw new RuntimeException(e); }
-//                        }
-//
-//                        else {
-//
-//                            List<String> raceGroup = currentDriver.getBallotAdapter().getRaceGroupContaining(needUpdate.get(uid));
-//                            PiecemealBallotEncrypter.SINGELTON.adderUpdate(uid, needUpdate.get(uid), raceGroup, _constants.getKeyStore().loadAdderPublicKeyShare());
-//
-//                        }
-//                    }
-//                }
-//            });
-//        }
 
         currentDriver.getView().registerForOverrideCancelConfirm( new Observer() {
                     /**
@@ -475,15 +391,6 @@ public class VoteBox{
                     /* Announce that we're commiting this ballot as override to auditorium and commit it */
                     auditorium.announce(new OverrideCommitConfirmEvent(mySerial, nonce, ballot.toListExpression().toVerbatim()));
                     auditorium.announce(new CommitBallotEvent(mySerial, nonce, encBallot.toListExpression().toVerbatim(), bid, precinct));
-
-                    /* Check to see if NIZKs are enabled or not and format event accordingly*/
-                    //if (!_constants.getEnableNIZKs()) {
-                    //}
-                    //else {
-                    //    if( ((List<List<String>>) arg[1]).size() != ((List<String>)arg[2]).size())
-                    //        throw new RuntimeException("There were not enough titles for all the race groups!");
-                    //    auditorium.announce(new CommitBallotEvent(mySerial, nonce, encBallot.toListExpression().toVerbatim(), bid, precinct));
-                    //}
 
                     /* Broadcast new status */
                     broadcastStatus();
@@ -740,7 +647,16 @@ public class VoteBox{
 
                     bid = String.valueOf(rand.nextInt(Integer.MAX_VALUE));
                     precinct = e.getPrecinct();
-                    
+
+
+                    DHExponentialElGamalCryptoType cryptoType = new DHExponentialElGamalCryptoType();
+
+                    try { cryptoType.loadPublicKey(_constants.getKeyStore().loadPEK()); }
+                    catch (AuditoriumCryptoException ex) { throw new RuntimeException("Error loading the PEK from the KeyStore."); }
+
+                    /* TODO : when do we set up the BallotCrypto?? */
+                    BallotCrypto.setCryptoType(cryptoType);
+
                     try {
                         /* Set ballot file */
                     	_currentBallotFile = new File(path, "ballot.zip");
@@ -799,7 +715,6 @@ public class VoteBox{
 
                         /* Show printing page */
 
-                        //BallotEncrypter.SINGLETON.clear();
                         nonce = null;
                         voting = false;
                         finishedVoting = false;

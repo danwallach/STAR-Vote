@@ -35,6 +35,13 @@ import crypto.adder.AdderPublicKeyShare;
 public interface IKeyStore {
 
     /**
+     *
+     * @return
+     * @throws AuditoriumCryptoException
+     */
+    public AdderPublicKey loadPEK() throws AuditoriumCryptoException;
+
+    /**
      * Load the private key associated with a given ID.
      * 
      * @return This method returns the private key of the ID that was asked for.

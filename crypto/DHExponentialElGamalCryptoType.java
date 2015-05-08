@@ -182,7 +182,7 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
     /**
      * @param privateKey
      */
-    private void loadPrivateKeyShares(AdderPrivateKeyShare privateKey[]) {
+    public void loadPrivateKeyShares(AdderPrivateKeyShare privateKey[]) {
         this.privateKeyShares = privateKey;
     }
 
@@ -207,7 +207,7 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
     /**
      * @param publicKey
      */
-    private void loadPublicKey(AdderPublicKey publicKey) {
+    public void loadPublicKey(AdderPublicKey publicKey) {
         this.PEK = publicKey;
     }
 

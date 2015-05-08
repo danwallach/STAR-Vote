@@ -1,12 +1,6 @@
 package votebox.events;
 
-import crypto.adder.AdderPublicKey;
-
 import sexpression.*;
-import crypto.interop.AdderKeyManipulator;
-
-//TODO: We need a way to send the final public key to the VoteBoxes (as well as preserve such a key
-//TODO: in the record, as it changes from run to run).  Alongside the ballot seems as good a place as any other.
 
 /**
  * Event to authorize a VoteBox booth to cast using NIZKs (Non-interactive, zero-knowledge proofs)
@@ -44,11 +38,9 @@ public class AuthorizedToCastWithNIZKsEvent extends AuthorizedToCastEvent {
                 String precinct = ((ListExpression) res).get( 3 )
                         .toString();
 
-                /* This is the public key with which all votes are encrypted so they can be verified by NIZKs */
-                AdderPublicKey finalPubKey = AdderPublicKey.fromASE(((ListExpression) res).get(4));
 
                 /* De-serialize and return an object representation of the aforementioned data */
-                return new AuthorizedToCastWithNIZKsEvent(serial, otherSerial, nonce, precinct, ballot, finalPubKey);
+                return new AuthorizedToCastWithNIZKsEvent(serial, otherSerial, nonce, precinct, ballot);
             }
             return null;
         }
@@ -61,28 +53,15 @@ public class AuthorizedToCastWithNIZKsEvent extends AuthorizedToCastEvent {
     	return MATCHER;
     }
 
-    /** The public key to use for encryption and NIZKs */
-    private AdderPublicKey finalPubKey;
-
-
 
     /**
      * @see votebox.events.AuthorizedToCastEvent#AuthorizedToCastEvent(int, int, sexpression.ASExpression, String, byte[])
-     * @param finalPubKey the public key that will be used to encrypt ballots
      */
-    public AuthorizedToCastWithNIZKsEvent(int serial, int node, ASExpression nonce, String precinct, byte[] ballot,  AdderPublicKey finalPubKey){
+    public AuthorizedToCastWithNIZKsEvent(int serial, int node, ASExpression nonce, String precinct, byte[] ballot){
     	super(serial, node, nonce, precinct, ballot);
 
-        this.finalPubKey = finalPubKey;
-    	
-    	/* This is a global value, on both the VoteBox and Supervisor side. */
-    	AdderKeyManipulator.setCachedKey(finalPubKey);
     }
 
-    /** @return the public key used to encrypt ballots sent with this authorization method */
-    public AdderPublicKey getFinalPubKey() {
-        return finalPubKey;
-    }
 
     /**
      * @see IAnnounceEvent#toSExp()
@@ -94,7 +73,6 @@ public class AuthorizedToCastWithNIZKsEvent extends AuthorizedToCastEvent {
                 StringExpression.makeString( Integer.toString( getTargetSerial() ) ),
                 getNonce(),
                 StringExpression.makeString( getBallot() ),
-                StringExpression.makeString( getPrecinct() ),
-                finalPubKey.toASE());
+                StringExpression.makeString( getPrecinct() ));
     }
 }

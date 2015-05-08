@@ -337,8 +337,8 @@ public class NIZKsPerformanceTest {
 
         SecureRandom r = new SecureRandom();
 
-        AuthorizedToCastWithNIZKsEvent ATCE = new AuthorizedToCastWithNIZKsEvent(0, 0, _ballot.toASExpression(), "3", _ballot.toASExpression().toVerbatim(),
-                AdderKeyManipulator.generateFinalPublicKey(_adderPublicKey));
+        AuthorizedToCastWithNIZKsEvent ATCE = new AuthorizedToCastWithNIZKsEvent(0, 0, _ballot.toASExpression(), "3", _ballot.toASExpression().toVerbatim()
+        );
 
         for(byte[] seed : _seeds){
             System.out.println("Trial #"+_seeds.indexOf(seed));

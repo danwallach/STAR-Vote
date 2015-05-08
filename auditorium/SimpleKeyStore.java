@@ -25,6 +25,7 @@ package auditorium;
 import crypto.adder.AdderPrivateKeyShare;
 import crypto.adder.AdderPublicKey;
 import crypto.adder.AdderPublicKeyShare;
+import sexpression.ASEParser;
 import sexpression.ASExpression;
 import sexpression.stream.ASEInputStreamReader;
 import sexpression.stream.InvalidVerbatimStreamException;
@@ -73,8 +74,21 @@ public class SimpleKeyStore implements IKeyStore {
 
         /* Initialize the maps */
 		keyCache = new HashMap<>();
+
 		certCache = new HashMap<>();
 	}
+
+    public AdderPublicKey loadPEK() throws AuditoriumCryptoException{
+        ASExpression asePEK = null;
+
+        try {
+
+            asePEK = load("PEK.key");
+
+            return ASEParser.convert(asePEK, AdderPublicKey.class);
+        }
+        catch (AuditoriumCryptoException e){ throw new AuditoriumCryptoException("Error during loadPEK(): ", e); }
+    }
 
 	/**
 	 * Load the key from a file in the "keys" directory.

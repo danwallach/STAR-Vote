@@ -11,9 +11,6 @@ import java.util.*;
  */
 public class AdderKeyManipulator {
 
-    /** A cached key that will let us compare the public key that is used throughout the election process */
-	private static AdderPublicKey _cachedKey = null;
-
     /** A LaGrange polynomial for the Exponential-ElGamal homomorphic process. */
 	private static Polynomial _poly = null;
 
@@ -22,7 +19,7 @@ public class AdderKeyManipulator {
     private static Map<Integer, List<ExponentialElGamalCiphertext>> polyMap = new TreeMap<>();
     private static Map<Integer, AdderInteger> GMap = new TreeMap<>();
 
-    private final static int safetyThreshold =1;
+    private final static int safetyThreshold = 1;
     private final static int decryptionThreshold =1;
 
     private static Set<Integer> stage1participants = new TreeSet<>();
@@ -173,64 +170,5 @@ public class AdderKeyManipulator {
 
         } else throw new InvalidPublicKeyException("Public key creation stage cannot be initiated due to safety threshold.");
     }
-
-	/**
-	 * Sets the cached final public key.
-	 * This is used so VoteBoxes and Supervisors can coordinate their
-	 * key usage.
-	 *
-	 * @param newKey - the key to load into the cache.
-	 */
-	public static void setCachedKey(AdderPublicKey newKey){
-		_cachedKey = newKey;
-	}
-	
-	/**
-	 * Generates the "final" public key using the pre-generated public key.
-	 * This is needed for tallying and NIZK verification.
-	 * This call returns the same key each time, but this key is different
-	 * from run to run.
-	 * 
-	 * @param publicKey - the pre-calculated public key.
-	 * @return the new PublicKey
-	 */
-	public static AdderPublicKey generateFinalPublicKey(AdderPublicKey publicKey){
-		if(_cachedKey != null)
-			return _cachedKey;
-		
-		_cachedKey = generateFinalPublicKeyNoCache(publicKey);
-		
-		return _cachedKey;
-	}
-	
-	/**
-	 * Generates the "final" public key using the pre-generated public key.
-	 * This is needed to actually tally and perform NIZK verification.
-	 * Additionally, this call will return a different variant of the public key
-	 * every time it is called.
-	 * 
-	 * @param pubKey - the pre-calculated public key.
-	 * @return the new PublicKey
-	 */
-	protected static AdderPublicKey generateFinalPublicKeyNoCache(AdderPublicKey pubKey){
-
-		_poly = new Polynomial(pubKey.getP(), pubKey.getG(), pubKey.getF(), 0);
-
-        AdderInteger p = pubKey.getP();
-		AdderInteger q = pubKey.getQ();
-		AdderInteger g = pubKey.getG();
-		AdderInteger f = pubKey.getF();
-		AdderInteger finalH = new AdderInteger(AdderInteger.ONE, p);
-
-        /* Theoretically this is g^x, where x is in R Z_q or something*/
-		AdderInteger gvalue = g.pow((_poly).evaluate(new AdderInteger(AdderInteger.ZERO, q)));
-
-        /* set h = gvalue, where gvalue = g^x */
-		finalH = finalH.multiply(gvalue);
-		
-		_cachedKey = new AdderPublicKey(p, g, finalH, f);
-		
-		return _cachedKey;
-	}
 
 }

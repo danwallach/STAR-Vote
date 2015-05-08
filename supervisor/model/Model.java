@@ -24,12 +24,7 @@ package supervisor.model;
 
 import auditorium.IAuditoriumParams;
 import auditorium.NetworkException;
-import crypto.BallotCrypto;
-import crypto.DHExponentialElGamalCryptoType;
 import crypto.EncryptedRaceSelection;
-import crypto.adder.AdderPrivateKeyShare;
-import crypto.adder.AdderPublicKey;
-import crypto.interop.AdderKeyManipulator;
 import sexpression.ASExpression;
 import sexpression.StringExpression;
 import sexpression.stream.Base64;
@@ -332,25 +327,24 @@ public class Model {
 
             try {
 
-                AdderKeyManipulator.setSeedKey(auditoriumParams.getKeyStore().loadAdderPublicKeyShare());
-                AdderPrivateKeyShare prks = AdderKeyManipulator.generateAuthorityKeySharePair(1);
-                AdderKeyManipulator.generateAuthorityPolynomialValues(1);
+                /*----------------------Needs to be put in server--------------------------*/
+//                AdderKeyManipulator.setSeedKey(auditoriumParams.getKeyStore().loadAdderPublicKeyShare());
+//
+//                AdderPrivateKeyShare prks = AdderKeyManipulator.generateAuthorityKeySharePair(1);
+//
+//
+//                AdderKeyManipulator.generateAuthorityPolynomialValues(1);
+//
+//                /* Want to write this to a file somewhere */
+//                AdderPrivateKeyShare realPrks = AdderKeyManipulator.generateRealPrivateKeyShare(1, prks);
+//
+//                /* Want to write this to a file somewhere */
+//                AdderPublicKey PEK = AdderKeyManipulator.generatePublicEncryptionKey();
 
-                /* Want to write this to a file somewhere */
-                AdderPrivateKeyShare realPrks = AdderKeyManipulator.generateRealPrivateKeyShare(1, prks);
-
-                /* Want to write this to a file somewhere */
-                AdderPublicKey PEK = AdderKeyManipulator.generatePublicEncryptionKey();
-
-                /* Load the public key from the file to enable encryption */
-                //DHExponentialElGamalCryptoType cryptoType = new DHExponentialElGamalCryptoType();
-                //cryptoType.loadPublicKey();
-
-                /* TODO : when do we set up the BallotCrypto?? */
-                BallotCrypto.setCryptoType(new DHExponentialElGamalCryptoType());
+                /*------------------------------------------------*/
 
                 /* For NIZKs to work, we have to establish the public key before the voting can start */
-                auditorium.announce(new AuthorizedToCastWithNIZKsEvent(mySerial, otherSerial, ASENonce, p.getPrecinctID(), ballot, PEK));
+                auditorium.announce(new AuthorizedToCastWithNIZKsEvent(mySerial, otherSerial, ASENonce, p.getPrecinctID(), ballot));
 
             } catch(Exception e){  System.err.println("There was an error during key generation!"); e.printStackTrace(); }
         }
@@ -1381,6 +1375,8 @@ public class Model {
             System.out.println("Recoverable error occurred: "+e1.getMessage());
             e1.printStackTrace(System.err);
         }
+
+        /* Read in the PEK */
 
         /* Start the heartbeat timer */
         statusTimer.start();

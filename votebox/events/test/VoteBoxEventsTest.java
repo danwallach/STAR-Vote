@@ -173,7 +173,7 @@ public class VoteBoxEventsTest extends TestCase {
 
         byte[] ballot = getBlob().toVerbatim();
         AuthorizedToCastWithNIZKsEvent event = new AuthorizedToCastWithNIZKsEvent(50, 65, nonce,
-                "007", ballot, key);
+                "007", ballot);
         ASExpression sexp = event.toSExp();
         assertEquals("(authorized-to-cast-with-nizks 65 "
                 + nonce.toString() + " "
