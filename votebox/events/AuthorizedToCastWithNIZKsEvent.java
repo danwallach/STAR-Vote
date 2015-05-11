@@ -23,19 +23,19 @@ public class AuthorizedToCastWithNIZKsEvent extends AuthorizedToCastEvent {
             if (res != NoMatch.SINGLETON) {
 
                 /* This is the serial of the machine being authorized */
-                int otherSerial = Integer.parseInt( ((ListExpression) res).get( 0 )
+                int otherSerial = Integer.parseInt( ((ListExpression) res).get(0)
                         .toString() );
 
                 /* This is the session nonce */
                 ASExpression nonce = ((ListExpression) res)
-                        .get( 1 );
+                        .get(1);
 
                 /* This is the ballot data */
                 byte[] ballot = ((StringExpression) ((ListExpression) res)
-                        .get( 2 )).getBytesCopy();
+                        .get(2)).getBytesCopy();
 
                 /* This is the ballot style, per precinct */
-                String precinct = ((ListExpression) res).get( 3 )
+                String precinct = ((ListExpression) res).get(3)
                         .toString();
 
 

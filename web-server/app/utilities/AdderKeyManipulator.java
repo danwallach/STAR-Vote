@@ -1,4 +1,4 @@
-package crypto.interop;
+package utilities;
 
 import crypto.ExponentialElGamalCiphertext;
 import crypto.adder.*;
@@ -12,7 +12,7 @@ import java.util.*;
 public class AdderKeyManipulator {
 
     /** A LaGrange polynomial for the Exponential-ElGamal homomorphic process. */
-	private static Polynomial _poly = null;
+    private static Polynomial _poly = null;
 
     private final static int maxAuth =1;
     private static Map<Integer, AdderPublicKeyShare> keyShares = new TreeMap<>();
