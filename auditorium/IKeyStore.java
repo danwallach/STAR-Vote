@@ -35,7 +35,7 @@ import crypto.adder.AdderPublicKeyShare;
 public interface IKeyStore {
 
     /**
-     *
+     * Load the public encryption key (the key for the entire election)
      * @return
      * @throws AuditoriumCryptoException
      */

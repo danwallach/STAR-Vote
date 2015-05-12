@@ -25,6 +25,7 @@ package supervisor.model;
 import auditorium.IAuditoriumParams;
 import auditorium.NetworkException;
 import crypto.EncryptedRaceSelection;
+import sexpression.ASEParser;
 import sexpression.ASExpression;
 import sexpression.StringExpression;
 import sexpression.stream.Base64;
@@ -1142,7 +1143,7 @@ public class Model {
 
                         ASExpression ballot = ASExpression.makeVerbatim(e.getBallot());
 
-                        thisPrecinct.commitBallot(e.getBID(), Ballot.fromASE(ballot));
+                        thisPrecinct.commitBallot(e.getBID(), ASEParser.convert(ballot, Ballot.class));
 
                         machinesToCommits.put(ballot, e.getSerial());
 
@@ -1260,8 +1261,8 @@ public class Model {
 
                     if (wasCast)
                         auditorium.announce(
-                                new EncryptedCastBallotWithNIZKsEvent(serial, nonce, b.toListExpression().toVerbatim(),
-                                        bid, machinesToCommits.get(b.toListExpression())));
+                                new EncryptedCastBallotWithNIZKsEvent(serial, nonce, ASEParser.convert(b).toVerbatim(),
+                                        bid, machinesToCommits.get(ASEParser.convert(b))));
                     else throw new RuntimeException("Found the precinct with the bid, but couldn't cast the ballot...");
 
                     /* Now tell the ballot scanner that this ballot was accepted */
@@ -1438,7 +1439,7 @@ public class Model {
             ballot = p.challengeBallot(bid);
 
             /* Announce that a ballot was spoiled */
-            auditorium.announce(new SpoilBallotEvent(mySerial, StringExpression.make(nonce), bid, ballot.toListExpression().toVerbatim()));
+            auditorium.announce(new SpoilBallotEvent(mySerial, StringExpression.make(nonce), bid, ASEParser.convert(ballot).toVerbatim()));
 
             return true;
         }

@@ -3,7 +3,6 @@ package supervisor.model;
 import crypto.ARaceSelection;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
-import sexpression.StringExpression;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -91,54 +90,5 @@ public class Ballot<T extends ARaceSelection> implements Serializable {
         return new ListExpression(votes);
     }
 
-    /**
-     * @return the ballot serialized as a ListExpression
-     */
-    public ListExpression toListExpression(){
-
-        /* Add all of the elements to a list */
-        ArrayList<ASExpression> elements = new ArrayList<>();
-
-        elements.add(StringExpression.makeString("ballot"));
-        elements.add(StringExpression.makeString(bid));
-        elements.add(getRaceSelectionsASE());
-        elements.add(StringExpression.makeString(nonce));
-        elements.add(StringExpression.makeString(Integer.toString(size)));
-
-        /* Build a list expression based on the data here contained */
-        return new ListExpression(elements);
-    }
-
-        /**
-         * Method for interop with VoteBox's S-Expression system.
-         *
-         * @param ase       S-Expression representation of a ballot
-         * @return          the Vote equivalent of ase
-         *
-         */
-        public static <A extends ARaceSelection> Ballot<A> fromASE(ASExpression ase){
-
-            ListExpression exp = (ListExpression)ase;
-
-            System.out.println(exp.get(0));
-
-            if(!(exp.get(0)).toString().equals("ballot"))
-                throw new RuntimeException("Not ballot");
-
-            String bid = exp.get(1).toString();
-
-            ListExpression vListE = (ListExpression)exp.get(2);
-
-            ArrayList<A> aList = new ArrayList<>();
-
-            for(ASExpression vote : vListE)
-                aList.add(A.fromASE(vote));
-
-            StringExpression nonce = (StringExpression)exp.get(3);
-
-            Integer size = Integer.parseInt(exp.get(4).toString());
-
-            return new Ballot<>(bid, aList, nonce.toString(), size);
-        }
 
 }

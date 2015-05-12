@@ -1,6 +1,12 @@
 package supervisor.model;
 
+import auditorium.Bugout;
 import crypto.EncryptedRaceSelection;
+import crypto.IPublicKey;
+import crypto.adder.Race;
+import sexpression.ASExpression;
+import sexpression.ListExpression;
+import sexpression.StringExpression;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -134,9 +140,86 @@ public class Precinct implements Serializable {
      * @return          a Ballot representing the sum total of all of the votes
      *                  cast in this precinct
      */
-    public Ballot<EncryptedRaceSelection> getCastBallotTotal(){
+    public Ballot<EncryptedRaceSelection> getCastBallotTotal(IPublicKey PEK){
 
-        return SupervisorTallier.tally(precinctID, cast);
+        int size=0;
+
+        /* The results of the election are stored by race ID in this map */
+        Map<String, Race> results = new HashMap<>();
+
+        /* For each ballot, get each vote and build a results mapping between race ids and elections */
+        for (Ballot<EncryptedRaceSelection> bal : cast) {
+
+            try {
+
+                List<EncryptedRaceSelection> raceSelections = bal.getRaceSelections();
+
+                /* Cycle through each of the races */
+                for(EncryptedRaceSelection ers: raceSelections){
+
+                    /* Get all the candidate choices */
+                    String raceID = ers.getTitle();
+
+                    /* Confirm that the vote proof is valid */
+                    if (!ers.verify(0, 1, PEK)) {
+                        Bugout.err("!!!Ballot failed NIZK test!!!");
+                        return null;
+                    }
+
+                    /* Code these results as a subelection so the ciphers can be summed homomorphically */
+                    Race race = results.get(raceID);
+
+                    /* If we haven't seen this specific race before, initialize it */
+                    if (race == null)
+                        race = new Race(PEK, new ArrayList<String>(ers.getRaceSelectionsMap().keySet()));
+
+                    /* This will ready race to homomorphically tally the vote */
+                    race.castRaceSelection(ers);
+
+                    /* Now save the result until we're ready to decrypt the totals */
+                    results.put(raceID, race);
+                }
+
+                size += bal.getSize();
+            }
+            catch (Exception e) {
+                Bugout.err("Malformed ballot received <" + e.getMessage() + ">");
+                Bugout.err("Rejected ballot:\n" + bal);
+                e.printStackTrace();
+            }
+        }
+
+        /* This will hold the final list of summed Votes to be put into a Ballot */
+        ArrayList<EncryptedRaceSelection> votes = new ArrayList<>();
+
+        /* This will be used to create the nonce eventually */
+        ArrayList<ASExpression> voteASE = new ArrayList<>();
+
+        /* Now go through each race */
+        for(String id :  results.keySet()) {
+
+            /* Get the race */
+            Race thisRace = results.get(id);
+
+            /* Get the homomorphically tallied vote for this race */
+            EncryptedRaceSelection vote = results.get(id).sumRaceSelections();
+
+
+            /* Verify the voteProof and error off if bad */
+            if(vote.verify(0, thisRace.getRaceSelections().size(), PEK)) {
+                votes.add(vote);
+                voteASE.add(vote.toASE());
+            }
+            else System.err.println("There was a bad summed vote that was not added to the ballot!");
+
+        }
+
+        /* Create the nonce */
+        ListExpression voteList = new ListExpression(voteASE);
+        String nonce = StringExpression.makeString(voteList.getSHA256()).toString();
+
+        /* Return the Ballot of all the summed race results */
+        return new Ballot<>(precinctID, votes, nonce, size);
     }
 
     /**
