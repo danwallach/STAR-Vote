@@ -1,8 +1,5 @@
 package crypto;
 
-import sexpression.ASExpression;
-import sexpression.ListExpression;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -15,24 +12,23 @@ public class EncryptedRaceSelection<T extends AHomomorphicCiphertext> extends AR
     private Map<String, T> selectionsMap;
 
     /**
-     *
-     * @param selectionsMap
-     * @param title
-     * @param size
+     * @param selectionsMap     the map of candidate IDs to ciphertext values for this race
+     * @param title             the title of this race
+     * @param size              the number of raceselections accumulated in this race selection (default: 1)
      */
     public EncryptedRaceSelection(Map<String, T> selectionsMap, String title, int size) {
         super(title, size);
 
         this.selectionsMap = selectionsMap;
-
     }
 
     /**
+     * Creates a multiplicative identity
+     * @param v     the encrypted race selection to use to extract the class of S
+     * @param PEK   the public encryption key used to encrypt the entire election
+     * @param <S>   the homomorphic ciphertext type, dependent on crypto-type
      *
-     * @param v
-     * @param PEK
-     * @param <S>
-     * @return
+     * @return      a multiplicative identity based on this encrypted race selection
      */
     public static <S extends AHomomorphicCiphertext> EncryptedRaceSelection<S> identity(EncryptedRaceSelection<S> v, IPublicKey PEK) {
 
@@ -48,8 +44,7 @@ public class EncryptedRaceSelection<T extends AHomomorphicCiphertext> extends AR
     }
 
     /**
-     *
-     * @return
+     * @return  the map of candidate IDs to ciphertexts
      */
     public Map<String, T> getRaceSelectionsMap(){
         return selectionsMap;
@@ -85,19 +80,19 @@ public class EncryptedRaceSelection<T extends AHomomorphicCiphertext> extends AR
     }
 
     /**
-     *
-     * @return
+     * @return  the race title
      */
     public String getTitle(){
         return title;
     }
 
     /**
+     * Checks that the sum of the selections is within a range by verifying the proof of the summed ciphertexts
+     * @param   selectionsMap the map of candidate IDs to ciphertext values for this race
      *
-     * @param selectionsMap
-     * @return
+     * @return  true if the number of 'for' votes (including abstentions) is within a range, false otherwise
      */
-    private boolean verifySum(Map<String, T> selectionsMap, int min, int max, IPublicKey PEK) {
+    private boolean verifySum(Map<String, T> selectionsMap, int value, IPublicKey PEK) {
 
         /* Should each Ciphertext have proofs inside or just have all their proofs inside VoteProof (or both)? */
         /* Should each Vote have to pass itself to its sumProof for verification? */
@@ -115,14 +110,17 @@ public class EncryptedRaceSelection<T extends AHomomorphicCiphertext> extends AR
             summed = (T)(summed.operate(entry.getValue(), PEK));
         }
 
-        return summed.verify(min, max, PEK);
+        return summed.verify(value, value, PEK);
     }
 
     /**
+     * Checks that each ciphertext is within a range and that the sum exactly the maximum value
+     * due to the way that abstentions are handled
      *
-     * @param min
-     * @param max
-     * @return
+     * @param min   the minimum value for an individual ciphertext (default: 0)
+     * @param max   the maximum value for an individual ciphertext (default: 1 or size)
+     *
+     * @return      whether the encrypted race selections satisfies these requirements
      */
     public boolean verify(int min, int max, IPublicKey PEK) {
 
@@ -132,22 +130,7 @@ public class EncryptedRaceSelection<T extends AHomomorphicCiphertext> extends AR
             }
         }
 
-        return verifySum(selectionsMap, min, max, PEK);
+        return verifySum(selectionsMap, max, PEK);
     }
 
-    /**
-     *
-     * @return
-     */
-    public ASExpression toASE(){
-        return new ListExpression("");
-    }
-
-    /**
-     *
-     * @return
-     */
-    public String toString() {
-        return "";
-    }
 }

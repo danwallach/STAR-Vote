@@ -4,6 +4,7 @@ import auditorium.Bugout;
 import crypto.EncryptedRaceSelection;
 import crypto.IPublicKey;
 import crypto.adder.Race;
+import sexpression.ASEParser;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.StringExpression;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
  */
 public class Precinct implements Serializable {
 
+    /* TODO may need to check to see if precinct should be typed for webserver tallying purposes */
     /** File path to the ballot style. */
     private String ballotFile;
 
@@ -136,7 +138,7 @@ public class Precinct implements Serializable {
     }
 
     /**
-     *
+     * Sums all Ballots in this precinct and returns the summed (encrypted) Ballot
      * @return          a Ballot representing the sum total of all of the votes
      *                  cast in this precinct
      */
@@ -208,7 +210,7 @@ public class Precinct implements Serializable {
             /* Verify the voteProof and error off if bad */
             if(vote.verify(0, thisRace.getRaceSelections().size(), PEK)) {
                 votes.add(vote);
-                voteASE.add(vote.toASE());
+                voteASE.add(ASEParser.convert(vote));
             }
             else System.err.println("There was a bad summed vote that was not added to the ballot!");
 

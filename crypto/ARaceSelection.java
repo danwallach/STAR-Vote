@@ -1,7 +1,5 @@
 package crypto;
 
-import sexpression.ASExpression;
-
 import java.util.Map;
 
 /**
@@ -20,6 +18,6 @@ public abstract class ARaceSelection {
 
     public abstract Map<String,?> getRaceSelectionsMap();
 
-    public abstract ASExpression toASE();
+    public abstract String getTitle();
 
 }

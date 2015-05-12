@@ -1,8 +1,5 @@
 package crypto;
 
-import sexpression.ASExpression;
-import sexpression.ListExpression;
-
 import java.util.Map;
 
 /**
@@ -25,11 +22,4 @@ public class PlaintextRaceSelection extends ARaceSelection {
         return title;
     }
 
-    public ASExpression toASE(){
-        return new ListExpression("");
-    }
-
-    public String toString() {
-        return "";
-    }
 }
