@@ -28,6 +28,16 @@ public class RaceSelectionCrypto {
         byteCrypter = new ByteCrypto(cryptoType);
     }
 
+    /**
+     *
+     * @param raceSelection
+     * @return
+     * @throws UninitialisedException
+     * @throws KeyNotLoadedException
+     * @throws InvalidKeyException
+     * @throws CipherException
+     * @throws CiphertextException
+     */
     public PlaintextRaceSelection decrypt(EncryptedRaceSelection raceSelection) throws UninitialisedException, KeyNotLoadedException, InvalidKeyException, CipherException, CiphertextException {
 
         /* Get the map from the race selection */
@@ -51,6 +61,16 @@ public class RaceSelectionCrypto {
         return new PlaintextRaceSelection(raceSelectionMap, raceSelection.getTitle(), raceSelection.size);
     }
 
+    /**
+     *
+     * @param raceSelection
+     * @return
+     * @throws UninitialisedException
+     * @throws KeyNotLoadedException
+     * @throws InvalidKeyException
+     * @throws CipherException
+     * @throws CiphertextException
+     */
     public EncryptedRaceSelection encrypt(PlaintextRaceSelection raceSelection) throws UninitialisedException, KeyNotLoadedException, InvalidKeyException, CipherException, CiphertextException {
 
         /* Get the map from the PlaintextVote */
@@ -74,6 +94,13 @@ public class RaceSelectionCrypto {
         return new EncryptedRaceSelection<>(cipherMap, raceSelection.getTitle(), 1);
     }
 
+    /**
+     *
+     * @param filePaths
+     * @throws FileNotFoundException
+     * @throws BadKeyException
+     * @throws UninitialisedException
+     */
     public void loadKeys(String... filePaths) throws FileNotFoundException, BadKeyException, UninitialisedException {
         byteCrypter.loadKeys(filePaths);
     }
