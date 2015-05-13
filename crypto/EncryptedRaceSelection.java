@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * An encrypted representation of the selection made for a given race.
  * Created by Matthew Kindy II on 11/19/2014.
  */
 public class EncryptedRaceSelection<T extends AHomomorphicCiphertext> extends ARaceSelection implements Provable {

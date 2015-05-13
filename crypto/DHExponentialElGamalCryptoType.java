@@ -17,6 +17,9 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
+ * The crypto-type associated with an Adder-type system, or more generally with
+ * an exponential elGamal cryptosystem.
+ *
  * Created by Matthew Kindy II on 11/5/2014.
  */
 public class DHExponentialElGamalCryptoType implements ICryptoType {
@@ -25,7 +28,18 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
     private AdderPublicKey PEK;
 
     /**
+     * Decrypts the AHomomorphicCiphertext
+     *
+     * @param ciphertext    the encrypted plaintext for a single vote-candidate value
+     *
      * @see crypto.ICryptoType#decrypt(AHomomorphicCiphertext)
+     *
+     * @return              the decrypted ciphertext as a byte[]
+     *
+     * @throws InvalidKeyException
+     * @throws KeyNotLoadedException
+     * @throws CipherException
+     * @throws CiphertextException
      */
     public byte[] decrypt(AHomomorphicCiphertext ciphertext) throws InvalidKeyException, KeyNotLoadedException, CipherException, CiphertextException {
 
@@ -48,11 +62,14 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
     }
 
     /**
+     * Using the partial decryptions (i.e. mapped plaintexts) for a ciphertext, calculates the
+     * final decryption.
      *
-     * @param partials
-     * @param size
-     * @param H
-     * @return
+     * @param partials  the partial decryptions of a ciphertext
+     * @param size      the size of the original ciphertext
+     * @param H         h^r * f^m
+     *
+     * @return          the full decryption as a byte[]
      */
     private byte[] decryptMappedPlaintext(List<AdderInteger> partials, int size, AdderInteger H) {
 
@@ -116,8 +133,9 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
 
     /**
      * Partially decrypts the ciphertext for each private key share and then returns them
-     * @param ciphertext
-     * @return
+     * @param ciphertext    the ciphertext to be partially decrypted
+     *
+     * @return              the list of partial decryptions
      */
     private List<AdderInteger> partialDecrypt(ExponentialElGamalCiphertext ciphertext) {
 
@@ -142,7 +160,16 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
     }
 
     /**
+     * Encrypts a plaintext (formatted as a byte[])
+     * @param plainText     a byte array to be encrypted
+     *
      * @see crypto.ICryptoType#encrypt(byte[])
+     *
+     * @return              the encrypted plaintext as an ExponentialElGamalCiphertext
+     *
+     * @throws CipherException
+     * @throws InvalidKeyException
+     * @throws KeyNotLoadedException
      */
     public AHomomorphicCiphertext encrypt(byte[] plainText) throws CipherException, InvalidKeyException, KeyNotLoadedException {
 
@@ -162,8 +189,11 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
     }
 
     /**
-     * Loads the private key shares from a single filepath
-     * @param filePath
+     * Loads the private key shares from a file path.
+     *
+     * @param filePath      the file path of the file from which to load the private key shares
+     * TODO this might need to be changed to load one key at a time until the threshold is met
+     *
      * @throws FileNotFoundException
      */
     public void loadPrivateKeyShares(String filePath) throws FileNotFoundException {
@@ -180,15 +210,24 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
     }
 
     /**
-     * @param privateKey
+     * Loads the private key shares.
+     *
+     * @param privateKey      the array of AdderPrivateKeyShares to be loaded
+     * TODO this might need to be changed to load one key at a time until the threshold is met or something
+     *
+     * @see #loadPrivateKeyShares(String)
+     *
+     * @throws FileNotFoundException
      */
-    public void loadPrivateKeyShares(AdderPrivateKeyShare privateKey[]) {
+    public void loadPrivateKeyShares(AdderPrivateKeyShare[] privateKey) {
         this.privateKeyShares = privateKey;
     }
 
     /**
-     * Loads the public key from a filepath
-     * @param filePath
+     * Loads the public key from a file path
+     *
+     * @param filePath      the file path of the file from which to load the PEK
+     *
      * @throws FileNotFoundException
      */
     public void loadPublicKey(String filePath) throws FileNotFoundException {
@@ -205,14 +244,20 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
     }
 
     /**
-     * @param publicKey
+     * Loads the PEK
+     * @param publicKey     the AdderPublicKey to be loaded
+     *
+     * @see #loadPublicKey(String)
      */
     public void loadPublicKey(AdderPublicKey publicKey) {
         this.PEK = publicKey;
     }
 
     /**
-     *@see ICryptoType#loadAllKeys(String[])
+     * Loads all the keys
+     * @param filePaths     the array of file paths from which to load the PEK and private key shares
+     *
+     * @see ICryptoType#loadAllKeys(String[])
      */
     public void loadAllKeys(String[] filePaths) throws FileNotFoundException {
 
@@ -239,8 +284,11 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
 
 
     /**
+     * Loads an array of AdderKeys (should consist of private key shares and PEK)
+     * @param keys      the array of AdderKeys to load
      *
-     * @param keys
+     * @see #loadAllKeys(String[])
+     *
      * @throws BadKeyException
      */
     private void loadAllKeys(AdderKey[] keys) throws BadKeyException {

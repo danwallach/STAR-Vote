@@ -24,8 +24,8 @@ public class BallotCrypto {
     private static RaceSelectionCrypto raceSelectionCrypter = null;
 
     /**
-     *
-     * @param cryptoType
+     * Sets the base crypto-package
+     * @param cryptoType    the base crypto-package used in encryption/decryption
      */
     public static void setCryptoType(ICryptoType cryptoType){
 
@@ -75,8 +75,10 @@ public class BallotCrypto {
     }
 
     /**
+     * Loads the keys from the files specified by the filePaths
      *
-     * @param filePaths
+     * @param filePaths     the file paths of the files from which the keys will be loaded
+     * @see crypto.ICryptoType#loadAllKeys(String[])
      */
     public void loadKeys(String... filePaths) throws FileNotFoundException, BadKeyException, UninitialisedException {
         raceSelectionCrypter.loadKeys(filePaths);

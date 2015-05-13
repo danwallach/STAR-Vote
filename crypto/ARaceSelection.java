@@ -3,6 +3,7 @@ package crypto;
 import java.util.Map;
 
 /**
+ * A framework for a selection in a Race (i.e. an individual part of a Ballot)
  * Created by Matthew Kindy II on 11/21/2014.
  */
 public abstract class ARaceSelection {

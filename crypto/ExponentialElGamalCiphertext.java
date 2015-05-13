@@ -100,10 +100,11 @@ public class ExponentialElGamalCiphertext extends AHomomorphicCiphertext<Exponen
 
     /**
      * Verifies this ciphertext encodes a value between min and max and was encrypted with this PEK
-     * @param min
-     * @param max
-     * @param PEK
-     * @return
+     * @param min   the minimum acceptable value for this ciphertext
+     * @param max   the maximum acceptable value for this ciphertext
+     * @param PEK   the public encryption key used in the verification process
+     *
+     * @return      true if this ciphertext encrypts a value between min and max, false otherwise
      */
     public boolean verify(int min, int max, IPublicKey PEK) {
 
@@ -119,6 +120,7 @@ public class ExponentialElGamalCiphertext extends AHomomorphicCiphertext<Exponen
         return proof.verify(this, PEK, domain);
     }
 
+    /* TODO this needsd to be figured out ?*/
     public byte[] asBytes() {
 
         /*byte[] gbytes = g.bigintValue().toByteArray();*/
