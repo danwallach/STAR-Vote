@@ -1,15 +1,6 @@
 package crypto.adder;
 
-/**
- * Thrown by the <tt>fromString</tt> method of a <code>ElgamalCiphertext</code>
- * to indicate that there was a parse error.
- *
- * @author  David Walluck
- * @version $LastChangedRevision$ $LastChangedDate$
- * @see     AdderElgamalCiphertext
- * @see     AdderElgamalCiphertext#fromString(String)
- * @since   0.0.1
- */
+/* TODO fix this commenting */
 public class InvalidElgamalCiphertextException extends RuntimeException {
     private static final long serialVersionUID = 0L;
 

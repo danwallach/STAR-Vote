@@ -1,14 +1,7 @@
 package crypto.adder;
 
 /**
- * Thrown by the <tt>getFinalSum</tt> method of a <code>Race</code>
- * to indicate that the search space has been exhausted.
- *
- * @author  David Walluck
- * @version $LastChangedRevision$ $LastChangedDate$
- * @see     Race
- * @see     Race#getFinalSum
- * @since   0.0.1
+ * todo fix comments
  */
 public class SearchSpaceExhaustedException extends RuntimeException {
     private static final long serialVersionUID = 0L;

@@ -1,23 +1,14 @@
 package crypto.adder;
 
-/**
- * Thrown by the <tt>fromString</tt> method of a <code>Vote</code>
- * to indicate that there was a parse error.
- *
- * @author  David Walluck
- * @version $LastChangedRevision$ $LastChangedDate$
- * @see     AdderVote
- * @see     AdderVote#fromString(String)
- * @since   0.0.1
- */
-public class InvalidVoteException extends RuntimeException {
+/* todo fix comments */
+public class InvalidRaceSelectionException extends RuntimeException {
     private static final long serialVersionUID = 0L;
 
     /**
      * Constructs an <code>InvalidVoteException</code> with
      * <tt>null</tt> as its error message string.
      */
-    public InvalidVoteException() {
+    public InvalidRaceSelectionException() {
         super();
     }
 
@@ -28,7 +19,7 @@ public class InvalidVoteException extends RuntimeException {
      *
      * @param s the detail message
      */
-    public InvalidVoteException(String s) {
+    public InvalidRaceSelectionException(String s) {
         super(s);
     }
 }

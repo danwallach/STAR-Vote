@@ -3,7 +3,7 @@ package crypto.adder.test;
 import crypto.adder.AdderElgamalCiphertext;
 import crypto.adder.AdderInteger;
 import crypto.adder.AdderVote;
-import crypto.adder.InvalidVoteException;
+import crypto.adder.InvalidRaceSelectionException;
 import junit.framework.TestCase;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
@@ -45,7 +45,7 @@ public class AdderVoteTest extends TestCase {
             assertEquals(new AdderInteger("246",
                          vote.getCipherList().get(0).getP()),
                          vote.getCipherList().get(0).getH());
-        } catch (InvalidVoteException ive) {
+        } catch (InvalidRaceSelectionException ive) {
             fail();
         }
 
@@ -96,41 +96,41 @@ public class AdderVoteTest extends TestCase {
         try {
             AdderVote.fromString("p123G123");
             fail();
-        } catch (InvalidVoteException ignored) {
+        } catch (InvalidRaceSelectionException ignored) {
 
         }
 
         try {
             AdderVote.fromString("qGH");
             fail();
-        } catch (InvalidVoteException ignored) {
+        } catch (InvalidRaceSelectionException ignored) {
 
         }
 
         try {
             AdderVote.fromString("p123H123H123");
             fail();
-        } catch (InvalidVoteException ignored) {
+        } catch (InvalidRaceSelectionException ignored) {
 
         }
         try {
             AdderVote.fromString("p123G123G123");
             fail();
-        } catch (InvalidVoteException ignored) {
+        } catch (InvalidRaceSelectionException ignored) {
 
         }
 
         try {
             AdderVote.fromString("p123G123H12a");
             fail();
-        } catch (InvalidVoteException ignored) {
+        } catch (InvalidRaceSelectionException ignored) {
 
         }
 
         try {
             AdderVote.fromString("p123G123H123p123");
             fail();
-        } catch (InvalidVoteException ignored) {
+        } catch (InvalidRaceSelectionException ignored) {
 
         }
 
@@ -142,7 +142,7 @@ public class AdderVoteTest extends TestCase {
                         + "5915557693s360340621934c222506129443c148756415697"
                         + "c387464678922");
             fail();
-        } catch (InvalidVoteException ignored) {
+        } catch (InvalidRaceSelectionException ignored) {
 
         }
 
@@ -154,7 +154,7 @@ public class AdderVoteTest extends TestCase {
                           + "339s405915557693s360340621934c222506129443c1487"
                           + "56415697c387464678922 xyz");
             fail();
-        } catch (InvalidVoteException ignored) {
+        } catch (InvalidRaceSelectionException ignored) {
 
         }
 
@@ -168,7 +168,7 @@ public class AdderVoteTest extends TestCase {
             );
             assertTrue(vote != null);
             fail();
-        } catch (InvalidVoteException ignored) {
+        } catch (InvalidRaceSelectionException ignored) {
 
         }
 
@@ -180,7 +180,7 @@ public class AdderVoteTest extends TestCase {
                           + "339s405915557693s360340621934c222506129443c1487"
                           + "56415697c387464678922 xyz");
             fail();
-        } catch (InvalidVoteException ignored) {
+        } catch (InvalidRaceSelectionException ignored) {
 
         }
 

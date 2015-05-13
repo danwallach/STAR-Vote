@@ -8,15 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represents an election.
- *
- * @author David Walluck
- * @version $LastChangedRevision$ $LastChangedDate$
- * @since 0.0.1
+ * Represents a collection of RaceSelections for a single 'race', where
+ * a 'race' is a single contest between multiple candidates in an election.
  */
 public class Race<T extends AHomomorphicCiphertext> {
 
-    /** The public key used to encrypt and tally */
+    /** The public key used to tally */
     private IPublicKey PEK;
 
     /** The List of all race selections cast in this Race */
@@ -83,95 +80,4 @@ public class Race<T extends AHomomorphicCiphertext> {
         return total;
     }
 
-    /**
-     * Gets the final sum given the partial sums, the coefficients, the vote
-     * representing the sum, and the master public key.
-     * TODO make this less stupid List<List<>> and LaGrange coefficients, among others
-     *
-     * @param  partialSums      the partial sums (the list of products of the encrypted
-     *                          raceSelections' h^y values wrapped in an additional list)
-     *
-     * @param  sum              the sum
-     *
-     * @param  masterKey        the master public key
-     *
-     * @return                  the final vote tally
-     */
-
-//
-//    public List<AdderInteger> getFinalSum(List<AdderInteger> partialSums, EncryptedRaceSelection sum, AdderPublicKey masterKey) {
-//
-//        /*
-//
-//    	  Adder encrypt is of m (public initial g, p, h) [inferred from code]
-//    	                    m = {0, 1}
-//    	                    g' = g^r = g^y
-//    	                    h' = h^r * f^m = h^y * m'
-//
-//    	  Quick decrypt (given r) [puzzled out by Kevin Montrose]
-//    	                    confirm g^r = g'
-//    	                    m' = (h' / (h^r)) = h' / h^y
-//    	                    if(m' == f) m = 1
-//    	                    if(m' == 1) m = 0
-//
-//    	*/
-//
-//        /* Get relevant key data */
-//        AdderInteger q = masterKey.getQ();
-//        AdderInteger f = masterKey.getF();
-//
-//        List<AdderInteger> coeffs = new ArrayList<>();
-//        coeffs.add(AdderInteger.ZERO);
-//
-//        /* Extract the ciphertexts */
-//        List<ElgamalCiphertext> cipherList = sum.getRaceSelectionsMap();
-//
-//        /* Figure out how many ciphertexts there are */
-//        int csize = cipherList.size();
-//
-//        List<AdderInteger> results      = new ArrayList<>();
-//
-//        /* For each cipher (i.e. for each candidate) */
-//        for (int i = 0; i < csize; i++) {
-//
-//
-//            /* Pull out the ith partial sum (equals h^y) */
-//            AdderInteger product = partialSums.get(i);
-//
-//            /* Get the public value from the ith ciphertext (encrypted sum for ith candidate) (bigH = h' = h^y * f^m) (bigG = g^y) */
-//            AdderInteger bigH = (cipherList.get(i)).getH();
-//
-//            /* Divide h' / h^y = f^m, where m = total number of raceSelections for a candidate */
-//            AdderInteger target = bigH.divide(product);
-//
-//            /* Indicates if we have successfully resolved the ciphertext */
-//            boolean gotResult = false;
-//
-//            AdderInteger j = null;
-//
-//            /* Possible total number of raceSelections for a candidate */
-//            int numVotes = raceSelections.size();
-//
-//            /* Iterate over the number of raceSelections to try to guess n */
-//            for (int k = 0; k <= numVotes; k++) {
-//
-//                /* Create a guess */
-//                j = new AdderInteger(k, q);
-//
-//                //System.out.println("DOES " + f.pow(j) + " equal " + target + "?");
-//
-//                /* Check the guess and get out when found */
-//                if (f.pow(j).equals(target)) {
-//                    gotResult = true;
-//                    break;
-//                }
-//            }
-//
-//            /* Keep track of found result, otherwise error */
-//            if (gotResult) results.add(j);
-//            else throw new SearchSpaceExhaustedException("Error searching for " + target);
-//        }
-//
-//        return results;
-//    }
 }

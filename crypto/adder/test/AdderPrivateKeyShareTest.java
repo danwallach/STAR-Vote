@@ -3,7 +3,7 @@ package crypto.adder.test;
 import crypto.adder.AdderInteger;
 import crypto.adder.AdderPrivateKeyShare;
 import crypto.adder.InvalidPrivateKeyException;
-import crypto.adder.InvalidVoteException;
+import crypto.adder.InvalidRaceSelectionException;
 import junit.framework.TestCase;
 import junit.textui.TestRunner;
 
@@ -137,7 +137,7 @@ public class AdderPrivateKeyShareTest extends TestCase {
             List/*<AdderInteger>*/ list2 = new ArrayList/*<AdderInteger>*/(1);
             list2.add(new  AdderInteger("695327169426"));
             assertEquals(list2, privateKey4.partialDecrypt(vote2));
-        } catch (InvalidPrivateKeyException | InvalidVoteException ipke) {
+        } catch (InvalidPrivateKeyException | InvalidRaceSelectionException ipke) {
             fail();
         }
 
@@ -185,7 +185,7 @@ public class AdderPrivateKeyShareTest extends TestCase {
                           authFinPrivKey1.toString());
             assertEquals("p553417232063g15044079079x182873233170f419757826339",
                          authFinPrivKey2.toString());
-        } catch (InvalidPrivateKeyException | InvalidVoteException ipke) {
+        } catch (InvalidPrivateKeyException | InvalidRaceSelectionException ipke) {
             fail();
         }
     }

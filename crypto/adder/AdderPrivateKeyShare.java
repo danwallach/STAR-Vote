@@ -43,12 +43,13 @@ public class AdderPrivateKeyShare extends AdderKey {
      *
      * @return          the partial decryption of the given vote
      */
-    public List<AdderInteger> partialDecrypt(EncryptedRaceSelection vote) {
-        Map<String, AHomomorphicCiphertext> cipherList = vote.getRaceSelectionsMap();
+    public List<AdderInteger> partialDecrypt(EncryptedRaceSelection<ExponentialElGamalCiphertext> vote) {
+
+        Map<String, ExponentialElGamalCiphertext> cipherList = vote.getRaceSelectionsMap();
         List<AdderInteger> resultList = new ArrayList<>(cipherList.size());
 
-        for (AHomomorphicCiphertext ciphertext : cipherList.values())
-            resultList.add(partialDecrypt((ExponentialElGamalCiphertext)ciphertext));
+        for (ExponentialElGamalCiphertext ciphertext : cipherList.values())
+            resultList.add(partialDecrypt(ciphertext));
 
         return resultList;
     }

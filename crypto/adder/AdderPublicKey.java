@@ -44,7 +44,7 @@ public class AdderPublicKey extends AdderKey implements IPublicKey, Serializable
     /**
      * Creates a new PublicKey with the specified parameter values.
      *
-     * @param p     the prime
+     * @param p     the safe prime
      * @param g     the generator of the key
      * @param f     the message base, generator used for homomorphic encryption
      */
@@ -55,7 +55,7 @@ public class AdderPublicKey extends AdderKey implements IPublicKey, Serializable
     /**
      * Creates a new PublicKey with the specified parameter values.
      *
-     * @param p     the prime
+     * @param p     the safe prime
      * @param g     the generator of the key
      * @param h     the public value
      * @param f     the message base, generator used for homomorphic encryption
@@ -69,8 +69,8 @@ public class AdderPublicKey extends AdderKey implements IPublicKey, Serializable
     /**
      * Creates a new PublicKey with the specified parameter values.
      *
-     * @param p     the prime
-     * @param q     the order of the group
+     * @param p     the safe prime
+     * @param q     the prime (order of the group)
      * @param g     the generator of the key
      * @param h     the public value
      * @param f     the message base, generator used for homomorphic encryption

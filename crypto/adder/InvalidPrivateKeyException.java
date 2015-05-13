@@ -1,15 +1,6 @@
 package crypto.adder;
 
-/**
- * Thrown by the <tt>fromString</tt> method of a <code>PrivateKey</code>
- * to indicate that there was a parse error.
- *
- * @author  David Walluck
- * @version $LastChangedRevision$ $LastChangedDate$
- * @see     AdderPrivateKeyShare
- * @see     AdderPrivateKeyShare#fromString(String)
- * @since   0.0.1
- */
+/* todo fix this commenting */
 public class InvalidPrivateKeyException extends RuntimeException {
     private static final long serialVersionUID = 0L;
 

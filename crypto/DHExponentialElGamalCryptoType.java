@@ -156,7 +156,7 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
 
         /* Verify the ciphertext */
         if (!ctext.verify(0,1,PEK))
-            throw new InvalidVoteException("We got a bad plaintext!");
+            throw new InvalidRaceSelectionException("We got a bad plaintext!");
 
         return ctext;
     }

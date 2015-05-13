@@ -1,15 +1,6 @@
 package crypto.adder;
 
-/**
- * Thrown by the <tt>fromString</tt> method of a <code>PublicKey</code>
- * to indicate that there was a parse error.
- *
- * @author  David Walluck
- * @version $LastChangedRevision$ $LastChangedDate$
- * @see     AdderPublicKey
- * @see     AdderPublicKey#fromString(String)
- * @since   0.0.1
- */
+/* TODO fix this commenting */
 public class InvalidPublicKeyException extends RuntimeException {
     private static final long serialVersionUID = 0L;
 
