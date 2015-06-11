@@ -231,7 +231,7 @@ public class ASEParser {
 
         /* Convert the data in particular */
         for (Map.Entry e : entrySet) {
-            KeyValue kv = new KeyValue<>(e.getKey(), e.getValue());
+            KeyValuePair kv = new KeyValuePair<>(e.getKey(), e.getValue());
             expList.add(ASEParser.convert(kv));
         }
 
@@ -253,7 +253,7 @@ public class ASEParser {
                 if (cur instanceof ListExpression) {
 
                     /* There ought to be no primitives here since they were autoboxed */
-                    KeyValue kv = ASEParser.convert((ListExpression)cur);
+                    KeyValuePair kv = ASEParser.convert((ListExpression)cur);
 
                     /* Add this object to the collection */
                     m.put(kv.getKey(),kv.getValue());

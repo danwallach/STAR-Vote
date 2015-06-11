@@ -40,9 +40,9 @@ public class ASEParserTest extends TestCase{
 
     public void testToASE(){
 
-        String expected = "(object java.util.HashMap (object sexpression.KeyValue (key java.lang.String Matt B) " +
-                          "(value java.lang.Integer 1)) (object sexpression.KeyValue (key java.lang.String Matt K) " +
-                          "(value java.lang.Integer 0)) (object sexpression.KeyValue (key java.lang.String Clayton) " +
+        String expected = "(object java.util.HashMap (object sexpression.KeyValuePair (key java.lang.String Matt B) " +
+                          "(value java.lang.Integer 1)) (object sexpression.KeyValuePair (key java.lang.String Matt K) " +
+                          "(value java.lang.Integer 0)) (object sexpression.KeyValuePair (key java.lang.String Clayton) " +
                           "(value java.lang.Integer 0)))";
 
 
