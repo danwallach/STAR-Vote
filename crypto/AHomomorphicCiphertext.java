@@ -28,8 +28,7 @@ public abstract class AHomomorphicCiphertext<T extends AHomomorphicCiphertext> i
     public abstract T operate(T operand, IPublicKey PEK);
 
     /**
-     *
-     * @return
+     * @return  the amount of ciphertexts operated into this one
      */
     public abstract int getSize();
 }

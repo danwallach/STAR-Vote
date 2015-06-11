@@ -54,7 +54,10 @@ public class AuditoriumLogGenerator {
         log = host.getLog();
 
         IKeyStore ks = new SimpleKeyStore("keys");
-        publicKey = ks.loadAdderPublicKeyShare();
+
+        try { publicKey = ks.loadPEK(); }
+        catch (AuditoriumCryptoException e) {e.printStackTrace();}
+
         topLayer = new AuditoriumIntegrityLayer(AAuditoriumLayer.BOTTOM, host, ks);
 
 
@@ -173,7 +176,7 @@ public class AuditoriumLogGenerator {
         BallotScannedEvent bse = new BallotScannedEvent(2, bid);
         BallotScanAcceptedEvent bsae = new BallotScanAcceptedEvent(0, bid);
 
-        EncryptedCastBallotWithNIZKsEvent ecbwne = new EncryptedCastBallotWithNIZKsEvent(0, nonce, ballot, bid);
+        EncryptedCastBallotWithNIZKsEvent ecbwne = new EncryptedCastBallotWithNIZKsEvent(0, nonce, ballot, bid,1);
 
         logDatum(pin.toSExp());
         logDatum(authorize.toSExp());

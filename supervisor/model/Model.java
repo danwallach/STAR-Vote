@@ -27,6 +27,7 @@ import auditorium.NetworkException;
 import crypto.EncryptedRaceSelection;
 import sexpression.ASEParser;
 import sexpression.ASExpression;
+import sexpression.ListExpression;
 import sexpression.StringExpression;
 import sexpression.stream.Base64;
 import supervisor.model.machine.*;
@@ -1143,7 +1144,7 @@ public class Model {
 
                         ASExpression ballot = ASExpression.makeVerbatim(e.getBallot());
 
-                        thisPrecinct.commitBallot(e.getBID(), ASEParser.convert(ballot, Ballot.class));
+                        thisPrecinct.commitBallot(e.getBID(), ASEParser.convert((ListExpression)ballot));
 
                         machinesToCommits.put(ballot, e.getSerial());
 

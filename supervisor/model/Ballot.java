@@ -1,6 +1,7 @@
 package supervisor.model;
 
 import crypto.ARaceSelection;
+import sexpression.ASEParser;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 
@@ -85,7 +86,7 @@ public class Ballot<T extends ARaceSelection> implements Serializable {
         ArrayList<ASExpression> votes = new ArrayList<>();
 
         for(T v : ballot)
-            votes.add(v.toASE());
+            votes.add(ASEParser.convert(v));
 
         return new ListExpression(votes);
     }

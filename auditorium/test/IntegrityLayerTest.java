@@ -92,6 +92,11 @@ public class IntegrityLayerTest {
             return null;
         }
 
+        @Override
+        public AdderPublicKey loadPEK() throws RuntimeException {
+            return null;
+        }
+
         public Key loadKey(String nodeID) throws AuditoriumCryptoException {
             return myKey;
         }

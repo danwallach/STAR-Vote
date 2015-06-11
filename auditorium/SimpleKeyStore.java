@@ -27,6 +27,7 @@ import crypto.adder.AdderPublicKey;
 import crypto.adder.AdderPublicKeyShare;
 import sexpression.ASEParser;
 import sexpression.ASExpression;
+import sexpression.ListExpression;
 import sexpression.stream.ASEInputStreamReader;
 import sexpression.stream.InvalidVerbatimStreamException;
 
@@ -85,7 +86,7 @@ public class SimpleKeyStore implements IKeyStore {
 
             asePEK = load("PEK.key");
 
-            return ASEParser.convert(asePEK, AdderPublicKey.class);
+            return ASEParser.convert((ListExpression)asePEK);
         }
         catch (AuditoriumCryptoException e){ throw new AuditoriumCryptoException("Error during loadPEK(): ", e); }
     }
