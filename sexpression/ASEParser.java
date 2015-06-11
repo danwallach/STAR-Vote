@@ -6,6 +6,7 @@ import org.objenesis.instantiator.ObjectInstantiator;
 
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * Created by Matthew Kindy II on 11/21/2014.
@@ -32,6 +33,9 @@ public class ASEParser {
 
 
         /* Use Objenesis to construct a new (hopefully blank) instance of this class */
+
+        if (c==null) return null;
+
         Objenesis o = new ObjenesisStd();
         T newObj = o.newInstance(c);
 
@@ -71,21 +75,32 @@ public class ASEParser {
                 //System.out.println("Field name: " + fieldName);
 
                 /* Set the field in the blank object to the value in the ASE using reflection */
+                Field f = null;
+                Class curClass = c;
+
+                /* Get the field with this name */
+                try { f = c.getDeclaredField(fieldName); }
+                catch (NoSuchFieldException ignored) {
+
+                    try { f=c.getSuperclass().getDeclaredField(fieldName); }
+                    catch (NoSuchFieldException e) {
+
+                        throw new ConversionException("Could not find the field with specified name '"+ fieldName +
+                                                      "' in " + c.getName() + " or " + c.getSuperclass().getName());
+                    }
+                }
+
                 try {
-
-                    /* Get the field with this name */
-                    Field f = c.getDeclaredField(fieldName);
-
                     /* This does not cause worry because it is automatically reset in Java */
                     f.setAccessible(true);
 
                     /* Set the new value */
                     f.set(newObj, value);
                 }
-                catch (NoSuchFieldException | IllegalAccessException e){ System.err.println("Could not convert: " + e.getClass()); }
+                catch (IllegalAccessException e) { throw new ConversionException("Could not access the field for some reason during conversion."); }
 
             }
-            else{/*error off*/}
+            else throw new ConversionException("Found an unexpected ASExpression in '" + exp + "'");
 
         }
 
@@ -113,8 +128,10 @@ public class ASEParser {
      * @return
      */
     private static <T> Class<T> getClass(ListExpression exp) throws ConversionException{
+        String className = exp.get(1).toString();
+
         try {
-            return (Class<T>)(Class.forName(exp.get(1).toString()));
+            return className.equals("NULL") ? null : (Class<T>)(Class.forName(className));
         } catch (Exception e) {
             e.printStackTrace();
             throw new ConversionException("Error during casting inferred type: " + e.getMessage());
@@ -138,6 +155,8 @@ public class ASEParser {
      * Converts the given object (field-derived) into an ASExpression
      * @param obj
      * @return
+     *
+     * NOTE: This is currently set to only check for relevant fields
      */
     private static ListExpression convert(Object obj, String fieldName) throws ConversionException {
 
@@ -157,10 +176,20 @@ public class ASEParser {
 
         /* Write the name of the Object */
         expList.add(StringExpression.make(fieldName));
-        expList.add(StringExpression.make(obj.getClass().getName()));
+
+        if (obj == null) {
+            expList.add(StringExpression.make("NULL"));
+            return new ListExpression(expList);
+        }
+
+        Class curClass = obj.getClass();
+        expList.add(StringExpression.make(curClass.getName()));
 
         /* Get the list of fields */
-        Field[] fields = obj.getClass().getDeclaredFields();
+        Field[] fields = curClass.getDeclaredFields();
+
+        /* Concatenate those fields in the direct superclass */
+        fields = Stream.concat(Arrays.stream(fields), Arrays.stream(curClass.getSuperclass().getDeclaredFields())).toArray(Field[]::new);
 
         /* Get each field object and convert */
         for (Field f : fields) {
