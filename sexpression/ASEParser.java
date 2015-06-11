@@ -9,6 +9,10 @@ import java.util.*;
 import java.util.stream.Stream;
 
 /**
+ * A static utility to automate the process of creating toASE and fromASE methods. This can create a
+ * relatively compact and human+machine-readable s-expression and convert it back to a copy of the
+ * original class instance.
+ *
  * Created by Matthew Kindy II on 11/21/2014.
  */
 public class ASEParser {
@@ -16,6 +20,7 @@ public class ASEParser {
     private static Objenesis o = new ObjenesisStd();
     /**
      * Creates an object of class c from ASExpression exp.
+     *
      * @param exp       the expression to convert into an object of class c
      * @param c         the class into which the expression will be converted
      * @param <T>       the type
@@ -28,7 +33,7 @@ public class ASEParser {
         /* Convert to a list expression */
         /* Parse through each element of the list expression */
         /* (object [classname] ([fieldname] [classname] ([param]) (...) (...)) ([fieldname] [classname] ([param])))*/
-        /*    type c           |-------------------------------- field  params --------------------------------- | */
+        /*    type c           |-------------------------------- class field ASEs ------------------------------ | */
 
 
 
@@ -44,11 +49,11 @@ public class ASEParser {
 
         try {
             if (newObj instanceof Collection)
-                return convertCollection(exp, (Collection) newObj);
+                return convertCollection(exp, (Collection<?>) newObj);
 
             if (newObj instanceof Map) {
                 //System.out.println("IT'S A MAP!");
-                return convertMap(exp, (Map) newObj);
+                return convertMap(exp, (Map<?,?>) newObj);
             }
         }
         catch (Exception e) {
@@ -109,9 +114,11 @@ public class ASEParser {
 
     /**
      * Creates an object of the type specified by the first string in a ListExpression.
-     * @param exp
-     * @param <T>
-     * @return
+     *
+     * @param exp       the expression to convert into an object of class c
+     * @param <T>       the type
+     *
+     * @return          an instance of type T
      */
     public static <T> T convert(ListExpression exp) {
 
@@ -123,9 +130,11 @@ public class ASEParser {
 
     /**
      * Returns the class associated with the first string in exp
-     * @param exp
-     * @param <T>
-     * @return
+     *
+     * @param exp       the expression to convert into an object of class c
+     * @param <T>       the type
+     *
+     * @return          the class type associated with this ListExpression
      */
     private static <T> Class<T> getClass(ListExpression exp) throws ConversionException{
         String className = exp.get(1).toString();
@@ -140,8 +149,10 @@ public class ASEParser {
 
     /**
      * Converts the given object into an ASExpression, used for primary object
-     * @param obj
-     * @return
+     *
+     * @param obj       the object to be converted into an s-expression
+     *
+     * @return          the ListExpression representation of this object
      */
     public static ListExpression convert(Object obj)  {
 
@@ -153,10 +164,12 @@ public class ASEParser {
 
     /**
      * Converts the given object (field-derived) into an ASExpression
-     * @param obj
-     * @return
      *
-     * NOTE: This is currently set to only check for relevant fields
+     * @param obj       the object to be converted into an s-expression
+     *
+     * @return          the ListExpression representation of this object
+     *
+     * NOTE: This is currently set to only check for declared fields, up to one inheritance deep
      */
     private static ListExpression convert(Object obj, String fieldName) throws ConversionException {
 
@@ -207,7 +220,16 @@ public class ASEParser {
         return new ListExpression(expList);
     }
 
-    private static <T extends Collection> ListExpression convertCollection(T col, String fieldName) throws ConversionException {
+    /**
+     * Converts a Collection into an s-expression
+     *
+     * @param col           the collection to be converted
+     * @param fieldName     the name of this object as a field in a larger object (if applicable)
+     * @param <T>           the type of the collection
+     *
+     * @return              the collection as a ListExpression
+     */
+    private static <T extends Collection> ListExpression convertCollection(T col, String fieldName) {
 
         List<ASExpression> expList = new ArrayList<>();
 
@@ -222,7 +244,18 @@ public class ASEParser {
         return new ListExpression(expList);
     }
 
-    private static <T extends Collection> T convertCollection(ListExpression exp, Collection col) throws ConversionException {
+    /**
+     * Converts a ListExpression for a Collection (Set/ArrayList) into a class instance
+     *
+     * @param exp           the expression to convert into an object of class c
+     * @param col           the collection created by Objenesis to be filled
+     * @param <T>           the type of the collection
+     *
+     * @return              a class instance of type T formed from the ListExpression
+     *
+     * @throws ConversionException if a bad cast occurs
+     */
+    private static <T extends Collection<K>, K> T convertCollection(ListExpression exp, Collection<K> col) throws ConversionException {
 
         try {
 
@@ -235,7 +268,7 @@ public class ASEParser {
                 if (cur instanceof ListExpression) {
 
                     /* There ought to be no primitives here since they were autoboxed */
-                    Object value = ASEParser.convert((ListExpression)cur);
+                    K value = ASEParser.convert((ListExpression)cur);
 
                     /* Add this object to the collection */
                     col.add(value);
@@ -248,7 +281,16 @@ public class ASEParser {
         catch (Exception e) { throw new ConversionException("Error during reconstruction of collection: " + e.getMessage()); }
     }
 
-    private static <T extends Map> ListExpression convertMap(T m, String fieldName) throws ConversionException {
+    /**
+     * Converts a Map (HashMap/TreeMap/etc.) into an s-expression
+     *
+     * @param m             the map to be converted into a ListExpression
+     * @param fieldName     the name of this object as a field in a larger object (if applicable)
+     * @param <T>           the type of the Map
+     *
+     * @return              the ListExpression formed from the converted map
+     */
+    private static <T extends Map<K,V>, K, V> ListExpression convertMap(T m, String fieldName) {
 
         List<ASExpression> expList = new ArrayList<>();
 
@@ -256,7 +298,7 @@ public class ASEParser {
         expList.add(StringExpression.make(fieldName));
         expList.add(StringExpression.make(m.getClass().getName()));
 
-        Set<Map.Entry> entrySet = m.entrySet();
+        Set<Map.Entry<K,V>> entrySet = m.entrySet();
 
         /* Convert the data in particular */
         for (Map.Entry e : entrySet) {
@@ -267,7 +309,18 @@ public class ASEParser {
         return new ListExpression(expList);
     }
 
-    private static <T extends Map> T convertMap (ListExpression exp, Map m) throws ConversionException {
+    /**
+     * Converts a ListExpression for a Map into a class instance.
+     *
+     * @param exp       the expression to convert into an object of class c
+     * @param m         the blank Map instance created using Objenesis
+     * @param <T>       the type to be returned
+     *
+     * @return          a filled Map (type T)
+     *
+     * @throws ConversionException  if there is a casting exception thrown in the method
+     */
+    private static <T extends Map, K, V> T convertMap (ListExpression exp, Map<K,V> m) throws ConversionException {
 
         try {
 
@@ -282,7 +335,7 @@ public class ASEParser {
                 if (cur instanceof ListExpression) {
 
                     /* There ought to be no primitives here since they were autoboxed */
-                    KeyValuePair kv = ASEParser.convert((ListExpression)cur);
+                    KeyValuePair<K,V> kv = ASEParser.convert((ListExpression)cur);
 
                     /* Add this object to the collection */
                     m.put(kv.getKey(),kv.getValue());
@@ -292,10 +345,19 @@ public class ASEParser {
             return (T)m;
 
         }
-        catch (Exception e) { throw new ConversionException("Error during reconstruction of collection: " + e.getMessage()); }
+        catch (ClassCastException e) { throw new ConversionException("Error during reconstruction of collection: " + e.getMessage()); }
     }
 
-    private static ListExpression convertBasicType(Object obj, String fieldName) throws ConversionException {
+    /**
+     * Converts a class instance of a basic type (Long/Integer/Float/Byte/Double/etc.) into an s-expression
+     *
+     * @param obj           the object to be converted into an s-expression
+     * @param fieldName     the name of this object as a field in a larger object (if applicable)
+     *                      "object" is the default value
+     *
+     * @return              a ListExpression of obj
+     */
+    private static ListExpression convertBasicType(Object obj, String fieldName) {
 
         List<ASExpression> expList = new ArrayList<>();
 
@@ -307,6 +369,16 @@ public class ASEParser {
         return new ListExpression(expList);
     }
 
+    /**
+     * Converts a ListExpression for a basic type (Long/Integer/Float/Byte/Double/etc.) into a class instance
+     *
+     * @param exp       the expression to convert into an object of class c
+     * @param c         the class into which the expression will be converted
+     * @param <T>       the type
+     * @return          an instance of type T.
+     *
+     * @throws ConversionException if a constructor can't be found that takes a String argument
+     */
     private static <T> T convertBasicType(ListExpression exp, Class<T> c) throws ConversionException{
         try {
             return c.getConstructor(String.class).newInstance(exp.get(2).toString());
