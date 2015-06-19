@@ -38,7 +38,7 @@ public class EncryptedRaceSelection<T extends AHomomorphicCiphertext> extends AR
 
         /* Fill in all the entries with identities of type S */
         for(Map.Entry<String, S> entry : v.selectionsMap.entrySet())
-                identityMap.put(entry.getKey(), (S) CiphertextFactory.identity(entry.getValue().getClass(), PEK));
+            identityMap.put(entry.getKey(), CiphertextFactory.identity(entry.getValue().getClass(), PEK));
 
         /* Create new identity with size 0 (i.e. no votes cast) */
         return new EncryptedRaceSelection<>(identityMap, v.getTitle(), 0);
