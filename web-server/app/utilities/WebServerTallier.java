@@ -3,6 +3,7 @@ package utilities;
 import auditorium.Bugout;
 import crypto.*;
 import crypto.adder.*;
+import sexpression.ASEParser;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.StringExpression;
@@ -27,7 +28,7 @@ public class WebServerTallier {
      * @param PEK           the public key used for vote proofs
      * @return              a Ballot containing the encrypted sums for each race
      */
-    public static <T extends AHomomorphicCiphertext> Ballot<EncryptedRaceSelection<T>> tally(
+    public static <T extends AHomomorphicCiphertext<T>> Ballot<EncryptedRaceSelection<T>> tally(
             String ID, List<Ballot<EncryptedRaceSelection<T>>> toSum, IPublicKey PEK){
 
         int size = 0;
@@ -102,7 +103,7 @@ public class WebServerTallier {
             System.out.println("In WebserverTallier.tally() -- Verifying this summed race ");
             if(summedRS.verify(0, thisRace.getRaceSelections().size(), PEK)) {
                 raceSelections.add(summedRS);
-                raceSelectionsASE.add(summedRS.toASE());
+                raceSelectionsASE.add(ASEParser.convert(summedRS));
                 System.out.println("This race was successfully added to the Ballot!");
             }
             else System.err.println("There was a bad summed race that was not added to the ballot!");
