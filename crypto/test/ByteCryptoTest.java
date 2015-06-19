@@ -3,7 +3,6 @@ package crypto.test;
 import crypto.AHomomorphicCiphertext;
 import crypto.ByteCrypto;
 import crypto.DHExponentialElGamalCryptoType;
-import crypto.AHomomorphicCiphertext;
 import crypto.ICryptoType;
 import crypto.exceptions.BadKeyException;
 import junit.framework.TestCase;
@@ -17,7 +16,7 @@ import java.nio.ByteBuffer;
 public class ByteCryptoTest extends TestCase {
 
     protected void setUp() throws Exception {
-
+        super.setUp();
     }
 
     public void testConstruction() {
