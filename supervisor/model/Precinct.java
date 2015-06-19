@@ -1,6 +1,7 @@
 package supervisor.model;
 
 import auditorium.Bugout;
+import crypto.AHomomorphicCiphertext;
 import crypto.EncryptedRaceSelection;
 import crypto.IPublicKey;
 import crypto.adder.Race;
@@ -21,7 +22,7 @@ import java.util.stream.Collectors;
  *
  * Created by Matthew Kindy II on 6/20/14.
  */
-public class Precinct implements Serializable {
+public class Precinct<T extends AHomomorphicCiphertext> implements Serializable {
 
     /* TODO may need to check to see if precinct should be typed for webserver tallying purposes */
     /** File path to the ballot style. */
@@ -31,16 +32,16 @@ public class Precinct implements Serializable {
     private final String precinctID;
 
     /** Map of all the bids to the corresponding ballot. */
-    private Map<String,Ballot<EncryptedRaceSelection>> allBallots;
+    private Map<String,Ballot<EncryptedRaceSelection<T>>> allBallots;
 
     /** Map of bids to ballots that have been committed but not cast or challenged.*/
-    private Map<String, Ballot<EncryptedRaceSelection>> committed;
+    private Map<String, Ballot<EncryptedRaceSelection<T>>> committed;
 
     /** List of ballots that have been cast, not committed or challenged.*/
-    private List<Ballot<EncryptedRaceSelection>> cast;
+    private List<Ballot<EncryptedRaceSelection<T>>> cast;
 
     /** List of ballots that have been challenged but not cast or committed.*/
-    private List<Ballot<EncryptedRaceSelection>> challenged;
+    private List<Ballot<EncryptedRaceSelection<T>>> challenged;
 
     /**
      * @param precinctID    Three digit precinct code
@@ -84,10 +85,10 @@ public class Precinct implements Serializable {
      * @param bid       Ballot Identification Number
      * @return          the ballot that was challenged
      */
-    public Ballot<EncryptedRaceSelection> challengeBallot(String bid){
+    public Ballot<EncryptedRaceSelection<T>> challengeBallot(String bid){
 
         /* Remove the Ballot from committed */
-        Ballot<EncryptedRaceSelection> toChallenge = committed.remove(bid);
+        Ballot<EncryptedRaceSelection<T>> toChallenge = committed.remove(bid);
 
         /* Add the Ballot to challenged */
         if(toChallenge != null) challenged.add(toChallenge);
@@ -102,7 +103,7 @@ public class Precinct implements Serializable {
      * @param bid       Ballot Identification Number
      * @param ballot    Ballot as an ASExpression
      */
-    public void commitBallot(String bid, Ballot<EncryptedRaceSelection> ballot){
+    public void commitBallot(String bid, Ballot<EncryptedRaceSelection<T>> ballot){
 
         committed.put(bid, ballot);
 
@@ -114,10 +115,10 @@ public class Precinct implements Serializable {
      * @return          true if the BID was a committed ballot and was successfully
      *                  cast, false otherwise
      */
-    public Ballot<EncryptedRaceSelection> castBallot(String bid){
+    public Ballot<EncryptedRaceSelection<T>> castBallot(String bid){
 
         /* Remove the Ballot from committed */
-        Ballot<EncryptedRaceSelection> toCast = committed.remove(bid);
+        Ballot<EncryptedRaceSelection<T>> toCast = committed.remove(bid);
 
         System.out.println(toCast);
 
@@ -147,17 +148,17 @@ public class Precinct implements Serializable {
         int size=0;
 
         /* The results of the election are stored by race ID in this map */
-        Map<String, Race> results = new HashMap<>();
+        Map<String, Race<T>> results = new HashMap<>();
 
         /* For each ballot, get each vote and build a results mapping between race ids and elections */
-        for (Ballot<EncryptedRaceSelection> bal : cast) {
+        for (Ballot<EncryptedRaceSelection<T>> bal : cast) {
 
             try {
 
-                List<EncryptedRaceSelection> raceSelections = bal.getRaceSelections();
+                List<EncryptedRaceSelection<T>> raceSelections = bal.getRaceSelections();
 
                 /* Cycle through each of the races */
-                for(EncryptedRaceSelection ers: raceSelections){
+                for(EncryptedRaceSelection<T> ers: raceSelections){
 
                     /* Get all the candidate choices */
                     String raceID = ers.getTitle();
@@ -169,11 +170,11 @@ public class Precinct implements Serializable {
                     }
 
                     /* Code these results as a subelection so the ciphers can be summed homomorphically */
-                    Race race = results.get(raceID);
+                    Race<T> race = results.get(raceID);
 
                     /* If we haven't seen this specific race before, initialize it */
                     if (race == null)
-                        race = new Race(PEK, new ArrayList<String>(ers.getRaceSelectionsMap().keySet()));
+                        race = new Race<>(PEK, new ArrayList<>(ers.getRaceSelectionsMap().keySet()));
 
                     /* This will ready race to homomorphically tally the vote */
                     race.castRaceSelection(ers);
@@ -231,9 +232,9 @@ public class Precinct implements Serializable {
      * @return          the list of challenged Ballots as a ListExpression of
      *                  ListExpressions
      */
-    public List<Ballot<EncryptedRaceSelection>> getChallengedBallots(){
+    public List<Ballot<EncryptedRaceSelection<T>>> getChallengedBallots(){
 
-        List<Ballot<EncryptedRaceSelection>> ballotList = new ArrayList<>();
+        List<Ballot<EncryptedRaceSelection<T>>> ballotList = new ArrayList<>();
 
         /* Add each challenged ballot to the List */
         ballotList.addAll(challenged.stream().collect(Collectors.toList()));
@@ -250,7 +251,7 @@ public class Precinct implements Serializable {
         return ballotFile;
     }
 
-    public Ballot<EncryptedRaceSelection> getChallengedBallot(String bid) {
+    public Ballot<EncryptedRaceSelection<T>> getChallengedBallot(String bid) {
 
         if(allBallots.containsKey(bid) && challenged.contains(allBallots.get(bid)))
             return allBallots.get(bid);
