@@ -1,6 +1,7 @@
 package crypto;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -8,7 +9,7 @@ import java.util.Set;
  * An encrypted representation of the selection made for a given race.
  * Created by Matthew Kindy II on 11/19/2014.
  */
-public class EncryptedRaceSelection<T extends AHomomorphicCiphertext> extends ARaceSelection implements Provable {
+public class EncryptedRaceSelection<T extends AHomomorphicCiphertext<T>> extends ARaceSelection implements Provable {
 
     private Map<String, T> selectionsMap;
 
@@ -31,14 +32,15 @@ public class EncryptedRaceSelection<T extends AHomomorphicCiphertext> extends AR
      *
      * @return      a multiplicative identity based on this encrypted race selection
      */
-    public static <S extends AHomomorphicCiphertext> EncryptedRaceSelection<S> identity(EncryptedRaceSelection<S> v, IPublicKey PEK) {
+    @SuppressWarnings("unchecked")
+    public static <S extends AHomomorphicCiphertext<S>> EncryptedRaceSelection<S> identity(EncryptedRaceSelection<S> v, IPublicKey PEK) {
 
         /* This will hold the map of identity ciphertexts to put into the identity vote */
         Map<String, S> identityMap = new HashMap<>();
 
         /* Fill in all the entries with identities of type S */
         for(Map.Entry<String, S> entry : v.selectionsMap.entrySet())
-            identityMap.put(entry.getKey(), CiphertextFactory.identity(entry.getValue().getClass(), PEK));
+            identityMap.put(entry.getKey(), CiphertextFactory.identity((Class<S>)entry.getValue().getClass(), PEK));
 
         /* Create new identity with size 0 (i.e. no votes cast) */
         return new EncryptedRaceSelection<>(identityMap, v.getTitle(), 0);
@@ -58,6 +60,7 @@ public class EncryptedRaceSelection<T extends AHomomorphicCiphertext> extends AR
      * @param other    the other vote to be combined with this one
      * @return the result of the operation
      */
+    @SuppressWarnings("unchecked")
     public EncryptedRaceSelection<T> operate(EncryptedRaceSelection<T> other, IPublicKey PEK) {
 
         Map<String, T> resultMap = new HashMap<>();
@@ -71,6 +74,7 @@ public class EncryptedRaceSelection<T extends AHomomorphicCiphertext> extends AR
 
                 T thisCiphertext = this.selectionsMap.get(title);
                 T otherCiphertext = other.selectionsMap.get(title);
+
 
                 resultMap.put(title, (T) thisCiphertext.operate(otherCiphertext, PEK));
             }
@@ -93,6 +97,7 @@ public class EncryptedRaceSelection<T extends AHomomorphicCiphertext> extends AR
      *
      * @return  true if the number of 'for' votes (including abstentions) is within a range, false otherwise
      */
+    @SuppressWarnings("unchecked")
     private boolean verifySum(Map<String, T> selectionsMap, int value, IPublicKey PEK) {
 
         /* Should each Ciphertext have proofs inside or just have all their proofs inside VoteProof (or both)? */
@@ -102,13 +107,14 @@ public class EncryptedRaceSelection<T extends AHomomorphicCiphertext> extends AR
         Set<Map.Entry<String,T>> eSet = selectionsMap.entrySet();
 
         /* Pull out an arbitrary ciphertext to get an instance of T */
-        T arbitraryCiphertext = (T)(eSet.toArray(new Map.Entry[eSet.size()])[0].getValue());
+        Iterator<Map.Entry<String,T>> iter = eSet.iterator();
+        T arbitraryCiphertext = iter.next().getValue();
 
         /* Create an identity for T */
-        T summed = (T)(CiphertextFactory.identity(arbitraryCiphertext.getClass(),PEK));
+        T summed = CiphertextFactory.identity((Class<T>)arbitraryCiphertext.getClass(),PEK);
 
-        for(Map.Entry<String, T> entry : selectionsMap.entrySet()) {
-            summed = (T)(summed.operate(entry.getValue(), PEK));
+        for(Map.Entry<String, T> entry : eSet) {
+            summed = summed.operate(entry.getValue(), PEK);
         }
 
         return summed.verify(value, value, PEK);

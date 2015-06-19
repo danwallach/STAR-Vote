@@ -9,7 +9,7 @@ import java.io.Serializable;
  *
  * @author Matt Bernhard
  */
-public abstract class AHomomorphicCiphertext<T extends AHomomorphicCiphertext> implements Provable, Serializable {
+public abstract class AHomomorphicCiphertext<T extends AHomomorphicCiphertext<T>> implements Provable, Serializable {
 
     protected int size;
 
