@@ -29,8 +29,9 @@ public class AdderKeyManipulator {
     private static AdderPublicKeyShare seedKey;
 
     /**
+     * Sets the initial rnandomness key for this procedure.
      *
-     * @param seed
+     * @param seed      the AdderPublicKeyShare containing the initial randomness to be used in authority key generation
      */
     public static void setSeedKey(AdderPublicKeyShare seed){
         if (seedKey != null)
@@ -39,9 +40,11 @@ public class AdderKeyManipulator {
     }
 
     /**
+     * Generates the public and private key shares for this authority and stores the public key share.
      *
-     * @param authNum
-     * @return
+     * @param authNum   the number identifier for the authority to participate in this step
+     * @return          the AdderPrivateKeyShare for this authority
+     *
      * @throws KeyGenerationException
      */
     public static AdderPrivateKeyShare generateAuthorityKeySharePair(int authNum) throws KeyGenerationException {
@@ -67,6 +70,13 @@ public class AdderKeyManipulator {
         } else throw new KeyGenerationException("An authority attempted to generate a keyPair but no seed key has been loaded.");
     }
 
+    /**
+     * Generates the polynomial values for each authority.
+     *
+     * @param authNum   the number identifier for the authority to participate in this step
+     *
+     * @throws InvalidPolynomialException
+     */
     public static void generateAuthorityPolynomialValues(int authNum) throws InvalidPolynomialException {
 
         if (stage1participants.size() >= safetyThreshold) {
@@ -79,17 +89,17 @@ public class AdderKeyManipulator {
 
                     for (Integer auth : stage1participants) {
 
-                    /* Add in P_authNum(auth) */
+                        /* Add in P_authNum(auth) */
                         valueList.add(keyShares.get(auth).encryptPoly(authPoly.evaluate(new AdderInteger(auth, seedKey.getQ()))));
                     }
 
-                /* Put this into the encrypted polynomial values map */
+                    /* Put this into the encrypted polynomial values map */
                     polyMap.put(authNum, valueList);
 
                     AdderInteger g = seedKey.getG();
                     AdderInteger q = seedKey.getQ();
 
-                /* Calculate G_{i,l} for l=0 (0 is all used in algorithm, but in paper, l=0...decryptionThreshold-1) */
+                    /* Calculate G_{i,l} for l=0 (0 is all used in algorithm, but in paper, l=0...decryptionThreshold-1) */
                     AdderInteger bigG = g.pow(authPoly.evaluate(new AdderInteger(AdderInteger.ZERO, q)));
                     GMap.put(authNum, bigG);
 
@@ -103,11 +113,12 @@ public class AdderKeyManipulator {
 
 
     /**
-     * Computes the real private key for each authority. The original AdderPrivateKeyShare
+     * Computes the real private key share for each authority. The original AdderPrivateKeyShare
      * was sourced from a random initial AdderPublicKeyShare.
      *
-     * @param authNum
-     * @param authKeyShare
+     * @param authNum       the number identifier for the authority to participate in this step
+     * @param authKeyShare  the AdderPrivateKeyShare associated with this authority
+     *
      * @return the final private key
      */
     public static AdderPrivateKeyShare generateRealPrivateKeyShare(int authNum, AdderPrivateKeyShare authKeyShare) {
@@ -153,8 +164,9 @@ public class AdderKeyManipulator {
     }
 
     /**
+     * Create the public encryption key used during all phases in the election.
      *
-     * @return
+     * @return  the AdderPublicKey to be used in all phases of an election
      */
     public static AdderPublicKey generatePublicEncryptionKey(){
 
