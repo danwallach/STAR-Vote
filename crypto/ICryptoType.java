@@ -37,7 +37,7 @@ public interface ICryptoType extends Serializable {
      * @throws CipherException
      * @throws crypto.exceptions.KeyNotLoadedException
      */
-    public AHomomorphicCiphertext encrypt(byte[] plainText) throws InvalidKeyException, KeyNotLoadedException, CipherException;
+    public <T extends AHomomorphicCiphertext> T encrypt(byte[] plainText) throws InvalidKeyException, KeyNotLoadedException, CipherException;
 
     /**
      * Given a filePath, extracts the keys from the file

@@ -171,7 +171,8 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
      * @throws InvalidKeyException
      * @throws KeyNotLoadedException
      */
-    public AHomomorphicCiphertext encrypt(byte[] plainText) throws CipherException, InvalidKeyException, KeyNotLoadedException {
+    @SuppressWarnings("unchecked")
+    public ExponentialElGamalCiphertext encrypt(byte[] plainText) throws CipherException, InvalidKeyException, KeyNotLoadedException {
 
         if(PEK == null)
             throw new KeyNotLoadedException("The public key has not yet been loaded! [Encryption]");

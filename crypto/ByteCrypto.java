@@ -51,7 +51,7 @@ public class ByteCrypto {
      * @throws InvalidKeyException
      * @throws CipherException
      */
-    public AHomomorphicCiphertext encrypt(byte[] plainText) throws KeyNotLoadedException, InvalidKeyException, CipherException {
+    public <T extends AHomomorphicCiphertext<T>> T encrypt(byte[] plainText) throws KeyNotLoadedException, InvalidKeyException, CipherException {
 
         return cryptoType.encrypt(plainText);
     }

@@ -71,11 +71,11 @@ public class RaceSelectionCrypto {
      * @throws CipherException
      * @throws CiphertextException
      */
-    public EncryptedRaceSelection encrypt(PlaintextRaceSelection raceSelection) throws UninitialisedException, KeyNotLoadedException, InvalidKeyException, CipherException, CiphertextException {
+    public <T extends AHomomorphicCiphertext<T>> EncryptedRaceSelection encrypt(PlaintextRaceSelection raceSelection) throws UninitialisedException, KeyNotLoadedException, InvalidKeyException, CipherException, CiphertextException {
 
         /* Get the map from the PlaintextVote */
         Map<String, Integer> raceSelectionsMap = raceSelection.getRaceSelectionsMap();
-        Map<String, AHomomorphicCiphertext> cipherMap = new HashMap<>();
+        Map<String, T> cipherMap = new HashMap<>();
 
         /* Cycle over each of the candidates in the raceSelectionMap */
         for(Map.Entry<String, Integer> cur : raceSelectionsMap.entrySet()) {
@@ -84,7 +84,7 @@ public class RaceSelectionCrypto {
             String candidate = cur.getKey();
 
             /* Encrypt each choice and put into a ciphertext */
-            AHomomorphicCiphertext encryptedChoice = byteCrypter.encrypt(ByteBuffer.allocate(4).putInt(choice).array());
+            T encryptedChoice = byteCrypter.encrypt(ByteBuffer.allocate(4).putInt(choice).array());
 
             /* Put the ciphertexts into a map */
             cipherMap.put(candidate, encryptedChoice);
