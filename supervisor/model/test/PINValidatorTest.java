@@ -107,8 +107,7 @@ public class PINValidatorTest extends TestCase {
 
         }
 
-        for(String pin : pins)
-            pv.usePIN(pin);
+        pins.forEach(pv::usePIN);
 
         for(String pin : pins)
             assertFalse("PIN " + pin + " should no longer be valid!", pv.validatePIN(pin));
