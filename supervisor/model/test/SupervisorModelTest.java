@@ -11,7 +11,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
         PINValidatorTest.class,
         PrecinctTest.class,
-        BallotTest.class
+        HashChainTest.class
 })
 
 public class SupervisorModelTest {
