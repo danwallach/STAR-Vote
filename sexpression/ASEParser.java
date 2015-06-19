@@ -49,7 +49,7 @@ public class ASEParser {
 
         try {
             if (newObj instanceof Collection)
-                return convertCollection(exp, (Collection<?>) newObj);
+                return (T)convertCollection(exp, (Collection) newObj);
 
             if (newObj instanceof Map) {
                 //System.out.println("IT'S A MAP!");
@@ -249,13 +249,12 @@ public class ASEParser {
      *
      * @param exp           the expression to convert into an object of class c
      * @param col           the collection created by Objenesis to be filled
-     * @param <T>           the type of the collection
      *
      * @return              a class instance of type T formed from the ListExpression
      *
      * @throws ConversionException if a bad cast occurs
      */
-    private static <T extends Collection<K>, K> T convertCollection(ListExpression exp, Collection<K> col) throws ConversionException {
+    private static Collection convertCollection(ListExpression exp, Collection col) throws ConversionException {
 
         try {
 
@@ -268,14 +267,11 @@ public class ASEParser {
                 if (cur instanceof ListExpression) {
 
                     /* There ought to be no primitives here since they were autoboxed */
-                    K value = ASEParser.convert((ListExpression)cur);
-
-                    /* Add this object to the collection */
-                    col.add(value);
+                    col.add(ASEParser.convert((ListExpression)cur));
                 }
             }
 
-            return (T)col;
+            return col;
 
         }
         catch (Exception e) { throw new ConversionException("Error during reconstruction of collection: " + e.getMessage()); }
@@ -320,7 +316,7 @@ public class ASEParser {
      *
      * @throws ConversionException  if there is a casting exception thrown in the method
      */
-    private static <T extends Map, K, V> T convertMap (ListExpression exp, Map<K,V> m) throws ConversionException {
+    private static <T extends Map<K,V>, K, V> T convertMap (ListExpression exp, Map<K,V> m) throws ConversionException {
 
         try {
 

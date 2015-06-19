@@ -11,7 +11,7 @@ import java.util.List;
  * Represents a collection of RaceSelections for a single 'race', where
  * a 'race' is a single contest between multiple candidates in an election.
  */
-public class Race<T extends AHomomorphicCiphertext> {
+public class Race<T extends AHomomorphicCiphertext<T>> {
 
     /** The public key used to tally */
     private IPublicKey PEK;

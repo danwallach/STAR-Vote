@@ -22,9 +22,8 @@ import java.util.stream.Collectors;
  *
  * Created by Matthew Kindy II on 6/20/14.
  */
-public class Precinct<T extends AHomomorphicCiphertext> implements Serializable {
+public class Precinct<T extends AHomomorphicCiphertext<T>> implements Serializable {
 
-    /* TODO may need to check to see if precinct should be typed for webserver tallying purposes */
     /** File path to the ballot style. */
     private String ballotFile;
 

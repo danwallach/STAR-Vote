@@ -1,8 +1,9 @@
 package crypto.test;
 
+import crypto.AHomomorphicCiphertext;
 import crypto.ByteCrypto;
 import crypto.DHExponentialElGamalCryptoType;
-import crypto.ICiphertext;
+import crypto.AHomomorphicCiphertext;
 import crypto.ICryptoType;
 import crypto.exceptions.BadKeyException;
 import junit.framework.TestCase;
@@ -46,11 +47,11 @@ public class ByteCryptoTest extends TestCase {
 
         try {
 
-            ICiphertext ciphertext0 = ct.encrypt("0".getBytes());
+            AHomomorphicCiphertext ciphertext0 = ct.encrypt("0".getBytes());
 
             Integer oneInt = new Integer(1);
             byte[] oneIntBytes = ByteBuffer.allocate(4).putInt(oneInt).array();
-            ICiphertext ciphertext1 = ct.encrypt(oneIntBytes);
+            AHomomorphicCiphertext ciphertext1 = ct.encrypt(oneIntBytes);
 
 
             /* Decrypt each one */
@@ -84,8 +85,8 @@ public class ByteCryptoTest extends TestCase {
 
         try {
 
-            ICiphertext ciphertext0 = bc.encrypt("0".getBytes());
-            ICiphertext ciphertext1 = bc.encrypt(oneIntBytes);
+            AHomomorphicCiphertext ciphertext0 = bc.encrypt("0".getBytes());
+            AHomomorphicCiphertext ciphertext1 = bc.encrypt(oneIntBytes);
 
             /* Decrypt and test each one */
             assertEquals("0".getBytes(), ct.decrypt(ciphertext0));
