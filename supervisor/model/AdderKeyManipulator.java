@@ -168,7 +168,7 @@ public class AdderKeyManipulator {
      *
      * @return  the AdderPublicKey to be used in all phases of an election
      */
-    public static AdderPublicKey generatePublicEncryptionKey(){
+    public static AdderPublicKey generatePublicEncryptionKey() throws KeyGenerationException {
 
         if (stage3participants.size() >= safetyThreshold) {
 
@@ -180,7 +180,7 @@ public class AdderKeyManipulator {
 
             return new AdderPublicKey(seedKey.getP(),seedKey.getG(),finalH,seedKey.getF());
 
-        } else throw new InvalidPublicKeyException("Public key creation stage cannot be initiated due to safety threshold.");
+        } else throw new KeyGenerationException("Public key creation stage cannot be initiated due to safety threshold.");
     }
 
 }

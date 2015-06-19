@@ -11,7 +11,7 @@ import java.security.*;
  */
 public class KeyGenerator {
 
-    enum Type {
+    public enum Type {
         ELGAMAL,
         ECC
     }
@@ -22,13 +22,12 @@ public class KeyGenerator {
         this.type = type;
     }
 
-    public void generatePublicKey(String directory) throws KeyGenerationException {
+    public KeyPair generateKeyPair(String directory) throws KeyGenerationException {
 
 
         switch (type) {
             case ELGAMAL:
-                generateElGamalKey(directory);
-                break;
+                return generateElGamalKeyPair(directory);
 
             default:
                 throw new KeyGenerationException("Couldn't find the correct cryptographic protocol!");
@@ -37,7 +36,7 @@ public class KeyGenerator {
     }
 
 
-    private void generateElGamalKey(String directory){
+    private KeyPair generateElGamalKeyPair(String directory) throws KeyGenerationException {
 
         try {
             ObjectOutputStream publicOut = new ObjectOutputStream(new FileOutputStream(directory + File.separator+ "ElGamalPublic.key"));
@@ -60,8 +59,11 @@ public class KeyGenerator {
             publicOut.close();
             privateOut.close();
 
+            return pair;
+
         } catch (NoSuchAlgorithmException | NoSuchProviderException | IOException e) {
             e.printStackTrace();
+            throw new KeyGenerationException("Error during key generation.");
         }
 
     }
