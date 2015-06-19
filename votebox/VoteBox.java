@@ -470,7 +470,7 @@ public class VoteBox{
 
                     /* Find the race to which the choice belongs */
                     for(List<String> race : raceGroups)
-                        if(race.contains(choice.get(0)))
+                        if(race.contains(choice.get(0).toString()))
                             raceId = ASExpression.make(race.get(0));
 
                     if(raceId == null)
@@ -655,7 +655,6 @@ public class VoteBox{
                     try { cryptoType.loadPublicKey(_constants.getKeyStore().loadPEK()); }
                     catch (AuditoriumCryptoException ex) { throw new RuntimeException("Error loading the PEK from the KeyStore."); }
 
-                    /* TODO : when do we set up the BallotCrypto?? */
                     BallotCrypto.setCryptoType(cryptoType);
 
                     try {
@@ -680,7 +679,7 @@ public class VoteBox{
                         /* Broadcast current status */
                         broadcastStatus();
 
-                    } catch (IOException e1) { throw new RuntimeException(e1); } /* TODO runtime exception */
+                    } catch (IOException e1) { throw new RuntimeException(e1); }
 
                 }
             }
@@ -699,7 +698,7 @@ public class VoteBox{
 
                     if (e.getTargetSerial() == mySerial && Arrays.equals(e.getNonce().toVerbatim(), nonce.toVerbatim())) {
 
-                        if (!committedBallot) /* TODO runtime exception */
+                        if (!committedBallot)
                             throw new RuntimeException("Someone said the ballot was received, but this machine hasn't committed it yet. Maybe the supervisor is not configured properly?");
 
                         if (isProvisional) {
@@ -790,7 +789,6 @@ public class VoteBox{
                                 pageBeforeOverride = page;
                                 override = true;
                             }
-                                 /* TODO runtime exception */
                         } else { throw new RuntimeException("Received an override-cancel message when the user wasn't voting"); }
 
                     } catch (IncorrectTypeException e1) { Bugout.err("Incorrect type in overrideCancel handler"); }
@@ -823,7 +821,6 @@ public class VoteBox{
                                 pageBeforeOverride = page;
                                 override = true;
                             }
-                                  /* TODO runtime exception */
                         }  else { throw new RuntimeException("Received an override-cast message when the user wasn't voting"); }
 
                     } catch (IncorrectTypeException e1) {
@@ -856,7 +853,7 @@ public class VoteBox{
                 if (e.getSerial() != mySerial) {
 
                     ASExpression res = null;
-                    /* TODO wtf */
+                    /* TODO need to know what this is for */
                     if (res != null && res != NoMatch.SINGLETON) {
 
                         VoteBoxEventMatcher matcher = new VoteBoxEventMatcher(PollsOpenEvent.getMatcher());
@@ -976,7 +973,7 @@ public class VoteBox{
         try {
             auditorium.connect();
             auditorium.announce(getStatus());
-        } /* TODO runtime exception */
+        }
         catch (NetworkException e1) { throw new RuntimeException(e1); }
 
         statusTimer.start();
