@@ -464,7 +464,7 @@ public class VoteBox{
                 ListExpression choice = (ListExpression) x;
 
                 /* If this is who the vote selected in this race, make a short code */
-                if(AdderInteger.fromASE(choice.get(1)) == AdderInteger.ONE){
+                if(ASEParser.convert((ListExpression)choice.get(1)) == AdderInteger.ONE){
 
                     ASExpression raceId = null;
 

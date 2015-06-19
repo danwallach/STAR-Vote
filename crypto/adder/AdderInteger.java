@@ -562,41 +562,6 @@ public class AdderInteger implements Comparable, Serializable {
     public String toString(int base) {
         return val.toString(base);
     }
- 
-    /**
-     * Method for interop with VoteBox's S-Expression system.
-     * 
-     * @return          the S-Expression equivalent of this AdderInteger
-     */
-    public ASExpression toASE(){
-    	return new ListExpression(StringExpression.makeString("adder-integer"), StringExpression.makeString(""+getValue()), StringExpression.makeString(""+getModulus()));
-    }
-    
-    /**
-     * Method for interop with VoteBox's S-Expression system.
-     * 
-     * @return          the S-Expression equivalent of this AdderInteger
-     */
-    public static AdderInteger fromASE(ASExpression ase){
-
-    	ListExpression list = (ListExpression)ase;
-
-        /* Check to make sure that the list expression is a well-formed AdderInteger ListExpression */
-    	if(list.size() != 3)
-    		throw new RuntimeException("Not an adder-integer");
-    	
-    	if(!list.get(0).toString().equals("adder-integer"))
-    		throw new RuntimeException("Not an adder-integer");
 
 
-        /* Pull out the value and modulus */
-    	BigInteger v = new BigInteger(list.get(1).toString());
-    	BigInteger m = new BigInteger(list.get(2).toString());
-
-        /* Check if the modulus is zero -- if so, return and construct with the value, otherwise specify the modulus */
-    	if(!m.equals(BigInteger.ZERO))
-    		return new AdderInteger(v, m);
-    	
-    	return new AdderInteger(v);
-    }
 }

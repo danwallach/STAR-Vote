@@ -235,45 +235,7 @@ public class AdderPublicKey extends AdderKey implements IPublicKey, Serializable
 
         return sb.toString();
     }
-    
-    /**
-     * Method for interop with VoteBox's S-Expression system.
-     * 
-     * @return the S-Expression equivalent of this PublicKey
-     */
-    public ASExpression toASE(){
-    	AdderInteger ourH = h;
-    	
-    	if(ourH == null) ourH = AdderInteger.ZERO;
-    	
-    	return new ListExpression(
-    			StringExpression.makeString("public-key"),
-    			p.toASE(),
-    			g.toASE(),
-    			ourH.toASE(),
-    			f.toASE());
-    }
-    
-    /**
-     * Method for interop with VoteBox's S-Expression system.
-     * 
-     * @param ase - S-Expression representation of a PublicKey
-     * @return the PublicKey equivalent of ase
-     */
-    public static AdderPublicKey fromASE(ASExpression ase){
-    	ListExpression exp = (ListExpression)ase;
-    	if(!(exp.get(0).toString()).equals("public-key"))
-    		throw new RuntimeException("Not public-key");
-    	
-    	AdderInteger p = AdderInteger.fromASE(exp.get(1));
-    	AdderInteger g = AdderInteger.fromASE(exp.get(2));
-    	AdderInteger h = AdderInteger.fromASE(exp.get(3));
-    	AdderInteger f = AdderInteger.fromASE(exp.get(4));
-    	
-    	AdderInteger q = p.subtract(AdderInteger.ONE).divide(AdderInteger.TWO);
-    	
-    	return new AdderPublicKey(p, q, g, h, f);
-    }
+
     
     /**
      * We need to test for equality between two keys in some places, just for sanities sake.

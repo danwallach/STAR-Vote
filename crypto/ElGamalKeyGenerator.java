@@ -24,6 +24,7 @@ package crypto;
 
 import java.io.*;
 
+import sexpression.ASEParser;
 import sexpression.ASExpression;
 
 import auditorium.Key;
@@ -82,8 +83,8 @@ public class ElGamalKeyGenerator {
 			Key privateKey = keys.get2();
 
             /* Here we parse the keys into an s-expression */
-			ASExpression pub = publicKey.toASE();
-			ASExpression priv = privateKey.toASE();
+			ASExpression pub = ASEParser.convert(publicKey);
+			ASExpression priv = ASEParser.convert(privateKey);
 
             /* The generated pair of public and private keys are stored in the <index>public.key and <index>private.key respectively. */
 			File pubFile = new File(dir, i+"public.key");

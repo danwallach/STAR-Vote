@@ -25,10 +25,6 @@ public class PlaintextVote extends AVote {
         return super.getTitle();
     }
 
-    public ASExpression toASE(){
-        return new ListExpression("");
-    }
-
     public String toString() {
         return "Title: [" + getTitle() + "]\n" + "VoteMap: [" + voteMap.toString() + "]";
     }

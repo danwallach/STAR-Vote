@@ -144,7 +144,7 @@ public class SimpleKeyStore implements IKeyStore {
                 byteArrayOutputStream.write(i);
             }
 
-            return AdderPublicKeyShare.fromASE(ASExpression.makeVerbatim(byteArrayOutputStream.toByteArray()));
+            return ASEParser.convert((ListExpression)ASExpression.makeVerbatim(byteArrayOutputStream.toByteArray()));
 
         }catch(Exception e){
             throw new RuntimeException(e);
@@ -168,7 +168,7 @@ public class SimpleKeyStore implements IKeyStore {
                 byteArrayOutputStream.write(i);
             }
 
-            return AdderPrivateKeyShare.fromASE(ASExpression.makeVerbatim(byteArrayOutputStream.toByteArray()));
+            return ASEParser.convert((ListExpression)ASExpression.makeVerbatim(byteArrayOutputStream.toByteArray()));
 
         }catch(Exception e){
             throw new RuntimeException(e);

@@ -162,39 +162,6 @@ public class AdderPrivateKeyShare extends AdderKey {
 
         return "p" + p.toString() + "g" + g.toString() + "x" + x.toString() + "f" + f.toString();
     }
-    
-    /**
-     * Method for interop with VoteBox's S-Expression system.
-     * 
-     * @return the S-Expression equivalent of this PrivateKey
-     */
-    public ASExpression toASE(){
-    	return new ListExpression(
-    		StringExpression.makeString("private-key"),
-    		p.toASE(),
-    		g.toASE(),
-    		x.toASE(),
-    		f.toASE()
-    	);
-    }
-    
-    /**
-     * Method for interop with VoteBox's S-Expression system.
-     * 
-     * @param ase - S-Expression representation of a PrivateKey
-     * @return the PrivateKey equivalent of ase
-     */
-    public static AdderPrivateKeyShare fromASE(ASExpression ase){
-    	ListExpression exp = (ListExpression)ase;
-    	
-    	if(!(exp.get(0).toString()).equals("private-key"))
-    		throw new RuntimeException("Not private-key");
-    	
-    	AdderInteger p = AdderInteger.fromASE(exp.get(1));
-    	AdderInteger g = AdderInteger.fromASE(exp.get(2));
-    	AdderInteger x = AdderInteger.fromASE(exp.get(3));
-    	AdderInteger f = AdderInteger.fromASE(exp.get(4));
-    	
-    	return new AdderPrivateKeyShare(p, g, x, f);
-    }
+
+
 }
