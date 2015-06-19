@@ -9,8 +9,7 @@ public class KeyValuePair<K,V> {
     V value;
 
     public KeyValuePair(){
-        key = null;
-        value = null;
+        this(null, null);
     }
 
     public KeyValuePair(K key, V value) {
