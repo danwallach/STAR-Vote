@@ -20,19 +20,13 @@ public class Ballot<T extends ARaceSelection> implements Serializable {
     /** The identifier for this ballot */
     private final String bid;
 
-    /** A representation of the ballot (document of voter intent) as an ASExpression
-     *
-     *                |------------ This is a Vote as an ASExpression -------------|
-     * (ballot bid (  ((vote [vote]) (vote-ids ([id1], [id2], ...)) (vote-proof [proof]))
-     *                ((vote [vote]) (vote-ids ([id1], [id2], ...)) (vote-proof [proof]))
-     *                ((vote [vote]) (vote-ids ([id1], [id2], ...)) (vote-proof [proof]))...  ) [nonce] [size])
-     *
-     * */
+    /** A representation of the ballot (document of voter intent) as an ASExpression */
     private final List<T> ballot;
 
     /** The nonce associated with the voting session when this ballot was committed */
     private final String nonce;
 
+    /** The number of accumulated ballots held in this one (after summation) */
     private final int size;
 
     /**
@@ -78,18 +72,6 @@ public class Ballot<T extends ARaceSelection> implements Serializable {
      * @return  the number of ballots tallied into this ballot (default: 1)
      */
     public Integer getSize() { return size; }
-
-    /**
-     * @return a ListExpression representation of the ballot
-     */
-    public ListExpression getRaceSelectionsASE(){
-        ArrayList<ASExpression> votes = new ArrayList<>();
-
-        for(T v : ballot)
-            votes.add(ASEParser.convert(v));
-
-        return new ListExpression(votes);
-    }
 
 
 }
