@@ -25,6 +25,7 @@ package supervisor.model;
 import auditorium.IAuditoriumParams;
 import auditorium.NetworkException;
 import crypto.EncryptedRaceSelection;
+import crypto.ExponentialElGamalCiphertext;
 import sexpression.ASEParser;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
@@ -96,7 +97,7 @@ public class Model {
     private HashMap<String, ASExpression> committedBids;
 
     /** A Map of Precinct IDs to Precincts */
-    private TreeMap<String, Precinct> precincts;
+    private TreeMap<String, Precinct<ExponentialElGamalCiphertext>> precincts;
 
     /** A mapping of committed ballots to the machines that committed them */
     private HashMap<ASExpression, Integer> machinesToCommits;
@@ -307,9 +308,10 @@ public class Model {
             return;
         }
 
-        ((VoteBoxBooth) getMachineForSerial(otherSerial)).setNonce(nonce);
+        VoteBoxBooth b = (VoteBoxBooth) (getMachineForSerial(otherSerial));
+        b.setNonce(nonce);
 
-        assert ((VoteBoxBooth) getMachineForSerial(otherSerial)).getNonce().equals(nonce);
+        assert Arrays.equals(b.getNonce(), nonce);
 
 
 
@@ -668,6 +670,7 @@ public class Model {
                 /* Iterate through all the machines and set the supervisors to inactive if they aren't this one */
                 for (AMachine m : machines) {
                     if (m instanceof SupervisorMachine) {
+
                         /*if (m.getSerial() == e.getSerial())*/
                             m.setStatus(SupervisorMachine.ACTIVE);
                         /*else
@@ -825,7 +828,7 @@ public class Model {
                 auditorium.announce(new StartUploadEvent(mySerial));
 
                 /* Go through all the precincts about which this Supervisor knows */
-                for (Map.Entry<String, Precinct> m : precincts.entrySet()) {
+                for (Map.Entry<String, Precinct<ExponentialElGamalCiphertext>> m : precincts.entrySet()) {
 
                     Precinct p = m.getValue();
 
@@ -1138,7 +1141,7 @@ public class Model {
 //                    booth.setProtectedCount(booth.getProtectedCount() + 1);
 
                     /* Put the committed ballot in the ballot store, in all the proper places */
-                    Precinct thisPrecinct = precincts.get(e.getPrecinct());
+                    Precinct<ExponentialElGamalCiphertext> thisPrecinct = precincts.get(e.getPrecinct());
 
                     try {
 
@@ -1413,7 +1416,7 @@ public class Model {
         try {
 
             /* Pare off the precinct information */
-            String precinctID = fileName.substring(fileName.length()-7,fileName.length()-4);
+            String precinctID = fileName.substring(fileName.length() - 7, fileName.length() - 4);
 
             Precinct precinct = new Precinct(precinctID, ballotFile.getAbsolutePath());
 
@@ -1455,7 +1458,7 @@ public class Model {
     private Precinct getPrecinctWithBID(String bid) {
 
         /* If we have the ballot, return it */
-        for (Map.Entry<String,Precinct> m : precincts.entrySet())
+        for (Map.Entry<String,Precinct<ExponentialElGamalCiphertext>> m : precincts.entrySet())
             if (m.getValue().hasBID(bid)) return m.getValue();
 
         return null;
@@ -1469,7 +1472,7 @@ public class Model {
     private Precinct getPrecinctWithBallot(String ballotFile){
 
         /* If we have the ballotFile, remove it */
-        for (Map.Entry<String,Precinct> m : precincts.entrySet())
+        for (Map.Entry<String,Precinct<ExponentialElGamalCiphertext>> m : precincts.entrySet())
             if (m.getValue().getBallotFile().equals(ballotFile)) return m.getValue();
 
         return null;
