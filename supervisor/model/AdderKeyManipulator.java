@@ -83,7 +83,7 @@ public class AdderKeyManipulator {
             if(stage3participants.isEmpty()) {
                 if (polyMap.get(authNum) != null) {
 
-                /* Create polynomial */
+                    /* Create polynomial */
                     Polynomial authPoly = new Polynomial(seedKey.getP(), seedKey.getG(), seedKey.getF(), keyShares.size() - 1);
                     List<ExponentialElGamalCiphertext> valueList = new ArrayList<>();
 
