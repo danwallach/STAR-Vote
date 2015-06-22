@@ -1,10 +1,11 @@
 package sexpression;
 
-import org.objenesis.Objenesis;
-import org.objenesis.ObjenesisStd;
+
+import org.objenesis.ObjenesisHelper;
 import org.objenesis.instantiator.ObjectInstantiator;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -17,7 +18,6 @@ import java.util.stream.Stream;
  */
 public class ASEParser {
 
-    private static Objenesis o = new ObjenesisStd();
     /**
      * Creates an object of class c from ASExpression exp.
      *
@@ -26,9 +26,9 @@ public class ASEParser {
      * @param <T>       the type
      * @return
      */
-    private static <T> T convert(ListExpression exp, Class<T> c) throws ConversionException {
+    private static <T> T convertFromASE(ListExpression exp, Class<T> c) throws ConversionException {
 
-        ObjectInstantiator<T> tInstantiator = o.getInstantiatorOf(c);
+        ObjectInstantiator<T> tInstantiator = ObjenesisHelper.getInstantiatorOf(c);
 
         /* Convert to a list expression */
         /* Parse through each element of the list expression */
@@ -41,11 +41,13 @@ public class ASEParser {
 
         if (c==null) return null;
 
-        Objenesis o = new ObjenesisStd();
-        T newObj = o.newInstance(c);
+        T newObj = tInstantiator.newInstance();
 
         if (newObj instanceof Number || newObj instanceof String)
             return convertBasicType(exp,c);
+
+        if (newObj instanceof ASExpression)
+            return (T)convertASE(exp);
 
         try {
             if (newObj instanceof Collection)
@@ -71,7 +73,7 @@ public class ASEParser {
                 //System.out.println("This ListExpression: " + cur);
 
                 /* There ought to be no primitives here since they were autoboxed */
-                Object value = ASEParser.convert((ListExpression)cur);
+                Object value = ASEParser.convertFromASE((ListExpression) cur);
 
                 //System.out.println("The value that got converted: " + value);
 
@@ -120,9 +122,9 @@ public class ASEParser {
      *
      * @return          an instance of type T
      */
-    public static <T> T convert(ListExpression exp) {
+    public static <T> T convertFromASE(ListExpression exp) {
 
-        try { return convert(exp, getClass(exp)); }
+        try { return convertFromASE(exp, getClass(exp)); }
         catch (ConversionException e){ e.printStackTrace(); }
 
         return null;
@@ -154,9 +156,9 @@ public class ASEParser {
      *
      * @return          the ListExpression representation of this object
      */
-    public static ListExpression convert(Object obj)  {
+    public static ListExpression convertToASE(Object obj)  {
 
-        try { return ASEParser.convert(obj, "object"); }
+        try { return ASEParser.convertToASE(obj, "object"); }
         catch (ConversionException e) {e.printStackTrace();}
 
         return null;
@@ -171,7 +173,7 @@ public class ASEParser {
      *
      * NOTE: This is currently set to only check for declared fields, up to one inheritance deep
      */
-    private static ListExpression convert(Object obj, String fieldName) throws ConversionException {
+    private static ListExpression convertToASE(Object obj, String fieldName) throws ConversionException {
 
         if (obj instanceof Collection) {
             return convertCollection((Collection) obj, fieldName);
@@ -181,13 +183,18 @@ public class ASEParser {
             return convertMap((Map) obj, fieldName);
         }
 
-        if(obj instanceof Number || obj instanceof String) {
+        if (obj instanceof Number || obj instanceof String) {
             return convertBasicType(obj, fieldName);
+        }
+
+        if (obj instanceof ASExpression) {
+            return convertASE((ASExpression)obj, fieldName);
         }
 
         List<ASExpression> expList = new ArrayList<>();
 
         /* Write the name of the Object */
+        //System.out.println(fieldName);
         expList.add(StringExpression.make(fieldName));
 
         if (obj == null) {
@@ -207,18 +214,41 @@ public class ASEParser {
         /* Get each field object and convert */
         for (Field f : fields) {
 
+            /* Skip if static */
+            if (Modifier.isStatic(f.getModifiers()))
+                continue;
+
             /* Convert this field to an ASE */
             try {
                 f.setAccessible(true);
 
                 /* This ought to autobox any primitives */
-                expList.add(ASEParser.convert(f.get(obj), f.getName()));
+                expList.add(ASEParser.convertToASE(f.get(obj), f.getName()));
             }
             catch (Exception e) { e.printStackTrace(); }
         }
 
         return new ListExpression(expList);
     }
+
+    private static <T extends ASExpression> ListExpression convertASE(T ase, String fieldName){
+
+        List<ASExpression> expList = new ArrayList<>();
+
+        /* Write the name of the Object */
+        expList.add(StringExpression.make(fieldName));
+        expList.add(StringExpression.make(ase.getClass().getName()));
+        expList.add(ase);
+
+        return new ListExpression(expList);
+
+    }
+
+    private static ASExpression convertASE(ListExpression exp){
+
+        return exp.get(2);
+    }
+
 
     /**
      * Converts a Collection into an s-expression
@@ -239,7 +269,7 @@ public class ASEParser {
 
         /* Convert the data in particular */
         for (Object o : col.toArray())
-            expList.add(ASEParser.convert(o));
+            expList.add(ASEParser.convertToASE(o));
 
         return new ListExpression(expList);
     }
@@ -267,7 +297,7 @@ public class ASEParser {
                 if (cur instanceof ListExpression) {
 
                     /* There ought to be no primitives here since they were autoboxed */
-                    col.add(ASEParser.convert((ListExpression)cur));
+                    col.add(ASEParser.convertFromASE((ListExpression) cur));
                 }
             }
 
@@ -299,7 +329,7 @@ public class ASEParser {
         /* Convert the data in particular */
         for (Map.Entry e : entrySet) {
             KeyValuePair kv = new KeyValuePair<>(e.getKey(), e.getValue());
-            expList.add(ASEParser.convert(kv));
+            expList.add(ASEParser.convertToASE(kv));
         }
 
         return new ListExpression(expList);
@@ -331,7 +361,7 @@ public class ASEParser {
                 if (cur instanceof ListExpression) {
 
                     /* There ought to be no primitives here since they were autoboxed */
-                    KeyValuePair<K,V> kv = ASEParser.convert((ListExpression)cur);
+                    KeyValuePair<K,V> kv = ASEParser.convertFromASE((ListExpression) cur);
 
                     /* Add this object to the collection */
                     m.put(kv.getKey(),kv.getValue());

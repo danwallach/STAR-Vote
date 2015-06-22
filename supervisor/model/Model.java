@@ -1147,7 +1147,7 @@ public class Model {
 
                         ASExpression ballot = ASExpression.makeVerbatim(e.getBallot());
 
-                        thisPrecinct.commitBallot(e.getBID(), ASEParser.convert((ListExpression)ballot));
+                        thisPrecinct.commitBallot(e.getBID(), ASEParser.convertFromASE((ListExpression) ballot));
 
                         machinesToCommits.put(ballot, e.getSerial());
 
@@ -1265,8 +1265,8 @@ public class Model {
 
                     if (wasCast)
                         auditorium.announce(
-                                new EncryptedCastBallotWithNIZKsEvent(serial, nonce, ASEParser.convert(b).toVerbatim(),
-                                        bid, machinesToCommits.get(ASEParser.convert(b))));
+                                new EncryptedCastBallotWithNIZKsEvent(serial, nonce, ASEParser.convertToASE(b).toVerbatim(),
+                                        bid, machinesToCommits.get(ASEParser.convertToASE(b))));
                     else throw new RuntimeException("Found the precinct with the bid, but couldn't cast the ballot...");
 
                     /* Now tell the ballot scanner that this ballot was accepted */
@@ -1443,7 +1443,7 @@ public class Model {
             ballot = p.challengeBallot(bid);
 
             /* Announce that a ballot was spoiled */
-            auditorium.announce(new SpoilBallotEvent(mySerial, StringExpression.make(nonce), bid, ASEParser.convert(ballot).toVerbatim()));
+            auditorium.announce(new SpoilBallotEvent(mySerial, StringExpression.make(nonce), bid, ASEParser.convertToASE(ballot).toVerbatim()));
 
             return true;
         }
