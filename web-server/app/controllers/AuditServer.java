@@ -280,6 +280,7 @@ public class AuditServer extends Controller {
     public static Result uploadkey() {
 
         /* Get key from form submission -- s expression? -- and load into adderkeymanipulator */
+        return null;
     }
 
 
