@@ -1,5 +1,6 @@
 package votebox.events;
 
+
 import org.apache.commons.codec.binary.Base64;
 import sexpression.ASExpression;
 import sexpression.ListExpression;

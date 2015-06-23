@@ -1,15 +1,13 @@
 package sexpression.test;
 
-import com.sun.org.apache.xpath.internal.SourceTree;
 import crypto.PlaintextRaceSelection;
 import junit.framework.TestCase;
 import sexpression.ASEParser;
 import sexpression.ASExpression;
-import sexpression.ConversionException;
 import sexpression.ListExpression;
+import sexpression.StringWildcard;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -36,11 +34,18 @@ public class ASEParserTest extends TestCase{
 
     public void testFromASE(){
 
-            int i = 2;
-            ASExpression iExp = ASEParser.convert(i);
-            int j = ASEParser.convert((ListExpression) iExp);
-            System.out.println(i + " " + iExp + " " + j);
-            assertEquals(i, j);
+        int i = 2;
+        ASExpression iExp = ASEParser.convertToASE(i);
+        int j = ASEParser.convertFromASE((ListExpression) iExp);
+        System.out.println(i + " " + iExp + " " + j);
+        assertEquals(i, j);
+
+
+        StringWildcard s = StringWildcard.SINGLETON;
+
+        ListExpression sExp = ASEParser.convertToASE(s);
+        StringWildcard s2 = ASEParser.convertFromASE(sExp);
+        assertEquals(s,s2);
     }
 
     public void testToASE(){
@@ -51,14 +56,14 @@ public class ASEParserTest extends TestCase{
                           "(value java.lang.Integer 0)))";
 
 
-        ListExpression rsExp = ASEParser.convert(rsMap);
+        ListExpression rsExp = ASEParser.convertToASE(rsMap);
 
         assertEquals(expected, rsExp.toString());
 
         System.out.println("Expected: " + expected);
         System.out.println("Returned: " + rsExp);
 
-        Map rs = ASEParser.convert(rsExp);
+        Map rs = ASEParser.convertFromASE(rsExp);
 
         assertEquals(rsMap, rs);
 
@@ -71,7 +76,7 @@ public class ASEParserTest extends TestCase{
                 "(key java.lang.String Clayton) (value java.lang.Integer 0))) (title java.lang.String myRaceSelection) " +
                 "(size java.lang.Integer 1))";
 
-        ListExpression prs = ASEParser.convert(p);
+        ListExpression prs = ASEParser.convertToASE(p);
 
         assertEquals(expected, prs.toString());
 
@@ -87,7 +92,7 @@ public class ASEParserTest extends TestCase{
         rsMap.put(null,0);
         rsMap.put("Dan",null);
 
-        rsExp = ASEParser.convert(rsMap);
+        rsExp = ASEParser.convertToASE(rsMap);
 
         System.out.println("Expected: " + expected);
         System.out.println("Returned: " + rsExp);
@@ -95,7 +100,7 @@ public class ASEParserTest extends TestCase{
         expected = "(object crypto.PlaintextRaceSelection (voteMap NULL) (title java.lang.String myNewRaceSelection) " +
                    "(size java.lang.Integer 1))";
 
-        prs = ASEParser.convert(pNew);
+        prs = ASEParser.convertToASE(pNew);
 
         assertEquals(expected, prs.toString());
 

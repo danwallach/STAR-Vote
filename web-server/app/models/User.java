@@ -1,7 +1,9 @@
 package models;
 
-import javax.persistence.*;
-import play.db.ebean.*;
+import play.db.ebean.Model;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
 @Entity
 public class User extends Model {
@@ -20,10 +22,12 @@ public class User extends Model {
     public static Finder<String,User> find = new Finder<>(
         String.class, User.class
     ); 
-    
+
+    public static void create(User user) { user.save(); }
+
     /* This will authenticate our user */
-     public static User authenticate(String username, String password) {
-        return find.where().eq("username", username)
-            .eq("password", password).findUnique();
+     public static boolean authenticate(String username, String password) {
+        return (find.where().eq("username", username)
+            .eq("password", password).findUnique() != null);
     }
 }

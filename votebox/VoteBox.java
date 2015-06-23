@@ -260,7 +260,7 @@ public class VoteBox{
                     throw new RuntimeException("Incorrectly expected a cast-ballot");
 
                 /* Convert Ballot from ASE to Ballot object TODO check if this is right, should be able to do something similar */
-                supervisor.model.Ballot<PlaintextRaceSelection> ballot = ASEParser.convert((ListExpression) arg[0]);
+                supervisor.model.Ballot<PlaintextRaceSelection> ballot = ASEParser.convertFromASE((ListExpression) arg[0]);
 
                 /* Encrypt Ballot */
                 supervisor.model.Ballot<EncryptedRaceSelection> encBallot;
@@ -272,13 +272,13 @@ public class VoteBox{
                 /* Check if provisional and choose announcement format */
                 if (!isProvisional) {
 
-                    auditorium.announce(new CommitBallotEvent(mySerial, nonce, ASEParser.convert(encBallot).toVerbatim(), bid, precinct));
+                    auditorium.announce(new CommitBallotEvent(mySerial, nonce, ASEParser.convertToASE(encBallot).toVerbatim(), bid, precinct));
 
                 }
 
                 /* Provisional */
                 else {
-                    auditorium.announce(new ProvisionalCommitEvent(mySerial, nonce, ASEParser.convert(encBallot).toVerbatim(), bid));
+                    auditorium.announce(new ProvisionalCommitEvent(mySerial, nonce, ASEParser.convertToASE(encBallot).toVerbatim(), bid));
                 }
 
                 /* Announce ballot printing and print */
@@ -286,7 +286,7 @@ public class VoteBox{
                 auditorium.announce(new BallotPrintingEvent(mySerial, bid, nonce));
                 printer = new Printer(_currentBallotFile, races);
 
-                boolean success = printer.printCommittedBallot((ListExpression)ASEParser.convert(ballot), bid);
+                boolean success = printer.printCommittedBallot((ListExpression)ASEParser.convertToASE(ballot), bid);
                 printer.printedReceipt(bid);
 
                 /* By this time, the voter is done voting */
@@ -379,7 +379,7 @@ public class VoteBox{
                         throw new RuntimeException("Incorrectly expected a cast-ballot");
 
                     /* Convert Ballot from ASE to Ballot object TODO check if this is right, should be able to do something similar */
-                    supervisor.model.Ballot<PlaintextRaceSelection> ballot = ASEParser.convert((ListExpression) arg[0]);
+                    supervisor.model.Ballot<PlaintextRaceSelection> ballot = ASEParser.convertFromASE((ListExpression) arg[0]);
 
                     /* Encrypt Ballot */
                     supervisor.model.Ballot<EncryptedRaceSelection> encBallot;
@@ -390,8 +390,8 @@ public class VoteBox{
                     committedBallot = true;
 
                     /* Announce that we're commiting this ballot as override to auditorium and commit it */
-                    auditorium.announce(new OverrideCommitConfirmEvent(mySerial, nonce, ASEParser.convert(ballot).toVerbatim()));
-                    auditorium.announce(new CommitBallotEvent(mySerial, nonce, ASEParser.convert(encBallot).toVerbatim(), bid, precinct));
+                    auditorium.announce(new OverrideCommitConfirmEvent(mySerial, nonce, ASEParser.convertToASE(ballot).toVerbatim()));
+                    auditorium.announce(new CommitBallotEvent(mySerial, nonce, ASEParser.convertToASE(encBallot).toVerbatim(), bid, precinct));
 
                     /* Broadcast new status */
                     broadcastStatus();
@@ -402,7 +402,7 @@ public class VoteBox{
                     printer = new Printer(_currentBallotFile, races);
 
                     /* Check for success */
-                    boolean success = printer.printCommittedBallot((ListExpression)ASEParser.convert(ballot), bid);
+                    boolean success = printer.printCommittedBallot((ListExpression)ASEParser.convertToASE(ballot), bid);
                     printer.printedReceipt(bid);
 
                     /* By this time, the voter is done voting. Wait before returning to inactive. */
@@ -464,7 +464,7 @@ public class VoteBox{
                 ListExpression choice = (ListExpression) x;
 
                 /* If this is who the vote selected in this race, make a short code */
-                if(ASEParser.convert((ListExpression)choice.get(1)) == AdderInteger.ONE){
+                if(ASEParser.convertFromASE((ListExpression) choice.get(1)) == AdderInteger.ONE){
 
                     ASExpression raceId = null;
 

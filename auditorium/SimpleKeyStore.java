@@ -86,7 +86,7 @@ public class SimpleKeyStore implements IKeyStore {
 
             asePEK = load("PEK.key");
 
-            return ASEParser.convert((ListExpression)asePEK);
+            return ASEParser.convertFromASE((ListExpression) asePEK);
         }
         catch (AuditoriumCryptoException e){ throw new AuditoriumCryptoException("Error during loadPEK(): ", e); }
     }
@@ -144,7 +144,7 @@ public class SimpleKeyStore implements IKeyStore {
                 byteArrayOutputStream.write(i);
             }
 
-            return ASEParser.convert((ListExpression)ASExpression.makeVerbatim(byteArrayOutputStream.toByteArray()));
+            return ASEParser.convertFromASE((ListExpression) ASExpression.makeVerbatim(byteArrayOutputStream.toByteArray()));
 
         }catch(Exception e){
             throw new RuntimeException(e);
@@ -168,7 +168,7 @@ public class SimpleKeyStore implements IKeyStore {
                 byteArrayOutputStream.write(i);
             }
 
-            return ASEParser.convert((ListExpression)ASExpression.makeVerbatim(byteArrayOutputStream.toByteArray()));
+            return ASEParser.convertFromASE((ListExpression) ASExpression.makeVerbatim(byteArrayOutputStream.toByteArray()));
 
         }catch(Exception e){
             throw new RuntimeException(e);

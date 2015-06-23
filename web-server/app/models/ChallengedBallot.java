@@ -20,7 +20,7 @@ public class ChallengedBallot extends Model {
     public static final int BALLOTS_PER_PAGE = 100;
 
     /**
-     * This member object is a finder that aids in retrieving Cat Ballots by their ballot IDs
+     * This member object is a finder that aids in retrieving Challenged Ballots by their ballot IDs
      */
     public static Finder<Long, ChallengedBallot> find = new Finder<>(Long.class, ChallengedBallot.class);
 
