@@ -121,6 +121,12 @@ public class AuditServer extends Controller {
         else                return ok(confirmballot.render(CastBallot.all(), confirmForm, errorCode));
     }
 
+
+
+
+
+    /*---------------------------------------- ADMIN METHODS -----------------------------------------------*/
+
     /**
      * Verifies that the username and password entered at the admin login screen are correct
      *
@@ -130,7 +136,7 @@ public class AuditServer extends Controller {
         return ok(adminlogin.render(form(Login.class), null));
     }
 
-    @Security.Authenticated(Secured.class)
+    @Security.Authenticated(AdminSecured.class)
     public static Result adminmain() {
         return ok(adminmain.render());
     }
@@ -141,6 +147,7 @@ public class AuditServer extends Controller {
      *
      * @return      the admin page with success/error dependent on login success
      */
+    @Security.Authenticated(AdminSecured.class)
     public static Result adminclear() {
 
         String message = "No data to clear!";
@@ -161,12 +168,12 @@ public class AuditServer extends Controller {
     /**
      *  Generates and renders the page for handling conflicts
      */
-    @Security.Authenticated(Secured.class)
+    @Security.Authenticated(AdminSecured.class)
     public static Result adminconflicts() {
         return ok(adminconflicts.render(VotingRecord.getConflicted()));
     }
     
-    @Security.Authenticated(Secured.class)
+    @Security.Authenticated(AdminSecured.class)
     public static Result resolveconflict(String id, String hash) {
 
         hash = hash.substring(0, hash.length()-1);
@@ -177,12 +184,12 @@ public class AuditServer extends Controller {
     /**
      * Generates and renders the page for publishing results 
      */    
-    @Security.Authenticated(Secured.class)
+    @Security.Authenticated(AdminSecured.class)
     public static Result adminpublish() {
         return ok(adminpublish.render(VotingRecord.getUnpublished(), VotingRecord.getPublished()));
     }
     
-    @Security.Authenticated(Secured.class)
+    @Security.Authenticated(AdminSecured.class)
     public static Result publishresults() {
 
         /* Reverse routing */
@@ -236,6 +243,53 @@ public class AuditServer extends Controller {
         /* Return the webpage */
         return ok(adminpublish.render(VotingRecord.getUnpublished(), VotingRecord.getPublished()));
     }
+
+    /*---------------------------------------- ADMIN METHODS -----------------------------------------------*/
+
+
+
+
+
+
+    /*-------------------------------------- AUTHORITY METHODS -----------------------------------------------*/
+
+    /**
+     * Verifies that the username and password entered at the authority login screen are correct
+     *
+     * @return      the authority login page of the website
+     */
+    public static Result authorityverify() {
+        return ok(authoritylogin.render(form(Login.class), null));
+    }
+
+    /**
+     * This will take the session user and show a page for key generation for the specific user
+     * @return
+     */
+    @Security.Authenticated(AuthoritySecured.class)
+    public static Result authority() {
+        return ok(authority.render(/*message/button dependent on key generation state for user*/)));
+    }
+
+    @Security.Authenticated(AuthoritySecured.class)
+    public static Result keygeneration() {
+        return ok(authorityupload.render("Please select private key share to be uploaded:")));
+    }
+
+    @Security.Authenticated(AuthoritySecured.class)
+    public static Result uploadkey() {
+
+        /* Get key from form submission -- s expression? -- and load into adderkeymanipulator */
+    }
+
+
+    /*-------------------------------------- AUTHORITY METHODS -----------------------------------------------*/
+
+
+
+
+
+
 
     /**
      * @return a Map of the current summed results Ballot for each Precinct by precinct ID
@@ -340,10 +394,10 @@ public class AuditServer extends Controller {
             Ballot b = entry.getValue();
             String precinctID = entry.getKey();
 
-            AdderPublicKey finalPublicKey = precinctMap.get(precinctID).getFinalPublicKey();
+            AdderPublicKey PEK = precinctMap.get(precinctID).getFinalPublicKey();
 
             /* This will be the decrypted representation of the results by race */
-            Map<String, Map<String, BigInteger>> decryptedResults = WebServerTallier.getVoteTotals(b, b.getSize(), finalPublicKey, privateKey);
+            Map<String, Map<String, BigInteger>> decryptedResults = WebServerTallier.getVoteTotals(b, b.getSize(), PEK, privateKey);
 
             /* Store totals in database */
             DecryptedResult.create(new DecryptedResult(precinctID, decryptedResults, b));
@@ -432,7 +486,6 @@ public class AuditServer extends Controller {
 
         /* Add the record to the database */
         VotingRecord.create(new VotingRecord(precinctID, votingRecord));
-
         return ok(index.render());
     }
 
@@ -465,33 +518,27 @@ public class AuditServer extends Controller {
      */
     public static Result authenticate() {
         Form<Login> loginForm = form(Login.class).bindFromRequest();
-        
+
         if (loginForm.hasErrors()) {
-            return badRequest(adminlogin.render(loginForm, null));
+            return loginForm.name().equals("adminlogin") ? badRequest(adminlogin.render(loginForm, null)) :
+                                                           badRequest(authoritylogin.render(loginForm, null));
         } else {
             session().clear();
             session("username", loginForm.get().username);
-            return redirect(
-                routes.AuditServer.adminmain()
-            );
+            return loginForm.name().equals("adminlogin") ? redirect(routes.AuditServer.adminmain()) :
+                                                           redirect(routes.AuditServer.authority());
         }
     }
     
     /**
-     * This ends an authenticated administrator session
+     * This ends an authenticated session
      */
     public static Result logout() {
         session().clear();
         flash("success", "You've been logged out");
-        return redirect(
-                routes.AuditServer.adminverify()
-        );
+        return redirect(routes.AuditServer.index());
     }
-    
-    public static Result adminlogout() {
-        return ok(adminlogout.render());
-    }
-    
+
     /** 
      * An inner class for a login
      */
@@ -503,7 +550,7 @@ public class AuditServer extends Controller {
         /** This will validate the username and password */
         public String validate() {
 
-            if (User.authenticate(username, password) == null)
+            if (!User.authenticate(username, password))
               return "Invalid user or password";
 
             return null;

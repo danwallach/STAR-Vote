@@ -1,10 +1,13 @@
 package models;
 
-import models.*;
-import org.junit.*;
-import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 import play.test.WithApplication;
-import static play.test.Helpers.*;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static play.test.Helpers.fakeApplication;
+import static play.test.Helpers.inMemoryDatabase;
 
 public class ModelsTest extends WithApplication {
     @Before
