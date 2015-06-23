@@ -22,11 +22,14 @@
 
 package verifier.ast;
 
-import java.util.HashMap;
+import sexpression.ASExpression;
+import sexpression.ListExpression;
+import sexpression.StringExpression;
+import verifier.ActivationRecord;
+import verifier.value.Reduction;
+import verifier.value.Value;
 
-import sexpression.*;
-import verifier.*;
-import verifier.value.*;
+import java.util.HashMap;
 
 public class Let extends AST {
 

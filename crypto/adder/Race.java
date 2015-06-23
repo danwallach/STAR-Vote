@@ -1,7 +1,7 @@
 package crypto.adder;
 
-import crypto.EncryptedRaceSelection;
 import crypto.AHomomorphicCiphertext;
+import crypto.EncryptedRaceSelection;
 import crypto.IPublicKey;
 
 import java.util.ArrayList;

@@ -22,12 +22,11 @@
 
 package sexpression.test;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
-
 import sexpression.ByteArrayBuffer;
 import sexpression.ByteArrayBuffer.ByteArray;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * This is a JUnit test of sexpression.ByteArrayBuffer.

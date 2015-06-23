@@ -22,16 +22,17 @@
 
 package verifier.value.test;
 
+import org.junit.Before;
+import org.junit.Test;
+import sexpression.StringExpression;
+import verifier.value.ExplicitDAG;
+import verifier.value.Expression;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.junit.*;
-
-import static org.junit.Assert.*;
-
-import verifier.value.*;
-
-import sexpression.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Test the DAG value's operations.

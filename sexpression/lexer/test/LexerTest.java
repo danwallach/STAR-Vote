@@ -22,13 +22,12 @@
 
 package sexpression.lexer.test;
 
-import static org.junit.Assert.*;
-
-import java.io.*;
-
 import org.junit.Test;
-
 import sexpression.lexer.*;
+
+import java.io.CharArrayReader;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * This classes contains JUnit tests for the Lexer class.

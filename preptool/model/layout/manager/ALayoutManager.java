@@ -22,6 +22,17 @@
 
 package preptool.model.layout.manager;
 
+import preptool.model.ballot.ACard;
+import preptool.model.ballot.Ballot;
+import preptool.model.language.Language;
+import preptool.model.layout.*;
+import preptool.model.layout.Button;
+import preptool.model.layout.Label;
+import preptool.view.ProgressInfo;
+import printer.PrintImageUtils;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -30,31 +41,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-
-import javax.imageio.ImageIO;
-import javax.swing.JPanel;
-
-import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-
-import preptool.model.ballot.ACard;
-import preptool.model.ballot.Ballot;
-import preptool.model.language.Language;
-import preptool.model.layout.ALayoutComponent;
-import preptool.model.layout.Background;
-import preptool.model.layout.Button;
-import preptool.model.layout.ILayoutComponentVisitor;
-import preptool.model.layout.Label;
-import preptool.model.layout.Layout;
-import preptool.model.layout.Page;
-import preptool.model.layout.ReviewButton;
-import preptool.model.layout.PrintButton;
-import preptool.model.layout.ReviewLabel;
-import preptool.model.layout.ToggleButton;
-import preptool.model.layout.ToggleButtonGroup;
-import preptool.view.ProgressInfo;
-import printer.PrintImageUtils;
 
 
 /**

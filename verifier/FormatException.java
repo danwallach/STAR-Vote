@@ -22,7 +22,7 @@
 
 package verifier;
 
-import sexpression.*;
+import sexpression.ASExpression;
 
 public class FormatException extends RuntimeException {
 

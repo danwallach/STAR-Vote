@@ -22,13 +22,18 @@
 
 package auditorium.test;
 
-import static org.junit.Assert.*;
+import auditorium.Certificate;
+import auditorium.IncorrectFormatException;
+import auditorium.Key;
+import auditorium.Signature;
+import org.junit.Test;
+import sexpression.ASExpression;
+import sexpression.ListExpression;
+import sexpression.StringExpression;
 
 import java.math.BigInteger;
 
-import org.junit.*;
-import sexpression.*;
-import auditorium.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * This class offers JUnit testing of the auditorium.Cert class.

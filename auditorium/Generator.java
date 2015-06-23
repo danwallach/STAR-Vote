@@ -22,6 +22,9 @@
 
 package auditorium;
 
+import sexpression.ASExpression;
+import sexpression.stream.ASEWriter;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -30,9 +33,6 @@ import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
-
-import sexpression.*;
-import sexpression.stream.*;
 
 /**
  * Use an instance of this class to generate RSA keys. It's main method will

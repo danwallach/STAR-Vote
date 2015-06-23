@@ -22,16 +22,16 @@
 
 package auditorium.test;
 
-import static org.junit.Assert.*;
-
-import java.io.File;
-
+import auditorium.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
 import sexpression.*;
-import auditorium.*;
+
+import java.io.File;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 
 /**
  * A test of the temporal layer (the layer that orders events with respect to time)

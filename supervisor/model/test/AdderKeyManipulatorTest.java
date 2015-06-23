@@ -1,7 +1,6 @@
 package supervisor.model.test;
 
 import auditorium.IKeyStore;
-import com.sun.org.apache.xpath.internal.SourceTree;
 import crypto.KeyGenerator;
 import crypto.adder.AdderPrivateKeyShare;
 import crypto.adder.AdderPublicKey;
@@ -12,7 +11,6 @@ import votebox.AuditoriumParams;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.KeyPairGenerator;
 
 /**
  * Created by Matthew Kindy II on 6/19/2015.

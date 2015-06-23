@@ -22,16 +22,10 @@
 
 package supervisor.view;
 
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-
-import javax.swing.Action;
-import javax.swing.Icon;
-import javax.swing.JButton;
-
 import supervisor.Supervisor;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * A decorator for a JButton that uses a standardized font, and turns on

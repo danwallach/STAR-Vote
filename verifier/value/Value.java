@@ -22,7 +22,7 @@
 
 package verifier.value;
 
-import sexpression.*;
+import sexpression.ASExpression;
 
 /**
  * An IValue represents an internal verifier value. These are values which can

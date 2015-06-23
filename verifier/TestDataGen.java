@@ -22,15 +22,16 @@
 
 package verifier;
 
+import auditorium.*;
+import sexpression.ASExpression;
+import sexpression.ListExpression;
+import sexpression.StringExpression;
+import sexpression.stream.ASEWriter;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-
-import sexpression.*;
-import sexpression.stream.*;
-
-import auditorium.*;
 
 /**
  * Generate some test data.

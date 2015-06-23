@@ -22,9 +22,9 @@
 
 package supervisor;
 
+import auditorium.Bugout;
 import supervisor.model.Model;
 import supervisor.view.View;
-import auditorium.Bugout;
 import votebox.AuditoriumParams;
 
 import javax.swing.*;

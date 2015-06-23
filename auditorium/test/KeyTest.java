@@ -22,12 +22,14 @@
 
 package auditorium.test;
 
+import auditorium.IncorrectFormatException;
+import auditorium.Key;
+import org.junit.Test;
+import sexpression.*;
+
 import java.math.BigInteger;
 
-import org.junit.*;
-import static org.junit.Assert.*;
-import auditorium.*;
-import sexpression.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests for Auditorium Keys

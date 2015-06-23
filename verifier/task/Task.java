@@ -22,13 +22,17 @@
 
 package verifier.task;
 
+import sexpression.ASExpression;
+import sexpression.ListExpression;
+import sexpression.StringExpression;
+import verifier.ActivationRecord;
+import verifier.ast.AST;
+import verifier.ast.ASTParser;
+import verifier.value.Future;
+import verifier.value.Value;
+
 import java.io.IOException;
 import java.io.OutputStream;
-
-import sexpression.*;
-import verifier.*;
-import verifier.value.*;
-import verifier.ast.*;
 
 /**
  * Tasks represent a computation job, the result of which will be realized in

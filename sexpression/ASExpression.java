@@ -22,6 +22,11 @@
 
 package sexpression;
 
+import sexpression.lexer.Lexer;
+import sexpression.parser.Parser;
+import sexpression.stream.ASEInputStreamReader;
+import sexpression.stream.InvalidVerbatimStreamException;
+
 import java.io.ByteArrayInputStream;
 import java.io.CharArrayReader;
 import java.io.IOException;
@@ -29,11 +34,6 @@ import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
-
-import sexpression.lexer.*;
-import sexpression.parser.*;
-import sexpression.stream.ASEInputStreamReader;
-import sexpression.stream.InvalidVerbatimStreamException;
 
 /**
  * From <a href="http://theory.lcs.mit.edu/~rivest/sexp.html">MIT</a>,

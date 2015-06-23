@@ -22,10 +22,14 @@
 
 package auditorium.test;
 
-import auditorium.*;
-import org.junit.*;
-import sexpression.*;
-import static org.junit.Assert.*;
+import auditorium.IncorrectFormatException;
+import auditorium.Signature;
+import org.junit.Test;
+import sexpression.ListExpression;
+import sexpression.NoMatch;
+import sexpression.StringExpression;
+
+import static org.junit.Assert.assertEquals;
 
 public class SignatureTest {
 

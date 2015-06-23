@@ -1,12 +1,12 @@
 package printer.Test;
 
 
+import printer.PrintImageUtils;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.imageio.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-
-import printer.PrintImageUtils;
 /**
  *  This is a test for the PrintImageUtils Class
  *

@@ -22,10 +22,10 @@
 
 package sexpression.parser;
 
-import java.util.ArrayList;
-
-import sexpression.lexer.*;
 import sexpression.*;
+import sexpression.lexer.*;
+
+import java.util.ArrayList;
 
 /**
  * This is a concrete parser implementation. It recognizes the strings &#35;any,

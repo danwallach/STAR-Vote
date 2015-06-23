@@ -1,10 +1,10 @@
 package crypto.adder.test;
 
-import java.security.SecureRandom;
-
+import crypto.adder.Context;
 import junit.framework.TestCase;
 import junit.textui.TestRunner;
-import crypto.adder.Context;
+
+import java.security.SecureRandom;
 
 /**
  * Context test.

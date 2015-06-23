@@ -23,7 +23,7 @@
 package verifier.ast;
 
 import sexpression.ASExpression;
-import verifier.*;
+import verifier.ActivationRecord;
 import verifier.value.*;
 
 /**

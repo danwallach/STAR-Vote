@@ -22,7 +22,8 @@
 
 package verifier.ast;
 
-import sexpression.*;
+import sexpression.ASExpression;
+import sexpression.ListExpression;
 
 /**
  * Each type of AST node must define a corresponding factory. The factory is

@@ -22,15 +22,15 @@
 
 package votebox.middle.view;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-
 import votebox.middle.IBallotVars;
 import votebox.middle.Properties;
 import votebox.middle.ballot.IBallotLookupAdapter;
 import votebox.middle.driver.IAdapter;
 import votebox.middle.driver.UnknownUIDException;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 
 /**

@@ -22,11 +22,11 @@
 
 package sexpression.stream;
 
+import sexpression.ASExpression;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-
-import sexpression.ASExpression;
 
 /**
  * The ASEWriter can take an ASExpressions and serialize them over an output

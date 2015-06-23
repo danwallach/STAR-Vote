@@ -22,20 +22,14 @@
 
 package auditorium.test;
 
-import static org.junit.Assert.*;
-
-import org.junit.Test;
-
-import sexpression.ListExpression;
-import sexpression.NoMatch;
-import sexpression.Nothing;
-import sexpression.StringExpression;
-import sexpression.StringWildcard;
-
 import auditorium.HostPointer;
 import auditorium.IncorrectFormatException;
 import auditorium.Message;
 import auditorium.MessagePointer;
+import org.junit.Test;
+import sexpression.*;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * These tests cover the MessagePointer class.

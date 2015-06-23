@@ -22,8 +22,8 @@
 
 package preptool.controller;
 
-import preptool.model.*;
-import preptool.view.*;
+import preptool.model.Model;
+import preptool.view.View;
 
 /**
  * The Controller is main entry point of the program that initializes the model,

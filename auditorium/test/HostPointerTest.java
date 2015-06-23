@@ -22,17 +22,16 @@
 
 package auditorium.test;
 
-import static org.junit.Assert.*;
-
+import auditorium.HostPointer;
+import auditorium.IncorrectFormatException;
 import org.junit.Test;
-
+import sexpression.ListExpression;
 import sexpression.NoMatch;
 import sexpression.Nothing;
 import sexpression.StringExpression;
-import sexpression.ListExpression;
 
-import auditorium.HostPointer;
-import auditorium.IncorrectFormatException;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 /**
  * This is a JUnit test of the auditorium.HostPointer class.

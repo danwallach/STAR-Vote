@@ -22,17 +22,17 @@
 
 package auditorium.loganalysis;
 
-import java.io.CharArrayReader;
-import java.io.FileInputStream;
-import java.io.EOFException;
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import auditorium.*;
-import sexpression.*;
+import auditorium.Message;
+import sexpression.ASExpression;
+import sexpression.ListExpression;
 import sexpression.lexer.Lexer;
 import sexpression.parser.Parser;
-import sexpression.stream.*;
+import sexpression.stream.ASEInputStreamReader;
+
+import java.io.CharArrayReader;
+import java.io.FileInputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Parse a log file and print out some simple information: <br>

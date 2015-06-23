@@ -23,9 +23,12 @@
 package verifier.auditoriumverifierplugins;
 
 import auditorium.*;
-import sexpression.*;
-import verifier.*;
-import verifier.ast.*;
+import sexpression.ASExpression;
+import verifier.ActivationRecord;
+import verifier.ast.AST;
+import verifier.ast.ASTFactory;
+import verifier.ast.IConstructor;
+import verifier.ast.PrimFactory;
 import verifier.value.*;
 
 public class SignatureVerify extends AST {

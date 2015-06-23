@@ -22,12 +22,14 @@
 
 package verifier.ast;
 
+import sexpression.ASExpression;
+import verifier.Box;
+import verifier.value.False;
+import verifier.value.Reduction;
+import verifier.value.True;
+import verifier.value.Value;
+
 import java.util.ArrayList;
-
-import verifier.*;
-import verifier.value.*;
-
-import sexpression.*;
 
 /**
  * This AST node represents the sentential connective "and."

@@ -22,7 +22,8 @@
 
 package verifier.ast;
 
-import sexpression.*;
+import sexpression.ASExpression;
+import sexpression.ListExpression;
 
 public abstract class ComparisonFactory extends ASTFactory {
 	private IConstructor _constructor;

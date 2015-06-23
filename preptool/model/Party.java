@@ -26,7 +26,6 @@ package preptool.model;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-
 import preptool.model.language.Language;
 import preptool.model.language.LocalizedString;
 

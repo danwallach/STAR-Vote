@@ -22,16 +22,19 @@
 
 package auditorium.test;
 
-import static org.junit.Assert.*;
-
-import org.junit.*;
+import auditorium.HostPointer;
+import auditorium.Log;
+import auditorium.Message;
+import auditorium.MessagePointer;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import sexpression.StringExpression;
 
 import java.io.File;
 import java.util.ArrayList;
 
-import sexpression.*;
-
-import auditorium.*;
+import static org.junit.Assert.*;
 
 /**
  * Tests for the Log class.

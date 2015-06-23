@@ -22,10 +22,9 @@
 
 package preptool.view;
 
-import java.util.Vector;
-
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableModel;
+import java.util.Vector;
 
 /**
  * An extension of the DefaultTableModel that provides a moveRow method that

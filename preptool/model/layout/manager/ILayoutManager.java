@@ -22,16 +22,15 @@
 
 package preptool.model.layout.manager;
 
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-
-import javax.swing.JPanel;
-
 import preptool.model.ballot.ACard;
 import preptool.model.ballot.Ballot;
 import preptool.model.layout.ILayoutComponentVisitor;
 import preptool.model.layout.Layout;
 import preptool.view.ProgressInfo;
+
+import javax.swing.*;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 
 /**

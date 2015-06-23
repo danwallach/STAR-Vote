@@ -22,12 +22,14 @@
 
 package auditorium;
 
+import sexpression.ASExpression;
+import sexpression.stream.ASEInputStreamReader;
+import sexpression.stream.ASEWriter;
+import sexpression.stream.InvalidVerbatimStreamException;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-
-import sexpression.ASExpression;
-import sexpression.stream.*;
 
 /**
  * This class wraps a socket that interfaces with the outside world in the form

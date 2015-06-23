@@ -26,12 +26,7 @@ import votebox.middle.IBallotVars;
 import votebox.middle.Properties;
 import votebox.middle.ballot.IBallotLookupAdapter;
 import votebox.middle.driver.IAdapter;
-import votebox.middle.view.IDrawable;
-import votebox.middle.view.IViewFactory;
-import votebox.middle.view.IViewImage;
-import votebox.middle.view.IViewManager;
-import votebox.middle.view.MeaninglessMethodException;
-import votebox.middle.view.RenderPage;
+import votebox.middle.view.*;
 
 import java.io.File;
 

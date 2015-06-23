@@ -22,45 +22,27 @@
 
 package votebox.middle.driver;
 
+import auditorium.IAuditoriumParams;
+import sexpression.ASExpression;
+import sexpression.ListExpression;
+import tap.BallotImageHelper;
+import votebox.middle.IBallotVars;
+import votebox.middle.Properties;
+import votebox.middle.ballot.*;
+import votebox.middle.view.IView;
+import votebox.middle.view.IViewFactory;
+import votebox.middle.view.ViewManager;
+
+import javax.print.PrintService;
+import javax.print.attribute.standard.PrinterName;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.awt.print.PageFormat;
-import java.awt.print.Paper;
-import java.awt.print.Printable;
-import java.awt.print.PrinterException;
-import java.awt.print.PrinterJob;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.awt.print.*;
+import java.io.*;
 import java.util.*;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-
-import javax.print.PrintService;
-import javax.print.attribute.standard.PrinterName;
-
-import auditorium.IAuditoriumParams;
-
-import sexpression.ASExpression;
-import sexpression.ListExpression;
-
-import tap.BallotImageHelper;
-
-import votebox.middle.IBallotVars;
-import votebox.middle.Properties;
-import votebox.middle.ballot.Ballot;
-import votebox.middle.ballot.BallotParser;
-import votebox.middle.ballot.BallotParserException;
-import votebox.middle.ballot.CardException;
-import votebox.middle.ballot.IBallotLookupAdapter;
-import votebox.middle.ballot.NonCardException;
-import votebox.middle.view.IView;
-import votebox.middle.view.IViewFactory;
-import votebox.middle.view.ViewManager;
 
 /* TODO: Documentation by knowledgeable member */
 

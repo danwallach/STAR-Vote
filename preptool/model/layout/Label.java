@@ -22,11 +22,10 @@
 
 package preptool.model.layout;
 
-import java.awt.Color;
-import java.awt.Dimension;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import java.awt.*;
 
 /**
  * A Label is a component that consists of some text that has no action when it

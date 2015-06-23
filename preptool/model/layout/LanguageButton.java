@@ -25,7 +25,6 @@ package preptool.model.layout;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
 import preptool.model.XMLTools;
 import preptool.model.language.Language;
 

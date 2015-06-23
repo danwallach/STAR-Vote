@@ -22,11 +22,14 @@
 
 package verifier.ast;
 
+import sexpression.ASExpression;
+import sexpression.ListExpression;
+import sexpression.NoMatch;
+import sexpression.StringExpression;
+import verifier.FormatException;
+import verifier.Verifier;
+
 import java.util.HashMap;
-
-import sexpression.*;
-
-import verifier.*;
 
 /**
  * Parse an AST from an s-expression representation. AST instances are

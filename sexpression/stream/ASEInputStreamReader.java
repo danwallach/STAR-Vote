@@ -22,12 +22,12 @@
 
 package sexpression.stream;
 
+import sexpression.*;
+
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-
-import sexpression.*;
 
 /**
  * The ASEInputStreamReader parses ASExpressions that have been serialized in

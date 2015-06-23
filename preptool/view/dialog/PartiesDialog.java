@@ -22,40 +22,20 @@
 
 package preptool.view.dialog;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
+import preptool.model.Party;
+import preptool.model.language.Language;
+import preptool.view.*;
+import preptool.view.dragndrop.TableTransferHandler;
 
-import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JToolBar;
-import javax.swing.ListSelectionModel;
+import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
-
-import preptool.model.Party;
-import preptool.model.language.Language;
-import preptool.view.IMovableTableModel;
-import preptool.view.IMultiLanguageEditor;
-import preptool.view.LanguageBar;
-import preptool.view.MovableTableModel;
-import preptool.view.View;
-import preptool.view.dragndrop.TableTransferHandler;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 
 /**

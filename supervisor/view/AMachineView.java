@@ -22,7 +22,7 @@
 
 package supervisor.view;
 
-import javax.swing.JPanel;
+import javax.swing.*;
 
 /**
  * Abstract panel for a machine view, that contains an update method

@@ -22,12 +22,15 @@
 
 package verifier.ast;
 
+import sexpression.ASExpression;
+import sexpression.NamedNoMatch;
+import verifier.ActivationRecord;
+import verifier.value.AValueVisitor;
+import verifier.value.Expression;
+import verifier.value.Reduction;
+import verifier.value.Value;
+
 import java.util.HashMap;
-
-import verifier.*;
-import verifier.value.*;
-
-import sexpression.*;
 
 public class LetMatch extends AST {
 

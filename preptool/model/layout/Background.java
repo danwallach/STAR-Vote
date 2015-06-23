@@ -22,10 +22,10 @@
 
 package preptool.model.layout;
 
-import java.awt.image.BufferedImage;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import java.awt.image.BufferedImage;
 
 /**
  * A component that represents the background image of a page

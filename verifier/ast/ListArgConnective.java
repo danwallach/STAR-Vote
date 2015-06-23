@@ -22,11 +22,13 @@
 
 package verifier.ast;
 
-import java.util.ArrayList;
-
-import sexpression.*;
-import verifier.*;
+import sexpression.ASExpression;
+import sexpression.ListExpression;
+import verifier.ActivationRecord;
+import verifier.Box;
 import verifier.value.*;
+
+import java.util.ArrayList;
 
 public abstract class ListArgConnective extends AST {
 

@@ -22,9 +22,9 @@
 
 package preptool.view;
 
-import java.util.ArrayList;
-
 import preptool.model.language.Language;
+
+import java.util.ArrayList;
 
 
 /**

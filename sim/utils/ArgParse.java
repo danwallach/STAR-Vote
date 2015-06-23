@@ -22,7 +22,9 @@
 
 package sim.utils;
 
-import java.util.*;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 public class ArgParse {
 	@SuppressWarnings("serial")

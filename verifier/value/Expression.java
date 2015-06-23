@@ -22,7 +22,9 @@
 
 package verifier.value;
 
-import sexpression.*;
+import sexpression.ASExpression;
+import sexpression.ListExpression;
+import sexpression.StringExpression;
 
 /**
  * This class represents the s-expression verifier value. Any arbitrary

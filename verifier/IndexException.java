@@ -22,7 +22,7 @@
 
 package verifier;
 
-import verifier.ast.*;
+import verifier.ast.AST;
 
 public class IndexException extends RuntimeException {
 

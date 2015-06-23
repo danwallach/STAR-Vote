@@ -22,15 +22,10 @@
 
 package votebox;
 
-import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import javax.swing.*;
+import java.awt.*;
 import java.util.Observable;
 import java.util.Observer;
-
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 
 /**
  * The view that is shown for a booth that is not currently voting - mainly shows

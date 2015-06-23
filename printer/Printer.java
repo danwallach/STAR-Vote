@@ -25,6 +25,20 @@
 
 package printer;
 
+import auditorium.Bugout;
+import com.princexml.Prince;
+import sexpression.ASExpression;
+import sexpression.ListExpression;
+import tap.BallotImageHelper;
+import votebox.AuditoriumParams;
+
+import javax.imageio.ImageIO;
+import javax.print.PrintService;
+import javax.print.attribute.HashPrintRequestAttributeSet;
+import javax.print.attribute.PrintRequestAttributeSet;
+import javax.print.attribute.standard.PrintQuality;
+import javax.print.attribute.standard.PrinterName;
+import javax.print.attribute.standard.PrinterResolution;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
@@ -37,21 +51,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
-
-import javax.imageio.ImageIO;
-import javax.print.attribute.HashPrintRequestAttributeSet;
-import javax.print.attribute.PrintRequestAttributeSet;
-import javax.print.attribute.standard.PrintQuality;
-import javax.print.attribute.standard.PrinterName;
-
-import com.princexml.Prince;
-import sexpression.*;
-import tap.BallotImageHelper;
-import votebox.AuditoriumParams;
-import auditorium.*;
-
-import javax.print.PrintService;
-import javax.print.attribute.standard.PrinterResolution;
 
 /**
  * This class handles all print calls made by Voteboxes, Supervisors and any future additions that will need to print

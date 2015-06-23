@@ -1,6 +1,6 @@
 package printer;
 
-import java.awt.Image;
+import java.awt.*;
 
 /**
  * @author Mircea Berechet

@@ -6,7 +6,10 @@ import sexpression.ASExpression;
 import sexpression.StringExpression;
 import sexpression.stream.ASEInputStreamReader;
 import sexpression.stream.InvalidVerbatimStreamException;
-import verifier.*;
+import verifier.HashChainCompromisedException;
+import verifier.IVerifierPlugin;
+import verifier.PluginException;
+import verifier.Verifier;
 
 import java.io.EOFException;
 import java.io.File;

@@ -22,12 +22,10 @@
 
 package preptool.model.layout.manager;
 
-import java.awt.Container;
-import java.awt.Dimension;
-
-import javax.swing.JLabel;
-
 import preptool.model.layout.ALayoutComponent;
+
+import javax.swing.*;
+import java.awt.*;
 
 
 /**

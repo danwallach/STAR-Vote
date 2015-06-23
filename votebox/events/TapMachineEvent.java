@@ -1,6 +1,9 @@
 package votebox.events;
 
-import sexpression.*;
+import sexpression.ASExpression;
+import sexpression.ListExpression;
+import sexpression.NoMatch;
+import sexpression.StringExpression;
 
 /**
  * An event by which Tap announces its status

@@ -22,12 +22,11 @@
 
 package preptool.view.dragndrop;
 
-import javax.swing.JComponent;
-import javax.swing.JTable;
+import preptool.view.IMovableTableModel;
+
+import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
-
-import preptool.view.IMovableTableModel;
 
 
 /**

@@ -22,20 +22,14 @@
 
 package votebox.events;
 
+import auditorium.*;
+import auditorium.AuditoriumHost.Pair;
+
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
 import java.util.Observable;
 import java.util.Observer;
-
-import javax.swing.Timer;
-
-import auditorium.IAuditoriumParams;
-import auditorium.AuditoriumHost;
-import auditorium.HostPointer;
-import auditorium.NetworkException;
-import auditorium.ReleasedQueueException;
-import auditorium.AuditoriumHost.Pair;
 
 /**
  * The VoteBoxAuditoriumConnecter is the "middleman" that starts an instance of

@@ -22,8 +22,8 @@
 
 package votebox.events.test;
 
-import votebox.events.*;
-import votebox.*;
+import votebox.AuditoriumParams;
+import votebox.events.VoteBoxAuditoriumConnector;
 
 public class Main {
 

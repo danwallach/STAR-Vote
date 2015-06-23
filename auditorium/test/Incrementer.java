@@ -22,9 +22,9 @@
 
 package auditorium.test;
 
-import sexpression.StringExpression;
 import auditorium.AuditoriumHost;
 import auditorium.HostPointer;
+import sexpression.StringExpression;
 
 /**
  * Test class that counts the number of packets received through Auditorium. On reaching 10 packets, it terminates.

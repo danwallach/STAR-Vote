@@ -22,14 +22,15 @@
 
 package verifier.ast;
 
-import java.util.ArrayList;
-
-import sexpression.*;
-import verifier.*;
+import sexpression.ASExpression;
+import sexpression.NoMatch;
+import verifier.ActivationRecord;
 import verifier.value.AValueVisitor;
 import verifier.value.Expression;
-import verifier.value.Value;
 import verifier.value.SetValue;
+import verifier.value.Value;
+
+import java.util.ArrayList;
 
 public class Filter extends AST {
 

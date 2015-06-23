@@ -22,15 +22,18 @@
 
 package preptool.model.layout.manager;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import preptool.model.ballot.ACard;
+import preptool.model.ballot.Ballot;
+import preptool.model.ballot.PartyCard;
+import preptool.model.ballot.PropositionCard;
+import preptool.model.language.Language;
+import preptool.model.language.LiteralStrings;
+import preptool.model.layout.*;
+import preptool.model.layout.Button;
+import preptool.model.layout.Label;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
@@ -38,14 +41,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-
-import preptool.model.ballot.*;
-import preptool.model.language.Language;
-import preptool.model.language.LiteralStrings;
-import preptool.model.layout.*;
 
 
 /**

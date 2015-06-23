@@ -22,17 +22,11 @@
 
 package votebox.middle.datacollection;
 
-import java.awt.BorderLayout;
-
 import javax.print.PrintService;
 import javax.print.attribute.standard.PrinterName;
 import javax.swing.*;
-import java.awt.GridBagLayout;
-
 import javax.swing.filechooser.FileFilter;
-
-import java.awt.GridBagConstraints;
-import java.awt.FlowLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.print.PrinterJob;

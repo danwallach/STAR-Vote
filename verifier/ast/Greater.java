@@ -23,7 +23,9 @@
 package verifier.ast;
 
 import sexpression.ASExpression;
-import verifier.value.*;
+import verifier.value.False;
+import verifier.value.True;
+import verifier.value.Value;
 
 public class Greater extends Comparison {
 

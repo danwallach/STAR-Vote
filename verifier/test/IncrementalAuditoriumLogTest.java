@@ -10,7 +10,6 @@ import verifier.auditoriumverifierplugins.HashChainVerifier;
 import verifier.auditoriumverifierplugins.IncrementalAuditoriumLog;
 import verifier.value.False;
 import verifier.value.Value;
-import votebox.events.ProvisionalAuthorizeEvent;
 import votebox.events.SupervisorEvent;
 
 import java.io.IOException;

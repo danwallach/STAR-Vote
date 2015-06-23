@@ -22,15 +22,10 @@
 
 package supervisor.view;
 
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-
-import javax.swing.Icon;
-import javax.swing.JLabel;
-
 import supervisor.Supervisor;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * A decorator for a JLabel that uses a standardized font, and turns on

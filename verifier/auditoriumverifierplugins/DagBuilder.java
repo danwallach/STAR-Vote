@@ -22,14 +22,17 @@
 
 package verifier.auditoriumverifierplugins;
 
+import auditorium.IncorrectFormatException;
+import auditorium.Message;
+import auditorium.MessagePointer;
+import sexpression.*;
+import verifier.FormatException;
+import verifier.value.DAGValue;
+import verifier.value.ExplicitDAG;
+import verifier.value.Expression;
+
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import auditorium.*;
-
-import sexpression.*;
-import verifier.*;
-import verifier.value.*;
 
 /**
  * A DAG builder incrementally accepts auditorium messages and builds a DAG

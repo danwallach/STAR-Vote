@@ -22,12 +22,12 @@
 
 package auditorium.test;
 
-import org.junit.Test;
-
 import auditorium.*;
 import auditorium.Generator.Keys;
-
-import sexpression.*;
+import org.junit.Test;
+import sexpression.ASExpression;
+import sexpression.ListExpression;
+import sexpression.StringExpression;
 
 /**
  * Unit test the primitives provided in the Crypto class. These test the output

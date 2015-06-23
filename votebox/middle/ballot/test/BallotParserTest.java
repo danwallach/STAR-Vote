@@ -22,13 +22,12 @@
 
 package votebox.middle.ballot.test;
 
-import java.net.URL;
-
+import junit.framework.TestCase;
 import votebox.middle.IBallotVars;
 import votebox.middle.ballot.Ballot;
 import votebox.middle.ballot.BallotParser;
 
-import junit.framework.TestCase;
+import java.net.URL;
 
 /**
  * This JUnit test case is meant to test the functionality of the BallotParser

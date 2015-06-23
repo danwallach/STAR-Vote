@@ -22,11 +22,14 @@
 
 package verifier.ast;
 
-import java.util.ArrayList;
-
 import sexpression.ASExpression;
-import verifier.*;
-import verifier.value.*;
+import verifier.Box;
+import verifier.value.False;
+import verifier.value.Reduction;
+import verifier.value.True;
+import verifier.value.Value;
+
+import java.util.ArrayList;
 
 public class Or extends ListArgConnective {
 

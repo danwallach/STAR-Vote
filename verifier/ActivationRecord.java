@@ -22,14 +22,15 @@
 
 package verifier;
 
+import sexpression.ASExpression;
+import sexpression.ListExpression;
+import sexpression.StringExpression;
+import verifier.ast.ASTParser;
+import verifier.value.Value;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
-
-import verifier.value.*;
-import verifier.ast.*;
-
-import sexpression.*;
 
 /**
  * An instance of this class represents a single record in the static chain

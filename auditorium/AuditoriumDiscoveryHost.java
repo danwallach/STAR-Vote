@@ -22,19 +22,15 @@
 
 package auditorium;
 
+import sexpression.ASExpression;
+import sexpression.ListExpression;
+import sexpression.stream.ASEInputStreamReader;
+import sexpression.stream.InvalidVerbatimStreamException;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.util.LinkedList;
-
-import sexpression.*;
-import sexpression.stream.*;
 
 /**
  * This class implements the auditorium discovery protocol. An instance of this

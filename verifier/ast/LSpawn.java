@@ -24,9 +24,11 @@ package verifier.ast;
 
 import sexpression.ASExpression;
 import sexpression.ListExpression;
-import verifier.*;
-import verifier.task.*;
-import verifier.value.*;
+import verifier.ActivationRecord;
+import verifier.task.LocalTask;
+import verifier.task.Pool;
+import verifier.value.Future;
+import verifier.value.Value;
 
 public class LSpawn extends AST {
 

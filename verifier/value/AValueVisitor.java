@@ -22,7 +22,7 @@
 
 package verifier.value;
 
-import verifier.*;
+import verifier.UnexpectedTypeException;
 
 public abstract class AValueVisitor implements IValueVisitor {
 

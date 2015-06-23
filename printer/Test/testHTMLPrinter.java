@@ -1,13 +1,12 @@
 package printer.Test;
 
 
-import java.io.IOException;
-import java.util.List;
-
 import printer.HTMLPrinter;
 import votebox.AuditoriumParams;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by arghyac on 6/25/14.

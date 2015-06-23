@@ -22,26 +22,19 @@
 
 package auditorium.test;
 
-import static org.junit.Assert.*;
+import auditorium.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import sexpression.ASExpression;
+import sexpression.ListExpression;
+import sexpression.StringExpression;
 
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import sexpression.ASExpression;
-import sexpression.ListExpression;
-import sexpression.StringExpression;
-import auditorium.HostPointer;
-import auditorium.IAuditoriumHost;
-import auditorium.Link;
-import auditorium.Log;
-import auditorium.Message;
-import auditorium.MessageSocket;
-import auditorium.SynchronizedQueue;
+import static org.junit.Assert.*;
 
 /**
  * Tests for Auditorium Links

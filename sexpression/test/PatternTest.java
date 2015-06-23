@@ -22,13 +22,12 @@
 
 package sexpression.test;
 
-import static org.junit.Assert.*;
+import org.junit.Test;
+import sexpression.*;
 
 import java.util.HashMap;
 
-import org.junit.Test;
-
-import sexpression.*;
+import static org.junit.Assert.*;
 
 public class PatternTest {
 

@@ -22,15 +22,15 @@
 
 package votebox.middle.ballot;
 
-import java.util.Observable;
-import java.util.Observer;
-
 import sexpression.ASExpression;
 import sexpression.StringExpression;
 import votebox.middle.Event;
 import votebox.middle.Properties;
 import votebox.middle.driver.DeselectionException;
 import votebox.middle.driver.UnknownUIDException;
+
+import java.util.Observable;
+import java.util.Observer;
 
 
 //TODO: think about removing onselect.

@@ -22,10 +22,15 @@
 
 package verifier.ast;
 
-import java.util.ArrayList;
+import verifier.ActivationRecord;
+import verifier.Binding;
+import verifier.Box;
+import verifier.value.False;
+import verifier.value.Reduction;
+import verifier.value.True;
+import verifier.value.Value;
 
-import verifier.*;
-import verifier.value.*;
+import java.util.ArrayList;
 
 /**
  * This AST node represents the "exists" quantifier.

@@ -22,8 +22,7 @@
 
 package preptool.model.layout;
 
-import java.awt.Color;
-import java.awt.Dimension;
+import java.awt.*;
 
 /**
  * A special type of Button that is seen on review screens.

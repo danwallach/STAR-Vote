@@ -22,9 +22,9 @@
 
 package auditorium;
 
-import java.util.ArrayList;
-
 import sexpression.*;
+
+import java.util.ArrayList;
 
 /**
  * This layer deals with temporality assertions in announcements. That is, it

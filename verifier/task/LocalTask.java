@@ -22,10 +22,10 @@
 
 package verifier.task;
 
-import sexpression.*;
-import verifier.*;
-import verifier.ast.*;
-import verifier.value.*;
+import sexpression.ASExpression;
+import verifier.ActivationRecord;
+import verifier.ast.AST;
+import verifier.value.Future;
 
 /**
  * A local task performs the computation on the local machine, never requiring

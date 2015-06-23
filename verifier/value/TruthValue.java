@@ -22,7 +22,8 @@
 
 package verifier.value;
 
-import sexpression.*;
+import sexpression.ASExpression;
+import sexpression.StringExpression;
 
 public abstract class TruthValue extends Value {
 

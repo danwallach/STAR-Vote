@@ -23,8 +23,8 @@
 package supervisor.view;
 
 import printer.Printer;
-import supervisor.model.machine.AMachine;
 import supervisor.model.Model;
+import supervisor.model.machine.AMachine;
 import supervisor.model.machine.TapMachine;
 
 import javax.swing.*;

@@ -22,17 +22,12 @@
 
 package preptool.view;
 
-import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.util.ArrayList;
-
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
 import preptool.model.ballot.module.AModule;
 import preptool.model.language.Language;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
 
 
 /**

@@ -22,7 +22,14 @@
 
 package tap;
 
-import java.awt.Image;
+import votebox.middle.IBallotVars;
+import votebox.middle.IncorrectTypeException;
+import votebox.middle.ballot.*;
+import votebox.middle.driver.Driver;
+import votebox.middle.driver.GlobalVarsReader;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.PixelGrabber;
 import java.io.File;
@@ -33,18 +40,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-
-import javax.imageio.ImageIO;
-
-import votebox.middle.IBallotVars;
-import votebox.middle.IncorrectTypeException;
-import votebox.middle.ballot.Ballot;
-import votebox.middle.ballot.BallotParser;
-import votebox.middle.ballot.BallotParserException;
-import votebox.middle.ballot.Card;
-import votebox.middle.ballot.SelectableCardElement;
-import votebox.middle.driver.Driver;
-import votebox.middle.driver.GlobalVarsReader;
 
 public class BallotImageHelper {
 	

@@ -22,8 +22,10 @@
 
 package verifier.ast;
 
-import sexpression.*;
-import verifier.*;
+import sexpression.ASExpression;
+import sexpression.ListExpression;
+import sexpression.StringExpression;
+import verifier.ActivationRecord;
 import verifier.value.*;
 
 public class Impl extends AST {

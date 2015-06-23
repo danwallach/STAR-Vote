@@ -22,12 +22,16 @@
 
 package verifier.ast;
 
+import sexpression.ASExpression;
+import sexpression.ListExpression;
+import sexpression.StringExpression;
+import verifier.ActivationRecord;
+import verifier.Binding;
+import verifier.Box;
+import verifier.value.*;
+
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import sexpression.*;
-import verifier.*;
-import verifier.value.*;
 
 public abstract class Quantifier extends AST {
 

@@ -1,14 +1,13 @@
 package preptool.converter;
 
-import java.awt.Image;
+import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
-
-import javax.imageio.ImageIO;
 
 /**
  * Tool for scaling compiled ballots to arbitrary resolutions,

@@ -22,13 +22,15 @@
 
 package sexpression.test;
 
-import static org.junit.Assert.*;
+import org.junit.Test;
+import sexpression.ASExpression;
+import sexpression.ListExpression;
+import sexpression.StringExpression;
 
 import java.util.Arrays;
 
-import org.junit.Test;
-
-import sexpression.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class SerializationTest {
 

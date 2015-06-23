@@ -22,13 +22,11 @@
 
 package preptool.model.layout;
 
-import java.util.ArrayList;
-
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
 import preptool.model.XMLTools;
+
+import java.util.ArrayList;
 
 /**
  * A ToggleButtonGroup is a set of ToggleButtons that follow a strategy when

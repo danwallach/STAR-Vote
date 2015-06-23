@@ -22,12 +22,12 @@
 
 package preptool.model.layout;
 
-import java.awt.Dimension;
-import java.util.HashMap;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import preptool.model.language.Language;
+
+import java.awt.*;
+import java.util.HashMap;
 
 /**
  * A ToggleButton is similar to a button, but it holds state in that it can

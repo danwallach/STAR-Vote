@@ -22,11 +22,13 @@
 
 package verifier.ast;
 
-import java.util.ArrayList;
+import sexpression.ASExpression;
+import sexpression.ListExpression;
+import verifier.ActivationRecord;
+import verifier.AssertionFailure;
+import verifier.value.Value;
 
-import sexpression.*;
-import verifier.*;
-import verifier.value.*;
+import java.util.ArrayList;
 
 /**
  * (assert name expected actual)

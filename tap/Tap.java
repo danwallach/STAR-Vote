@@ -24,8 +24,6 @@ package tap;
 
 import auditorium.IAuditoriumParams;
 import auditorium.NetworkException;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
@@ -38,7 +36,6 @@ import votebox.events.*;
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.nio.file.Files;
 import java.util.*;
 
 

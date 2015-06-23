@@ -23,8 +23,11 @@
 package verifier.ast;
 
 import sexpression.ASExpression;
-import verifier.*;
-import verifier.value.*;
+import verifier.ActivationRecord;
+import verifier.value.AValueVisitor;
+import verifier.value.Expression;
+import verifier.value.SetValue;
+import verifier.value.Value;
 
 public class SetToList extends AST {
 

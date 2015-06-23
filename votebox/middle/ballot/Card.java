@@ -22,15 +22,15 @@
 
 package votebox.middle.ballot;
 
+import sexpression.ASExpression;
+import sexpression.ListExpression;
+import sexpression.StringExpression;
+import votebox.middle.IncorrectTypeException;
+import votebox.middle.Properties;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-
-import sexpression.ASExpression;
-import sexpression.StringExpression;
-import sexpression.ListExpression;
-import votebox.middle.IncorrectTypeException;
-import votebox.middle.Properties;
 
 
 /**

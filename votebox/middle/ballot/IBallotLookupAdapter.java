@@ -22,11 +22,11 @@
 
 package votebox.middle.ballot;
 
-import java.util.List;
-import java.util.Map;
-
 import sexpression.ASExpression;
 import votebox.middle.driver.UnknownUIDException;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Use an instance of this interface to make queries on the ballot.

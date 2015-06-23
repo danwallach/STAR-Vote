@@ -22,15 +22,14 @@
 
 package votebox.middle.test;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import junit.framework.TestCase;
 import votebox.middle.IncorrectTypeException;
 import votebox.middle.Properties;
 import votebox.middle.UnknownFormatException;
 import votebox.middle.UnknownTypeException;
 
-import junit.framework.TestCase;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class tests the behaviors that are defined in Properties.

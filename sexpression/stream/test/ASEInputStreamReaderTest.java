@@ -22,13 +22,12 @@
 
 package sexpression.stream.test;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-
+import junit.framework.TestCase;
 import sexpression.stream.ASEInputStreamReader;
 import sexpression.stream.InvalidVerbatimStreamException;
 
-import junit.framework.TestCase;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 
 /**
  * This class tests the parsing capability included in ASEInputStreamReader.

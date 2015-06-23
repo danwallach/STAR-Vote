@@ -22,9 +22,8 @@
 
 package preptool.view;
 
+import javax.swing.*;
 import java.util.ArrayList;
-
-import javax.swing.JPanel;
 
 /**
  * An interface that is passed to a PreviewPane and is called whenever the

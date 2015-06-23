@@ -22,10 +22,9 @@
 
 package verifier.ast;
 
-import verifier.*;
-import verifier.value.*;
-
-import sexpression.*;
+import sexpression.ASExpression;
+import verifier.ActivationRecord;
+import verifier.value.Value;
 
 /**
  * Instances which implement IAST represent concrete nodes in an abstract syntax

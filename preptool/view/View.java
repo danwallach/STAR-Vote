@@ -22,29 +22,6 @@
 
 package preptool.view;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import javax.swing.border.BevelBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.filechooser.FileFilter;
-import javax.swing.text.DefaultEditorKit;
-
 import preptool.controller.exception.BallotExportException;
 import preptool.controller.exception.BallotOpenException;
 import preptool.controller.exception.BallotPreviewException;
@@ -59,6 +36,23 @@ import preptool.view.dialog.LanguagesDialog;
 import preptool.view.dialog.PartiesDialog;
 import preptool.view.dragndrop.ListTransferHandler;
 import preptool.view.dragndrop.ListTransferListener;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import javax.swing.border.BevelBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.text.DefaultEditorKit;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Observable;
+import java.util.Observer;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 
 /**

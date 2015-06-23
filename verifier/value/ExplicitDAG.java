@@ -22,12 +22,7 @@
 
 package verifier.value;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Queue;
+import java.util.*;
 
 /**
  * Data structure for modelling a DAG of time explicitly as a graph.

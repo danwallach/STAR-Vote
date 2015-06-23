@@ -23,8 +23,12 @@
 package verifier.ast;
 
 import sexpression.ASExpression;
-import verifier.*;
-import verifier.value.*;
+import verifier.ActivationRecord;
+import verifier.FormatException;
+import verifier.value.AValueVisitor;
+import verifier.value.Expression;
+import verifier.value.IntValue;
+import verifier.value.Value;
 
 /**
  * Convert a string to its number equivalent.

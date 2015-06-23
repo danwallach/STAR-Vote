@@ -22,18 +22,18 @@
 
 package sim.autobooth;
 
-import sim.utils.*;
-
-import sexpression.*;
-import auditorium.*;
-import votebox.*;
+import auditorium.NetworkException;
+import sexpression.StringExpression;
+import sim.utils.ArgParse;
+import sim.utils.Time;
+import votebox.AuditoriumParams;
 import votebox.events.*;
 
-import java.util.*;
-
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.Timer;
+import java.util.Arrays;
+import java.util.HashMap;
 
 public class Booth {
     public static final String OPT_ID = "id";

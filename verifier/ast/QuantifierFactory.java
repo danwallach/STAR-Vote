@@ -22,11 +22,12 @@
 
 package verifier.ast;
 
+import sexpression.ASExpression;
+import sexpression.ListExpression;
+import verifier.ActivationRecord;
+import verifier.Binding;
+
 import java.util.ArrayList;
-
-import verifier.*;
-
-import sexpression.*;
 
 public abstract class QuantifierFactory extends ASTFactory {
 	private IQuantifierConstructor _constructor;

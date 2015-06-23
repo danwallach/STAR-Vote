@@ -22,9 +22,12 @@
 
 package verifier.ast;
 
-import sexpression.*;
-import verifier.*;
-import verifier.value.*;
+import sexpression.ASExpression;
+import sexpression.StringExpression;
+import verifier.ActivationRecord;
+import verifier.value.AValueVisitor;
+import verifier.value.Expression;
+import verifier.value.Value;
 
 public class Hash extends AST {
 

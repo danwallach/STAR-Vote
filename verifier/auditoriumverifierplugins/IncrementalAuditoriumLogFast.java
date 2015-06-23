@@ -22,13 +22,17 @@
 
 package verifier.auditoriumverifierplugins;
 
+import auditorium.IncorrectFormatException;
+import auditorium.Message;
+import sexpression.ASExpression;
+import verifier.*;
+import verifier.value.DAGValue;
+import verifier.value.Expression;
+import verifier.value.SetValue;
+import verifier.value.Value;
+
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import verifier.*;
-import verifier.value.*;
-import auditorium.*;
-import sexpression.*;
 
 /**
  * This verifier plugin maintains all-set and all-dag based on incremental log

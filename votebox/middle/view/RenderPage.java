@@ -22,16 +22,16 @@
 
 package votebox.middle.view;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-
 import votebox.middle.IBallotVars;
 import votebox.middle.IncorrectTypeException;
 import votebox.middle.Properties;
 import votebox.middle.ballot.IBallotLookupAdapter;
 import votebox.middle.driver.IAdapter;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 
 /**

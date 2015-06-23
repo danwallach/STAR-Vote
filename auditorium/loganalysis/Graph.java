@@ -22,11 +22,12 @@
 
 package auditorium.loganalysis;
 
+import auditorium.IncorrectFormatException;
+import auditorium.MessagePointer;
+import sexpression.stream.InvalidVerbatimStreamException;
+
 import java.io.*;
 import java.util.HashMap;
-
-import auditorium.*;
-import sexpression.stream.InvalidVerbatimStreamException;
 
 /**
  * Given a log file, generate a visual dag of the messages and print a

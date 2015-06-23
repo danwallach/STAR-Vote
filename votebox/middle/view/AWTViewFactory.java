@@ -22,9 +22,7 @@
 
 package votebox.middle.view;
 
-import java.awt.DisplayMode;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
+import java.awt.*;
 
 /**
  * This is the factory for the AWTView. It constructs AWTView and AWTImage

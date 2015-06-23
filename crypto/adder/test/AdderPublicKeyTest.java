@@ -1,10 +1,10 @@
 package crypto.adder.test;
 
+import crypto.adder.AdderInteger;
 import crypto.adder.AdderPublicKey;
+import crypto.adder.InvalidPublicKeyException;
 import junit.framework.TestCase;
 import junit.textui.TestRunner;
-import crypto.adder.AdderInteger;
-import crypto.adder.InvalidPublicKeyException;
 
 /**
  * Public key test.

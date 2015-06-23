@@ -22,9 +22,10 @@
 
 package verifier.ast;
 
-import sexpression.*;
-import verifier.*;
-import verifier.value.*;
+import sexpression.ASExpression;
+import verifier.ActivationRecord;
+import verifier.value.Reduction;
+import verifier.value.Value;
 
 public class Red extends AST {
 

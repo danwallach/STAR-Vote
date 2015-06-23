@@ -22,11 +22,15 @@
 
 package verifier.ast;
 
+import verifier.ActivationRecord;
+import verifier.Binding;
+import verifier.Box;
+import verifier.value.False;
+import verifier.value.Reduction;
+import verifier.value.True;
+import verifier.value.Value;
+
 import java.util.ArrayList;
-
-import verifier.*;
-
-import verifier.value.*;
 
 public class Forall extends Quantifier {
 

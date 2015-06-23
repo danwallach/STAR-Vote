@@ -22,15 +22,18 @@
 
 package votebox.middle.ballot;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import votebox.middle.IncorrectTypeException;
 import votebox.middle.Properties;
-import votebox.middle.driver.*;
+import votebox.middle.driver.DeselectionException;
+import votebox.middle.driver.IViewAdapter;
+import votebox.middle.driver.SelectionException;
+import votebox.middle.driver.UnknownUIDException;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * 

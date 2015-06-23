@@ -22,10 +22,6 @@
 
 package votebox.middle.view;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Observer;
-
 import supervisor.model.ObservableEvent;
 import votebox.middle.IBallotVars;
 import votebox.middle.IncorrectTypeException;
@@ -36,6 +32,10 @@ import votebox.middle.driver.IAdapter;
 import votebox.middle.driver.SelectionException;
 import votebox.middle.driver.UnknownUIDException;
 import votebox.middle.view.widget.ToggleButton;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Observer;
 
 /**
  * The ViewManager is our top level view encapsulation. Here, all top level view

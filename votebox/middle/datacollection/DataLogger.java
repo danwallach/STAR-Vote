@@ -22,17 +22,13 @@
 
 package votebox.middle.datacollection;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import sexpression.*;
+import sexpression.stream.ASEWriter;
+
+import java.io.*;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-
-import sexpression.*;
-import sexpression.stream.*;
 
 /**
  * A data logger is a simple wrapper around an s-expression output writer. It

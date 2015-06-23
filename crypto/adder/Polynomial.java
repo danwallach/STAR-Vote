@@ -2,8 +2,8 @@ package crypto.adder;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
 import java.util.NoSuchElementException;
+import java.util.StringTokenizer;
 
 /**
  * Class to represent a polynomial.  This class contains a vector

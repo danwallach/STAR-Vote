@@ -22,9 +22,10 @@
 
 package verifier.ast;
 
-import java.util.ArrayList;
+import verifier.ActivationRecord;
+import verifier.Binding;
 
-import verifier.*;
+import java.util.ArrayList;
 
 public interface IQuantifierConstructor {
 

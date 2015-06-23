@@ -22,7 +22,7 @@
 
 package verifier.util;
 
-import java.util.*;
+import java.util.TimerTask;
 
 public class MemoryHole {
 	private static final Runtime _runtime = Runtime.getRuntime();

@@ -22,10 +22,10 @@
 
 package verifier.ast;
 
-import java.util.ArrayList;
-
 import sexpression.ASExpression;
 import sexpression.ListExpression;
+
+import java.util.ArrayList;
 
 /**
  * Instances of this class are factories for primitives that have one argument

@@ -22,15 +22,17 @@
 
 package auditorium.test;
 
-import java.io.File;
-import java.io.FileInputStream;
-
 import auditorium.Certificate;
 import auditorium.HostPointer;
-
 import auditorium.Signature;
-import sexpression.*;
-import sexpression.stream.*;
+import sexpression.ASExpression;
+import sexpression.ListExpression;
+import sexpression.StringExpression;
+import sexpression.StringWildcard;
+import sexpression.stream.ASEInputStreamReader;
+
+import java.io.File;
+import java.io.FileInputStream;
 
 
 

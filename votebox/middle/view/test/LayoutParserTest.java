@@ -22,9 +22,7 @@
 
 package votebox.middle.view.test;
 
-import java.net.URL;
-import java.util.ArrayList;
-
+import junit.framework.TestCase;
 import votebox.middle.IBallotVars;
 import votebox.middle.Properties;
 import votebox.middle.view.Layout;
@@ -34,7 +32,9 @@ import votebox.middle.view.widget.Button;
 import votebox.middle.view.widget.FocusableLabel;
 import votebox.middle.view.widget.ToggleButton;
 import votebox.middle.view.widget.ToggleButtonGroup;
-import junit.framework.TestCase;
+
+import java.net.URL;
+import java.util.ArrayList;
 
 public class LayoutParserTest extends TestCase {
 

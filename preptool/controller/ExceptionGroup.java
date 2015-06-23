@@ -22,11 +22,10 @@
 
 package preptool.controller;
 
-import java.awt.Frame;
+import preptool.view.dialog.ExceptionDialog;
 
-import javax.swing.JFrame;
-
-import preptool.view.dialog.*;
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * Copied from http://www.javaspecialists.co.za/archive/Issue081.html

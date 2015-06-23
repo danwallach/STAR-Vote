@@ -22,7 +22,8 @@
 
 package verifier.value;
 
-import sexpression.*;
+import sexpression.ASExpression;
+import sexpression.StringExpression;
 
 /**
  * Instances of this class represent integer values in the verifier.

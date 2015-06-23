@@ -22,12 +22,11 @@
 
 package supervisor.view;
 
-import java.util.Observable;
-import java.util.Observer;
+import supervisor.model.Model;
 
 import javax.swing.*;
-
-import supervisor.model.Model;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  * The Supervisor's view. The common denominator is simply the frame, and the

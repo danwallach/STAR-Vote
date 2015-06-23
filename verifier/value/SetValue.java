@@ -22,11 +22,13 @@
 
 package verifier.value;
 
+import sexpression.ASExpression;
+import sexpression.ListExpression;
+import sexpression.StringExpression;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
-
-import sexpression.*;
 
 /**
  * Instances of this class represent internal set values.

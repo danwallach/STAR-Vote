@@ -22,11 +22,10 @@
 
 package sexpression.parser.test;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
-
 import sexpression.*;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Test pretty-parsing of s-expressions. The top level method call to

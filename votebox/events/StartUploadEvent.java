@@ -1,6 +1,9 @@
 package votebox.events;
 
-import sexpression.*;
+import sexpression.ASExpression;
+import sexpression.ListExpression;
+import sexpression.NoMatch;
+import sexpression.StringExpression;
 
 /**
  * An event that signifies to Tap that the supervisor will be sending over encrypted tallied ballots,

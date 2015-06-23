@@ -22,11 +22,8 @@
 
 package preptool.view.dragndrop;
 
+import javax.swing.*;
 import java.util.ArrayList;
-
-import javax.swing.DefaultListModel;
-import javax.swing.JComponent;
-import javax.swing.JList;
 
 /**
  * <p>

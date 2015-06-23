@@ -26,7 +26,6 @@ package preptool.model.ballot;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-
 import preptool.model.Party;
 import preptool.model.XMLTools;
 import preptool.model.language.Language;

@@ -22,10 +22,10 @@
 
 package votebox.middle.view.widget.test;
 
+import junit.framework.TestCase;
+
 import java.util.Observable;
 import java.util.Observer;
-
-import junit.framework.TestCase;
 
 public class ObservableTest extends TestCase{
 

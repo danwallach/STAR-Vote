@@ -23,8 +23,10 @@
 package verifier.ast;
 
 import sexpression.ASExpression;
-import verifier.value.*;
-import verifier.*;
+import verifier.ActivationRecord;
+import verifier.value.AValueVisitor;
+import verifier.value.IntValue;
+import verifier.value.Value;
 
 public abstract class Comparison extends AST {
 	public abstract Value compare(int left, int right);

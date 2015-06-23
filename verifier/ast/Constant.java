@@ -22,9 +22,13 @@
 
 package verifier.ast;
 
-import sexpression.*;
-import verifier.*;
-import verifier.value.*;
+import sexpression.ASExpression;
+import sexpression.ListExpression;
+import verifier.ActivationRecord;
+import verifier.value.False;
+import verifier.value.IntValue;
+import verifier.value.True;
+import verifier.value.Value;
 
 /**
  * This AST represents any identifier or number.

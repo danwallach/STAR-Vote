@@ -22,12 +22,14 @@
 
 package auditorium.test;
 
-import java.io.File;
-
-import org.junit.*;
-
 import auditorium.*;
-import sexpression.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import sexpression.ASExpression;
+import sexpression.ListExpression;
+
+import java.io.File;
 
 /**
  * Tests the functionality of the Auditorium key store

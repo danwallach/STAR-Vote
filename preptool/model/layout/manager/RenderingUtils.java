@@ -22,14 +22,14 @@
 
 package preptool.model.layout.manager;
 
+import printer.PrintImageUtils;
+
 import java.awt.*;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-
-import printer.PrintImageUtils;
 
 
 /**

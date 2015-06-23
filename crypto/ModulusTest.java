@@ -23,6 +23,7 @@
 package crypto;
 
 import junit.framework.TestCase;
+
 import java.math.BigInteger;
 
 public class ModulusTest extends TestCase {

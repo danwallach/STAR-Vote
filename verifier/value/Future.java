@@ -22,10 +22,10 @@
 
 package verifier.value;
 
+import sexpression.ASExpression;
+
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
-
-import sexpression.*;
 
 /**
  * A future represents a value being computed in parallel by another worker

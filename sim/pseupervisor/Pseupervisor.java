@@ -22,16 +22,18 @@
 
 package sim.pseupervisor;
 
-import sim.utils.*;
-
-import supervisor.model.*;
-
+import sim.utils.ArgParse;
+import sim.utils.Time;
+import supervisor.model.Model;
 import supervisor.model.machine.AMachine;
 import supervisor.model.machine.VoteBoxBooth;
-import votebox.*;
+import votebox.AuditoriumParams;
 
-import java.util.*;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Random;
 
 public class Pseupervisor {
 	static String OPT_AUTHORIZE_PERIOD_MIN = "auth-period-min";

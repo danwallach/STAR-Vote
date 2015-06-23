@@ -22,8 +22,11 @@
 
 package auditorium.test;
 
+import auditorium.AuditoriumHost;
+import auditorium.Bugout;
+import auditorium.HostPointer;
+import auditorium.ReleasedQueueException;
 import sexpression.StringExpression;
-import auditorium.*;
 import votebox.events.PollsClosedEvent;
 import votebox.events.PollsOpenEvent;
 

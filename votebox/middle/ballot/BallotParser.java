@@ -22,9 +22,15 @@
 
 package votebox.middle.ballot;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+import votebox.middle.IBallotVars;
+import votebox.middle.Properties;
+import votebox.middle.UnknownFormatException;
+import votebox.middle.UnknownTypeException;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -36,16 +42,11 @@ import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.SchemaFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-
-import votebox.middle.IBallotVars;
-import votebox.middle.Properties;
-import votebox.middle.UnknownFormatException;
-import votebox.middle.UnknownTypeException;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * This class encapsulates the ballot XML parser. The ballot xml stores model

@@ -1,12 +1,8 @@
 package supervisor.model;
 
 import crypto.ARaceSelection;
-import sexpression.ASEParser;
-import sexpression.ASExpression;
-import sexpression.ListExpression;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 /**

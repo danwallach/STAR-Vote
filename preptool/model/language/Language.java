@@ -22,16 +22,11 @@
 
 package preptool.model.language;
 
-import org.apache.commons.codec.language.bm.Lang;
 import preptool.view.View;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 /**
  * The Language class encapsulates an icon (flag), name, and short name

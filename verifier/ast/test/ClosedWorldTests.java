@@ -22,15 +22,17 @@
 
 package verifier.ast.test;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
-
+import sexpression.ASExpression;
+import sexpression.ListExpression;
+import sexpression.StringExpression;
 import verifier.*;
+import verifier.ast.ASTParser;
+import verifier.ast.Assert;
+import verifier.ast.Constant;
 import verifier.value.*;
-import verifier.ast.*;
 
-import sexpression.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * These test represent situations where the world is "closed" (every value in

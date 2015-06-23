@@ -22,9 +22,9 @@
 
 package auditorium.test;
 
-import sexpression.StringExpression;
 import auditorium.AuditoriumHost;
 import auditorium.HostPointer;
+import sexpression.StringExpression;
 
 /**
  * Start an auditorium host, run discovery, join everyone you find.

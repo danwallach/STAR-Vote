@@ -22,14 +22,18 @@
 
 package verifier;
 
-import java.io.*;
-import java.util.*;
-import sexpression.*;
-import sexpression.stream.*;
-import verifier.ast.*;
-import verifier.value.*;
+import sexpression.ASExpression;
+import sexpression.stream.ASEInputStreamReader;
+import verifier.ast.Assert;
+import verifier.util.MemoryHole;
+import verifier.util.ThreadTimer;
+import verifier.value.Reduction;
+import verifier.value.Value;
 
-import verifier.util.*;
+import java.io.EOFException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.HashMap;
 
 /** example command line:
  *

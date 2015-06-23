@@ -22,14 +22,11 @@
 
 package preptool.model.layout;
 
-import java.awt.Color;
-import java.awt.Dimension;
-
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
 import preptool.model.XMLTools;
+
+import java.awt.*;
 
 /**
  * A Button is a component that executes an action in VoteBox when clicked.

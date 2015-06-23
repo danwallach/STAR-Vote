@@ -22,7 +22,7 @@
 
 package votebox.middle.view;
 
-import java.awt.Rectangle;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;

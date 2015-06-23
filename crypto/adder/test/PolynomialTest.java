@@ -1,10 +1,10 @@
 package crypto.adder.test;
 
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
 import crypto.adder.AdderInteger;
 import crypto.adder.InvalidPolynomialException;
 import crypto.adder.Polynomial;
+import junit.framework.TestCase;
+import junit.textui.TestRunner;
 
 /**
  * Polynomial test.

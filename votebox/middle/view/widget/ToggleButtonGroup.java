@@ -22,12 +22,12 @@
 
 package votebox.middle.view.widget;
 
-import java.util.ArrayList;
-
 import votebox.middle.IncorrectTypeException;
 import votebox.middle.Properties;
 import votebox.middle.driver.IAdapter;
 import votebox.middle.view.IViewManager;
+
+import java.util.ArrayList;
 
 public class ToggleButtonGroup {
 

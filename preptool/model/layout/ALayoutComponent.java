@@ -22,13 +22,11 @@
 
 package preptool.model.layout;
 
-import java.awt.Dimension;
-
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
 import preptool.model.XMLTools;
+
+import java.awt.*;
 
 /**
  * ALayoutComponent is the abstract notion of anything that belongs on a Page,

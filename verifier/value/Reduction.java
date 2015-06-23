@@ -22,8 +22,10 @@
 
 package verifier.value;
 
-import verifier.ast.*;
-import sexpression.*;
+import sexpression.ASExpression;
+import sexpression.ListExpression;
+import sexpression.StringExpression;
+import verifier.ast.AST;
 
 /**
  * The verifier will evaluate an AST to a reduction if there isn't enough

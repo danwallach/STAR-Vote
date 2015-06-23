@@ -22,12 +22,11 @@
 
 package votebox.middle.view;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.SoftReference;
-
-import javax.imageio.ImageIO;
 
 /**
  * This is a wrapper for the AWT Image class, BufferedImage.

@@ -22,9 +22,6 @@
 
 package votebox.middle.view.widget;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-
 import javazoom.jl.player.Player;
 import votebox.middle.Event;
 import votebox.middle.IBallotVars;
@@ -32,11 +29,10 @@ import votebox.middle.Properties;
 import votebox.middle.ballot.IBallotLookupAdapter;
 import votebox.middle.driver.IAdapter;
 import votebox.middle.driver.UnknownUIDException;
-import votebox.middle.view.BallotBoxViewException;
-import votebox.middle.view.IFocusable;
-import votebox.middle.view.IViewFactory;
-import votebox.middle.view.IViewImage;
-import votebox.middle.view.IViewManager;
+import votebox.middle.view.*;
+
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
 
 
 /**

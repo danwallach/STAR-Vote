@@ -23,12 +23,8 @@
 package preptool.model.ballot;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
 import preptool.model.XMLTools;
 import preptool.model.ballot.module.CandidatesModule;
 import preptool.model.ballot.module.TextFieldModule;
@@ -37,6 +33,9 @@ import preptool.model.language.LiteralStrings;
 import preptool.model.layout.manager.ALayoutManager;
 import preptool.model.layout.manager.ALayoutManager.ICardLayout;
 import votebox.middle.Properties;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * PresidentialRaceCard is the implementation of an ACard that constitutes a

@@ -22,7 +22,8 @@
 
 package verifier.ast;
 
-import sexpression.*;
+import sexpression.ASExpression;
+import sexpression.ListExpression;
 
 /**
  * Instances of this class represent AST nodes that represent applications of

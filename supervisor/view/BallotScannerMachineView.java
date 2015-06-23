@@ -1,7 +1,7 @@
 package supervisor.view;
 
-import supervisor.model.machine.BallotScannerMachine;
 import supervisor.model.Model;
+import supervisor.model.machine.BallotScannerMachine;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;

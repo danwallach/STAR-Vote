@@ -22,7 +22,7 @@
 
 package verifier;
 
-import sexpression.*;
+import sexpression.ASExpression;
 
 /// Sub-interface of IVerifierPlugin that allows incremental addition of log
 /// entries and log closure.
