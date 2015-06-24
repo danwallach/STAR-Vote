@@ -1,12 +1,19 @@
 package sexpression.test;
 
 import crypto.PlaintextRaceSelection;
+import crypto.adder.AdderPublicKeyShare;
 import junit.framework.TestCase;
 import sexpression.ASEParser;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.StringWildcard;
+import supervisor.model.AdderKeyManipulator;
 
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,6 +53,33 @@ public class ASEParserTest extends TestCase{
         ListExpression sExp = ASEParser.convertToASE(s);
         StringWildcard s2 = ASEParser.convertFromASE(sExp);
         assertEquals(s,s2);
+
+        /* Load the seed key */
+        JFileChooser chooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Keys", "key");
+        chooser.setFileFilter(filter);
+        int returnVal = chooser.showOpenDialog(null);
+        if(returnVal == JFileChooser.APPROVE_OPTION) {
+            System.out.println("You chose to open this file: " +
+                    chooser.getSelectedFile().getName());
+        }
+
+        File seedKeyFile = chooser.getSelectedFile();
+        Path seedKeyPath = seedKeyFile.toPath();
+
+
+
+        try {
+            byte[] verbatimSeedKey = Files.readAllBytes(seedKeyPath);
+            ASExpression seedKeyASE = ASExpression.makeVerbatim(verbatimSeedKey);
+            System.out.println(seedKeyASE);
+            AdderPublicKeyShare seedKey = ASEParser.convertFromASE((ListExpression)seedKeyASE);
+
+            AdderKeyManipulator.setSeedKey(seedKey);
+        }
+        catch (Exception e) { throw new RuntimeException("Couldn't use the key file");}
+
+
     }
 
     public void testToASE(){

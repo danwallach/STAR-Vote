@@ -1,6 +1,6 @@
 package models;
 
-import crypto.AHomomorphicCiphertext;
+import crypto.ExponentialElGamalCiphertext;
 import org.apache.commons.codec.binary.Base64;
 import play.db.ebean.Model;
 import supervisor.model.Precinct;
@@ -42,16 +42,16 @@ public class VotingRecord extends Model {
      * @param records           the Map of supervisor hash to voting record (if more than one
      *                          hash exist, they are in conflict)
      */
-    public VotingRecord(String precinctID, Map<String, Map<String, Precinct>> records) {
+    public VotingRecord(String precinctID, Map<String, Map<String, Precinct<ExponentialElGamalCiphertext>>> records) {
 
         this.precinctID = precinctID;
         isConflicted = (records.size() > 1);
         
-        for (Map.Entry<String, Map<String, Precinct>> entry : records.entrySet())
+        for (Map.Entry<String, Map<String, Precinct<ExponentialElGamalCiphertext>>> entry : records.entrySet())
             supervisorRecords.put(entry.getKey(), new SupervisorRecord(this, entry.getKey(), recordToString(entry.getValue())));
     }
 
-    private String recordToString(Map<String, Precinct> s) {
+    private String recordToString(Map<String, Precinct<ExponentialElGamalCiphertext>> s) {
         
         String encoded = null;
   
@@ -70,15 +70,15 @@ public class VotingRecord extends Model {
         return encoded;
     }
     
-    private Map<String, Precinct> StringToRecord(String s) {
+    private Map<String, Precinct<ExponentialElGamalCiphertext>> StringToRecord(String s) {
         
         byte[] bytes = Base64.decodeBase64(s.getBytes());
-        Map<String, Precinct> record = null;
+        Map<String, Precinct<ExponentialElGamalCiphertext>> record = null;
   
 
         try {
             ObjectInputStream objectInputStream = new ObjectInputStream(new ByteArrayInputStream(bytes));
-            record = (Map<String, Precinct>)objectInputStream.readObject();
+            record = (Map<String, Precinct<ExponentialElGamalCiphertext>>)objectInputStream.readObject();
         } 
         catch (IOException | ClassNotFoundException | ClassCastException e) { e.printStackTrace(); } 
   
@@ -122,7 +122,7 @@ public class VotingRecord extends Model {
      * Retrieves the map of Precincts for this VotingRecord if there are no conflicts
      * and the VotingRecord has been published
      */
-    public Map<String, Precinct> getPrecinctMap() {
+    public Map<String, Precinct<ExponentialElGamalCiphertext>> getPrecinctMap() {
         
         if (isPublished) {
 

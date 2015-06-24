@@ -1,4 +1,5 @@
 import com.avaje.ebean.Ebean;
+import crypto.adder.AdderInteger;
 import crypto.adder.AdderPublicKeyShare;
 import play.Application;
 import play.GlobalSettings;
@@ -36,7 +37,11 @@ public class Global extends GlobalSettings {
     @Override
     public void onStart(Application app) {
                
-       
+       AdderPublicKeyShare pks = new AdderPublicKeyShare(AdderInteger.ONE,AdderInteger.ONE,AdderInteger.ONE);
+
+        System.out.println(pks.getClass().getName());
+
+
         System.out.println("Initializing the Ballot Loader");
         BallotLoader.init();
         if (models.User.find.findRowCount() == 0) {
@@ -61,11 +66,12 @@ public class Global extends GlobalSettings {
         try {
             byte[] verbatimSeedKey = Files.readAllBytes(seedKeyPath);
             ASExpression seedKeyASE = ASExpression.makeVerbatim(verbatimSeedKey);
+            System.out.println(seedKeyASE);
             AdderPublicKeyShare seedKey = ASEParser.convertFromASE((ListExpression)seedKeyASE);
 
             AdderKeyManipulator.setSeedKey(seedKey);
         }
-        catch (Exception e) { throw new RuntimeException("Couldn't use the key file");}
+        catch (Exception e) { e.printStackTrace(); throw new RuntimeException("Couldn't use the key file");}
 
 
 

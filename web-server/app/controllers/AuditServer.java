@@ -1,10 +1,7 @@
 package controllers;
 
 import auditorium.SimpleKeyStore;
-import crypto.AHomomorphicCiphertext;
-import crypto.BallotCrypto;
-import crypto.EncryptedRaceSelection;
-import crypto.PlaintextRaceSelection;
+import crypto.*;
 import crypto.adder.AdderPrivateKeyShare;
 import models.*;
 import play.data.Form;
@@ -56,14 +53,14 @@ public class AuditServer extends Controller {
      */
     private static void loadTestRecords() {
 
-        Map<String, Map<String, Precinct>> records = new HashMap<>();
+        Map<String, Map<String, Precinct<ExponentialElGamalCiphertext>>> records = new HashMap<>();
 
         for(int i = 0; i < 3; i++) {
 
-            Map<String, Precinct> hashes = new HashMap<>();
+            Map<String, Precinct<ExponentialElGamalCiphertext>> hashes = new HashMap<>();
 
             for(int j = 0; j < 3; j++)
-                hashes.put(j+"", new Precinct(j+"", ""));
+                hashes.put(j+"", new Precinct<ExponentialElGamalCiphertext>(j+"", ""));
 
             records.put("record" + i, hashes);
 
@@ -74,9 +71,9 @@ public class AuditServer extends Controller {
 
             records = new HashMap<>();
 
-            Map<String, Precinct> hashes = new HashMap<>();
+            Map<String, Precinct<ExponentialElGamalCiphertext>> hashes = new HashMap<>();
 
-            hashes.put("1", new Precinct("1", ""));
+            hashes.put("1", new Precinct<ExponentialElGamalCiphertext>("1", ""));
 
             records.put("record" + i, hashes);
 
@@ -134,7 +131,7 @@ public class AuditServer extends Controller {
      * @return      the admin page of the website
      */
     public static Result adminverify() {
-        return ok(adminlogin.render(form(Login.class), null));
+        return ok(adminlogin.render(form("adminlogin",Login.class), null));
     }
 
     @Security.Authenticated(AdminSecured.class)
@@ -198,9 +195,9 @@ public class AuditServer extends Controller {
 
         int start = 0;
 
-        Map<String, Ballot<EncryptedRaceSelection>> summedTotals = getSummedTotals();
-        Map<String, List<Ballot<EncryptedRaceSelection>>> precinctTotals = new TreeMap<>();
-        Map<String, Precinct> precinctMap = new TreeMap<>();
+        Map<String, Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>>> summedTotals = getSummedTotals();
+        Map<String, List<Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>>>> precinctTotals = new TreeMap<>();
+        Map<String, Precinct<ExponentialElGamalCiphertext>> precinctMap;
         
         /* Grab each selected precinct and publish it */
         while(start < records.length()) {
@@ -227,7 +224,7 @@ public class AuditServer extends Controller {
 
             /* Add the results from the Precincts in this VotingRecord to precinctTotals */
             System.out.println("Updating Precinct Totals: ");
-            precinctTotals = updatePrecinctTotals((Map)precinctMap);
+            precinctTotals = updatePrecinctTotals(precinctMap);
 
             /* Move on to the next VotingRecord to be published */
             start = end+1;
@@ -239,7 +236,7 @@ public class AuditServer extends Controller {
 
         /* Decrypt and store the final updated totals for each Precinct */
         System.out.println("Storing Decrypted Summed Totals: ");
-        storeDecryptedSummedTotals(summedTotals, precinctMap);
+        storeDecryptedSummedTotals(summedTotals);
 
         /* Return the webpage */
         return ok(adminpublish.render(VotingRecord.getUnpublished(), VotingRecord.getPublished()));
@@ -260,7 +257,7 @@ public class AuditServer extends Controller {
      * @return      the authority login page of the website
      */
     public static Result authorityverify() {
-        return ok(authoritylogin.render(form(Login.class), null));
+        return ok(authoritylogin.render(form("authoritylogin", Login.class), null));
     }
 
     /**
@@ -334,13 +331,13 @@ public class AuditServer extends Controller {
     /**
      * @return a Map of the current summed results Ballot for each Precinct by precinct ID
      */
-    private static Map<String, Ballot<EncryptedRaceSelection>> getSummedTotals() {
+    private static Map<String, Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>>> getSummedTotals() {
 
-        Map<String, Ballot<EncryptedRaceSelection>> summedTotals = new TreeMap<>();
+        Map<String, Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>>> summedTotals = new TreeMap<>();
 
         /* Extract the precinct ID and ENCRYPTED results Ballot from each DecryptedResult */
         for(DecryptedResult result : DecryptedResult.all())
-            summedTotals.put(result.precinctID, result.precinctResultsBallot);
+                summedTotals.put(result.precinctID, result.precinctResultsBallot);
 
         return summedTotals;
     }
@@ -353,19 +350,20 @@ public class AuditServer extends Controller {
      *                      
      * @return the updated precinctTotals
      */
-    private static <T extends AHomomorphicCiphertext<T>> Map<String, List<Ballot<EncryptedRaceSelection>>> updatePrecinctTotals(Map<String, Precinct<T>> precinctMap) {
+    private static Map<String, List<Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>>>> updatePrecinctTotals(
+            Map<String, Precinct<ExponentialElGamalCiphertext>> precinctMap) {
 
-        Map<String, List<Ballot<EncryptedRaceSelection>>> precinctTotals = new TreeMap<>();
+        Map<String, List<Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>>>> precinctTotals = new TreeMap<>();
 
         /* Get the cast ballot totals for each precinct in this voting record */
-        for (Map.Entry<String, Precinct<T>> entry : precinctMap.entrySet()) {
+        for (Map.Entry<String, Precinct<ExponentialElGamalCiphertext>> entry : precinctMap.entrySet()) {
 
-            Precinct<T> p = entry.getValue();
+            Precinct<ExponentialElGamalCiphertext> p = entry.getValue();
             String precinctID = entry.getKey();
 
             /* Initialise the list for this precinct if we haven't yet seen it */
             if (precinctTotals.get(precinctID) == null)
-                precinctTotals.put(precinctID, new ArrayList<Ballot<EncryptedRaceSelection>>());
+                precinctTotals.put(precinctID, new ArrayList<Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>>>());
 
             System.out.println("Precinct totals: " + precinctTotals);
             System.out.println("P: " + p);
@@ -419,9 +417,8 @@ public class AuditServer extends Controller {
      * Decrypts and stores the summed totals (the public running tally). Helper method for publishresults()
      *
      * @param summedTotals  the public running tally of totals mapped from precinct ID to precinct results Ballot
-     * @param precinctMap   the map of Precincts from precinct IDs
      */
-    private static void storeDecryptedSummedTotals(Map<String, Ballot<EncryptedRaceSelection>> summedTotals, Map<String, Precinct> precinctMap) {
+    private static void storeDecryptedSummedTotals(Map<String, Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>>> summedTotals) {
 
         SimpleKeyStore keyStore = new SimpleKeyStore("/lib/keys/");
         AdderPrivateKeyShare privateKey = keyStore.loadAdderPrivateKey();
@@ -429,9 +426,9 @@ public class AuditServer extends Controller {
         System.out.println("Decrypting summedTotals...");
 
         /* Decrypt summedTotals */
-        for(Map.Entry<String, Ballot<EncryptedRaceSelection>> entry : summedTotals.entrySet()) {
+        for(Map.Entry<String, Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>>> entry : summedTotals.entrySet()) {
 
-            Ballot<EncryptedRaceSelection> b = entry.getValue();
+            Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>> b = entry.getValue();
             String precinctID = entry.getKey();
 
             Ballot<PlaintextRaceSelection> decryptB = null;
@@ -516,11 +513,11 @@ public class AuditServer extends Controller {
 
         /* Decode from base64 */
         byte[] bytes = Base64.decode(record);
-        Map<String, Map<String, Precinct>> votingRecord = null;
+        Map<String, Map<String, Precinct<ExponentialElGamalCiphertext>>> votingRecord = null;
 
         try {
             ObjectInputStream o = new ObjectInputStream(new ByteArrayInputStream(bytes));
-            votingRecord = (Map<String, Map<String, Precinct>>) o.readObject();
+            votingRecord = (Map<String, Map<String, Precinct<ExponentialElGamalCiphertext>>>) o.readObject();
         }
         catch (IOException | ClassNotFoundException | ClassCastException e) { e.printStackTrace(); }
 
@@ -561,6 +558,7 @@ public class AuditServer extends Controller {
     public static Result authenticate() {
         Form<Login> loginForm = form(Login.class).bindFromRequest();
 
+        System.out.println(loginForm.name());
         if (loginForm.hasErrors()) {
             return loginForm.name().equals("adminlogin") ? badRequest(adminlogin.render(loginForm, null)) :
                                                            badRequest(authoritylogin.render(loginForm, null));
