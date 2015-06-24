@@ -1,21 +1,21 @@
 @(message: String, name: String, stage: Integer)
 
 
-<script>
+@authority(name, "Key Generation" ) {
 
-function doIt(event) {
+    <script>
+
+    function doIt(event) {
     var form = document.forms[event.target.id];
     form.action = "/authority/keygeneration";
     form.submit();
 
-return true;
-}
+    return true;
+    }
 
-</script>
+    </script>
 
 
-
-@authority(name, "Key Generation" ) {
 
     @if(stage == 4) {
 
