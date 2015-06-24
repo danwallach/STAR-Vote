@@ -25,7 +25,7 @@ public interface ICryptoType extends Serializable {
      * @throws CipherException
      * @throws crypto.exceptions.KeyNotLoadedException
      */
-    public byte[] decrypt(AHomomorphicCiphertext cipherText) throws InvalidKeyException, KeyNotLoadedException, CipherException, CiphertextException;
+    public <T extends AHomomorphicCiphertext> byte[] decrypt(T cipherText) throws InvalidKeyException, KeyNotLoadedException, CipherException, CiphertextException;
 
     /**
      * Encrypts a plainText according to the ICryptoType's protocol.

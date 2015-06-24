@@ -34,7 +34,7 @@ public class ByteCrypto {
      * @throws CipherException
      * @throws CiphertextException
      */
-    public byte[] decrypt(AHomomorphicCiphertext cipherText) throws KeyNotLoadedException, InvalidKeyException, CipherException, CiphertextException {
+    public <T extends AHomomorphicCiphertext<T>> byte[] decrypt(T cipherText) throws KeyNotLoadedException, InvalidKeyException, CipherException, CiphertextException {
 
         return cryptoType.decrypt(cipherText);
     }

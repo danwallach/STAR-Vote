@@ -38,14 +38,15 @@ public class RaceSelectionCrypto {
      * @throws CipherException
      * @throws CiphertextException
      */
-    public PlaintextRaceSelection decrypt(EncryptedRaceSelection raceSelection) throws UninitialisedException, KeyNotLoadedException, InvalidKeyException, CipherException, CiphertextException {
+    public <T extends AHomomorphicCiphertext<T>> PlaintextRaceSelection decrypt(
+            EncryptedRaceSelection<T> raceSelection) throws UninitialisedException, KeyNotLoadedException, InvalidKeyException, CipherException, CiphertextException {
 
         /* Get the map from the race selection */
-        Map<String, AHomomorphicCiphertext> cipherMap = raceSelection.getRaceSelectionsMap();
+        Map<String, T> cipherMap = raceSelection.getRaceSelectionsMap();
         Map<String, Integer> raceSelectionMap = new HashMap<>();
 
         /* Cycle over each of the candidates in the cipherMap */
-        for(Map.Entry<String, AHomomorphicCiphertext> cur : cipherMap.entrySet()) {
+        for(Map.Entry<String, T> cur : cipherMap.entrySet()) {
 
             AHomomorphicCiphertext encryptedChoice = cur.getValue();
             String candidate = cur.getKey();

@@ -142,7 +142,7 @@ public class Precinct<T extends AHomomorphicCiphertext<T>> implements Serializab
      * @return          a Ballot representing the sum total of all of the votes
      *                  cast in this precinct
      */
-    public Ballot<EncryptedRaceSelection> getCastBallotTotal(IPublicKey PEK){
+    public Ballot<EncryptedRaceSelection<T>> getCastBallotTotal(IPublicKey PEK){
 
         int size=0;
 
@@ -192,7 +192,7 @@ public class Precinct<T extends AHomomorphicCiphertext<T>> implements Serializab
         }
 
         /* This will hold the final list of summed Votes to be put into a Ballot */
-        ArrayList<EncryptedRaceSelection> votes = new ArrayList<>();
+        ArrayList<EncryptedRaceSelection<T>> votes = new ArrayList<>();
 
         /* This will be used to create the nonce eventually */
         ArrayList<ASExpression> voteASE = new ArrayList<>();
@@ -204,7 +204,7 @@ public class Precinct<T extends AHomomorphicCiphertext<T>> implements Serializab
             Race thisRace = results.get(id);
 
             /* Get the homomorphically tallied vote for this race */
-            EncryptedRaceSelection vote = results.get(id).sumRaceSelections();
+            EncryptedRaceSelection<T> vote = results.get(id).sumRaceSelections();
 
 
             /* Verify the voteProof and error off if bad */

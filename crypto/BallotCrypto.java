@@ -41,13 +41,13 @@ public class BallotCrypto {
      * @param ballot    a Ballot containing EncryptedVotes
      * @return          a Ballot containing PlaintextVotes which are the decrypted EncryptedVotes
      */
-    public static Ballot<PlaintextRaceSelection> decrypt(Ballot<EncryptedRaceSelection> ballot)
+    public static <T extends AHomomorphicCiphertext<T>> Ballot<PlaintextRaceSelection> decrypt(Ballot<EncryptedRaceSelection<T>> ballot)
             throws UninitialisedException, KeyNotLoadedException, InvalidKeyException, CipherException, CiphertextException {
 
         List<PlaintextRaceSelection> raceSelections = new ArrayList<>();
 
         /* Go through each of the EncryptedVotes and decrypt, then add to the list of PlaintextVotes*/
-        for(EncryptedRaceSelection ev : ballot.getRaceSelections()) {
+        for(EncryptedRaceSelection<T> ev : ballot.getRaceSelections()) {
             raceSelections.add(raceSelectionCrypter.decrypt(ev));
         }
 

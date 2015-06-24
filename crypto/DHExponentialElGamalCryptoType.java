@@ -41,7 +41,7 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
      * @throws CipherException
      * @throws CiphertextException
      */
-    public byte[] decrypt(AHomomorphicCiphertext ciphertext) throws InvalidKeyException, KeyNotLoadedException, CipherException, CiphertextException {
+    public <T extends AHomomorphicCiphertext> byte[] decrypt(T ciphertext) throws InvalidKeyException, KeyNotLoadedException, CipherException, CiphertextException {
 
         /* Check if this is the right type of AHomomorphicCiphertext */
         if(!(ciphertext instanceof ExponentialElGamalCiphertext))
@@ -171,7 +171,6 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
      * @throws InvalidKeyException
      * @throws KeyNotLoadedException
      */
-    @SuppressWarnings("unchecked")
     public ExponentialElGamalCiphertext encrypt(byte[] plainText) throws CipherException, InvalidKeyException, KeyNotLoadedException {
 
         if(PEK == null)
