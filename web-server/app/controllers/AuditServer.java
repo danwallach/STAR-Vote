@@ -192,7 +192,7 @@ public class AuditServer extends Controller {
     }
     
     @Security.Authenticated(AdminSecured.class)
-    public static <T extends AHomomorphicCiphertext<T>> Result publishresults() {
+    public static Result publishresults() {
 
         /* Reverse routing */
         String records = request().getQueryString("records");
@@ -387,7 +387,7 @@ public class AuditServer extends Controller {
      * @param precinctTotals    the map of just-published Precinct result totals, mapped from precinct ID to a list of ballots
      * @param summedTotals      the public running tally of totals mapped from precinct ID to precinct results Ballot
      */
-    private static <T extends AHomomorphicCiphertext<T>> void  updateSummedTotals(
+    private static void  updateSummedTotals(
             Map<String, Ballot<EncryptedRaceSelection>> summedTotals, Map<String, List<Ballot<EncryptedRaceSelection>>> precinctTotals) {
 
         /* Update summed totals that already exist */
