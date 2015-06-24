@@ -24,7 +24,6 @@ package tap;
 
 import auditorium.IAuditoriumParams;
 import auditorium.NetworkException;
-import org.apache.commons.codec.binary.*;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
