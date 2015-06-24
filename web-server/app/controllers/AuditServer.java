@@ -353,7 +353,7 @@ public class AuditServer extends Controller {
      *                      
      * @return the updated precinctTotals
      */
-    private static <T extends AHomomorphicCiphertext<T>> Map<String, List<Ballot<EncryptedRaceSelection>>> updatePrecinctTotals(Map<String, Precinct> precinctMap) {
+    private static <T extends AHomomorphicCiphertext<T>> Map<String, List<Ballot<EncryptedRaceSelection>>> updatePrecinctTotals(Map<String, Precinct<T>> precinctMap) {
 
         Map<String, List<Ballot<EncryptedRaceSelection>>> precinctTotals = new TreeMap<>();
 
@@ -373,7 +373,7 @@ public class AuditServer extends Controller {
             System.out.println("Precinct ID: " + precinctID);
 
             /* Store the total for that precinct in the list */
-            precinctTotals.get(precinctID).add(p.getCastBallotTotal(PEK));
+            precinctTotals.get(precinctID).add(p.getCastBallotTotal(AdderKeyManipulator.generatePublicEncryptionKey()));
         }
 
         return precinctTotals;
@@ -407,7 +407,7 @@ public class AuditServer extends Controller {
             System.out.println("Updating the precinct totals...");
 
             /* Tally the new precinctTotals using WebServerTallier*/
-            Ballot<EncryptedRaceSelection<T>> b = WebServerTallier.tally(precinctID, thisPrecinctTotal, PEK);
+            Ballot<EncryptedRaceSelection<T>> b = WebServerTallier.tally(precinctID, thisPrecinctTotal, AdderKeyManipulator.generatePublicEncryptionKey());
 
             /* Replace old totals with new totals */
             summedTotals.put(precinctID, b);

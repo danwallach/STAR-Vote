@@ -16,7 +16,7 @@ public class AdderKeyManipulator {
     /** A LaGrange polynomial for the Exponential-ElGamal homomorphic process. */
     private static Polynomial _poly = null;
 
-    private final static int maxAuth =1;
+    private final static int maxAuth = 3;
     private static Map<String, AdderPublicKeyShare> keyShares = new TreeMap<>();
     private static Map<String, AdderPrivateKeyShare> prkeyShares = new TreeMap<>();
     private static Map<String, List<ExponentialElGamalCiphertext>> polyMap = new TreeMap<>();
@@ -30,6 +30,7 @@ public class AdderKeyManipulator {
     private static Set<String> stage3participants = new TreeSet<>();
 
     private static AdderPublicKeyShare seedKey;
+    private static boolean alreadyGenerated = false;
 
     /**
      * Sets the initial rnandomness key for this procedure.
@@ -37,15 +38,15 @@ public class AdderKeyManipulator {
      * @param seed      the AdderPublicKeyShare containing the initial randomness to be used in authority key generation
      */
     public static void setSeedKey(AdderPublicKeyShare seed){
-        if (seedKey != null)
+        if (seedKey == null)
             seedKey = seed;
         else System.err.println("Seed key was not set because it already has been set!");
     }
 
     public static int getStage(String auth) {
         return stage3participants.contains(auth) ? 4 :
-               stage2participants.contains(auth) ? 3 :
-               stage1participants.contains(auth) ? 2 : 1;
+                stage2participants.contains(auth) ? 3 :
+                        stage1participants.contains(auth) ? 2 : 1;
     }
 
     /**
@@ -74,10 +75,10 @@ public class AdderKeyManipulator {
                         /* Return the PrivateKeyShare for this authority */
                         return prkeyShares.get(auth);
 
-                    } else throw new KeyGenerationException("An authority attempted to generate a keyPair more than once!");
-                } else throw new KeyGenerationException("An authority with invalid authNum attempted to generate a keyPair");
+                    } else throw new KeyGenerationException("An authority (" + auth + ") attempted to generate a keyPair more than once!");
+                } else throw new KeyGenerationException("An authority (" + auth + ") with invalid authNum attempted to generate a keyPair");
             } else throw new KeyGenerationException("KeySharePair generation stage cannot operate once polynomial stage has begun.");
-        } else throw new KeyGenerationException("An authority attempted to generate a keyPair but no seed key has been loaded.");
+        } else throw new KeyGenerationException("An authority (" + auth + ") attempted to generate a keyPair but no seed key has been loaded.");
     }
 
     /**
@@ -92,9 +93,9 @@ public class AdderKeyManipulator {
         if (stage1participants.size() >= safetyThreshold) {
             if(stage3participants.isEmpty()) {
                 if (stage1participants.contains(auth)) {
-                    if (polyMap.get(auth) != null) {
+                    if (!stage2participants.contains(auth)) {
 
-                /* Create polynomial */
+                        /* Create polynomial */
                         Polynomial authPoly = new Polynomial(seedKey.getP(), seedKey.getG(), seedKey.getF(), keyShares.size() - 1);
                         List<ExponentialElGamalCiphertext> valueList = new ArrayList<>();
 
@@ -104,20 +105,20 @@ public class AdderKeyManipulator {
                             valueList.add(keyShares.get(a).encryptPoly(authPoly.evaluate(new AdderInteger(a, seedKey.getQ()))));
                         }
 
-                    /* Put this into the encrypted polynomial values map */
+                        /* Put this into the encrypted polynomial values map */
                         polyMap.put(auth, valueList);
 
                         AdderInteger g = seedKey.getG();
                         AdderInteger q = seedKey.getQ();
 
-                    /* Calculate G_{i,l} for l=0 (0 is all used in algorithm, but in paper, l=0...decryptionThreshold-1) */
+                        /* Calculate G_{i,l} for l=0 (0 is all used in algorithm, but in paper, l=0...decryptionThreshold-1) */
                         AdderInteger bigG = g.pow(authPoly.evaluate(new AdderInteger(AdderInteger.ZERO, q)));
                         GMap.put(auth, bigG);
 
                         stage2participants.add(auth);
 
-                    } else throw new InvalidPolynomialException("An authority attempted to generate polynomial values more than once!");
-                } else throw new InvalidPolynomialException("This authority did not complete KeySharePair generation stage!");
+                    } else throw new InvalidPolynomialException("An authority (" + auth + ") attempted to generate polynomial values more than once!");
+                } else throw new InvalidPolynomialException("This authority (" + auth + ") did not complete KeySharePair generation stage!");
             } else throw new InvalidPolynomialException("Polynomial stage cannot operate once PrivateKeyShare regeneration stage has begun.");
         } else throw new InvalidPolynomialException("Polynomial stage cannot be initiated due to safety threshold.");
     }
@@ -129,52 +130,55 @@ public class AdderKeyManipulator {
      * was sourced from a random initial AdderPublicKeyShare.
      *
      * @param auth       the number identifier for the authority to participate in this step
-     * @param authKeyShare  the AdderPrivateKeyShare associated with this authority
+     * param authKeyShare  the AdderPrivateKeyShare associated with this authority
      *
      * @return the final private key
      */
-    public static AdderPrivateKeyShare generateRealPrivateKeyShare(String auth/*, AdderPrivateKeyShare authKeyShare*/) {
+    public static AdderPrivateKeyShare generateRealPrivateKeyShare(String auth/*, AdderPrivateKeyShare authKeyShare*/) throws KeyGenerationException {
 
         if (stage2participants.size() >= safetyThreshold) {
             if (stage2participants.contains(auth)) {
+                if (!alreadyGenerated) {
 
-                AdderPrivateKeyShare authKeyShare = prkeyShares.get(auth);
+                    AdderPrivateKeyShare authKeyShare = prkeyShares.get(auth);
 
-                AdderInteger g = authKeyShare.getG();
-                AdderInteger q = authKeyShare.getQ();
-                AdderInteger x = authKeyShare.getX();
-                AdderInteger p = authKeyShare.getP();
-                AdderInteger f = authKeyShare.getF();
+                    AdderInteger g = authKeyShare.getG();
+                    AdderInteger q = authKeyShare.getQ();
+                    AdderInteger x = authKeyShare.getX();
+                    AdderInteger p = authKeyShare.getP();
+                    AdderInteger f = authKeyShare.getF();
 
-                AdderInteger total = new AdderInteger(AdderInteger.ZERO, q);
+                    AdderInteger total = new AdderInteger(AdderInteger.ZERO, q);
 
-                for (ExponentialElGamalCiphertext encryptedAuthorityPoly : polyMap.get(auth)) {
+                    for (ExponentialElGamalCiphertext encryptedAuthorityPoly : polyMap.get(auth)) {
 
-                /* Decrypt the polynomial manually (reverse polynomial operation) */
-                    AdderInteger eL = encryptedAuthorityPoly.getG();
-                    AdderInteger eR = encryptedAuthorityPoly.getH();
-                    AdderInteger product = eL.pow(x.negate()).multiply(eR);
-                    AdderInteger qPlusOneOverTwo = q.add(AdderInteger.ONE).divide(AdderInteger.TWO);
-                    AdderInteger posInverse = product.pow(qPlusOneOverTwo);
-                    AdderInteger negInverse = posInverse.negate();
-                    AdderInteger inverse;
+                        /* Decrypt the polynomial manually (reverse polynomial operation) */
+                        AdderInteger eL = encryptedAuthorityPoly.getG();
+                        AdderInteger eR = encryptedAuthorityPoly.getH();
+                        AdderInteger product = eL.pow(x.negate()).multiply(eR);
+                        AdderInteger qPlusOneOverTwo = q.add(AdderInteger.ONE).divide(AdderInteger.TWO);
+                        AdderInteger posInverse = product.pow(qPlusOneOverTwo);
+                        AdderInteger negInverse = posInverse.negate();
+                        AdderInteger inverse;
 
-                    if (posInverse.compareTo(negInverse) < 0) {
-                        inverse = posInverse;
-                    } else {
-                        inverse = negInverse;
+                        if (posInverse.compareTo(negInverse) < 0) {
+                            inverse = posInverse;
+                        } else {
+                            inverse = negInverse;
+                        }
+
+                        inverse = inverse.subtract(AdderInteger.ONE);
+
+                        total = total.add(inverse);
                     }
 
-                    inverse = inverse.subtract(AdderInteger.ONE);
+                    stage3participants.add(auth);
 
-                    total = total.add(inverse);
-                }
+                    return new AdderPrivateKeyShare(p, g, total, f);
 
-                stage3participants.add(auth);
-
-                return new AdderPrivateKeyShare(p, g, total, f);
-            } else throw new InvalidPrivateKeyException("This authority did not complete polynomial stage!");
-        } else throw new InvalidPrivateKeyException("PrivateKeyShare regeneration stage cannot be initiated due to safety threshold.");
+                } else throw new KeyGenerationException("Public encryption key generation already occurred!");
+            } else throw new KeyGenerationException("This authority (" + auth + ") did not complete polynomial stage!");
+        } else throw new KeyGenerationException("PrivateKeyShare regeneration stage cannot be initiated due to safety threshold.");
 
     }
 
@@ -192,6 +196,8 @@ public class AdderKeyManipulator {
             for (String participant : stage2participants) {
                 finalH.multiply(GMap.get(participant));
             }
+
+            alreadyGenerated = true;
 
             return new AdderPublicKey(seedKey.getP(),seedKey.getG(),finalH,seedKey.getF());
 
