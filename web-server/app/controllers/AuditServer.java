@@ -6,7 +6,6 @@ import crypto.BallotCrypto;
 import crypto.EncryptedRaceSelection;
 import crypto.PlaintextRaceSelection;
 import crypto.adder.AdderPrivateKeyShare;
-import crypto.adder.AdderPublicKey;
 import models.*;
 import play.data.Form;
 import play.mvc.Controller;
@@ -366,7 +365,7 @@ public class AuditServer extends Controller {
 
             /* Initialise the list for this precinct if we haven't yet seen it */
             if (precinctTotals.get(precinctID) == null)
-                precinctTotals.put(precinctID, new ArrayList<>());
+                precinctTotals.put(precinctID, new ArrayList<Ballot<EncryptedRaceSelection>>());
 
             System.out.println("Precinct totals: " + precinctTotals);
             System.out.println("P: " + p);
@@ -387,26 +386,28 @@ public class AuditServer extends Controller {
      * @param precinctTotals    the map of just-published Precinct result totals, mapped from precinct ID to a list of ballots
      * @param summedTotals      the public running tally of totals mapped from precinct ID to precinct results Ballot
      */
-    private static void  updateSummedTotals(
-            Map<String, Ballot<EncryptedRaceSelection>> summedTotals, Map<String, List<Ballot<EncryptedRaceSelection>>> precinctTotals) {
+    private static <T extends AHomomorphicCiphertext<T>> void updateSummedTotals(
+            Map<String, Ballot<EncryptedRaceSelection<T>>> summedTotals, Map<String, List<Ballot<EncryptedRaceSelection<T>>>> precinctTotals) {
 
         /* Update summed totals that already exist */
-        for (Map.Entry<String, List<Ballot<EncryptedRaceSelection>>> entry : precinctTotals.entrySet()) {
+        for (Map.Entry<String, List<Ballot<EncryptedRaceSelection<T>>>> entry : precinctTotals.entrySet()) {
 
             /* Find for which Precinct this is */
             String precinctID = entry.getKey();
 
             /* Pull out the preExisting total if it exists */
-            Ballot<EncryptedRaceSelection> preExisting = summedTotals.get(precinctID);
+            Ballot<EncryptedRaceSelection<T>> preExisting = summedTotals.get(precinctID);
+
+            List<Ballot<EncryptedRaceSelection<T>>> thisPrecinctTotal = precinctTotals.get(precinctID);
 
             /* Add in any pre-existing totals from summedTotals */
             if(preExisting != null)
-                precinctTotals.get(precinctID).add(preExisting);
+                thisPrecinctTotal.add(preExisting);
 
             System.out.println("Updating the precinct totals...");
 
             /* Tally the new precinctTotals using WebServerTallier*/
-            Ballot<EncryptedRaceSelection> b = WebServerTallier.tally(precinctID, precinctTotals.get(precinctID), PEK);
+            Ballot<EncryptedRaceSelection<T>> b = WebServerTallier.tally(precinctID, thisPrecinctTotal, PEK);
 
             /* Replace old totals with new totals */
             summedTotals.put(precinctID, b);
