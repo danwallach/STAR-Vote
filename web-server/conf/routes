@@ -29,7 +29,7 @@ GET         /authoritylogin                 controllers.AuditServer.authorityver
 POST        /authoritylogin                 controllers.AuditServer.authenticate()
 GET         /authority                      controllers.AuditServer.authority()
 GET         /authority/keygeneration        controllers.AuditServer.keygeneration()
-POST        /authority/uploadkey            controllers.AuditServer.uploadkey()
+POST        /authority/keygeneration        controllers.AuditServer.updateprocedure()
 GET         /authority/logout               controllers.AuditServer.logout()
 
 # Map static resources from the /public folder to the /assets URL path

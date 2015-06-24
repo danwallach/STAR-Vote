@@ -1,0 +1,42 @@
+@(message: String, name: String, stage: Integer)
+
+
+<script>
+
+function doIt(event) {
+    var form = document.forms[event.target.id];
+    form.action = "/authority/keygeneration";
+    form.submit();
+
+return true;
+}
+
+</script>
+
+
+
+@authority(name, "Key Generation" ) {
+
+    @if(stage == 4) {
+
+        <div style="color:#008800;">
+            message
+        </div>
+
+    } else {
+
+        <div align ="center">
+            <h2>message</h2>
+
+        </div>
+
+        <div style="text-align : center ;">
+                <form method="POST" name=stage>
+                    <input type="button" class="button green medium" value="Confirm" style="float: right;" id=@stage onClick="doIt(event);">
+                </form>
+        </div>
+    }
+    <div id="wrapper"></div>
+}
+
+

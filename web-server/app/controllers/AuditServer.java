@@ -11,6 +11,7 @@ import play.mvc.Security;
 import sexpression.stream.Base64;
 import supervisor.model.Ballot;
 import supervisor.model.Precinct;
+import utilities.AdderKeyManipulator;
 import utilities.WebServerTallier;
 import views.html.*;
 
@@ -43,10 +44,8 @@ public class AuditServer extends Controller {
      *
      * @return      the home page of the site
      */
-    public static Result index() { 
-
+    public static Result index() {
         //loadTestRecords();
- 
         return ok(index.render()); 
     }
 
@@ -268,18 +267,48 @@ public class AuditServer extends Controller {
      */
     @Security.Authenticated(AuthoritySecured.class)
     public static Result authority() {
-        return ok(authority.render(/*message/button dependent on key generation state for user*/)));
+        return ok(authority.render(request().username(), "Main Page" ,null));
     }
 
     @Security.Authenticated(AuthoritySecured.class)
     public static Result keygeneration() {
-        return ok(authorityupload.render("Please select private key share to be uploaded:")));
+
+        int stage = AdderKeyManipulator.getStage(request().username());
+        String message = stage == 1 ? "KeySharePair generation stage (1)" :
+                         stage == 2 ? "Polynomial generation stage (2)" :
+                         stage == 3 ? "Private Key-share generation stage (3)" : "Complete!";
+
+        return ok(authorityprocedure.render(,stage));
+    }
+
+    @Security.Authenticated(AuthoritySecured.class)
+    public static Result updateprocedure() {
+
+        String auth = request().username();
+
+        /* Process for this */
+        int stage = AdderKeyManipulator.getStage(auth);
+        switch (stage) {
+
+            case 1: AdderKeyManipulator.generateAuthorityKeySharePair(auth);
+                    break;
+
+            case 2: AdderKeyManipulator.generateAuthorityPolynomialValues(auth);
+                    break;
+
+            /* Need to know if we can keep these on the webserver */
+            case 3: AdderKeyManipulator.generateRealPrivateKeyShare(auth);
+                    break;
+
+            default: break;
+        }
+        return keygeneration();
     }
 
     @Security.Authenticated(AuthoritySecured.class)
     public static Result uploadkey() {
 
-        /* Get key from form submission -- s expression? -- and load into adderkeymanipulator */
+        /* Get key from form submission -- s expression? -- and load into adderkeymanipulator for stage 3 */
         return null;
     }
 

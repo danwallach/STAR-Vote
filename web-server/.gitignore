@@ -1,0 +1,7 @@
+#  Ignore the temp directory     #
+#  Ignore the out directory      #
+#  Ignore the idea workspace xml #
+##################################
+lib
+
+

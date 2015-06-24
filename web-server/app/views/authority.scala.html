@@ -1,0 +1,35 @@
+@(name: String, message: String)(content: Html)
+
+
+
+@main(name) {
+
+    @if(message != null)  {
+        <div style="text-align : center ;">
+            <div style="color:#FF0000;">
+                <p>
+                @message
+                </p>
+            </div>
+        </div>
+    }
+
+    <!--suppress ALL -->
+    <h1>Election Authority Page</h1>
+    
+    <div style="text-align : center ;">
+        <div id = ANBar>
+            <ul id="authNavBar">
+                    <li><a href="/authority" class ="authNavBar">Main</a></li>
+                    <li><a href="/authority/keygeneration" class="authNavBar">Key Generation</a></li>
+                    <li><a href="/authority/decrypt" class="authNavBar">Authority Decryption</a></li>
+            </ul>
+        </div>
+        
+    </div>
+    
+    <br>
+    @content
+   
+}    
+
