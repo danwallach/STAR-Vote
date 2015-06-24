@@ -1,5 +1,6 @@
 package models;
 
+import crypto.AHomomorphicCiphertext;
 import org.apache.commons.codec.binary.Base64;
 import play.db.ebean.Model;
 import supervisor.model.Precinct;
@@ -74,6 +75,7 @@ public class VotingRecord extends Model {
         byte[] bytes = Base64.decodeBase64(s.getBytes());
         Map<String, Precinct> record = null;
   
+
         try {
             ObjectInputStream objectInputStream = new ObjectInputStream(new ByteArrayInputStream(bytes));
             record = (Map<String, Precinct>)objectInputStream.readObject();

@@ -1,6 +1,10 @@
 package controllers;
 
 import auditorium.SimpleKeyStore;
+import crypto.AHomomorphicCiphertext;
+import crypto.BallotCrypto;
+import crypto.EncryptedRaceSelection;
+import crypto.PlaintextRaceSelection;
 import crypto.adder.AdderPrivateKeyShare;
 import crypto.adder.AdderPublicKey;
 import models.*;
@@ -19,7 +23,6 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.math.BigInteger;
 import java.util.*;
 
 import static play.data.Form.form;
@@ -61,7 +64,7 @@ public class AuditServer extends Controller {
             Map<String, Precinct> hashes = new HashMap<>();
 
             for(int j = 0; j < 3; j++)
-                hashes.put(j+"", new Precinct(j+"", "", null));
+                hashes.put(j+"", new Precinct(j+"", ""));
 
             records.put("record" + i, hashes);
 
@@ -74,7 +77,7 @@ public class AuditServer extends Controller {
 
             Map<String, Precinct> hashes = new HashMap<>();
 
-            hashes.put("1", new Precinct("1", "", null));
+            hashes.put("1", new Precinct("1", ""));
 
             records.put("record" + i, hashes);
 
@@ -189,18 +192,18 @@ public class AuditServer extends Controller {
     }
     
     @Security.Authenticated(AdminSecured.class)
-    public static Result publishresults() {
+    public static <T extends AHomomorphicCiphertext<T>> Result publishresults() {
 
         /* Reverse routing */
         String records = request().getQueryString("records");
 
         int start = 0;
 
-        Map<String, Ballot> summedTotals = getSummedTotals();
-        Map<String, List<Ballot>> precinctTotals = new TreeMap<>();
+        Map<String, Ballot<EncryptedRaceSelection>> summedTotals = getSummedTotals();
+        Map<String, List<Ballot<EncryptedRaceSelection>>> precinctTotals = new TreeMap<>();
         Map<String, Precinct> precinctMap = new TreeMap<>();
         
-        /* Grab each checked precinct and publish it */
+        /* Grab each selected precinct and publish it */
         while(start < records.length()) {
 
             int end = records.indexOf(",", start);
@@ -219,7 +222,7 @@ public class AuditServer extends Controller {
             /* Publish the record */
             vr.publish();
             
-            /* Get the Precincts from this VotingRecord*/
+            /* Get the Precincts from this VotingRecord (Encrypted!) */
             System.out.println("Getting the Precinct Map: ");
             precinctMap = vr.getPrecinctMap();
 
@@ -233,7 +236,7 @@ public class AuditServer extends Controller {
 
         /* Combine the newly published result totals with the old totals */
         System.out.println("Updating Summed Totals: ");
-        updateSummedTotals(summedTotals, precinctTotals, precinctMap);
+        updateSummedTotals(summedTotals, precinctTotals);
 
         /* Decrypt and store the final updated totals for each Precinct */
         System.out.println("Storing Decrypted Summed Totals: ");
@@ -278,7 +281,7 @@ public class AuditServer extends Controller {
                          stage == 2 ? "Polynomial generation stage (2)" :
                          stage == 3 ? "Private Key-share generation stage (3)" : "Complete!";
 
-        return ok(authorityprocedure.render(,stage));
+        return ok(authorityprocedure.render(message, request().username(), stage));
     }
 
     @Security.Authenticated(AuthoritySecured.class)
@@ -288,20 +291,28 @@ public class AuditServer extends Controller {
 
         /* Process for this */
         int stage = AdderKeyManipulator.getStage(auth);
-        switch (stage) {
 
-            case 1: AdderKeyManipulator.generateAuthorityKeySharePair(auth);
+        try {
+            switch (stage) {
+
+                case 1:
+                    AdderKeyManipulator.generateAuthorityKeySharePair(auth);
                     break;
 
-            case 2: AdderKeyManipulator.generateAuthorityPolynomialValues(auth);
+                case 2:
+                    AdderKeyManipulator.generateAuthorityPolynomialValues(auth);
                     break;
 
             /* Need to know if we can keep these on the webserver */
-            case 3: AdderKeyManipulator.generateRealPrivateKeyShare(auth);
+                case 3:
+                    AdderKeyManipulator.generateRealPrivateKeyShare(auth);
                     break;
 
-            default: break;
-        }
+                default:
+                    break;
+            }
+
+        } catch (Exception e) {e.printStackTrace();}
         return keygeneration();
     }
 
@@ -324,11 +335,11 @@ public class AuditServer extends Controller {
     /**
      * @return a Map of the current summed results Ballot for each Precinct by precinct ID
      */
-    private static Map<String, Ballot> getSummedTotals() {
+    private static Map<String, Ballot<EncryptedRaceSelection>> getSummedTotals() {
 
-        Map<String, Ballot> summedTotals = new TreeMap<>();
+        Map<String, Ballot<EncryptedRaceSelection>> summedTotals = new TreeMap<>();
 
-        /* Extract the precinct ID and results Ballot from each DecryptedResult */
+        /* Extract the precinct ID and ENCRYPTED results Ballot from each DecryptedResult */
         for(DecryptedResult result : DecryptedResult.all())
             summedTotals.put(result.precinctID, result.precinctResultsBallot);
 
@@ -339,23 +350,23 @@ public class AuditServer extends Controller {
      * Adds the summed result Ballots for each of the Precincts in this precinctMap to precinctTotals. Helper method
      * for publishresults()
      * 
-     * @param precinctMap   the map of just-published Precinct result totals, mapped from precinct ID to a list of ballots
+     * @param precinctMap   the map of just-published Precinct result totals, mapped from precinct ID to a precinct of ballots
      *                      
      * @return the updated precinctTotals
      */
-    private static Map<String, List<Ballot>> updatePrecinctTotals(Map<String, Precinct> precinctMap) {
+    private static <T extends AHomomorphicCiphertext<T>> Map<String, List<Ballot<EncryptedRaceSelection>>> updatePrecinctTotals(Map<String, Precinct> precinctMap) {
 
-        Map<String, List<Ballot>> precinctTotals = new TreeMap<>();
+        Map<String, List<Ballot<EncryptedRaceSelection>>> precinctTotals = new TreeMap<>();
 
         /* Get the cast ballot totals for each precinct in this voting record */
-        for (Map.Entry<String, Precinct> entry : precinctMap.entrySet()) {
+        for (Map.Entry<String, Precinct<T>> entry : precinctMap.entrySet()) {
 
-            Precinct p = entry.getValue();
+            Precinct<T> p = entry.getValue();
             String precinctID = entry.getKey();
 
             /* Initialise the list for this precinct if we haven't yet seen it */
             if (precinctTotals.get(precinctID) == null)
-                precinctTotals.put(precinctID, new ArrayList<Ballot>());
+                precinctTotals.put(precinctID, new ArrayList<>());
 
             System.out.println("Precinct totals: " + precinctTotals);
             System.out.println("P: " + p);
@@ -363,7 +374,7 @@ public class AuditServer extends Controller {
             System.out.println("Precinct ID: " + precinctID);
 
             /* Store the total for that precinct in the list */
-            precinctTotals.get(precinctID).add(p.getCastBallotTotal());
+            precinctTotals.get(precinctID).add(p.getCastBallotTotal(PEK));
         }
 
         return precinctTotals;
@@ -374,30 +385,28 @@ public class AuditServer extends Controller {
      * publishresults()
      *
      * @param precinctTotals    the map of just-published Precinct result totals, mapped from precinct ID to a list of ballots
-     * @param precinctMap       the map of Precincts from precinct IDs
      * @param summedTotals      the public running tally of totals mapped from precinct ID to precinct results Ballot
      */
-    private static void updateSummedTotals(Map<String, Ballot> summedTotals, Map<String, List<Ballot>> precinctTotals, Map<String, Precinct> precinctMap) {
+    private static <T extends AHomomorphicCiphertext<T>> void  updateSummedTotals(
+            Map<String, Ballot<EncryptedRaceSelection>> summedTotals, Map<String, List<Ballot<EncryptedRaceSelection>>> precinctTotals) {
 
         /* Update summed totals that already exist */
-        for (Map.Entry<String, List<Ballot>> entry : precinctTotals.entrySet()) {
+        for (Map.Entry<String, List<Ballot<EncryptedRaceSelection>>> entry : precinctTotals.entrySet()) {
 
             /* Find for which Precinct this is */
             String precinctID = entry.getKey();
 
             /* Pull out the preExisting total if it exists */
-            Ballot preExisting = summedTotals.get(precinctID);
+            Ballot<EncryptedRaceSelection> preExisting = summedTotals.get(precinctID);
 
             /* Add in any pre-existing totals from summedTotals */
             if(preExisting != null)
                 precinctTotals.get(precinctID).add(preExisting);
 
-            //PublicKey finalPublicKey = AdderKeyManipulator.generateFinalPublicKey(precinctMap.get(precinctID).getPublicKey());
-
             System.out.println("Updating the precinct totals...");
 
             /* Tally the new precinctTotals using WebServerTallier*/
-            Ballot b = WebServerTallier.tally(precinctID, precinctTotals.get(precinctID), precinctMap.get(precinctID).getFinalPublicKey());
+            Ballot<EncryptedRaceSelection> b = WebServerTallier.tally(precinctID, precinctTotals.get(precinctID), PEK);
 
             /* Replace old totals with new totals */
             summedTotals.put(precinctID, b);
@@ -411,7 +420,7 @@ public class AuditServer extends Controller {
      * @param summedTotals  the public running tally of totals mapped from precinct ID to precinct results Ballot
      * @param precinctMap   the map of Precincts from precinct IDs
      */
-    private static void storeDecryptedSummedTotals(Map<String, Ballot> summedTotals, Map<String, Precinct> precinctMap) {
+    private static void storeDecryptedSummedTotals(Map<String, Ballot<EncryptedRaceSelection>> summedTotals, Map<String, Precinct> precinctMap) {
 
         SimpleKeyStore keyStore = new SimpleKeyStore("/lib/keys/");
         AdderPrivateKeyShare privateKey = keyStore.loadAdderPrivateKey();
@@ -419,15 +428,17 @@ public class AuditServer extends Controller {
         System.out.println("Decrypting summedTotals...");
 
         /* Decrypt summedTotals */
-        for(Map.Entry<String, Ballot> entry : summedTotals.entrySet()) {
+        for(Map.Entry<String, Ballot<EncryptedRaceSelection>> entry : summedTotals.entrySet()) {
 
-            Ballot b = entry.getValue();
+            Ballot<EncryptedRaceSelection> b = entry.getValue();
             String precinctID = entry.getKey();
 
-            AdderPublicKey PEK = precinctMap.get(precinctID).getFinalPublicKey();
+            Ballot<PlaintextRaceSelection> decryptB = null;
+            try { decryptB = BallotCrypto.decrypt(b); }
+            catch (Exception e) {e.printStackTrace(); }
 
             /* This will be the decrypted representation of the results by race */
-            Map<String, Map<String, BigInteger>> decryptedResults = WebServerTallier.getVoteTotals(b, b.getSize(), PEK, privateKey);
+            Map<String, Map<String, Integer>> decryptedResults = WebServerTallier.getVoteTotals(decryptB);
 
             /* Store totals in database */
             DecryptedResult.create(new DecryptedResult(precinctID, decryptedResults, b));

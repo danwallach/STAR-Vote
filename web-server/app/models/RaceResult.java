@@ -34,7 +34,7 @@ public class RaceResult extends Model {
     /* TODO use the below if the key is broken for some reason */
     //@MapKeyColumn(name="name")
     //@Column(name="value")
-    public Map<String, BigInteger> candidateResults = new HashMap<>();
+    public Map<String, Integer> candidateResults = new HashMap<>();
 
     @ManyToOne
     public DecryptedResult owner;
@@ -46,7 +46,7 @@ public class RaceResult extends Model {
      * @param raceName              the name/id of the race for this RaceResult
      * @param candidateResults      the map of candidates to their vote totals
      */
-    public RaceResult(DecryptedResult parent, String raceName, Map<String, BigInteger> candidateResults) {
+    public RaceResult(DecryptedResult parent, String raceName, Map<String, Integer> candidateResults) {
 
         owner                   = parent;
         this.raceName           = raceName;

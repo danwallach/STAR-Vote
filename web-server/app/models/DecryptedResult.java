@@ -1,5 +1,7 @@
 package models;
 
+import crypto.EncryptedRaceSelection;
+import crypto.PlaintextRaceSelection;
 import play.db.ebean.Model;
 import supervisor.model.Ballot;
 
@@ -34,7 +36,7 @@ public class DecryptedResult extends Model {
     @MapKey(name="raceName")
     public Map<String, RaceResult> raceResults = new HashMap<>();
 
-    public Ballot precinctResultsBallot;
+    public Ballot<EncryptedRaceSelection> precinctResultsBallot;
 
     /**
      * Constructor
@@ -43,13 +45,13 @@ public class DecryptedResult extends Model {
      * @param raceResults               the map of race names to mapping of candidates to their totals
      * @param precinctResultsBallot     the encrypted totalled ballot for this precinct
      */
-    public DecryptedResult(String precinctID, Map<String, Map<String, BigInteger>> raceResults, Ballot precinctResultsBallot) {
+    public DecryptedResult(String precinctID, Map<String, Map<String, Integer>> raceResults, Ballot<EncryptedRaceSelection> precinctResultsBallot) {
 
         this.precinctID             = precinctID;
         this.precinctResultsBallot  = precinctResultsBallot;
 
 
-        for(Map.Entry<String, Map<String, BigInteger>> raceResult : raceResults.entrySet())
+        for(Map.Entry<String, Map<String, Integer>> raceResult : raceResults.entrySet())
             this.raceResults.put(raceResult.getKey(), new RaceResult(this, raceResult.getKey(), raceResult.getValue()));
     }
 
@@ -76,7 +78,7 @@ public class DecryptedResult extends Model {
      * @param precinctID
      * @return
      */
-    public static Ballot getResultsBallot(String precinctID) {
+    public static Ballot<EncryptedRaceSelection> getResultsBallot(String precinctID) {
         return find.where().ieq("precinctID", precinctID).findUnique().precinctResultsBallot;
     }
 

@@ -103,7 +103,7 @@ public class WebServerTallier {
             System.out.println("In WebserverTallier.tally() -- Verifying this summed race ");
             if(summedRS.verify(0, thisRace.getRaceSelections().size(), PEK)) {
                 raceSelections.add(summedRS);
-                raceSelectionsASE.add(ASEParser.convert(summedRS));
+                raceSelectionsASE.add(ASEParser.convertToASE(summedRS));
                 System.out.println("This race was successfully added to the Ballot!");
             }
             else System.err.println("There was a bad summed race that was not added to the ballot!");

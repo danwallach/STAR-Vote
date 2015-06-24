@@ -3,5 +3,7 @@
 #  Ignore the idea workspace xml #
 ##################################
 lib
+Supervisor.jar
+Votebox.jar
 
 
