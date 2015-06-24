@@ -227,7 +227,7 @@ public class AuditServer extends Controller {
 
             /* Add the results from the Precincts in this VotingRecord to precinctTotals */
             System.out.println("Updating Precinct Totals: ");
-            precinctTotals = updatePrecinctTotals(precinctMap);
+            precinctTotals = updatePrecinctTotals((Map)precinctMap);
 
             /* Move on to the next VotingRecord to be published */
             start = end+1;
