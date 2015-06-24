@@ -5,6 +5,7 @@ import crypto.*;
 import crypto.adder.AdderPrivateKeyShare;
 import models.*;
 import play.data.Form;
+import play.data.validation.Constraints;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
@@ -15,6 +16,7 @@ import utilities.AdderKeyManipulator;
 import utilities.WebServerTallier;
 import views.html.*;
 
+import javax.validation.constraints.NotNull;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -131,7 +133,7 @@ public class AuditServer extends Controller {
      * @return      the admin page of the website
      */
     public static Result adminverify() {
-        return ok(adminlogin.render(form("adminlogin",Login.class), null));
+        return ok(adminlogin.render(form(Login.class), null));
     }
 
     @Security.Authenticated(AdminSecured.class)
@@ -556,17 +558,17 @@ public class AuditServer extends Controller {
      * This will authenticate our logins
      */
     public static Result authenticate() {
+
         Form<Login> loginForm = form(Login.class).bindFromRequest();
 
-        System.out.println(loginForm.name());
         if (loginForm.hasErrors()) {
-            return loginForm.name().equals("adminlogin") ? badRequest(adminlogin.render(loginForm, null)) :
-                                                           badRequest(authoritylogin.render(loginForm, null));
+            return loginForm.data().get("type").equals("admin") ? badRequest(adminlogin.render(loginForm, null)) :
+                                                                  badRequest(authoritylogin.render(loginForm, null));
         } else {
             session().clear();
             session("username", loginForm.get().username);
-            return loginForm.name().equals("adminlogin") ? redirect(routes.AuditServer.adminmain()) :
-                                                           redirect(routes.AuditServer.authority());
+            return loginForm.data().get("type").equals("admin") ? redirect(routes.AuditServer.adminmain()) :
+                                                                  redirect(routes.AuditServer.authority());
         }
     }
     
@@ -584,14 +586,33 @@ public class AuditServer extends Controller {
      */
     public static class Login {
 
+        @Constraints.Required
         public String username;
+
+        @Constraints.Required
         public String password;
+
+        @Constraints.Required
+        public String type;
+
+        public void setUsername(@NotNull String username){
+            this.username = username;
+        }
+        public void setPassword(@NotNull String password){
+            this.password = password;
+        }
+        public void setType(@NotNull String type){
+            this.type = type;
+        }
 
         /** This will validate the username and password */
         public String validate() {
 
-            if (!User.authenticate(username, password))
-              return "Invalid user or password";
+            if(!type.equals("admin") && !type.equals("authority"))
+                return "Invalid Type";
+
+            if (!User.authenticate(username, password, type))
+              return "Invalid user or password, or incorrect type";
 
             return null;
         }

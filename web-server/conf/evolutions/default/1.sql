@@ -42,8 +42,9 @@ create table supervisor_record (
 
 create table user (
   username                  varchar(255) not null,
-  name                      varchar(255),
   password                  varchar(255),
+  name                      varchar(255),
+  type                      varchar(255),
   constraint pk_user primary key (username))
 ;
 

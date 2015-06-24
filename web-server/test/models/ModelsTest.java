@@ -17,7 +17,7 @@ public class ModelsTest extends WithApplication {
     
     @Test
     public void createAndRetrieveUser() {
-        new User("bob@gmail.com", "Bob", "secret").save();
+        new User("bob@gmail.com", "Bob", "secret", "admin").save();
         User bob = User.find.where().eq("email", "bob@gmail.com").findUnique();
         assertNotNull(bob);
         assertEquals("Bob", bob.name);
