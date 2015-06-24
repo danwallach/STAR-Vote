@@ -12,6 +12,8 @@ out
 *.zip
 *.bal
 *.conf
+Supervisor.jar
+Votebox.jar
 ballotScanner/BallotScannerUITester.java
 supervisor/view/BallotScannerMachineViewTester.java
 CommandsFile.txt

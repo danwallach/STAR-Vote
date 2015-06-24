@@ -24,6 +24,8 @@ package tap;
 
 import auditorium.IAuditoriumParams;
 import auditorium.NetworkException;
+import org.apache.commons.codec.binary.*;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
@@ -140,7 +142,7 @@ public class Tap {
                 out.close();
             } catch (Exception e) {e.printStackTrace();}
 
-            List<BasicNameValuePair> bnvp = new ArrayList();
+            List<BasicNameValuePair> bnvp = new ArrayList<>();
 
             bnvp.add(new BasicNameValuePair("record", encoded));
             bnvp.add(new BasicNameValuePair("precinctID", Integer.toString((new Random()).nextInt())));
