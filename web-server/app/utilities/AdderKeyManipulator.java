@@ -3,6 +3,7 @@ package utilities;
 import crypto.ExponentialElGamalCiphertext;
 import crypto.adder.*;
 import crypto.exceptions.KeyGenerationException;
+import sexpression.ASEParser;
 
 import java.util.*;
 
@@ -16,7 +17,7 @@ public class AdderKeyManipulator {
     /** A LaGrange polynomial for the Exponential-ElGamal homomorphic process. */
     private static Polynomial _poly = null;
 
-    private final static int maxAuth = 3;
+    private final static int maxAuth = 1;
     private static Map<String, AdderPublicKeyShare> keyShares = new TreeMap<>();
     private static Map<String, AdderPrivateKeyShare> prkeyShares = new TreeMap<>();
     private static Map<String, List<ExponentialElGamalCiphertext>> polyMap = new TreeMap<>();
@@ -25,9 +26,9 @@ public class AdderKeyManipulator {
     private final static int safetyThreshold = 1;
     private final static int decryptionThreshold =1;
 
-    private static Set<String> stage1participants = new TreeSet<>();
-    private static Set<String> stage2participants = new TreeSet<>();
-    private static Set<String> stage3participants = new TreeSet<>();
+    private static TreeSet<String> stage1participants = new TreeSet<>();
+    private static TreeSet<String> stage2participants = new TreeSet<>();
+    private static TreeSet<String> stage3participants = new TreeSet<>();
 
     private static AdderPublicKeyShare seedKey;
     private static boolean alreadyGenerated = false;
@@ -101,8 +102,10 @@ public class AdderKeyManipulator {
 
                         for (String a : stage1participants) {
 
-                        /* Add in P_authNum(auth) */
-                            valueList.add(keyShares.get(a).encryptPoly(authPoly.evaluate(new AdderInteger(a, seedKey.getQ()))));
+                            /* Add in P_authNum(auth) */
+                            int authnum = stage1participants.headSet(a).size();
+
+                            valueList.add(keyShares.get(a).encryptPoly(authPoly.evaluate(new AdderInteger(authnum, seedKey.getQ()))));
                         }
 
                         /* Put this into the encrypted polynomial values map */
@@ -199,7 +202,11 @@ public class AdderKeyManipulator {
 
             alreadyGenerated = true;
 
-            return new AdderPublicKey(seedKey.getP(),seedKey.getG(),finalH,seedKey.getF());
+            AdderPublicKey PEK = new AdderPublicKey(seedKey.getP(),seedKey.getG(),finalH,seedKey.getF());
+
+            System.out.println("Generated PEK: " + ASEParser.convertToASE(PEK));
+
+            return PEK;
 
         } else throw new InvalidPublicKeyException("Public key creation stage cannot be initiated due to safety threshold.");
     }

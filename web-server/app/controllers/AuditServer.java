@@ -279,6 +279,8 @@ public class AuditServer extends Controller {
                          stage == 2 ? "Polynomial generation stage (2)" :
                          stage == 3 ? "Private Key-share generation stage (3)" : "Complete!";
 
+        if (message.equals("Complete!")) AdderKeyManipulator.generatePublicEncryptionKey();
+
         return ok(authorityprocedure.render(message, request().username(), stage));
     }
 
@@ -289,6 +291,8 @@ public class AuditServer extends Controller {
 
         /* Process for this */
         int stage = AdderKeyManipulator.getStage(auth);
+
+        System.out.println(request().username() + " is on stage " + stage);
 
         try {
             switch (stage) {
@@ -301,7 +305,7 @@ public class AuditServer extends Controller {
                     AdderKeyManipulator.generateAuthorityPolynomialValues(auth);
                     break;
 
-            /* Need to know if we can keep these on the webserver */
+                /* Need to know if we can keep these on the webserver */
                 case 3:
                     AdderKeyManipulator.generateRealPrivateKeyShare(auth);
                     break;
