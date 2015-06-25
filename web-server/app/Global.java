@@ -50,7 +50,7 @@ public class Global extends GlobalSettings {
 
         /* Load the seed key */
         JFileChooser chooser = new JFileChooser();
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("Keys", "key");
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(".key files", "key");
         chooser.setFileFilter(filter);
         int returnVal = chooser.showOpenDialog(null);
         if(returnVal == JFileChooser.APPROVE_OPTION) {
