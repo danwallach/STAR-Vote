@@ -268,7 +268,7 @@ public class AuditServer extends Controller {
      */
     @Security.Authenticated(AuthoritySecured.class)
     public static Result authority() {
-        return ok(authority.render(request().username(), "Main Page" ,null));
+        return ok(authoritymain.render(request().username(), "Main Page" ,null));
     }
 
     @Security.Authenticated(AuthoritySecured.class)
@@ -562,6 +562,7 @@ public class AuditServer extends Controller {
         Form<Login> loginForm = form(Login.class).bindFromRequest();
 
         if (loginForm.hasErrors()) {
+            System.out.println(loginForm.data().get("type"));
             return loginForm.data().get("type").equals("admin") ? badRequest(adminlogin.render(loginForm, null)) :
                                                                   badRequest(authoritylogin.render(loginForm, null));
         } else {

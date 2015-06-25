@@ -3,49 +3,52 @@
 @main("Election Authority Login") {
 
     <div style="text-align : center ;">
-    
-    
-    
-    @if(message != null)  {
-    <div style="text-align : center ;">
-        <div style="color:#FF0000;">
-            <p>
-                @message
-            </p>
-        </div>
-    </div>
-    }
-    
-    @helper.form(routes.AuditServer.authenticate) {
-       <h1>Election Authority Login</h1>
-       
-        <p>
-        Enter election credentials below
-        </p>
 
-       
-       @if(form.hasGlobalErrors) {
-            <p class="error" style="color:#FF0000;">
+
+        @if(message != null)  {
+            <div style="text-align : center ;">
+                <div style="color:#FF0000;">
+                    <p>
+                    @message
+                    </p>
+                </div>
+            </div>
+        }
+
+        @helper.form(routes.AuditServer.authenticate) {
+            <h1>Authority Login</h1>
+
+            <p>
+                Enter election credentials below
+            </p>
+
+
+            @if(form.hasGlobalErrors) {
+                <p class="error" style="color:#FF0000;">
                 @form.globalError.message
+                </p>
+            }
+
+
+            <p>
+                <label for="username">Username:</label>
+                <input type="text" name="username" placeholder="Username" value="@form("username").value">
+
+            </p>
+            <p>
+                <label for="password">Password:</label>
+                <input type="password" name="password" placeholder="Password">
+            </p>
+            <p>
+                <input type="hidden" name="type" value="authority">
+            </p>
+            <p>
+                <button type="submit">Login</button>
             </p>
         }
 
-       <p>
-           <label for="username">Username:</label>
-           <input type="username" name="username" placeholder="Authority ID" value="@form("email").value">
-           
-       </p>
-       <p>
-           <label for="password">Password:</label>
-           <input type="password" name="password" placeholder="Password">
-       </p>
-       <p>
-           <button type="submit">Login</button>
-       </p>
-    }
-
     </div>
-    
+
 
     <div id="wrapper"></div>
 }

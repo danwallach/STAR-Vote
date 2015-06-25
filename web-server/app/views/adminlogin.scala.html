@@ -33,7 +33,7 @@
 
        <p>
            <label for="username">Username:</label>
-           <input type="username" name="username" placeholder="Username" value="@form("username").value">
+           <input type="text" name="username" placeholder="Username" value="@form("username").value">
            
        </p>
        <p>
@@ -41,8 +41,7 @@
            <input type="password" name="password" placeholder="Password">
        </p>
         <p>
-            <label for="type">Type:</label>
-            <input type="type" name="type" placeholder="Type">
+            <input type="hidden" name="type" value="admin">
         </p>
        <p>
            <button type="submit">Login</button>

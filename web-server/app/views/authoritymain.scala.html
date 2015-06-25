@@ -1,0 +1,13 @@
+@(user: String, message: String)(content: Html)
+
+
+@authority(message, user) {
+
+    <p>This is the main page for the STAR-Vote election authority interface.
+        From here you can undergo the key generation procedure,
+        submit your keys to partially decrypt ballots, and
+        logout by clicking on the buttons in the administrator navigation bar.</p>
+
+    @content
+
+}

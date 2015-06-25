@@ -253,6 +253,35 @@ A.adminNavBar:hover,A.adminNavBar:active
     background-color:#3d3d3d;
 }
 
+#authNavBar
+{
+    list-style-type:none;
+    padding:0;
+    display:inline;
+}
+#authNavBar
+li{
+    float: left;
+    width: 20%;
+}
+#authNavBar
+A.authNavBar:link,A.authNavBar:visited
+{
+    display:block;
+    font-weight:bold;
+    color:#FFFFFF;
+    background-color:#000000;
+    text-align:center;
+    padding:4px;
+    text-decoration:none;
+    text-transform:uppercase;
+}
+#authNavBar
+A.authNavBar:hover,A.authNavBar:active
+{
+    background-color:#3d3d3d;
+}
+
 
 #navBar
 {

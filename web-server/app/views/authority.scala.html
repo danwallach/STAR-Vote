@@ -1,35 +1,28 @@
-@(name: String, message: String)(content: Html)
+@(message: String, user: String)(content: Html)
 
-
-
-@main(name) {
-
-    @if(message != null)  {
-        <div style="text-align : center ;">
-            <div style="color:#FF0000;">
-                <p>
-                @message
-                </p>
-            </div>
-        </div>
-    }
-
+@main(message) {
     <!--suppress ALL -->
     <h1>Election Authority Page</h1>
-    
+    <h2>@message</h2>
+    <h2>Authority: @user</h2>
+
     <div style="text-align : center ;">
-        <div id = ANBar>
+        <div id = AuNBar>
             <ul id="authNavBar">
-                    <li><a href="/authority" class ="authNavBar">Main</a></li>
-                    <li><a href="/authority/keygeneration" class="authNavBar">Key Generation</a></li>
-                    <li><a href="/authority/decrypt" class="authNavBar">Authority Decryption</a></li>
+                <li><a href="/authority" class ="authNavBar">Main</a></li>
+                <li><a href="/authority/keygeneration" class="authNavBar">Key Generation</a></li>
+                <li><a href="/authority/decrypt" class="authNavBar">Authority Decryption</a></li>
+                <li><a href="/authority/logout" class="authNavBar">Logout</a></li>
             </ul>
         </div>
-        
+
     </div>
-    
+
     <br>
     @content
-   
-}    
+
+}
+
+
+
 

@@ -1,7 +1,7 @@
-@(message: String, name: String, stage: Integer)
+@(message: String, user: String, stage: Integer)
 
 
-@authority(name, "Key Generation" ) {
+@authority("Key Generation", user) {
 
     <script>
 
@@ -20,13 +20,13 @@
     @if(stage == 4) {
 
         <div style="color:#008800;">
-            message
+            @message
         </div>
 
     } else {
 
         <div align ="center">
-            <h2>message</h2>
+            <h2>@message</h2>
 
         </div>
 
