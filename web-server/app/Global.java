@@ -39,9 +39,6 @@ public class Global extends GlobalSettings {
                
        AdderPublicKeyShare pks = new AdderPublicKeyShare(AdderInteger.ONE,AdderInteger.ONE,AdderInteger.ONE);
 
-        System.out.println(pks.getClass().getName());
-
-
         System.out.println("Initializing the Ballot Loader");
         BallotLoader.init();
         if (models.User.find.findRowCount() == 0) {

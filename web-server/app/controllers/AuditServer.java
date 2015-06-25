@@ -9,6 +9,7 @@ import play.data.validation.Constraints;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
+import sexpression.ASEParser;
 import sexpression.stream.Base64;
 import supervisor.model.Ballot;
 import supervisor.model.Precinct;
@@ -307,7 +308,10 @@ public class AuditServer extends Controller {
 
                 /* Need to know if we can keep these on the webserver */
                 case 3:
-                    AdderKeyManipulator.generateRealPrivateKeyShare(auth);
+                    User u = User.find.byId(request().username());
+                    System.out.println(u.getKey());
+                    u.setKey(AdderKeyManipulator.generateRealPrivateKeyShare(auth));
+                    System.out.println(ASEParser.convertToASE(u.getKey()));
                     break;
 
                 default:

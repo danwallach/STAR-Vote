@@ -45,6 +45,7 @@ create table user (
   password                  varchar(255),
   name                      varchar(255),
   type                      varchar(255),
+  key                       TEXT,
   constraint pk_user primary key (username))
 ;
 

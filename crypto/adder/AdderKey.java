@@ -1,10 +1,12 @@
 package crypto.adder;
 
+import java.io.Serializable;
+
 /**
  * Abstract class for Adder system based key.
  * Created by Matthew Kindy II on 1/30/2015.
  */
-public abstract class AdderKey {
+public abstract class AdderKey implements Serializable {
 
     protected AdderInteger p;
     protected AdderInteger q;
