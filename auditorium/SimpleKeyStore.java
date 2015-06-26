@@ -32,6 +32,8 @@ import sexpression.stream.ASEInputStreamReader;
 import sexpression.stream.InvalidVerbatimStreamException;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -80,6 +82,22 @@ public class SimpleKeyStore implements IKeyStore {
 	}
 
     public AdderPublicKey loadPEK() throws AuditoriumCryptoException{
+
+        File PEKFile = new File("PEK.adder.key");
+        Path PEKPath = PEKFile.toPath();
+        System.out.println(PEKPath.toAbsolutePath());
+
+
+        try {
+            byte[] verbatimPEK = Files.readAllBytes(PEKPath);
+            ASExpression PEKASE = ASExpression.makeVerbatim(verbatimPEK);
+            System.out.println(PEKASE);
+            return ASEParser.convertFromASE((ListExpression)PEKASE);
+        }
+        catch (Exception e) { e.printStackTrace(); throw new RuntimeException("Couldn't use the key file");}
+
+
+/*
         ASExpression asePEK = null;
 
         try {
@@ -89,6 +107,7 @@ public class SimpleKeyStore implements IKeyStore {
             return ASEParser.convertFromASE((ListExpression) asePEK);
         }
         catch (AuditoriumCryptoException e){ throw new AuditoriumCryptoException("Error during loadPEK(): ", e); }
+        */
     }
 
 	/**

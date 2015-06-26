@@ -35,7 +35,7 @@ public class AdderKeyGenerator {
 			destDir.mkdirs();
 		}
 
-        /*If it exits then it checks whether its a directory or not.*/
+        /*If it exists then it checks whether its a directory or not.*/
         else{
 
 			if(!destDir.isDirectory()){

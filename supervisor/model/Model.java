@@ -331,22 +331,6 @@ public class Model {
 
             try {
 
-                /*----------------------Needs to be put in server--------------------------*/
-//                AdderKeyManipulator.setSeedKey(auditoriumParams.getKeyStore().loadAdderPublicKeyShare());
-//
-//                AdderPrivateKeyShare prks = AdderKeyManipulator.generateAuthorityKeySharePair(1);
-//
-//
-//                AdderKeyManipulator.generateAuthorityPolynomialValues(1);
-//
-//                /* Want to write this to a file somewhere */
-//                AdderPrivateKeyShare realPrks = AdderKeyManipulator.generateRealPrivateKeyShare(1, prks);
-//
-//                /* Want to write this to a file somewhere */
-//                AdderPublicKey PEK = AdderKeyManipulator.generatePublicEncryptionKey();
-
-                /*------------------------------------------------*/
-
                 /* For NIZKs to work, we have to establish the public key before the voting can start */
                 auditorium.announce(new AuthorizedToCastWithNIZKsEvent(mySerial, otherSerial, ASENonce, p.getPrecinctID(), ballot));
 
@@ -1380,8 +1364,6 @@ public class Model {
             System.out.println("Recoverable error occurred: "+e1.getMessage());
             e1.printStackTrace(System.err);
         }
-
-        /* Read in the PEK */
 
         /* Start the heartbeat timer */
         statusTimer.start();
