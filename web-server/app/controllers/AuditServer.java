@@ -323,8 +323,6 @@ public class AuditServer extends Controller {
         /* Process for this */
         int stage = AdderKeyManipulator.getStage(auth);
 
-        System.out.println(request().username() + " is on stage " + stage);
-
         try {
             switch (stage) {
 
@@ -339,9 +337,7 @@ public class AuditServer extends Controller {
                 /* Need to know if we can keep these on the webserver */
                 case 3:
                     User u = User.find.byId(request().username());
-                    System.out.println(u.getKey());
                     u.setKey(AdderKeyManipulator.generateRealPrivateKeyShare(auth));
-                    System.out.println(ASEParser.convertToASE(u.getKey()));
                     break;
 
                 default:
@@ -352,6 +348,7 @@ public class AuditServer extends Controller {
         return keygeneration();
     }
 
+    /* TODO will talk about whether this is necessary or if current system is fine */
     @Security.Authenticated(AuthoritySecured.class)
     public static Result uploadkey() {
 
@@ -377,7 +374,7 @@ public class AuditServer extends Controller {
 
         /* Extract the precinct ID and ENCRYPTED results Ballot from each DecryptedResult */
         for(DecryptedResult result : DecryptedResult.all())
-                summedTotals.put(result.precinctID, result.precinctResultsBallot);
+                summedTotals.put(result.precinctID, result.getResultsBallot());
 
         return summedTotals;
     }

@@ -71,20 +71,25 @@ public class DecryptedResult extends Model {
      * @param precinctID       the ID of the precinct from which this record was collected
      * @return                 the corresponding VoteRecord or null if non-existent
      */
-    public static Map<String, RaceResult> getResults(String precinctID) {
-        return find.where().ieq("precinctID", precinctID).findUnique().raceResults;
-    }
 
     /**
      *
      * @param precinctID
      * @return
      */
-    public static Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>> getResultsBallot(String precinctID) {
-        return stringToBallot(find.where().ieq("precinctID", precinctID).findUnique().precinctResultsBallot);
+    public static DecryptedResult getDecryptedResult(String precinctID) {
+        return find.where().ieq("precinctID", precinctID).findUnique();
     }
 
-    public static String ballotToString(Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>> b) {
+    public Map<String, RaceResult> getResults(String precinctID) {
+        return raceResults;
+    }
+
+    public Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>> getResultsBallot() {
+        return stringToBallot(this.precinctResultsBallot);
+    }
+
+    private String ballotToString(Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>> b) {
 
         String encoded = null;
 
@@ -103,7 +108,7 @@ public class DecryptedResult extends Model {
         return encoded;
     }
 
-    public static Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>> stringToBallot(String s) {
+    private Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>> stringToBallot(String s) {
 
         byte[] bytes = Base64.decodeBase64(s.getBytes());
         Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>> ballot = null;
@@ -117,7 +122,6 @@ public class DecryptedResult extends Model {
 
         return ballot;
     }
-
 
     /**
      * Store a DecryptedResult into the database.
