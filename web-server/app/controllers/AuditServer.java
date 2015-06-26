@@ -3,6 +3,8 @@ package controllers;
 import auditorium.SimpleKeyStore;
 import crypto.*;
 import crypto.adder.AdderPrivateKeyShare;
+import crypto.adder.AdderPublicKey;
+import crypto.interop.AdderKeyGenerator;
 import models.*;
 import play.data.Form;
 import play.data.validation.Constraints;
@@ -18,10 +20,7 @@ import utilities.WebServerTallier;
 import views.html.*;
 
 import javax.validation.constraints.NotNull;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.ObjectInputStream;
+import java.io.*;
 import java.util.*;
 
 import static play.data.Form.form;
@@ -280,9 +279,40 @@ public class AuditServer extends Controller {
                          stage == 2 ? "Polynomial generation stage (2)" :
                          stage == 3 ? "Private Key-share generation stage (3)" : "Complete!";
 
-        if (message.equals("Complete!")) AdderKeyManipulator.generatePublicEncryptionKey();
+        if (message.equals("Complete!")) writePEKtoFile();
 
         return ok(authorityprocedure.render(message, request().username(), stage));
+    }
+
+    private static void writePEKtoFile(){
+        AdderPublicKey PEK = AdderKeyManipulator.generatePublicEncryptionKey();
+
+        File destDir = new File("PEK");
+
+        /* Checks whether the destination directory already exists, if not then make the directory.*/
+        if(!destDir.exists()){
+            destDir.mkdirs();
+        }
+
+        /*If it exists then it checks whether its a directory or not.*/
+        else{
+
+            if(!destDir.isDirectory()){
+                System.out.println("Usage: java "+AdderKeyGenerator.class.getName()+" [destination directory]");
+                System.exit(-1);
+            }
+        }
+
+        File pekFile = new File("PEK","PEK.adder.key");
+
+        try {
+            FileOutputStream fos = new FileOutputStream(pekFile);
+            fos.write(ASEParser.convertToASE(PEK).toVerbatim());
+            fos.flush();
+            fos.close();
+        }
+        catch (Exception e) { e.printStackTrace(); }
+
     }
 
     @Security.Authenticated(AuthoritySecured.class)
