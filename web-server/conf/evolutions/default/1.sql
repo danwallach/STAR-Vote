@@ -22,6 +22,7 @@ create table challenged_ballot (
 create table decrypted_result (
   id                        bigint not null,
   precinct_id               varchar(255),
+  precinct_results_ballot   TEXT,
   constraint pk_decrypted_result primary key (id))
 ;
 

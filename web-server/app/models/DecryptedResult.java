@@ -2,10 +2,12 @@ package models;
 
 import crypto.EncryptedRaceSelection;
 import crypto.ExponentialElGamalCiphertext;
+import org.apache.commons.codec.binary.Base64;
 import play.db.ebean.Model;
 import supervisor.model.Ballot;
 
 import javax.persistence.*;
+import java.io.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +37,8 @@ public class DecryptedResult extends Model {
     @MapKey(name="raceName")
     public Map<String, RaceResult> raceResults = new HashMap<>();
 
-    public Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>> precinctResultsBallot;
+    @Column(columnDefinition = "TEXT")
+    public String precinctResultsBallot;
 
     /**
      * Constructor
@@ -47,7 +50,7 @@ public class DecryptedResult extends Model {
     public DecryptedResult(String precinctID, Map<String, Map<String, Integer>> raceResults, Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>> precinctResultsBallot) {
 
         this.precinctID             = precinctID;
-        this.precinctResultsBallot  = precinctResultsBallot;
+        this.precinctResultsBallot  = ballotToString(precinctResultsBallot);
 
 
         for(Map.Entry<String, Map<String, Integer>> raceResult : raceResults.entrySet())
@@ -78,8 +81,43 @@ public class DecryptedResult extends Model {
      * @return
      */
     public static Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>> getResultsBallot(String precinctID) {
-        return find.where().ieq("precinctID", precinctID).findUnique().precinctResultsBallot;
+        return stringToBallot(find.where().ieq("precinctID", precinctID).findUnique().precinctResultsBallot);
     }
+
+    public static String ballotToString(Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>> b) {
+
+        String encoded = null;
+
+        try {
+
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+
+            objectOutputStream.writeObject(b);
+            objectOutputStream.close();
+
+            encoded = new String(Base64.encodeBase64(byteArrayOutputStream.toByteArray()));
+        }
+        catch (IOException e) { e.printStackTrace(); }
+
+        return encoded;
+    }
+
+    public static Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>> stringToBallot(String s) {
+
+        byte[] bytes = Base64.decodeBase64(s.getBytes());
+        Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>> ballot = null;
+
+
+        try {
+            ObjectInputStream objectInputStream = new ObjectInputStream(new ByteArrayInputStream(bytes));
+            ballot = (Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>>)objectInputStream.readObject();
+        }
+        catch (IOException | ClassNotFoundException | ClassCastException e) { e.printStackTrace(); }
+
+        return ballot;
+    }
+
 
     /**
      * Store a DecryptedResult into the database.
