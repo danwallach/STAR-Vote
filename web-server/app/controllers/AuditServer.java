@@ -1,6 +1,8 @@
 package controllers;
 
 import auditorium.SimpleKeyStore;
+import be.objectify.deadbolt.java.actions.Group;
+import be.objectify.deadbolt.java.actions.Restrict;
 import crypto.*;
 import crypto.adder.AdderPrivateKeyShare;
 import crypto.adder.AdderPublicKey;
@@ -11,6 +13,7 @@ import play.data.validation.Constraints;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
+import security.Secured;
 import sexpression.ASEParser;
 import sexpression.stream.Base64;
 import supervisor.model.Ballot;
@@ -119,6 +122,7 @@ public class AuditServer extends Controller {
         /* Make sure the ballot is okay, then search for it, otherwise return an error page */
         if (ballot != null) return ok(castballotfound.render(ballot, bid));
         else                return ok(confirmballot.render(CastBallot.all(), confirmForm, errorCode));
+
     }
 
 
@@ -136,18 +140,20 @@ public class AuditServer extends Controller {
         return ok(adminlogin.render(form(Login.class), null));
     }
 
-    @Security.Authenticated(AdminSecured.class)
+    @Security.Authenticated(Secured.class)
+    @Restrict(@Group("admin"))
     public static Result adminmain() {
         return ok(adminmain.render());
     }
-    
+
     /**
      * Verifies that the admin is currently logged in, then clears data from the ebean database.
      * Serves up admin page with success message if admin logged in, or error page if admin not logged in.
      *
      * @return      the admin page with success/error dependent on login success
      */
-    @Security.Authenticated(AdminSecured.class)
+    @Security.Authenticated(Secured.class)
+    @Restrict(@Group("admin"))
     public static Result adminclear() {
 
         String message = "No data to clear!";
@@ -168,12 +174,14 @@ public class AuditServer extends Controller {
     /**
      *  Generates and renders the page for handling conflicts
      */
-    @Security.Authenticated(AdminSecured.class)
+    @Security.Authenticated(Secured.class)
+    @Restrict(@Group("admin"))
     public static Result adminconflicts() {
         return ok(adminconflicts.render(VotingRecord.getConflicted()));
     }
     
-    @Security.Authenticated(AdminSecured.class)
+    @Security.Authenticated(Secured.class)
+    @Restrict(@Group("admin"))
     public static Result resolveconflict(String id, String hash) {
 
         hash = hash.substring(0, hash.length()-1);
@@ -184,12 +192,14 @@ public class AuditServer extends Controller {
     /**
      * Generates and renders the page for publishing results 
      */    
-    @Security.Authenticated(AdminSecured.class)
+    @Security.Authenticated(Secured.class)
+    @Restrict(@Group("admin"))
     public static Result adminpublish() {
         return ok(adminpublish.render(VotingRecord.getUnpublished(), VotingRecord.getPublished()));
     }
     
-    @Security.Authenticated(AdminSecured.class)
+    @Security.Authenticated(Secured.class)
+    @Restrict(@Group("admin"))
     public static Result publishresults() {
 
         /* Reverse routing */
@@ -266,12 +276,14 @@ public class AuditServer extends Controller {
      * This will take the session user and show a page for key generation for the specific user
      * @return
      */
-    @Security.Authenticated(AuthoritySecured.class)
+    @Security.Authenticated(Secured.class)
+    @Restrict(@Group("authority"))
     public static Result authority() {
         return ok(authoritymain.render(request().username(), "Main Page" ,null));
     }
 
-    @Security.Authenticated(AuthoritySecured.class)
+    @Security.Authenticated(Secured.class)
+    @Restrict(@Group("authority"))
     public static Result keygeneration() {
 
         int stage = AdderKeyManipulator.getStage(request().username());
@@ -315,7 +327,8 @@ public class AuditServer extends Controller {
 
     }
 
-    @Security.Authenticated(AuthoritySecured.class)
+    @Security.Authenticated(Secured.class)
+    @Restrict(@Group("authority"))
     public static Result updateprocedure() {
 
         String auth = request().username();
@@ -349,7 +362,8 @@ public class AuditServer extends Controller {
     }
 
     /* TODO will talk about whether this is necessary or if current system is fine */
-    @Security.Authenticated(AuthoritySecured.class)
+    @Security.Authenticated(Secured.class)
+    @Restrict(@Group("authority"))
     public static Result uploadkey() {
 
         /* Get key from form submission -- s expression? -- and load into adderkeymanipulator for stage 3 */
@@ -400,7 +414,7 @@ public class AuditServer extends Controller {
 
             /* Initialise the list for this precinct if we haven't yet seen it */
             if (precinctTotals.get(precinctID) == null)
-                precinctTotals.put(precinctID, new ArrayList<Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>>>());
+                precinctTotals.put(precinctID, new ArrayList<>());
 
             System.out.println("Precinct totals: " + precinctTotals);
             System.out.println("P: " + p);
@@ -597,14 +611,14 @@ public class AuditServer extends Controller {
         Form<Login> loginForm = form(Login.class).bindFromRequest();
 
         if (loginForm.hasErrors()) {
-            System.out.println(loginForm.data().get("type"));
-            return loginForm.data().get("type").equals("admin") ? badRequest(adminlogin.render(loginForm, null)) :
-                                                                  badRequest(authoritylogin.render(loginForm, null));
+            System.out.println(loginForm.data().get("roles"));
+            return loginForm.get().roles.contains("admin") ? badRequest(adminlogin.render(loginForm, null)) :
+                                                          badRequest(authoritylogin.render(loginForm, null));
         } else {
             session().clear();
             session("username", loginForm.get().username);
-            return loginForm.data().get("type").equals("admin") ? redirect(routes.AuditServer.adminmain()) :
-                                                                  redirect(routes.AuditServer.authority());
+            return loginForm.get().roles.contains("admin") ? redirect(routes.AuditServer.adminmain()) :
+                                                          redirect(routes.AuditServer.authority());
         }
     }
     
@@ -629,7 +643,7 @@ public class AuditServer extends Controller {
         public String password;
 
         @Constraints.Required
-        public String type;
+        public List<String> roles = new ArrayList<>();
 
         public void setUsername(@NotNull String username){
             this.username = username;
@@ -637,18 +651,18 @@ public class AuditServer extends Controller {
         public void setPassword(@NotNull String password){
             this.password = password;
         }
-        public void setType(@NotNull String type){
-            this.type = type;
+        public void setType(@NotNull List<String> type){
+            this.roles.addAll(type);
         }
 
         /** This will validate the username and password */
         public String validate() {
 
-            if(!type.equals("admin") && !type.equals("authority"))
-                return "Invalid Type";
+            if(!(roles.contains("admin") || roles.contains("authority")))
+                return "Invalid Role";
 
-            if (!User.authenticate(username, password, type))
-              return "Invalid user or password, or incorrect type";
+            if (!User.authenticate(username, password, roles))
+              return "Invalid user or password, or wrong login type";
 
             return null;
         }

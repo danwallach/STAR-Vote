@@ -1,10 +1,12 @@
-package controllers;
+package security;
 
+import controllers.routes;
 import play.mvc.Http.Context;
 import play.mvc.Result;
+import play.mvc.Results;
 import play.mvc.Security;
 
-public class AuthoritySecured extends Security.Authenticator {
+public class Secured extends Security.Authenticator {
 
     @Override
     public String getUsername(Context ctx) {
@@ -13,6 +15,6 @@ public class AuthoritySecured extends Security.Authenticator {
 
     @Override
     public Result onUnauthorized(Context ctx) {
-        return redirect(routes.AuditServer.authorityverify());
+        return Results.redirect(routes.AuditServer.adminverify());
     }
 }

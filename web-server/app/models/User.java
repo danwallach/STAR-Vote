@@ -1,31 +1,41 @@
 package models;
 
+import be.objectify.deadbolt.core.models.Permission;
+import be.objectify.deadbolt.core.models.Role;
+import be.objectify.deadbolt.core.models.Subject;
 import crypto.adder.AdderPrivateKeyShare;
 import org.apache.commons.codec.binary.Base64;
 import play.db.ebean.Model;
+import security.Admin;
+import security.Authority;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-public class User extends Model {
+public class User extends Model implements Subject {
 
     @Id
     public String username;
     public String password;
     public String name;
-    public String type;
+
+    @OneToMany
+    public List<String> roles;
 
     @Column(columnDefinition = "TEXT")
     public String key;
 
     
-    public User(String username, String password, String type, String name) {
+    public User(String username, String password, List<String> roles, String name) {
       this.username = username;
       this.password = password;
-      this.type     = type;
+      this.roles    = roles;
       this.name     = name;
       this.key      = null;
     }
@@ -68,8 +78,30 @@ public class User extends Model {
     public static void create(User user) { user.save(); }
 
     /* This will authenticate our user */
-     public static boolean authenticate(String username, String password, String type) {
+     public static boolean authenticate(String username, String password, List<String> roles) {
 
-        return (find.where().eq("username", username).eq("password", password).eq("type", type).findUnique() != null);
+        User thisUser = find.where().eq("username", username).eq("password", password).findUnique();
+        return (thisUser != null && thisUser.roles.containsAll(roles));
+    }
+
+    @Override
+    public List<? extends Role> getRoles() {
+        ArrayList<Role> roleList = new ArrayList<>();
+
+        if (roles.contains("admin")) roleList.add(new Admin());
+        if (roles.contains("authortity")) roleList.add(new Authority());
+
+        return roleList;
+
+    }
+
+    @Override
+    public List<? extends Permission> getPermissions() {
+        return new ArrayList<>();
+    }
+
+    @Override
+    public String getIdentifier() {
+        return username;
     }
 }

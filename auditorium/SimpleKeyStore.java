@@ -97,7 +97,7 @@ public class SimpleKeyStore implements IKeyStore {
         catch (Exception e) { e.printStackTrace(); throw new RuntimeException("Couldn't use the key file");}
 
 
-/*
+/* todo see if this matters
         ASExpression asePEK = null;
 
         try {

@@ -4,6 +4,8 @@ import org.junit.Before;
 import org.junit.Test;
 import play.test.WithApplication;
 
+import java.util.Arrays;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static play.test.Helpers.fakeApplication;
@@ -17,7 +19,7 @@ public class ModelsTest extends WithApplication {
     
     @Test
     public void createAndRetrieveUser() {
-        new User("bob@gmail.com", "Bob", "secret", "admin").save();
+        new User("bob@gmail.com", "secret", Arrays.asList("admin"),"Bob").save();
         User bob = User.find.where().eq("email", "bob@gmail.com").findUnique();
         assertNotNull(bob);
         assertEquals("Bob", bob.name);
