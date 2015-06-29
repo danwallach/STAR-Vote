@@ -61,7 +61,12 @@ public class MessageSocket {
     public MessageSocket(HostPointer host, int timeout) throws NetworkException {
         socket = new Socket();
         try {
+            System.out.println("HOSTIP: " + host.getIP());
+            System.out.println("HOSTPORT: " + host.getPort());
+            System.out.println("TIMEOUT: " + timeout);
             socket.connect(new InetSocketAddress(host.getIP(), host.getPort()), timeout);
+
+            System.out.println("Connected!");
             out = new ASEWriter(socket.getOutputStream());
             in = new ASEInputStreamReader(socket.getInputStream());
         }

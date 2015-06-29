@@ -1,11 +1,11 @@
-Using VoteBox:
-java -jar votebox.jar [serial number]
+Using VoteBox: (make sure IPv6 is disabled)
+java -jar VoteBox.jar [serial number]
 
 Using Supervisor:
-java -jar supervisor.jar [serial number]
+java -jar Supervisor.jar [serial number]
 
 Using Tap:
-java -jar tap.jar [serial number] [report address] [port]
+java -jar Tap.jar [serial number] [report address] [port]
 
 [port] should be the same between Tap and ChallengeWebServer
 [serial number]s should all be distinct (and must have corresponding keys)
