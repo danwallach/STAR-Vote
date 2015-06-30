@@ -272,7 +272,7 @@ public class Button extends FocusableLabel {
                 };
                 break;
 
-            case "OverrideCommitConfirm":
+            case "OverrideCastConfirm":
 
                 _buttonStrategy = new IButtonStrategy() {
 
@@ -283,7 +283,7 @@ public class Button extends FocusableLabel {
                 };
                 break;
 
-            case "OverrideCommitDeny":
+            case "OverrideCastDeny":
 
                 _buttonStrategy = new IButtonStrategy() {
 
