@@ -46,7 +46,7 @@ import java.util.List;
  * how that information will be presented.
  * 
  */
-public final class Ballot {
+public final class RuntimeBallot {
 
     public static final ASExpression BALLOT_PATTERN = ASExpression.make("#list:(#string #any)");
     
@@ -86,9 +86,9 @@ public final class Ballot {
      *                    to a list of lists such that each sub list may only have one
      *                    child element selected in a valid ballot at any time.
      */
-    public Ballot(List<Card> cards, Properties properties,
-            HashMap<String, SelectableCardElement> elements,
-            List<List<String>> raceGroups) {
+    public RuntimeBallot(List<Card> cards, Properties properties,
+                         HashMap<String, SelectableCardElement> elements,
+                         List<List<String>> raceGroups) {
         _cards = cards;
         _properties = properties;
         _elements = elements;
@@ -309,7 +309,7 @@ public final class Ballot {
      * Refer there for more discussion.
      * 
      * @return the race groups of this ballots
-     * @see {@link #Ballot(List, Properties, HashMap, List)}
+     * @see {@link #RuntimeBallot(List, Properties, HashMap, List)}
      */
     public List<List<String>> getRaceGroups(){
     	return _raceGroups;

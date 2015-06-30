@@ -88,7 +88,7 @@ public class BallotParser {
      *
      * @throws BallotParserException if the ballot parser encountered any problems translating the tree.
      */
-    public Ballot getBallot(IBallotVars vars) throws BallotParserException {
+    public RuntimeBallot getBallot(IBallotVars vars) throws BallotParserException {
 
         _elements = new HashMap<>();
 
@@ -121,7 +121,7 @@ public class BallotParser {
      *
      * @throws BallotParserException if the ballot parser encountered any problems translating the tree.
      */
-    private Ballot parseBallot(Node node) throws BallotParserException {
+    private RuntimeBallot parseBallot(Node node) throws BallotParserException {
 
         NodeList children = node.getChildNodes();
         ArrayList<Card> cards = new ArrayList<>();
@@ -166,7 +166,7 @@ public class BallotParser {
         	}
         }
         
-        return new Ballot(cards, properties, _elements, raceGroups);
+        return new RuntimeBallot(cards, properties, _elements, raceGroups);
     }
 
     /**

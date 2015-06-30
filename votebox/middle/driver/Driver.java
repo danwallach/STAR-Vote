@@ -52,7 +52,7 @@ public class Driver {
 	private final IViewFactory _factory;
 
 	private ViewManager _view;
-	private Ballot _ballot;
+	private RuntimeBallot _ballot;
 	private boolean _encryptionEnabled;
 
 	private IViewAdapter _viewAdapter = new IViewAdapter() {
@@ -233,7 +233,7 @@ public class Driver {
     /**
      * @return the ballot this driver is working with
      */
-    public Ballot getBallot(){
+    public RuntimeBallot getBallot(){
         return _ballot;
     }
 

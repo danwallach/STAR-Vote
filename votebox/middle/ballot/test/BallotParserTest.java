@@ -24,7 +24,7 @@ package votebox.middle.ballot.test;
 
 import junit.framework.TestCase;
 import votebox.middle.IBallotVars;
-import votebox.middle.ballot.Ballot;
+import votebox.middle.ballot.RuntimeBallot;
 import votebox.middle.ballot.BallotParser;
 
 import java.net.URL;
@@ -77,7 +77,7 @@ public class BallotParserTest extends TestCase {
 		MyGlobalVars vars = new MyGlobalVars();
 		vars.setBallotFile(PATH + "test1.xml");
 		vars.setBallotSchema(SCHEMA);
-		Ballot ballot = new BallotParser().getBallot(vars);
+		RuntimeBallot ballot = new BallotParser().getBallot(vars);
 
         /* Test */
 		assertEquals(1, ballot.getCards().size());

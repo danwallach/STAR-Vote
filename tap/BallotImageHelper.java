@@ -123,7 +123,7 @@ public class BallotImageHelper {
 
 		try {
 
-			Ballot ballot = getBallot(ballotPath);
+			RuntimeBallot ballot = getBallot(ballotPath);
 
 			List<Card> cards = ballot.getCards();
 
@@ -257,7 +257,7 @@ public class BallotImageHelper {
 
         try {
 
-            Ballot ballot = getBallot(ballotPath);
+            RuntimeBallot ballot = getBallot(ballotPath);
 
 			List<String> lang;
 
@@ -282,7 +282,7 @@ public class BallotImageHelper {
 	 * @throws BallotParserException
 	 */
 	@SuppressWarnings("ResultOfMethodCallIgnored")
-    public static Ballot getBallot(String ballotPath) throws IOException, BallotParserException {
+    public static RuntimeBallot getBallot(String ballotPath) throws IOException, BallotParserException {
 
 		/*
 		  TODO ? GlobalVarsReader et. al. expect the ballot to be extracted. This is a very stupid assumption

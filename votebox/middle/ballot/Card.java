@@ -59,7 +59,7 @@ public class Card {
     /**
      * This is the ballot that this card belongs to.
      */
-    private Ballot _parent;
+    private RuntimeBallot _parent;
 
     /**
      * This denotes whether this card has a write-in or not
@@ -176,7 +176,7 @@ public class Card {
     /**
      * @return the Parent of this Card.
      */
-    public Ballot getParent() {
+    public RuntimeBallot getParent() {
         return _parent;
     }
 
@@ -197,7 +197,7 @@ public class Card {
     /**
      * @param card the new parent of this Card
      */
-    public void setParent(Ballot card) {
+    public void setParent(RuntimeBallot card) {
         _parent = card;
     }
 

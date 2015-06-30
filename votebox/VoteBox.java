@@ -42,7 +42,7 @@ import sexpression.stream.InvalidVerbatimStreamException;
 import votebox.events.*;
 import votebox.middle.IncorrectTypeException;
 import votebox.middle.Properties;
-import votebox.middle.ballot.Ballot;
+import votebox.middle.ballot.RuntimeBallot;
 import votebox.middle.driver.Driver;
 import votebox.middle.view.AWTViewFactory;
 import votebox.middle.view.IViewFactory;
@@ -256,7 +256,7 @@ public class VoteBox{
                 Object[] arg = (Object[]) argTemp;
 
                 /* arg0 should be the cast ballot structure, check. TODO Fix handling */
-                if (Ballot.BALLOT_PATTERN.match((ASExpression) arg[0]) == NoMatch.SINGLETON)
+                if (RuntimeBallot.BALLOT_PATTERN.match((ASExpression) arg[0]) == NoMatch.SINGLETON)
                     throw new RuntimeException("Incorrectly expected a cast-ballot");
 
                 /* Convert Ballot from ASE to Ballot object TODO check if this is right, should be able to do something similar */
@@ -375,7 +375,7 @@ public class VoteBox{
                     Object[] arg = (Object[]) argTemp;
 
                     /* arg1 should be the cast ballot structure, check  TODO */
-                    if (Ballot.BALLOT_PATTERN.match((ASExpression) arg[0]) == NoMatch.SINGLETON)
+                    if (RuntimeBallot.BALLOT_PATTERN.match((ASExpression) arg[0]) == NoMatch.SINGLETON)
                         throw new RuntimeException("Incorrectly expected a cast-ballot");
 
                     /* Convert Ballot from ASE to Ballot object TODO check if this is right, should be able to do something similar */
