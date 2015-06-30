@@ -506,7 +506,7 @@ public class VoteBox{
                     ActivatedEvent.getMatcher(), AssignLabelEvent.getMatcher(),
                     AuthorizedToCastEvent.getMatcher(), BallotReceivedEvent.getMatcher(),
                     OverrideCancelEvent.getMatcher(), OverrideCommitEvent.getMatcher(),
-                    PollsOpenQEvent.getMatcher(), AuthorizedToCastWithNIZKsEvent.getMatcher(),
+                    PollsOpenQEvent.getMatcher(), /*AuthorizedToCastWithNIZKsEvent.getMatcher(),*/
                     PINEnteredEvent.getMatcher(), InvalidPinEvent.getMatcher(),
                     PollsOpenEvent.getMatcher(), PollStatusEvent.getMatcher(),
                     BallotPrintingEvent.getMatcher(), BallotPrintSuccessEvent.getMatcher(),
