@@ -66,10 +66,10 @@ public class VoteBoxAuditoriumConnector {
         notifier = new VoteBoxEventNotifier();
 
         /* Initialize the network  with the provided serial number and parameters*/
-        auditorium = new AuditoriumHost( Integer.toString( serial ), params, launchCode );
+        auditorium = new AuditoriumHost(Integer.toString( serial ), params, launchCode);
 
         /* Initialize the message matcher */
-        matcher = new VoteBoxEventMatcher( rules );
+        matcher = new VoteBoxEventMatcher(rules);
 
         /* Register the network to listen for and handle join events */
         auditorium.registerForJoined( new Observer() {
@@ -109,7 +109,7 @@ public class VoteBoxAuditoriumConnector {
      * @param l the listener
      */
     public void addListener(VoteBoxEventListener l) {
-        notifier.addListener( l );
+        notifier.addListener(l);
     }
 
     /**
@@ -118,7 +118,7 @@ public class VoteBoxAuditoriumConnector {
      * @throws NetworkException
      */
     public void connect() throws NetworkException {
-        connect( 0, 0 );
+        connect(0, 0);
     }
 
     /**
