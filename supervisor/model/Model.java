@@ -335,7 +335,8 @@ public class Model {
             try {
 
                 /* For NIZKs to work, we have to establish the public key before the voting can start */
-                auditorium.announce(new AuthorizedToCastWithNIZKsEvent(mySerial, otherSerial, ASENonce, p.getPrecinctID(), ballot));
+                /* TODO don't worry about params because there is no difference between events? Used to be "withNIZKs" */
+                auditorium.announce(new AuthorizedToCastEvent(mySerial, otherSerial, ASENonce, p.getPrecinctID(), ballot));
 
             } catch(Exception e){  System.err.println("There was an error during key generation!"); e.printStackTrace(); }
         }
@@ -611,7 +612,7 @@ public class Model {
                     PollsOpenEvent.getMatcher(), PollsOpenQEvent.getMatcher(),
                     SupervisorEvent.getMatcher(), VoteBoxEvent.getMatcher(),
                     EncryptedCastBallotEvent.getMatcher(), CommitBallotEvent.getMatcher(),
-                    EncryptedCastBallotWithNIZKsEvent.getMatcher(), AuthorizedToCastWithNIZKsEvent.getMatcher(),
+                    EncryptedCastBallotWithNIZKsEvent.getMatcher(),
                     PINEnteredEvent.getMatcher(), InvalidPinEvent.getMatcher(),
                     PollStatusEvent.getMatcher(), BallotPrintSuccessEvent.getMatcher(),
                     BallotScannedEvent.getMatcher(), BallotScannerEvent.getMatcher(),

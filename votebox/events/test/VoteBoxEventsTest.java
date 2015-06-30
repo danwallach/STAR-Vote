@@ -57,7 +57,7 @@ public class VoteBoxEventsTest extends TestCase {
                 BallotScanAcceptedEvent.getMatcher(), BallotScannedEvent.getMatcher(),
                 BallotScanRejectedEvent.getMatcher(), BallotPrintFailEvent.getMatcher(),
                 BallotPrintingEvent.getMatcher(), BallotPrintSuccessEvent.getMatcher(),
-                BallotScannerEvent.getMatcher(), AuthorizedToCastWithNIZKsEvent.getMatcher(),
+                BallotScannerEvent.getMatcher(),
                 CommitBallotEvent.getMatcher(), EncryptedCastBallotEvent.getMatcher(),
                 EncryptedCastBallotWithNIZKsEvent.getMatcher(), PollMachinesEvent.getMatcher(),
                 PollsOpenQEvent.getMatcher(), PollStatusEvent.getMatcher(),

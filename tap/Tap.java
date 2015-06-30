@@ -176,7 +176,6 @@ public class Tap {
                     CommitBallotEvent.getMatcher(),
                     BallotReceivedEvent.getMatcher(),
                     BallotScanAcceptedEvent.getMatcher(),
-                    AuthorizedToCastWithNIZKsEvent.getMatcher(),
                     PollsClosedEvent.getMatcher(),
                     StartUploadEvent.getMatcher(),
                     BallotUploadEvent.getMatcher()

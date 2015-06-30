@@ -110,7 +110,7 @@ public class Booth {
                     auditoriumParams, "0000000000", ActivatedEvent.getMatcher(), AssignLabelEvent.getMatcher(),
                     AuthorizedToCastEvent.getMatcher(), BallotReceivedEvent.getMatcher(),
                     OverrideCancelEvent.getMatcher(), OverrideCommitEvent.getMatcher(),
-                    PollsOpenQEvent.getMatcher(), AuthorizedToCastWithNIZKsEvent.getMatcher(),
+                    PollsOpenQEvent.getMatcher(),
                     PINEnteredEvent.getMatcher(), InvalidPinEvent.getMatcher(),
                     PollsOpenEvent.getMatcher(), PollStatusEvent.getMatcher(),
                     BallotPrintingEvent.getMatcher(), BallotPrintSuccessEvent.getMatcher(),

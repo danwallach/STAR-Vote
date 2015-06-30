@@ -185,6 +185,7 @@ public class VoteBoxAuditoriumConnector {
      */
     public void announce(IAnnounceEvent e) {
         auditorium.announce( e.toSExp() );
+        System.out.println("Auditorium announced: " + e.getClass().getSimpleName());
         e.fire(notifier);
     }
 

@@ -506,7 +506,7 @@ public class VoteBox{
                     ActivatedEvent.getMatcher(), AssignLabelEvent.getMatcher(),
                     AuthorizedToCastEvent.getMatcher(), BallotReceivedEvent.getMatcher(),
                     OverrideCancelEvent.getMatcher(), OverrideCommitEvent.getMatcher(),
-                    PollsOpenQEvent.getMatcher(), /*AuthorizedToCastWithNIZKsEvent.getMatcher(),*/
+                    PollsOpenQEvent.getMatcher(),
                     PINEnteredEvent.getMatcher(), InvalidPinEvent.getMatcher(),
                     PollsOpenEvent.getMatcher(), PollStatusEvent.getMatcher(),
                     BallotPrintingEvent.getMatcher(), BallotPrintSuccessEvent.getMatcher(),
@@ -623,7 +623,7 @@ public class VoteBox{
                 if (e.getTargetSerial() == mySerial) {
                     isProvisional = false;
 
-                    /* Make sure not already voting TODO runtime exception */
+                    /* Make sure not already voting TFODO runtime exception */
 
                     System.out.println("Currently this machine is " + (voting ? "voting already!" : "not voting already!"));
 

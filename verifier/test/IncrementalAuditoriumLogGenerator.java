@@ -174,7 +174,7 @@ public class IncrementalAuditoriumLogGenerator {
 
         PINEnteredEvent pin = new PINEnteredEvent(1, "pin");
 
-        AuthorizedToCastWithNIZKsEvent authorize = new AuthorizedToCastWithNIZKsEvent(0, 1, nonce, precinct, ballot);
+        AuthorizedToCastEvent authorize = new AuthorizedToCastEvent(0, 1, nonce, precinct, ballot);
 
         /* Generate a random bid for this voting session */
         String bid = getRandomString();
