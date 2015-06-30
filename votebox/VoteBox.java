@@ -534,8 +534,8 @@ public class VoteBox{
             public void overrideCancelConfirm(OverrideCancelConfirmEvent e) {}
             public void overrideCancelDeny(OverrideCancelDenyEvent e) {}
             public void lastPollsOpen(LastPollsOpenEvent e) {}
-            public void overrideCastConfirm(OverrideCommitConfirmEvent e) {}
-            public void overrideCastDeny(OverrideCommitDenyEvent e) {}
+            public void overrideCommitConfirm(OverrideCommitConfirmEvent e) {}
+            public void overrideCommitDeny(OverrideCommitDenyEvent e) {}
             public void pollsClosed(PollsClosedEvent e) {}
             public void supervisor(SupervisorEvent e) {}
             public void votebox(VoteBoxEvent e) {}
@@ -816,7 +816,7 @@ public class VoteBox{
              *
              * @see votebox.events.OverrideCommitEvent
              */
-            public void overrideCast(OverrideCommitEvent e) {
+            public void overrideCommit(OverrideCommitEvent e) {
                 /* See if this is the target of the event */
                 if(e.getTargetSerial() == mySerial){
 
@@ -826,7 +826,7 @@ public class VoteBox{
                         if (voting && !finishedVoting && currentDriver != null) {
 
                             /* Saves the last page the voter was on */
-                            int page = currentDriver.getView().overrideCast();
+                            int page = currentDriver.getView().overrideCommit();
 
                             /* Go back if override is no good */
                             if (!override) {

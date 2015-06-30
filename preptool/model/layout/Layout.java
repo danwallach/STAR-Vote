@@ -44,7 +44,7 @@ public class Layout {
     private int overrideCancelPage;
     
     /** The page number of the override-cast page */
-    private int overrideCastPage;
+    private int overrideCommitPage;
 
     /** The page number of the provisional success page */
     private int provisionalPage;
@@ -64,10 +64,10 @@ public class Layout {
     }
 
     /**
-     * @return the overrideCastPage
+     * @return the overrideCommitPage
      */
     public int getOverrideCommitPage() {
-        return overrideCastPage;
+        return overrideCommitPage;
     }
 
     /**
@@ -85,10 +85,10 @@ public class Layout {
     }
 
 	/**
-     * @param overrideCastPage the overrideCastPage to set
+     * @param overrideCommitPage the overrideCommitPage to set
      */
-    public void setOverrideCommitPage(int overrideCastPage) {
-        this.overrideCastPage = overrideCastPage;
+    public void setOverrideCommitPage(int overrideCommitPage) {
+        this.overrideCommitPage = overrideCommitPage;
     }
     
     /**
@@ -108,7 +108,7 @@ public class Layout {
 	public Element toXML(Document doc) {
 		Element layoutElt = doc.createElement("Layout");
         XMLTools.addProperty(doc, layoutElt, "OverrideCancelPage", "Integer", overrideCancelPage);
-        XMLTools.addProperty(doc, layoutElt, "OverrideCommitPage", "Integer", overrideCastPage);
+        XMLTools.addProperty(doc, layoutElt, "OverrideCommitPage", "Integer", overrideCommitPage);
         XMLTools.addProperty(doc, layoutElt, "ProvisionalSuccessPage", "Integer", provisionalPage);
         
 		for (Page p : pages) {

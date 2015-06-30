@@ -212,19 +212,19 @@ public class Tap {
             public void pinEntered(PINEnteredEvent event) {}
             public void invalidPin(InvalidPinEvent event) {}
             public void lastPollsOpen(LastPollsOpenEvent e) {}
-            public void overrideCast(OverrideCommitEvent e) {}
+            public void overrideCommit(OverrideCommitEvent e) {}
             public void ballotScanner(BallotScannerEvent e) {}
             public void ballotScanned(BallotScannedEvent e) {}
             public void overrideCancel(OverrideCancelEvent e) {}
             public void ballotRejected(BallotScanRejectedEvent e){}
-            public void overrideCastDeny(OverrideCommitDenyEvent e) {}
+            public void overrideCommitDeny(OverrideCommitDenyEvent e) {}
             public void authorizedToCast(AuthorizedToCastEvent e) {}
             public void tapMachine(TapMachineEvent tapMachineEvent) {}
             public void pollStatus(PollStatusEvent pollStatusEvent) {}
             public void overrideCancelDeny(OverrideCancelDenyEvent e) {}
             public void spoilBallot(SpoilBallotEvent spoilBallotEvent) {}
             public void castCommittedBallot(CastCommittedBallotEvent e) {}
-            public void overrideCastConfirm(OverrideCommitConfirmEvent e) {}
+            public void overrideCommitConfirm(OverrideCommitConfirmEvent e) {}
             public void scannerStart(StartScannerEvent startScannerEvent) {}
             public void overrideCancelConfirm(OverrideCancelConfirmEvent e) {}
             public void ballotPrinting(BallotPrintingEvent ballotPrintingEvent) {}

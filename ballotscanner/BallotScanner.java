@@ -251,9 +251,9 @@ public class  BallotScanner{
             public void overrideCancel(OverrideCancelEvent e) {}
             public void overrideCancelConfirm(OverrideCancelConfirmEvent e) {}
             public void overrideCancelDeny(OverrideCancelDenyEvent e) {}
-            public void overrideCast(OverrideCommitEvent e) {}
-            public void overrideCastConfirm(OverrideCommitConfirmEvent e) {}
-            public void overrideCastDeny(OverrideCommitDenyEvent e) {}
+            public void overrideCommit(OverrideCommitEvent e) {}
+            public void overrideCommitConfirm(OverrideCommitConfirmEvent e) {}
+            public void overrideCommitDeny(OverrideCommitDenyEvent e) {}
             public void pollsClosed(PollsClosedEvent e) {}
             public void pollsOpen(PollsOpenEvent e) {}
             public void pollsOpenQ(PollsOpenQEvent e) {}

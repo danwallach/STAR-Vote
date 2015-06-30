@@ -80,7 +80,7 @@ public class OverrideCommitDenyEvent extends ABallotEvent {
 
     /** @see votebox.events.IAnnounceEvent#fire(VoteBoxEventListener) */
     public void fire(VoteBoxEventListener l) {
-        l.overrideCastDeny( this );
+        l.overrideCommitDeny(this);
     }
 
     /** @see votebox.events.IAnnounceEvent#toSExp() */

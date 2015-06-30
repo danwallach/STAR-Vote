@@ -121,19 +121,19 @@ public class VoteBoxEventNotifier implements VoteBoxEventListener {
             l.overrideCancelDeny(e);
     }
 
-    public void overrideCast(OverrideCommitEvent e) {
+    public void overrideCommit(OverrideCommitEvent e) {
         for (VoteBoxEventListener l : listeners)
-            l.overrideCast(e);
+            l.overrideCommit(e);
     }
 
-    public void overrideCastConfirm(OverrideCommitConfirmEvent e) {
+    public void overrideCommitConfirm(OverrideCommitConfirmEvent e) {
         for (VoteBoxEventListener l : listeners)
-            l.overrideCastConfirm(e);
+            l.overrideCommitConfirm(e);
     }
 
-    public void overrideCastDeny(OverrideCommitDenyEvent e) {
+    public void overrideCommitDeny(OverrideCommitDenyEvent e) {
         for (VoteBoxEventListener l : listeners)
-            l.overrideCastDeny(e);
+            l.overrideCommitDeny(e);
     }
 
     public void pollsClosed(PollsClosedEvent e) {

@@ -239,14 +239,14 @@ public class Booth {
             }
 
             @Override
-            public void overrideCast(OverrideCommitEvent e) {
+            public void overrideCommit(OverrideCommitEvent e) {
 
             }
 
             public void uploadBallots(BallotUploadEvent ballotUploadEvent) {}
 
             @Override
-            public void overrideCastConfirm(OverrideCommitConfirmEvent e) {
+            public void overrideCommitConfirm(OverrideCommitConfirmEvent e) {
                 System.out.println("*** override-cast: " + e.toString());
 
                 if (voting && serial == e.getSerial()
@@ -257,7 +257,7 @@ public class Booth {
             }
 
             @Override
-            public void overrideCastDeny(OverrideCommitDenyEvent e) {
+            public void overrideCommitDeny(OverrideCommitDenyEvent e) {
 
             }
 

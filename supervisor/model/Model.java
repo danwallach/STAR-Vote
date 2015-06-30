@@ -630,8 +630,8 @@ public class Model {
             public void overrideCancel(OverrideCancelEvent e) {}
             public void overrideCancelConfirm(OverrideCancelConfirmEvent e) {}
             public void overrideCancelDeny(OverrideCancelDenyEvent e) {}
-            public void overrideCast(OverrideCommitEvent e) {}
-            public void overrideCastDeny(OverrideCommitDenyEvent e) {}
+            public void overrideCommit(OverrideCommitEvent e) {}
+            public void overrideCommitDeny(OverrideCommitDenyEvent e) {}
 
             public void invalidPin(InvalidPinEvent e) {}
             public void ballotAccepted(BallotScanAcceptedEvent e){}
@@ -787,7 +787,7 @@ public class Model {
              * Handler for the override-cast-confirm event. Similar to
              * cast-ballot, but no received reply is sent.
              */ /* TODO Is this okay?*/
-            public void overrideCastConfirm(OverrideCommitConfirmEvent e) {
+            public void overrideCommitConfirm(OverrideCommitConfirmEvent e) {
                 //AMachine m = getMachineForSerial(e.getSerial());
                 //if (m != null && m instanceof BallotScannerMachine) {
                     //TODO Make this work with ballot hashes

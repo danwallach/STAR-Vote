@@ -55,8 +55,8 @@ public class ViewManager implements IViewManager {
     private final ObservableEvent _commitEvent;
     private final ObservableEvent _overrideCancelConfirm;
     private final ObservableEvent _overrideCancelDeny;
-    private final ObservableEvent _overrideCastConfirm;
-    private final ObservableEvent _overrideCastDeny;
+    private final ObservableEvent _overrideCommitConfirm;
+    private final ObservableEvent _overrideCommitDeny;
     private final ObservableEvent _reviewScreenEncountered;
     private final ObservableEvent _pageChanged;
 
@@ -109,8 +109,8 @@ public class ViewManager implements IViewManager {
 
         _overrideCancelConfirm   = new ObservableEvent();
         _overrideCancelDeny      = new ObservableEvent();
-        _overrideCastConfirm     = new ObservableEvent();
-        _overrideCastDeny        = new ObservableEvent();
+        _overrideCommitConfirm = new ObservableEvent();
+        _overrideCommitDeny = new ObservableEvent();
 
         _reviewScreenEncountered = new ObservableEvent();
         _pageChanged             = new ObservableEvent();
@@ -345,7 +345,7 @@ public class ViewManager implements IViewManager {
      * was previously on is returned, so that if the override is denied, the
      * caller can go back to that page.
      */
-    public int overrideCast() throws IncorrectTypeException {
+    public int overrideCommit() throws IncorrectTypeException {
 
         if (!_layout.getProperties().contains(Properties.OVERRIDE_COMMIT_PAGE))
             throw new BallotBoxViewException("Override Cast Page does not exist", null);
@@ -375,7 +375,7 @@ public class ViewManager implements IViewManager {
     /**
      * Fired when the override-cast operation is confirmed on the booth.
      */
-    public void overrideCastConfirm() {
+    public void overrideCommitConfirm() {
 
 
         Object[] toPass = new Object[]{
@@ -384,14 +384,14 @@ public class ViewManager implements IViewManager {
                 _ballotLookupAdapter.getTitles()
         };
 
-        _overrideCastConfirm.notifyObservers(toPass);
+        _overrideCommitConfirm.notifyObservers(toPass);
     }
 
     /**
      * Fired when the override-cast operation is confirmed on the booth.
      */
-    public void overrideCastDeny() {
-        _overrideCastDeny.notifyObservers();
+    public void overrideCommitDeny() {
+        _overrideCommitDeny.notifyObservers();
     }
 
     /**
@@ -427,7 +427,7 @@ public class ViewManager implements IViewManager {
      * @param obs       the observer
      */
     public void registerForOverrideCommitConfirm(Observer obs) {
-        _overrideCastConfirm.addObserver(obs);
+        _overrideCommitConfirm.addObserver(obs);
     }
 
     /**
@@ -436,7 +436,7 @@ public class ViewManager implements IViewManager {
      * @param obs       the observer
      */
     public void registerForOverrideCommitDeny(Observer obs) {
-        _overrideCastDeny.addObserver(obs);
+        _overrideCommitDeny.addObserver(obs);
     }
 
     /**

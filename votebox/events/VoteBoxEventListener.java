@@ -127,7 +127,7 @@ public interface VoteBoxEventListener {
      * @param e
      *            the event
      */
-    public void overrideCast(OverrideCommitEvent e);
+    public void overrideCommit(OverrideCommitEvent e);
 
     /**
      * Fired when the override-cast-confirm message is received
@@ -135,7 +135,7 @@ public interface VoteBoxEventListener {
      * @param e
      *            the event
      */
-    public void overrideCastConfirm(OverrideCommitConfirmEvent e);
+    public void overrideCommitConfirm(OverrideCommitConfirmEvent e);
 
     /**
      * Fired when the override-cast-deny message is received
@@ -143,7 +143,7 @@ public interface VoteBoxEventListener {
      * @param e
      *            the event
      */
-    public void overrideCastDeny(OverrideCommitDenyEvent e);
+    public void overrideCommitDeny(OverrideCommitDenyEvent e);
 
     /**
      * Fired when the polls-closed message is received

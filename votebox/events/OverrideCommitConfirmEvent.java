@@ -82,7 +82,7 @@ public class OverrideCommitConfirmEvent extends ABallotEvent {
 
     /** @see votebox.events.IAnnounceEvent#fire(VoteBoxEventListener) */
     public void fire(VoteBoxEventListener l) {
-        l.overrideCastConfirm( this );
+        l.overrideCommitConfirm(this);
     }
 
     /** @see votebox.events.IAnnounceEvent#toSExp() */

@@ -76,12 +76,12 @@ public interface IViewManager {
     /**
      * Fired when the override-cast operation is confirmed on the booth.
      */
-    public void overrideCastConfirm();
+    public void overrideCommitConfirm();
     
     /**
      * Fired when the override-cast operation is confirmed on the booth.
      */
-    public void overrideCastDeny();
+    public void overrideCommitDeny();
 
     /**
      * Set the language being displayed in the view.

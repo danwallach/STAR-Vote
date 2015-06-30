@@ -91,7 +91,7 @@ public class OverrideCommitEvent extends ABallotEvent {
 
     /** @see votebox.events.IAnnounceEvent#fire(VoteBoxEventListener) */
     public void fire(VoteBoxEventListener l) {
-        l.overrideCast( this );
+        l.overrideCommit(this);
     }
 
     /** @see votebox.events.IAnnounceEvent#toSExp() */

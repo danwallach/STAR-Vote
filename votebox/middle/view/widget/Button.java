@@ -272,23 +272,23 @@ public class Button extends FocusableLabel {
                 };
                 break;
 
-            case "OverrideCastConfirm":
+            case "OverrideCommitConfirm":
 
                 _buttonStrategy = new IButtonStrategy() {
 
                     public void execute(Button context)
                             throws BallotBoxViewException {
-                        viewManager.overrideCastConfirm();
+                        viewManager.overrideCommitConfirm();
                     }
                 };
                 break;
 
-            case "OverrideCastDeny":
+            case "OverrideCommitDeny":
 
                 _buttonStrategy = new IButtonStrategy() {
 
                     public void execute(Button context) throws BallotBoxViewException {
-                        viewManager.overrideCastDeny();
+                        viewManager.overrideCommitDeny();
                     }
                 };
                 break;
