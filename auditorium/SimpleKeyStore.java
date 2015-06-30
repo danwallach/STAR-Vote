@@ -83,7 +83,8 @@ public class SimpleKeyStore implements IKeyStore {
 
     public AdderPublicKey loadPEK() throws AuditoriumCryptoException{
 
-        File PEKFile = new File("PEK.adder.key");
+        System.out.println(System.getProperty("user.dir"));
+        File PEKFile = new File(System.getProperty("user.dir"), "PEK.adder.key");
         Path PEKPath = PEKFile.toPath();
         System.out.println(PEKPath.toAbsolutePath());
 
