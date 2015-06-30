@@ -9,8 +9,6 @@ out
 *.class
 *.out
 *.pdf
-*.zip
-*.bal
 *.conf
 Supervisor.jar
 Votebox.jar
