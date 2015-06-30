@@ -296,7 +296,7 @@ public class ActiveUI extends JPanel {
                      * TODO handle the error case when the selected name is a valid file but not the correct length?
                      */
                     String precinct = ballot.substring(ballot.length()-7, ballot.length()-4);
-                    System.out.println(precinct);
+                    System.out.println("Loaded ballot for precinct " + precinct);
                     precinctsToBallots.put(precinct, selected.getAbsolutePath());
 
                     /* Add the ballot to the model */

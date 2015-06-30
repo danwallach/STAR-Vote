@@ -308,6 +308,7 @@ public class Model {
             return;
         }
 
+        System.out.println("Setting up a new Votebox!");
         VoteBoxBooth b = (VoteBoxBooth) (getMachineForSerial(otherSerial));
         b.setNonce(nonce);
 
@@ -328,6 +329,8 @@ public class Model {
 
         }
         else {
+
+            System.out.println("Announcing that this is authorised to cast!");
 
             try {
 
@@ -1277,19 +1280,28 @@ public class Model {
                 String PIN = e.getPin();
 
                 /* This only works if the polls are open */
+
+                System.out.println("Polls are " + (arePollsOpen() ? "open!" : "closed!"));
+
                 if(arePollsOpen()) {
 
                     /* Validate the PIN */
                     boolean isValidPIN = pinValidator.validatePIN(PIN);
 
+                    System.out.println("This PIN was " + (isValidPIN ? "valid!" : "invalid!"));
+
                     /* Check that there is a record of this PIN and ballot style */
                     if (isValidPIN) {
 
+                        System.out.println("Getting the precinct ID and the ballot file... ");
                         /* Get the precinct and then ballot style for this PIN */
                         String PID = pinValidator.usePIN(PIN);
                         String ballotFile = precincts.get(PID).getBallotFile();
 
                         try {
+
+                            System.out.println("Authorising a " + (PID.contains("provisional") ? "provisional" : "normal") + " voting session... ");
+
 
                             /* If the ballot is provisional, authorize provisionally */
                             if(PID.contains("provisional"))

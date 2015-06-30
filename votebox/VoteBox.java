@@ -617,12 +617,17 @@ public class VoteBox{
              */
             public void authorizedToCast(AuthorizedToCastEvent e) {
 
+                System.out.println("Detected AuthorizedToCastEvent for machine with serial " + e.getTargetSerial());
+
                 /* See if this is directed towards this machine */
                 if (e.getTargetSerial() == mySerial) {
                     isProvisional = false;
 
                     /* Make sure not already voting TODO runtime exception */
-                    if (voting || currentDriver != null && killVBTimer == null)
+
+                    System.out.println("Currently this machine is " + (voting ? "voting already!" : "not voting already!"));
+
+                    if (voting || (currentDriver != null && killVBTimer == null))
                         throw new RuntimeException( "VoteBox was authorized-to-cast, but was already voting");
 
                     /* If last VB runtime is on thank you screen and counting down to when it disappears, kill it prematurely without showing inactive UI */
@@ -649,6 +654,8 @@ public class VoteBox{
                     bid = String.valueOf(rand.nextInt(Integer.MAX_VALUE));
                     precinct = e.getPrecinct();
 
+                    System.out.println("Dealing with ballot " + bid + " in precinct " + precinct + "...");
+                    System.out.println("Initialising crypto...");
 
                     DHExponentialElGamalCryptoType cryptoType = new DHExponentialElGamalCryptoType();
 
@@ -657,7 +664,12 @@ public class VoteBox{
 
                     BallotCrypto.setCryptoType(cryptoType);
 
+                    System.out.println("Crypto set!");
+
                     try {
+
+                        System.out.println("Setting ballot file!");
+
                         /* Set ballot file */
                     	_currentBallotFile = new File(path, "ballot.zip");
                         staticCurrentBallotFile = _currentBallotFile;
