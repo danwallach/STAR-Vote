@@ -274,18 +274,6 @@ public class Card {
     }
 
     /**
-     * @return an SExpression representation of this Card.
-     */
-    public ASExpression toASExpression() {
-        ArrayList<ASExpression> elementList = new ArrayList<>();
-
-        try{ elementList.add(StringExpression.makeString(this.getSelectedElement())); }
-        catch(Exception e){ e.printStackTrace(); }
-
-        return new ListExpression(StringExpression.makeString(_uniqueID), new ListExpression(elementList));
-    }
-
-    /**
      * @return This method returns a conceptual list of BigIntegers which
      *         represents this ballot. A "1" in the list represents a selection,
      *         while a "0" represents no selection. Each of these "counter"

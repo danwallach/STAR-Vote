@@ -291,7 +291,6 @@ public final class RuntimeBallot {
         /* Add all the cast ballots and put into pairs for return */
         for (Card card : _cards) {
             raceSelections.add(card.asRaceSelection());
-            System.out.println(card.asRaceSelection());
         }
 
         return new Ballot<>(null, raceSelections, null);

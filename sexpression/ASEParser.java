@@ -28,6 +28,9 @@ public class ASEParser {
      */
     private static <T> T convertFromASE(ListExpression exp, Class<T> c) throws ConversionException {
 
+        if (c==null) return null;
+        if (exp==null) return null;
+
         ObjectInstantiator<T> tInstantiator = ObjenesisHelper.getInstantiatorOf(c);
 
         /* Convert to a list expression */
@@ -38,9 +41,6 @@ public class ASEParser {
 
 
         /* Use Objenesis to construct a new (hopefully blank) instance of this class */
-
-        if (c==null) return null;
-
         T newObj = tInstantiator.newInstance();
 
         if (newObj instanceof Number || newObj instanceof String)
@@ -50,16 +50,17 @@ public class ASEParser {
             return (T)convertASE(exp);
 
         try {
-            if (newObj instanceof Collection)
-                return (T)convertCollection(exp, (Collection) newObj);
-
+            if (newObj instanceof Collection) {
+                T result = (T) convertCollection(exp, (Collection) newObj);
+                return result;
+            }
             if (newObj instanceof Map) {
-                //System.out.println("IT'S A MAP!");
-                return convertMap(exp, (Map<?,?>) newObj);
+                T result = convertMap(exp, (Map<?,?>) newObj);
+                return result;
             }
         }
         catch (Exception e) {
-            throw new ConversionException("Error during reconstruction of collection: " + e.getMessage());
+            throw new ConversionException("Error during reconstruction of collection: " + exp +"\n\t" + e.getMessage());
         }
 
         for (int i=2; i<exp.size(); i++) {
@@ -124,8 +125,13 @@ public class ASEParser {
      */
     public static <T> T convertFromASE(ListExpression exp) {
 
-        try { return convertFromASE(exp, getClass(exp)); }
-        catch (ConversionException e){ e.printStackTrace(); }
+        try {
+            T result = convertFromASE(exp, getClass(exp));
+            return result; }
+        catch (ConversionException e){
+            System.err.println("Error converting from ASE: " + e.getClass() + " for " + exp);
+            e.printStackTrace();
+        }
 
         return null;
     }
@@ -284,27 +290,28 @@ public class ASEParser {
      *
      * @throws ConversionException if a bad cast occurs
      */
-    private static Collection convertCollection(ListExpression exp, Collection col) throws ConversionException {
-
+    private static <T> Collection<T> convertCollection(ListExpression exp, Collection<T> col) throws ConversionException {
+        Collection<T> collection = Collections.synchronizedCollection(col);
         try {
 
-            for (int i=2; i<exp.size(); i++) {
+            for (int i=2; exp != null && i<exp.size(); i++) {
 
                 /* Get the ASExpression */
                 ASExpression cur = exp.get(i);
 
                 /* If this is an instance of ListExpression, convert to object */
                 if (cur instanceof ListExpression) {
-
                     /* There ought to be no primitives here since they were autoboxed */
-                    col.add(ASEParser.convertFromASE((ListExpression) cur));
+                    collection.add(ASEParser.convertFromASE((ListExpression) cur));
                 }
             }
 
-            return col;
+            collection = Collections.synchronizedCollection(collection);
+            return collection;
 
         }
-        catch (Exception e) { throw new ConversionException("Error during reconstruction of collection: " + e.getMessage()); }
+        catch (Exception e) { throw new ConversionException("Error during reconstruction of collection: " + e.getClass()
+                                                            + "(" + e.getMessage() + ")" + " for " + exp); }
     }
 
     /**
@@ -348,6 +355,8 @@ public class ASEParser {
      */
     private static <T extends Map<K,V>, K, V> T convertMap (ListExpression exp, Map<K,V> m) throws ConversionException {
 
+        Map<K,V> map = Collections.synchronizedMap(m);
+
         try {
 
             for (int i=2; i<exp.size(); i++) {
@@ -364,14 +373,16 @@ public class ASEParser {
                     KeyValuePair<K,V> kv = ASEParser.convertFromASE((ListExpression) cur);
 
                     /* Add this object to the collection */
-                    m.put(kv.getKey(),kv.getValue());
+                    map.put(kv.getKey(),kv.getValue());
                 }
             }
 
-            return (T)m;
+            map = Collections.synchronizedMap(map);
+
+            return (T)map;
 
         }
-        catch (ClassCastException e) { throw new ConversionException("Error during reconstruction of collection: " + e.getMessage()); }
+        catch (ClassCastException e) { throw new ConversionException("Error during reconstruction of map: " + e.getMessage() + " for " + exp); }
     }
 
     /**

@@ -39,6 +39,7 @@ import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.NoMatch;
 import sexpression.stream.InvalidVerbatimStreamException;
+import supervisor.model.Ballot;
 import votebox.events.*;
 import votebox.middle.IncorrectTypeException;
 import votebox.middle.Properties;
@@ -259,13 +260,14 @@ public class VoteBox{
                 //    throw new RuntimeException("Incorrectly expected a cast-ballot");
 
                 /* Convert Ballot from ASE to Ballot object TODO check if this is right, should be able to do something similar */
-                supervisor.model.Ballot<PlaintextRaceSelection> ballot = ASEParser.convertFromASE((ListExpression) arg[0]);
+                supervisor.model.Ballot<PlaintextRaceSelection> ballot = (Ballot<PlaintextRaceSelection>) arg[0];
+
 
                 /* Encrypt Ballot */
                 supervisor.model.Ballot<EncryptedRaceSelection> encBallot;
 
                 try { encBallot = BallotCrypto.encrypt(ballot); }
-                catch (Exception e) { e.printStackTrace(); throw new RuntimeException("Could not encrypt the ballot because of "+e.getClass()); }
+                catch (Exception e) { e.printStackTrace(); throw new RuntimeException("Could not encrypt the ballot because of " + e.getClass()); }
 
 
                 /* Check if provisional and choose announcement format */
