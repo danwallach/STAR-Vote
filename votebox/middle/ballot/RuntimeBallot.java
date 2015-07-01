@@ -284,7 +284,7 @@ public final class RuntimeBallot {
      *         BigInteger.ONE (in byte[] format, converted to an s-expression
      *         byte string).
      */
-    public Ballot<PlaintextRaceSelection> asBallot() {
+    public List<PlaintextRaceSelection> inRaceSelectionForm() {
 
         List<PlaintextRaceSelection> raceSelections = new ArrayList<>();
 
@@ -293,7 +293,7 @@ public final class RuntimeBallot {
             raceSelections.add(card.asRaceSelection());
         }
 
-        return new Ballot<>(null, raceSelections, null);
+        return raceSelections;
     }
     
     /**

@@ -88,7 +88,7 @@ public interface IBallotLookupAdapter {
 	 * 
 	 * @return This method returns an s-expression representation of the ballot.
 	 */
-	public Ballot<PlaintextRaceSelection> asBallot();
+	public List<PlaintextRaceSelection> inRaceSelectionForm();
 
 	/**
 	 * Call this method to get the number of selections that have currently been

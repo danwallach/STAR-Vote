@@ -1134,6 +1134,7 @@ public class Model {
                     try {
 
                         ASExpression ballot = ASExpression.makeVerbatim(e.getBallot());
+                        System.out.println(ballot + " committed!");
 
                         thisPrecinct.commitBallot(e.getBID(), ASEParser.convertFromASE((ListExpression) ballot));
 

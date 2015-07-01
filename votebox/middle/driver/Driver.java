@@ -26,7 +26,6 @@ import auditorium.IAuditoriumParams;
 import crypto.PlaintextRaceSelection;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
-import supervisor.model.Ballot;
 import tap.BallotImageHelper;
 import votebox.middle.IBallotVars;
 import votebox.middle.Properties;
@@ -120,9 +119,9 @@ public class Driver {
 			return _ballot.isSelected(uid);
 		}
 
-		public Ballot<PlaintextRaceSelection> asBallot() {
+		public List<PlaintextRaceSelection> inRaceSelectionForm() {
 
-			return _ballot.asBallot();
+			return _ballot.inRaceSelectionForm();
 		}
 
 		public int numSelections() {

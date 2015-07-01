@@ -260,11 +260,12 @@ public class VoteBox{
                 //    throw new RuntimeException("Incorrectly expected a cast-ballot");
 
                 /* Convert Ballot from ASE to Ballot object TODO check if this is right, should be able to do something similar */
-                supervisor.model.Ballot<PlaintextRaceSelection> ballot = (Ballot<PlaintextRaceSelection>) arg[0];
+                List<PlaintextRaceSelection> ballotForm = (List<PlaintextRaceSelection>) arg[0];
 
+                Ballot<PlaintextRaceSelection> ballot = new Ballot<>(bid, ballotForm, nonce.toString());
 
                 /* Encrypt Ballot */
-                supervisor.model.Ballot<EncryptedRaceSelection> encBallot;
+                Ballot<EncryptedRaceSelection> encBallot;
 
                 try { encBallot = BallotCrypto.encrypt(ballot); }
                 catch (Exception e) { e.printStackTrace(); throw new RuntimeException("Could not encrypt the ballot because of " + e.getClass()); }
@@ -380,10 +381,12 @@ public class VoteBox{
                     //    throw new RuntimeException("Incorrectly expected a cast-ballot");
 
                     /* Convert Ballot from ASE to Ballot object TODO check if this is right, should be able to do something similar */
-                    supervisor.model.Ballot<PlaintextRaceSelection> ballot = ASEParser.convertFromASE((ListExpression) arg[0]);
+                    List<PlaintextRaceSelection> ballotForm = (List<PlaintextRaceSelection>) arg[0];
+
+                    Ballot<PlaintextRaceSelection> ballot = new Ballot<>(bid, ballotForm, nonce.toString());
 
                     /* Encrypt Ballot */
-                    supervisor.model.Ballot<EncryptedRaceSelection> encBallot;
+                    Ballot<EncryptedRaceSelection> encBallot;
 
                     try { encBallot = BallotCrypto.encrypt(ballot); }
                     catch (Exception e) { e.printStackTrace(); throw new RuntimeException("Could not encrypt the ballot because of "+ e.getClass()); }
