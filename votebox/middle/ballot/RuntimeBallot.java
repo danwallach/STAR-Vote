@@ -22,8 +22,9 @@
 
 package votebox.middle.ballot;
 
+import crypto.PlaintextRaceSelection;
 import sexpression.ASExpression;
-import sexpression.ListExpression;
+import supervisor.model.Ballot;
 import votebox.middle.IncorrectTypeException;
 import votebox.middle.Properties;
 import votebox.middle.driver.DeselectionException;
@@ -275,16 +276,6 @@ public final class RuntimeBallot {
     }
 
     /**
-     * @return the SExpression representation of this Ballot.
-     */
-    public ASExpression toASExpression() {
-        ArrayList<ASExpression> cardList = new ArrayList<>();
-        for (Card card : _cards)
-            cardList.add(card.toASExpression());
-        return new ListExpression(cardList);
-    }
-
-    /**
      * New as of 1/28/2008: Cast ballot representation.
      * 
      * @return This method returns the cast ballot representation, ready for
@@ -293,15 +284,17 @@ public final class RuntimeBallot {
      *         BigInteger.ONE (in byte[] format, converted to an s-expression
      *         byte string).
      */
-    public ListExpression getCastBallot() {
+    public Ballot<PlaintextRaceSelection> asBallot() {
 
-        ArrayList<ASExpression> pairs = new ArrayList<>();
+        List<PlaintextRaceSelection> raceSelections = new ArrayList<>();
 
         /* Add all the cast ballots and put into pairs for return */
-        for (Card card : _cards)
-            pairs.addAll(card.getCastBallot());
+        for (Card card : _cards) {
+            raceSelections.add(card.asRaceSelection());
+            System.out.println(card.asRaceSelection());
+        }
 
-        return new ListExpression(pairs);
+        return new Ballot<>(null, raceSelections, null);
     }
     
     /**

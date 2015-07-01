@@ -23,8 +23,10 @@
 package votebox.middle.driver;
 
 import auditorium.IAuditoriumParams;
+import crypto.PlaintextRaceSelection;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
+import supervisor.model.Ballot;
 import tap.BallotImageHelper;
 import votebox.middle.IBallotVars;
 import votebox.middle.Properties;
@@ -118,11 +120,9 @@ public class Driver {
 			return _ballot.isSelected(uid);
 		}
 
-		public ASExpression getCastBallot() {
-			if(!_encryptionEnabled)
-				return _ballot.toASExpression();
-			
-			return _ballot.getCastBallot();
+		public Ballot<PlaintextRaceSelection> asBallot() {
+
+			return _ballot.asBallot();
 		}
 
 		public int numSelections() {

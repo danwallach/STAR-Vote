@@ -22,7 +22,9 @@
 
 package votebox.middle.ballot;
 
+import crypto.PlaintextRaceSelection;
 import sexpression.ASExpression;
+import supervisor.model.Ballot;
 import votebox.middle.driver.UnknownUIDException;
 
 import java.util.List;
@@ -86,7 +88,7 @@ public interface IBallotLookupAdapter {
 	 * 
 	 * @return This method returns an s-expression representation of the ballot.
 	 */
-	public ASExpression getCastBallot();
+	public Ballot<PlaintextRaceSelection> asBallot();
 
 	/**
 	 * Call this method to get the number of selections that have currently been

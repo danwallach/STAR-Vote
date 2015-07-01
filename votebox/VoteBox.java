@@ -42,7 +42,6 @@ import sexpression.stream.InvalidVerbatimStreamException;
 import votebox.events.*;
 import votebox.middle.IncorrectTypeException;
 import votebox.middle.Properties;
-import votebox.middle.ballot.RuntimeBallot;
 import votebox.middle.driver.Driver;
 import votebox.middle.view.AWTViewFactory;
 import votebox.middle.view.IViewFactory;
@@ -256,8 +255,8 @@ public class VoteBox{
                 Object[] arg = (Object[]) argTemp;
 
                 /* arg0 should be the cast ballot structure, check. TODO Fix handling */
-                if (RuntimeBallot.BALLOT_PATTERN.match((ASExpression) arg[0]) == NoMatch.SINGLETON)
-                    throw new RuntimeException("Incorrectly expected a cast-ballot");
+                //if (RuntimeBallot.BALLOT_PATTERN.match((ASExpression) arg[0]) == NoMatch.SINGLETON)
+                //    throw new RuntimeException("Incorrectly expected a cast-ballot");
 
                 /* Convert Ballot from ASE to Ballot object TODO check if this is right, should be able to do something similar */
                 supervisor.model.Ballot<PlaintextRaceSelection> ballot = ASEParser.convertFromASE((ListExpression) arg[0]);
@@ -286,7 +285,7 @@ public class VoteBox{
                 auditorium.announce(new BallotPrintingEvent(mySerial, bid, nonce));
                 printer = new Printer(_currentBallotFile, races);
 
-                boolean success = printer.printCommittedBallot((ListExpression)ASEParser.convertToASE(ballot), bid);
+                boolean success = printer.printCommittedBallot(ASEParser.convertToASE(ballot), bid);
                 printer.printedReceipt(bid);
 
                 /* By this time, the voter is done voting */
@@ -375,8 +374,8 @@ public class VoteBox{
                     Object[] arg = (Object[]) argTemp;
 
                     /* arg1 should be the cast ballot structure, check  TODO */
-                    if (RuntimeBallot.BALLOT_PATTERN.match((ASExpression) arg[0]) == NoMatch.SINGLETON)
-                        throw new RuntimeException("Incorrectly expected a cast-ballot");
+                    //if (RuntimeBallot.BALLOT_PATTERN.match((ASExpression) arg[0]) == NoMatch.SINGLETON)
+                    //    throw new RuntimeException("Incorrectly expected a cast-ballot");
 
                     /* Convert Ballot from ASE to Ballot object TODO check if this is right, should be able to do something similar */
                     supervisor.model.Ballot<PlaintextRaceSelection> ballot = ASEParser.convertFromASE((ListExpression) arg[0]);

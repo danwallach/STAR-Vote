@@ -22,15 +22,17 @@
 
 package votebox.middle.ballot;
 
+import crypto.PlaintextRaceSelection;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.StringExpression;
 import votebox.middle.IncorrectTypeException;
 import votebox.middle.Properties;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -49,7 +51,7 @@ public class Card {
     /**
      * These are the card elements that this card is parent to.
      */
-    private ArrayList<SelectableCardElement> _elements = new ArrayList<SelectableCardElement>();
+    private ArrayList<SelectableCardElement> _elements = new ArrayList<>();
 
     /**
      * This is the card's unique id.
@@ -292,28 +294,20 @@ public class Card {
      *         the BigInteger value back out of the s-expression, use the
      *         BigInteger(String) constructor.
      */
-    public List<ASExpression> getCastBallot() {
+    public PlaintextRaceSelection asRaceSelection() {
 
-        ArrayList<ASExpression> lst = new ArrayList<>();
+        Map<String,Integer> voteMap = new HashMap<>();
 
         /* A flag to determine if NO SELECTION was...er...selected. */
         boolean selected = false;
+        SelectableCardElement last = _elements.get(0);
 
         for (SelectableCardElement sce : _elements) {
 
-            ASExpression val;
-
             /* If one SCE is selected, set val to "1" StringExpression, otherwise "0" */
-            if (sce.isSelected()){
-
-                selected = true;
-            	val = StringExpression.makeString(BigInteger.ONE.toString());
-
-            }
-            else val = StringExpression.makeString(BigInteger.ZERO.toString());
-
-            /* Add this val as a ListExpression to lst */
-            lst.add(new ListExpression(StringExpression.makeString(sce.getUniqueID()), val));
+            selected = selected || sce.isSelected();
+            voteMap.put(sce.getUniqueID(), sce.isSelected() ? 1 : 0);
+            last = sce;
         }
 
         /*
@@ -322,37 +316,23 @@ public class Card {
         */
         if(_hasWriteIn){
 
-            /* Get the last element as a ListExpression */
-            ListExpression last = (ListExpression) lst.get(lst.size() - 1);
-
-            /* Get the first two elements as ASE in the ListExpression */
-            ASExpression first = last.get(0);
-            ASExpression data = last.get(1);
-
-            /* Create a String to hold the information */
-            String modData = data.toString() + writeInValue;
-
-            /* Write this to an ASE */
-            ASExpression written = new ListExpression(first, StringExpression.make(modData));
-
-            /* Set this into the lst */
-            lst.set(lst.size()-1 , written);
+            voteMap.remove(last.getUniqueID(), last.isSelected() ? 1 : 0);
+            voteMap.put(last.getUniqueID() + " " + writeInValue.trim().toUpperCase(), last.isSelected() ? 1 : 0);
         }
 
         /**
          * This code allows for a "No Selection" element to be added to the string representation of the ballot
          * This is so the tallier can include (and count) races where no one was selected
          * We do this by including the UID of the no selection candidate, which will always be the lowest number
-         * UID for the race. Hence we take out the first candidate and subtract one from the UID to derive the
+         * UID for the race. Hence we take the first candidate and subtract one from the UID to derive the
          * No selection UID
          **/
         String noSelectionLabel = _elements.get(0).getUniqueID();
         noSelectionLabel = noSelectionLabel.substring(0,1) + (Integer.parseInt(noSelectionLabel.substring(1)) - 1);
 
-        lst.add(0, new ListExpression(StringExpression.makeString(noSelectionLabel),
-                StringExpression.makeString((selected?BigInteger.ZERO:BigInteger.ONE).toString())));
+        voteMap.put(noSelectionLabel, !selected ? 1 : 0);
 
-        return lst;
+        return new PlaintextRaceSelection(voteMap, _uniqueID, 1);
     }
 
     /**

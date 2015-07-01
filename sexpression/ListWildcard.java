@@ -87,13 +87,11 @@ public class ListWildcard extends AWildcard {
     }
 
     /**
-     * @see sexpression.ASpecialExpression#equals(java.lang.Object)
+     * @see sexpression.ASExpression#equals(java.lang.Object)
      */
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof ListWildcard))
-            return false;
+        return o instanceof ListWildcard && ((ListWildcard) o)._pattern.equals(_pattern);
 
-        return ((ListWildcard) o)._pattern.equals( _pattern );
     }
 }
