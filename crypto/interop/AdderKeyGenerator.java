@@ -2,7 +2,7 @@ package crypto.interop;
 
 import crypto.adder.AdderPrivateKeyShare;
 import crypto.adder.AdderPublicKeyShare;
-import sexpression.ASEParser;
+import sexpression.ASEConverter;
 import sexpression.ASExpression;
 
 import java.io.File;
@@ -63,13 +63,13 @@ public class AdderKeyGenerator {
 		FileOutputStream pubOut = new FileOutputStream(pubFile);
 		FileOutputStream privOut = new FileOutputStream(privFile);
 
-        ASExpression pubASE = ASEParser.convertToASE(pubKeyShare);
+        ASExpression pubASE = ASEConverter.convertToASE(pubKeyShare);
         System.out.println("Public key: " + pubASE);
 
         /* Writes the public key to the 'public.adder.key' file. */
 		pubOut.write(pubASE.toVerbatim());
 
-        ASExpression privASE = ASEParser.convertToASE(privKey);
+        ASExpression privASE = ASEConverter.convertToASE(privKey);
         System.out.println("Public key: " + privASE);
 
         /* Writes the private key to the 'private.adder.key' file. */

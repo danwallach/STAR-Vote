@@ -25,7 +25,7 @@ package auditorium;
 import crypto.adder.AdderPrivateKeyShare;
 import crypto.adder.AdderPublicKey;
 import crypto.adder.AdderPublicKeyShare;
-import sexpression.ASEParser;
+import sexpression.ASEConverter;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.stream.ASEInputStreamReader;
@@ -93,7 +93,7 @@ public class SimpleKeyStore implements IKeyStore {
             byte[] verbatimPEK = Files.readAllBytes(PEKPath);
             ASExpression PEKASE = ASExpression.makeVerbatim(verbatimPEK);
             System.out.println(PEKASE);
-            return ASEParser.convertFromASE((ListExpression)PEKASE);
+            return ASEConverter.convertFromASE((ListExpression) PEKASE);
         }
         catch (Exception e) { e.printStackTrace(); throw new RuntimeException("Couldn't use the key file");}
 
@@ -164,7 +164,7 @@ public class SimpleKeyStore implements IKeyStore {
                 byteArrayOutputStream.write(i);
             }
 
-            return ASEParser.convertFromASE((ListExpression) ASExpression.makeVerbatim(byteArrayOutputStream.toByteArray()));
+            return ASEConverter.convertFromASE((ListExpression) ASExpression.makeVerbatim(byteArrayOutputStream.toByteArray()));
 
         }catch(Exception e){
             throw new RuntimeException(e);
@@ -188,7 +188,7 @@ public class SimpleKeyStore implements IKeyStore {
                 byteArrayOutputStream.write(i);
             }
 
-            return ASEParser.convertFromASE((ListExpression) ASExpression.makeVerbatim(byteArrayOutputStream.toByteArray()));
+            return ASEConverter.convertFromASE((ListExpression) ASExpression.makeVerbatim(byteArrayOutputStream.toByteArray()));
 
         }catch(Exception e){
             throw new RuntimeException(e);

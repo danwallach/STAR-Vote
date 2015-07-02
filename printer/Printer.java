@@ -27,6 +27,7 @@ package printer;
 
 import auditorium.Bugout;
 import com.princexml.Prince;
+import crypto.PlaintextRaceSelection;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import tap.BallotImageHelper;
@@ -130,7 +131,7 @@ public class Printer{
      * @return              true if the print executed successfully, false otherwise
      */
 	@SuppressWarnings("StatementWithEmptyBody")
-    public boolean printCommittedBallot(ListExpression ballot, final String bid) {
+    public boolean printCommittedBallot(List<PlaintextRaceSelection> ballot, final String bid) {
 
 		final Map<String, Image> choiceToImage = BallotImageHelper.loadImagesForVVPAT(_currentBallotFile);
 
@@ -139,7 +140,6 @@ public class Printer{
         final List<String> choices = new ArrayList<>();
 
         ArrayList<ChoicePair> reformedBallot = reformBallot(ballot);
-
 
         /* This for loop uses the corrected ballot, which accounts for No Selections. */
         for (ChoicePair currentItem : reformedBallot)
@@ -327,78 +327,44 @@ public class Printer{
      * @param rawBallot     the vote decisions as a ListExpression
      * @return              the vote decisions as an ArrayList of ChoicePairs
      */
-    protected ArrayList<ChoicePair> reformBallot(ListExpression rawBallot) {
+    protected ArrayList<ChoicePair> reformBallot(List<PlaintextRaceSelection> rawBallot) {
 
         ArrayList<ChoicePair> reformedBallot = new ArrayList<>();
 
         /* Cycle through each race in the List of all races */
-        for (List<String> currentRace : _races) {
+        for (List<String> currentRaceCandidateList : _races) {
 
             Boolean existingSelectedOption = false;
 
-            /* Cycle through each label in each race */
-            for (String currentLabel : currentRace) {
+                /* Cycle through each PlaintextRaceSelection in the raw ballot until we find all of our candidate IDs */
+                for (PlaintextRaceSelection currentRace : rawBallot) {
 
-                /* Cycle through each ASExpression in the raw ballot until we find our currentLabel */
-                for (ASExpression curChoice : rawBallot) {
+                    /* If the first candidate ID matches the title of the map */
+                    if (currentRace.getTitle().equals(currentRaceCandidateList.get(0))) {
 
-                    ListExpression currentChoice = (ListExpression) curChoice;
+                        /* Now cycle through each of the candidates */
+                        for (String currentCandidate : currentRaceCandidateList) {
 
-                    /* If the first element of the ListExpression is the current String... */
-                    if (currentChoice.get(0).toString().equals(currentLabel)) {
+                            /* Extract the vote value for this candidate */
+                            Integer currentVoteValue = currentRace.getRaceSelectionsMap().get(currentCandidate);
 
-                        ASExpression voteChoice = currentChoice.get(1);
+                            /* Write-in if they have a carat */
+                            String candidate = currentCandidate.contains("^") ? currentCandidate.substring(currentCandidate.indexOf("^")+1) :
+                                                                                currentCandidate;
 
-                        /* See if the option was selected */
-                        if (voteChoice.toString().equals("1")) {
+                            /* Keep track if there has been at least one valid selection */
+                            existingSelectedOption = (currentVoteValue == 1) || existingSelectedOption;
 
-
-                            /* Reflect that a valid option was selected */
-                            existingSelectedOption = true;
-
-                            /* Add the choice-decision pairing to the ArrayList */
-                            reformedBallot.add(new ChoicePair(currentLabel, 1));
-                            break;
+                            /* Add this ChoicePair to the reformedBallot */
+                            reformedBallot.add(new ChoicePair(candidate, currentVoteValue));
                         }
 
-                        /* See if it was not selected */
-                        else if (voteChoice.toString().equals("0")) {
-
-                            /* Add the choice-decision pairing to the ArrayList */
-                            reformedBallot.add(new ChoicePair(currentLabel, 0));
-                            break;
-                        }
-
-                        /* Write-in */
-                        else {
-
-                            /* Check if the write-in was selected */
-                            if (voteChoice.toString().charAt(0) == '1') {
-
-                                /* Reflect that a valid option was selected */
-                                existingSelectedOption = true;
-
-                                /* Add the choice-decision pairing to the ArrayList */
-                                reformedBallot.add(new ChoicePair(currentLabel, 1));
-                                break;
-                            }
-
-                            /* Otherwise, just show it as not selected */
-                            else {
-
-                                /* Add the choice-decision pairing to the ArrayList */
-                                reformedBallot.add(new ChoicePair(currentLabel, 0));
-                                break;
-                            }
-                        }
+                        /* If there is a valid option selected, do nothing. Otherwise, add the "No Selection" option and select that one. */
+                        if (!existingSelectedOption)
+                            reformedBallot.add(new ChoicePair(currentRaceCandidateList.get(0), 1));
                     }
                 }
             }
-
-            /* If there is a valid option selected, do nothing. Otherwise, add the "No Selection" option and select that one. */
-            if (!existingSelectedOption)
-                reformedBallot.add(new ChoicePair(currentRace.get(0), 1));
-        }
 
         return reformedBallot;
     }

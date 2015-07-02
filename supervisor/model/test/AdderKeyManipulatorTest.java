@@ -4,7 +4,7 @@ import crypto.adder.AdderPrivateKeyShare;
 import crypto.adder.AdderPublicKey;
 import crypto.adder.AdderPublicKeyShare;
 import junit.framework.TestCase;
-import sexpression.ASEParser;
+import sexpression.ASEConverter;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import supervisor.model.AdderKeyManipulator;
@@ -49,7 +49,7 @@ public class AdderKeyManipulatorTest extends TestCase {
         try {
             byte[] verbatimSeedKey = Files.readAllBytes(seedKeyPath);
             ASExpression seedKeyASE = ASExpression.makeVerbatim(verbatimSeedKey);
-            AdderPublicKeyShare seedKey = ASEParser.convertFromASE((ListExpression) seedKeyASE);
+            AdderPublicKeyShare seedKey = ASEConverter.convertFromASE((ListExpression) seedKeyASE);
 
             AdderKeyManipulator.setSeedKey(seedKey);
         }

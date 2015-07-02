@@ -3,7 +3,7 @@ package sexpression.test;
 import crypto.PlaintextRaceSelection;
 import crypto.adder.AdderPublicKeyShare;
 import junit.framework.TestCase;
-import sexpression.ASEParser;
+import sexpression.ASEConverter;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.StringWildcard;
@@ -20,7 +20,7 @@ import java.util.Map;
 /**
  * Created by Matthew Kindy II on 4/16/2015.
  */
-public class ASEParserTest extends TestCase{
+public class ASEConverterTest extends TestCase{
 
     private Map<String,Integer> rsMap = new HashMap<>();
     private PlaintextRaceSelection p;
@@ -42,16 +42,16 @@ public class ASEParserTest extends TestCase{
     public void testFromASE(){
 
         int i = 2;
-        ASExpression iExp = ASEParser.convertToASE(i);
-        int j = ASEParser.convertFromASE((ListExpression) iExp);
+        ASExpression iExp = ASEConverter.convertToASE(i);
+        int j = ASEConverter.convertFromASE((ListExpression) iExp);
         System.out.println(i + " " + iExp + " " + j);
         assertEquals(i, j);
 
 
         StringWildcard s = StringWildcard.SINGLETON;
 
-        ListExpression sExp = ASEParser.convertToASE(s);
-        StringWildcard s2 = ASEParser.convertFromASE(sExp);
+        ListExpression sExp = ASEConverter.convertToASE(s);
+        StringWildcard s2 = ASEConverter.convertFromASE(sExp);
         assertEquals(s,s2);
 
         /* Load the seed key */
@@ -73,7 +73,7 @@ public class ASEParserTest extends TestCase{
             byte[] verbatimSeedKey = Files.readAllBytes(seedKeyPath);
             ASExpression seedKeyASE = ASExpression.makeVerbatim(verbatimSeedKey);
             System.out.println(seedKeyASE);
-            AdderPublicKeyShare seedKey = ASEParser.convertFromASE((ListExpression)seedKeyASE);
+            AdderPublicKeyShare seedKey = ASEConverter.convertFromASE((ListExpression) seedKeyASE);
 
             AdderKeyManipulator.setSeedKey(seedKey);
         }
@@ -90,14 +90,14 @@ public class ASEParserTest extends TestCase{
                           "(value java.lang.Integer 0)))";
 
 
-        ListExpression rsExp = ASEParser.convertToASE(rsMap);
+        ListExpression rsExp = ASEConverter.convertToASE(rsMap);
 
         assertEquals(expected, rsExp.toString());
 
         System.out.println("Expected: " + expected);
         System.out.println("Returned: " + rsExp);
 
-        Map rs = ASEParser.convertFromASE(rsExp);
+        Map rs = ASEConverter.convertFromASE(rsExp);
 
         assertEquals(rsMap, rs);
 
@@ -110,7 +110,7 @@ public class ASEParserTest extends TestCase{
                 "(key java.lang.String Clayton) (value java.lang.Integer 0))) (title java.lang.String myRaceSelection) " +
                 "(size java.lang.Integer 1))";
 
-        ListExpression prs = ASEParser.convertToASE(p);
+        ListExpression prs = ASEConverter.convertToASE(p);
 
         assertEquals(expected, prs.toString());
 
@@ -126,7 +126,7 @@ public class ASEParserTest extends TestCase{
         rsMap.put(null,0);
         rsMap.put("Dan",null);
 
-        rsExp = ASEParser.convertToASE(rsMap);
+        rsExp = ASEConverter.convertToASE(rsMap);
 
         System.out.println("Expected: " + expected);
         System.out.println("Returned: " + rsExp);
@@ -134,7 +134,7 @@ public class ASEParserTest extends TestCase{
         expected = "(object crypto.PlaintextRaceSelection (voteMap NULL) (title java.lang.String myNewRaceSelection) " +
                    "(size java.lang.Integer 1))";
 
-        prs = ASEParser.convertToASE(pNew);
+        prs = ASEConverter.convertToASE(pNew);
 
         assertEquals(expected, prs.toString());
 

@@ -26,7 +26,7 @@ import auditorium.IAuditoriumParams;
 import auditorium.NetworkException;
 import crypto.EncryptedRaceSelection;
 import crypto.ExponentialElGamalCiphertext;
-import sexpression.ASEParser;
+import sexpression.ASEConverter;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.StringExpression;
@@ -1136,7 +1136,7 @@ public class Model {
                         ASExpression ballot = ASExpression.makeVerbatim(e.getBallot());
                         System.out.println(ballot + " committed!");
 
-                        thisPrecinct.commitBallot(e.getBID(), ASEParser.convertFromASE((ListExpression) ballot));
+                        thisPrecinct.commitBallot(e.getBID(), ASEConverter.convertFromASE((ListExpression) ballot));
 
                         machinesToCommits.put(ballot, e.getSerial());
 
@@ -1254,8 +1254,8 @@ public class Model {
 
                     if (wasCast)
                         auditorium.announce(
-                                new EncryptedCastBallotWithNIZKsEvent(serial, nonce, ASEParser.convertToASE(b).toVerbatim(),
-                                        bid, machinesToCommits.get(ASEParser.convertToASE(b))));
+                                new EncryptedCastBallotWithNIZKsEvent(serial, nonce, ASEConverter.convertToASE(b).toVerbatim(),
+                                        bid, machinesToCommits.get(ASEConverter.convertToASE(b))));
                     else throw new RuntimeException("Found the precinct with the bid, but couldn't cast the ballot...");
 
                     /* Now tell the ballot scanner that this ballot was accepted */
@@ -1439,7 +1439,7 @@ public class Model {
             ballot = p.challengeBallot(bid);
 
             /* Announce that a ballot was spoiled */
-            auditorium.announce(new SpoilBallotEvent(mySerial, StringExpression.make(nonce), bid, ASEParser.convertToASE(ballot).toVerbatim()));
+            auditorium.announce(new SpoilBallotEvent(mySerial, StringExpression.make(nonce), bid, ASEConverter.convertToASE(ballot).toVerbatim()));
 
             return true;
         }

@@ -5,7 +5,7 @@ import crypto.AHomomorphicCiphertext;
 import crypto.EncryptedRaceSelection;
 import crypto.IPublicKey;
 import crypto.adder.Race;
-import sexpression.ASEParser;
+import sexpression.ASEConverter;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.StringExpression;
@@ -210,7 +210,7 @@ public class Precinct<T extends AHomomorphicCiphertext<T>> implements Serializab
             /* Verify the voteProof and error off if bad */
             if(vote.verify(0, thisRace.getRaceSelections().size(), PEK)) {
                 votes.add(vote);
-                voteASE.add(ASEParser.convertToASE(vote));
+                voteASE.add(ASEConverter.convertToASE(vote));
             }
             else System.err.println("There was a bad summed vote that was not added to the ballot!");
 

@@ -16,7 +16,7 @@ import java.util.stream.Stream;
  *
  * Created by Matthew Kindy II on 11/21/2014.
  */
-public class ASEParser {
+public class ASEConverter {
 
     /**
      * Creates an object of class c from ASExpression exp.
@@ -74,7 +74,7 @@ public class ASEParser {
                 //System.out.println("This ListExpression: " + cur);
 
                 /* There ought to be no primitives here since they were autoboxed */
-                Object value = ASEParser.convertFromASE((ListExpression) cur);
+                Object value = ASEConverter.convertFromASE((ListExpression) cur);
 
                 //System.out.println("The value that got converted: " + value);
 
@@ -164,7 +164,7 @@ public class ASEParser {
      */
     public static ListExpression convertToASE(Object obj)  {
 
-        try { return ASEParser.convertToASE(obj, "object"); }
+        try { return ASEConverter.convertToASE(obj, "object"); }
         catch (ConversionException e) {e.printStackTrace();}
 
         return null;
@@ -229,7 +229,7 @@ public class ASEParser {
                 f.setAccessible(true);
 
                 /* This ought to autobox any primitives */
-                expList.add(ASEParser.convertToASE(f.get(obj), f.getName()));
+                expList.add(ASEConverter.convertToASE(f.get(obj), f.getName()));
             }
             catch (Exception e) { e.printStackTrace(); }
         }
@@ -275,7 +275,7 @@ public class ASEParser {
 
         /* Convert the data in particular */
         for (Object o : col.toArray())
-            expList.add(ASEParser.convertToASE(o));
+            expList.add(ASEConverter.convertToASE(o));
 
         return new ListExpression(expList);
     }
@@ -302,7 +302,7 @@ public class ASEParser {
                 /* If this is an instance of ListExpression, convert to object */
                 if (cur instanceof ListExpression) {
                     /* There ought to be no primitives here since they were autoboxed */
-                    collection.add(ASEParser.convertFromASE((ListExpression) cur));
+                    collection.add(ASEConverter.convertFromASE((ListExpression) cur));
                 }
             }
 
@@ -336,7 +336,7 @@ public class ASEParser {
         /* Convert the data in particular */
         for (Map.Entry e : entrySet) {
             KeyValuePair kv = new KeyValuePair<>(e.getKey(), e.getValue());
-            expList.add(ASEParser.convertToASE(kv));
+            expList.add(ASEConverter.convertToASE(kv));
         }
 
         return new ListExpression(expList);
@@ -370,7 +370,7 @@ public class ASEParser {
                 if (cur instanceof ListExpression) {
 
                     /* There ought to be no primitives here since they were autoboxed */
-                    KeyValuePair<K,V> kv = ASEParser.convertFromASE((ListExpression) cur);
+                    KeyValuePair<K,V> kv = ASEConverter.convertFromASE((ListExpression) cur);
 
                     /* Add this object to the collection */
                     map.put(kv.getKey(),kv.getValue());
