@@ -242,6 +242,9 @@ public class ConfigurationFileEditor extends JFrame {
         // Load default attributes.
         loadDefaultAttributes();
 
+        //Use this to see defaults without needing a file
+        //addDefaultAttributesToGroups();
+
     }
 
     /**
