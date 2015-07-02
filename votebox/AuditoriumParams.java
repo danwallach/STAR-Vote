@@ -135,7 +135,7 @@ public class AuditoriumParams implements IAuditoriumParams,
     private final HashMap<String, String> _config;
 
     /* Settings for printing */
-    public static final String PRINT_COMMANDS_FILE_FILENAME = "CommandsFile.txt";
+    public static final String PRINT_COMMANDS_FILE_FILENAME = "CommandsFileWindows.txt";
     public static final String PRINT_COMMANDS_FILE_PARAMETER_SEPARATOR = "!!!";
 
     public static final String DEFAULT_OPERATING_SYSTEM = "Windows";

@@ -27,9 +27,8 @@ package printer;
 
 import auditorium.Bugout;
 import com.princexml.Prince;
+import com.sun.org.apache.xml.internal.serialize.LineSeparator;
 import crypto.PlaintextRaceSelection;
-import sexpression.ASExpression;
-import sexpression.ListExpression;
 import tap.BallotImageHelper;
 import votebox.AuditoriumParams;
 
@@ -88,7 +87,7 @@ public class Printer{
      */
     public Printer(File ballotFile, List<List<String>> races, String confFilePath, boolean test) {
         _constants = new AuditoriumParams(confFilePath);
-        _printerConstants = new AuditoriumParams("printer.conf");
+        _printerConstants = new AuditoriumParams("printerLinux.conf");
         _currentBallotFile =  ballotFile;
         _races = races;
         this.test = test;
@@ -121,7 +120,7 @@ public class Printer{
      */
     public Printer() {
         _constants = new AuditoriumParams("supervisor.conf");
-        _printerConstants = new AuditoriumParams("printer.conf");
+        _printerConstants = new AuditoriumParams("printerLinux.conf");
     }
 
     /**
@@ -161,8 +160,11 @@ public class Printer{
         /* TODO actually read in these from somewhere */
         Boolean useTwoColumns = true;
 
-        String path = cleanFilePath +  "media" + fileChar;
+        String path = cleanFilePath + "media" + fileChar;
+        String altPath = cleanFilePath + "data" + fileChar + "media" + fileChar;
+        String barcodeFileNameNoExtensionAlt = altPath + "Barcode";
         String barcodeFileNameNoExtension = path + "Barcode";
+        String lineSeparatorFileNameAlt = altPath + "LineSeparator.png";
         String lineSeparatorFileName = path + "LineSeparator.png";
 
 
@@ -178,11 +180,17 @@ public class Printer{
             g.fillRect(0,0,10,10);
 
             File lineSeparatorFile =  new File(lineSeparatorFileName);
+            File altLineSeparatorFile = new File(lineSeparatorFileNameAlt);
+
             //noinspection ResultOfMethodCallIgnored
             lineSeparatorFile.mkdirs();
             ImageIO.write(lineSeparator, "png", lineSeparatorFile);
             ImageIO.write(barcode, "png", new File(barcodeFileNameNoExtension + ".png"));
             ImageIO.write(barcode, "png", new File(barcodeFileNameNoExtension + "_flipped.png"));
+
+            ImageIO.write(lineSeparator, "png", altLineSeparatorFile);
+            ImageIO.write(barcode, "png", new File(barcodeFileNameNoExtensionAlt + ".png"));
+            ImageIO.write(barcode, "png", new File(barcodeFileNameNoExtensionAlt + "_flipped.png"));
         }
         catch (IOException e) { System.err.println("Could not write barcode image to a file."); }
 
@@ -217,7 +225,7 @@ public class Printer{
         }
 
         /* Generate the HTML file with the properties set above. */
-        HTMLPrinter.generateHTMLFile(htmlFileName, useTwoColumns, path, _constants, columnsToPrint);
+        HTMLPrinter.generateHTMLFile(htmlFileName, useTwoColumns, altPath, _constants, columnsToPrint);
 
         /* Get the file that is to be read for commands and its parameter separator string. */
         String filename = _printerConstants.getCommandsFileFilename();
@@ -254,8 +262,14 @@ public class Printer{
             String[] convertHTMLtoPDFCommandArray = convertHTMLtoPDFCommandLine.split(fileSeparator);
             String[] printPDFCommandArray = printPDFCommandLine.split(fileSeparator);
 
+            System.out.println(Arrays.asList(convertHTMLtoPDFCommandArray));
+            System.out.println(Arrays.asList(printPDFCommandArray));
+
             /* Attempt to convert HTML to PDF. */
-            try { Runtime.getRuntime().exec(convertHTMLtoPDFCommandArray); }
+            try {
+                new ProcessBuilder(convertHTMLtoPDFCommandArray).start();
+                //Runtime.getRuntime().exec(convertHTMLtoPDFCommandArray);
+            }
             catch (IOException e) { System.err.println("Converting HTML to PDF failed."); e.printStackTrace(); }
 
             /* Need to make the thread wait for the PDF to get created. */
@@ -263,7 +277,10 @@ public class Printer{
             while (System.currentTimeMillis() - start < 1000);
 
             /* Attempt to print PDF. */
-            try { Runtime.getRuntime().exec(printPDFCommandArray); }
+            try {
+                new ProcessBuilder(printPDFCommandArray).start();
+                //Runtime.getRuntime().exec(printPDFCommandArray);
+            }
             catch (IOException e) { System.err.println("Printing PDF failed."); e.printStackTrace(); }
         }
         else if (currentOS.equals("Linux")) {
@@ -339,12 +356,16 @@ public class Printer{
                 /* Cycle through each PlaintextRaceSelection in the raw ballot until we find all of our candidate IDs */
                 for (PlaintextRaceSelection currentRace : rawBallot) {
 
+                    System.out.println("Current RaceSelection Title: " + currentRace.getTitle());
+                    System.out.println("Current Initial Candidate: " + currentRaceCandidateList.get(0));
+
                     /* If the first candidate ID matches the title of the map */
                     if (currentRace.getTitle().equals(currentRaceCandidateList.get(0))) {
 
                         /* Now cycle through each of the candidates */
                         for (String currentCandidate : currentRaceCandidateList) {
 
+                            System.out.println("Current candidate from RaceSelection: " + currentCandidate);
                             /* Extract the vote value for this candidate */
                             Integer currentVoteValue = currentRace.getRaceSelectionsMap().get(currentCandidate);
 
