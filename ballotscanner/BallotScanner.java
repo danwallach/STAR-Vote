@@ -11,6 +11,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.InputMismatchException;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class  BallotScanner{
@@ -174,7 +175,7 @@ public class  BallotScanner{
                     /* Check for new input from barcode scanner */
                     try{
                         lastFoundBID = scanner.nextLine();
-                    } catch (InputMismatchException e){ lastFoundBID = "-1"; }
+                    } catch (NoSuchElementException e){ lastFoundBID = "-1"; }
 
                     /* TODO add a getter for frame.state, maybe verifyState() method */
                     String frameStateName   = frame.state.getStateName();
