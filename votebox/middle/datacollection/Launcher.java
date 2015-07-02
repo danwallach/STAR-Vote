@@ -24,7 +24,10 @@ package votebox.middle.datacollection;
 
 import auditorium.IAuditoriumParams;
 import auditorium.IKeyStore;
+import crypto.PlaintextRaceSelection;
+import supervisor.model.Ballot;
 import printer.Printer;
+import sexpression.ASEConverter;
 import sexpression.ListExpression;
 import votebox.middle.driver.Driver;
 import votebox.middle.view.AWTViewFactory;
@@ -224,7 +227,7 @@ public class Launcher {
 
                         /* Print a bogus ballot if not the last seen ballot? TODO check what this does / is supposed to do */
                         if(ballot != _lastSeenBallot)
-                            printer.printCommittedBallot(ballot, "9999999999");
+                            printer.printCommittedBallot(((Ballot<PlaintextRaceSelection>)ASEConverter.convertFromASE(ballot)).getRaceSelections(), "9999999999");
 
                         printer.printedReceipt("9999999999");
 
