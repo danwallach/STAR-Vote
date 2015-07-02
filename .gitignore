@@ -9,9 +9,8 @@ out
 *.class
 *.out
 *.pdf
-#*.conf
-Supervisor.jar
-Votebox.jar
+*.conf
+*.jar
 ballotScanner/BallotScannerUITester.java
 supervisor/view/BallotScannerMachineViewTester.java
 #CommandsFile.txt
