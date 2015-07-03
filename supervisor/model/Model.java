@@ -649,20 +649,16 @@ public class Model {
 
             /**
              * Handler for the activated message. Sets all other supervisors
-             * (including this one, if necessary) to the inactive state. Also
+             * (including this one, if necessary) to the active state. Also
              * checks to see if this machine's status is listed, and responds
              * with it if not.
              */
             public void activated(ActivatedEvent e) {
 
-                /* Iterate through all the machines and set the supervisors to inactive if they aren't this one */
+                /* Keep all Supervisors active for multiple Supervisors */
                 for (AMachine m : machines) {
                     if (m instanceof SupervisorMachine) {
-
-                        /*if (m.getSerial() == e.getSerial())*/
                             m.setStatus(SupervisorMachine.ACTIVE);
-                        /*else
-                            m.setStatus(SupervisorMachine.INACTIVE);*/
                     }
                 }
 
@@ -716,9 +712,11 @@ public class Model {
                 AMachine m = getMachineForSerial(e.getSerial());
 
                 if (m != null && m instanceof SupervisorMachine && e.getSerial() != mySerial) {
-                    /* TODO null check? */
+
                     Precinct p = getPrecinctWithBID(e.getBID());
-                    p.castBallot(e.getBID());
+
+                    try { p.castBallot(e.getBID()); }
+                    catch (NullPointerException ex) { throw new RuntimeException("Couldn't find a precinct for this committed ballot!"); }
                 }
             }
 
@@ -926,9 +924,16 @@ public class Model {
                 BallotScannerMachine bsm = (BallotScannerMachine) m;
 
                 /* Figure out and set the activated status of the machine */
-                if(e.getStatus().equals("active"))         bsm.setStatus(BallotScannerMachine.ACTIVE);
-                else if (e.getStatus().equals("inactive")) bsm.setStatus(BallotScannerMachine.INACTIVE);
-                else throw new IllegalStateException("Invalid BallotScanner Status: " + e.getStatus());
+                switch (e.getStatus()) {
+                    case "active":
+                        bsm.setStatus(BallotScannerMachine.ACTIVE);
+                        break;
+                    case "inactive":
+                        bsm.setStatus(BallotScannerMachine.INACTIVE);
+                        break;
+                    default:
+                        throw new IllegalStateException("Invalid BallotScanner Status: " + e.getStatus());
+                }
 
                 /* Set the battery and counts appropriately */
                 bsm.setBattery(e.getBattery());
