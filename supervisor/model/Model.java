@@ -784,16 +784,45 @@ public class Model {
             }
 
             /**
-             * Handler for the override-cast-confirm event. Similar to
-             * cast-ballot, but no received reply is sent.
+             * Handler for the override-commit-confirm event. Similar to
+             * commit-ballot, but no received reply is sent.
              */ /* TODO Is this okay?*/
             public void overrideCommitConfirm(OverrideCommitConfirmEvent e) {
-                //AMachine m = getMachineForSerial(e.getSerial());
-                //if (m != null && m instanceof BallotScannerMachine) {
-                    //TODO Make this work with ballot hashes
-                    /*String precinct = bManager.getPrecinctByBID(e.getBID().toString());
-                    talliers.get(precinct).confirmed(e.getNonce());*/
-                //}
+
+
+                /* Get the mini-model for the machine that committed the ballot */
+                AMachine m = getMachineForSerial(e.getSerial());
+
+                /* Ensure that the machine committing the booth is actually a votebox */
+                if (m != null && m instanceof VoteBoxBooth && !((VoteBoxBooth) m).isProvisional() ) {
+
+                    /* Enforce the machine's type */
+                    VoteBoxBooth booth = (VoteBoxBooth) m;
+
+                    /* Update the public and protected counts of the machine */
+//                    booth.setPublicCount(booth.getPublicCount() + 1);
+//                    booth.setProtectedCount(booth.getProtectedCount() + 1);
+
+                    /* Put the committed ballot in the ballot store, in all the proper places */
+                    Precinct<ExponentialElGamalCiphertext> thisPrecinct = precincts.get(e.getPrecinct());
+
+                    try {
+
+                        ASExpression ballot = ASExpression.makeVerbatim(e.getBallot());
+                        System.out.println(ballot + " committed!");
+
+                        thisPrecinct.commitBallot(e.getBID(), ASEConverter.convertFromASE((ListExpression) ballot));
+
+                        machinesToCommits.put(ballot, e.getSerial());
+
+                        committedBids.put(e.getBID(), e.getNonce());
+                    } catch (Exception ex) {
+                        throw new RuntimeException(ex);
+                    }
+
+                    /* Create a hash chain record of this ballot and voting session */
+                    String ballotHash = hashChain.hashBallot(e.getSerial());
+                }
             }
 
             /**
@@ -811,6 +840,10 @@ public class Model {
                 /* Check the hash chain for consistency */
                 if(hashChain.isHashChainCompromised())
                     JOptionPane.showMessageDialog(null, "ERROR: The hash chain is incomplete, votes may have been removed or tampered with!");
+
+
+
+                /* TODO there should be a button on the UI or something to upload separately from this pollsClosed event */
 
                 /* Announce that this Supervisor is going to start sending ballots to Tap */
                 auditorium.announce(new StartUploadEvent(mySerial));
