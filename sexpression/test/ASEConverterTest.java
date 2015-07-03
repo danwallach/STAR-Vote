@@ -14,7 +14,9 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -23,6 +25,7 @@ import java.util.Map;
 public class ASEConverterTest extends TestCase{
 
     private Map<String,Integer> rsMap = new HashMap<>();
+    private List<Map<String,Integer>> arrayMap = new ArrayList<>();
     private PlaintextRaceSelection p;
     private PlaintextRaceSelection pNew;
 
@@ -36,6 +39,12 @@ public class ASEConverterTest extends TestCase{
 
         p = new PlaintextRaceSelection(rsMap,"myRaceSelection",1);
         pNew = new PlaintextRaceSelection(null, "myNewRaceSelection",1);
+
+        for (i = 0; i<3; i++) {
+            HashMap<String, Integer> newMap = new HashMap<String, Integer>();
+            newMap.putAll(rsMap);
+            arrayMap.add(newMap);
+        }
 
     }
 
@@ -53,33 +62,6 @@ public class ASEConverterTest extends TestCase{
         ListExpression sExp = ASEConverter.convertToASE(s);
         StringWildcard s2 = ASEConverter.convertFromASE(sExp);
         assertEquals(s,s2);
-
-        /* Load the seed key */
-        JFileChooser chooser = new JFileChooser();
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("Keys", "key");
-        chooser.setFileFilter(filter);
-        int returnVal = chooser.showOpenDialog(null);
-        if(returnVal == JFileChooser.APPROVE_OPTION) {
-            System.out.println("You chose to open this file: " +
-                    chooser.getSelectedFile().getName());
-        }
-
-        File seedKeyFile = chooser.getSelectedFile();
-        Path seedKeyPath = seedKeyFile.toPath();
-
-
-
-        try {
-            byte[] verbatimSeedKey = Files.readAllBytes(seedKeyPath);
-            ASExpression seedKeyASE = ASExpression.makeVerbatim(verbatimSeedKey);
-            System.out.println(seedKeyASE);
-            AdderPublicKeyShare seedKey = ASEConverter.convertFromASE((ListExpression) seedKeyASE);
-
-            AdderKeyManipulator.setSeedKey(seedKey);
-        }
-        catch (Exception e) { throw new RuntimeException("Couldn't use the key file");}
-
-
     }
 
     public void testToASE(){
@@ -123,7 +105,7 @@ public class ASEConverterTest extends TestCase{
                    "(object sexpression.KeyValuePair (key java.lang.String Matt K) (value java.lang.Integer 0)) " +
                    "(object sexpression.KeyValuePair (key java.lang.String Clayton) (value java.lang.Integer 0)))";
 
-        rsMap.put(null,0);
+        rsMap.put(null, 0);
         rsMap.put("Dan",null);
 
         rsExp = ASEConverter.convertToASE(rsMap);
@@ -138,10 +120,18 @@ public class ASEConverterTest extends TestCase{
 
         assertEquals(expected, prs.toString());
 
-
-
         System.out.println("Expected: " + expected);
         System.out.println("Returned: " + prs);
+
+        HashMap<String, Integer> newMap = new HashMap<String, Integer>();
+        newMap.putAll(rsMap);
+        arrayMap.add(newMap);
+
+        System.out.println("Starting: " + arrayMap);
+        System.out.println("Outcome: " + ASEConverter.convertToASE(arrayMap));
+        System.out.println("Backwards: " + ASEConverter.convertFromASE(ASEConverter.convertToASE(arrayMap)));
+
+
 
     }
 }

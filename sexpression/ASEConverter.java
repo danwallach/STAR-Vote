@@ -125,9 +125,7 @@ public class ASEConverter {
      */
     public static <T> T convertFromASE(ListExpression exp) {
 
-        try {
-            T result = convertFromASE(exp, getClass(exp));
-            return result; }
+        try { return convertFromASE(exp, getClass(exp)); }
         catch (ConversionException e){
             System.err.println("Error converting from ASE: " + e.getClass() + " for " + exp);
             e.printStackTrace();
