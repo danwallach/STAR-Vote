@@ -1,19 +1,12 @@
 package sexpression.test;
 
 import crypto.PlaintextRaceSelection;
-import crypto.adder.AdderPublicKeyShare;
 import junit.framework.TestCase;
 import sexpression.ASEConverter;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.StringWildcard;
-import supervisor.model.AdderKeyManipulator;
 
-import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -53,7 +46,7 @@ public class ASEConverterTest extends TestCase{
         int i = 2;
         ASExpression iExp = ASEConverter.convertToASE(i);
         int j = ASEConverter.convertFromASE((ListExpression) iExp);
-        System.out.println(i + " " + iExp + " " + j);
+        System.out.println(i + " ==[toASE()]==> " + iExp + " ==[fromASE()]==> " + j + "\n");
         assertEquals(i, j);
 
 
@@ -61,7 +54,10 @@ public class ASEConverterTest extends TestCase{
 
         ListExpression sExp = ASEConverter.convertToASE(s);
         StringWildcard s2 = ASEConverter.convertFromASE(sExp);
-        assertEquals(s,s2);
+
+        System.out.println("These should be equal: ");
+        System.out.println("\t" + s + " = " + s2 +"\n");
+        assertEquals(s, s2);
     }
 
     public void testToASE(){
@@ -77,14 +73,14 @@ public class ASEConverterTest extends TestCase{
         assertEquals(expected, rsExp.toString());
 
         System.out.println("Expected: " + expected);
-        System.out.println("Returned: " + rsExp);
+        System.out.println("Returned: " + rsExp + "\n");
 
         Map rs = ASEConverter.convertFromASE(rsExp);
 
         assertEquals(rsMap, rs);
 
         System.out.println("Expected: " + rsMap);
-        System.out.println("Returned: " + rs);
+        System.out.println("Returned: " + rs + "\n");
 
         expected = "(object crypto.PlaintextRaceSelection (voteMap java.util.HashMap (object sexpression.KeyValuePair " +
                 "(key java.lang.String Matt B) (value java.lang.Integer 1)) (object sexpression.KeyValuePair " +
@@ -97,7 +93,7 @@ public class ASEConverterTest extends TestCase{
         assertEquals(expected, prs.toString());
 
         System.out.println("Expected: " + expected);
-        System.out.println("Returned: " + prs);
+        System.out.println("Returned: " + prs + "\n");
 
         expected = "(object java.util.HashMap (object sexpression.KeyValuePair (key NULL) (value java.lang.Integer 0)) " +
                    "(object sexpression.KeyValuePair (key java.lang.String Dan) (value NULL)) " +
@@ -111,7 +107,7 @@ public class ASEConverterTest extends TestCase{
         rsExp = ASEConverter.convertToASE(rsMap);
 
         System.out.println("Expected: " + expected);
-        System.out.println("Returned: " + rsExp);
+        System.out.println("Returned: " + rsExp + "\n");
 
         expected = "(object crypto.PlaintextRaceSelection (voteMap NULL) (title java.lang.String myNewRaceSelection) " +
                    "(size java.lang.Integer 1))";
@@ -121,17 +117,26 @@ public class ASEConverterTest extends TestCase{
         assertEquals(expected, prs.toString());
 
         System.out.println("Expected: " + expected);
-        System.out.println("Returned: " + prs);
+        System.out.println("Returned: " + prs + "\n");
+
+    }
+
+    public void testReciprocity(){
 
         HashMap<String, Integer> newMap = new HashMap<String, Integer>();
         newMap.putAll(rsMap);
+
+        newMap.put(null, 0);
+        newMap.put("Dan",null);
+
         arrayMap.add(newMap);
 
-        System.out.println("Starting: " + arrayMap);
-        System.out.println("Outcome: " + ASEConverter.convertToASE(arrayMap));
-        System.out.println("Backwards: " + ASEConverter.convertFromASE(ASEConverter.convertToASE(arrayMap)));
+        System.out.println("These should be equal: ");
+        System.out.println("\t" + arrayMap + "\n\t=\n\t" + ASEConverter.convertFromASE(ASEConverter.convertToASE(arrayMap)) + "\n");
+        assertEquals(arrayMap, ASEConverter.convertFromASE(ASEConverter.convertToASE(arrayMap)));
 
-
-
+        System.out.println("These should be equal: ");
+        System.out.println("\t" + ASEConverter.convertToASE(arrayMap) + "\n\t=\n\t" + ASEConverter.convertToASE(ASEConverter.convertFromASE(ASEConverter.convertToASE(arrayMap))) + "\n");
+        assertEquals(ASEConverter.convertToASE(arrayMap), ASEConverter.convertToASE(ASEConverter.convertFromASE(ASEConverter.convertToASE(arrayMap))));
     }
 }

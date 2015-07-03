@@ -50,12 +50,19 @@ public class ASEConverter {
             return (T)convertASE(exp);
 
         try {
+
+            /* Objenesis doesn't call the constructor, which is necessary for Collections, at minimum,
+             * so here we use reflection directly.
+             */
+
             if (newObj instanceof Collection) {
+                newObj = c.getDeclaredConstructor().newInstance();
                 T result = (T) convertCollection(exp, (Collection) newObj);
                 return result;
             }
             if (newObj instanceof Map) {
-                T result = convertMap(exp, (Map<?,?>) newObj);
+                newObj = c.getDeclaredConstructor().newInstance();
+                T result = (T) convertMap(exp, (Map<?,?>) newObj);
                 return result;
             }
         }
@@ -289,7 +296,7 @@ public class ASEConverter {
      * @throws ConversionException if a bad cast occurs
      */
     private static <T> Collection<T> convertCollection(ListExpression exp, Collection<T> col) throws ConversionException {
-        Collection<T> collection = Collections.synchronizedCollection(col);
+
         try {
 
             for (int i=2; exp != null && i<exp.size(); i++) {
@@ -299,13 +306,13 @@ public class ASEConverter {
 
                 /* If this is an instance of ListExpression, convert to object */
                 if (cur instanceof ListExpression) {
+
                     /* There ought to be no primitives here since they were autoboxed */
-                    collection.add(ASEConverter.convertFromASE((ListExpression) cur));
+                    col.add(ASEConverter.convertFromASE((ListExpression) cur));
                 }
             }
 
-            collection = Collections.synchronizedCollection(collection);
-            return collection;
+            return col;
 
         }
         catch (Exception e) { throw new ConversionException("Error during reconstruction of collection: " + e.getClass()
@@ -351,9 +358,7 @@ public class ASEConverter {
      *
      * @throws ConversionException  if there is a casting exception thrown in the method
      */
-    private static <T extends Map<K,V>, K, V> T convertMap (ListExpression exp, Map<K,V> m) throws ConversionException {
-
-        Map<K,V> map = Collections.synchronizedMap(m);
+    private static <T extends Map<K,V>, K, V> T convertMap (ListExpression exp, T m) throws ConversionException {
 
         try {
 
@@ -362,7 +367,6 @@ public class ASEConverter {
                 /* Get the ASExpression */
                 ASExpression cur = exp.get(i);
 
-                //System.out.println("Current checked in map: " + cur);
 
                 /* If this is an instance of ListExpression, convert to object */
                 if (cur instanceof ListExpression) {
@@ -371,13 +375,11 @@ public class ASEConverter {
                     KeyValuePair<K,V> kv = ASEConverter.convertFromASE((ListExpression) cur);
 
                     /* Add this object to the collection */
-                    map.put(kv.getKey(),kv.getValue());
+                    m.put(kv.getKey(),kv.getValue());
                 }
             }
 
-            map = Collections.synchronizedMap(map);
-
-            return (T)map;
+            return m;
 
         }
         catch (ClassCastException e) { throw new ConversionException("Error during reconstruction of map: " + e.getMessage() + " for " + exp); }
