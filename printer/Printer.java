@@ -238,6 +238,7 @@ public class Printer{
         try {
 
             Prince prince = new Prince(exePath);
+            prince.addStyleSheet(System.getProperty("user.dir") + separator + "s1.css");
 
             System.out.println("Location: " + System.getProperty("user.dir") + separator + "PrintableBallot.pdf");
             prince.convert(htmlFileName, System.getProperty("user.dir") + separator + "PrintableBallot.pdf");
