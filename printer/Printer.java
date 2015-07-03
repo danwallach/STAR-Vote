@@ -117,7 +117,7 @@ public class Printer{
      */
     public Printer() {
         _constants = new AuditoriumParams("supervisor.conf");
-        _printerConstants = new AuditoriumParams("printerLinux.conf");
+        _printerConstants = new AuditoriumParams("printer.conf");
     }
 
     /**
