@@ -247,7 +247,12 @@ public class Printer{
             while (System.currentTimeMillis() - start < 1000) ;
 
             String foxitPath = currentOS.equals("Windows") ? "C:\\Program Files (x86)\\Foxit Software\\Foxit Reader\\FoxitReader.exe" :
-                               currentOS.equals("Linux")   ? "/usr/local/bin/prince" : "";
+                               currentOS.equals("Linux")   ? "/usr/local/bin/FoxitReader" : "";
+
+            File testFile = new File(foxitPath);
+
+            /* Fix so we don't have to worry about the type of install. hopefully */
+            foxitPath = !testFile.exists() && currentOS.equals("Windows") ?  "C:\\Program Files\\Foxit Software\\Foxit Reader\\FoxitReader.exe" : foxitPath;
 
             String[] printPDFCommandArray = {foxitPath, "/t",
                                              System.getProperty("user.dir") + separator + "PrintableBallot.pdf",
