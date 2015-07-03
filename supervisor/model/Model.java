@@ -1174,11 +1174,14 @@ public class Model {
 //                    booth.setPublicCount(booth.getPublicCount() + 1);
 //                    booth.setProtectedCount(booth.getProtectedCount() + 1);
 
-                    /* TODO check if this is supposed to move this ballot somewhere */
-                    Precinct thisPrecinct = getPrecinctWithBID(e.getBID());
+                    try {
+                        /* TODO check if this is supposed to move this ballot somewhere */
+                        Precinct thisPrecinct = getPrecinctWithBID(e.getBID());
 
-                    /* Announce that the provisional ballot was received */
-                    auditorium.announce(new BallotReceivedEvent(mySerial, e.getSerial(), e.getNonce(), e.getBID(), thisPrecinct.getPrecinctID()));
+                        /* Announce that the provisional ballot was received */
+                        auditorium.announce(new BallotReceivedEvent(mySerial, e.getSerial(), e.getNonce(), e.getBID(), thisPrecinct.getPrecinctID()));
+                    }
+                    catch (NullPointerException ex) { throw new RuntimeException("There was no precinct found for this ballot."); }
                 }
 
                 /* TODO Log and disregard, popup to inform the user */
