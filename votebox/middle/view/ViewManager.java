@@ -22,6 +22,7 @@
 
 package votebox.middle.view;
 
+import sexpression.ASEConverter;
 import supervisor.model.ObservableEvent;
 import votebox.middle.IBallotVars;
 import votebox.middle.IncorrectTypeException;
@@ -179,7 +180,7 @@ public class ViewManager implements IViewManager {
         	String isReviewPage = _layout.getPages().get(pagenum).getProperties().getString("IsReviewPage"); 
 
         	if(isReviewPage != null && isReviewPage.equals("yes")){
-        		_reviewScreenEncountered.notifyObservers(new Object[]{false, _ballotLookupAdapter.inRaceSelectionForm()});
+        		_reviewScreenEncountered.notifyObservers(new Object[]{false, ASEConverter.convertToASE(_ballotLookupAdapter.inRaceSelectionForm())});
         		postNotice = true;
         	}
         }
@@ -188,7 +189,7 @@ public class ViewManager implements IViewManager {
         _layout.draw( pagenum, _view );
         
         if(postNotice)
-        	_reviewScreenEncountered.notifyObservers(new Object[]{true, _ballotLookupAdapter.inRaceSelectionForm()});
+        	_reviewScreenEncountered.notifyObservers(new Object[]{true, ASEConverter.convertToASE(_ballotLookupAdapter.inRaceSelectionForm())});
     }
 
     /**
@@ -279,7 +280,7 @@ public class ViewManager implements IViewManager {
     public void castCommittedBallot() {
 
     	Object[] toPass = new Object[]{
-    		_ballotLookupAdapter.inRaceSelectionForm(),
+                ASEConverter.convertToASE(_ballotLookupAdapter.inRaceSelectionForm()),
     		_ballotLookupAdapter.getRaceGroups()
     	};
 
@@ -303,7 +304,7 @@ public class ViewManager implements IViewManager {
     public void commitBallot() {
 
     	Object[] toPass = new Object[]{
-        	_ballotLookupAdapter.inRaceSelectionForm(),
+        	ASEConverter.convertToASE(_ballotLookupAdapter.inRaceSelectionForm()),
         	_ballotLookupAdapter.getRaceGroups(),
             _ballotLookupAdapter.getTitles()
     	};
@@ -379,7 +380,7 @@ public class ViewManager implements IViewManager {
 
 
         Object[] toPass = new Object[]{
-                _ballotLookupAdapter.inRaceSelectionForm(),
+                ASEConverter.convertToASE(_ballotLookupAdapter.inRaceSelectionForm()),
                 _ballotLookupAdapter.getRaceGroups(),
                 _ballotLookupAdapter.getTitles()
         };

@@ -260,7 +260,7 @@ public class VoteBox{
                 //    throw new RuntimeException("Incorrectly expected a cast-ballot");
 
                 /* Convert Ballot from ASE to Ballot object TODO check if this is right, should be able to do something similar */
-                List<PlaintextRaceSelection> ballotForm = (List<PlaintextRaceSelection>) arg[0];
+                List<PlaintextRaceSelection> ballotForm = ASEConverter.convertFromASE((ListExpression)arg[0]);
 
                 Ballot<PlaintextRaceSelection> ballot = new Ballot<>(bid, ballotForm, nonce.toString());
 
@@ -386,7 +386,7 @@ public class VoteBox{
                     //while (System.currentTimeMillis() - start < 1000);
 
                     /* Convert Ballot from ASE to Ballot object TODO check if this is right, should be able to do something similar */
-                    List<PlaintextRaceSelection> ballotForm = (List<PlaintextRaceSelection>) arg[0];
+                    List<PlaintextRaceSelection> ballotForm = ASEConverter.convertFromASE((ListExpression)arg[0]);
 
                     Ballot<PlaintextRaceSelection> ballot = new Ballot<>(bid, ballotForm, nonce.toString());
 
