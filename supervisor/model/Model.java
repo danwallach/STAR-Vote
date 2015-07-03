@@ -1142,7 +1142,7 @@ public class Model {
 
                         committedBids.put(e.getBID(), e.getNonce());
                     }
-                    catch(Exception ex) { ex.printStackTrace(); }
+                    catch(Exception ex) { throw new RuntimeException(ex); }
 
                     /* Create a hash chain record of this ballot and voting session */
                     String ballotHash = hashChain.hashBallot(e.getSerial());
@@ -1238,8 +1238,6 @@ public class Model {
                 int serial = e.getSerial();
 
                 try {
-
-
 
                     /* If the ballot was actually committed, handle it */
                     Precinct p = getPrecinctWithBID(bid);
