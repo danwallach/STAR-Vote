@@ -135,8 +135,7 @@ public class AuditoriumParams implements IAuditoriumParams,
     private final HashMap<String, String> _config;
 
     /* Settings for printing */
-    public static final String PRINT_COMMANDS_FILE_FILENAME = "CommandsFileWindows.txt";
-    public static final String PRINT_COMMANDS_FILE_PARAMETER_SEPARATOR = "!!!";
+    public static final String PRINTER_NAME = "Hewlett-Packard HP LaserJet P2055dn";
 
     public static final String DEFAULT_OPERATING_SYSTEM = "Windows";
 
@@ -260,34 +259,6 @@ public class AuditoriumParams implements IAuditoriumParams,
             return Integer.parseInt(_config.get("LISTEN_PORT"));
 
         return LISTEN_PORT;
-    }
-
-    /**
-     * Checks the HashMap to see if it contains an entry for the filename of the
-     * print commands file and, if so, returns it.
-     *
-     * @return      the filename of the print commands file
-     */
-    public String getCommandsFileFilename() {
-
-        if (_config.containsKey( "PRINT_COMMANDS_FILE_FILENAME"))
-            return _config.get( "PRINT_COMMANDS_FILE_FILENAME");
-
-        return PRINT_COMMANDS_FILE_FILENAME;
-    }
-
-    /**
-     * Checks the HashMap to see if it contains an entry for the parameter separator
-     * of the print commands file and, if so, returns it.
-     *
-     * @return      the parameter separator
-     */
-    public String getCommandsFileParameterSeparator() {
-
-        if (_config.containsKey("PRINT_COMMANDS_FILE_PARAMETER_SEPARATOR"))
-            return _config.get("PRINT_COMMANDS_FILE_PARAMETER_SEPARATOR");
-
-        return PRINT_COMMANDS_FILE_PARAMETER_SEPARATOR;
     }
 
     /**
@@ -756,6 +727,14 @@ public class AuditoriumParams implements IAuditoriumParams,
             return _config.get("SCAN_CONFIRMATION_SOUND_PATH");
 
         return SCAN_CONFIRMATION_SOUND_PATH;
+    }
+
+    public String getPrinterName() {
+
+        if (_config.containsKey("PRINTER_NAME"))
+            return _config.get("PRINTER_NAME");
+
+        return PRINTER_NAME;
     }
 
     /**

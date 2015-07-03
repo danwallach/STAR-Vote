@@ -1,5 +1,0 @@
-C:\Program Files (x86)\Prince\Engine\bin\prince.exe!!!-s!!!C:\Users\Matthew Kindy II\Documents\GitHub\STAR-Vote\s1.css!!!--no-compress!!!C:\Users\Matthew Kindy II\Documents\GitHub\STAR-Vote\tmp\ballots\ballot\PrintableBallot.html!!!-o!!!C:\Users\Matthew Kindy II\Documents\GitHub\STAR-Vote\PrintableBallot.pdf
-C:\Program Files (x86)\Foxit Software\Foxit Reader\FoxitReader.exe!!!/t!!!C:\Users\Matthew Kindy II\Documents\GitHub\STAR-Vote\PrintableBallot.pdf!!!Hewlett-Packard HP LaserJet P2055dn
-
-The first line converts an HTML file to a PDF document using (the poorly named) Prince XML.
-The second line prints the PDF document using Foxit Reader.
