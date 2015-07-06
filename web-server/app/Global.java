@@ -4,17 +4,8 @@ import crypto.adder.AdderPublicKeyShare;
 import play.Application;
 import play.GlobalSettings;
 import play.libs.Yaml;
-import sexpression.ASEParser;
-import sexpression.ASExpression;
-import sexpression.ListExpression;
-import utilities.AdderKeyManipulator;
 import utilities.BallotLoader;
 
-import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
 
 
@@ -45,7 +36,7 @@ public class Global extends GlobalSettings {
             Ebean.save((List) Yaml.load("initial-data.yml"));
         }
 
-        /* Load the seed key */
+        /* Load the seed key *//*
         JFileChooser chooser = new JFileChooser();
         FileNameExtensionFilter filter = new FileNameExtensionFilter(".key files", "key");
         chooser.setFileFilter(filter);
@@ -64,13 +55,12 @@ public class Global extends GlobalSettings {
             byte[] verbatimSeedKey = Files.readAllBytes(seedKeyPath);
             ASExpression seedKeyASE = ASExpression.makeVerbatim(verbatimSeedKey);
             System.out.println(seedKeyASE);
-            AdderPublicKeyShare seedKey = ASEParser.convertFromASE((ListExpression)seedKeyASE);
+            AdderPublicKeyShare seedKey = ASEConverter.convertFromASE((ListExpression) seedKeyASE);
 
             AdderKeyManipulator.setSeedKey(seedKey);
         }
         catch (Exception e) { e.printStackTrace(); throw new RuntimeException("Couldn't use the key file");}
-
-
+*/
 
     }
 }

@@ -14,7 +14,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 import security.Secured;
-import sexpression.ASEParser;
+import sexpression.ASEConverter;
 import sexpression.stream.Base64;
 import supervisor.model.Ballot;
 import supervisor.model.Precinct;
@@ -22,7 +22,6 @@ import utilities.AdderKeyManipulator;
 import utilities.WebServerTallier;
 import views.html.*;
 
-import javax.validation.constraints.NotNull;
 import java.io.*;
 import java.util.*;
 
@@ -65,7 +64,7 @@ public class AuditServer extends Controller {
             Map<String, Precinct<ExponentialElGamalCiphertext>> hashes = new HashMap<>();
 
             for(int j = 0; j < 3; j++)
-                hashes.put(j+"", new Precinct<ExponentialElGamalCiphertext>(j+"", ""));
+                hashes.put(j+"", new Precinct<>(j+"", ""));
 
             records.put("record" + i, hashes);
 
@@ -78,7 +77,7 @@ public class AuditServer extends Controller {
 
             Map<String, Precinct<ExponentialElGamalCiphertext>> hashes = new HashMap<>();
 
-            hashes.put("1", new Precinct<ExponentialElGamalCiphertext>("1", ""));
+            hashes.put("1", new Precinct<>("1", ""));
 
             records.put("record" + i, hashes);
 
@@ -319,7 +318,7 @@ public class AuditServer extends Controller {
 
         try {
             FileOutputStream fos = new FileOutputStream(pekFile);
-            fos.write(ASEParser.convertToASE(PEK).toVerbatim());
+            fos.write(ASEConverter.convertToASE(PEK).toVerbatim());
             fos.flush();
             fos.close();
         }
@@ -610,16 +609,14 @@ public class AuditServer extends Controller {
 
         Form<Login> loginForm = form(Login.class).bindFromRequest();
 
-        if (loginForm.hasErrors()) {
-            System.out.println(loginForm.data().get("roles"));
-            return loginForm.get().roles.contains("admin") ? badRequest(adminlogin.render(loginForm, null)) :
-                                                          badRequest(authoritylogin.render(loginForm, null));
-        } else {
+        if (!loginForm.hasErrors()) {
             session().clear();
             session("username", loginForm.get().username);
-            return loginForm.get().roles.contains("admin") ? redirect(routes.AuditServer.adminmain()) :
+            System.out.println(session().toString());
+            return loginForm.get().role.equals("admin") ? redirect(routes.AuditServer.adminmain()) :
                                                           redirect(routes.AuditServer.authority());
         }
+        return null;
     }
     
     /**
@@ -643,28 +640,34 @@ public class AuditServer extends Controller {
         public String password;
 
         @Constraints.Required
-        public List<String> roles = new ArrayList<>();
+        public String role;
 
-        public void setUsername(@NotNull String username){
+        public void setUsername(String username) {
             this.username = username;
         }
-        public void setPassword(@NotNull String password){
+
+        public void setPassword(String password) {
             this.password = password;
         }
-        public void setType(@NotNull List<String> type){
-            this.roles.addAll(type);
+
+        public void setRole(String role) {
+            this.role = role;
         }
 
         /** This will validate the username and password */
         public String validate() {
 
-            if(!(roles.contains("admin") || roles.contains("authority")))
+            if(!(role.equals("admin") || role.equals("authority")))
                 return "Invalid Role";
 
-            if (!User.authenticate(username, password, roles))
-              return "Invalid user or password, or wrong login type";
+            if (!User.authenticate(username, password, role))
+              return "Invalid user or password!";
 
             return null;
+        }
+
+        public String toString() {
+            return "Username: " + username + ", Password: " + password + ", Role: " + role;
         }
 
     }

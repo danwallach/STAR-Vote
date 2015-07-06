@@ -6,6 +6,7 @@ import play.mvc.Result;
 import play.mvc.Results;
 import play.mvc.Security;
 
+
 public class Secured extends Security.Authenticator {
 
     @Override
@@ -15,6 +16,12 @@ public class Secured extends Security.Authenticator {
 
     @Override
     public Result onUnauthorized(Context ctx) {
-        return Results.redirect(routes.AuditServer.adminverify());
+
+        if (ctx.request().path().contains("/admin")) {
+            return Results.redirect(routes.AuditServer.adminverify());
+        } else if (ctx.request().path().contains("/authority")) {
+            return Results.redirect(routes.AuditServer.authorityverify());
+        } else
+            return Results.redirect(routes.AuditServer.index());
     }
 }

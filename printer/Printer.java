@@ -154,6 +154,8 @@ public class Printer{
         /* Print to an HTML file. Parameters to be used: */
         String htmlFileName = cleanFilePath + "PrintableBallot.html";
 
+        System.out.println("Planning on printing HTML file to " + htmlFileName);
+
         /* TODO actually read in these from somewhere */
         Boolean useTwoColumns = true;
 

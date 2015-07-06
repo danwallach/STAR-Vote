@@ -1,9 +1,12 @@
 package utilities;
 
 import auditorium.Bugout;
-import crypto.*;
-import crypto.adder.*;
-import sexpression.ASEParser;
+import crypto.AHomomorphicCiphertext;
+import crypto.EncryptedRaceSelection;
+import crypto.IPublicKey;
+import crypto.PlaintextRaceSelection;
+import crypto.adder.Race;
+import sexpression.ASEConverter;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.StringExpression;
@@ -103,7 +106,7 @@ public class WebServerTallier {
             System.out.println("In WebserverTallier.tally() -- Verifying this summed race ");
             if(summedRS.verify(0, thisRace.getRaceSelections().size(), PEK)) {
                 raceSelections.add(summedRS);
-                raceSelectionsASE.add(ASEParser.convertToASE(summedRS));
+                raceSelectionsASE.add(ASEConverter.convertToASE(summedRS));
                 System.out.println("This race was successfully added to the Ballot!");
             }
             else System.err.println("There was a bad summed race that was not added to the ballot!");

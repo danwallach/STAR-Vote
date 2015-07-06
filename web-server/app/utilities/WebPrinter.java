@@ -1,7 +1,10 @@
 package utilities;
 
-import printer.*;
-import sexpression.ListExpression;
+import crypto.PlaintextRaceSelection;
+import printer.ChoicePair;
+import printer.PrintImageUtils;
+import printer.Printer;
+import printer.RaceTitlePair;
 import tap.BallotImageHelper;
 
 import javax.imageio.ImageIO;
@@ -9,8 +12,9 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -35,7 +39,7 @@ public class WebPrinter extends Printer{
      * @param bid           the ballot ID
      * @return              success of print
      */
-    public boolean printCommittedBallot(ListExpression ballot, final String bid) {
+    public boolean printCommittedBallot(List<PlaintextRaceSelection> ballot, final String bid) {
 
         final Map<String, Image> choiceToImage = BallotImageHelper.loadImagesForVVPAT(_currentBallotFile);
         final ArrayList<RaceTitlePair> actualRaceNameImagePairs = getRaceNameImagePairs(choiceToImage);

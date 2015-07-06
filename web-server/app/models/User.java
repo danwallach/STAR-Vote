@@ -12,7 +12,6 @@ import security.Authority;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,17 +24,18 @@ public class User extends Model implements Subject {
     public String password;
     public String name;
 
-    @OneToMany
-    public List<String> roles;
+    public String userRole;
 
     @Column(columnDefinition = "TEXT")
     public String key;
 
     
-    public User(String username, String password, List<String> roles, String name) {
+    public User(String username, String password, String userRole, String name) {
       this.username = username;
       this.password = password;
-      this.roles    = roles;
+
+      this.userRole = userRole;
+
       this.name     = name;
       this.key      = null;
     }
@@ -78,21 +78,25 @@ public class User extends Model implements Subject {
     public static void create(User user) { user.save(); }
 
     /* This will authenticate our user */
-     public static boolean authenticate(String username, String password, List<String> roles) {
+     public static boolean authenticate(String username, String password, String role) {
 
         User thisUser = find.where().eq("username", username).eq("password", password).findUnique();
-        return (thisUser != null && thisUser.roles.containsAll(roles));
+        return (thisUser != null && thisUser.userRole.equals(role));
     }
 
     @Override
     public List<? extends Role> getRoles() {
         ArrayList<Role> roleList = new ArrayList<>();
 
-        if (roles.contains("admin")) roleList.add(new Admin());
-        if (roles.contains("authortity")) roleList.add(new Authority());
+        if (userRole.equals("admin")) roleList.add(new Admin());
+        if (userRole.equals("authority")) roleList.add(new Authority());
 
         return roleList;
 
+    }
+
+    public String getUserRole() {
+        return this.userRole;
     }
 
     @Override

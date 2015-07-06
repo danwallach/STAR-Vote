@@ -3,7 +3,7 @@ package utilities;
 import crypto.ExponentialElGamalCiphertext;
 import crypto.adder.*;
 import crypto.exceptions.KeyGenerationException;
-import sexpression.ASEParser;
+import sexpression.ASEConverter;
 
 import java.util.*;
 
@@ -204,7 +204,7 @@ public class AdderKeyManipulator {
 
             AdderPublicKey PEK = new AdderPublicKey(seedKey.getP(),seedKey.getG(),finalH,seedKey.getF());
 
-            System.out.println("Generated PEK: " + ASEParser.convertToASE(PEK));
+            System.out.println("Generated PEK: " + ASEConverter.convertToASE(PEK));
 
             return PEK;
 

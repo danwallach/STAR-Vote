@@ -48,7 +48,7 @@
         
         
         @for(vr <- records) {
-            <tr><td><label for="value="></label> <input type="checkbox" name="publishBox" id=@vr.precinctID value=@vr.precinctID>
+            <tr><td><label for="value="></label> <input role="checkbox" name="publishBox" id=@vr.precinctID value=@vr.precinctID>
                 <label for=@vr.precinctID>@vr.precinctID : @vr.getHashes</label>
             </td></tr>
         }
