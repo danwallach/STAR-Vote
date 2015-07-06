@@ -52,7 +52,7 @@
         
         @for(hash <- vr.getHashes) {
             <tr><td><label>
-                <input role="radio" name=@vr.precinctID id=@vr.precinctID value=@hash/>
+                <input type="radio" name=@vr.precinctID id=@vr.precinctID value=@hash/>
             </label>
                 <label for=@hash>@hash</label>
             </td></tr>
