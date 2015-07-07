@@ -135,6 +135,7 @@ public class Tap {
             /* Encode the record as a string */
             encoded = new String(Base64.encodeBase64(byteArrayOutputStream.toByteArray()));
 
+            /* Output encoded to a file for webserver testing */
             try {
                 PrintWriter out = new PrintWriter("testdata.txt");
                 out.print(encoded);
