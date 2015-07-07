@@ -271,7 +271,19 @@ public class Tap {
 
                 /* Start uploading if we're done making the map (i.e. if no more pending and not currently uploading) */
                 if(uploadPending.size()==0 && !uploading) {
-                    /* TODO collapse identical maps */
+
+                    Map<Serializable, String> invertedMap = new HashMap<>();
+
+                    /* Any duplicates will be overwritten by inverting the map */
+                    for (Map.Entry<String, Serializable> entry : supervisorRecord.entrySet())
+                        invertedMap.put(entry.getValue(),entry.getKey());
+
+                    supervisorRecord.clear();
+
+                    /* Now put back to normal */
+                    for (Map.Entry<Serializable, String> entry : invertedMap.entrySet())
+                        supervisorRecord.put(entry.getValue(), entry.getKey());
+
                     System.out.println("Upload to server pending... ");
                     startUploadToServer();
                 }
