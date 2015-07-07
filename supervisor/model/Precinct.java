@@ -133,8 +133,9 @@ public class Precinct<T extends AHomomorphicCiphertext<T>> implements Serializab
      */
     public void closePolls() {
 
-        /* Challenge each committed Ballot */
-        committed.keySet().forEach(this::challengeBallot);
+        /* Move each ballot in committed to the challenged list */
+        challenged.addAll(committed.values());
+        committed.clear();
     }
 
     /**
