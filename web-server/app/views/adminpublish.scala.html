@@ -1,4 +1,4 @@
-@(records: java.util.List[VotingRecord], published: java.util.List[VotingRecord])
+@(records: java.util.List[VotingRecord], published: java.util.List[VotingRecord], PEKexists: Boolean)
 
 @admin("Publish") {
 
@@ -6,7 +6,7 @@
         <h2>Publish Election Results</h2>
     </div>
 
-    @checkTableTemplate(records)
+    @checkTableTemplate(records, PEKexists)
     
     <h2>Published Results</h2>
     

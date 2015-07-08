@@ -15,6 +15,8 @@ import play.mvc.Result;
 import play.mvc.Security;
 import security.Secured;
 import sexpression.ASEConverter;
+import sexpression.ASExpression;
+import sexpression.ListExpression;
 import sexpression.stream.Base64;
 import supervisor.model.Ballot;
 import supervisor.model.Precinct;
@@ -22,7 +24,11 @@ import utilities.AdderKeyManipulator;
 import utilities.WebServerTallier;
 import views.html.*;
 
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 
 import static play.data.Form.form;
@@ -39,6 +45,7 @@ public class AuditServer extends Controller {
     /* Forms for searching for ballots in DBs */
     static Form<ChallengedBallot> challengeForm = form(ChallengedBallot.class);
     static Form<CastBallot> confirmForm = form(CastBallot.class);
+    static AdderPublicKey PEK;
 
     static boolean init = false;
 
@@ -194,7 +201,8 @@ public class AuditServer extends Controller {
     @Security.Authenticated(Secured.class)
     @Restrict(@Group("admin"))
     public static Result adminpublish() {
-        return ok(adminpublish.render(VotingRecord.getUnpublished(), VotingRecord.getPublished()));
+        System.out.println("We have a PEK: " + (PEK != null));
+        return ok(adminpublish.render(VotingRecord.getUnpublished(), VotingRecord.getPublished(), PEK != null));
     }
     
     @Security.Authenticated(Secured.class)
@@ -230,11 +238,11 @@ public class AuditServer extends Controller {
             vr.publish();
             
             /* Get the Precincts from this VotingRecord (Encrypted!) */
-            System.out.println("Getting the Precinct Map: ");
+            System.out.println("Getting the Precinct Map... ");
             precinctMap = vr.getPrecinctMap();
 
             /* Add the results from the Precincts in this VotingRecord to precinctTotals */
-            System.out.println("Updating Precinct Totals: ");
+            System.out.println("Updating Precinct Totals... ");
             precinctTotals = updatePrecinctTotals(precinctMap);
 
             /* Move on to the next VotingRecord to be published */
@@ -242,15 +250,50 @@ public class AuditServer extends Controller {
         }
 
         /* Combine the newly published result totals with the old totals */
-        System.out.println("Updating Summed Totals: ");
+        System.out.println("Updating Summed Totals... ");
         updateSummedTotals(summedTotals, precinctTotals);
 
         /* Decrypt and store the final updated totals for each Precinct */
-        System.out.println("Storing Decrypted Summed Totals: ");
+        System.out.println("Storing Decrypted Summed Totals... ");
         storeDecryptedSummedTotals(summedTotals);
 
         /* Return the webpage */
-        return ok(adminpublish.render(VotingRecord.getUnpublished(), VotingRecord.getPublished()));
+        return ok(adminpublish.render(VotingRecord.getUnpublished(), VotingRecord.getPublished(), PEK != null));
+    }
+
+    @Security.Authenticated(Secured.class)
+    @Restrict(@Group("admin"))
+    public static Result uploadPEK() {
+
+        /* Load the seed key */
+        JFileChooser chooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(".key files", "key");
+        chooser.setFileFilter(filter);
+
+        int returnVal = chooser.showOpenDialog(null);
+
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            System.out.println("You chose to open this file: " +
+                    chooser.getSelectedFile().getName());
+        }
+
+        try {
+
+            File PEKFile = chooser.getSelectedFile();
+            Path PEKPath = PEKFile.toPath();
+
+            byte[] verbatimPEK = Files.readAllBytes(PEKPath);
+            ASExpression PEKASE = ASExpression.makeVerbatim(verbatimPEK);
+            System.out.println(PEKASE);
+            PEK = ASEConverter.convertFromASE((ListExpression) PEKASE);
+
+        }
+        catch (Exception e) {
+            System.err.println("Couldn't upload the key file due to " + e.getClass());
+
+        }
+
+        return ok(adminpublish.render(VotingRecord.getUnpublished(), VotingRecord.getPublished(), PEK != null));
     }
 
     /*---------------------------------------- ADMIN METHODS -----------------------------------------------*/
@@ -296,7 +339,7 @@ public class AuditServer extends Controller {
     }
 
     private static void writePEKtoFile(){
-        AdderPublicKey PEK = AdderKeyManipulator.generatePublicEncryptionKey();
+        PEK = AdderKeyManipulator.generatePublicEncryptionKey();
 
         File destDir = new File("PEK");
 
@@ -415,13 +458,12 @@ public class AuditServer extends Controller {
             if (precinctTotals.get(precinctID) == null)
                 precinctTotals.put(precinctID, new ArrayList<>());
 
-            System.out.println("Precinct totals: " + precinctTotals);
-            System.out.println("P: " + p);
-            System.out.println("Precinct totals.get: " + precinctTotals.get(precinctID));
-            System.out.println("Precinct ID: " + precinctID);
+            System.out.println("\tPrecinct totals: " + precinctTotals);
+            System.out.println("\tP: " + p);
+            System.out.println("\tPrecinct ID: " + precinctID);
 
             /* Store the total for that precinct in the list */
-            precinctTotals.get(precinctID).add(p.getCastBallotTotal(AdderKeyManipulator.generatePublicEncryptionKey()));
+            precinctTotals.get(precinctID).add(p.getCastBallotTotal(PEK));
         }
 
         return precinctTotals;
@@ -455,7 +497,7 @@ public class AuditServer extends Controller {
             System.out.println("Updating the precinct totals...");
 
             /* Tally the new precinctTotals using WebServerTallier*/
-            Ballot<EncryptedRaceSelection<T>> b = WebServerTallier.tally(precinctID, thisPrecinctTotal, AdderKeyManipulator.generatePublicEncryptionKey());
+            Ballot<EncryptedRaceSelection<T>> b = WebServerTallier.tally(precinctID, thisPrecinctTotal, PEK);
 
             /* Replace old totals with new totals */
             summedTotals.put(precinctID, b);
@@ -470,7 +512,7 @@ public class AuditServer extends Controller {
      */
     private static void storeDecryptedSummedTotals(Map<String, Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>>> summedTotals) {
 
-        SimpleKeyStore keyStore = new SimpleKeyStore("/lib/keys/");
+        SimpleKeyStore keyStore = new SimpleKeyStore("/keys/");
         AdderPrivateKeyShare privateKey = keyStore.loadAdderPrivateKey();
 
         System.out.println("Decrypting summedTotals...");
@@ -551,14 +593,16 @@ public class AuditServer extends Controller {
         *   Each Map.Entry<String, Precinct> is <PrecinctID, PrecinctObject>
         */
 
+        /* Note that a VotingRecord maps of all the Supervisor serials to their (conflicting) precinct maps
+         * We refer to each of these precinct maps as a SupervisorRecord (it is a record written by each Supervisor)
+         */
+
         /* Code for this method in handling a POST command are found at http://www.vogella.com/articles/ApacheHttpClient/article.html */
 
-        /* TODO check the form encoding load */
         final Map<String, String[]> values = request().body().asFormUrlEncoded();
-
-        System.out.println(request().body());
-
         final String record = values.get("record")[0];
+
+        /* TODO Note that this is random right now, but will be the origin precinctID */
         final String precinctID = values.get("precinctID")[0];
 
         /* Decode from base64 */
@@ -571,10 +615,9 @@ public class AuditServer extends Controller {
         }
         catch (IOException | ClassNotFoundException | ClassCastException e) { e.printStackTrace(); }
 
-        System.out.println(votingRecord);
-
         /* Add the record to the database */
         VotingRecord.create(new VotingRecord(precinctID, votingRecord));
+
         return ok(index.render());
     }
 

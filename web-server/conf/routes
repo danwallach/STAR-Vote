@@ -23,6 +23,7 @@ GET         /admin/conflicts                controllers.AuditServer.adminconflic
 POST        /admin/resolveconflicts         controllers.AuditServer.resolveconflict(id: String ?= "none", hash: String ?= "none")
 GET         /admin/publish                  controllers.AuditServer.adminpublish()
 POST        /admin/publishresults           controllers.AuditServer.publishresults()
+GET         /admin/uploadPEK                controllers.AuditServer.uploadPEK()
 GET         /admin/logout                   controllers.AuditServer.logout()
 
 GET         /authoritylogin                 controllers.AuditServer.authorityverify()
