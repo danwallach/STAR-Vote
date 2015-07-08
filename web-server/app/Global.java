@@ -4,8 +4,15 @@ import crypto.adder.AdderPublicKeyShare;
 import play.Application;
 import play.GlobalSettings;
 import play.libs.Yaml;
+import sexpression.ASEConverter;
+import sexpression.ASExpression;
+import sexpression.ListExpression;
+import utilities.AdderKeyManipulator;
 import utilities.BallotLoader;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 
@@ -36,20 +43,9 @@ public class Global extends GlobalSettings {
             Ebean.save((List) Yaml.load("initial-data.yml"));
         }
 
-        /* Load the seed key *//*
-        JFileChooser chooser = new JFileChooser();
-        FileNameExtensionFilter filter = new FileNameExtensionFilter(".key files", "key");
-        chooser.setFileFilter(filter);
-        int returnVal = chooser.showOpenDialog(null);
-        if(returnVal == JFileChooser.APPROVE_OPTION) {
-            System.out.println("You chose to open this file: " +
-                    chooser.getSelectedFile().getName());
-        }
-
-        File seedKeyFile = chooser.getSelectedFile();
+        /* Load the seed key */
+        File seedKeyFile = new File("keys","seedkey.adder.key");
         Path seedKeyPath = seedKeyFile.toPath();
-
-
 
         try {
             byte[] verbatimSeedKey = Files.readAllBytes(seedKeyPath);
@@ -60,7 +56,6 @@ public class Global extends GlobalSettings {
             AdderKeyManipulator.setSeedKey(seedKey);
         }
         catch (Exception e) { e.printStackTrace(); throw new RuntimeException("Couldn't use the key file");}
-*/
 
     }
 }

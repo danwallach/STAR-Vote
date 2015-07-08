@@ -1,6 +1,5 @@
 package controllers;
 
-import auditorium.SimpleKeyStore;
 import be.objectify.deadbolt.java.actions.Group;
 import be.objectify.deadbolt.java.actions.Restrict;
 import crypto.*;
@@ -357,7 +356,7 @@ public class AuditServer extends Controller {
             }
         }
 
-        File pekFile = new File("PEK","PEK.adder.key");
+        File pekFile = new File("keys","PEK.adder.key");
 
         try {
             FileOutputStream fos = new FileOutputStream(pekFile);
@@ -511,9 +510,6 @@ public class AuditServer extends Controller {
      * @param summedTotals  the public running tally of totals mapped from precinct ID to precinct results Ballot
      */
     private static void storeDecryptedSummedTotals(Map<String, Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>>> summedTotals) {
-
-        SimpleKeyStore keyStore = new SimpleKeyStore("/keys/");
-        AdderPrivateKeyShare privateKey = keyStore.loadAdderPrivateKey();
 
         System.out.println("Decrypting summedTotals...");
 
