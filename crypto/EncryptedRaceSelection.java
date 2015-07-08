@@ -105,6 +105,8 @@ public class EncryptedRaceSelection<T extends AHomomorphicCiphertext<T>> extends
         /* Should each Vote have to pass itself to its sumProof for verification? */
         /* VoteProof should probably contain Ciphertext proofs and Ciphertexts */
 
+        System.out.println("Verifying the sum of this ERS: " + size  + ", " + selectionsMap);
+
         Set<Map.Entry<String,T>> eSet = selectionsMap.entrySet();
 
         /* Pull out an arbitrary ciphertext to get an instance of T */
@@ -118,6 +120,7 @@ public class EncryptedRaceSelection<T extends AHomomorphicCiphertext<T>> extends
             summed = summed.operate(entry.getValue(), PEK);
         }
 
+        System.out.println("Verifying the sum of this summed: " + summed);
         return summed.verify(value, value, PEK);
     }
 
@@ -138,6 +141,7 @@ public class EncryptedRaceSelection<T extends AHomomorphicCiphertext<T>> extends
             }
         }
 
+        System.out.println("Verifying the sum of this ERS: " + size  + ", " + selectionsMap);
         return verifySum(selectionsMap, max, PEK);
     }
 

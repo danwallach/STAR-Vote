@@ -524,6 +524,24 @@ public class AuditServer extends Controller {
             String precinctID = entry.getKey();
 
             Ballot<PlaintextRaceSelection> decryptB = null;
+
+            /* Load the ICryptoType */
+            DHExponentialElGamalCryptoType t = new DHExponentialElGamalCryptoType();
+
+            /* Get all the privateKeyShares from the authorities database */
+            List<User> users = User.find.where().eq("userRole","authority").ne("key", null).findList();
+            List<AdderPrivateKeyShare> privateKeyShares = new ArrayList<>();
+            AdderPrivateKeyShare[] privateKeySharesArray = new AdderPrivateKeyShare[users.size()];
+
+            for (User user : users)
+                privateKeyShares.add(user.getKey());
+
+            /* Load the privateKeyShares into the ICryptoType */
+            t.loadPrivateKeyShares(privateKeyShares.toArray(privateKeySharesArray));
+
+            /* Now set it so that we can decrypt */
+            BallotCrypto.setCryptoType(t);
+
             try { decryptB = BallotCrypto.decrypt(b); }
             catch (Exception e) {e.printStackTrace(); }
 

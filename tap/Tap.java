@@ -68,7 +68,8 @@ public class Tap {
     /** A list of all supervisors who have finished uploading their ballots */
     private ArrayList<Integer> uploadComplete;
 
-    /** This precinct's supervisor record, which will be uploaded to the bulletin board */
+    /** This precinct's supervisors' records of precincts voting, mapped by Supervisor serial.
+     * This will be uploaded to the bulletin board */
     private Map<String, Serializable> supervisorRecord;
 
 
@@ -145,6 +146,8 @@ public class Tap {
             List<BasicNameValuePair> bnvp = new ArrayList<>();
 
             bnvp.add(new BasicNameValuePair("record", encoded));
+
+            /* TODO this should actually be the precinct of the precinct the voting record is from */
             bnvp.add(new BasicNameValuePair("precinctID", Integer.toString((new Random()).nextInt())));
 
             /* Set entities for each of the url encoded forms of the NVP */
@@ -359,7 +362,7 @@ public class Tap {
     }
 
     /**
-     * Usage:<BR> FIXME?
+     * Usage:<BR>
      * 		java votebox.Tap [serial] [report address] [port]
      *
      * @param args      arguments to be used
@@ -480,7 +483,7 @@ public class Tap {
 
         /* TEST CODE */
 
-        //testMethod();
+        testMethod();
 
         /* END TEST CODE */
 
