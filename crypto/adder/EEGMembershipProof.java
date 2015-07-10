@@ -169,7 +169,7 @@ public class EEGMembershipProof implements IProof<ExponentialElGamalCiphertext> 
         sb.append(bigG);
         sb.append(bigH);
 
-        /* Calculate combined variables */
+        /* Reshape the proof lists to fit the new domain */
         reviseProofs(ctext1.getProof(), domain1, ctext2.getProof(), domain2, newDomain, q);
 
         /* Iterate over the domain */
@@ -185,7 +185,10 @@ public class EEGMembershipProof implements IProof<ExponentialElGamalCiphertext> 
             AdderInteger c1 = ctext1.getProof().cList.get(i);
             AdderInteger c2 = ctext1.getProof().cList.get(i);
 
+            /* s' = s1 + s2 */
             sList.add(s1.add(s2));
+
+            /* c' = c1 + c2 */
             cList.add(c1.add(c2));
 
             /* This will be needed for computing z_i */
@@ -200,7 +203,6 @@ public class EEGMembershipProof implements IProof<ExponentialElGamalCiphertext> 
             AdderInteger y2 = g.pow(s2).multiply(ctext2.getG().pow(negC2));
 
             /* Now this is y1*y2 / [g^(r2*c1+r1*c2)] = g^(s'-r'c') = y(s',r',c') = y' */
-            /* This is currently wrong */
             y = y1.multiply(y2).divide(g.pow(r2.multiply(c1).add(r1.multiply(c2))));
 
             /* Compute a cipher, of the form g^xs * [(g^rx * f^m)/f^d]^(-c_i) = g^[x(s - rc_i)] * f^[c_i*(d - m)] */
@@ -208,7 +210,6 @@ public class EEGMembershipProof implements IProof<ExponentialElGamalCiphertext> 
             AdderInteger z2 = h.pow(s2).multiply(ctext2.getH().divide(fpow).pow(negC2));
 
             /* Now this is z1*z2 / [f^(m2*c1+m1*c2)] = z1*z2 * [h^(r2*c1+r1*c2)] / [ bigH2^c1 * bigH1^c2 ] = z(y', s',c') = z' */
-            /* This is currently wrong when m=/=0 */
             z = z1.multiply(z2).multiply(h.pow(r2.multiply(c1).add(r1.multiply(c2)))).divide(ctext2.getH().pow(c1).multiply(ctext1.getH().pow(c2)));
 
             /* If this is true, then this means that d=m */
