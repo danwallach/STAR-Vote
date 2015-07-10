@@ -136,7 +136,8 @@ public class EncryptedRaceSelection<T extends AHomomorphicCiphertext<T>> extends
          * fact that we check to make sure sum of votes = number of votes
          */
 
-        /* Otherwise would have to figure out how to add together proofs */
+        /* However, we manage to sum each ciphertext's proofs together after operations
+         * so here we do verify them. */
 
         for (Map.Entry<String, T> entry : selectionsMap.entrySet()) {
             if (!entry.getValue().verify(min, max, PEK)) {
