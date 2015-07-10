@@ -26,19 +26,19 @@ public class EncryptedRaceSelection<T extends AHomomorphicCiphertext<T>> extends
      * Creates a multiplicative identity
      * @param v     the encrypted race selection to use to extract the class of S
      * @param PEK   the public encryption key used to encrypt the entire election
-     * @param <S>   the homomorphic ciphertext type, dependent on crypto-type
+     * @param <T>   the homomorphic ciphertext type, dependent on crypto-type
      *
      * @return      a multiplicative identity based on this encrypted race selection
      */
     @SuppressWarnings("unchecked")
-    public static <S extends AHomomorphicCiphertext<S>> EncryptedRaceSelection<S> identity(EncryptedRaceSelection<S> v, IPublicKey PEK) {
+    public static <T extends AHomomorphicCiphertext<T>> EncryptedRaceSelection<T> identity(EncryptedRaceSelection<T> v, IPublicKey PEK) {
 
         /* This will hold the map of identity ciphertexts to put into the identity vote */
-        Map<String, S> identityMap = new HashMap<>();
+        Map<String, T> identityMap = new HashMap<>();
 
         /* Fill in all the entries with identities of type S */
-        for(Map.Entry<String, S> entry : v.selectionsMap.entrySet())
-            identityMap.put(entry.getKey(), CiphertextFactory.identity((Class<S>)entry.getValue().getClass(), PEK));
+        for(Map.Entry<String, T> entry : v.selectionsMap.entrySet())
+            identityMap.put(entry.getKey(), (T)CiphertextFactory.identity(entry.getValue().getClass(), PEK));
 
         /* Create new identity with size 0 (i.e. no votes cast) */
         return new EncryptedRaceSelection<>(identityMap, v.getTitle(), 0);
@@ -109,7 +109,7 @@ public class EncryptedRaceSelection<T extends AHomomorphicCiphertext<T>> extends
         T arbitraryCiphertext = iter.next().getValue();
 
         /* Create an identity for T */
-        T summed = CiphertextFactory.identity((Class<T>)arbitraryCiphertext.getClass(),PEK);
+        T summed = (T)CiphertextFactory.identity(arbitraryCiphertext.getClass(),PEK);
 
         summed = summed.operateDependent(new ArrayList<>(selectionsMap.values()), PEK);
 

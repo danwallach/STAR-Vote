@@ -18,14 +18,13 @@ public class CiphertextFactory {
         catch (Exception e){ e.printStackTrace(); return null; }
     }
 
-    //@SuppressWarnings("unchecked")
-    public static <T extends AHomomorphicCiphertext<T>> T identity(Class<T> c, IPublicKey PEK){
+    public static AHomomorphicCiphertext identity(Class<? extends AHomomorphicCiphertext> c, IPublicKey PEK){
 
         AdderPublicKey publicKey = (AdderPublicKey) PEK;
 
         /* This has a null proof because it will force return for multiply. Always use this as operand */
         try {
-            Constructor<T> constructor = c.getConstructor(AdderInteger.class, AdderInteger.class, AdderInteger.class, EEGMembershipProof.class, int.class);
+            Constructor<? extends AHomomorphicCiphertext> constructor = c.getConstructor(AdderInteger.class, AdderInteger.class, AdderInteger.class, EEGMembershipProof.class, int.class);
             return constructor.newInstance(AdderInteger.ONE, AdderInteger.ONE, publicKey.getP(), null, 0);
         }
         catch (Exception e) { e.printStackTrace(); }
