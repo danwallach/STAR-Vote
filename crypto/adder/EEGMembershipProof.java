@@ -117,6 +117,147 @@ public class EEGMembershipProof implements IProof<ExponentialElGamalCiphertext> 
      * element of the domain. All but one of the proofs (the one corresponding
      * to \em value) will be fake.
      *
+     * @param ctext1
+     * @param r1
+     * @param domain1
+     * @param ctext2
+     * @param r2
+     * @param domain2
+     * @param newDomain
+     * @param pubKey the public key used to encrypt the message.
+     */
+    public EEGMembershipProof(  ExponentialElGamalCiphertext ctext1, AdderInteger r1, List<AdderInteger> domain1,
+                                ExponentialElGamalCiphertext ctext2, AdderInteger r2, List<AdderInteger> domain2,
+                                List<AdderInteger> newDomain,        AdderPublicKey pubKey) {
+
+        yList = new ArrayList<>();
+        zList = new ArrayList<>();
+        sList = new ArrayList<>();
+        cList = new ArrayList<>();
+
+        computeOperationProof(ctext1, r1, domain1, ctext2, r2, domain2, newDomain, pubKey);
+
+    }
+
+    private void computeOperationProof(ExponentialElGamalCiphertext ctext1, AdderInteger r1, List<AdderInteger> domain1,
+                                       ExponentialElGamalCiphertext ctext2, AdderInteger r2, List<AdderInteger> domain2,
+                                       List<AdderInteger> newDomain,        AdderPublicKey pubKey) {
+
+        /* Get p and q from the key */
+        this.p = pubKey.getP();
+        this.q = pubKey.getQ();
+
+        /* Get g, h, and f */
+        AdderInteger g = new AdderInteger(pubKey.getG(), this.p);
+        AdderInteger h = pubKey.getH();
+        AdderInteger f = pubKey.getF();
+
+        /* bigG (g^r), bigH (g^(rx) * f^m), and r */
+        AdderInteger bigG = ctext1.getG().multiply(ctext2.getG());
+        AdderInteger bigH = ctext1.getH().multiply(ctext2.getH());
+
+        /* Calculate combined variables */
+        reviseProofs(ctext1.getProof(), domain1, ctext2.getProof(), domain2, newDomain, q);
+
+        /* Iterate over the domain */
+        for (int i = 0; i < newDomain.size(); i++) {
+
+            AdderInteger y;
+            AdderInteger z;
+            AdderInteger d = newDomain.get(i);
+
+            AdderInteger s1 = ctext1.getProof().sList.get(i);
+            AdderInteger s2 = ctext2.getProof().sList.get(i);
+
+            AdderInteger c1 = ctext1.getProof().cList.get(i);
+            AdderInteger c2 = ctext1.getProof().cList.get(i);
+
+            sList.add(s1.add(s2));
+            cList.add(c1.add(c2));
+
+            /* This will be needed for computing z_i */
+            AdderInteger negC1 = c1.negate();
+            AdderInteger negC2 = c2.negate();
+
+            /* This is essentially the message corresponding to domain member d mapped into G */
+            AdderInteger fpow = f.pow(d);
+
+            /* Compute a group member g^s * (g^r)^(-c_i) = g^(s - r*c_i) */
+            AdderInteger y1 = g.pow(s1).multiply(bigG.pow(negC1));
+            AdderInteger y2 = g.pow(s2).multiply(bigG.pow(negC2));
+
+            /* Now this is y1*y2 / [g^(r2*c1+r1*c2)] */
+            y = y1.multiply(y2).divide(g.pow(r2.multiply(c1).add(r1.multiply(c2))));
+
+            /* Compute a cipher, of the form g^xs * [(g^rx * f^m)/f^d]^(-c_i) = g^[x(s - rc_i)] * f^[c_i*(d - m)] */
+            AdderInteger z1 = h.pow(s1).multiply(bigH.divide(fpow).pow(negC1));
+            AdderInteger z2 = h.pow(s2).multiply(bigH.divide(fpow).pow(negC2));
+
+            /* Now this is z1*z2 / [f^(m2*c1+m1*c2)] = z1*z1 * [h^(r2*c1+r1*c2)] / [ bigH2^c1 * bigH1^c2 ] */
+            z = z1.multiply(z2).multiply(h.pow(r2.multiply(c1).add(r1.multiply(c2)))).divide(ctext2.getH().pow(c1).multiply(ctext1.getH().pow(c2)));
+
+            /* Add our random ciphers and members to their respective lists */
+            yList.add(y);
+            zList.add(z);
+        }
+
+    }
+
+    private void reviseProofs(EEGMembershipProof proof1,    List<AdderInteger> domain1,
+                              EEGMembershipProof proof2,    List<AdderInteger> domain2,
+                              List<AdderInteger> newDomain, AdderInteger q){
+
+        /* Want to shift around the sList and cList for the proofs to achieve the new domain */
+        List<AdderInteger> newCList1 = new ArrayList<>();
+        List<AdderInteger> newSList1 = new ArrayList<>();
+        AdderInteger min1 = domain1.get(0);
+        AdderInteger max1 = domain1.get(domain1.size()-1);
+
+        List<AdderInteger> newCList2 = new ArrayList<>();
+        List<AdderInteger> newSList2 = new ArrayList<>();
+        AdderInteger min2 = domain2.get(0);
+        AdderInteger max2 = domain2.get(domain2.size()-1);
+
+        int j=0;
+        int k=0;
+
+        for (int i=newDomain.get(0).intValue(); i<=newDomain.get(newDomain.size()-1).intValue(); i++) {
+
+            if (i < min1.intValue() || i > max1.intValue()) {
+                newCList1.add(AdderInteger.random(q));
+                newSList1.add(AdderInteger.random(q));
+            }
+            else {
+                newCList1.add(proof1.cList.get(j));
+                newSList1.add(proof1.sList.get(j));
+                j++;
+            }
+
+            if (i < min2.intValue() || i > max2.intValue()) {
+                newCList2.add(AdderInteger.random(q));
+                newSList2.add(AdderInteger.random(q));
+            }
+            else {
+                newCList2.add(proof2.cList.get(k));
+                newSList2.add(proof2.sList.get(k));
+                k++;
+            }
+        }
+
+        proof1.cList = newCList1;
+        proof1.sList = newSList1;
+
+        proof2.cList = newCList2;
+        proof2.sList = newSList2;
+
+    }
+
+
+    /**
+     * Computes the proof as detailed above by forming one proof for each
+     * element of the domain. All but one of the proofs (the one corresponding
+     * to \em value) will be fake.
+     *
      * @param bigG
      * @param bigH
      * @param r
@@ -124,7 +265,7 @@ public class EEGMembershipProof implements IProof<ExponentialElGamalCiphertext> 
      * @param value  the plaintext value of the ciphertext.
      * @param domain the domain of possible values of the plaintext.
      */
-    private void compute(AdderInteger bigG, AdderInteger bigH, AdderInteger r, AdderPublicKey pubKey, AdderInteger value, List domain) {
+    private void compute(AdderInteger bigG, AdderInteger bigH, AdderInteger r, AdderPublicKey pubKey, AdderInteger value, List<AdderInteger> domain) {
 
         /* Get p and q from the key */
         this.p = pubKey.getP();
@@ -162,7 +303,7 @@ public class EEGMembershipProof implements IProof<ExponentialElGamalCiphertext> 
 
             AdderInteger y;
             AdderInteger z;
-            AdderInteger d = (AdderInteger) domain.get(i);
+            AdderInteger d = domain.get(i);
 
             /* See if the value is this particular member of the domain */
             if (d.equals(value)) {
@@ -221,9 +362,9 @@ public class EEGMembershipProof implements IProof<ExponentialElGamalCiphertext> 
         for (AdderInteger fakeC : cList)
             realC = realC.subtract(fakeC);
 
-        /* Note that realC is now c - (sum(cList)) */
+        /* Note that realC (call it s) is now c - (sum(cList)) */
 
-        /* Compute cr + t using our real commitment value and add it in the right place */
+        /* Compute sr + t using our real commitment value and add it in the right place */
         sList.set(indexInDomain, realC.multiply(r).add(t));
 
         /* Add our real commitment value into the commit list in the right place */
@@ -250,6 +391,7 @@ public class EEGMembershipProof implements IProof<ExponentialElGamalCiphertext> 
         AdderInteger f = pubKey.getF();
 
         /* Get the cipher's randomness and encrypted value*/
+        /* bigG (g^r), bigH (g^(rx) * f^m)0 */
         AdderInteger bigG = ciphertext.getG();
         AdderInteger bigH = ciphertext.getH();
 
@@ -265,44 +407,54 @@ public class EEGMembershipProof implements IProof<ExponentialElGamalCiphertext> 
         sb.append(bigG);
         sb.append(bigH);
 
-        /* Iterate over all the commits, fake and otherwise */
-        for (int i = 0; i < cList.size(); i++) {
+        try {
 
-            /* Get out the domain value (i.e. the possible message m) */
-            AdderInteger d = new AdderInteger(domain.get(i));
+            /* Iterate over all the commits, fake and otherwise */
+            for (int i = 0; i < cList.size(); i++) {
 
-            /* Map the value into the group via f */
-            AdderInteger fpow = f.pow(d);
+                /* Get out the domain value (i.e. the possible message m) */
+                AdderInteger d = new AdderInteger(domain.get(i));
 
-            /* extract the commit value and cr + t (or the random values) */
-            AdderInteger s = sList.get(i);
-            AdderInteger c = cList.get(i);
+                /* Map the value into the group via f */
+                AdderInteger fpow = f.pow(d);
 
-            /* Compute -c_i so it will fall out of z_i for fake commitments */
-            AdderInteger negC = c.negate();
+                /* extract the commit value and cr + t (or the random values) */
+                AdderInteger s = sList.get(i);
+                AdderInteger c = cList.get(i);
 
-            /*
-             * add this commit value to reconstruct our hashed value
-             * cChoices = sum(c_i), where one c_i is realC from compute, giving us
-             * cChoices = c_0 + ... + realC + ... c_n = c_0 + ... (c - (c_0 + ... + 0 + ... + c_n) + ... c_n
-             * cChoices = c_0 - c_0 + ... c - 0 + ... c_n - c_n
-             * cChoices = c
-             */
-            cChoices = cChoices.add(c);
+                /* Compute -c_i so it will fall out of z_i for fake commitments */
+                AdderInteger negC = c.negate();
 
-            /* Compute the y-values used in the commit string */
-            sb.append(g.pow(s).multiply(bigG.pow(negC)));
+                /*
+                 * add this commit value to reconstruct our hashed value
+                 * cChoices = sum(c_i), where one c_i is realC from compute, giving us
+                 * cChoices = c_0 + ... + realC + ... c_n = c_0 + ... (c - (c_0 + ... + 0 + ... + c_n) + ... c_n
+                 * cChoices = c_0 - c_0 + ... c - 0 + ... c_n - c_n
+                 * cChoices = c eventually
+                 */
+                cChoices = cChoices.add(c);
 
-            /* Compute the z-values used in the commit string */
-            sb.append(h.pow(s).multiply(bigH.divide(fpow).pow(negC)));
+                /* Compute the y-values used in the commit string */
+                sb.append(g.pow(s).multiply(bigG.pow(negC)));
+
+                /* Compute the z-values used in the commit string */
+                sb.append(h.pow(s).multiply(bigH.divide(fpow).pow(negC)));
+            }
+
+            /* Now take the hash of the commit string and convert it to a number */
+            String cHash = Util.sha1(sb.toString());
+            AdderInteger newC = new AdderInteger(cHash, q, 16).mod(q);
+
+            /* Ensure that cChoices (i.e. the real commit) matches the hashed value of the commit string */
+            return (cChoices.equals(newC));
+
         }
-
-        /* Now take the hash of the commit string and convert it to a number */
-        String cHash = Util.sha1(sb.toString());
-        AdderInteger newC = new AdderInteger(cHash, q, 16).mod(q);
-
-        /* Ensure that cChoices (i.e. the real commit) matches the hashed value of the commit string */
-        return (cChoices.equals(newC));
+        catch (IndexOutOfBoundsException e) {
+            /* This happens if the domain used in verification is smaller than the
+             * one used for computation of the proof -- automatic failure for verification
+             */
+            return false;
+        }
     }
 
     /**

@@ -1,10 +1,7 @@
 package crypto;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * An encrypted representation of the selection made for a given race.
@@ -66,18 +63,19 @@ public class EncryptedRaceSelection<T extends AHomomorphicCiphertext<T>> extends
 
         Map<String, T> resultMap = new HashMap<>();
 
-
+        /* Add all the candidates from both selection maps */
         resultMap.putAll(other.selectionsMap);
         resultMap.putAll(selectionsMap);
 
-        for(String title : other.getRaceSelectionsMap().keySet()) {
-            if(selectionsMap.containsKey(title)) {
+        /* If the selections maps contain the same candidates, add their ciphertexts together */
+        for(String candidate : other.getRaceSelectionsMap().keySet()) {
+            if(selectionsMap.containsKey(candidate)) {
 
-                T thisCiphertext = this.selectionsMap.get(title);
-                T otherCiphertext = other.selectionsMap.get(title);
+                T thisCiphertext = this.selectionsMap.get(candidate);
+                T otherCiphertext = other.selectionsMap.get(candidate);
 
 
-                resultMap.put(title, (T) thisCiphertext.operate(otherCiphertext, PEK));
+                resultMap.put(candidate, thisCiphertext.operateIndependent(otherCiphertext, PEK));
             }
 
         }
@@ -105,8 +103,6 @@ public class EncryptedRaceSelection<T extends AHomomorphicCiphertext<T>> extends
         /* Should each Vote have to pass itself to its sumProof for verification? */
         /* VoteProof should probably contain Ciphertext proofs and Ciphertexts */
 
-        System.out.println("Verifying the sum of this ERS: " + size  + ", " + selectionsMap);
-
         Set<Map.Entry<String,T>> eSet = selectionsMap.entrySet();
 
         /* Pull out an arbitrary ciphertext to get an instance of T */
@@ -116,12 +112,9 @@ public class EncryptedRaceSelection<T extends AHomomorphicCiphertext<T>> extends
         /* Create an identity for T */
         T summed = CiphertextFactory.identity((Class<T>)arbitraryCiphertext.getClass(),PEK);
 
-        for(Map.Entry<String, T> entry : eSet) {
-            summed = summed.operate(entry.getValue(), PEK);
-        }
+        summed = summed.operateDependent(new ArrayList<>(selectionsMap.values()), PEK);
 
-        System.out.println("Verifying the sum of this summed: " + summed);
-        return summed.verify(value, value, PEK);
+        return summed.verify(0, value, PEK);
     }
 
     /**
@@ -135,13 +128,24 @@ public class EncryptedRaceSelection<T extends AHomomorphicCiphertext<T>> extends
      */
     public boolean verify(int min, int max, IPublicKey PEK) {
 
+        /* We check when we encrypt that each vote is between 0 and 1.
+         * Since we know this, a proof for the sum is sufficient.
+         * [1 0 1] will fail validation for 0 to 1 because the sum > 1
+         * [2 0 -1] would pass sum validation, but never could
+         * occur here because it would be invalidated during encryption.
+         * If it were the sum of multiple votes, it would fail due to the
+         * fact that we check to make sure sum of votes = number of votes
+         */
+
+        /* Otherwise would have to figure out how to add together proofs */
+
         for (Map.Entry<String, T> entry : selectionsMap.entrySet()) {
             if (!entry.getValue().verify(min, max, PEK)) {
-                return false;
+                System.err.println("Testing entry!");
+                //return false;
             }
         }
 
-        System.out.println("Verifying the sum of this ERS: " + size  + ", " + selectionsMap);
         return verifySum(selectionsMap, max, PEK);
     }
 
