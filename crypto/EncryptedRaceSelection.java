@@ -74,7 +74,6 @@ public class EncryptedRaceSelection<T extends AHomomorphicCiphertext<T>> extends
                 T thisCiphertext = this.selectionsMap.get(candidate);
                 T otherCiphertext = other.selectionsMap.get(candidate);
 
-
                 resultMap.put(candidate, thisCiphertext.operateIndependent(otherCiphertext, PEK));
             }
 
@@ -141,8 +140,7 @@ public class EncryptedRaceSelection<T extends AHomomorphicCiphertext<T>> extends
 
         for (Map.Entry<String, T> entry : selectionsMap.entrySet()) {
             if (!entry.getValue().verify(min, max, PEK)) {
-                System.err.println("Testing entry!");
-                //return false;
+                return false;
             }
         }
 

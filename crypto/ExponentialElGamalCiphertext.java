@@ -86,10 +86,6 @@ public class ExponentialElGamalCiphertext extends AHomomorphicCiphertext<Exponen
          */
         EEGMembershipProof proof = new EEGMembershipProof(g, h, r, (AdderPublicKey) PEK, new AdderInteger(sameSize), domain);
 
-
-        System.out.println("Current size: " + (sameSize));
-        System.out.println("Current domain: " + domain);
-
         /* Create a new ciphertext with the updated values and proof */
         return new ExponentialElGamalCiphertext(g, h, r, p, proof, sameSize);
     }

@@ -80,7 +80,7 @@ public class EEGMembershipProof implements IProof<ExponentialElGamalCiphertext> 
     /**
      * Constructs a new <code>MembershipProof</code> object with the specified prime.
      */
-    public EEGMembershipProof(AdderInteger bigG, AdderInteger bigH, AdderInteger r, AdderPublicKey pubKey, AdderInteger value, List domain) {
+    public EEGMembershipProof(AdderInteger bigG, AdderInteger bigH, AdderInteger r, AdderPublicKey pubKey, AdderInteger value, List<AdderInteger> domain) {
 
         yList = new ArrayList<>();
         zList = new ArrayList<>();
@@ -156,6 +156,19 @@ public class EEGMembershipProof implements IProof<ExponentialElGamalCiphertext> 
         AdderInteger bigG = ctext1.getG().multiply(ctext2.getG());
         AdderInteger bigH = ctext1.getH().multiply(ctext2.getH());
 
+        int indexInDomain =0;
+
+        /* Used in commitment process */
+        AdderInteger t = AdderInteger.random(q);
+
+        StringBuilder sb = new StringBuilder(4096);
+
+        /* Append all the numbers to the string*/
+        sb.append(g);
+        sb.append(h);
+        sb.append(bigG);
+        sb.append(bigH);
+
         /* Calculate combined variables */
         reviseProofs(ctext1.getProof(), domain1, ctext2.getProof(), domain2, newDomain, q);
 
@@ -182,25 +195,53 @@ public class EEGMembershipProof implements IProof<ExponentialElGamalCiphertext> 
             /* This is essentially the message corresponding to domain member d mapped into G */
             AdderInteger fpow = f.pow(d);
 
-            /* Compute a group member g^s * (g^r)^(-c_i) = g^(s - r*c_i) */
-            AdderInteger y1 = g.pow(s1).multiply(bigG.pow(negC1));
-            AdderInteger y2 = g.pow(s2).multiply(bigG.pow(negC2));
+            /* Compute a group member g^s * (g^r)^(-c) = g^(s - r*c) */
+            AdderInteger y1 = g.pow(s1).multiply(ctext1.getG().pow(negC1));
+            AdderInteger y2 = g.pow(s2).multiply(ctext2.getG().pow(negC2));
 
-            /* Now this is y1*y2 / [g^(r2*c1+r1*c2)] */
+            /* Now this is y1*y2 / [g^(r2*c1+r1*c2)] = g^(s'-r'c') = y(s',r',c') = y' */
+            /* This is currently wrong */
             y = y1.multiply(y2).divide(g.pow(r2.multiply(c1).add(r1.multiply(c2))));
 
             /* Compute a cipher, of the form g^xs * [(g^rx * f^m)/f^d]^(-c_i) = g^[x(s - rc_i)] * f^[c_i*(d - m)] */
-            AdderInteger z1 = h.pow(s1).multiply(bigH.divide(fpow).pow(negC1));
-            AdderInteger z2 = h.pow(s2).multiply(bigH.divide(fpow).pow(negC2));
+            AdderInteger z1 = h.pow(s1).multiply(ctext1.getH().divide(fpow).pow(negC1));
+            AdderInteger z2 = h.pow(s2).multiply(ctext2.getH().divide(fpow).pow(negC2));
 
-            /* Now this is z1*z2 / [f^(m2*c1+m1*c2)] = z1*z1 * [h^(r2*c1+r1*c2)] / [ bigH2^c1 * bigH1^c2 ] */
+            /* Now this is z1*z2 / [f^(m2*c1+m1*c2)] = z1*z2 * [h^(r2*c1+r1*c2)] / [ bigH2^c1 * bigH1^c2 ] = z(y', s',c') = z' */
+            /* This is currently wrong when m=/=0 */
             z = z1.multiply(z2).multiply(h.pow(r2.multiply(c1).add(r1.multiply(c2)))).divide(ctext2.getH().pow(c1).multiply(ctext1.getH().pow(c2)));
+
+            /* If this is true, then this means that d=m */
+            if (bigH.divide(fpow).equals(h.pow(r1.add(r2)))) {
+
+                y = g.pow(t);
+                z = h.pow(t);
+                cList.set(i,AdderInteger.ZERO);
+                sList.set(i,AdderInteger.ZERO);
+                indexInDomain = i;
+            }
 
             /* Add our random ciphers and members to their respective lists */
             yList.add(y);
             zList.add(z);
+
+            sb.append(y);
+            sb.append(z);
         }
 
+        AdderInteger c = new AdderInteger(Util.sha1(sb.toString()), q, 16).mod(q);
+        AdderInteger realC =  new AdderInteger(c,q);
+
+        for (AdderInteger fakeC : cList) realC = realC.subtract(fakeC);
+
+        /* Note that realC is now c - (sum(cList)) = hash(sb) - sum(cList). If we tack this onto existing cList, then
+         * sum(cList) = hash(sb). When this gets verified, then cChoices = sum cList
+         */
+
+        /* This will ensure that y = g^(s' - r'c') = g^(realC*r'+t - r'*realC) = g^t which is what was committed */
+        /* Since z = y^x * f^[c(d-m)] = (g^t)^x f^[realC(d-m)] = h^t when d=m which is what was committed */
+        cList.set(indexInDomain, realC);
+        sList.set(indexInDomain, realC.multiply(r1.add(r2)).add(t));
     }
 
     private void reviseProofs(EEGMembershipProof proof1,    List<AdderInteger> domain1,
@@ -362,9 +403,9 @@ public class EEGMembershipProof implements IProof<ExponentialElGamalCiphertext> 
         for (AdderInteger fakeC : cList)
             realC = realC.subtract(fakeC);
 
-        /* Note that realC (call it s) is now c - (sum(cList)) */
+        /* Note that realC (call it p) is now c1 - (sum(cList)) */
 
-        /* Compute sr + t using our real commitment value and add it in the right place */
+        /* Compute pr + t using our real commitment value and add it in the right place */
         sList.set(indexInDomain, realC.multiply(r).add(t));
 
         /* Add our real commitment value into the commit list in the right place */
@@ -391,7 +432,7 @@ public class EEGMembershipProof implements IProof<ExponentialElGamalCiphertext> 
         AdderInteger f = pubKey.getF();
 
         /* Get the cipher's randomness and encrypted value*/
-        /* bigG (g^r), bigH (g^(rx) * f^m)0 */
+        /* bigG (g^r), bigH (g^(rx) * f^m) */
         AdderInteger bigG = ciphertext.getG();
         AdderInteger bigH = ciphertext.getH();
 
@@ -428,9 +469,9 @@ public class EEGMembershipProof implements IProof<ExponentialElGamalCiphertext> 
                 /*
                  * add this commit value to reconstruct our hashed value
                  * cChoices = sum(c_i), where one c_i is realC from compute, giving us
-                 * cChoices = c_0 + ... + realC + ... c_n = c_0 + ... (c - (c_0 + ... + 0 + ... + c_n) + ... c_n
+                 * cChoices = c_0 + ... + realC + ... c_n = c_0 + ... (c1 - (c_0 + ... + 0 + ... + c_n) + ... c_n
                  * cChoices = c_0 - c_0 + ... c - 0 + ... c_n - c_n
-                 * cChoices = c eventually
+                 * cChoices = c1 eventually
                  */
                 cChoices = cChoices.add(c);
 
