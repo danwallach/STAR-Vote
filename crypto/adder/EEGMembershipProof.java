@@ -113,18 +113,17 @@ public class EEGMembershipProof implements IProof<ExponentialElGamalCiphertext> 
     }
 
     /**
-     * Computes the proof as detailed above by forming one proof for each
-     * element of the domain. All but one of the proofs (the one corresponding
-     * to \em value) will be fake.
+     * Computes and constructs a proof of the operation of two ciphertexts (itself a ciphertext) by using
+     * values from the individual ciphertexts and their respective proofs.
      *
-     * @param ctext1
-     * @param r1
-     * @param domain1
-     * @param ctext2
-     * @param r2
-     * @param domain2
-     * @param newDomain
-     * @param pubKey the public key used to encrypt the message.
+     * @param ctext1    the first ciphertext to be used to construct the new combined proof
+     * @param r1        the r value of the first ciphertext
+     * @param domain1   the domain of the proof of the first ciphertext
+     * @param ctext2    the second ciphertext to be used to construct the new combined proof
+     * @param r2        the r values of the second ciphertext
+     * @param domain2   the domain of the proof of the second ciphertext
+     * @param newDomain the domain of the new proof (the sum of domain1 and domain2, usually)
+     * @param pubKey    the public key used to encrypt the message.
      */
     public EEGMembershipProof(  ExponentialElGamalCiphertext ctext1, AdderInteger r1, List<AdderInteger> domain1,
                                 ExponentialElGamalCiphertext ctext2, AdderInteger r2, List<AdderInteger> domain2,
@@ -236,7 +235,7 @@ public class EEGMembershipProof implements IProof<ExponentialElGamalCiphertext> 
         for (AdderInteger fakeC : cList) realC = realC.subtract(fakeC);
 
         /* Note that realC is now c - (sum(cList)) = hash(sb) - sum(cList). If we tack this onto existing cList, then
-         * sum(cList) = hash(sb). When this gets verified, then cChoices = sum cList
+         * sum(cList) = hash(sb). When this gets verified, then cChoices = sum(cList) = hash(sb) = c
          */
 
         /* This will ensure that y = g^(s' - r'c') = g^(realC*r'+t - r'*realC) = g^t which is what was committed */
@@ -286,6 +285,7 @@ public class EEGMembershipProof implements IProof<ExponentialElGamalCiphertext> 
             }
         }
 
+        /* Replace the old cLists and sLists*/
         proof1.cList = newCList1;
         proof1.sList = newSList1;
 
