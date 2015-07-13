@@ -1,5 +1,4 @@
 import com.avaje.ebean.Ebean;
-import crypto.adder.AdderInteger;
 import crypto.adder.AdderPublicKeyShare;
 import play.Application;
 import play.GlobalSettings;
@@ -34,8 +33,6 @@ public class Global extends GlobalSettings {
      */
     @Override
     public void onStart(Application app) {
-               
-       AdderPublicKeyShare pks = new AdderPublicKeyShare(AdderInteger.ONE,AdderInteger.ONE,AdderInteger.ONE);
 
         System.out.println("Initializing the Ballot Loader");
         BallotLoader.init();

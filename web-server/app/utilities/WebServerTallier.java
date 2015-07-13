@@ -102,7 +102,6 @@ public class WebServerTallier {
             EncryptedRaceSelection<T> summedRS = results.get(id).sumRaceSelections();
 
             /* Verify the race selection proof and error off if bad */
-
             System.out.println("In WebserverTallier.tally() -- Verifying this summed race ");
             if(summedRS.verify(0, thisRace.getRaceSelections().size(), PEK)) {
                 raceSelections.add(summedRS);

@@ -24,14 +24,13 @@ POST        /admin/resolveconflicts         controllers.AuditServer.resolveconfl
 GET         /admin/publish                  controllers.AuditServer.adminpublish()
 POST        /admin/publishresults           controllers.AuditServer.publishresults()
 GET         /admin/uploadPEK                controllers.AuditServer.uploadPEK()
-GET         /admin/logout                   controllers.AuditServer.logout()
+GET         /logout                         controllers.AuditServer.logout()
 
 GET         /authoritylogin                 controllers.AuditServer.authorityverify()
 POST        /authoritylogin                 controllers.AuditServer.authenticate()
 GET         /authority                      controllers.AuditServer.authority()
 GET         /authority/keygeneration        controllers.AuditServer.keygeneration()
 POST        /authority/keygeneration        controllers.AuditServer.updateprocedure()
-GET         /authority/logout               controllers.AuditServer.logout()
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /files                          controllers.AuditServer.getBallotHtmlFile(ballotid: String ?= "none")
