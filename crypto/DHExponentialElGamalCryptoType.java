@@ -57,8 +57,6 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
         List<AdderInteger> partialDecryptions = partialDecrypt(eegCiphertext);
 
         return decryptMappedPlaintext(partialDecryptions, eegCiphertext.size, eegCiphertext.getH());
-
-
     }
 
     /**
@@ -137,7 +135,7 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
      *
      * @return              the list of partial decryptions
      */
-    private List<AdderInteger> partialDecrypt(ExponentialElGamalCiphertext ciphertext) {
+    public List<AdderInteger> partialDecrypt(ExponentialElGamalCiphertext ciphertext) {
 
         List<AdderInteger> coeffs = new ArrayList<>();
 

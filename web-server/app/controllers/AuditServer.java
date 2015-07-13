@@ -3,8 +3,10 @@ package controllers;
 import be.objectify.deadbolt.java.actions.Group;
 import be.objectify.deadbolt.java.actions.Restrict;
 import crypto.*;
+import crypto.adder.AdderInteger;
 import crypto.adder.AdderPrivateKeyShare;
 import crypto.adder.AdderPublicKey;
+import crypto.adder.Polynomial;
 import crypto.interop.AdderKeyGenerator;
 import models.*;
 import play.data.Form;
@@ -29,6 +31,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static play.data.Form.form;
 
@@ -538,6 +541,11 @@ public class AuditServer extends Controller {
             /* Now set it so that we can decrypt */
             BallotCrypto.setCryptoType(t);
 
+            /* Get these in case we want to publish them */
+            Map<String, Map<String, Map<String, AdderInteger>>> partials = calculatePartials(b);
+
+            /* Will want to publish partials to the bulletin board */
+
             try { decryptB = BallotCrypto.decrypt(b); }
             catch (Exception e) {e.printStackTrace(); }
 
@@ -548,6 +556,49 @@ public class AuditServer extends Controller {
             DecryptedResult.create(new DecryptedResult(precinctID, decryptedResults, b));
         }
 
+    }
+
+    private static Map<String, Map<String, Map<String, AdderInteger>>> calculatePartials(Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>> b) {
+
+        List<User> authList = User.find.where().eq("userRole", "authority").ne("key", null).findList();
+
+        /* This will be a map for each encrypted race selection to a map of candidates to map of partial decryptions by authority */
+        Map<String, Map<String, Map<String, AdderInteger>>> partialsMap = new TreeMap<>();
+
+        for (EncryptedRaceSelection<ExponentialElGamalCiphertext> ers : b.getRaceSelections()) {
+
+            partialsMap.put(ers.getTitle(), new TreeMap<>());
+
+            for (Map.Entry<String, ExponentialElGamalCiphertext> entry : ers.getRaceSelectionsMap().entrySet()) {
+
+                ExponentialElGamalCiphertext ctext = entry.getValue();
+
+                partialsMap.get(ers.getTitle()).put(entry.getKey(), new TreeMap<>());
+
+                List<AdderInteger> coeffs = new ArrayList<>();
+                List<AdderPrivateKeyShare> privateKeyShares = authList.stream().map(User::getKey).collect(Collectors.toList());
+
+                for (int i=0; i<privateKeyShares.size(); i++) {
+                    coeffs.add(new AdderInteger(i));
+                }
+
+                Polynomial poly = new Polynomial(PEK.getP(), PEK.getG(), PEK.getF(), coeffs);
+                List<AdderInteger> lagrangeCoeffs = poly.lagrange();
+
+                for (User authority : authList) {
+
+                    AdderPrivateKeyShare pks = authority.getKey();
+
+                    /* Partially decrypt for each share */
+                    AdderInteger partial = pks.partialDecrypt(ctext).pow(lagrangeCoeffs.get(privateKeyShares.indexOf(pks)));
+                    partialsMap.get(ers.getTitle()).get(entry.getKey()).put(authority.name, partial);
+
+                }
+
+            }
+        }
+
+        return partialsMap;
     }
 
     /**
