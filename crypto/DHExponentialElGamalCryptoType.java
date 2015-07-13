@@ -24,7 +24,7 @@ import java.util.List;
  */
 public class DHExponentialElGamalCryptoType implements ICryptoType {
 
-    private AdderPrivateKeyShare[] privateKeyShares;
+    private List<AdderPrivateKeyShare> privateKeyShares;
     private AdderPublicKey PEK;
 
     /**
@@ -141,7 +141,7 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
 
         List<AdderInteger> coeffs = new ArrayList<>();
 
-        for (int i=0; i<privateKeyShares.length; i++) {
+        for (int i=0; i<privateKeyShares.size(); i++) {
             coeffs.add(new AdderInteger(i));
         }
 
@@ -152,7 +152,7 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
         /* Partially decrypt for each share */
         for(int i=0; i<lagrangeCoeffs.size(); i++ ) {
 
-            AdderInteger partial = privateKeyShares[i].partialDecrypt(ciphertext);
+            AdderInteger partial = privateKeyShares.get(i).partialDecrypt(ciphertext);
             partials.add(partial.pow(lagrangeCoeffs.get(i)));
         }
 
@@ -220,7 +220,7 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
      * @throws FileNotFoundException
      */
     public void loadPrivateKeyShares(AdderPrivateKeyShare[] privateKey) {
-        this.privateKeyShares = privateKey;
+        this.privateKeyShares = Arrays.asList(privateKey);
     }
 
     /**
@@ -321,7 +321,7 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
 
 
         PEK = (AdderPublicKey)keys[0];
-        privateKeyShares = (AdderPrivateKeyShare[]) Arrays.copyOfRange(keys,1,privateKeySharesNum+2);
+        privateKeyShares = Arrays.asList((AdderPrivateKeyShare[]) Arrays.copyOfRange(keys,1,privateKeySharesNum+2));
     }
 
 }
