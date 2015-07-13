@@ -72,7 +72,8 @@ public class Race<T extends AHomomorphicCiphertext<T>> {
         /* ---------------- TESTING ---------------- */
 
         System.out.println("In Race.sumRaceSelections() -- Testing single race selection summed, Max expected value: " + raceSelections.size());
-        System.out.println("In Race.sumRaceSelections() -- [Single vote summed] sum verfied: " + total.verify(0, raceSelections.size(), PEK));
+        System.out.println("In Race.sumRaceSelections() -- [Single race selection summed] sum verfied: " + total.verify(0, raceSelections.size(), PEK));
+        System.out.println("In Race.sumRaceSelections() -- [Total]: " + total.getRaceSelectionsMap());
         System.out.println("-----------------");
 
         /* ------------------------------------------ */

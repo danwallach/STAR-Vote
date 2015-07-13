@@ -165,7 +165,7 @@ public class Precinct<T extends AHomomorphicCiphertext<T>> implements Serializab
 
                     /* Confirm that the vote proof is valid */
                     if (!ers.verify(0, 1, PEK)) {
-                        Bugout.err("!!!Ballot failed NIZK test!!!");
+                        Bugout.err("!!!Ballot failed NIZK test!!! " + bal.getSize() + " " + ers.getRaceSelectionsMap());
                         return null;
                     }
 
