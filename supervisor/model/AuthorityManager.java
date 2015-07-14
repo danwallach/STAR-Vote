@@ -5,43 +5,33 @@ import crypto.adder.*;
 import crypto.exceptions.KeyGenerationException;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Authority procedure adapted from Adder paper
  *
  * Created by Matthew Kindy II
  */
-public class AdderKeyManipulator {
+public class AuthorityManager {
 
-    /** A LaGrange polynomial for the Exponential-ElGamal homomorphic process. */
-    private static Polynomial _poly = null;
-
-    private final static int maxAuth = 3;
-    private static Map<String, AdderPublicKeyShare> keyShares = new TreeMap<>();
-    private static Map<String, AdderPrivateKeyShare> prkeyShares = new TreeMap<>();
-    private static Map<String, List<ExponentialElGamalCiphertext>> polyMap = new TreeMap<>();
-    private static Map<String, AdderInteger> GMap = new TreeMap<>();
+    private static SortedMap<String, AdderPublicKeyShare> keyShares = new TreeMap<>();
+    private static SortedMap<String, AdderPrivateKeyShare> prkeyShares = new TreeMap<>();
+    private static Map<String, List<ExponentialElGamalCiphertext>> polyMap = new LinkedHashMap<>();
+    private static Map<String, AdderInteger> GMap = new LinkedHashMap<>();
 
     private final static int safetyThreshold = 1;
-    private final static int decryptionThreshold =1;
+    private final static int decryptionThreshold = 1;
+    private final static int maxAuth = 3;
 
-    private static Set<String> stage1participants = new TreeSet<>();
-    private static Set<String> stage2participants = new TreeSet<>();
-    private static Set<String> stage3participants = new TreeSet<>();
+    private static SortedSet<String> stage1participants = new TreeSet<>();
+    private static Set<String> stage2participants = new LinkedHashSet<>();
+    private static Set<String> stage3participants = new LinkedHashSet<>();
 
-    private static AdderPublicKeyShare seedKey;
-    private static boolean alreadyGenerated = false;
+    private static Map<String, Integer> indexMap = new HashMap<>();
+    private static Map<AdderPrivateKeyShare, Integer> keyIndex = new HashMap<>();
 
-    /**
-     * Sets the initial rnandomness key for this procedure.
-     *
-     * @param seed      the AdderPublicKeyShare containing the initial randomness to be used in authority key generation
-     */
-    public static void setSeedKey(AdderPublicKeyShare seed){
-        if (seedKey == null)
-            seedKey = seed;
-        else System.err.println("Seed key was not set because it already has been set!");
-    }
+    /* Source of randomness */
+    private static final AdderPublicKeyShare seedKey = AdderPublicKeyShare.makePublicKeyShare(128);
 
     public static int getStage(String auth) {
         return stage3participants.contains(auth) ? 4 :
@@ -58,9 +48,7 @@ public class AdderKeyManipulator {
      * @throws KeyGenerationException
      */
     public static AdderPrivateKeyShare generateAuthorityKeySharePair(String auth) throws KeyGenerationException {
-        /* TODO? This could take a code linked to a number or something (register authorities?) */
-        /* TODO? instead of using a seedKey, perhaps would make sense to make this a singleton */
-        if (seedKey != null) {
+
             if(stage2participants.isEmpty()) {
                 if (stage1participants.size() < maxAuth){
                     if (!stage1participants.contains(auth)) {
@@ -71,6 +59,7 @@ public class AdderKeyManipulator {
 
                         /* Add this to list of stage1participants */
                         stage1participants.add(auth);
+                        indexMap.put(auth, stage1participants.size());
 
                         /* Return the PrivateKeyShare for this authority */
                         return prkeyShares.get(auth);
@@ -78,7 +67,6 @@ public class AdderKeyManipulator {
                     } else throw new KeyGenerationException("An authority (" + auth + ") attempted to generate a keyPair more than once!");
                 } else throw new KeyGenerationException("An authority (" + auth + ") with invalid authNum attempted to generate a keyPair");
             } else throw new KeyGenerationException("KeySharePair generation stage cannot operate once polynomial stage has begun.");
-        } else throw new KeyGenerationException("An authority (" + auth + ") attempted to generate a keyPair but no seed key has been loaded.");
     }
 
     /**
@@ -96,13 +84,14 @@ public class AdderKeyManipulator {
                     if (!stage2participants.contains(auth)) {
 
                         /* Create polynomial */
-                        Polynomial authPoly = new Polynomial(seedKey.getP(), seedKey.getG(), seedKey.getF(), keyShares.size() - 1);
+                        Polynomial authPoly = new Polynomial(seedKey.getP(), seedKey.getG(), seedKey.getF(), decryptionThreshold - 1);
                         List<ExponentialElGamalCiphertext> valueList = new ArrayList<>();
 
-                        for (String a : stage1participants) {
+                        for (String participant : stage1participants) {
 
-                        /* Add in P_authNum(auth) */
-                            valueList.add(keyShares.get(a).encryptPoly(authPoly.evaluate(new AdderInteger(a, seedKey.getQ()))));
+                            /* Add in P_authNum(auth) */
+                            AdderInteger aPosition = new AdderInteger(indexMap.get(participant));
+                            valueList.add(keyShares.get(participant).encryptPoly(authPoly.evaluate(new AdderInteger(aPosition, seedKey.getQ()))));
                         }
 
                         /* Put this into the encrypted polynomial values map */
@@ -123,8 +112,6 @@ public class AdderKeyManipulator {
         } else throw new InvalidPolynomialException("Polynomial stage cannot be initiated due to safety threshold.");
     }
 
-
-
     /**
      * Computes the real private key share for each authority. The original AdderPrivateKeyShare
      * was sourced from a random initial AdderPublicKeyShare.
@@ -138,7 +125,6 @@ public class AdderKeyManipulator {
 
         if (stage2participants.size() >= safetyThreshold) {
             if (stage2participants.contains(auth)) {
-                if (!alreadyGenerated) {
 
                     AdderPrivateKeyShare authKeyShare = prkeyShares.get(auth);
 
@@ -150,11 +136,11 @@ public class AdderKeyManipulator {
 
                     AdderInteger total = new AdderInteger(AdderInteger.ZERO, q);
 
-                    for (ExponentialElGamalCiphertext encryptedAuthorityPoly : polyMap.get(auth)) {
+                    for (List<ExponentialElGamalCiphertext> encryptedAuthorityPolyValues : polyMap.values()) {
 
                         /* Decrypt the polynomial manually (reverse polynomial operation) */
-                        AdderInteger eL = encryptedAuthorityPoly.getG();
-                        AdderInteger eR = encryptedAuthorityPoly.getH();
+                        AdderInteger eL = encryptedAuthorityPolyValues.get(indexMap.get(auth)-1).getG();
+                        AdderInteger eR = encryptedAuthorityPolyValues.get(indexMap.get(auth)-1).getH();
                         AdderInteger product = eL.pow(x.negate()).multiply(eR);
                         AdderInteger qPlusOneOverTwo = q.add(AdderInteger.ONE).divide(AdderInteger.TWO);
                         AdderInteger posInverse = product.pow(qPlusOneOverTwo);
@@ -174,9 +160,11 @@ public class AdderKeyManipulator {
 
                     stage3participants.add(auth);
 
-                    return new AdderPrivateKeyShare(p, g, total, f);
+                    AdderPrivateKeyShare authPrivKey = new AdderPrivateKeyShare(p, g, total, f);
+                    keyIndex.put(authPrivKey, indexMap.get(auth));
 
-                } else throw new KeyGenerationException("Public encryption key generation already occurred!");
+                    return authPrivKey;
+
             } else throw new KeyGenerationException("This authority (" + auth + ") did not complete polynomial stage!");
         } else throw new KeyGenerationException("PrivateKeyShare regeneration stage cannot be initiated due to safety threshold.");
 
@@ -194,14 +182,22 @@ public class AdderKeyManipulator {
             AdderInteger finalH = new AdderInteger(AdderInteger.ONE, seedKey.getP());
 
             for (String participant : stage2participants) {
-                finalH.multiply(GMap.get(participant));
+                finalH = finalH.multiply(GMap.get(participant));
             }
-
-            alreadyGenerated = true;
 
             return new AdderPublicKey(seedKey.getP(),seedKey.getG(),finalH,seedKey.getF());
 
         } else throw new InvalidPublicKeyException("Public key creation stage cannot be initiated due to safety threshold.");
+    }
+
+    public static List<AdderInteger> getPolynomialCoefficients(List<AdderPrivateKeyShare> pksList) {
+
+        List<AdderInteger> coeffs = new ArrayList<>();
+
+        coeffs.addAll(pksList.stream().map(pks -> new AdderInteger(keyIndex.get(pks))).collect(Collectors.toList()));
+
+        return coeffs;
+
     }
 
 }

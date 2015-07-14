@@ -4,6 +4,7 @@ import crypto.adder.*;
 import crypto.exceptions.BadKeyException;
 import crypto.exceptions.CiphertextException;
 import crypto.exceptions.KeyNotLoadedException;
+import supervisor.model.AuthorityManager;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -15,6 +16,7 @@ import java.security.InvalidKeyException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * The crypto-type associated with an Adder-type system, or more generally with
@@ -56,7 +58,7 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
         /* Partially decrypt to get g^m */
         List<AdderInteger> partialDecryptions = partialDecrypt(eegCiphertext);
 
-        return decryptMappedPlaintext(partialDecryptions, eegCiphertext.size, eegCiphertext.getH());
+        return fullDecrypt(partialDecryptions, AuthorityManager.getPolynomialCoefficients(privateKeyShares), eegCiphertext);
     }
 
     /**
@@ -64,12 +66,11 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
      * final decryption.
      *
      * @param partials  the partial decryptions of a ciphertext
-     * @param size      the size of the original ciphertext
-     * @param H         h^r * f^m
-     *
+     * @param coeffs
+     * @param ctext
      * @return          the full decryption as a byte[]
      */
-    private byte[] decryptMappedPlaintext(List<AdderInteger> partials, int size, AdderInteger H) {
+    private byte[] fullDecrypt(List<AdderInteger> partials, List<AdderInteger> coeffs, ExponentialElGamalCiphertext ctext) {
 
         /*
 
@@ -87,16 +88,21 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
 
     	*/
 
+        Polynomial poly = new Polynomial(PEK.getP(), PEK.getG(), PEK.getF(), coeffs);
+        List<AdderInteger> lagrangeCoeffs = poly.lagrange();
+
         /* Use this to multiply all the values together */
         AdderInteger total = AdderInteger.ONE;
 
-        for (AdderInteger partial : partials) {
-            total = total.multiply(partial);
+        for (int i=0; i<partials.size(); i++) {
+            AdderInteger currentAuthorityPartial = partials.get(i);
+            AdderInteger currentAuthorityPolyEval = lagrangeCoeffs.get(i);
+            total = total.multiply(currentAuthorityPartial.pow(currentAuthorityPolyEval));
         }
 
         /* This will be the mapped ciphertext */
         /* total = h^y, H = h' = h^y * f^m, so this is f^m */
-        AdderInteger mappedPlaintext = H.divide(total);
+        AdderInteger mappedPlaintext = ctext.getH().divide(total);
 
         AdderInteger f = PEK.getF();
         AdderInteger p = PEK.getP();
@@ -108,15 +114,14 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
         AdderInteger j = new AdderInteger(0, q);
 
         /* Iterate over the number of votes to try to guess n */
-        for (int k = 0; k <= size; k++) {
+        for (int k = 0; k <= ctext.size; k++) {
 
             /* Create a guess */
             j = new AdderInteger(k, q);
 
-            System.out.println("DOES " + new AdderInteger(f,p).pow(j) + " equal " + mappedPlaintext + "?");
-
             /* Check the guess and get out when found */
             if (f.pow(j).equals(mappedPlaintext)) {
+                System.err.println("We think the value of this ciphertext is " + j);
                 gotResult = true;
                 break;
             }
@@ -137,24 +142,7 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
      */
     public List<AdderInteger> partialDecrypt(ExponentialElGamalCiphertext ciphertext) {
 
-        List<AdderInteger> coeffs = new ArrayList<>();
-
-        for (int i=0; i<privateKeyShares.size(); i++) {
-            coeffs.add(new AdderInteger(i));
-        }
-
-        List<AdderInteger> partials = new ArrayList<>();
-        Polynomial poly = new Polynomial(PEK.getP(), PEK.getG(), PEK.getF(), coeffs);
-        List<AdderInteger> lagrangeCoeffs = poly.lagrange();
-
-        /* Partially decrypt for each share */
-        for(int i=0; i<lagrangeCoeffs.size(); i++ ) {
-
-            AdderInteger partial = privateKeyShares.get(i).partialDecrypt(ciphertext);
-            partials.add(partial.pow(lagrangeCoeffs.get(i)));
-        }
-
-        return partials;
+        return privateKeyShares.stream().map(pks -> pks.partialDecrypt(ciphertext)).collect(Collectors.toList());
     }
 
     /**
