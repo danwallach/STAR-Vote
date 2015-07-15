@@ -36,7 +36,7 @@ public class EncryptedRaceSelection<T extends AHomomorphicCiphertext<T>> extends
         /* This will hold the map of identity ciphertexts to put into the identity vote */
         Map<String, T> identityMap = new HashMap<>();
 
-        /* Fill in all the entries with identities of type S */
+        /* Fill in all the entries with identities of type T */
         for(Map.Entry<String, T> entry : v.selectionsMap.entrySet())
             identityMap.put(entry.getKey(), (T)CiphertextFactory.identity(entry.getValue().getClass(), PEK));
 
@@ -65,11 +65,11 @@ public class EncryptedRaceSelection<T extends AHomomorphicCiphertext<T>> extends
 
         /* Add all the candidates from both selection maps */
         resultMap.putAll(other.selectionsMap);
-        resultMap.putAll(selectionsMap);
+        resultMap.putAll(this.selectionsMap);
 
         /* If the selections maps contain the same candidates, add their ciphertexts together */
-        for(String candidate : other.getRaceSelectionsMap().keySet()) {
-            if(selectionsMap.containsKey(candidate)) {
+        for(String candidate : other.selectionsMap.keySet()) {
+            if(this.selectionsMap.containsKey(candidate)) {
 
                 T thisCiphertext = this.selectionsMap.get(candidate);
                 T otherCiphertext = other.selectionsMap.get(candidate);

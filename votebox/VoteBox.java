@@ -26,10 +26,7 @@ import auditorium.AuditoriumCryptoException;
 import auditorium.Bugout;
 import auditorium.Event;
 import auditorium.NetworkException;
-import crypto.BallotCrypto;
-import crypto.DHExponentialElGamalCryptoType;
-import crypto.EncryptedRaceSelection;
-import crypto.PlaintextRaceSelection;
+import crypto.*;
 import crypto.adder.AdderInteger;
 import preptool.model.language.Language;
 import preptool.model.layout.manager.RenderingUtils;
@@ -265,7 +262,7 @@ public class VoteBox{
                 Ballot<PlaintextRaceSelection> ballot = new Ballot<>(bid, ballotForm, nonce.toString());
 
                 /* Encrypt Ballot */
-                Ballot<EncryptedRaceSelection> encBallot;
+                Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>> encBallot;
 
                 try { encBallot = BallotCrypto.encrypt(ballot); }
                 catch (Exception e) { e.printStackTrace(); throw new RuntimeException("Could not encrypt the ballot because of " + e.getClass()); }
@@ -391,7 +388,7 @@ public class VoteBox{
                     Ballot<PlaintextRaceSelection> ballot = new Ballot<>(bid, ballotForm, nonce.toString());
 
                     /* Encrypt Ballot */
-                    Ballot<EncryptedRaceSelection> encBallot;
+                    Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>> encBallot;
 
                     try { encBallot = BallotCrypto.encrypt(ballot); }
                     catch (Exception e) { e.printStackTrace(); throw new RuntimeException("Could not encrypt the ballot because of "+ e.getClass()); }

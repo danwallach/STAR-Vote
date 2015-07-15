@@ -205,15 +205,15 @@ public class Precinct<T extends AHomomorphicCiphertext<T>> implements Serializab
             Race thisRace = results.get(id);
 
             /* Get the homomorphically tallied vote for this race */
-            EncryptedRaceSelection<T> vote = results.get(id).sumRaceSelections();
+            EncryptedRaceSelection<T> vote = thisRace.sumRaceSelections();
 
 
             /* Verify the voteProof and error off if bad */
-            if(vote.verify(0, thisRace.getRaceSelections().size(), PEK)) {
+            //if(vote.verify(0, thisRace.getRaceSelections().size(), PEK)) {
                 votes.add(vote);
                 voteASE.add(ASEConverter.convertToASE(vote));
-            }
-            else System.err.println("There was a bad summed vote that was not added to the ballot!");
+            //}
+            //else System.err.println("There was a bad summed vote that was not added to the ballot!");
 
         }
 

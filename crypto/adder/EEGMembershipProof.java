@@ -134,8 +134,34 @@ public class EEGMembershipProof implements IProof<ExponentialElGamalCiphertext> 
         sList = new ArrayList<>();
         cList = new ArrayList<>();
 
-        computeOperationProof(ctext1, r1, domain1, ctext2, r2, domain2, newDomain, pubKey);
 
+        ExponentialElGamalCiphertext c1 = new ExponentialElGamalCiphertext( new AdderInteger(ctext1.getG()), new AdderInteger(ctext1.getH()),
+                                                                            new AdderInteger(r1), new AdderInteger(pubKey.getP()),
+                                                                            new EEGMembershipProof(ctext1.getProof()), ctext1.getSize());
+
+        ExponentialElGamalCiphertext c2 = new ExponentialElGamalCiphertext( new AdderInteger(ctext2.getG()), new AdderInteger(ctext2.getH()),
+                                                                            new AdderInteger(r2), new AdderInteger(pubKey.getP()),
+                                                                            new EEGMembershipProof(ctext2.getProof()), ctext2.getSize());
+
+        computeOperationProof(c1, new AdderInteger(r1), domain1, c2, new AdderInteger(r2), domain2, newDomain, pubKey);
+
+    }
+
+    public EEGMembershipProof(EEGMembershipProof proof) {
+        yList = new ArrayList<>();
+        yList.addAll(proof.yList);
+
+        zList = new ArrayList<>();
+        zList.addAll(proof.zList);
+
+        sList = new ArrayList<>();
+        sList.addAll(proof.sList);
+
+        cList = new ArrayList<>();
+        cList.addAll(proof.cList);
+
+        p = new AdderInteger(proof.p);
+        q = new AdderInteger(proof.q);
     }
 
     private void computeOperationProof(ExponentialElGamalCiphertext ctext1, AdderInteger r1, List<AdderInteger> domain1,

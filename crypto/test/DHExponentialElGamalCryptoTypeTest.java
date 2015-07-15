@@ -1,12 +1,14 @@
 package crypto.test;
 
 import crypto.DHExponentialElGamalCryptoType;
+import crypto.ExponentialElGamalCiphertext;
 import crypto.adder.AdderPrivateKeyShare;
+import crypto.adder.AdderPublicKey;
 import junit.framework.TestCase;
 import supervisor.model.AuthorityManager;
 
 import java.nio.ByteBuffer;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -21,56 +23,83 @@ public class DHExponentialElGamalCryptoTypeTest extends TestCase {
         cryptoType = new DHExponentialElGamalCryptoType();
     }
 
-    public void testEncryptDecryptSingle() {
+    public void testEncryptDecryptSingle() throws InterruptedException {
 
+        System.out.println("Testing encryption using a decryption threshold of 1, safety threshold of 1...");
         cryptoType = new DHExponentialElGamalCryptoType();
-
+        AuthorityManager.newSession(1,1,2);
         setUpSingleKeys();
-
-        byte[] ZERO = ByteBuffer.allocate(4).putInt(0).array();
-        byte[] ONE = ByteBuffer.allocate(4).putInt(1).array();
-
-        try {
-            assertEquals(ByteBuffer.wrap(cryptoType.decrypt(cryptoType.encrypt(ZERO))).getInt(), 0);
-            assertEquals(ByteBuffer.wrap(cryptoType.decrypt(cryptoType.encrypt(ONE))).getInt(), 1);
-        }
-        catch (Exception e) { e.printStackTrace(); fail(); }
-
+        checkEncryptDecrypt();
+        Thread.sleep(1000);
     }
 
-    public void testEncryptDecryptMultiple() {
+    public void testEncryptDecryptMultiple() throws InterruptedException {
 
+        System.out.println("Testing encryption using a decryption threshold of 1, safety threshold of 2...");
         cryptoType = new DHExponentialElGamalCryptoType();
+        AuthorityManager.newSession(2,1,3);
+        setUpMultipleKeys(2, 1);
+        checkEncryptDecrypt();
+        Thread.sleep(1000);
 
-        setUpMultipleKeys();
+        System.out.println("Testing encryption using a decryption threshold of 2, safety threshold of 3...");
+        AuthorityManager.newSession(3, 2, 4);
+        setUpMultipleKeys(3, 2);
+        checkEncryptDecrypt();
+        Thread.sleep(1000);
 
-        byte[] ZERO = ByteBuffer.allocate(4).putInt(0).array();
-        byte[] ONE = ByteBuffer.allocate(4).putInt(1).array();
-
-        try {
-            assertEquals(ByteBuffer.wrap(cryptoType.decrypt(cryptoType.encrypt(ZERO))).getInt(), 0);
-            assertEquals(ByteBuffer.wrap(cryptoType.decrypt(cryptoType.encrypt(ONE))).getInt(), 1);
-        }
-        catch (Exception e) { e.printStackTrace(); fail(); }
+        System.out.println("Testing encryption using a decryption threshold of 3, safety threshold of 3...");
+        AuthorityManager.newSession(3, 3, 4);
+        setUpMultipleKeys(3, 3);
+        checkEncryptDecrypt();
+        Thread.sleep(1000);
 
     }
 
-    private void setUpMultipleKeys() {
+    private void checkEncryptDecrypt() {
+
+        byte[] ZERO = ByteBuffer.allocate(4).putInt(0).array();
+        byte[] ONE = ByteBuffer.allocate(4).putInt(1).array();
+        AdderPublicKey PEK = AuthorityManager.generatePublicEncryptionKey();
+
+
+        try {
+            ExponentialElGamalCiphertext ZEROct = cryptoType.encrypt(ZERO);
+            ExponentialElGamalCiphertext ONEct = cryptoType.encrypt(ONE);
+
+            ExponentialElGamalCiphertext TWOct = ONEct.operateIndependent(ONEct, PEK);
+            TWOct = TWOct.operateIndependent(ZEROct, PEK);
+            ExponentialElGamalCiphertext THREEct = TWOct.operateIndependent(ONEct, PEK);
+
+            assertEquals(ByteBuffer.wrap(cryptoType.decrypt(ZEROct)).getInt(), 0);
+            assertEquals(ByteBuffer.wrap(cryptoType.decrypt(ONEct)).getInt(), 1);
+            assertEquals(ByteBuffer.wrap(cryptoType.decrypt(TWOct)).getInt(), 2);
+            assertEquals(ByteBuffer.wrap(cryptoType.decrypt(THREEct)).getInt(), 3);
+        }
+        catch (Exception e) { e.printStackTrace(); fail(); }
+    }
+
+    private void setUpMultipleKeys(int numGenerate, int numDecrypt) {
 
          /* Load the seed key */
         try {
 
-            AuthorityManager.generateAuthorityKeySharePair("1");
-            AuthorityManager.generateAuthorityKeySharePair("2");
+            for (int i=0; i<numGenerate; i++) {
+                AuthorityManager.generateAuthorityKeySharePair(Integer.toString(i + 1));
+            }
 
-            AuthorityManager.generateAuthorityPolynomialValues("1");
-            AuthorityManager.generateAuthorityPolynomialValues("2");
+            for (int i=0; i<numGenerate; i++) {
+                AuthorityManager.generateAuthorityPolynomialValues(Integer.toString(i + 1));
+            }
 
-            List<AdderPrivateKeyShare> keyList = Arrays.asList(AuthorityManager.generateRealPrivateKeyShare("1")//,
-                                                          /*AuthorityManager.generateRealPrivateKeyShare("2")*/);
+            List<AdderPrivateKeyShare> pksList = new ArrayList<>();
 
-            cryptoType.loadPrivateKeyShares(keyList.toArray(new AdderPrivateKeyShare[keyList.size()]));
+            for (int i=0; i<numGenerate; i++) {
+                AdderPrivateKeyShare generated = AuthorityManager.generateRealPrivateKeyShare(Integer.toString(i+1));
+                if (i<=numDecrypt) pksList.add(generated);
+            }
 
+            cryptoType.loadPrivateKeyShares(pksList.toArray(new AdderPrivateKeyShare[pksList.size()]));
             cryptoType.loadPublicKey(AuthorityManager.generatePublicEncryptionKey());
         }
         catch (Exception e) { e.printStackTrace(); }

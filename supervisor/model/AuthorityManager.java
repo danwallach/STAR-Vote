@@ -19,9 +19,9 @@ public class AuthorityManager {
     private static Map<String, List<ExponentialElGamalCiphertext>> polyMap = new LinkedHashMap<>();
     private static Map<String, AdderInteger> GMap = new LinkedHashMap<>();
 
-    private final static int safetyThreshold = 1;
-    private final static int decryptionThreshold = 1;
-    private final static int maxAuth = 3;
+    private static int safetyThreshold = 1;
+    private static int decryptionThreshold = 1;
+    private static int maxAuth = 3;
 
     private static SortedSet<String> stage1participants = new TreeSet<>();
     private static Set<String> stage2participants = new LinkedHashSet<>();
@@ -31,7 +31,7 @@ public class AuthorityManager {
     private static Map<AdderPrivateKeyShare, Integer> keyIndex = new HashMap<>();
 
     /* Source of randomness */
-    private static final AdderPublicKeyShare seedKey = AdderPublicKeyShare.makePublicKeyShare(128);
+    private static AdderPublicKeyShare seedKey = AdderPublicKeyShare.makePublicKeyShare(128);
 
     public static int getStage(String auth) {
         return stage3participants.contains(auth) ? 4 :
@@ -198,6 +198,31 @@ public class AuthorityManager {
 
         return coeffs;
 
+    }
+
+    public static void newSession(int safetyThreshold, int decryptionThreshold, int maxAuth) {
+
+        if (safetyThreshold >= decryptionThreshold && decryptionThreshold > 0 && maxAuth >= safetyThreshold) {
+
+            AuthorityManager.safetyThreshold = safetyThreshold;
+            AuthorityManager.decryptionThreshold = decryptionThreshold;
+            AuthorityManager.maxAuth = maxAuth;
+
+            keyShares = new TreeMap<>();
+            prkeyShares = new TreeMap<>();
+            polyMap = new LinkedHashMap<>();
+            GMap = new LinkedHashMap<>();
+
+            stage1participants = new TreeSet<>();
+            stage2participants = new LinkedHashSet<>();
+            stage3participants = new LinkedHashSet<>();
+
+            indexMap = new HashMap<>();
+            keyIndex = new HashMap<>();
+
+            seedKey = AdderPublicKeyShare.makePublicKeyShare(128);
+
+        } else throw new RuntimeException("Tried to start a new session with bad inputs!");
     }
 
 }

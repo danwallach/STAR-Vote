@@ -29,9 +29,6 @@ public class BallotCrypto {
      */
     public static void setCryptoType(ICryptoType cryptoType){
 
-        if(raceSelectionCrypter != null)
-            System.err.println("[WARNING]: CryptoType change in BallotCrypto unadvised!");
-
         raceSelectionCrypter = new RaceSelectionCrypto(cryptoType);
     }
 
@@ -61,10 +58,10 @@ public class BallotCrypto {
      * @param ballot    a Ballot containing PlaintextVotes
      * @return          a Ballot containing EncryptedVotes which are the encrypted PlaintextVotes
      */
-    public static Ballot<EncryptedRaceSelection> encrypt(Ballot<PlaintextRaceSelection> ballot)
+    public static <T extends AHomomorphicCiphertext<T>> Ballot<EncryptedRaceSelection<T>> encrypt(Ballot<PlaintextRaceSelection> ballot)
             throws UninitialisedException, KeyNotLoadedException, InvalidKeyException, CipherException, CiphertextException {
 
-        List<EncryptedRaceSelection> raceSelections = new ArrayList<>();
+        List<EncryptedRaceSelection<T>> raceSelections = new ArrayList<>();
 
         for(PlaintextRaceSelection pv : ballot.getRaceSelections()) {
             raceSelections.add(raceSelectionCrypter.encrypt(pv));

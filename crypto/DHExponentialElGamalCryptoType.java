@@ -43,7 +43,7 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
      * @throws CipherException
      * @throws CiphertextException
      */
-    public <T extends AHomomorphicCiphertext> byte[] decrypt(T ciphertext) throws InvalidKeyException, KeyNotLoadedException, CipherException, CiphertextException {
+    public <T extends AHomomorphicCiphertext<T>> byte[] decrypt(T ciphertext) throws InvalidKeyException, KeyNotLoadedException, CipherException, CiphertextException {
 
         /* Check if this is the right type of AHomomorphicCiphertext */
         if(!(ciphertext instanceof ExponentialElGamalCiphertext))
@@ -121,7 +121,6 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
 
             /* Check the guess and get out when found */
             if (f.pow(j).equals(mappedPlaintext)) {
-                System.err.println("We think the value of this ciphertext is " + j);
                 gotResult = true;
                 break;
             }

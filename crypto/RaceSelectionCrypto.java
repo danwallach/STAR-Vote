@@ -72,7 +72,7 @@ public class RaceSelectionCrypto {
      * @throws CipherException
      * @throws CiphertextException
      */
-    public <T extends AHomomorphicCiphertext<T>> EncryptedRaceSelection encrypt(PlaintextRaceSelection raceSelection) throws UninitialisedException, KeyNotLoadedException, InvalidKeyException, CipherException, CiphertextException {
+    public <T extends AHomomorphicCiphertext<T>> EncryptedRaceSelection<T> encrypt(PlaintextRaceSelection raceSelection) throws UninitialisedException, KeyNotLoadedException, InvalidKeyException, CipherException, CiphertextException {
 
         /* Get the map from the PlaintextVote */
         Map<String, Integer> raceSelectionsMap = raceSelection.getRaceSelectionsMap();
