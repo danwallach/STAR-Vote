@@ -14,7 +14,7 @@ import java.io.FileOutputStream;
  * @author Montrose
  *
  */
-public class AdderKeyGenerator {
+public class AdderSeedKeyGenerator {
 
 	/**
 	 * @param args   args.length should == 1 and args[0] should be a path to the destination directory
@@ -22,7 +22,7 @@ public class AdderKeyGenerator {
 
 	public static void main(String[] args) throws Exception{
 		if(args.length != 1){
-			System.out.println("Usage: java "+AdderKeyGenerator.class.getName()+" [destination directory]");
+			System.out.println("Usage: java "+AdderSeedKeyGenerator.class.getName()+" [destination directory]");
 			System.exit(-1);
 		}
 
@@ -39,7 +39,7 @@ public class AdderKeyGenerator {
         else{
 
 			if(!destDir.isDirectory()){
-				System.out.println("Usage: java "+AdderKeyGenerator.class.getName()+" [destination directory]");
+				System.out.println("Usage: java "+AdderSeedKeyGenerator.class.getName()+" [destination directory]");
 				System.exit(-1);
 			}
 		}

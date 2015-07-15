@@ -97,8 +97,9 @@ public class WebServerTallier {
             EncryptedRaceSelection<T> summedRS = thisRace.sumRaceSelections();
 
             System.out.println("SummedRS: " + summedRS.getRaceSelectionsMap());
+
             /* Verify the race selection proof and error off if bad */
-            if(summedRS.verify(0, thisRace.getRaceSelections().size(), PEK)) {
+            if(summedRS.verify(0, summedRS.getSize(), PEK)) {
                 raceSelections.add(summedRS);
                 raceSelectionsASE.add(ASEConverter.convertToASE(summedRS));
             }

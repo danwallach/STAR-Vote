@@ -79,9 +79,7 @@ public class EncryptedRaceSelection<T extends AHomomorphicCiphertext<T>> extends
 
         }
 
-        EncryptedRaceSelection ers = new EncryptedRaceSelection<>(resultMap, getTitle(), this.size+other.size);
-
-        return ers;
+        return new EncryptedRaceSelection<>(resultMap, getTitle(), this.size+other.size);
     }
 
     /**
@@ -143,13 +141,14 @@ public class EncryptedRaceSelection<T extends AHomomorphicCiphertext<T>> extends
 
         for (Map.Entry<String, T> entry : selectionsMap.entrySet()) {
             if (!entry.getValue().verify(min, max, PEK)) {
-                System.out.println("Failed on individual ciphertext");
                 return false;
             }
         }
 
-        System.out.println("Got to sum check");
         return verifySum(selectionsMap, max, PEK);
     }
 
+    public int getSize() {
+        return size;
+    }
 }

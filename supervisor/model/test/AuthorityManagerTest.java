@@ -40,9 +40,5 @@ public class AuthorityManagerTest extends TestCase {
 
         System.out.println("Public Encryption Key: " + PEK);
 
-
-
-
-
     }
 }

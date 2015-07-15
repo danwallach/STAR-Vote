@@ -61,15 +61,15 @@ public class RaceSelectionTest extends TestCase {
 
                 EncryptedRaceSelection<ExponentialElGamalCiphertext> ers3 = ers.operate(ers2,PEK);
                 assertTrue(ers3.verify(0, 2, PEK));
-                assertTrue(ers.verify(0,1, PEK));
+                assertTrue(ers.verify(0, 1, PEK));
 
                 EncryptedRaceSelection<ExponentialElGamalCiphertext> ers4 = ers.operate(ers3, PEK);
                 assertTrue(ers4.verify(0, 3, PEK));
-                assertTrue(ers3.verify(0,2, PEK));
+                assertTrue(ers3.verify(0, 2, PEK));
 
                 EncryptedRaceSelection<ExponentialElGamalCiphertext> ers5 = ers4.operate(ers3, PEK);
                 assertTrue(ers5.verify(0, 5, PEK));
-                assertFalse(ers5.verify(1,6, PEK));
+                assertFalse(ers5.verify(1, 6, PEK));
                 assertFalse(ers5.verify(0, 4, PEK));
 
             } catch (Exception e) { e.printStackTrace(); }

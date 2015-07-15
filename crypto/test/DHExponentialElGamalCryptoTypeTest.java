@@ -26,7 +26,6 @@ public class DHExponentialElGamalCryptoTypeTest extends TestCase {
     public void testEncryptDecryptSingle() throws InterruptedException {
 
         System.out.println("Testing encryption using a decryption threshold of 1, safety threshold of 1...");
-        cryptoType = new DHExponentialElGamalCryptoType();
         AuthorityManager.newSession(1,1,2);
         setUpSingleKeys();
         checkEncryptDecrypt();
@@ -36,7 +35,6 @@ public class DHExponentialElGamalCryptoTypeTest extends TestCase {
     public void testEncryptDecryptMultiple() throws InterruptedException {
 
         System.out.println("Testing encryption using a decryption threshold of 1, safety threshold of 2...");
-        cryptoType = new DHExponentialElGamalCryptoType();
         AuthorityManager.newSession(2,1,3);
         setUpMultipleKeys(2, 1);
         checkEncryptDecrypt();
@@ -60,14 +58,17 @@ public class DHExponentialElGamalCryptoTypeTest extends TestCase {
 
         byte[] ZERO = ByteBuffer.allocate(4).putInt(0).array();
         byte[] ONE = ByteBuffer.allocate(4).putInt(1).array();
-        AdderPublicKey PEK = AuthorityManager.generatePublicEncryptionKey();
 
 
         try {
+
+            AdderPublicKey PEK = AuthorityManager.generatePublicEncryptionKey();
+
             ExponentialElGamalCiphertext ZEROct = cryptoType.encrypt(ZERO);
             ExponentialElGamalCiphertext ONEct = cryptoType.encrypt(ONE);
 
             ExponentialElGamalCiphertext TWOct = ONEct.operateIndependent(ONEct, PEK);
+            assertTrue(TWOct.verify(0, 2, PEK));
             TWOct = TWOct.operateIndependent(ZEROct, PEK);
             ExponentialElGamalCiphertext THREEct = TWOct.operateIndependent(ONEct, PEK);
 
@@ -75,6 +76,10 @@ public class DHExponentialElGamalCryptoTypeTest extends TestCase {
             assertEquals(ByteBuffer.wrap(cryptoType.decrypt(ONEct)).getInt(), 1);
             assertEquals(ByteBuffer.wrap(cryptoType.decrypt(TWOct)).getInt(), 2);
             assertEquals(ByteBuffer.wrap(cryptoType.decrypt(THREEct)).getInt(), 3);
+            assertTrue(ZEROct.verify(0,1,PEK));
+            assertTrue(ONEct.verify(0,1,PEK));
+            assertTrue(TWOct.verify(0,3,PEK));
+            assertTrue(THREEct.verify(0,4, PEK));
         }
         catch (Exception e) { e.printStackTrace(); fail(); }
     }

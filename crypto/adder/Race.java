@@ -68,7 +68,6 @@ public class Race<T extends AHomomorphicCiphertext<T>> {
 
         /* Multiply all the raceSelections together and recompute proof */
         for (EncryptedRaceSelection<T> rs : raceSelections) {
-            System.out.println("Total: " + total.verify(0, total.getRaceSelectionsMap().size(), PEK) + "\nIndividual: " + rs.verify(0, rs.getRaceSelectionsMap().size(), PEK));
             total = rs.operate(total, PEK);
         }
 

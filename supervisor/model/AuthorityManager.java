@@ -175,7 +175,7 @@ public class AuthorityManager {
      *
      * @return  the AdderPublicKey to be used in all phases of an election
      */
-    public static AdderPublicKey generatePublicEncryptionKey(){
+    public static AdderPublicKey generatePublicEncryptionKey() throws KeyGenerationException {
 
         if (stage3participants.size() >= safetyThreshold) {
 
@@ -187,7 +187,7 @@ public class AuthorityManager {
 
             return new AdderPublicKey(seedKey.getP(),seedKey.getG(),finalH,seedKey.getF());
 
-        } else throw new InvalidPublicKeyException("Public key creation stage cannot be initiated due to safety threshold.");
+        } else throw new KeyGenerationException("Public key creation stage cannot be initiated due to safety threshold.");
     }
 
     public static List<AdderInteger> getPolynomialCoefficients(List<AdderPrivateKeyShare> pksList) {
@@ -208,17 +208,17 @@ public class AuthorityManager {
             AuthorityManager.decryptionThreshold = decryptionThreshold;
             AuthorityManager.maxAuth = maxAuth;
 
-            keyShares = new TreeMap<>();
-            prkeyShares = new TreeMap<>();
-            polyMap = new LinkedHashMap<>();
-            GMap = new LinkedHashMap<>();
+            keyShares.clear();
+            prkeyShares.clear();
+            polyMap.clear();
+            GMap.clear();
 
-            stage1participants = new TreeSet<>();
-            stage2participants = new LinkedHashSet<>();
-            stage3participants = new LinkedHashSet<>();
+            stage1participants.clear();
+            stage2participants.clear();
+            stage3participants.clear();
 
-            indexMap = new HashMap<>();
-            keyIndex = new HashMap<>();
+            indexMap.clear();
+            keyIndex.clear();
 
             seedKey = AdderPublicKeyShare.makePublicKeyShare(128);
 
