@@ -59,6 +59,7 @@ public class Race<T extends AHomomorphicCiphertext<T>> {
      */
     public EncryptedRaceSelection<T> sumRaceSelections() {
 
+        System.err.println("Summing race selection! ");
         /* Pull out the first vote */
         EncryptedRaceSelection<T> v = raceSelections.get(0);
 
@@ -67,8 +68,8 @@ public class Race<T extends AHomomorphicCiphertext<T>> {
 
         /* Multiply all the raceSelections together and recompute proof */
         for (EncryptedRaceSelection<T> rs : raceSelections) {
+            System.out.println("Total: " + total.verify(0, total.getRaceSelectionsMap().size(), PEK) + "\nIndividual: " + rs.verify(0, rs.getRaceSelectionsMap().size(), PEK));
             total = rs.operate(total, PEK);
-            System.out.println(total.verify(0,total.getRaceSelectionsMap().size(),PEK));
         }
 
         return total;

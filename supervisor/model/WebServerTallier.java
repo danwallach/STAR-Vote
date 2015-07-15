@@ -96,6 +96,7 @@ public class WebServerTallier {
             /* Get the homomorphically tallied race selection for this race */
             EncryptedRaceSelection<T> summedRS = thisRace.sumRaceSelections();
 
+            System.out.println("SummedRS: " + summedRS.getRaceSelectionsMap());
             /* Verify the race selection proof and error off if bad */
             if(summedRS.verify(0, thisRace.getRaceSelections().size(), PEK)) {
                 raceSelections.add(summedRS);

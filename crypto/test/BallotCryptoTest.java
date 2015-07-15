@@ -58,8 +58,6 @@ public class BallotCryptoTest extends TestCase {
                                                                                                           PEK);
             Ballot<PlaintextRaceSelection> decrypted = BallotCrypto.decrypt(tallied);
 
-            System.out.println(decrypted.getRaceSelections());
-
             for (int i=0; i<decrypted.getRaceSelections().size(); i++) {
                 for (Map.Entry<String, Integer> entry : decrypted.getRaceSelections().get(i).getRaceSelectionsMap().entrySet()) {
                     assertEquals((int) entry.getValue(), 2 * ballot.getRaceSelections().get(i).getRaceSelectionsMap().get(entry.getKey()));
