@@ -59,7 +59,6 @@ public class Race<T extends AHomomorphicCiphertext<T>> {
      */
     public EncryptedRaceSelection<T> sumRaceSelections() {
 
-        System.err.println("Summing race selection! ");
         /* Pull out the first vote */
         EncryptedRaceSelection<T> v = raceSelections.get(0);
 

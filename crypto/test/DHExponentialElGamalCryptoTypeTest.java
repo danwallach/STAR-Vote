@@ -59,15 +59,15 @@ public class DHExponentialElGamalCryptoTypeTest extends TestCase {
         byte[] ZERO = ByteBuffer.allocate(4).putInt(0).array();
         byte[] ONE = ByteBuffer.allocate(4).putInt(1).array();
 
-
         try {
 
             AdderPublicKey PEK = AuthorityManager.generatePublicEncryptionKey();
 
             ExponentialElGamalCiphertext ZEROct = cryptoType.encrypt(ZERO);
             ExponentialElGamalCiphertext ONEct = cryptoType.encrypt(ONE);
+            ExponentialElGamalCiphertext ONEct2 = cryptoType.encrypt(ONE);
 
-            ExponentialElGamalCiphertext TWOct = ONEct.operateIndependent(ONEct, PEK);
+            ExponentialElGamalCiphertext TWOct = ONEct.operateIndependent(ONEct2, PEK);
             assertTrue(TWOct.verify(0, 2, PEK));
             TWOct = TWOct.operateIndependent(ZEROct, PEK);
             ExponentialElGamalCiphertext THREEct = TWOct.operateIndependent(ONEct, PEK);

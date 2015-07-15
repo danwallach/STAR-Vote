@@ -179,13 +179,13 @@ public class AuthorityManager {
 
         if (stage3participants.size() >= safetyThreshold) {
 
-            AdderInteger finalH = new AdderInteger(AdderInteger.ONE, seedKey.getP());
+            AdderInteger finalH = new AdderInteger(AdderInteger.ONE, new AdderInteger(seedKey.getP()));
 
             for (String participant : stage2participants) {
                 finalH = finalH.multiply(GMap.get(participant));
             }
 
-            return new AdderPublicKey(seedKey.getP(),seedKey.getG(),finalH,seedKey.getF());
+            return new AdderPublicKey(new AdderInteger(seedKey.getP()), new AdderInteger(seedKey.getG()), finalH, new AdderInteger(seedKey.getF()));
 
         } else throw new KeyGenerationException("Public key creation stage cannot be initiated due to safety threshold.");
     }

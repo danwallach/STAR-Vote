@@ -3,13 +3,7 @@ package crypto.test;
 import crypto.*;
 import crypto.adder.AdderPublicKey;
 import junit.framework.TestCase;
-import sexpression.ASEConverter;
-import sexpression.ASExpression;
-import sexpression.ListExpression;
-
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import supervisor.model.AuthorityManager;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,17 +16,12 @@ public class RaceSelectionTest extends TestCase {
         AdderPublicKey PEK;
 
         protected void setUp() throws Exception {
-            File PEKFile = new File(System.getProperty("user.dir"), "PEK.adder.key");
-            Path PEKPath = PEKFile.toPath();
-            System.out.println(PEKPath.toAbsolutePath());
 
-
-            try {
-                byte[] verbatimPEK = Files.readAllBytes(PEKPath);
-                ASExpression PEKASE = ASExpression.makeVerbatim(verbatimPEK);
-                PEK = ASEConverter.convertFromASE((ListExpression) PEKASE);
-            }
-            catch (Exception e) { e.printStackTrace(); throw new RuntimeException("Couldn't use the key file");}
+            AuthorityManager.newSession(1, 1, 2);
+            AuthorityManager.generateAuthorityKeySharePair("1");
+            AuthorityManager.generateAuthorityPolynomialValues("1");
+            AuthorityManager.generateRealPrivateKeyShare("1");
+            PEK = AuthorityManager.generatePublicEncryptionKey();
 
             DHExponentialElGamalCryptoType cryptoType = new DHExponentialElGamalCryptoType();
             cryptoType.loadPublicKey(PEK);

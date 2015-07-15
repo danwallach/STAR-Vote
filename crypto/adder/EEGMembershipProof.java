@@ -177,13 +177,9 @@ public class EEGMembershipProof implements IProof<ExponentialElGamalCiphertext> 
         AdderInteger h = pubKey.getH();
         AdderInteger f = pubKey.getF();
 
-        System.out.println("publickeycompute: " + p +"," + q +"," + g +"," + h +"," +f +",");
-
         /* bigG (g^r), bigH (g^(rx) * f^m), and r */
         AdderInteger bigG = ctext1.getG().multiply(ctext2.getG());
         AdderInteger bigH = ctext1.getH().multiply(ctext2.getH());
-
-        System.out.println("bigGcalc: " + bigG + " , bigH: " + bigH);
 
         int indexInDomain =0;
 
@@ -204,7 +200,6 @@ public class EEGMembershipProof implements IProof<ExponentialElGamalCiphertext> 
         /* Iterate over the domain */
         for (int i = 0; i < newDomain.size(); i++) {
 
-            System.out.println("i="+i);
             AdderInteger y;
             AdderInteger z;
             AdderInteger d = newDomain.get(i);
@@ -220,9 +215,6 @@ public class EEGMembershipProof implements IProof<ExponentialElGamalCiphertext> 
 
             /* c' = c1 + c2 */
             cList.add(c1.add(c2));
-            System.out.println("\tsCALC: " + s1.add(s2));
-            System.out.println("\tcCALC: " + c1.add(c2));
-
 
             /* This will be needed for computing z_i */
             AdderInteger negC1 = c1.negate();
@@ -242,8 +234,8 @@ public class EEGMembershipProof implements IProof<ExponentialElGamalCiphertext> 
             AdderInteger z1 = h.pow(s1).multiply(ctext1.getH().divide(fpow).pow(negC1));
             AdderInteger z2 = h.pow(s2).multiply(ctext2.getH().divide(fpow).pow(negC2));
 
-            /* Now this is z1*z2 / [f^(m2*c1+m1*c2)] = z1*z2 * [h^(r2*c1+r1*c2)] / [ bigH2^c1 * bigH1^c2 ] = z(y', s',c') = z' */
-            z = z1.multiply(z2).multiply(h.pow(r2.multiply(c1).add(r1.multiply(c2)))).divide(ctext2.getH().pow(c1).multiply(ctext1.getH().pow(c2)));
+            /* Now this is z1*z2 / [f^(m2*c1+m1*c2)] = z1*z2 / [ bigH2^c1 * bigH1^c2 ] = z(y', s',c') = z' */
+            z = z1.multiply(z2).divide(ctext2.getH().pow(c1).multiply(ctext1.getH().pow(c2)));
 
             /* If this is true, then this means that d=m */
             if (bigH.divide(fpow).equals(h.pow(r1.add(r2)))) {
@@ -258,8 +250,6 @@ public class EEGMembershipProof implements IProof<ExponentialElGamalCiphertext> 
             /* Add our random ciphers and members to their respective lists */
             yList.add(y);
             zList.add(z);
-            System.out.println("\tYcalc: " + y);
-            System.out.println("\tZcalc: " + z);
 
             sb.append(y);
             sb.append(z);
@@ -467,14 +457,11 @@ public class EEGMembershipProof implements IProof<ExponentialElGamalCiphertext> 
         AdderInteger g = pubKey.getG();
         AdderInteger h = pubKey.getH();
         AdderInteger f = pubKey.getF();
-        System.out.println("publickey: " + p +"," + q +"," + g +"," + h +"," +f +",");
-
 
         /* Get the cipher's randomness and encrypted value*/
         /* bigG (g^r), bigH (g^(rx) * f^m) */
         AdderInteger bigG = ciphertext.getG();
         AdderInteger bigH = ciphertext.getH();
-        System.out.println("bigG: " + bigG + " , bigH: " + bigH);
 
         /* This will be our commit value that we reconstruct */
         AdderInteger cChoices = new AdderInteger(AdderInteger.ZERO, q);
@@ -493,18 +480,16 @@ public class EEGMembershipProof implements IProof<ExponentialElGamalCiphertext> 
             /* Iterate over all the commits, fake and otherwise */
             for (int i = 0; i < cList.size(); i++) {
 
-                System.out.println("i="+i);
                 /* Get out the domain value (i.e. the possible message m) */
                 AdderInteger d = new AdderInteger(domain.get(i));
 
                 /* Map the value into the group via f */
                 AdderInteger fpow = f.pow(d);
 
+
                 /* extract the commit value and cr + t (or the random values) */
                 AdderInteger s = sList.get(i);
-                System.out.println("\ts: " + s);
                 AdderInteger c = cList.get(i);
-                System.out.println("\tc: " + c);
 
                 /* Compute -c_i so it will fall out of z_i for fake commitments */
                 AdderInteger negC = c.negate();
@@ -520,12 +505,9 @@ public class EEGMembershipProof implements IProof<ExponentialElGamalCiphertext> 
 
                 /* Compute the y-values used in the commit string */
                 sb.append(g.pow(s).multiply(bigG.pow(negC)));
-                System.out.println("\tY: " + g.pow(s).multiply(bigG.pow(negC)));
 
                 /* Compute the z-values used in the commit string */
                 sb.append(h.pow(s).multiply(bigH.divide(fpow).pow(negC)));
-                System.out.println("\tZ: " + h.pow(s).multiply(bigH.divide(fpow).pow(negC)));
-
             }
 
             /* Now take the hash of the commit string and convert it to a number */
