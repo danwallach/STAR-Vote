@@ -202,7 +202,7 @@ public class Precinct<T extends AHomomorphicCiphertext<T>> implements Serializab
         for(String id :  results.keySet()) {
 
             /* Get the race */
-            Race thisRace = results.get(id);
+            Race<T> thisRace = results.get(id);
 
             /* Get the homomorphically tallied vote for this race */
             EncryptedRaceSelection<T> vote = thisRace.sumRaceSelections();
