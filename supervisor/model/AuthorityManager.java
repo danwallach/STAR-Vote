@@ -31,7 +31,7 @@ public class AuthorityManager {
     private static Map<AdderPrivateKeyShare, Integer> keyIndex = new HashMap<>();
 
     /* Source of randomness */
-    private static AdderPublicKeyShare seedKey = AdderPublicKeyShare.makePublicKeyShare(128);
+    private static AdderPublicKeyShare seedKey = AdderPublicKeyShare.makePublicKeyShare(512);
 
     public static int getStage(String auth) {
         return stage3participants.contains(auth) ? 4 :
@@ -220,7 +220,7 @@ public class AuthorityManager {
             indexMap.clear();
             keyIndex.clear();
 
-            seedKey = AdderPublicKeyShare.makePublicKeyShare(128);
+            seedKey = AdderPublicKeyShare.makePublicKeyShare(512);
 
         } else throw new RuntimeException("Tried to start a new session with bad inputs!");
     }
