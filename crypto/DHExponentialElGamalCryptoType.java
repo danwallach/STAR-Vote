@@ -52,7 +52,7 @@ public class DHExponentialElGamalCryptoType implements ICryptoType<ExponentialEl
         /* Partially decrypt to get g^m */
         List<AdderInteger> partialDecryptions = partialDecrypt(ciphertext);
 
-        return fullDecrypt(partialDecryptions, AuthorityManager.getPolynomialCoefficients(privateKeyShares), ciphertext);
+        return fullDecrypt(partialDecryptions, AuthorityManager.SESSION.getPolynomialCoefficients(privateKeyShares), ciphertext);
     }
 
     /**

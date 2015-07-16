@@ -27,18 +27,17 @@ public class BallotCrypterTest extends TestCase {
         super.setUp();
 
         try {
-            AuthorityManager.newSession(1, 1, 3);
-            AuthorityManager.generateAuthorityKeySharePair("1");
-            AuthorityManager.generateAuthorityPolynomialValues("1");
+            AuthorityManager.SESSION.newSession(1, 1, 3);
+            AuthorityManager.SESSION.generateAuthorityKeySharePair("1");
+            AuthorityManager.SESSION.generateAuthorityPolynomialValues("1");
 
             DHExponentialElGamalCryptoType cryptoType = new DHExponentialElGamalCryptoType();
 
-            cryptoType.loadPrivateKeyShares(Collections.singletonList(AuthorityManager.generateRealPrivateKeyShare("1")).toArray(new AdderPrivateKeyShare[1]));
-            PEK = AuthorityManager.generatePublicEncryptionKey();
+            cryptoType.loadPrivateKeyShares(Collections.singletonList(AuthorityManager.SESSION.generateRealPrivateKeyShare("1")).toArray(new AdderPrivateKeyShare[1]));
+            PEK = AuthorityManager.SESSION.generatePublicEncryptionKey();
             cryptoType.loadPublicKey(PEK);
 
             ballotCrypter = new BallotCrypter<>(cryptoType);
-            ballotCrypter.loadKeys();
         }
         catch (Exception e) { e.printStackTrace(); }
 

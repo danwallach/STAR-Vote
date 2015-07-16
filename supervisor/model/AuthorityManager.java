@@ -14,26 +14,49 @@ import java.util.stream.Collectors;
  */
 public class AuthorityManager {
 
-    private static SortedMap<String, AdderPublicKeyShare> keyShares = new TreeMap<>();
-    private static SortedMap<String, AdderPrivateKeyShare> prkeyShares = new TreeMap<>();
-    private static Map<String, List<ExponentialElGamalCiphertext>> polyMap = new LinkedHashMap<>();
-    private static Map<String, AdderInteger> GMap = new LinkedHashMap<>();
+    public static AuthorityManager SESSION = new AuthorityManager();
 
-    private static int safetyThreshold = 1;
-    private static int decryptionThreshold = 1;
-    private static int maxAuth = 3;
+    private SortedMap<String, AdderPublicKeyShare> keyShares;
+    private SortedMap<String, AdderPrivateKeyShare> prkeyShares;
+    private Map<String, List<ExponentialElGamalCiphertext>> polyMap;
+    private Map<String, AdderInteger> GMap;
 
-    private static SortedSet<String> stage1participants = new TreeSet<>();
-    private static Set<String> stage2participants = new LinkedHashSet<>();
-    private static Set<String> stage3participants = new LinkedHashSet<>();
+    private int safetyThreshold;
+    private int decryptionThreshold;
+    private int maxAuth;
 
-    private static Map<String, Integer> indexMap = new HashMap<>();
-    private static Map<AdderPrivateKeyShare, Integer> keyIndex = new HashMap<>();
+    private SortedSet<String> stage1participants;
+    private Set<String> stage2participants;
+    private Set<String> stage3participants;
+
+    private Map<String, Integer> indexMap;
+    private Map<AdderPrivateKeyShare, Integer> keyIndex;
 
     /* Source of randomness */
-    private static AdderPublicKeyShare seedKey = AdderPublicKeyShare.makePublicKeyShare(512);
+    private AdderPublicKeyShare seedKey;
+    
+    private AuthorityManager() {
 
-    public static int getStage(String auth) {
+         keyShares = new TreeMap<>();
+         prkeyShares = new TreeMap<>();
+         polyMap = new LinkedHashMap<>();
+         GMap = new LinkedHashMap<>();
+
+         safetyThreshold = 1;
+         decryptionThreshold = 1;
+         maxAuth = 3;
+
+         stage1participants = new TreeSet<>();
+         stage2participants = new LinkedHashSet<>();
+         stage3participants = new LinkedHashSet<>();
+
+         indexMap = new HashMap<>();
+         keyIndex = new HashMap<>();
+
+         seedKey = AdderPublicKeyShare.makePublicKeyShare(512);
+    }
+
+    public int getStage(String auth) {
         return stage3participants.contains(auth) ? 4 :
                stage2participants.contains(auth) ? 3 :
                stage1participants.contains(auth) ? 2 : 1;
@@ -47,7 +70,7 @@ public class AuthorityManager {
      *
      * @throws KeyGenerationException
      */
-    public static AdderPrivateKeyShare generateAuthorityKeySharePair(String auth) throws KeyGenerationException {
+    public AdderPrivateKeyShare generateAuthorityKeySharePair(String auth) throws KeyGenerationException {
 
             if(stage2participants.isEmpty()) {
                 if (stage1participants.size() < maxAuth){
@@ -76,7 +99,7 @@ public class AuthorityManager {
      *
      * @throws InvalidPolynomialException
      */
-    public static void generateAuthorityPolynomialValues(String auth) throws InvalidPolynomialException {
+    public void generateAuthorityPolynomialValues(String auth) throws InvalidPolynomialException {
 
         if (stage1participants.size() >= safetyThreshold) {
             if(stage3participants.isEmpty()) {
@@ -121,7 +144,7 @@ public class AuthorityManager {
      *
      * @return the final private key
      */
-    public static AdderPrivateKeyShare generateRealPrivateKeyShare(String auth/*, AdderPrivateKeyShare authKeyShare*/) throws KeyGenerationException {
+    public AdderPrivateKeyShare generateRealPrivateKeyShare(String auth/*, AdderPrivateKeyShare authKeyShare*/) throws KeyGenerationException {
 
         if (stage2participants.size() >= safetyThreshold) {
             if (stage2participants.contains(auth)) {
@@ -175,7 +198,7 @@ public class AuthorityManager {
      *
      * @return  the AdderPublicKey to be used in all phases of an election
      */
-    public static AdderPublicKey generatePublicEncryptionKey() throws KeyGenerationException {
+    public AdderPublicKey generatePublicEncryptionKey() throws KeyGenerationException {
 
         if (stage3participants.size() >= safetyThreshold) {
 
@@ -190,7 +213,7 @@ public class AuthorityManager {
         } else throw new KeyGenerationException("Public key creation stage cannot be initiated due to safety threshold.");
     }
 
-    public static List<AdderInteger> getPolynomialCoefficients(List<AdderPrivateKeyShare> pksList) {
+    public List<AdderInteger> getPolynomialCoefficients(List<AdderPrivateKeyShare> pksList) {
 
         List<AdderInteger> coeffs = new ArrayList<>();
 
@@ -200,13 +223,13 @@ public class AuthorityManager {
 
     }
 
-    public static void newSession(int safetyThreshold, int decryptionThreshold, int maxAuth) {
+    public AuthorityManager newSession(int safetyThreshold, int decryptionThreshold, int maxAuth) {
 
         if (safetyThreshold >= decryptionThreshold && decryptionThreshold > 0 && maxAuth >= safetyThreshold) {
 
-            AuthorityManager.safetyThreshold = safetyThreshold;
-            AuthorityManager.decryptionThreshold = decryptionThreshold;
-            AuthorityManager.maxAuth = maxAuth;
+            this.safetyThreshold = safetyThreshold;
+            this.decryptionThreshold = decryptionThreshold;
+            this.maxAuth = maxAuth;
 
             keyShares.clear();
             prkeyShares.clear();
@@ -223,6 +246,8 @@ public class AuthorityManager {
             seedKey = AdderPublicKeyShare.makePublicKeyShare(512);
 
         } else throw new RuntimeException("Tried to start a new session with bad inputs!");
+        
+        return this;
     }
 
 }

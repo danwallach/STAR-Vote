@@ -48,11 +48,16 @@ public class WebServerTallier {
                 /* Cycle through each of the races */
                 for(EncryptedRaceSelection<T> rs: raceSelections){
 
+                    if (rs.getSize() > bal.getSize()) {
+                        Bugout.err("!!!RaceSelection was larger than expected Ballot capacity!!!");
+                        return null;
+                    }
+
                     /* Get all the candidate choices */
                     List<String> possibleCandidates = new ArrayList<>(rs.getRaceSelectionsMap().keySet());
 
                     /* Confirm that the rs proof is valid */
-                    if (!rs.verify(0, 1, PEK)) {
+                    if (!rs.verify(0, rs.getSize(), PEK)) {
                         Bugout.err("!!!Ballot failed NIZK test!!!");
                         return null;
                     }

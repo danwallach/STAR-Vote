@@ -24,19 +24,19 @@ public class AuthorityManagerTest extends TestCase {
     public void testProcedure() throws Exception {
 
         /* Have 3 logins to generate keypairs*/
-        AdderPrivateKeyShare a1prks = AuthorityManager.generateAuthorityKeySharePair("1");
-        AdderPrivateKeyShare a2prks = AuthorityManager.generateAuthorityKeySharePair("2");
-        AdderPrivateKeyShare a3prks = AuthorityManager.generateAuthorityKeySharePair("3");
+        AdderPrivateKeyShare a1prks = AuthorityManager.SESSION.generateAuthorityKeySharePair("1");
+        AdderPrivateKeyShare a2prks = AuthorityManager.SESSION.generateAuthorityKeySharePair("2");
+        AdderPrivateKeyShare a3prks = AuthorityManager.SESSION.generateAuthorityKeySharePair("3");
 
-        AuthorityManager.generateAuthorityPolynomialValues("1");
-        AuthorityManager.generateAuthorityPolynomialValues("2");
-        AuthorityManager.generateAuthorityPolynomialValues("3");
+        AuthorityManager.SESSION.generateAuthorityPolynomialValues("1");
+        AuthorityManager.SESSION.generateAuthorityPolynomialValues("2");
+        AuthorityManager.SESSION.generateAuthorityPolynomialValues("3");
 
-        a1prks = AuthorityManager.generateRealPrivateKeyShare("1");
-        a2prks = AuthorityManager.generateRealPrivateKeyShare("2");
-        a3prks = AuthorityManager.generateRealPrivateKeyShare("3");
+        a1prks = AuthorityManager.SESSION.generateRealPrivateKeyShare("1");
+        a2prks = AuthorityManager.SESSION.generateRealPrivateKeyShare("2");
+        a3prks = AuthorityManager.SESSION.generateRealPrivateKeyShare("3");
 
-        AdderPublicKey PEK = AuthorityManager.generatePublicEncryptionKey();
+        AdderPublicKey PEK = AuthorityManager.SESSION.generatePublicEncryptionKey();
 
         System.out.println("Public Encryption Key: " + PEK);
 

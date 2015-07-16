@@ -26,7 +26,7 @@ public class DHExponentialElGamalCryptoTypeTest extends TestCase {
     public void testEncryptDecryptSingle() throws InterruptedException {
 
         System.out.println("Testing encryption using a decryption threshold of 1, safety threshold of 1...");
-        AuthorityManager.newSession(1,1,2);
+        AuthorityManager.SESSION.newSession(1,1,2);
         setUpSingleKeys();
         checkEncryptDecrypt();
         Thread.sleep(1000);
@@ -35,19 +35,19 @@ public class DHExponentialElGamalCryptoTypeTest extends TestCase {
     public void testEncryptDecryptMultiple() throws InterruptedException {
 
         System.out.println("Testing encryption using a decryption threshold of 1, safety threshold of 2...");
-        AuthorityManager.newSession(2,1,3);
+        AuthorityManager.SESSION.newSession(2,1,3);
         setUpMultipleKeys(2, 1);
         checkEncryptDecrypt();
         Thread.sleep(1000);
 
         System.out.println("Testing encryption using a decryption threshold of 2, safety threshold of 3...");
-        AuthorityManager.newSession(3, 2, 4);
+        AuthorityManager.SESSION.newSession(3, 2, 4);
         setUpMultipleKeys(3, 2);
         checkEncryptDecrypt();
         Thread.sleep(1000);
 
         System.out.println("Testing encryption using a decryption threshold of 3, safety threshold of 3...");
-        AuthorityManager.newSession(3, 3, 4);
+        AuthorityManager.SESSION.newSession(3, 3, 4);
         setUpMultipleKeys(3, 3);
         checkEncryptDecrypt();
         Thread.sleep(1000);
@@ -61,7 +61,7 @@ public class DHExponentialElGamalCryptoTypeTest extends TestCase {
 
         try {
 
-            AdderPublicKey PEK = AuthorityManager.generatePublicEncryptionKey();
+            AdderPublicKey PEK = AuthorityManager.SESSION.generatePublicEncryptionKey();
 
             ExponentialElGamalCiphertext ZEROct = cryptoType.encrypt(ZERO);
             ExponentialElGamalCiphertext ONEct = cryptoType.encrypt(ONE);
@@ -90,22 +90,22 @@ public class DHExponentialElGamalCryptoTypeTest extends TestCase {
         try {
 
             for (int i=0; i<numGenerate; i++) {
-                AuthorityManager.generateAuthorityKeySharePair(Integer.toString(i + 1));
+                AuthorityManager.SESSION.generateAuthorityKeySharePair(Integer.toString(i + 1));
             }
 
             for (int i=0; i<numGenerate; i++) {
-                AuthorityManager.generateAuthorityPolynomialValues(Integer.toString(i + 1));
+                AuthorityManager.SESSION.generateAuthorityPolynomialValues(Integer.toString(i + 1));
             }
 
             List<AdderPrivateKeyShare> pksList = new ArrayList<>();
 
             for (int i=0; i<numGenerate; i++) {
-                AdderPrivateKeyShare generated = AuthorityManager.generateRealPrivateKeyShare(Integer.toString(i+1));
+                AdderPrivateKeyShare generated = AuthorityManager.SESSION.generateRealPrivateKeyShare(Integer.toString(i+1));
                 if (i<=numDecrypt) pksList.add(generated);
             }
 
             cryptoType.loadPrivateKeyShares(pksList.toArray(new AdderPrivateKeyShare[pksList.size()]));
-            cryptoType.loadPublicKey(AuthorityManager.generatePublicEncryptionKey());
+            cryptoType.loadPublicKey(AuthorityManager.SESSION.generatePublicEncryptionKey());
         }
         catch (Exception e) { e.printStackTrace(); }
     }
@@ -115,10 +115,10 @@ public class DHExponentialElGamalCryptoTypeTest extends TestCase {
         /* Load the seed key */
         try {
 
-            AuthorityManager.generateAuthorityKeySharePair("1");
-            AuthorityManager.generateAuthorityPolynomialValues("1");
-            cryptoType.loadPrivateKeyShares(Collections.singletonList(AuthorityManager.generateRealPrivateKeyShare("1")).toArray(new AdderPrivateKeyShare[1]));
-            cryptoType.loadPublicKey(AuthorityManager.generatePublicEncryptionKey());
+            AuthorityManager.SESSION.generateAuthorityKeySharePair("1");
+            AuthorityManager.SESSION.generateAuthorityPolynomialValues("1");
+            cryptoType.loadPrivateKeyShares(Collections.singletonList(AuthorityManager.SESSION.generateRealPrivateKeyShare("1")).toArray(new AdderPrivateKeyShare[1]));
+            cryptoType.loadPublicKey(AuthorityManager.SESSION.generatePublicEncryptionKey());
         }
         catch (Exception e) { e.printStackTrace(); }
     }

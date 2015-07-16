@@ -4,6 +4,7 @@ import crypto.*;
 import crypto.adder.AdderPublicKey;
 import junit.framework.TestCase;
 import supervisor.model.AuthorityManager;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,11 +18,11 @@ public class RaceSelectionTest extends TestCase {
 
         protected void setUp() throws Exception {
 
-            AuthorityManager.newSession(1, 1, 2);
-            AuthorityManager.generateAuthorityKeySharePair("1");
-            AuthorityManager.generateAuthorityPolynomialValues("1");
-            AuthorityManager.generateRealPrivateKeyShare("1");
-            PEK = AuthorityManager.generatePublicEncryptionKey();
+            AuthorityManager.SESSION.newSession(1, 1, 2);
+            AuthorityManager.SESSION.generateAuthorityKeySharePair("1");
+            AuthorityManager.SESSION.generateAuthorityPolynomialValues("1");
+            AuthorityManager.SESSION.generateRealPrivateKeyShare("1");
+            PEK = AuthorityManager.SESSION.generatePublicEncryptionKey();
 
             DHExponentialElGamalCryptoType cryptoType = new DHExponentialElGamalCryptoType();
             cryptoType.loadPublicKey(PEK);
