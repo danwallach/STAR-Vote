@@ -69,7 +69,6 @@ public class BallotCryptoTest extends TestCase {
                                                                                                           PEK);
 
             for (int i=0; i<tallied.getRaceSelections().size(); i++) {
-                System.out.println(tallied.getRaceSelections().get(i).getRaceSelectionsMap());
                 assertTrue(tallied.getRaceSelections().get(i).verify(0,2,PEK));
             }
 
