@@ -19,13 +19,13 @@ import java.util.Map;
  *
  * Created by Matthew Kindy II on 11/9/2014.
  */
-public class RaceSelectionCrypto {
+public class RaceSelectionCrypto<T extends AHomomorphicCiphertext<T>> {
 
 
-    private ByteCrypto byteCrypter;
+    private ByteCrypto<T> byteCrypter;
 
-    public RaceSelectionCrypto(ICryptoType cryptoType) {
-        byteCrypter = new ByteCrypto(cryptoType);
+    public RaceSelectionCrypto(ICryptoType<T> cryptoType) {
+        byteCrypter = new ByteCrypto<>(cryptoType);
     }
 
     /**
@@ -38,8 +38,8 @@ public class RaceSelectionCrypto {
      * @throws CipherException
      * @throws CiphertextException
      */
-    public <T extends AHomomorphicCiphertext<T>> PlaintextRaceSelection decrypt(
-            EncryptedRaceSelection<T> raceSelection) throws UninitialisedException, KeyNotLoadedException, InvalidKeyException, CipherException, CiphertextException {
+    public PlaintextRaceSelection decrypt(EncryptedRaceSelection<T> raceSelection)
+            throws UninitialisedException, KeyNotLoadedException, InvalidKeyException, CipherException, CiphertextException {
 
         /* Get the map from the race selection */
         Map<String, T> cipherMap = raceSelection.getRaceSelectionsMap();
@@ -48,7 +48,7 @@ public class RaceSelectionCrypto {
         /* Cycle over each of the candidates in the cipherMap */
         for(Map.Entry<String, T> cur : cipherMap.entrySet()) {
 
-            AHomomorphicCiphertext encryptedChoice = cur.getValue();
+            T encryptedChoice = cur.getValue();
             String candidate = cur.getKey();
 
             /* Encrypt each choice and put into a ciphertext */
@@ -72,7 +72,8 @@ public class RaceSelectionCrypto {
      * @throws CipherException
      * @throws CiphertextException
      */
-    public <T extends AHomomorphicCiphertext<T>> EncryptedRaceSelection<T> encrypt(PlaintextRaceSelection raceSelection) throws UninitialisedException, KeyNotLoadedException, InvalidKeyException, CipherException, CiphertextException {
+    public EncryptedRaceSelection<T> encrypt(PlaintextRaceSelection raceSelection)
+            throws UninitialisedException, KeyNotLoadedException, InvalidKeyException, CipherException, CiphertextException {
 
         /* Get the map from the PlaintextVote */
         Map<String, Integer> raceSelectionsMap = raceSelection.getRaceSelectionsMap();

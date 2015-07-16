@@ -98,6 +98,7 @@ public class VoteBox{
     private int superSerial;
     private String precinct;
     private final String launchCode;
+    private BallotCrypter<ExponentialElGamalCiphertext> ballotCrypter;
 
     /** Will keep the short code - nonce pairings to send over when the polls close */
     private HashMap<ASExpression, VotePair> plaintextAuditCommits;
@@ -264,7 +265,7 @@ public class VoteBox{
                 /* Encrypt Ballot */
                 Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>> encBallot;
 
-                try { encBallot = BallotCrypto.encrypt(ballot); }
+                try { encBallot = ballotCrypter.encrypt(ballot); }
                 catch (Exception e) { e.printStackTrace(); throw new RuntimeException("Could not encrypt the ballot because of " + e.getClass()); }
 
 
@@ -390,7 +391,7 @@ public class VoteBox{
                     /* Encrypt Ballot */
                     Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>> encBallot;
 
-                    try { encBallot = BallotCrypto.encrypt(ballot); }
+                    try { encBallot = ballotCrypter.encrypt(ballot); }
                     catch (Exception e) { e.printStackTrace(); throw new RuntimeException("Could not encrypt the ballot because of "+ e.getClass()); }
 
                     committedBallot = true;
@@ -668,7 +669,7 @@ public class VoteBox{
                     try { cryptoType.loadPublicKey(_constants.getKeyStore().loadPEK()); }
                     catch (AuditoriumCryptoException ex) { throw new RuntimeException("Error loading the PEK from the KeyStore."); }
 
-                    BallotCrypto.setCryptoType(cryptoType);
+                    ballotCrypter = new BallotCrypter<>(cryptoType);
 
                     System.out.println("Crypto set!");
 

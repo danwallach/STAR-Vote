@@ -19,17 +19,12 @@ import java.util.List;
  *
  * Created by Matthew Kindy II on 11/9/2014.
  */
-public class BallotCrypto {
+public class BallotCrypter<T extends AHomomorphicCiphertext<T>> {
 
-    private static RaceSelectionCrypto raceSelectionCrypter = null;
+    private RaceSelectionCrypto<T> raceSelectionCrypter;
 
-    /**
-     * Sets the base crypto-package
-     * @param cryptoType    the base crypto-package used in encryption/decryption
-     */
-    public static void setCryptoType(ICryptoType cryptoType){
-
-        raceSelectionCrypter = new RaceSelectionCrypto(cryptoType);
+    public BallotCrypter(ICryptoType<T> cryptoType) {
+        raceSelectionCrypter = new RaceSelectionCrypto<>(cryptoType);
     }
 
     /**
@@ -38,7 +33,7 @@ public class BallotCrypto {
      * @param ballot    a Ballot containing EncryptedVotes
      * @return          a Ballot containing PlaintextVotes which are the decrypted EncryptedVotes
      */
-    public static <T extends AHomomorphicCiphertext<T>> Ballot<PlaintextRaceSelection> decrypt(Ballot<EncryptedRaceSelection<T>> ballot)
+    public Ballot<PlaintextRaceSelection> decrypt(Ballot<EncryptedRaceSelection<T>> ballot)
             throws UninitialisedException, KeyNotLoadedException, InvalidKeyException, CipherException, CiphertextException {
 
         List<PlaintextRaceSelection> raceSelections = new ArrayList<>();
@@ -58,7 +53,7 @@ public class BallotCrypto {
      * @param ballot    a Ballot containing PlaintextVotes
      * @return          a Ballot containing EncryptedVotes which are the encrypted PlaintextVotes
      */
-    public static <T extends AHomomorphicCiphertext<T>> Ballot<EncryptedRaceSelection<T>> encrypt(Ballot<PlaintextRaceSelection> ballot)
+    public Ballot<EncryptedRaceSelection<T>> encrypt(Ballot<PlaintextRaceSelection> ballot)
             throws UninitialisedException, KeyNotLoadedException, InvalidKeyException, CipherException, CiphertextException {
 
         List<EncryptedRaceSelection<T>> raceSelections = new ArrayList<>();

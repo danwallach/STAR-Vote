@@ -17,9 +17,9 @@ import java.util.*;
 /**
  * Created by Matthew Kindy II on 11/9/2014.
  */
-public class BallotCryptoTest extends TestCase {
+public class BallotCrypterTest extends TestCase {
 
-    private DHExponentialElGamalCryptoType cryptoType;
+    private BallotCrypter<ExponentialElGamalCiphertext> ballotCrypter;
     private AdderPublicKey PEK;
 
     protected void setUp() throws Exception {
@@ -31,15 +31,17 @@ public class BallotCryptoTest extends TestCase {
             AuthorityManager.generateAuthorityKeySharePair("1");
             AuthorityManager.generateAuthorityPolynomialValues("1");
 
-            cryptoType = new DHExponentialElGamalCryptoType();
+            DHExponentialElGamalCryptoType cryptoType = new DHExponentialElGamalCryptoType();
 
             cryptoType.loadPrivateKeyShares(Collections.singletonList(AuthorityManager.generateRealPrivateKeyShare("1")).toArray(new AdderPrivateKeyShare[1]));
             PEK = AuthorityManager.generatePublicEncryptionKey();
             cryptoType.loadPublicKey(PEK);
+
+            ballotCrypter = new BallotCrypter<>(cryptoType);
+            ballotCrypter.loadKeys();
         }
         catch (Exception e) { e.printStackTrace(); }
 
-        BallotCrypto.setCryptoType(cryptoType);
 
     }
 
@@ -50,8 +52,8 @@ public class BallotCryptoTest extends TestCase {
 
         try {
 
-            Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>> encrypted = BallotCrypto.encrypt(ballot1);
-            Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>> encrypted2 = BallotCrypto.encrypt(ballot2);
+            Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>> encrypted = ballotCrypter.encrypt(ballot1);
+            Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>> encrypted2 = ballotCrypter.encrypt(ballot2);
 
             for (int i=0; i<ballot1.getRaceSelections().size(); i++) {
 
@@ -59,7 +61,7 @@ public class BallotCryptoTest extends TestCase {
                 assertTrue(encrypted2.getRaceSelections().get(i).verify(0, 1, PEK));
 
                 for (Map.Entry<String, Integer> entry : ballot1.getRaceSelections().get(i).getRaceSelectionsMap().entrySet()) {
-                    assertEquals(BallotCrypto.decrypt(encrypted).getRaceSelections().get(i).getRaceSelectionsMap().get(entry.getKey()),
+                    assertEquals(ballotCrypter.decrypt(encrypted).getRaceSelections().get(i).getRaceSelectionsMap().get(entry.getKey()),
                             ballot1.getRaceSelections().get(i).getRaceSelectionsMap().get(entry.getKey()));
                 }
             }
@@ -72,7 +74,7 @@ public class BallotCryptoTest extends TestCase {
                 assertTrue(tallied.getRaceSelections().get(i).verify(0,2,PEK));
             }
 
-            Ballot<PlaintextRaceSelection> decrypted = BallotCrypto.decrypt(tallied);
+            Ballot<PlaintextRaceSelection> decrypted = ballotCrypter.decrypt(tallied);
 
             for (int i=0; i<decrypted.getRaceSelections().size(); i++) {
                 for (Map.Entry<String, Integer> entry : decrypted.getRaceSelections().get(i).getRaceSelectionsMap().entrySet()) {

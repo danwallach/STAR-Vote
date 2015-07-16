@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
  *
  * Created by Matthew Kindy II on 11/5/2014.
  */
-public class DHExponentialElGamalCryptoType implements ICryptoType {
+public class DHExponentialElGamalCryptoType implements ICryptoType<ExponentialElGamalCiphertext> {
 
     private List<AdderPrivateKeyShare> privateKeyShares;
     private AdderPublicKey PEK;
@@ -43,22 +43,16 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
      * @throws CipherException
      * @throws CiphertextException
      */
-    public <T extends AHomomorphicCiphertext<T>> byte[] decrypt(T ciphertext) throws InvalidKeyException, KeyNotLoadedException, CipherException, CiphertextException {
-
-        /* Check if this is the right type of AHomomorphicCiphertext */
-        if(!(ciphertext instanceof ExponentialElGamalCiphertext))
-            throw new CiphertextException("The ciphertext type did not match the crypto type!");
-
-        ExponentialElGamalCiphertext eegCiphertext = ((ExponentialElGamalCiphertext) ciphertext);
+    public byte[] decrypt(ExponentialElGamalCiphertext ciphertext) throws InvalidKeyException, KeyNotLoadedException, CipherException, CiphertextException {
 
         /* Check if the private key shares have been loaded */
         if(privateKeyShares == null)
             throw new KeyNotLoadedException("The private key shares have not yet been loaded! [Decryption]");
 
         /* Partially decrypt to get g^m */
-        List<AdderInteger> partialDecryptions = partialDecrypt(eegCiphertext);
+        List<AdderInteger> partialDecryptions = partialDecrypt(ciphertext);
 
-        return fullDecrypt(partialDecryptions, AuthorityManager.getPolynomialCoefficients(privateKeyShares), eegCiphertext);
+        return fullDecrypt(partialDecryptions, AuthorityManager.getPolynomialCoefficients(privateKeyShares), ciphertext);
     }
 
     /**
