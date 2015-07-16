@@ -1,17 +1,10 @@
 import com.avaje.ebean.Ebean;
-import crypto.adder.AdderPublicKeyShare;
 import play.Application;
 import play.GlobalSettings;
 import play.libs.Yaml;
-import sexpression.ASEConverter;
-import sexpression.ASExpression;
-import sexpression.ListExpression;
-import utilities.AdderKeyManipulator;
+import supervisor.model.AuthorityManager;
 import utilities.BallotLoader;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
 
 
@@ -40,19 +33,7 @@ public class Global extends GlobalSettings {
             Ebean.save((List) Yaml.load("initial-data.yml"));
         }
 
-        /* Load the seed key */
-        File seedKeyFile = new File("keys","seedkey.adder.key");
-        Path seedKeyPath = seedKeyFile.toPath();
-
-        try {
-            byte[] verbatimSeedKey = Files.readAllBytes(seedKeyPath);
-            ASExpression seedKeyASE = ASExpression.makeVerbatim(verbatimSeedKey);
-            System.out.println(seedKeyASE);
-            AdderPublicKeyShare seedKey = ASEConverter.convertFromASE((ListExpression) seedKeyASE);
-
-            AdderKeyManipulator.setSeedKey(seedKey);
-        }
-        catch (Exception e) { e.printStackTrace(); throw new RuntimeException("Couldn't use the key file");}
+        AuthorityManager.newSession(1,1,3);
 
     }
 }

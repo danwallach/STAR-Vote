@@ -7,7 +7,6 @@ import crypto.adder.AdderInteger;
 import crypto.adder.AdderPrivateKeyShare;
 import crypto.adder.AdderPublicKey;
 import crypto.adder.Polynomial;
-import crypto.interop.AdderKeyGenerator;
 import models.*;
 import play.data.Form;
 import play.data.validation.Constraints;
@@ -19,9 +18,9 @@ import sexpression.ASEConverter;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.stream.Base64;
+import supervisor.model.AuthorityManager;
 import supervisor.model.Ballot;
 import supervisor.model.Precinct;
-import utilities.AdderKeyManipulator;
 import utilities.WebServerTallier;
 import views.html.*;
 
@@ -31,7 +30,6 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static play.data.Form.form;
 
@@ -219,7 +217,8 @@ public class AuditServer extends Controller {
         Map<String, Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>>> summedTotals = getSummedTotals();
         Map<String, List<Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>>>> precinctTotals = new TreeMap<>();
         Map<String, Precinct<ExponentialElGamalCiphertext>> precinctMap;
-        
+        System.out.println("Summed totals! " + summedTotals);
+
         /* Grab each selected precinct and publish it */
         while(start < records.length()) {
 
@@ -251,10 +250,13 @@ public class AuditServer extends Controller {
             start = end+1;
         }
 
+        System.out.println("Summed totals! " + summedTotals);
+
         /* Combine the newly published result totals with the old totals */
         System.out.println("Updating Summed Totals... ");
         updateSummedTotals(summedTotals, precinctTotals);
 
+        System.out.println("Summed totals! " + summedTotals);
         /* Decrypt and store the final updated totals for each Precinct */
         System.out.println("Storing Decrypted Summed Totals... ");
         storeDecryptedSummedTotals(summedTotals);
@@ -330,7 +332,7 @@ public class AuditServer extends Controller {
     @Restrict(@Group("authority"))
     public static Result keygeneration() {
 
-        int stage = AdderKeyManipulator.getStage(request().username());
+        int stage = AuthorityManager.getStage(request().username());
         String message = stage == 1 ? "KeySharePair generation stage (1)" :
                          stage == 2 ? "Polynomial generation stage (2)" :
                          stage == 3 ? "Private Key-share generation stage (3)" : "Complete!";
@@ -341,27 +343,29 @@ public class AuditServer extends Controller {
     }
 
     private static void writePEKtoFile(){
-        PEK = AdderKeyManipulator.generatePublicEncryptionKey();
-
-        File destDir = new File("PEK");
-
-        /* Checks whether the destination directory already exists, if not then make the directory.*/
-        if(!destDir.exists()){
-            destDir.mkdirs();
-        }
-
-        /*If it exists then it checks whether its a directory or not.*/
-        else{
-
-            if(!destDir.isDirectory()){
-                System.out.println("Usage: java "+AdderKeyGenerator.class.getName()+" [destination directory]");
-                System.exit(-1);
-            }
-        }
-
-        File pekFile = new File("keys","PEK.adder.key");
 
         try {
+
+            PEK = AuthorityManager.generatePublicEncryptionKey();
+
+            File destDir = new File("keys");
+
+            /* Checks whether the destination directory already exists, if not then make the directory. */
+            if(!destDir.exists()){
+                destDir.mkdirs();
+            }
+
+            /* If it exists then it checks whether its a directory or not. */
+            else{
+
+                if(!destDir.isDirectory()){
+                    System.out.println("Usage: java " + AuthorityManager.class.getName() + " [destination directory]");
+                    System.exit(-1);
+                }
+            }
+
+            File pekFile = new File("keys", "PEK.adder.key");
+
             FileOutputStream fos = new FileOutputStream(pekFile);
             fos.write(ASEConverter.convertToASE(PEK).toVerbatim());
             fos.flush();
@@ -378,23 +382,23 @@ public class AuditServer extends Controller {
         String auth = request().username();
 
         /* Process for this */
-        int stage = AdderKeyManipulator.getStage(auth);
+        int stage = AuthorityManager.getStage(auth);
 
         try {
             switch (stage) {
 
                 case 1:
-                    AdderKeyManipulator.generateAuthorityKeySharePair(auth);
+                    AuthorityManager.generateAuthorityKeySharePair(auth);
                     break;
 
                 case 2:
-                    AdderKeyManipulator.generateAuthorityPolynomialValues(auth);
+                    AuthorityManager.generateAuthorityPolynomialValues(auth);
                     break;
 
                 /* Need to know if we can keep these on the webserver */
                 case 3:
                     User u = User.find.byId(request().username());
-                    u.setKey(AdderKeyManipulator.generateRealPrivateKeyShare(auth));
+                    u.setKey(AuthorityManager.generateRealPrivateKeyShare(auth));
                     break;
 
                 default:
@@ -528,12 +532,13 @@ public class AuditServer extends Controller {
             DHExponentialElGamalCryptoType t = new DHExponentialElGamalCryptoType();
 
             /* Get all the privateKeyShares from the authorities database */
-            List<User> users = User.find.where().eq("userRole","authority").ne("key", null).findList();
+            List<User> authList = User.find.where().eq("userRole","authority").ne("key", null).findList();
             List<AdderPrivateKeyShare> privateKeyShares = new ArrayList<>();
-            AdderPrivateKeyShare[] privateKeySharesArray = new AdderPrivateKeyShare[users.size()];
+            AdderPrivateKeyShare[] privateKeySharesArray = new AdderPrivateKeyShare[authList.size()];
 
-            for (User user : users)
-                privateKeyShares.add(user.getKey());
+            /* Add all the authority keys */
+            for (User authority : authList)
+                privateKeyShares.add(authority.getKey());
 
             /* Load the privateKeyShares into the ICryptoType */
             t.loadPrivateKeyShares(privateKeyShares.toArray(privateKeySharesArray));
@@ -546,16 +551,20 @@ public class AuditServer extends Controller {
 
             /* Will want to publish partials to the bulletin board */
 
-            try { decryptB = BallotCrypto.decrypt(b); }
+            try {
+
+                decryptB = BallotCrypto.decrypt(b);
+
+                /* This will be the decrypted representation of the results by race */
+                Map<String, Map<String, Integer>> decryptedResults = WebServerTallier.getVoteTotals(decryptB);
+
+                /* Store totals in database */
+                DecryptedResult.create(new DecryptedResult(precinctID, decryptedResults, b));
+
+            }
             catch (Exception e) {e.printStackTrace(); }
 
-            /* This will be the decrypted representation of the results by race */
-            Map<String, Map<String, Integer>> decryptedResults = WebServerTallier.getVoteTotals(decryptB);
-
-            /* Store totals in database */
-            DecryptedResult.create(new DecryptedResult(precinctID, decryptedResults, b));
         }
-
     }
 
     private static Map<String, Map<String, Map<String, AdderInteger>>> calculatePartials(Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>> b) {
@@ -576,7 +585,10 @@ public class AuditServer extends Controller {
                 partialsMap.get(ers.getTitle()).put(entry.getKey(), new TreeMap<>());
 
                 List<AdderInteger> coeffs = new ArrayList<>();
-                List<AdderPrivateKeyShare> privateKeyShares = authList.stream().map(User::getKey).collect(Collectors.toList());
+                List<AdderPrivateKeyShare> privateKeyShares = new ArrayList<>();
+
+                for (User authority : authList)
+                    privateKeyShares.add(authority.getKey());
 
                 for (int i=0; i<privateKeyShares.size(); i++) {
                     coeffs.add(new AdderInteger(i));
