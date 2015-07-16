@@ -15,3 +15,9 @@
     password:   authority
     name:       STAR-Vote Authority
     userRole:  authority
+
+- !!models.User
+    username:   auth
+    password:   auth
+    name:       STAR-Vote Auth
+    userRole:  authority

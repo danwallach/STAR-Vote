@@ -46,6 +46,7 @@ public class AuditServer extends Controller {
     static Form<ChallengedBallot> challengeForm = form(ChallengedBallot.class);
     static Form<CastBallot> confirmForm = form(CastBallot.class);
     static AdderPublicKey PEK;
+    static BallotCrypter<ExponentialElGamalCiphertext> ballotCrypter;
 
     static boolean init = false;
 
@@ -201,7 +202,6 @@ public class AuditServer extends Controller {
     @Security.Authenticated(Secured.class)
     @Restrict(@Group("admin"))
     public static Result adminpublish() {
-        System.out.println("We have a PEK: " + (PEK != null));
         return ok(adminpublish.render(VotingRecord.getUnpublished(), VotingRecord.getPublished(), PEK != null));
     }
     
@@ -217,7 +217,6 @@ public class AuditServer extends Controller {
         Map<String, Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>>> summedTotals = getSummedTotals();
         Map<String, List<Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>>>> precinctTotals = new TreeMap<>();
         Map<String, Precinct<ExponentialElGamalCiphertext>> precinctMap;
-        System.out.println("Summed totals! " + summedTotals);
 
         /* Grab each selected precinct and publish it */
         while(start < records.length()) {
@@ -241,6 +240,7 @@ public class AuditServer extends Controller {
             /* Get the Precincts from this VotingRecord (Encrypted!) */
             System.out.println("Getting the Precinct Map... ");
             precinctMap = vr.getPrecinctMap();
+            System.out.println("\t" + precinctMap);
 
             /* Add the results from the Precincts in this VotingRecord to precinctTotals */
             System.out.println("Updating Precinct Totals... ");
@@ -332,12 +332,15 @@ public class AuditServer extends Controller {
     @Restrict(@Group("authority"))
     public static Result keygeneration() {
 
-        int stage = AuthorityManager.getStage(request().username());
+        int stage = AuthorityManager.SESSION.getStage(request().username());
         String message = stage == 1 ? "KeySharePair generation stage (1)" :
                          stage == 2 ? "Polynomial generation stage (2)" :
                          stage == 3 ? "Private Key-share generation stage (3)" : "Complete!";
 
-        if (message.equals("Complete!")) writePEKtoFile();
+        if (message.equals("Complete!")) {
+            writePEKtoFile();
+            storeAuthorityData();
+        }
 
         return ok(authorityprocedure.render(message, request().username(), stage));
     }
@@ -346,7 +349,7 @@ public class AuditServer extends Controller {
 
         try {
 
-            PEK = AuthorityManager.generatePublicEncryptionKey();
+            PEK = AuthorityManager.SESSION.generatePublicEncryptionKey();
 
             File destDir = new File("keys");
 
@@ -372,7 +375,18 @@ public class AuditServer extends Controller {
             fos.close();
         }
         catch (Exception e) { e.printStackTrace(); }
+    }
 
+    private static void storeAuthorityData(){
+
+        try {
+            org.yaml.snakeyaml.Yaml yaml = new org.yaml.snakeyaml.Yaml();
+            FileWriter writer = new FileWriter(new File("conf", "authority-data.yml"));
+            yaml.dump(AuthorityManager.SESSION, writer);
+            /* On load, would probably say AuthorityManager.SESSION = loadedData*/
+            writer.close();
+        }
+        catch (IOException e) { System.err.println("Could not write the user file!"); }
     }
 
     @Security.Authenticated(Secured.class)
@@ -382,23 +396,23 @@ public class AuditServer extends Controller {
         String auth = request().username();
 
         /* Process for this */
-        int stage = AuthorityManager.getStage(auth);
+        int stage = AuthorityManager.SESSION.getStage(auth);
 
         try {
             switch (stage) {
 
                 case 1:
-                    AuthorityManager.generateAuthorityKeySharePair(auth);
+                    AuthorityManager.SESSION.generateAuthorityKeySharePair(auth);
                     break;
 
                 case 2:
-                    AuthorityManager.generateAuthorityPolynomialValues(auth);
+                    AuthorityManager.SESSION.generateAuthorityPolynomialValues(auth);
                     break;
 
-                /* Need to know if we can keep these on the webserver */
+                /* TODO Need to know if we can keep these on the webserver */
                 case 3:
                     User u = User.find.byId(request().username());
-                    u.setKey(AuthorityManager.generateRealPrivateKeyShare(auth));
+                    u.setKey(AuthorityManager.SESSION.generateRealPrivateKeyShare(auth));
                     break;
 
                 default:
@@ -468,6 +482,11 @@ public class AuditServer extends Controller {
             System.out.println("\tP: " + p);
             System.out.println("\tPrecinct ID: " + precinctID);
 
+            Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>> total = p.getCastBallotTotal(PEK);
+
+            for (int i=0; i<total.getRaceSelections().size(); i++)
+                System.out.println("\t\t" + p.getCastBallotTotal(PEK).getRaceSelections().get(i).getRaceSelectionsMap());
+
             /* Store the total for that precinct in the list */
             precinctTotals.get(precinctID).add(p.getCastBallotTotal(PEK));
         }
@@ -500,8 +519,6 @@ public class AuditServer extends Controller {
             if(preExisting != null)
                 thisPrecinctTotal.add(preExisting);
 
-            System.out.println("Updating the precinct totals...");
-
             /* Tally the new precinctTotals using WebServerTallier*/
             Ballot<EncryptedRaceSelection<T>> b = WebServerTallier.tally(precinctID, thisPrecinctTotal, PEK);
 
@@ -526,7 +543,7 @@ public class AuditServer extends Controller {
             Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>> b = entry.getValue();
             String precinctID = entry.getKey();
 
-            Ballot<PlaintextRaceSelection> decryptB = null;
+            Ballot<PlaintextRaceSelection> decryptB;
 
             /* Load the ICryptoType */
             DHExponentialElGamalCryptoType t = new DHExponentialElGamalCryptoType();
@@ -544,7 +561,7 @@ public class AuditServer extends Controller {
             t.loadPrivateKeyShares(privateKeyShares.toArray(privateKeySharesArray));
 
             /* Now set it so that we can decrypt */
-            BallotCrypto.setCryptoType(t);
+            ballotCrypter = new BallotCrypter<>(t);
 
             /* Get these in case we want to publish them */
             Map<String, Map<String, Map<String, AdderInteger>>> partials = calculatePartials(b);
@@ -553,7 +570,7 @@ public class AuditServer extends Controller {
 
             try {
 
-                decryptB = BallotCrypto.decrypt(b);
+                decryptB = ballotCrypter.decrypt(b);
 
                 /* This will be the decrypted representation of the results by race */
                 Map<String, Map<String, Integer>> decryptedResults = WebServerTallier.getVoteTotals(decryptB);

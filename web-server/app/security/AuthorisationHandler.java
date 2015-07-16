@@ -29,7 +29,6 @@ public class AuthorisationHandler implements DeadboltHandler {
     }
 
     public Subject getSubject(Http.Context ctx) {
-        System.err.println("Getting subject...");
         return User.find.byId(ctx.session().get("username")); }
 
     public DynamicResourceHandler getDynamicResourceHandler(Http.Context ctx) { return null; }

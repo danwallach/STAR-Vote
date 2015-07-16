@@ -2,7 +2,6 @@ import com.avaje.ebean.Ebean;
 import play.Application;
 import play.GlobalSettings;
 import play.libs.Yaml;
-import supervisor.model.AuthorityManager;
 import utilities.BallotLoader;
 
 import java.util.List;
@@ -32,8 +31,6 @@ public class Global extends GlobalSettings {
         if (models.User.find.findRowCount() == 0) {
             Ebean.save((List) Yaml.load("initial-data.yml"));
         }
-
-        AuthorityManager.newSession(1,1,3);
 
     }
 }
