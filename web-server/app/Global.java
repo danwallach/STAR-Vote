@@ -2,8 +2,15 @@ import com.avaje.ebean.Ebean;
 import play.Application;
 import play.GlobalSettings;
 import play.libs.Yaml;
+import sexpression.ASEConverter;
+import sexpression.ASExpression;
+import sexpression.ListExpression;
+import supervisor.model.AuthorityManager;
 import utilities.BallotLoader;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 
@@ -31,6 +38,22 @@ public class Global extends GlobalSettings {
         if (models.User.find.findRowCount() == 0) {
             Ebean.save((List) Yaml.load("initial-data.yml"));
         }
+
+
+        try {
+
+            File authorityFile = new File("conf", "authority-data.inf");
+            Path authorityPath = authorityFile.toPath();
+
+            byte[] verbatimAuthorityInfo = Files.readAllBytes(authorityPath);
+            ASExpression authorityInfo = ASExpression.makeVerbatim(verbatimAuthorityInfo);
+            AuthorityManager.SESSION = ASEConverter.convertFromASE((ListExpression) authorityInfo);
+        }
+        catch (Exception e) {
+            System.err.println("Could not load the authority information");
+
+        }
+
 
     }
 }

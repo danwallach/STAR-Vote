@@ -380,13 +380,14 @@ public class AuditServer extends Controller {
     private static void storeAuthorityData(){
 
         try {
-            org.yaml.snakeyaml.Yaml yaml = new org.yaml.snakeyaml.Yaml();
-            FileWriter writer = new FileWriter(new File("conf", "authority-data.yml"));
-            yaml.dump(AuthorityManager.SESSION, writer);
-            /* On load, would probably say AuthorityManager.SESSION = loadedData*/
-            writer.close();
+            File authorityFile = new File("conf", "authority-data.inf");
+
+            FileOutputStream fos = new FileOutputStream(authorityFile);
+            fos.write(ASEConverter.convertToASE(AuthorityManager.SESSION).toVerbatim());
+            fos.flush();
+            fos.close();
         }
-        catch (IOException e) { System.err.println("Could not write the user file!"); }
+        catch (IOException e) { System.err.println("Could not write the authority file!"); }
     }
 
     @Security.Authenticated(Secured.class)
