@@ -1,9 +1,10 @@
-@(records: java.util.List[VotingRecord], published: java.util.List[VotingRecord], PEKexists: Boolean)
+@(records: java.util.List[VotingRecord], published: java.util.List[VotingRecord], PEKexists: Boolean, message: String)
 
 @admin("Publish") {
 
     <div style="text-align : center ;">
         <h2>Publish Election Results</h2>
+        @message
     </div>
 
     @checkTableTemplate(records, PEKexists)

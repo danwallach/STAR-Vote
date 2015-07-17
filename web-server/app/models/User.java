@@ -59,6 +59,8 @@ public class User extends Model implements Subject {
 
     public AdderPrivateKeyShare getKey() {
 
+        System.out.println(key);
+
         if (key == null) return null;
 
         try {
@@ -107,5 +109,9 @@ public class User extends Model implements Subject {
     @Override
     public String getIdentifier() {
         return username;
+    }
+
+    public String toString() {
+        return "[User] Username: " + username + ", Password: " + password + ", Name: " + name + ", UserRole: " + userRole + ", Key: " + key;
     }
 }

@@ -8,6 +8,7 @@ import crypto.adder.AdderPrivateKeyShare;
 import crypto.adder.AdderPublicKey;
 import crypto.adder.Polynomial;
 import models.*;
+import org.yaml.snakeyaml.Yaml;
 import play.data.Form;
 import play.data.validation.Constraints;
 import play.mvc.Controller;
@@ -202,67 +203,115 @@ public class AuditServer extends Controller {
     @Security.Authenticated(Secured.class)
     @Restrict(@Group("admin"))
     public static Result adminpublish() {
-        return ok(adminpublish.render(VotingRecord.getUnpublished(), VotingRecord.getPublished(), PEK != null));
+        return ok(adminpublish.render(VotingRecord.getUnpublished(), VotingRecord.getPublished(), PEK != null, ""));
     }
     
     @Security.Authenticated(Secured.class)
     @Restrict(@Group("admin"))
     public static Result publishresults() {
 
-        /* Reverse routing */
-        String records = request().getQueryString("records");
 
-        int start = 0;
 
-        Map<String, Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>>> summedTotals = getSummedTotals();
-        Map<String, List<Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>>>> precinctTotals = new TreeMap<>();
-        Map<String, Precinct<ExponentialElGamalCiphertext>> precinctMap;
+            /* Reverse routing */
+            String records = request().getQueryString("records");
+            String message = "There was an issue publishing the last set of records!";
+            int start = 0;
 
-        /* Grab each selected precinct and publish it */
-        while(start < records.length()) {
+        try {
 
-            int end = records.indexOf(",", start);
+            Map<String, Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>>> summedTotals = getSummedTotals();
+            Map<String, List<Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>>>> precinctTotals = new TreeMap<>();
+            Map<String, Precinct<ExponentialElGamalCiphertext>> precinctMap;
 
-            if (end == -1)
-                end = records.length();
+            /* Grab each selected precinct and publish it */
+            while (start < records.length()) {
 
-            /* Get the precinct ID from the query string */
-            String precinctID = records.substring(start, end);
+                int end = records.indexOf(",", start);
 
-            System.out.println(precinctID);
+                if (end == -1)
+                    end = records.length();
 
-            /* Pull out the current record to be published */
-            VotingRecord vr = VotingRecord.getRecord(precinctID);
-            
-            /* Publish the record */
-            vr.publish();
-            
-            /* Get the Precincts from this VotingRecord (Encrypted!) */
-            System.out.println("Getting the Precinct Map... ");
-            precinctMap = vr.getPrecinctMap();
-            System.out.println("\t" + precinctMap);
+                /* Get the precinct ID from the query string */
+                String precinctID = records.substring(start, end);
 
-            /* Add the results from the Precincts in this VotingRecord to precinctTotals */
-            System.out.println("Updating Precinct Totals... ");
-            precinctTotals = updatePrecinctTotals(precinctMap);
+                System.out.println(precinctID);
 
-            /* Move on to the next VotingRecord to be published */
-            start = end+1;
+                /* Pull out the current record to be published */
+                VotingRecord vr = VotingRecord.getRecord(precinctID);
+
+                /* Publish the record */
+                vr.openRecord();
+
+                /* Get the Precincts from this VotingRecord (Encrypted!) */
+                System.out.println("Getting the Precinct Map... ");
+                precinctMap = vr.getPrecinctMap();
+                System.out.println("\t" + precinctMap);
+
+                /* Add the results from the Precincts in this VotingRecord to precinctTotals */
+                System.out.println("Updating Precinct Totals... ");
+                precinctTotals = updatePrecinctTotals(precinctMap);
+
+                /* Move on to the next VotingRecord to be published */
+                start = end + 1;
+            }
+
+            System.out.println("Summed totals! " + summedTotals);
+
+            /* Combine the newly published result totals with the old totals */
+            System.out.println("Updating Summed Totals... ");
+            updateSummedTotals(summedTotals, precinctTotals);
+
+            System.out.println("Summed totals! " + summedTotals);
+            /* Decrypt and store the final updated totals for each Precinct */
+            System.out.println("Storing Decrypted Summed Totals... ");
+            storeDecryptedSummedTotals(summedTotals);
+
+            while (start < records.length()) {
+
+                int end = records.indexOf(",", start);
+
+                if (end == -1)
+                    end = records.length();
+
+                /* Get the precinct ID from the query string */
+                String precinctID = records.substring(start, end);
+
+                System.out.println(precinctID);
+
+                /* Pull out the current record to be published */
+                VotingRecord vr = VotingRecord.getRecord(precinctID);
+
+                /* Publish the record */
+                vr.publish();
+            }
+
+            message = "Published!";
+        }
+        catch (Exception e) {
+
+            /* If we run into a problem publishing, make sure to close all of the records */
+            while (start < records.length()) {
+
+                int end = records.indexOf(",", start);
+
+                if (end == -1)
+                    end = records.length();
+
+                /* Get the precinct ID from the query string */
+                String precinctID = records.substring(start, end);
+
+                /* Pull out the current record to be closed */
+                VotingRecord vr = VotingRecord.getRecord(precinctID);
+
+                /* Close the record */
+                vr.closeRecord();
+            }
+
         }
 
-        System.out.println("Summed totals! " + summedTotals);
-
-        /* Combine the newly published result totals with the old totals */
-        System.out.println("Updating Summed Totals... ");
-        updateSummedTotals(summedTotals, precinctTotals);
-
-        System.out.println("Summed totals! " + summedTotals);
-        /* Decrypt and store the final updated totals for each Precinct */
-        System.out.println("Storing Decrypted Summed Totals... ");
-        storeDecryptedSummedTotals(summedTotals);
-
         /* Return the webpage */
-        return ok(adminpublish.render(VotingRecord.getUnpublished(), VotingRecord.getPublished(), PEK != null));
+        return ok(adminpublish.render(VotingRecord.getUnpublished(), VotingRecord.getPublished(),
+                PEK != null, message));
     }
 
     @Security.Authenticated(Secured.class)
@@ -297,7 +346,7 @@ public class AuditServer extends Controller {
 
         }
 
-        return ok(adminpublish.render(VotingRecord.getUnpublished(), VotingRecord.getPublished(), PEK != null));
+        return ok(adminpublish.render(VotingRecord.getUnpublished(), VotingRecord.getPublished(), PEK != null, ""));
     }
 
     /*---------------------------------------- ADMIN METHODS -----------------------------------------------*/
@@ -380,12 +429,18 @@ public class AuditServer extends Controller {
     private static void storeAuthorityData(){
 
         try {
+            File userFile = new File("conf", "user-data.yml");
             File authorityFile = new File("conf", "authority-data.inf");
 
             FileOutputStream fos = new FileOutputStream(authorityFile);
             fos.write(ASEConverter.convertToASE(AuthorityManager.SESSION).toVerbatim());
             fos.flush();
             fos.close();
+
+            Yaml yaml = new Yaml();
+            FileWriter writer = new FileWriter(userFile);
+            yaml.dump(User.find.all(), writer);
+            writer.close();
         }
         catch (IOException e) { System.err.println("Could not write the authority file!"); }
     }
@@ -534,7 +589,7 @@ public class AuditServer extends Controller {
      *
      * @param summedTotals  the public running tally of totals mapped from precinct ID to precinct results Ballot
      */
-    private static void storeDecryptedSummedTotals(Map<String, Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>>> summedTotals) {
+    private static void storeDecryptedSummedTotals(Map<String, Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>>> summedTotals) throws Exception {
 
         System.out.println("Decrypting summedTotals...");
 
@@ -555,11 +610,16 @@ public class AuditServer extends Controller {
             AdderPrivateKeyShare[] privateKeySharesArray = new AdderPrivateKeyShare[authList.size()];
 
             /* Add all the authority keys */
-            for (User authority : authList)
+            for (User authority : authList) {
+                System.out.println(authority.getKey() + " " + authority.key);
                 privateKeyShares.add(authority.getKey());
+            }
+
 
             /* Load the privateKeyShares into the ICryptoType */
             t.loadPrivateKeyShares(privateKeyShares.toArray(privateKeySharesArray));
+            System.out.println(PEK);
+            t.loadPublicKey(PEK);
 
             /* Now set it so that we can decrypt */
             ballotCrypter = new BallotCrypter<>(t);
@@ -568,19 +628,13 @@ public class AuditServer extends Controller {
             Map<String, Map<String, Map<String, AdderInteger>>> partials = calculatePartials(b);
 
             /* Will want to publish partials to the bulletin board */
+            decryptB = ballotCrypter.decrypt(b);
 
-            try {
-
-                decryptB = ballotCrypter.decrypt(b);
-
-                /* This will be the decrypted representation of the results by race */
-                Map<String, Map<String, Integer>> decryptedResults = WebServerTallier.getVoteTotals(decryptB);
+            /* This will be the decrypted representation of the results by race */
+            Map<String, Map<String, Integer>> decryptedResults = WebServerTallier.getVoteTotals(decryptB);
 
                 /* Store totals in database */
-                DecryptedResult.create(new DecryptedResult(precinctID, decryptedResults, b));
-
-            }
-            catch (Exception e) {e.printStackTrace(); }
+            DecryptedResult.create(new DecryptedResult(precinctID, decryptedResults, b));
 
         }
     }

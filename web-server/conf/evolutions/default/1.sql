@@ -54,6 +54,7 @@ create table voting_record (
   id                        bigint not null,
   precinct_id               varchar(255),
   is_conflicted             boolean,
+  is_opened                 boolean,
   is_published              boolean,
   constraint pk_voting_record primary key (id))
 ;
