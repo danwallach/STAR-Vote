@@ -120,9 +120,9 @@ public class AuditServer extends Controller {
         Ebean.delete(DecryptedResult.find.where().eq("precinctID", "test").findList());
 
         Map<String, Integer> testMap = new HashMap<>();
-        testMap.put("Bob", 1000);
-        testMap.put("Joe", 225);
-        testMap.put("Martha", 599);
+        testMap.put("Bob Marley", 599);
+        testMap.put("Joe Rogan", 1);
+        testMap.put("Martha Stewart", 532);
 
         Map<String, Map<String,Integer>> testMapMap = new HashMap<>();
         testMapMap.put("test1", testMap);

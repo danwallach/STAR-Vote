@@ -1,4 +1,23 @@
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:400,800);
+
+#inner{
+    background-color:#FBECEE
+}
+
+#content {
+    background-color:#FBECEE
+}
+
+#header {
+    background-color:#FBECEE
+}
+
+.vSpace{
+    background-color:#FBECEE
+}
+
+
+
 body {
     font-family: 'Open Sans', sans-serif;
 }
@@ -12,7 +31,7 @@ body {
     .chart {
         background: url("http://cl.ly/QSpc/bg-chart.png") right top repeat-x;
         height: 425px;
-        margin: 0 auto -32px;
+        margin: 10px auto -32px;
     }
 }
 .chart li {
@@ -34,12 +53,12 @@ body {
         display: inline-block;
         height: 425px;
         margin: 0 1.8% 0 0;
-        width: 15%;
+        width: 14%;
     }
 }
 .chart .axis {
     display: none;
-    top: -45px;
+    top: -17px;
     width: 8%;
 }
 @media (min-width: 700px) {
@@ -52,23 +71,39 @@ body {
     margin: -9px 0 71px 0;
 }
 .chart .percent {
-    letter-spacing: -3px;
-    opacity: .4;
+    letter-spacing: -1px;
+    opacity: .8;
     width: 100%;
-    font-size: 30px;
     font-size: 1.875rem;
 }
 @media (min-width: 700px) {
     .chart .percent {
         position: absolute;
-        font-size: 62px;
-        font-size: 3.875rem;
+        font-size: 2.125rem;
     }
 }
 .chart .percent span {
-    font-size: 30px;
-    font-size: 1.875rem;
+    font-size: 1.5rem;
 }
+
+.chart .percent:hover {
+    display:inline; position:absolute; color:#111;
+    border:1px solid #DCA; background:#fffAF0;
+    z-index: 9999;
+
+}
+
+.chart .percent:hover:after {
+    font-size: 1.5rem;
+    border: 1px solid #fc0;
+    padding: 3px 6px;
+    background: #fffea1;
+    content: attr(title);
+    position: absolute;
+    right: -40px;
+    top: -26px;
+}
+
 .chart .skill {
     font-weight: 800;
     opacity: .5;
@@ -105,34 +140,4 @@ body {
     background-image: -moz-linear-gradient(#ff9e9e, #ff6b6b 70%);
     background-image: -webkit-linear-gradient(#ff9e9e, #ff6b6b 70%);
     background-image: linear-gradient(#ff9e9e, #ff6b6b 70%);
-}
-.chart .lime {
-    background: #97f464;
-    border: 1px solid #97f464;
-    background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4gPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJncmFkIiBncmFkaWVudFVuaXRzPSJvYmplY3RCb3VuZGluZ0JveCIgeDE9IjAuNSIgeTE9IjAuMCIgeDI9IjAuNSIgeTI9IjEuMCI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2I3Zjc5NCIvPjxzdG9wIG9mZnNldD0iNzAlIiBzdG9wLWNvbG9yPSIjOTdmNDY0Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmFkKSIgLz48L3N2Zz4g');
-    background-size: 100%;
-    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #b7f794), color-stop(70%, #97f464));
-    background-image: -moz-linear-gradient(#b7f794, #97f464 70%);
-    background-image: -webkit-linear-gradient(#b7f794, #97f464 70%);
-    background-image: linear-gradient(#b7f794, #97f464 70%);
-}
-.chart .peach {
-    background: #ffcd92;
-    border: 1px solid #ffcd92;
-    background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4gPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJncmFkIiBncmFkaWVudFVuaXRzPSJvYmplY3RCb3VuZGluZ0JveCIgeDE9IjAuNSIgeTE9IjAuMCIgeDI9IjAuNSIgeTI9IjEuMCI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZmZTRjNSIvPjxzdG9wIG9mZnNldD0iNzAlIiBzdG9wLWNvbG9yPSIjZmZjZDkyIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmFkKSIgLz48L3N2Zz4g');
-    background-size: 100%;
-    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffe4c5), color-stop(70%, #ffcd92));
-    background-image: -moz-linear-gradient(#ffe4c5, #ffcd92 70%);
-    background-image: -webkit-linear-gradient(#ffe4c5, #ffcd92 70%);
-    background-image: linear-gradient(#ffe4c5, #ffcd92 70%);
-}
-.chart .grape {
-    background: #ab64f4;
-    border: 1px solid #ab64f4;
-    background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4gPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJncmFkIiBncmFkaWVudFVuaXRzPSJvYmplY3RCb3VuZGluZ0JveCIgeDE9IjAuNSIgeTE9IjAuMCIgeDI9IjAuNSIgeTI9IjEuMCI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2M1OTRmNyIvPjxzdG9wIG9mZnNldD0iNzAlIiBzdG9wLWNvbG9yPSIjYWI2NGY0Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmFkKSIgLz48L3N2Zz4g');
-    background-size: 100%;
-    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #c594f7), color-stop(70%, #ab64f4));
-    background-image: -moz-linear-gradient(#c594f7, #ab64f4 70%);
-    background-image: -webkit-linear-gradient(#c594f7, #ab64f4 70%);
-    background-image: linear-gradient(#c594f7, #ab64f4 70%);
 }

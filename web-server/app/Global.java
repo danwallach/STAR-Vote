@@ -57,7 +57,6 @@ public class Global extends GlobalSettings {
 
             System.out.println("Opening and reading the user information file...");
             Object o = Yaml.load("user-data.yml");
-            System.out.println(o);
 
             for (User u : ((List<User>)o)) {
 
