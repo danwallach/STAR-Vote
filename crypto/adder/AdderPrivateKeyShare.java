@@ -159,5 +159,9 @@ public class AdderPrivateKeyShare extends AdderKey {
         return "p" + p.toString() + "g" + g.toString() + "x" + x.toString() + "f" + f.toString();
     }
 
+    public boolean equals(AdderPrivateKeyShare pks) {
+        return this.p.equals(pks.p) && this.g.equals(pks.g) && this.f.equals(pks.f) && this.x.equals(pks.x);
+    }
+
 
 }
