@@ -60,11 +60,12 @@ public class Global extends GlobalSettings {
 
             for (User u : ((List<User>)o)) {
 
-                System.out.println("Saving the user information... ");
-                System.out.println(u);
-
-                if (User.find.where().eq("username", u.getIdentifier()) == null)
+                if (User.find.where().eq("username", u.getIdentifier()).findList().isEmpty()) {
+                    System.out.println("Saving the user information... ");
+                    System.out.println(u);
                     Ebean.save(u);
+                    System.out.println(u.getKey() + " " + u.getKey());
+                }
             }
 
         }

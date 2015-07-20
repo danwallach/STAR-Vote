@@ -46,11 +46,12 @@ public class User extends Model implements Subject {
 
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
-
             objectOutputStream.writeObject(key);
             objectOutputStream.close();
 
             this.key = new String(Base64.encodeBase64(byteArrayOutputStream.toByteArray()));
+            byteArrayOutputStream.close();
+
             save();
         }
         catch (IOException e) { e.printStackTrace(); }
@@ -59,8 +60,6 @@ public class User extends Model implements Subject {
 
     public AdderPrivateKeyShare getKey() {
 
-        System.out.println(key);
-
         if (key == null) return null;
 
         try {
@@ -68,7 +67,10 @@ public class User extends Model implements Subject {
 
             ObjectInputStream objectInputStream = new ObjectInputStream(new ByteArrayInputStream(bytes));
 
-            return (AdderPrivateKeyShare)objectInputStream.readObject();
+            AdderPrivateKeyShare privateKeyShare = (AdderPrivateKeyShare)objectInputStream.readObject();
+            objectInputStream.close();
+
+            return privateKeyShare;
         }
         catch (IOException | ClassNotFoundException | ClassCastException e) { e.printStackTrace(); }
 

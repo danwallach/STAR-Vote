@@ -292,6 +292,8 @@ public class AuditServer extends Controller {
         }
         catch (Exception e) {
 
+            e.printStackTrace();
+
             /* If we run into a problem publishing, make sure to close all of the records */
             while (start < records.length()) {
 
@@ -309,6 +311,7 @@ public class AuditServer extends Controller {
                 /* Close the record */
                 vr.closeRecord();
             }
+
 
         }
 
@@ -614,71 +617,74 @@ public class AuditServer extends Controller {
 
             /* Add all the authority keys */
             for (User authority : authList) {
-                System.out.println(authority.getKey() + " " + authority.key);
+                System.out.println(authority.name + ":\n\tKey: " + authority.getKey() + "\n\tKey Data: " + authority.key);
                 privateKeyShares.add(authority.getKey());
             }
 
 
             /* Load the privateKeyShares into the ICryptoType */
+            System.out.println("Loading the CryptoType...");
             t.loadPrivateKeyShares(privateKeyShares.toArray(privateKeySharesArray));
-            System.out.println(PEK);
+            System.out.println("PEK: " + PEK);
             t.loadPublicKey(PEK);
 
             /* Now set it so that we can decrypt */
             ballotCrypter = new BallotCrypter<>(t);
 
+            System.out.println("Calculating partials...");
             /* Get these in case we want to publish them */
-            Map<String, Map<String, Map<String, AdderInteger>>> partials = calculatePartials(b);
+            Map<String, Map<String, Map<String, AdderInteger>>> partials = calculatePartials(b, privateKeyShares, authList);
 
+            System.out.println(AuthorityManager.SESSION);
+
+            System.out.println("Decrypting...");
             /* Will want to publish partials to the bulletin board */
             decryptB = ballotCrypter.decrypt(b);
 
+            System.out.println("Calculating vote totals...");
             /* This will be the decrypted representation of the results by race */
             Map<String, Map<String, Integer>> decryptedResults = WebServerTallier.getVoteTotals(decryptB);
 
-                /* Store totals in database */
+            System.out.println("Creating database representation...");
+            /* Store totals in database */
             DecryptedResult.create(new DecryptedResult(precinctID, decryptedResults, b));
 
         }
     }
 
-    private static Map<String, Map<String, Map<String, AdderInteger>>> calculatePartials(Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>> b) {
-
-        List<User> authList = User.find.where().eq("userRole", "authority").ne("key", null).findList();
+    private static Map<String, Map<String, Map<String, AdderInteger>>> calculatePartials(
+            Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>> b, List<AdderPrivateKeyShare> privateKeyShares, List<User> authList) {
 
         /* This will be a map for each encrypted race selection to a map of candidates to map of partial decryptions by authority */
         Map<String, Map<String, Map<String, AdderInteger>>> partialsMap = new TreeMap<>();
 
         for (EncryptedRaceSelection<ExponentialElGamalCiphertext> ers : b.getRaceSelections()) {
 
+            System.out.println("Creating entry for <" + ers.getTitle() + ">...");
             partialsMap.put(ers.getTitle(), new TreeMap<>());
 
             for (Map.Entry<String, ExponentialElGamalCiphertext> entry : ers.getRaceSelectionsMap().entrySet()) {
 
+                System.out.println("Creating entry for <" + entry.getKey() + ">...");
                 ExponentialElGamalCiphertext ctext = entry.getValue();
 
                 partialsMap.get(ers.getTitle()).put(entry.getKey(), new TreeMap<>());
 
                 List<AdderInteger> coeffs = new ArrayList<>();
-                List<AdderPrivateKeyShare> privateKeyShares = new ArrayList<>();
-
-                for (User authority : authList)
-                    privateKeyShares.add(authority.getKey());
 
                 for (int i=0; i<privateKeyShares.size(); i++) {
                     coeffs.add(new AdderInteger(i));
                 }
 
+                System.out.println("Calculating polynomial...");
                 Polynomial poly = new Polynomial(PEK.getP(), PEK.getG(), PEK.getF(), coeffs);
                 List<AdderInteger> lagrangeCoeffs = poly.lagrange();
 
-                for (User authority : authList) {
-
-                    AdderPrivateKeyShare pks = authority.getKey();
+                for (int i=0; i<privateKeyShares.size();i++) {
 
                     /* Partially decrypt for each share */
-                    AdderInteger partial = pks.partialDecrypt(ctext).pow(lagrangeCoeffs.get(privateKeyShares.indexOf(pks)));
-                    partialsMap.get(ers.getTitle()).get(entry.getKey()).put(authority.name, partial);
+                    AdderInteger partial = privateKeyShares.get(i).partialDecrypt(ctext).pow(lagrangeCoeffs.get(i));
+                    partialsMap.get(ers.getTitle()).get(entry.getKey()).put(authList.get(i).name, partial);
 
                 }
 
