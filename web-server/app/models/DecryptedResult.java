@@ -53,8 +53,12 @@ public class DecryptedResult extends Model {
         this.precinctResultsBallot  = ballotToString(precinctResultsBallot);
 
 
-        for(Map.Entry<String, Map<String, Integer>> raceResult : raceResults.entrySet())
-            this.raceResults.put(raceResult.getKey(), new RaceResult(this, raceResult.getKey(), raceResult.getValue()));
+        for(Map.Entry<String, Map<String, Integer>> raceResultMap : raceResults.entrySet()) {
+            RaceResult raceResult = new RaceResult(this, raceResultMap.getKey(), raceResultMap.getValue());
+            System.out.println(raceResult);
+            this.raceResults.put(raceResultMap.getKey(), raceResult);
+            System.out.println(raceResults);
+        }
     }
 
     /**
@@ -81,7 +85,7 @@ public class DecryptedResult extends Model {
         return find.where().ieq("precinctID", precinctID).findUnique();
     }
 
-    public Map<String, RaceResult> getResults(String precinctID) {
+    public Map<String, RaceResult> getResults() {
         return raceResults;
     }
 

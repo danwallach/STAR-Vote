@@ -32,6 +32,8 @@ GET         /authority                      controllers.AuditServer.authority()
 GET         /authority/keygeneration        controllers.AuditServer.keygeneration()
 POST        /authority/keygeneration        controllers.AuditServer.updateprocedure()
 
+GET         /results                        controllers.AuditServer.results()
+
 # Map static resources from the /public folder to the /assets URL path
 GET         /files                          controllers.AuditServer.getBallotHtmlFile(ballotid: String ?= "none")
 GET         /assets/*file                   controllers.Assets.at(path="/public", file)

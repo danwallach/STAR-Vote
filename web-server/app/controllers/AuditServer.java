@@ -2,6 +2,7 @@ package controllers;
 
 import be.objectify.deadbolt.java.actions.Group;
 import be.objectify.deadbolt.java.actions.Restrict;
+import com.avaje.ebean.Ebean;
 import crypto.*;
 import crypto.adder.AdderInteger;
 import crypto.adder.AdderPrivateKeyShare;
@@ -113,6 +114,24 @@ public class AuditServer extends Controller {
         return ok(aboutUs.render());
     }
 
+    public static Result results() {
+
+
+        Ebean.delete(DecryptedResult.find.where().eq("precinctID", "test").findList());
+
+        Map<String, Integer> testMap = new HashMap<>();
+        testMap.put("Bob", 1000);
+        testMap.put("Joe", 225);
+        testMap.put("Martha", 599);
+
+        Map<String, Map<String,Integer>> testMapMap = new HashMap<>();
+        testMapMap.put("test1", testMap);
+        testMapMap.put("test2", testMap);
+
+        DecryptedResult.create(new DecryptedResult("test", testMapMap, new Ballot<>(null,null,null)));
+
+        return ok(resultspage.render(DecryptedResult.find.all()));
+    }
    /**
      * Confirms ballot was cast by looking for hash in cast ballot database
      *

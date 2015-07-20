@@ -2,10 +2,15 @@ import play.Project._
 import sbt.Keys._
 import sbt._
 
+
+
 object ApplicationBuild extends Build {
 
   val appName         = "web-server"
   val appVersion      = "1.0-SNAPSHOT"
+
+  net.litola.SassPlugin.sassSettings
+  net.litola.SassPlugin.sassOptions := Seq("--compass")
 
   val appDependencies = Seq(
     // Add your project dependencies here,

@@ -1,0 +1,40 @@
+@(results: java.util.List[DecryptedResult])
+
+@main("Results") {
+
+    <link rel="stylesheet" href="@routes.Assets.at("stylesheets/graph.css")">
+
+
+    @for(result <- results) {
+
+        <br>
+        <br>
+        <br>
+        <br>
+
+        <b>@result.precinctID</b>
+
+        <br>
+        <br>
+        <br>
+
+        @for(raceResult <- result.raceResults.values()) {
+
+            @raceResultGraph(raceResult.raceName, raceResult.getCandidateResults, Collections.max(raceResult.getCandidateResults.values()), raceResult.numVotes)
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+        }
+
+
+        <br>
+        <br>
+
+    }
+
+
+}

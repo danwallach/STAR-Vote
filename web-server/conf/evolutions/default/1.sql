@@ -29,6 +29,8 @@ create table decrypted_result (
 create table race_result (
   id                        bigint not null,
   race_name                 varchar(255),
+  num_votes                 integer,
+  candidate_results         TEXT,
   owner_id                  bigint,
   constraint pk_race_result primary key (id))
 ;
