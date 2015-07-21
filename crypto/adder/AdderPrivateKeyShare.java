@@ -159,9 +159,25 @@ public class AdderPrivateKeyShare extends AdderKey {
         return "p" + p.toString() + "g" + g.toString() + "x" + x.toString() + "f" + f.toString();
     }
 
-    public boolean equals(AdderPrivateKeyShare pks) {
+    public boolean equals(Object o) {
+
+        if (!(o instanceof AdderPrivateKeyShare)) return false;
+
+        AdderPrivateKeyShare pks = (AdderPrivateKeyShare)o;
         return this.p.equals(pks.p) && this.g.equals(pks.g) && this.f.equals(pks.f) && this.x.equals(pks.x);
     }
 
+
+    public int hashCode(){
+
+        int hash = 17;
+        hash = 89*hash + (this.p != null ? this.p.hashCode() : 0);
+        hash = 89*hash + (this.g != null ? this.g.hashCode() : 0);
+        hash = 89*hash + (this.x != null ? this.x.hashCode() : 0);
+        hash = 89*hash + (this.f != null ? this.f.hashCode() : 0);
+
+        return hash;
+
+    }
 
 }
