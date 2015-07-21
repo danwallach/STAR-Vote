@@ -27,7 +27,6 @@ package printer;
 
 import auditorium.Bugout;
 import com.princexml.Prince;
-import com.sun.org.apache.xml.internal.serialize.LineSeparator;
 import crypto.PlaintextRaceSelection;
 import tap.BallotImageHelper;
 import votebox.AuditoriumParams;
@@ -43,9 +42,7 @@ import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.print.*;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -87,7 +84,7 @@ public class Printer{
      */
     public Printer(File ballotFile, List<List<String>> races, String confFilePath, boolean test) {
         _constants = new AuditoriumParams(confFilePath);
-        _printerConstants = new AuditoriumParams("printerLinux.conf");
+        _printerConstants = new AuditoriumParams("printer.conf");
         _currentBallotFile =  ballotFile;
         _races = races;
         this.test = test;
@@ -120,7 +117,7 @@ public class Printer{
      */
     public Printer() {
         _constants = new AuditoriumParams("supervisor.conf");
-        _printerConstants = new AuditoriumParams("printerLinux.conf");
+        _printerConstants = new AuditoriumParams("printer.conf");
     }
 
     /**
@@ -156,6 +153,8 @@ public class Printer{
 
         /* Print to an HTML file. Parameters to be used: */
         String htmlFileName = cleanFilePath + "PrintableBallot.html";
+
+        System.out.println("Planning on printing HTML file to " + htmlFileName);
 
         /* TODO actually read in these from somewhere */
         Boolean useTwoColumns = true;
@@ -227,76 +226,45 @@ public class Printer{
         /* Generate the HTML file with the properties set above. */
         HTMLPrinter.generateHTMLFile(htmlFileName, useTwoColumns, altPath, _constants, columnsToPrint);
 
-        /* Get the file that is to be read for commands and its parameter separator string. */
-        String filename = _printerConstants.getCommandsFileFilename();
-        String fileSeparator = _printerConstants.getCommandsFileParameterSeparator();
-
-        /* Open the file. */
-        File file = new File (filename);
-
-        /* If the file does not exist, then print error. */
-        if (!file.exists()) System.err.println("The specified file could not be found: " + filename);
-
-        /* Create holders for the two commands. */
-        String convertHTMLtoPDFCommandLine = "";
-        String printPDFCommandLine = "";
-
-        /* Create the reader. */
-        BufferedReader reader;
-
-        /* Try to read the HTML into the converter */
-        try {
-            reader = new BufferedReader(new FileReader(file.getAbsoluteFile()));
-            convertHTMLtoPDFCommandLine = reader.readLine();
-            printPDFCommandLine = reader.readLine();
-            reader.close();
-        }
-        catch (IOException e) { System.err.println("Unable to read from file " + filename); e.printStackTrace(); }
+        /* Get the file separator for this OS */
+        String separator = File.separator;
 
         /* Get the OS. */
         String currentOS = _constants.getOS();
 
-        if (currentOS.equals("Windows")) {
+        String exePath = currentOS.equals("Windows") ? "C:\\Program Files (x86)\\Prince\\Engine\\bin\\prince.exe" :
+                         currentOS.equals("Linux")   ? "/usr/local/bin/prince" : "";
 
-            /* Create arrays of the command and its parameters (to use with the exec method in JDK 7+ */
-            String[] convertHTMLtoPDFCommandArray = convertHTMLtoPDFCommandLine.split(fileSeparator);
-            String[] printPDFCommandArray = printPDFCommandLine.split(fileSeparator);
 
-            System.out.println(Arrays.asList(convertHTMLtoPDFCommandArray));
-            System.out.println(Arrays.asList(printPDFCommandArray));
+        /* Attempt to convert HTML to PDF. */
+        try {
 
-            /* Attempt to convert HTML to PDF. */
-            try {
-                new ProcessBuilder(convertHTMLtoPDFCommandArray).start();
-                //Runtime.getRuntime().exec(convertHTMLtoPDFCommandArray);
-            }
-            catch (IOException e) { System.err.println("Converting HTML to PDF failed."); e.printStackTrace(); }
+            Prince prince = new Prince(exePath);
+            prince.addStyleSheet(System.getProperty("user.dir") + separator + "s1.css");
 
-            /* Need to make the thread wait for the PDF to get created. */
-            long start = System.currentTimeMillis();
-            while (System.currentTimeMillis() - start < 1000);
-
-            /* Attempt to print PDF. */
-            try {
-                new ProcessBuilder(printPDFCommandArray).start();
-                //Runtime.getRuntime().exec(printPDFCommandArray);
-            }
-            catch (IOException e) { System.err.println("Printing PDF failed."); e.printStackTrace(); }
-        }
-        else if (currentOS.equals("Linux")) {
-
-            /* Attempt to convert HTML to PDF. */
-            try {
-                Prince prince = new Prince("/usr/local/bin/prince");
-                System.out.println("Location: " + System.getProperty("user.dir") + "/ballot_printout.pdf");
-                prince.convert(htmlFileName, System.getProperty("user.dir") + "/ballot_printout.pdf");
-            }
-            catch (IOException e) { System.err.println("Converting HTML to PDF failed."); e.printStackTrace(); }
+            System.out.println("Location: " + System.getProperty("user.dir") + separator + "PrintableBallot.pdf");
+            prince.convert(htmlFileName, System.getProperty("user.dir") + separator + "PrintableBallot.pdf");
 
             /* Need to make the thread wait for the PDF to get created. */
             long start = System.currentTimeMillis();
             while (System.currentTimeMillis() - start < 1000) ;
+
+            String foxitPath = currentOS.equals("Windows") ? "C:\\Program Files (x86)\\Foxit Software\\Foxit Reader\\FoxitReader.exe" :
+                               currentOS.equals("Linux")   ? "/usr/local/bin/FoxitReader" : "";
+
+            File testFile = new File(foxitPath);
+
+            /* Fix so we don't have to worry about the type of install. hopefully */
+            foxitPath = !testFile.exists() && currentOS.equals("Windows") ?  "C:\\Program Files\\Foxit Software\\Foxit Reader\\Foxit Reader.exe" : foxitPath;
+
+            String[] printPDFCommandArray = {foxitPath, "/t",
+                                             System.getProperty("user.dir") + separator + "PrintableBallot.pdf",
+                                             _printerConstants.getPrinterName() };
+
+            new ProcessBuilder(printPDFCommandArray).start();
         }
+        catch (IOException e) { System.err.println("Converting HTML to PDF failed."); e.printStackTrace(); }
+
         return true;
 	}
 

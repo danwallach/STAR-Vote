@@ -33,6 +33,7 @@ public class VotingRecord extends Model {
     public Map<String, SupervisorRecord> supervisorRecords = new HashMap<>();
     
     public boolean isConflicted;
+    public boolean isOpened = false;
     public boolean isPublished=false;
 
     /**
@@ -109,10 +110,22 @@ public class VotingRecord extends Model {
     /**
      * Publishes this VotingRecord which makes its PrecinctMap available
      */
-    public void publish() {
+    public void openRecord() {
         
         /* Check that it is valid to publish this */
         if (!isConflicted) {
+            isOpened = true;
+            this.save();
+        }
+    }
+
+    public void closeRecord() {
+        isOpened = false;
+        this.save();
+    }
+
+    public void publish() {
+        if (isOpened) {
             isPublished = true;
             this.save();
         }
@@ -124,7 +137,7 @@ public class VotingRecord extends Model {
      */
     public Map<String, Precinct<ExponentialElGamalCiphertext>> getPrecinctMap() {
         
-        if (isPublished) {
+        if (isOpened) {
 
             Collection<SupervisorRecord> var = supervisorRecords.values();
             List<SupervisorRecord> sr = Arrays.asList(var.toArray(new SupervisorRecord[var.size()]));
@@ -204,7 +217,7 @@ public class VotingRecord extends Model {
      * @return appropriately formatted String representation
      */
     public String toString(){
-         return id + ":" + supervisorRecords.size() + ":" + isConflicted + ":" + isPublished;
+         return id + ":" + supervisorRecords.size() + ":" + isConflicted + ":" + isOpened + ":" + isPublished;
     }
     
 }

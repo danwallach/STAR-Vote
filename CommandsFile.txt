@@ -1,5 +1,0 @@
-/usr/local/bin/prince ~/Workspace/STAR-Vote/tmp/ballots/ballot/PrintableBallot.html -o ~/Workspace/STAR-Vote/printout.pdf
-
-
-The first line converts an HTML file to a PDF document using (the poorly named) Prince XML.
-The second line prints the PDF document using Foxit Reader.

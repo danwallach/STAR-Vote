@@ -133,8 +133,9 @@ public class Precinct<T extends AHomomorphicCiphertext<T>> implements Serializab
      */
     public void closePolls() {
 
-        /* Challenge each committed Ballot */
-        committed.keySet().forEach(this::challengeBallot);
+        /* Move each ballot in committed to the challenged list */
+        challenged.addAll(committed.values());
+        committed.clear();
     }
 
     /**
@@ -164,7 +165,7 @@ public class Precinct<T extends AHomomorphicCiphertext<T>> implements Serializab
 
                     /* Confirm that the vote proof is valid */
                     if (!ers.verify(0, 1, PEK)) {
-                        Bugout.err("!!!Ballot failed NIZK test!!!");
+                        Bugout.err("!!!Ballot failed NIZK test!!! " + bal.getSize() + " " + ers.getRaceSelectionsMap());
                         return null;
                     }
 
@@ -201,10 +202,10 @@ public class Precinct<T extends AHomomorphicCiphertext<T>> implements Serializab
         for(String id :  results.keySet()) {
 
             /* Get the race */
-            Race thisRace = results.get(id);
+            Race<T> thisRace = results.get(id);
 
             /* Get the homomorphically tallied vote for this race */
-            EncryptedRaceSelection<T> vote = results.get(id).sumRaceSelections();
+            EncryptedRaceSelection<T> vote = thisRace.sumRaceSelections();
 
 
             /* Verify the voteProof and error off if bad */

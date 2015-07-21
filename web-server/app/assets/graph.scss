@@ -1,0 +1,127 @@
+@import "compass/css3";
+
+// FONT IMPORT
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,800);
+
+// VARIABLES
+
+// Color Pallette
+$orange:        #ff9e2c;
+$gray:          #999;
+$grayLight:     lighten($gray, 20%);
+$teal:          #4ecdc4;
+$salmon:        #ff6b6b;
+$lime:          #97f464;
+$peach:         lighten($orange, 20%);
+$grape:         #ab64f4;
+
+// MIXINS
+// Calculates REMs out of pixels
+@mixin font-size($sizeValue: 16) {
+  font-size: $sizeValue + px;
+  font-size: ($sizeValue / 16) + rem;
+}
+
+// Media Queries
+@mixin bp($point) {
+  @if $point == ocean {
+    @media (min-width: 1000px) { @content; }
+  }
+  @else if $point == lake {
+    @media (min-width: 700px) { @content; }
+  }
+}
+
+// STYLES
+
+body { font-family: 'Open Sans', sans-serif; }
+
+.chart {
+  clear: both;
+  padding: 0;
+  width: 100%;
+  @include bp(lake) {
+    background: url("http://cl.ly/QSpc/bg-chart.png") right top repeat-x;
+    height: 425px;
+    margin: 0 auto -32px;
+  }
+  li {
+    display: block;
+    height: 20px;
+    padding: (25px) 0;
+    position: relative;
+    text-align: center;
+    vertical-align: bottom;
+    @include border-radius(4px 4px 0 0);
+    @include box-shadow(inset 0 1px 0 0 rgba(255,255,255,.6));
+    @include bp(lake) {
+      display: inline-block;
+      height: 425px;
+      margin: 0 1.8% 0 0;
+      width: 15%;
+    }
+  }
+  .axis {
+    display: none;
+    top: -45px;
+    width: 8%;
+    @include bp(lake) {
+      display: inline-block;
+    }
+  }
+  .label {
+    background: $grayLight;
+    margin: -9px 0 71px 0;
+  }
+  .percent {
+    letter-spacing: -3px;
+    opacity: .4;
+    width: 100%;
+    @include font-size(30);
+    @include bp(lake) {
+      position: absolute;
+      @include font-size(62);
+    }
+    span {
+      @include font-size(30);
+    }
+  }
+  .skill {
+    font-weight: 800;
+    opacity: .5;
+    overflow: hidden;
+    text-transform: uppercase;
+    width: 100%;
+    @include font-size(14);
+    @include bp(lake) {
+      bottom: 20px;
+      position: absolute;
+      @include font-size(16);
+    }
+  }
+  .teal {
+    background: $teal;
+    border: 1px solid $teal;
+    @include background-image(linear-gradient(lighten($teal, 10%), $teal 70%));
+  }
+  .salmon {
+    background: $salmon;
+    border: 1px solid $salmon;
+    @include background-image(linear-gradient(lighten($salmon, 10%), $salmon 70%));
+  }
+  .lime {
+    background: $lime;
+    border: 1px solid $lime;
+    @include background-image(linear-gradient(lighten($lime, 10%), $lime 70%));
+  }
+  .peach {
+    background: $peach;
+    border: 1px solid $peach;
+    @include background-image(linear-gradient(lighten($peach, 10%), $peach 70%));
+  }
+  .grape {
+    background: $grape;
+    border: 1px solid $grape;
+    @include background-image(linear-gradient(lighten($grape, 10%), $grape 70%));
+  }
+}

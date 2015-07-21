@@ -29,6 +29,8 @@ create table decrypted_result (
 create table race_result (
   id                        bigint not null,
   race_name                 varchar(255),
+  num_votes                 integer,
+  candidate_results         TEXT,
   owner_id                  bigint,
   constraint pk_race_result primary key (id))
 ;
@@ -45,7 +47,7 @@ create table user (
   username                  varchar(255) not null,
   password                  varchar(255),
   name                      varchar(255),
-  type                      varchar(255),
+  user_role                 varchar(255),
   key                       TEXT,
   constraint pk_user primary key (username))
 ;
@@ -54,6 +56,7 @@ create table voting_record (
   id                        bigint not null,
   precinct_id               varchar(255),
   is_conflicted             boolean,
+  is_opened                 boolean,
   is_published              boolean,
   constraint pk_voting_record primary key (id))
 ;

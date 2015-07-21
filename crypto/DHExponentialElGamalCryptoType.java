@@ -4,6 +4,7 @@ import crypto.adder.*;
 import crypto.exceptions.BadKeyException;
 import crypto.exceptions.CiphertextException;
 import crypto.exceptions.KeyNotLoadedException;
+import supervisor.model.AuthorityManager;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -15,6 +16,7 @@ import java.security.InvalidKeyException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * The crypto-type associated with an Adder-type system, or more generally with
@@ -22,9 +24,9 @@ import java.util.List;
  *
  * Created by Matthew Kindy II on 11/5/2014.
  */
-public class DHExponentialElGamalCryptoType implements ICryptoType {
+public class DHExponentialElGamalCryptoType implements ICryptoType<ExponentialElGamalCiphertext> {
 
-    private AdderPrivateKeyShare[] privateKeyShares;
+    private List<AdderPrivateKeyShare> privateKeyShares;
     private AdderPublicKey PEK;
 
     /**
@@ -41,24 +43,16 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
      * @throws CipherException
      * @throws CiphertextException
      */
-    public <T extends AHomomorphicCiphertext> byte[] decrypt(T ciphertext) throws InvalidKeyException, KeyNotLoadedException, CipherException, CiphertextException {
-
-        /* Check if this is the right type of AHomomorphicCiphertext */
-        if(!(ciphertext instanceof ExponentialElGamalCiphertext))
-            throw new CiphertextException("The ciphertext type did not match the crypto type!");
-
-        ExponentialElGamalCiphertext eegCiphertext = ((ExponentialElGamalCiphertext) ciphertext);
+    public byte[] decrypt(ExponentialElGamalCiphertext ciphertext) throws InvalidKeyException, KeyNotLoadedException, CipherException, CiphertextException {
 
         /* Check if the private key shares have been loaded */
         if(privateKeyShares == null)
             throw new KeyNotLoadedException("The private key shares have not yet been loaded! [Decryption]");
 
         /* Partially decrypt to get g^m */
-        List<AdderInteger> partialDecryptions = partialDecrypt(eegCiphertext);
+        List<AdderInteger> partialDecryptions = partialDecrypt(ciphertext);
 
-        return decryptMappedPlaintext(partialDecryptions, eegCiphertext.size, eegCiphertext.getH());
-
-
+        return fullDecrypt(partialDecryptions, AuthorityManager.SESSION.getPolynomialCoefficients(privateKeyShares), ciphertext);
     }
 
     /**
@@ -66,12 +60,11 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
      * final decryption.
      *
      * @param partials  the partial decryptions of a ciphertext
-     * @param size      the size of the original ciphertext
-     * @param H         h^r * f^m
-     *
+     * @param coeffs
+     * @param ctext
      * @return          the full decryption as a byte[]
      */
-    private byte[] decryptMappedPlaintext(List<AdderInteger> partials, int size, AdderInteger H) {
+    private byte[] fullDecrypt(List<AdderInteger> partials, List<AdderInteger> coeffs, ExponentialElGamalCiphertext ctext) {
 
         /*
 
@@ -89,16 +82,21 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
 
     	*/
 
+        Polynomial poly = new Polynomial(PEK.getP(), PEK.getG(), PEK.getF(), coeffs);
+        List<AdderInteger> lagrangeCoeffs = poly.lagrange();
+
         /* Use this to multiply all the values together */
         AdderInteger total = AdderInteger.ONE;
 
-        for (AdderInteger partial : partials) {
-            total = total.multiply(partial);
+        for (int i=0; i<partials.size(); i++) {
+            AdderInteger currentAuthorityPartial = partials.get(i);
+            AdderInteger currentAuthorityPolyEval = lagrangeCoeffs.get(i);
+            total = total.multiply(currentAuthorityPartial.pow(currentAuthorityPolyEval));
         }
 
         /* This will be the mapped ciphertext */
         /* total = h^y, H = h' = h^y * f^m, so this is f^m */
-        AdderInteger mappedPlaintext = H.divide(total);
+        AdderInteger mappedPlaintext = ctext.getH().divide(total);
 
         AdderInteger f = PEK.getF();
         AdderInteger p = PEK.getP();
@@ -110,12 +108,10 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
         AdderInteger j = new AdderInteger(0, q);
 
         /* Iterate over the number of votes to try to guess n */
-        for (int k = 0; k <= size; k++) {
+        for (int k = 0; k <= ctext.size; k++) {
 
             /* Create a guess */
             j = new AdderInteger(k, q);
-
-            System.out.println("DOES " + new AdderInteger(f,p).pow(j) + " equal " + mappedPlaintext + "?");
 
             /* Check the guess and get out when found */
             if (f.pow(j).equals(mappedPlaintext)) {
@@ -137,26 +133,9 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
      *
      * @return              the list of partial decryptions
      */
-    private List<AdderInteger> partialDecrypt(ExponentialElGamalCiphertext ciphertext) {
+    public List<AdderInteger> partialDecrypt(ExponentialElGamalCiphertext ciphertext) {
 
-        List<AdderInteger> coeffs = new ArrayList<>();
-
-        for (int i=0; i<privateKeyShares.length; i++) {
-            coeffs.add(new AdderInteger(i));
-        }
-
-        List<AdderInteger> partials = new ArrayList<>();
-        Polynomial poly = new Polynomial(PEK.getP(), PEK.getG(), PEK.getF(), coeffs);
-        List<AdderInteger> lagrangeCoeffs = poly.lagrange();
-
-        /* Partially decrypt for each share */
-        for(int i=0; i<lagrangeCoeffs.size(); i++ ) {
-
-            AdderInteger partial = privateKeyShares[i].partialDecrypt(ciphertext);
-            partials.add(partial.pow(lagrangeCoeffs.get(i)));
-        }
-
-        return partials;
+        return privateKeyShares.stream().map(pks -> pks.partialDecrypt(ciphertext)).collect(Collectors.toList());
     }
 
     /**
@@ -220,7 +199,7 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
      * @throws FileNotFoundException
      */
     public void loadPrivateKeyShares(AdderPrivateKeyShare[] privateKey) {
-        this.privateKeyShares = privateKey;
+        this.privateKeyShares = Arrays.asList(privateKey);
     }
 
     /**
@@ -321,7 +300,7 @@ public class DHExponentialElGamalCryptoType implements ICryptoType {
 
 
         PEK = (AdderPublicKey)keys[0];
-        privateKeyShares = (AdderPrivateKeyShare[]) Arrays.copyOfRange(keys,1,privateKeySharesNum+2);
+        privateKeyShares = Arrays.asList((AdderPrivateKeyShare[]) Arrays.copyOfRange(keys,1,privateKeySharesNum+2));
     }
 
 }

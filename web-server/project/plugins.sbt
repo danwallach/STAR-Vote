@@ -15,4 +15,8 @@ resolvers += Resolver.url("Objectify Play Snapshot Repository", url("http://scha
 // Use the Play sbt plugin for Play projects
 addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.2.1")
 
+resolvers += "Sonatype OSS Releases" at "https://oss.sonatype.org/content/repositories/releases"
+
+addSbtPlugin("net.litola" % "play-sass" % "0.3.0")
+
 libraryDependencies += "be.objectify" %% "deadbolt-java" % "2.2.1-RC2"

@@ -1,10 +1,10 @@
 package models;
 
+import org.apache.commons.codec.binary.Base64;
 import play.db.ebean.Model;
 
 import javax.persistence.*;
-import java.math.BigInteger;
-import java.util.HashMap;
+import java.io.*;
 import java.util.List;
 import java.util.Map;
 
@@ -30,11 +30,11 @@ public class RaceResult extends Model {
     @JoinColumn(name="race_id")
     public String raceName;
 
-    @ElementCollection
-    /* TODO use the below if the key is broken for some reason */
-    //@MapKeyColumn(name="name")
-    //@Column(name="value")
-    public Map<String, Integer> candidateResults = new HashMap<>();
+    @JoinColumn(name="num_votes")
+    public int numVotes;
+
+    @Column(columnDefinition = "TEXT")
+    public String candidateResults;
 
     @ManyToOne
     public DecryptedResult owner;
@@ -50,7 +50,49 @@ public class RaceResult extends Model {
 
         owner                   = parent;
         this.raceName           = raceName;
-        this.candidateResults   = candidateResults;
+        this.candidateResults   = mapToString(candidateResults);
+        numVotes = 0;
+
+        for (Integer val : candidateResults.values())
+            numVotes = numVotes + val;
+    }
+
+    private String mapToString(Map<String, Integer> map) {
+
+        String encoded = null;
+
+        try {
+
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+
+            objectOutputStream.writeObject(map);
+            objectOutputStream.close();
+
+            encoded = new String(Base64.encodeBase64(byteArrayOutputStream.toByteArray()));
+        }
+        catch (IOException e) { e.printStackTrace(); }
+
+        return encoded;
+    }
+
+    private Map<String, Integer> stringToMap(String s) {
+
+        byte[] bytes = Base64.decodeBase64(s.getBytes());
+        Map<String, Integer> map = null;
+
+
+        try {
+            ObjectInputStream objectInputStream = new ObjectInputStream(new ByteArrayInputStream(bytes));
+            map = (Map<String, Integer>)objectInputStream.readObject();
+        }
+        catch (IOException | ClassNotFoundException | ClassCastException e) { e.printStackTrace(); }
+
+        return map;
+    }
+
+    public Map<String, Integer> getCandidateResults(){
+        return stringToMap(candidateResults);
     }
 
     /**
@@ -78,11 +120,12 @@ public class RaceResult extends Model {
         record.delete();
     }
 
+
     /**
      * @return appropriately formatted String representation
      */
     public String toString() {
-        return "Race Name: " + raceName + ", Candidate Results: " + candidateResults.toString();
+        return "Race Name: " + raceName + ", Candidate Results: " + candidateResults + ", Total Votes: " + numVotes;
     }
 
 }

@@ -66,16 +66,9 @@ public class Race<T extends AHomomorphicCiphertext<T>> {
         EncryptedRaceSelection<T> total = EncryptedRaceSelection.identity(v, PEK);
 
         /* Multiply all the raceSelections together and recompute proof */
-        for (EncryptedRaceSelection<T> rs : raceSelections)
+        for (EncryptedRaceSelection<T> rs : raceSelections) {
             total = rs.operate(total, PEK);
-
-        /* ---------------- TESTING ---------------- */
-
-        System.out.println("In Race.sumRaceSelections() -- Testing single race selection summed, Max expected value: " + raceSelections.size());
-        System.out.println("In Race.sumRaceSelections() -- [Single vote summed] sum verfied: " + total.verify(0, raceSelections.size(), PEK));
-        System.out.println("-----------------");
-
-        /* ------------------------------------------ */
+        }
 
         return total;
     }

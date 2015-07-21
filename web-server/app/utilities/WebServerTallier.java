@@ -1,9 +1,12 @@
 package utilities;
 
 import auditorium.Bugout;
-import crypto.*;
-import crypto.adder.*;
-import sexpression.ASEParser;
+import crypto.AHomomorphicCiphertext;
+import crypto.EncryptedRaceSelection;
+import crypto.IPublicKey;
+import crypto.PlaintextRaceSelection;
+import crypto.adder.Race;
+import sexpression.ASEConverter;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
 import sexpression.StringExpression;
@@ -34,7 +37,7 @@ public class WebServerTallier {
         int size = 0;
 
         /* The results of the election are stored by race ID in this map */
-        Map<String, Race<T>> results = new HashMap<>();
+        Map<String, Race<T>> results = new LinkedHashMap<>();
 
         /* For each ballot, get each vote and build a results mapping between race ids and elections */
         for (Ballot<EncryptedRaceSelection<T>> bal : toSum) {
@@ -46,18 +49,19 @@ public class WebServerTallier {
                 /* Cycle through each of the races */
                 for(EncryptedRaceSelection<T> rs: raceSelections){
 
+                    if (rs.getSize() > bal.getSize()) {
+                        Bugout.err("!!!RaceSelection was larger than expected Ballot capacity!!!");
+                        return null;
+                    }
+
                     /* Get all the candidate choices */
                     List<String> possibleCandidates = new ArrayList<>(rs.getRaceSelectionsMap().keySet());
 
                     /* Confirm that the rs proof is valid */
-                    System.out.println("In WebserverTallier.tally() -- verifying the race selections. ");
-
-                    if (!rs.verify(0, 1, PEK)) {
+                    if (!rs.verify(0, rs.getSize(), PEK)) {
                         Bugout.err("!!!Ballot failed NIZK test!!!");
                         return null;
                     }
-                    else
-                        System.out.println("Race selection was successfully verified!\n");
 
                     /* Code these results as a race so the ciphers can be summed homomorphically */
                     String raceID = rs.getTitle();
@@ -95,16 +99,12 @@ public class WebServerTallier {
             Race<T> thisRace = results.get(id);
 
             /* Get the homomorphically tallied race selection for this race */
-            System.out.println("Entering Race.sumRaceSelections(): ");
-            EncryptedRaceSelection<T> summedRS = results.get(id).sumRaceSelections();
+            EncryptedRaceSelection<T> summedRS = thisRace.sumRaceSelections();
 
             /* Verify the race selection proof and error off if bad */
-
-            System.out.println("In WebserverTallier.tally() -- Verifying this summed race ");
-            if(summedRS.verify(0, thisRace.getRaceSelections().size(), PEK)) {
+            if(summedRS.verify(0, summedRS.getSize(), PEK)) {
                 raceSelections.add(summedRS);
-                raceSelectionsASE.add(ASEParser.convertToASE(summedRS));
-                System.out.println("This race was successfully added to the Ballot!");
+                raceSelectionsASE.add(ASEConverter.convertToASE(summedRS));
             }
             else System.err.println("There was a bad summed race that was not added to the ballot!");
         }

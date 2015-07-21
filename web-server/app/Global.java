@@ -1,17 +1,14 @@
 import com.avaje.ebean.Ebean;
-import crypto.adder.AdderInteger;
-import crypto.adder.AdderPublicKeyShare;
+import models.User;
 import play.Application;
 import play.GlobalSettings;
 import play.libs.Yaml;
-import sexpression.ASEParser;
+import sexpression.ASEConverter;
 import sexpression.ASExpression;
 import sexpression.ListExpression;
-import utilities.AdderKeyManipulator;
+import supervisor.model.AuthorityManager;
 import utilities.BallotLoader;
 
-import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -36,41 +33,53 @@ public class Global extends GlobalSettings {
      */
     @Override
     public void onStart(Application app) {
-               
-       AdderPublicKeyShare pks = new AdderPublicKeyShare(AdderInteger.ONE,AdderInteger.ONE,AdderInteger.ONE);
 
         System.out.println("Initializing the Ballot Loader");
         BallotLoader.init();
-        if (models.User.find.findRowCount() == 0) {
-            Ebean.save((List) Yaml.load("initial-data.yml"));
-        }
-
-        /* Load the seed key */
-        JFileChooser chooser = new JFileChooser();
-        FileNameExtensionFilter filter = new FileNameExtensionFilter(".key files", "key");
-        chooser.setFileFilter(filter);
-        int returnVal = chooser.showOpenDialog(null);
-        if(returnVal == JFileChooser.APPROVE_OPTION) {
-            System.out.println("You chose to open this file: " +
-                    chooser.getSelectedFile().getName());
-        }
-
-        File seedKeyFile = chooser.getSelectedFile();
-        Path seedKeyPath = seedKeyFile.toPath();
-
-
 
         try {
-            byte[] verbatimSeedKey = Files.readAllBytes(seedKeyPath);
-            ASExpression seedKeyASE = ASExpression.makeVerbatim(verbatimSeedKey);
-            System.out.println(seedKeyASE);
-            AdderPublicKeyShare seedKey = ASEParser.convertFromASE((ListExpression)seedKeyASE);
 
-            AdderKeyManipulator.setSeedKey(seedKey);
+            System.out.println("Opening and reading the authority information file...");
+            File authorityFile = new File("conf", "authority-data.inf");
+            Path authorityPath = authorityFile.toPath();
+
+            System.out.println("Setting up the session...");
+            byte[] verbatimAuthorityInfo = Files.readAllBytes(authorityPath);
+            ASExpression authorityInfo = ASExpression.makeVerbatim(verbatimAuthorityInfo);
+            AuthorityManager.SESSION = ASEConverter.convertFromASE((ListExpression) authorityInfo);
         }
-        catch (Exception e) { e.printStackTrace(); throw new RuntimeException("Couldn't use the key file");}
+        catch (Exception e) {
+            System.err.println("Could not load the authority information!");
 
+        }
 
+        try {
+
+            System.out.println("Opening and reading the user information file...");
+            Object o = Yaml.load("user-data.yml");
+
+            for (User u : ((List<User>)o)) {
+
+                try {
+                    if (User.find.where().eq("username", u.getIdentifier()).findList().isEmpty()) {
+                        System.out.println("Saving the user information... ");
+                        System.out.println(u);
+                        Ebean.save(u);
+                    }
+                }
+                catch (Exception e) { System.err.println("Problem while loading user " + u.getIdentifier() + "!"); }
+            }
+
+        }
+        catch (Exception e) {
+            System.err.println("Could not load the user information!");
+
+        }
+
+        if (models.User.find.findRowCount() == 0) {
+            System.out.println("Initial data was loaded.");
+            Ebean.save((List) Yaml.load("initial-data.yml"));
+        }
 
     }
 }

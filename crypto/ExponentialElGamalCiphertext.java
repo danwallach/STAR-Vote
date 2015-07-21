@@ -49,27 +49,82 @@ public class ExponentialElGamalCiphertext extends AHomomorphicCiphertext<Exponen
     }
 
     /**
-     * Multiply this and another ciphertext together. This is accomplished by
-     * multiplying them component-wise.
+     * Multiply this and another ciphertext from the same choice set together. This is accomplished by
+     * multiplying them component-wise. This makes use of assumptions regarding the
+     * origin of the ciphertexts -- specifically that they come from the same RaceSelection
+     *
+     * @param operands  the ciphertext to "add" yourself to
+     * @return          the result of the homomorphic operation on the two ciphertexts
+     */
+    public ExponentialElGamalCiphertext operateDependent(List<ExponentialElGamalCiphertext> operands, IPublicKey PEK) {
+
+        /* Get the requisite numbers and multiply */
+        AdderInteger p = this.p;
+        AdderInteger g = this.g;
+        AdderInteger h = this.h;
+        AdderInteger r = this.r;
+
+
+        for (ExponentialElGamalCiphertext operand : operands) {
+            g.multiply(operand.g);
+            h.multiply(operand.g);
+            r.add(operand.r);
+        }
+
+        /* Max to deal with identity which has size 0 */
+        Integer sameSize = operands.get(0).size;
+        List<AdderInteger> domain = new ArrayList<>();
+
+        /* For dependent, when these are all added together, we get*/
+        for(int i=sameSize; i<=sameSize; i++){
+            domain.add(new AdderInteger(i));
+        }
+
+        /* Compute a new proof -- size works because abstention votes have their own "candidate", so a RaceSelection
+         * of size 1 always has exactly 1 selection, size 2 always has exactly 2 selections , etc. Note that this
+         * will NOT work unless these all come from the same RaceSelection
+         */
+        EEGMembershipProof proof = new EEGMembershipProof(g, h, r, (AdderPublicKey) PEK, new AdderInteger(sameSize), domain);
+
+        /* Create a new ciphertext with the updated values and proof */
+        return new ExponentialElGamalCiphertext(g, h, r, p, proof, sameSize);
+    }
+
+    /**
+     * Multiply this and another ciphertext from different choice sets together. This is accomplished by
+     * multiplying them component-wise. This makes use of assumptions regarding the
+     * origin of the ciphertexts -- specifically that they come from different RaceSelections.
      *
      * @param operand   the ciphertext to "add" yourself to
      * @return          the result of the homomorphic operation on the two ciphertexts
      */
-    public ExponentialElGamalCiphertext operate(ExponentialElGamalCiphertext operand, IPublicKey PEK) {
+    public ExponentialElGamalCiphertext operateIndependent(ExponentialElGamalCiphertext operand, IPublicKey PEK) {
         /* Get the requisite numbers and multiply */
         AdderInteger p = this.p;
         AdderInteger g = this.g.multiply(operand.g);
         AdderInteger h = this.h.multiply(operand.h);
         AdderInteger r = this.r.add(operand.r);
 
-        List<AdderInteger> domain = new ArrayList<>();
+        List<AdderInteger> domain1 = new ArrayList<>();
+        List<AdderInteger> domain2 = new ArrayList<>();
+        List<AdderInteger> newDomain = new ArrayList<>();
 
-        for(int i=0; i<=size; i++){
-            domain.add(new AdderInteger(i));
+        for(int i=0; i<=this.size; i++){
+            domain1.add(new AdderInteger(i));
         }
 
-        /* Compute a new proof -- size works because "empty" votes have their own spot, so the sum of 2 votes is always 2, etc. */
-        EEGMembershipProof proof = new EEGMembershipProof(g, h, r, (AdderPublicKey) PEK, new AdderInteger(size), domain);
+        for(int i=0; i<=operand.size; i++){
+            domain2.add(new AdderInteger(i));
+        }
+
+        for(int i=0; i<=this.size+operand.size; i++){
+            newDomain.add(new AdderInteger(i));
+        }
+
+        /* Compute a new proof for the correct value */
+        EEGMembershipProof proof = new EEGMembershipProof(  this,       this.r,     domain1,
+                                                            operand,    operand.r,  domain2,
+                                                            newDomain,  (AdderPublicKey) PEK);
 
         /* Create a new ciphertext with the updated values and proof */
         return new ExponentialElGamalCiphertext(g, h, r, p, proof, this.size+operand.size);
@@ -97,6 +152,9 @@ public class ExponentialElGamalCiphertext extends AHomomorphicCiphertext<Exponen
         return size;
     }
 
+    public EEGMembershipProof getProof(){
+        return proof;
+    }
 
     /**
      * Verifies this ciphertext encodes a value between min and max and was encrypted with this PEK
@@ -120,11 +178,4 @@ public class ExponentialElGamalCiphertext extends AHomomorphicCiphertext<Exponen
         return proof.verify(this, PEK, domain);
     }
 
-    /* TODO this needsd to be figured out ?*/
-    public byte[] asBytes() {
-
-        /*byte[] gbytes = g.bigintValue().toByteArray();*/
-
-        return null;
-    }
 }

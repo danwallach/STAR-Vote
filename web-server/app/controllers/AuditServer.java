@@ -1,29 +1,35 @@
 package controllers;
 
-import auditorium.SimpleKeyStore;
 import be.objectify.deadbolt.java.actions.Group;
 import be.objectify.deadbolt.java.actions.Restrict;
 import crypto.*;
+import crypto.adder.AdderInteger;
 import crypto.adder.AdderPrivateKeyShare;
 import crypto.adder.AdderPublicKey;
-import crypto.interop.AdderKeyGenerator;
+import crypto.adder.Polynomial;
 import models.*;
+import org.yaml.snakeyaml.Yaml;
 import play.data.Form;
 import play.data.validation.Constraints;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 import security.Secured;
-import sexpression.ASEParser;
+import sexpression.ASEConverter;
+import sexpression.ASExpression;
+import sexpression.ListExpression;
 import sexpression.stream.Base64;
+import supervisor.model.AuthorityManager;
 import supervisor.model.Ballot;
 import supervisor.model.Precinct;
-import utilities.AdderKeyManipulator;
 import utilities.WebServerTallier;
 import views.html.*;
 
-import javax.validation.constraints.NotNull;
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 
 import static play.data.Form.form;
@@ -40,6 +46,8 @@ public class AuditServer extends Controller {
     /* Forms for searching for ballots in DBs */
     static Form<ChallengedBallot> challengeForm = form(ChallengedBallot.class);
     static Form<CastBallot> confirmForm = form(CastBallot.class);
+    static AdderPublicKey PEK;
+    static BallotCrypter<ExponentialElGamalCiphertext> ballotCrypter;
 
     static boolean init = false;
 
@@ -65,7 +73,7 @@ public class AuditServer extends Controller {
             Map<String, Precinct<ExponentialElGamalCiphertext>> hashes = new HashMap<>();
 
             for(int j = 0; j < 3; j++)
-                hashes.put(j+"", new Precinct<ExponentialElGamalCiphertext>(j+"", ""));
+                hashes.put(j+"", new Precinct<>(j+"", ""));
 
             records.put("record" + i, hashes);
 
@@ -78,7 +86,7 @@ public class AuditServer extends Controller {
 
             Map<String, Precinct<ExponentialElGamalCiphertext>> hashes = new HashMap<>();
 
-            hashes.put("1", new Precinct<ExponentialElGamalCiphertext>("1", ""));
+            hashes.put("1", new Precinct<>("1", ""));
 
             records.put("record" + i, hashes);
 
@@ -105,6 +113,9 @@ public class AuditServer extends Controller {
         return ok(aboutUs.render());
     }
 
+    public static Result results() {
+        return ok(resultspage.render(DecryptedResult.find.all()));
+    }
    /**
      * Confirms ballot was cast by looking for hash in cast ballot database
      *
@@ -195,63 +206,156 @@ public class AuditServer extends Controller {
     @Security.Authenticated(Secured.class)
     @Restrict(@Group("admin"))
     public static Result adminpublish() {
-        return ok(adminpublish.render(VotingRecord.getUnpublished(), VotingRecord.getPublished()));
+        return ok(adminpublish.render(VotingRecord.getUnpublished(), VotingRecord.getPublished(), PEK != null, ""));
     }
     
     @Security.Authenticated(Secured.class)
     @Restrict(@Group("admin"))
     public static Result publishresults() {
 
-        /* Reverse routing */
-        String records = request().getQueryString("records");
 
-        int start = 0;
 
-        Map<String, Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>>> summedTotals = getSummedTotals();
-        Map<String, List<Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>>>> precinctTotals = new TreeMap<>();
-        Map<String, Precinct<ExponentialElGamalCiphertext>> precinctMap;
-        
-        /* Grab each selected precinct and publish it */
-        while(start < records.length()) {
+            /* Reverse routing */
+            String records = request().getQueryString("records");
+            String message = "There was an issue publishing the last set of records!";
+            int start = 0;
 
-            int end = records.indexOf(",", start);
+        try {
 
-            if (end == -1)
-                end = records.length();
+            Map<String, Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>>> summedTotals = getSummedTotals();
+            Map<String, List<Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>>>> precinctTotals = new TreeMap<>();
+            Map<String, Precinct<ExponentialElGamalCiphertext>> precinctMap;
 
-            /* Get the precinct ID from the query string */
-            String precinctID = records.substring(start, end);
+            /* Grab each selected precinct and publish it */
+            while (start < records.length()) {
 
-            System.out.println(precinctID);
+                int end = records.indexOf(",", start);
 
-            /* Pull out the current record to be published */
-            VotingRecord vr = VotingRecord.getRecord(precinctID);
-            
-            /* Publish the record */
-            vr.publish();
-            
-            /* Get the Precincts from this VotingRecord (Encrypted!) */
-            System.out.println("Getting the Precinct Map: ");
-            precinctMap = vr.getPrecinctMap();
+                if (end == -1)
+                    end = records.length();
 
-            /* Add the results from the Precincts in this VotingRecord to precinctTotals */
-            System.out.println("Updating Precinct Totals: ");
-            precinctTotals = updatePrecinctTotals(precinctMap);
+                /* Get the precinct ID from the query string */
+                String precinctID = records.substring(start, end);
 
-            /* Move on to the next VotingRecord to be published */
-            start = end+1;
+                System.out.println(precinctID);
+
+                /* Pull out the current record to be published */
+                VotingRecord vr = VotingRecord.getRecord(precinctID);
+
+                /* Publish the record */
+                vr.openRecord();
+
+                /* Get the Precincts from this VotingRecord (Encrypted!) */
+                System.out.println("Getting the Precinct Map... ");
+                precinctMap = vr.getPrecinctMap();
+                System.out.println("\t" + precinctMap);
+
+                /* Add the results from the Precincts in this VotingRecord to precinctTotals */
+                System.out.println("Updating Precinct Totals... ");
+                precinctTotals = updatePrecinctTotals(precinctMap);
+
+                /* Move on to the next VotingRecord to be published */
+                start = end + 1;
+            }
+
+            System.out.println("Summed totals! " + summedTotals);
+
+            /* Combine the newly published result totals with the old totals */
+            System.out.println("Updating Summed Totals... ");
+            updateSummedTotals(summedTotals, precinctTotals);
+
+            System.out.println("Summed totals! " + summedTotals);
+            /* Decrypt and store the final updated totals for each Precinct */
+            System.out.println("Storing Decrypted Summed Totals... ");
+            storeDecryptedSummedTotals(summedTotals);
+
+            start =0;
+
+            while (start < records.length()) {
+
+                int end = records.indexOf(",", start);
+
+                if (end == -1)
+                    end = records.length();
+
+                /* Get the precinct ID from the query string */
+                String precinctID = records.substring(start, end);
+
+                System.out.println(precinctID);
+
+                /* Pull out the current record to be published */
+                VotingRecord vr = VotingRecord.getRecord(precinctID);
+
+                /* Publish the record */
+                vr.publish();
+                start= end+1;
+            }
+
+            message = "Published!";
+        }
+        catch (Exception e) {
+
+            e.printStackTrace();
+
+            /* If we run into a problem publishing, make sure to close all of the records */
+            while (start < records.length()) {
+
+                int end = records.indexOf(",", start);
+
+                if (end == -1)
+                    end = records.length();
+
+                /* Get the precinct ID from the query string */
+                String precinctID = records.substring(start, end);
+
+                /* Pull out the current record to be closed */
+                VotingRecord vr = VotingRecord.getRecord(precinctID);
+
+                /* Close the record */
+                vr.closeRecord();
+            }
+
+
         }
 
-        /* Combine the newly published result totals with the old totals */
-        System.out.println("Updating Summed Totals: ");
-        updateSummedTotals(summedTotals, precinctTotals);
-
-        /* Decrypt and store the final updated totals for each Precinct */
-        System.out.println("Storing Decrypted Summed Totals: ");
-        storeDecryptedSummedTotals(summedTotals);
-
         /* Return the webpage */
-        return ok(adminpublish.render(VotingRecord.getUnpublished(), VotingRecord.getPublished()));
+        return ok(adminpublish.render(VotingRecord.getUnpublished(), VotingRecord.getPublished(),
+                PEK != null, message));
+    }
+
+    @Security.Authenticated(Secured.class)
+    @Restrict(@Group("admin"))
+    public static Result uploadPEK() {
+
+        /* Load the seed key */
+        JFileChooser chooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(".key files", "key");
+        chooser.setFileFilter(filter);
+
+        int returnVal = chooser.showOpenDialog(null);
+
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            System.out.println("You chose to open this file: " +
+                    chooser.getSelectedFile().getName());
+        }
+
+        try {
+
+            File PEKFile = chooser.getSelectedFile();
+            Path PEKPath = PEKFile.toPath();
+
+            byte[] verbatimPEK = Files.readAllBytes(PEKPath);
+            ASExpression PEKASE = ASExpression.makeVerbatim(verbatimPEK);
+            System.out.println(PEKASE);
+            PEK = ASEConverter.convertFromASE((ListExpression) PEKASE);
+
+        }
+        catch (Exception e) {
+            System.err.println("Couldn't upload the key file due to " + e.getClass());
+
+        }
+
+        return ok(adminpublish.render(VotingRecord.getUnpublished(), VotingRecord.getPublished(), PEK != null, ""));
     }
 
     /*---------------------------------------- ADMIN METHODS -----------------------------------------------*/
@@ -286,45 +390,68 @@ public class AuditServer extends Controller {
     @Restrict(@Group("authority"))
     public static Result keygeneration() {
 
-        int stage = AdderKeyManipulator.getStage(request().username());
+        int stage = AuthorityManager.SESSION.getStage(request().username());
         String message = stage == 1 ? "KeySharePair generation stage (1)" :
                          stage == 2 ? "Polynomial generation stage (2)" :
                          stage == 3 ? "Private Key-share generation stage (3)" : "Complete!";
 
-        if (message.equals("Complete!")) writePEKtoFile();
+        if (message.equals("Complete!")) {
+            writePEKtoFile();
+            storeAuthorityData();
+        }
 
         return ok(authorityprocedure.render(message, request().username(), stage));
     }
 
     private static void writePEKtoFile(){
-        AdderPublicKey PEK = AdderKeyManipulator.generatePublicEncryptionKey();
-
-        File destDir = new File("PEK");
-
-        /* Checks whether the destination directory already exists, if not then make the directory.*/
-        if(!destDir.exists()){
-            destDir.mkdirs();
-        }
-
-        /*If it exists then it checks whether its a directory or not.*/
-        else{
-
-            if(!destDir.isDirectory()){
-                System.out.println("Usage: java "+AdderKeyGenerator.class.getName()+" [destination directory]");
-                System.exit(-1);
-            }
-        }
-
-        File pekFile = new File("PEK","PEK.adder.key");
 
         try {
+
+            PEK = AuthorityManager.SESSION.generatePublicEncryptionKey();
+
+            File destDir = new File("keys");
+
+            /* Checks whether the destination directory already exists, if not then make the directory. */
+            if(!destDir.exists()){
+                destDir.mkdirs();
+            }
+
+            /* If it exists then it checks whether its a directory or not. */
+            else{
+
+                if(!destDir.isDirectory()){
+                    System.out.println("Usage: java " + AuthorityManager.class.getName() + " [destination directory]");
+                    System.exit(-1);
+                }
+            }
+
+            File pekFile = new File("keys", "PEK.adder.key");
+
             FileOutputStream fos = new FileOutputStream(pekFile);
-            fos.write(ASEParser.convertToASE(PEK).toVerbatim());
+            fos.write(ASEConverter.convertToASE(PEK).toVerbatim());
             fos.flush();
             fos.close();
         }
         catch (Exception e) { e.printStackTrace(); }
+    }
 
+    private static void storeAuthorityData(){
+
+        try {
+            File userFile = new File("conf", "user-data.yml");
+            File authorityFile = new File("conf", "authority-data.inf");
+
+            FileOutputStream fos = new FileOutputStream(authorityFile);
+            fos.write(ASEConverter.convertToASE(AuthorityManager.SESSION).toVerbatim());
+            fos.flush();
+            fos.close();
+
+            Yaml yaml = new Yaml();
+            FileWriter writer = new FileWriter(userFile);
+            yaml.dump(User.find.all(), writer);
+            writer.close();
+        }
+        catch (IOException e) { System.err.println("Could not write the authority file!"); }
     }
 
     @Security.Authenticated(Secured.class)
@@ -334,23 +461,23 @@ public class AuditServer extends Controller {
         String auth = request().username();
 
         /* Process for this */
-        int stage = AdderKeyManipulator.getStage(auth);
+        int stage = AuthorityManager.SESSION.getStage(auth);
 
         try {
             switch (stage) {
 
                 case 1:
-                    AdderKeyManipulator.generateAuthorityKeySharePair(auth);
+                    AuthorityManager.SESSION.generateAuthorityKeySharePair(auth);
                     break;
 
                 case 2:
-                    AdderKeyManipulator.generateAuthorityPolynomialValues(auth);
+                    AuthorityManager.SESSION.generateAuthorityPolynomialValues(auth);
                     break;
 
-                /* Need to know if we can keep these on the webserver */
+                /* TODO Need to know if we can keep these on the webserver */
                 case 3:
                     User u = User.find.byId(request().username());
-                    u.setKey(AdderKeyManipulator.generateRealPrivateKeyShare(auth));
+                    u.setKey(AuthorityManager.SESSION.generateRealPrivateKeyShare(auth));
                     break;
 
                 default:
@@ -416,13 +543,17 @@ public class AuditServer extends Controller {
             if (precinctTotals.get(precinctID) == null)
                 precinctTotals.put(precinctID, new ArrayList<>());
 
-            System.out.println("Precinct totals: " + precinctTotals);
-            System.out.println("P: " + p);
-            System.out.println("Precinct totals.get: " + precinctTotals.get(precinctID));
-            System.out.println("Precinct ID: " + precinctID);
+            System.out.println("\tPrecinct totals: " + precinctTotals);
+            System.out.println("\tP: " + p);
+            System.out.println("\tPrecinct ID: " + precinctID);
+
+            Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>> total = p.getCastBallotTotal(PEK);
+
+            for (int i=0; i<total.getRaceSelections().size(); i++)
+                System.out.println("\t\t" + p.getCastBallotTotal(PEK).getRaceSelections().get(i).getRaceSelectionsMap());
 
             /* Store the total for that precinct in the list */
-            precinctTotals.get(precinctID).add(p.getCastBallotTotal(AdderKeyManipulator.generatePublicEncryptionKey()));
+            precinctTotals.get(precinctID).add(p.getCastBallotTotal(PEK));
         }
 
         return precinctTotals;
@@ -453,10 +584,8 @@ public class AuditServer extends Controller {
             if(preExisting != null)
                 thisPrecinctTotal.add(preExisting);
 
-            System.out.println("Updating the precinct totals...");
-
             /* Tally the new precinctTotals using WebServerTallier*/
-            Ballot<EncryptedRaceSelection<T>> b = WebServerTallier.tally(precinctID, thisPrecinctTotal, AdderKeyManipulator.generatePublicEncryptionKey());
+            Ballot<EncryptedRaceSelection<T>> b = WebServerTallier.tally(precinctID, thisPrecinctTotal, PEK);
 
             /* Replace old totals with new totals */
             summedTotals.put(precinctID, b);
@@ -469,10 +598,7 @@ public class AuditServer extends Controller {
      *
      * @param summedTotals  the public running tally of totals mapped from precinct ID to precinct results Ballot
      */
-    private static void storeDecryptedSummedTotals(Map<String, Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>>> summedTotals) {
-
-        SimpleKeyStore keyStore = new SimpleKeyStore("/lib/keys/");
-        AdderPrivateKeyShare privateKey = keyStore.loadAdderPrivateKey();
+    private static void storeDecryptedSummedTotals(Map<String, Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>>> summedTotals) throws Exception {
 
         System.out.println("Decrypting summedTotals...");
 
@@ -482,17 +608,96 @@ public class AuditServer extends Controller {
             Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>> b = entry.getValue();
             String precinctID = entry.getKey();
 
-            Ballot<PlaintextRaceSelection> decryptB = null;
-            try { decryptB = BallotCrypto.decrypt(b); }
-            catch (Exception e) {e.printStackTrace(); }
+            Ballot<PlaintextRaceSelection> decryptB;
 
+            /* Load the ICryptoType */
+            DHExponentialElGamalCryptoType t = new DHExponentialElGamalCryptoType();
+
+            /* Get all the privateKeyShares from the authorities database */
+            List<User> authList = User.find.where().eq("userRole","authority").ne("key", null).findList();
+            List<AdderPrivateKeyShare> privateKeyShares = new ArrayList<>();
+
+            int threshold = AuthorityManager.SESSION.getDecryptionThreshold();
+            if (threshold > authList.size()) throw new RuntimeException("Decryption threshold was greater than number of private keys present!");
+
+            AdderPrivateKeyShare[] privateKeySharesArray = new AdderPrivateKeyShare[threshold];
+
+            /* Add all the authority keys */
+            for (User authority : authList) {
+
+                while(privateKeyShares.size() < threshold)
+                    privateKeyShares.add(authority.getKey());
+            }
+
+
+            /* Load the privateKeyShares into the ICryptoType */
+            System.out.println("Loading the CryptoType...");
+            t.loadPrivateKeyShares(privateKeyShares.toArray(privateKeySharesArray));
+            System.out.println("PEK: " + PEK);
+            t.loadPublicKey(PEK);
+
+            /* Now set it so that we can decrypt */
+            ballotCrypter = new BallotCrypter<>(t);
+
+            System.out.println("Calculating partials...");
+            /* Get these in case we want to publish them */
+            Map<String, Map<String, Map<String, AdderInteger>>> partials = calculatePartials(b, privateKeyShares, authList);
+
+            System.out.println("Decrypting...");
+            /* Will want to publish partials to the bulletin board */
+            decryptB = ballotCrypter.decrypt(b);
+
+            System.out.println("Calculating vote totals...");
             /* This will be the decrypted representation of the results by race */
             Map<String, Map<String, Integer>> decryptedResults = WebServerTallier.getVoteTotals(decryptB);
 
+            System.out.println("Creating database representation...");
             /* Store totals in database */
             DecryptedResult.create(new DecryptedResult(precinctID, decryptedResults, b));
+
+        }
+    }
+
+    private static Map<String, Map<String, Map<String, AdderInteger>>> calculatePartials(
+            Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>> b, List<AdderPrivateKeyShare> privateKeyShares, List<User> authList) {
+
+        /* This will be a map for each encrypted race selection to a map of candidates to map of partial decryptions by authority */
+        Map<String, Map<String, Map<String, AdderInteger>>> partialsMap = new TreeMap<>();
+
+        for (EncryptedRaceSelection<ExponentialElGamalCiphertext> ers : b.getRaceSelections()) {
+
+            System.out.println("Creating entry for <" + ers.getTitle() + ">...");
+            partialsMap.put(ers.getTitle(), new TreeMap<>());
+
+            for (Map.Entry<String, ExponentialElGamalCiphertext> entry : ers.getRaceSelectionsMap().entrySet()) {
+
+                System.out.println("Creating entry for <" + entry.getKey() + ">...");
+                ExponentialElGamalCiphertext ctext = entry.getValue();
+
+                partialsMap.get(ers.getTitle()).put(entry.getKey(), new TreeMap<>());
+
+                List<AdderInteger> coeffs = new ArrayList<>();
+
+                for (int i=0; i<privateKeyShares.size(); i++) {
+                    coeffs.add(new AdderInteger(i));
+                }
+
+                System.out.println("Calculating polynomial...");
+                Polynomial poly = new Polynomial(PEK.getP(), PEK.getG(), PEK.getF(), coeffs);
+                List<AdderInteger> lagrangeCoeffs = poly.lagrange();
+
+                for (int i=0; i<privateKeyShares.size();i++) {
+
+                    /* Partially decrypt for each share */
+                    AdderInteger partial = privateKeyShares.get(i).partialDecrypt(ctext).pow(lagrangeCoeffs.get(i));
+                    partialsMap.get(ers.getTitle()).get(entry.getKey()).put(authList.get(i).name, partial);
+
+                }
+
+            }
         }
 
+        return partialsMap;
     }
 
     /**
@@ -552,14 +757,16 @@ public class AuditServer extends Controller {
         *   Each Map.Entry<String, Precinct> is <PrecinctID, PrecinctObject>
         */
 
+        /* Note that a VotingRecord maps of all the Supervisor serials to their (conflicting) precinct maps
+         * We refer to each of these precinct maps as a SupervisorRecord (it is a record written by each Supervisor)
+         */
+
         /* Code for this method in handling a POST command are found at http://www.vogella.com/articles/ApacheHttpClient/article.html */
 
-        /* TODO check the form encoding load */
         final Map<String, String[]> values = request().body().asFormUrlEncoded();
-
-        System.out.println(request().body());
-
         final String record = values.get("record")[0];
+
+        /* TODO Note that this is random right now, but will be the origin precinctID */
         final String precinctID = values.get("precinctID")[0];
 
         /* Decode from base64 */
@@ -572,10 +779,9 @@ public class AuditServer extends Controller {
         }
         catch (IOException | ClassNotFoundException | ClassCastException e) { e.printStackTrace(); }
 
-        System.out.println(votingRecord);
-
         /* Add the record to the database */
         VotingRecord.create(new VotingRecord(precinctID, votingRecord));
+
         return ok(index.render());
     }
 
@@ -610,16 +816,14 @@ public class AuditServer extends Controller {
 
         Form<Login> loginForm = form(Login.class).bindFromRequest();
 
-        if (loginForm.hasErrors()) {
-            System.out.println(loginForm.data().get("roles"));
-            return loginForm.get().roles.contains("admin") ? badRequest(adminlogin.render(loginForm, null)) :
-                                                          badRequest(authoritylogin.render(loginForm, null));
-        } else {
+        if (!loginForm.hasErrors()) {
             session().clear();
             session("username", loginForm.get().username);
-            return loginForm.get().roles.contains("admin") ? redirect(routes.AuditServer.adminmain()) :
+            System.out.println(session().toString());
+            return loginForm.get().role.equals("admin") ? redirect(routes.AuditServer.adminmain()) :
                                                           redirect(routes.AuditServer.authority());
         }
+        return null;
     }
     
     /**
@@ -643,28 +847,34 @@ public class AuditServer extends Controller {
         public String password;
 
         @Constraints.Required
-        public List<String> roles = new ArrayList<>();
+        public String role;
 
-        public void setUsername(@NotNull String username){
+        public void setUsername(String username) {
             this.username = username;
         }
-        public void setPassword(@NotNull String password){
+
+        public void setPassword(String password) {
             this.password = password;
         }
-        public void setType(@NotNull List<String> type){
-            this.roles.addAll(type);
+
+        public void setRole(String role) {
+            this.role = role;
         }
 
         /** This will validate the username and password */
         public String validate() {
 
-            if(!(roles.contains("admin") || roles.contains("authority")))
+            if(!(role.equals("admin") || role.equals("authority")))
                 return "Invalid Role";
 
-            if (!User.authenticate(username, password, roles))
-              return "Invalid user or password, or wrong login type";
+            if (!User.authenticate(username, password, role))
+              return "Invalid user or password!";
 
             return null;
+        }
+
+        public String toString() {
+            return "Username: " + username + ", Password: " + password + ", Role: " + role;
         }
 
     }

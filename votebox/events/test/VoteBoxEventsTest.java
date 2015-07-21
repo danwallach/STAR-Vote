@@ -165,7 +165,7 @@ public class VoteBoxEventsTest extends TestCase {
 
     public void testAuthorizedToCastWithNIZKs() {
 /*
-        AdderPublicKey key = AdderKeyGenerator.generateFinalPublicKey((AdderPublicKey) keyStore.loadAdderPublicKeyShare());
+        AdderPublicKey key = AdderSeedKeyGenerator.generateFinalPublicKey((AdderPublicKey) keyStore.loadAdderPublicKeyShare());
 
         ASExpression nonce = getBlob();
 

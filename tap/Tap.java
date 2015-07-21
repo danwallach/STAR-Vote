@@ -68,7 +68,8 @@ public class Tap {
     /** A list of all supervisors who have finished uploading their ballots */
     private ArrayList<Integer> uploadComplete;
 
-    /** This precinct's supervisor record, which will be uploaded to the bulletin board */
+    /** This precinct's supervisors' records of precincts voting, mapped by Supervisor serial.
+     * This will be uploaded to the bulletin board */
     private Map<String, Serializable> supervisorRecord;
 
 
@@ -135,6 +136,7 @@ public class Tap {
             /* Encode the record as a string */
             encoded = new String(Base64.encodeBase64(byteArrayOutputStream.toByteArray()));
 
+            /* Output encoded to a file for webserver testing */
             try {
                 PrintWriter out = new PrintWriter("testdata.txt");
                 out.print(encoded);
@@ -144,6 +146,8 @@ public class Tap {
             List<BasicNameValuePair> bnvp = new ArrayList<>();
 
             bnvp.add(new BasicNameValuePair("record", encoded));
+
+            /* TODO this should actually be the precinct of the precinct the voting record is from */
             bnvp.add(new BasicNameValuePair("precinctID", Integer.toString((new Random()).nextInt())));
 
             /* Set entities for each of the url encoded forms of the NVP */
@@ -270,7 +274,19 @@ public class Tap {
 
                 /* Start uploading if we're done making the map (i.e. if no more pending and not currently uploading) */
                 if(uploadPending.size()==0 && !uploading) {
-                    /* TODO collapse identical maps */
+
+                    Map<Serializable, String> invertedMap = new HashMap<>();
+
+                    /* Any duplicates will be overwritten by inverting the map */
+                    for (Map.Entry<String, Serializable> entry : supervisorRecord.entrySet())
+                        invertedMap.put(entry.getValue(),entry.getKey());
+
+                    supervisorRecord.clear();
+
+                    /* Now put back to normal */
+                    for (Map.Entry<Serializable, String> entry : invertedMap.entrySet())
+                        supervisorRecord.put(entry.getValue(), entry.getKey());
+
                     System.out.println("Upload to server pending... ");
                     startUploadToServer();
                 }
@@ -346,7 +362,7 @@ public class Tap {
     }
 
     /**
-     * Usage:<BR> FIXME?
+     * Usage:<BR>
      * 		java votebox.Tap [serial] [report address] [port]
      *
      * @param args      arguments to be used
@@ -461,7 +477,7 @@ public class Tap {
             }
         }
         catch (NumberFormatException e) {
-            throw new RuntimeException("usage: Tap [serial] [report address] [port]; where port is between 1 and 65335 & [serial] is a positive integer", e);
+            throw new RuntimeException("usage: Tap [serial] [report address] [port]; where port is between 1 and 65535 & [serial] is a positive integer", e);
         }
         catch (InterruptedException e) { throw new RuntimeException(e); }
 

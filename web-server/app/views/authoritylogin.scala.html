@@ -15,7 +15,7 @@
             </div>
         }
 
-        @helper.form(routes.AuditServer.authenticate) {
+        @helper.form(routes.AuditServer.authenticate()) {
             <h1>Authority Login</h1>
 
             <p>
@@ -28,8 +28,6 @@
                 @form.globalError.message
                 </p>
             }
-
-
             <p>
                 <label for="username">Username:</label>
                 <input type="text" name="username" placeholder="Username" value="@form("username").value">
@@ -40,7 +38,9 @@
                 <input type="password" name="password" placeholder="Password">
             </p>
             <p>
-                <input type="hidden" name="type" value="authority">
+                <label>
+                    <input type="hidden" name="role" value="authority">
+                </label>
             </p>
             <p>
                 <button type="submit">Login</button>

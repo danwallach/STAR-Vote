@@ -1,32 +1,32 @@
-@(records: java.util.List[VotingRecord])
+@(records: java.util.List[VotingRecord], PEKexists: Boolean)
 
 
 <script type="text/javascript">
 
-      function get_checkboxes() {
+    function get_checkboxes() {
         
         // var form = document.getElementById("form_id");
         // var inputs = document.getElementById(form.value);
         var inputs = document.getElementsByName("publishBox");
-        
+
         var query = "records=";
-        
+
         for(var i =0; i < inputs.length; i++) {
             if (inputs[i].checked) {
                 query += inputs[i].value + ",";
             }
         }
-        
-        return query.substring(0,query.length-1);
-      }
 
-      function SubmitForm(form)
-      {
+        return query.substring(0,query.length-1);
+    }
+
+    function SubmitForm(form)
+    {
         form.action="/admin/publishresults?"+get_checkboxes();
 
         form.submit(); // Submit the page
-      }
-      
+    }
+
 </script>
 
 
@@ -36,7 +36,20 @@
         Currently no voting records are available for publishing!
     </div>
     </div>
-} else { 
+} else { @if(!PEKexists) {
+    <div style="text-align : center ; margin: 0 auto;">
+        <div style="color:#008800;">
+            The public encryption key has not yet been loaded into the server!
+        </div>
+        <br>
+        To perform this action, the public encryption key must be loaded.
+        <br>
+        <br>
+
+        <input type="button" class="button gray medium" value="Upload PEK" id="upload" onClick="location.href = '/admin/uploadPEK'">
+        <br>
+    </div>
+} else {
 
     <form method="POST" name="publish">
     <ul>
@@ -64,4 +77,4 @@
 
     </ul>
     </form>
-}
+} }

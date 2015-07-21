@@ -148,6 +148,7 @@ public class Polynomial {
             lagrangeCoeffs.add(numerator.divide(denominator));
         }
 
+
         return lagrangeCoeffs;
     }
 

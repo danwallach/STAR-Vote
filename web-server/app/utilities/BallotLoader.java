@@ -1,9 +1,11 @@
 package utilities;
-import tap.BallotImageHelper;
-import votebox.middle.ballot.Ballot;
-import votebox.middle.ballot.BallotParserException;
 
-import java.io.*;
+import tap.BallotImageHelper;
+import votebox.middle.ballot.BallotParserException;
+import votebox.middle.ballot.RuntimeBallot;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -54,7 +56,7 @@ public class BallotLoader {
                     ballotMap.put(precinct, zipFile);
 
                     /* --- Create a raceMap --- */
-                    Ballot ballot = null;
+                    RuntimeBallot ballot = null;
 
                     /* Try to get the ballot from the zipFile */
                     try { ballot = BallotImageHelper.getBallot(zipFile.getAbsolutePath()); }

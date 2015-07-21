@@ -14,11 +14,11 @@ import java.security.InvalidKeyException;
  *
  * Created by Matthew Kindy II and Matt Bernhard on 11/3/2014.
  */
-public class ByteCrypto {
+public class ByteCrypto<T extends AHomomorphicCiphertext<T>> {
 
-    private ICryptoType cryptoType;
+    private ICryptoType<T> cryptoType;
 
-    public ByteCrypto(ICryptoType cryptoType){
+    public ByteCrypto(ICryptoType<T> cryptoType){
         this.cryptoType = cryptoType;
     }
 
@@ -34,7 +34,7 @@ public class ByteCrypto {
      * @throws CipherException
      * @throws CiphertextException
      */
-    public <T extends AHomomorphicCiphertext<T>> byte[] decrypt(T cipherText) throws KeyNotLoadedException, InvalidKeyException, CipherException, CiphertextException {
+    public byte[] decrypt(T cipherText) throws KeyNotLoadedException, InvalidKeyException, CipherException, CiphertextException {
 
         return cryptoType.decrypt(cipherText);
     }
@@ -50,7 +50,7 @@ public class ByteCrypto {
      * @throws InvalidKeyException
      * @throws CipherException
      */
-    public <T extends AHomomorphicCiphertext<T>> T encrypt(byte[] plainText) throws KeyNotLoadedException, InvalidKeyException, CipherException {
+    public T encrypt(byte[] plainText) throws KeyNotLoadedException, InvalidKeyException, CipherException {
 
         return cryptoType.encrypt(plainText);
     }

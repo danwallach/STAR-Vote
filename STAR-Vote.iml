@@ -8,16 +8,9 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/objenesis-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
     <orderEntry type="library" name="lib" level="project" />
+    <orderEntry type="library" name="Supervisor" level="project" />
+    <orderEntry type="library" name="lib1" level="project" />
   </component>
 </module>
 

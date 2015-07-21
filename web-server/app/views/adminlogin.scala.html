@@ -16,7 +16,7 @@
     </div>
     }
     
-    @helper.form(routes.AuditServer.authenticate) {
+    @helper.form(routes.AuditServer.authenticate()) {
        <h1>Administrator Login</h1>
        
         <p>
@@ -30,7 +30,6 @@
             </p>
         }
 
-
        <p>
            <label for="username">Username:</label>
            <input type="text" name="username" placeholder="Username" value="@form("username").value">
@@ -40,9 +39,9 @@
            <label for="password">Password:</label>
            <input type="password" name="password" placeholder="Password">
        </p>
-        <p>
-            <input type="hidden" name="type" value="admin">
-        </p>
+       <p>
+            <input type="hidden" name="role" value="admin">
+       </p>
        <p>
            <button type="submit">Login</button>
        </p>
