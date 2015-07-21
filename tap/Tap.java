@@ -477,7 +477,7 @@ public class Tap {
             }
         }
         catch (NumberFormatException e) {
-            throw new RuntimeException("usage: Tap [serial] [report address] [port]; where port is between 1 and 65335 & [serial] is a positive integer", e);
+            throw new RuntimeException("usage: Tap [serial] [report address] [port]; where port is between 1 and 65535 & [serial] is a positive integer", e);
         }
         catch (InterruptedException e) { throw new RuntimeException(e); }
 
