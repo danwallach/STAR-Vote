@@ -72,7 +72,7 @@ public class User extends Model implements Subject {
 
             return privateKeyShare;
         }
-        catch (IOException | ClassNotFoundException | ClassCastException e) { e.printStackTrace(); }
+        catch (IOException | ClassNotFoundException | ClassCastException e) { System.err.println("Problem converting to private key! ");}
 
         return null;
     }

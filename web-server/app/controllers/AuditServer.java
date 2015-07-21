@@ -269,6 +269,8 @@ public class AuditServer extends Controller {
             System.out.println("Storing Decrypted Summed Totals... ");
             storeDecryptedSummedTotals(summedTotals);
 
+            start =0;
+
             while (start < records.length()) {
 
                 int end = records.indexOf(",", start);
@@ -286,6 +288,7 @@ public class AuditServer extends Controller {
 
                 /* Publish the record */
                 vr.publish();
+                start= end+1;
             }
 
             message = "Published!";
@@ -613,12 +616,17 @@ public class AuditServer extends Controller {
             /* Get all the privateKeyShares from the authorities database */
             List<User> authList = User.find.where().eq("userRole","authority").ne("key", null).findList();
             List<AdderPrivateKeyShare> privateKeyShares = new ArrayList<>();
-            AdderPrivateKeyShare[] privateKeySharesArray = new AdderPrivateKeyShare[authList.size()];
+
+            int threshold = AuthorityManager.SESSION.getDecryptionThreshold();
+            if (threshold > authList.size()) throw new RuntimeException("Decryption threshold was greater than number of private keys present!");
+
+            AdderPrivateKeyShare[] privateKeySharesArray = new AdderPrivateKeyShare[threshold];
 
             /* Add all the authority keys */
             for (User authority : authList) {
-                System.out.println(authority.name + ":\n\tKey: " + authority.getKey() + "\n\tKey Data: " + authority.key);
-                privateKeyShares.add(authority.getKey());
+
+                while(privateKeyShares.size() < threshold)
+                    privateKeyShares.add(authority.getKey());
             }
 
 
@@ -634,8 +642,6 @@ public class AuditServer extends Controller {
             System.out.println("Calculating partials...");
             /* Get these in case we want to publish them */
             Map<String, Map<String, Map<String, AdderInteger>>> partials = calculatePartials(b, privateKeyShares, authList);
-
-            System.out.println(AuthorityManager.SESSION);
 
             System.out.println("Decrypting...");
             /* Will want to publish partials to the bulletin board */
