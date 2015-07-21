@@ -101,7 +101,7 @@ public class DHExponentialElGamalCryptoTypeTest extends TestCase {
 
             for (int i=0; i<numGenerate; i++) {
                 AdderPrivateKeyShare generated = AuthorityManager.SESSION.generateRealPrivateKeyShare(Integer.toString(i+1));
-                if (i<=numDecrypt) pksList.add(generated);
+                if (i<numDecrypt) pksList.add(generated);
             }
 
             cryptoType.loadPrivateKeyShares(pksList.toArray(new AdderPrivateKeyShare[pksList.size()]));

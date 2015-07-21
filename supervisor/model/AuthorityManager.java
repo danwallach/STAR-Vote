@@ -250,4 +250,8 @@ public class AuthorityManager {
         return this;
     }
 
+    public int getDecryptionThreshold() {
+        return decryptionThreshold;
+    }
+
 }
