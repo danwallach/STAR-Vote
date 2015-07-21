@@ -35,6 +35,7 @@ public class Precinct<T extends AHomomorphicCiphertext<T>> implements Serializab
 
     /** Map of bids to ballots that have been committed but not cast or challenged.*/
     private Map<String, Ballot<EncryptedRaceSelection<T>>> committed;
+    private Map<String, TimeStamp> inFlightTimer;
 
     /** List of ballots that have been cast, not committed or challenged.*/
     private List<Ballot<EncryptedRaceSelection<T>>> cast;
@@ -51,10 +52,11 @@ public class Precinct<T extends AHomomorphicCiphertext<T>> implements Serializab
         this.precinctID = precinctID;
         this.ballotFile = ballotFile;
 
-        allBallots = new HashMap<>();
-        committed  = new HashMap<>();
-        cast       = new ArrayList<>();
-        challenged = new ArrayList<>();
+        allBallots      = new HashMap<>();
+        committed       = new HashMap<>();
+        inFlightTimer   = new HashMap<>();
+        cast            = new ArrayList<>();
+        challenged      = new ArrayList<>();
     }
 
     /**
@@ -90,7 +92,10 @@ public class Precinct<T extends AHomomorphicCiphertext<T>> implements Serializab
         Ballot<EncryptedRaceSelection<T>> toChallenge = committed.remove(bid);
 
         /* Add the Ballot to challenged */
-        if(toChallenge != null) challenged.add(toChallenge);
+        if(toChallenge != null) {
+            challenged.add(toChallenge);
+            inFlightTimer.remove(bid);
+        }
 
         /* Return the ballot that was challenged */
         return toChallenge;
@@ -105,8 +110,8 @@ public class Precinct<T extends AHomomorphicCiphertext<T>> implements Serializab
     public void commitBallot(String bid, Ballot<EncryptedRaceSelection<T>> ballot){
 
         committed.put(bid, ballot);
-
         allBallots.put(bid, ballot);
+        inFlightTimer.put(bid, new TimeStamp(30));
     }
 
     /**
@@ -118,10 +123,9 @@ public class Precinct<T extends AHomomorphicCiphertext<T>> implements Serializab
 
         /* Remove the Ballot from committed */
         Ballot<EncryptedRaceSelection<T>> toCast = committed.remove(bid);
+        TimeStamp flightTimer = inFlightTimer.remove(bid);
 
-        System.out.println(toCast);
-
-        if(toCast!=null)
+        if(toCast != null && flightTimer != null && flightTimer.isValid())
             cast.add(toCast);
 
         /* Add it to cast and check */

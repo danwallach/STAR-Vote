@@ -1,10 +1,10 @@
 package supervisor.model;
 
 /**
- * Keeps track of how long a pin has been issued and expires the pin if pin is older than
+ * Keeps track of how long anything been issued and expires if it is older than
  * lifeTimeInSeconds
  */
-class PinTimeStamp{
+class TimeStamp {
 
 
     /** The time that this PIN came into the world */
@@ -16,11 +16,11 @@ class PinTimeStamp{
     /**
      * Constructor
      *
-     * @param lt the lifespan of the PIN in seconds
+     * @param seconds the lifespan of the PIN in seconds
      */
-    public PinTimeStamp(int lt){
+    public TimeStamp(int seconds){
         startTime = System.currentTimeMillis();
-        lifeTimeInSeconds = lt;
+        lifeTimeInSeconds = seconds;
     }
 
     /**
