@@ -31,7 +31,7 @@ import java.io.IOException;
  * the host. The host will then, of course, decide what to do with it. Because
  * each link is a keeper of this listening thread, you must call start() and
  * stop() on it before it will behave in the expected way. The link's thread
- * will operate at a priority one less than the calling thread. This is to aid
+ * will operateIndependent at a priority one less than the calling thread. This is to aid
  * auditorium in being able to keep up with many links flooding messages onto
  * its queues.
  * 

@@ -20,7 +20,7 @@ public class PINValidator {
     private static final int DEFAULT_LIFE_TIME = 180;
 
     /** Maps every PIN to a time stamp so that the PIN can expire */
-    private static Map<String, PinTimeStamp> timeStamp = new HashMap<>();
+    private static Map<String, TimeStamp> timeStamp = new HashMap<>();
 
     /** A Map of PINs to Precinct IDs */
     private Map<String, String> precinctIDs;
@@ -63,7 +63,7 @@ public class PINValidator {
             PIN = PINFormat.format(rand.nextInt(100000));
 
         /* Create a new time stamp on this pin */
-        timeStamp.put(PIN, new PinTimeStamp(lifespan));
+        timeStamp.put(PIN, new TimeStamp(lifespan));
         precinctIDs.put(PIN, precinctID);
 
         return PIN;
