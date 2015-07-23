@@ -66,7 +66,7 @@ import java.util.List;
  * 2) The vote storage backend<br>
  * 3) The votebox "middle" (that is, the link between the voter and the backend,
  * the gui)
- * 
+ *
  * @author derrley, Corey Shaw
  */
 public class VoteBox{
@@ -116,14 +116,14 @@ public class VoteBox{
     public VoteBox(){
     	this(-1, "0000000000");
     }
-    
+
     /**
      * Constructs a new instance of a persistent VoteBox booth. This
      * implementation runs in the background, on an auditorium network, and
      * waits to receive an authorization before launching the VoteBox middle.
      * For a standalone implementation, see
      * {@link votebox.middle.datacollection.Launcher}.
-     * 
+     *
      * @param serial the serial number of the votebox
      */
     public VoteBox(int serial, String launchCode) {
@@ -138,7 +138,7 @@ public class VoteBox{
         /* If mySerial ends up with a bad number anyway, throw an error */
         if(mySerial == -1)
         	throw new RuntimeException("usage: VoteBox <machineID>");
-        
+
         numConnections = 0;
         labelChangedEvent = new Event<>();
 
@@ -180,7 +180,7 @@ public class VoteBox{
     /**
      * Returns this booth's label, assigned by a supervisor over auditorium. If
      * unassigned, will return 0.
-     * 
+     *
      * @return the label
      */
     public int getLabel() {
@@ -189,7 +189,7 @@ public class VoteBox{
 
     /**
      * Returns this booth's status as a VoteBoxEvent, used for periodic broadcasts
-     * 
+     *
      * @return the status as a @VoteBoxEvent
      */
     public VoteBoxEvent getStatus() {
@@ -208,7 +208,7 @@ public class VoteBox{
     /**
      * Allows the VoteBox inactive UI (what is shown when a user isn't voting)
      * to register for a label changed event, and update itself accordingly
-     * 
+     *
      * @param obs the observer
      */
     public void registerForLabelChanged(Observer obs) {
@@ -219,7 +219,7 @@ public class VoteBox{
      * Launch the VoteBox middle. Registers for events that we would want to
      * know about (such as cast ballot, so we can send the message over
      * auditorium)
-     * 
+     *
      * @param location the location on disk of the ballot
      */
     public void run(String location) {
@@ -336,7 +336,7 @@ public class VoteBox{
                         }
                     }
         });
-        
+
         currentDriver.getView().registerForOverrideCancelDeny(new Observer() {
             /**
              * Announce the deny message, and return to the page on which the voter was previously
@@ -358,7 +358,7 @@ public class VoteBox{
                 }
             }
         });
-        
+
         currentDriver.getView().registerForOverrideCommitConfirm(new Observer() {
             /**
              * Increment counters, and send the ballot in the confirm message.
@@ -430,7 +430,7 @@ public class VoteBox{
                 }
             }
         });
-        
+
         currentDriver.getView().registerForOverrideCommitDeny(new Observer() {
             /**
              * Announce the deny message, and return to the page the voter was
@@ -504,7 +504,7 @@ public class VoteBox{
     public void start() {
 
         inactiveUI = new VoteBoxInactiveUI(this);
-        
+
         inactiveUI.setVisible(true);
 
         try {
