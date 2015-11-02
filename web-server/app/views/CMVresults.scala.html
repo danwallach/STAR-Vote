@@ -1,0 +1,45 @@
+@(status: String)(id: String)
+
+@psycMain(true) {
+
+    @if(status == "cast") {
+
+        <div id = "msg" class="correct">
+            <img src="http://i1289.photobucket.com/albums/b518/lNyra/correct_icon_zpsxhugoyjj.png" class = "icon"/>
+            <p> Your ballot #@id was successfully cast and has been counted in the election! </p>
+        </div>
+
+    } else {
+        @if(status == "challenged") {
+
+            <div id = "msg" class="warning">
+                <img src="http://i1289.photobucket.com/albums/b518/lNyra/warning_icon_zps9h4svtt2.png" class = "icon"/>
+                <p> Your ballot ID #@id was not counted in the election, as the ballot was not placed in the ballot box. </p>
+            </div>
+
+        } else {
+            @if(status == "invalid") {
+
+                <div id = "msg" class="invalid">
+                    <img src="http://i1289.photobucket.com/albums/b518/lNyra/error_icon_zpswargj3iq.png" class = "icon"/>
+                    <p> @if(id != "") {
+                        The ballot number you have entered, #@id, does not exist in the system. Please check that you have entered the correct number and try again.
+                    } else {
+                        You did not enter a ballot number.<br>Please try again.
+                    }</p>
+                </div>
+
+            }
+        }
+    }
+
+    <div id= "contentbuttons">
+        <ul>
+            <li><a href="/check"> Enter another ballot ID </a></li>
+            <li><a href="/report/@id"> Report an issue </a></li>
+        </ul>
+    </div>
+
+}
+
+

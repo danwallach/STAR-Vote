@@ -1,0 +1,24 @@
+@(email: String)(print: String)(text: String)(id: String)
+
+@psycMain(true) {
+
+    <div id = "msg" class = "correct">
+        <img src="http://i1289.photobucket.com/albums/b518/lNyra/correct_icon_zpsxhugoyjj.png" id = "correcticon"/>
+        <p> Thank you! Your trouble ticket for ballot #@id has been submitted for review by authorities.
+
+            @if(text != null || email != null) {
+                A copy of your ticket has been sent to
+                @if(text != null) {
+                    @text
+                }
+                @if(text != null && email != null) {
+                    and
+                }
+                @if(email != null) {
+                    @email
+                }.
+            }
+        </p>
+    </div>
+
+}

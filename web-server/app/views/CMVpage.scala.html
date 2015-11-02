@@ -1,0 +1,14 @@
+@psycMain(true) {
+
+
+
+    <div id="checktext">
+        <br> Enter the Ballot ID found at the ((location))
+        <br> of your ballot in the box below.
+    </div>
+
+    <!-- ID search box + submit button -->
+    <p><input type="text" id="idText" maxlength="10" autofocus></p> <!--size="10px" -->
+    <p><button id="submit" onclick="javascript: location.href = '/check/' + document.getElementById('idText').value;"> Submit </button></p>
+}
+

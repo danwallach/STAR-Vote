@@ -51,6 +51,100 @@ public class AuditServer extends Controller {
 
     static boolean init = false;
 
+
+    /* =======================  PSYC STUFF =============================== */
+
+    /**
+     * Serves the psyc Home Page of the site
+     *
+     * @return      the home page of the site
+     */
+    public static Result homePage() {
+        return ok(psycHomepage.render());
+    }
+
+
+    /**
+     * Serves the "check my vote" page of the site
+     *
+     * @return      the CMV page
+     */
+    public static Result check() {
+        return ok(CMVpage.render());
+    }
+
+
+    /**
+     * Parses the submitted id and returns a page with the status
+     *
+     * @return      the CMV results page with the proper status
+     */
+    public static Result checkballot(String bid) {
+
+        String status = (CastBallot.getBallot(bid) != null) ? "cast" :
+                        (ChallengedBallot.getBallot(bid) != null) ? "challenged" :
+                        "invalid";
+
+        return ok(CMVresults.render(status, bid));
+    }
+
+    /**
+     * Serves the "poll results" page of the site
+     *
+     * @return      the poll results page
+     */
+    public static Result pollresults() {
+
+        return ok(pollResults.render());
+
+    }
+
+    /**
+     * Serves the "tools" page of the site
+     *
+     * @return      the tools page
+     */
+    public static Result tools() {
+
+        return ok(tools.render());
+
+    }
+
+    /**
+     * Serves the "report" page of the site
+     *
+     * @return      the report page
+     */
+    public static Result report(String id) {
+
+        return ok(Report.render(id));
+
+    }
+
+    /**
+     * Handles submitted report information and serves the result
+     *
+     * @return      the result of submitted report information page
+     */
+    public static Result reportissue(String id) {
+
+        String issue = request().getQueryString("issue");
+        String comments = request().getQueryString("comments");
+        String print = request().getQueryString("print");
+        String text = request().getQueryString("text");
+        String email = request().getQueryString("email");
+
+        return ok(reportConfirmation.render(email, print, text, id));
+    }
+
+
+
+    /* ====================  PSYC STUFF END ============================== */
+
+
+
+
+
     /**
      * Serves the Home Page of the site
      *

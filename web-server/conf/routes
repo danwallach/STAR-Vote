@@ -3,7 +3,8 @@
 # ~~~~
 
 # Home page
-GET         /                               controllers.AuditServer.index()
+# temp. normally "/"
+GET         /index                          controllers.AuditServer.index()
 GET         /confirm                        controllers.AuditServer.confirm()
 GET         /challenge                      controllers.AuditServer.challenge()
 GET         /confirm/submit                 controllers.AuditServer.getCastBallot(ballotid: String ?= "none")
@@ -13,6 +14,20 @@ GET         /aboutUs                        controllers.AuditServer.aboutUs
 GET         /api                            controllers.AuditServer.getAPI()
 GET         /trac                           controllers.AuditServer.getTrac()
 
+
+# Psych new home page
+GET         /                               controllers.AuditServer.homePage()
+GET         /check                          controllers.AuditServer.check()
+GET         /check/                         controllers.AuditServer.checkballot(id= "")
+GET         /check/:id                      controllers.AuditServer.checkballot(id: String)
+GET         /pollresults                    controllers.AuditServer.pollresults()
+GET         /tools                          controllers.AuditServer.tools()
+GET         /report/                        controllers.AuditServer.report(id ="")
+GET         /report/:id                     controllers.AuditServer.report(id: String)
+POST        /report/                        controllers.AuditServer.reportissue(id = "")
+POST        /report/:id                     controllers.AuditServer.reportissue(id: String)
+
+# Regular stuff
 POST        /3FF968A3B47CT34C               controllers.AuditServer.ballotLoad()
 
 GET         /adminlogin                     controllers.AuditServer.adminverify()
