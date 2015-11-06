@@ -36,19 +36,16 @@ function sendReceipt(id) {
 }
 
 function sendNoReceipt(id) {
-    document.getElementById("reportcontainer" ).style.display = "block";
-    document.getElementById("receiptcontainer" ).style.display = "none";
-
     document.getElementsByName("receiptRequest")[0].action= "/report/" + id + "?issue=" + getIssue() + "&comments=" + document.getElementById("freeresponse").value;
     document.getElementsByName("receiptRequest")[0].submit();
 }
 </script>
 
-@psycMain(false) {
+@psycMain(false)("Report an Issue") {
 
 
 
-    <div id="reportcontainer">
+    <div id="reportcontainer" style="display: block">
         <h3>Select your problem:</h3>
         <input type="radio" name="issue" value="missing"> My ballot is not showing up at all<br>
         <input type="radio" name="issue" value="uncast"> My ballot says it was never cast<br>
@@ -83,7 +80,7 @@ function sendNoReceipt(id) {
             <div id="buttons">
                 <ul>
                     <li><a id = "send" href="javascript: sendReceipt(@id)"> Submit </a></li>
-                    <li id= "noreceipt"><a href="javascript: sendNoReceipt(@id)"> I don't want to receive a copy of my ticket </a></li>
+                    <li id= "noreceipt"><a href="javascript: sendNoReceipt(@id)"> I don't want to receive<br>a copy of my ticket </a></li>
                 </ul>
             </div>
 

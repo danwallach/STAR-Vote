@@ -23,6 +23,12 @@ h1 {
 	color: white;
 }
 
+h3 {
+    position: relative;
+    top: 10px;
+    font-size: 24px;
+}
+
 #footer {
 	bottom:0; left:0;
 	width: 100%; height: 90px;
@@ -52,7 +58,7 @@ h1 {
 	/* border: 1px dashed navy; */
 }
 
-ul {
+#navbar ul {
 	list-style-type: none;
 	top: 10px;
 	bottom: 10px;
@@ -63,7 +69,7 @@ ul {
 	/* background-color: #466D8C; */
 }
 
-li {
+#navbar li {
 	position: relative;
 	z-index: 1;
 	display: block;
@@ -117,6 +123,30 @@ a:hover {
 	left: 160px;
 	float: right;
 	overflow: hidden;
+}
+
+#checktext {
+    margin-left: auto;
+    margin-right: auto;
+    width: auto;
+    padding: 10px 0;
+    border: 0;
+    font-family: inherit;
+    font-style: inherit;
+    font-size: 30px; /*originally set at 20px*/
+    line-height: 42px; /*originally set at 28px*/
+    text-align: center;
+    outline: 0;
+    display: block;
+}
+
+#idText {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    font-size: 40px;
+    width: 350px;
+    text-align: center;
 }
 
 .bigtext{
@@ -261,12 +291,25 @@ a:hover {
     padding-top: 20px;
 }
 
+#buttons ul {
+    list-style-type: none;
+    top: 10px;
+    bottom: 10px;
+    left: 10px;
+    margin: 0 0 0 0;
+    padding: 0 0 0 0;
+    /* border: 1px dashed red; */
+    /* background-color: #466D8C; */
+}
+
 #buttons li {
     position: relative;
     display: inline-block;
     list-style-type: none;
     width: 380px;
 }
+
+
 
 #buttons a:link, #buttons a:visited {
     text-align: center;
@@ -298,16 +341,10 @@ a:hover {
 #noreceipt a:link, #noreceipt a:visited {
     font-size: 20px;
     font-weight: 300;
+    line-height: 1.25em;
     background: rgba(200,200,200,1);
     border: thin;
     color: rgba(0,0,0,0.8);
-}
-
-form {
-    line-height: 30px;
-    font-size: 20px;
-    text-align: left;
-    display: inline-block;
 }
 
 #comments {
@@ -345,4 +382,24 @@ form {
     align-items: flex-start;
     text-align: center;
     box-sizing: border-box;
+}
+
+.enter {
+    position: relative;
+    font-size: 16px;
+    left: 50px;
+    line-height: 25px;
+}
+
+#options {
+    position: relative;
+    left: 100px;
+}
+
+form {
+    position: relative;
+    font-size: 18px;
+    text-align: left;
+    display: inline-block;
+    top: -20px;
 }
