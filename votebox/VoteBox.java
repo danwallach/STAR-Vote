@@ -143,11 +143,9 @@ public class VoteBox{
         labelChangedEvent = new Event<>();
 
         /* Announce to auditorium the status */
-        statusTimer = new Timer(300000, new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (connected)
-                    auditorium.announce(getStatus());
-            }
+        statusTimer = new Timer(300000, e -> {
+            if (connected)
+                auditorium.announce(getStatus());
         });
 
         /* Run fullscreen on OSX only */
@@ -230,32 +228,131 @@ public class VoteBox{
         currentDriver.run();
 
         /* Listen for commit UI events.  When received, send out an encrypted vote. */
-        currentDriver.getView().registerForCommit(new Observer() {
+        currentDriver.getView().registerForCommit((o, argTemp) -> {
 
-            /**
-             * Handles the updating procedure after a ballot gets committed
-             * @see Observer#update(java.util.Observable, Object)
-             */
-            @SuppressWarnings("unchecked")
-            public void update(Observable o, Object argTemp) {
+            if (!connected)
+                throw new RuntimeException("Attempted to cast ballot when not connected to any machines");
 
-                if (!connected)
-                    throw new RuntimeException("Attempted to cast ballot when not connected to any machines");
+            if (!voting || currentDriver == null)
+                throw new RuntimeException("VoteBox attempted to cast ballot, but was not currently voting");
 
-                if (!voting || currentDriver == null)
-                    throw new RuntimeException("VoteBox attempted to cast ballot, but was not currently voting");
+            if (finishedVoting)
+                throw new RuntimeException("This machine has already finished voting, but attempted to vote again");
 
-                if (finishedVoting)
-                    throw new RuntimeException("This machine has already finished voting, but attempted to vote again");
+            committedBallot = true;
 
-                committedBallot = true;
+            /* Can we just get Ballot<Plaintext> type objects? */
+            Object[] arg = (Object[]) argTemp;
 
-                /* Can we just get Ballot<Plaintext> type objects? */
+            /* arg0 should be the cast ballot structure, check. TODO Fix handling */
+            //if (RuntimeBallot.BALLOT_PATTERN.match((ASExpression) arg[0]) == NoMatch.SINGLETON)
+            //    throw new RuntimeException("Incorrectly expected a cast-ballot");
+
+            /* Convert Ballot from ASE to Ballot object TODO check if this is right, should be able to do something similar */
+            List<PlaintextRaceSelection> ballotForm = ASEConverter.convertFromASE((ListExpression)arg[0]);
+
+            Ballot<PlaintextRaceSelection> ballot = new Ballot<>(bid, ballotForm, nonce.toString());
+
+            /* Encrypt Ballot */
+            Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>> encBallot;
+
+            try { encBallot = ballotCrypter.encrypt(ballot); }
+            catch (Exception e) { e.printStackTrace(); throw new RuntimeException("Could not encrypt the ballot because of " + e.getClass()); }
+
+
+            /* Check if provisional and choose announcement format */
+            if (!isProvisional) {
+
+                auditorium.announce(new CommitBallotEvent(mySerial, nonce, ASEConverter.convertToASE(encBallot).toVerbatim(), bid, precinct));
+
+            }
+
+            /* Provisional */
+            else {
+                auditorium.announce(new ProvisionalCommitEvent(mySerial, nonce, ASEConverter.convertToASE(encBallot).toVerbatim(), bid));
+            }
+
+            /* Announce ballot printing and print */
+            List<List<String>> races = currentDriver.getBallotAdapter().getRaceGroups();
+            auditorium.announce(new BallotPrintingEvent(mySerial, bid, nonce));
+            printer = new Printer(_currentBallotFile, races);
+
+            boolean success = printer.printCommittedBallot(ballot.getRaceSelections(), bid);
+            printer.printedReceipt(bid);
+
+            /* By this time, the voter is done voting */
+            /* Wait before returning to inactive */
+
+            long start = System.currentTimeMillis();
+
+            while (System.currentTimeMillis() - start < 5000) ;
+
+            finishedVoting = true;
+
+            System.out.println("\nBID: " + bid + "\n");
+
+            if (success)
+                auditorium.announce(new BallotPrintSuccessEvent(mySerial, bid, nonce));
+
+        });
+
+        currentDriver.getView().registerForOverrideCancelConfirm((o, arg) -> {
+
+            if (voting && override && !finishedVoting && currentDriver != null) {
+
+                /* Announce the override */
+                auditorium.announce(new OverrideCancelConfirmEvent(mySerial, nonce));
+
+                /* Kills the voting session */
+                currentDriver.kill();
+                currentDriver = null;
+                nonce = null;
+                voting = false;
+                override = false;
+
+                /* Broadcast the new status */
+                broadcastStatus();
+
+                promptForPin("Enter Voting Authentication PIN");
+
+            }
+            else { /* TODO runtime exception */
+                throw new RuntimeException("Received an override-cancel-confirm event at the incorrect time");
+            }
+        });
+
+        currentDriver.getView().registerForOverrideCancelDeny((o, arg) -> {
+
+            if (voting && override && !finishedVoting && currentDriver != null) {
+
+                /* Announce the denial of the override and go back */
+                auditorium.announce(new OverrideCancelDenyEvent(mySerial, nonce));
+                override = false;
+                currentDriver.getView().drawPage(pageBeforeOverride, false);
+
+            }
+
+            else { /* TODO runtime exception */
+                throw new RuntimeException("Received an override-cancel-deny event at the incorrect time");
+            }
+        });
+
+        currentDriver.getView().registerForOverrideCommitConfirm((o, argTemp) -> {
+
+            /* Check to see if voting is still in progress after the override commit selection */
+            if (voting && override && !finishedVoting && currentDriver != null) {
+
+
                 Object[] arg = (Object[]) argTemp;
 
-                /* arg0 should be the cast ballot structure, check. TODO Fix handling */
+                /* arg1 should be the cast ballot structure, check  TODO */
                 //if (RuntimeBallot.BALLOT_PATTERN.match((ASExpression) arg[0]) == NoMatch.SINGLETON)
                 //    throw new RuntimeException("Incorrectly expected a cast-ballot");
+
+                //TODO use this if logging fails and requires ASE -- this might make threads wait long enough for ASEParser
+                /* Need to make the thread wait for the PDF to get created. */
+                //long start = System.currentTimeMillis();
+                //while (System.currentTimeMillis() - start < 1000);
 
                 /* Convert Ballot from ASE to Ballot object TODO check if this is right, should be able to do something similar */
                 List<PlaintextRaceSelection> ballotForm = ASEConverter.convertFromASE((ListExpression)arg[0]);
@@ -266,190 +363,55 @@ public class VoteBox{
                 Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>> encBallot;
 
                 try { encBallot = ballotCrypter.encrypt(ballot); }
-                catch (Exception e) { e.printStackTrace(); throw new RuntimeException("Could not encrypt the ballot because of " + e.getClass()); }
+                catch (Exception e) { e.printStackTrace(); throw new RuntimeException("Could not encrypt the ballot because of "+ e.getClass()); }
 
+                committedBallot = true;
 
-                /* Check if provisional and choose announcement format */
-                if (!isProvisional) {
+                /* Announce that we're commiting this ballot as override to auditorium and commit it */
+                auditorium.announce(new OverrideCommitConfirmEvent(mySerial, nonce, ASEConverter.convertToASE(ballot).toVerbatim()));
+                auditorium.announce(new CommitBallotEvent(mySerial, nonce, ASEConverter.convertToASE(encBallot).toVerbatim(), bid, precinct));
 
-                    auditorium.announce(new CommitBallotEvent(mySerial, nonce, ASEConverter.convertToASE(encBallot).toVerbatim(), bid, precinct));
+                /* Broadcast new status */
+                broadcastStatus();
 
-                }
-
-                /* Provisional */
-                else {
-                    auditorium.announce(new ProvisionalCommitEvent(mySerial, nonce, ASEConverter.convertToASE(encBallot).toVerbatim(), bid));
-                }
-
-                /* Announce ballot printing and print */
+                /* Announce a new printing event and print */
                 List<List<String>> races = currentDriver.getBallotAdapter().getRaceGroups();
                 auditorium.announce(new BallotPrintingEvent(mySerial, bid, nonce));
                 printer = new Printer(_currentBallotFile, races);
 
+                /* Check for success */
                 boolean success = printer.printCommittedBallot(ballot.getRaceSelections(), bid);
                 printer.printedReceipt(bid);
 
-                /* By this time, the voter is done voting */
-                /* Wait before returning to inactive */
-
+                /* By this time, the voter is done voting. Wait before returning to inactive. */
                 long start = System.currentTimeMillis();
 
                 while (System.currentTimeMillis() - start < 5000) ;
 
                 finishedVoting = true;
 
-                System.out.println("\nBID: " + bid + "\n");
-
+                /* Announce successful print event or throw an error */
                 if (success)
                     auditorium.announce(new BallotPrintSuccessEvent(mySerial, bid, nonce));
 
             }
-        });
 
-        currentDriver.getView().registerForOverrideCancelConfirm( new Observer() {
-                    /**
-                     * Kill the VB runtime, and announce the confirm message
-                     * @see java.util.Observer#update(java.util.Observable, Object)
-                     */
-                    public void update(Observable o, Object arg) {
-
-                        if (voting && override && !finishedVoting && currentDriver != null) {
-
-                            /* Announce the override */
-                            auditorium.announce(new OverrideCancelConfirmEvent(mySerial, nonce));
-
-                            /* Kills the voting session */
-                            currentDriver.kill();
-                            currentDriver = null;
-                            nonce = null;
-                            voting = false;
-                            override = false;
-
-                            /* Broadcast the new status */
-                            broadcastStatus();
-
-                            promptForPin("Enter Voting Authentication PIN");
-
-                        }
-                        else { /* TODO runtime exception */
-                            throw new RuntimeException("Received an override-cancel-confirm event at the incorrect time");
-                        }
-                    }
-        });
-
-        currentDriver.getView().registerForOverrideCancelDeny(new Observer() {
-            /**
-             * Announce the deny message, and return to the page on which the voter was previously
-             * @see Observer#update(java.util.Observable, Object)
-             */
-            public void update(Observable o, Object arg) {
-
-                if (voting && override && !finishedVoting && currentDriver != null) {
-
-                    /* Announce the denial of the override and go back */
-                    auditorium.announce(new OverrideCancelDenyEvent(mySerial, nonce));
-                    override = false;
-                    currentDriver.getView().drawPage(pageBeforeOverride, false);
-
-                }
-
-                else { /* TODO runtime exception */
-                    throw new RuntimeException("Received an override-cancel-deny event at the incorrect time");
-                }
+            else { /* TODO runtime error should be graceful */
+                throw new RuntimeException("Received an override-commit-confirm event at the incorrect time");
             }
         });
 
-        currentDriver.getView().registerForOverrideCommitConfirm(new Observer() {
-            /**
-             * Increment counters, and send the ballot in the confirm message.
-             * Also kill VoteBox and show the inactive UI
-             *
-             * @see java.util.Observer#update(java.util.Observable, Object)
-             */
-            public void update(Observable o, Object argTemp) {
+        currentDriver.getView().registerForOverrideCommitDeny((o, arg) -> {
+            if (voting && override && !finishedVoting && currentDriver != null) {
 
-                /* Check to see if voting is still in progress after the override commit selection */
-                if (voting && override && !finishedVoting && currentDriver != null) {
+                auditorium.announce(new OverrideCommitDenyEvent(mySerial, nonce));
+                override = false;
+                currentDriver.getView().drawPage(pageBeforeOverride, false);
 
-
-                    Object[] arg = (Object[]) argTemp;
-
-                    /* arg1 should be the cast ballot structure, check  TODO */
-                    //if (RuntimeBallot.BALLOT_PATTERN.match((ASExpression) arg[0]) == NoMatch.SINGLETON)
-                    //    throw new RuntimeException("Incorrectly expected a cast-ballot");
-
-                    //TODO use this if logging fails and requires ASE -- this might make threads wait long enough for ASEParser
-                    /* Need to make the thread wait for the PDF to get created. */
-                    //long start = System.currentTimeMillis();
-                    //while (System.currentTimeMillis() - start < 1000);
-
-                    /* Convert Ballot from ASE to Ballot object TODO check if this is right, should be able to do something similar */
-                    List<PlaintextRaceSelection> ballotForm = ASEConverter.convertFromASE((ListExpression)arg[0]);
-
-                    Ballot<PlaintextRaceSelection> ballot = new Ballot<>(bid, ballotForm, nonce.toString());
-
-                    /* Encrypt Ballot */
-                    Ballot<EncryptedRaceSelection<ExponentialElGamalCiphertext>> encBallot;
-
-                    try { encBallot = ballotCrypter.encrypt(ballot); }
-                    catch (Exception e) { e.printStackTrace(); throw new RuntimeException("Could not encrypt the ballot because of "+ e.getClass()); }
-
-                    committedBallot = true;
-
-                    /* Announce that we're commiting this ballot as override to auditorium and commit it */
-                    auditorium.announce(new OverrideCommitConfirmEvent(mySerial, nonce, ASEConverter.convertToASE(ballot).toVerbatim()));
-                    auditorium.announce(new CommitBallotEvent(mySerial, nonce, ASEConverter.convertToASE(encBallot).toVerbatim(), bid, precinct));
-
-                    /* Broadcast new status */
-                    broadcastStatus();
-
-                    /* Announce a new printing event and print */
-                    List<List<String>> races = currentDriver.getBallotAdapter().getRaceGroups();
-                    auditorium.announce(new BallotPrintingEvent(mySerial, bid, nonce));
-                    printer = new Printer(_currentBallotFile, races);
-
-                    /* Check for success */
-                    boolean success = printer.printCommittedBallot(ballot.getRaceSelections(), bid);
-                    printer.printedReceipt(bid);
-
-                    /* By this time, the voter is done voting. Wait before returning to inactive. */
-                    long start = System.currentTimeMillis();
-
-                    while (System.currentTimeMillis() - start < 5000) ;
-
-                    finishedVoting = true;
-
-                    /* Announce successful print event or throw an error */
-                    if (success)
-                        auditorium.announce(new BallotPrintSuccessEvent(mySerial, bid, nonce));
-
-                }
-
-                else { /* TODO runtime error should be graceful */
-                    throw new RuntimeException("Received an override-commit-confirm event at the incorrect time");
-                }
             }
-        });
 
-        currentDriver.getView().registerForOverrideCommitDeny(new Observer() {
-            /**
-             * Announce the deny message, and return to the page the voter was
-             * previously on
-             *
-             * @see java.util.Observer#update(java.util.Observable, Object)
-             */
-            public void update(Observable o, Object arg) {
-                if (voting && override && !finishedVoting && currentDriver != null) {
-
-                    auditorium.announce(new OverrideCommitDenyEvent(mySerial, nonce));
-                    override = false;
-                    currentDriver.getView().drawPage(pageBeforeOverride, false);
-
-                }
-
-                else {
-                    throw new RuntimeException("Received an override-cast-deny event at the incorrect time");
-                }
+            else {
+                throw new RuntimeException("Received an override-cast-deny event at the incorrect time");
             }
         });
     }
@@ -741,20 +703,18 @@ public class VoteBox{
                         broadcastStatus();
 
                         /* Create a timer to kill the runtime after 5 seconds */
-                        killVBTimer = new Timer(_constants.getViewRestartTimeout(), new ActionListener() {
-                            public void actionPerformed(ActionEvent arg0) {
+                        killVBTimer = new Timer(_constants.getViewRestartTimeout(), arg0 -> {
 
-                                currentDriver.kill();
-                                currentDriver = null;
+                            currentDriver.kill();
+                            currentDriver = null;
 
-                                /* Show inactive screen */
-                                inactiveUI.setVisible(true);
+                            /* Show inactive screen */
+                            inactiveUI.setVisible(true);
 
-                                killVBTimer = null;
+                            killVBTimer = null;
 
-                            /* Prompt for PIN for next voting session */
-                            promptForPin("Enter Voting Authentication PIN");
-                            }
+                        /* Prompt for PIN for next voting session */
+                        promptForPin("Enter Voting Authentication PIN");
                         });
 
                         killVBTimer.setRepeats(false);
@@ -1016,16 +976,14 @@ public class VoteBox{
         pinGUI.setLabelText(message);
 
         /* Add a listener for the OK button so that when it gets clicked, it validates the pin. */
-        pinGUI.okButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent arg0) {
+        pinGUI.okButton.addActionListener(arg0 -> {
 
-                /* Validate the PIN and kill the current prompt */
-                validatePin(pinGUI.getPin());
-                pinGUI.stop();
+            /* Validate the PIN and kill the current prompt */
+            validatePin(pinGUI.getPin());
+            pinGUI.stop();
 
-                /* Tell VoteBox that the PIN is currently not being prompted */
-                promptingForPin = false;
-            }
+            /* Tell VoteBox that the PIN is currently not being prompted */
+            promptingForPin = false;
         });
 
         /* Add a listener for the pin text field so that when the Enter key gets pressed, it validates the PIN. */
