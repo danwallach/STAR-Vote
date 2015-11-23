@@ -148,6 +148,7 @@ public class VoteBox{
                 auditorium.announce(getStatus());
         });
 
+        /* TODO replace this view */
         /* Run fullscreen on OSX only */
         if (_constants.getViewImplementation().equals("AWT")) {
 
@@ -157,6 +158,7 @@ public class VoteBox{
             throw new RuntimeException("Unknown view implementation defined in configuration");
         }
 
+        /* TODO this is part of the view -- kill it */
         /* Make sure this boolean is set properly */
         promptingForPin = false;
 
@@ -223,6 +225,8 @@ public class VoteBox{
     public void run(String location) {
 
         inactiveUI.setVisible(false);
+
+        /* This driver will need to take messages from the new ui */
         currentDriver = new Driver(location, _factory, _constants.getCastBallotEncryptionEnabled());
         voting = true;
         currentDriver.run();
@@ -465,6 +469,7 @@ public class VoteBox{
      */
     public void start() {
 
+        /* TODO probably want to keep this view and open new UI on active */
         inactiveUI = new VoteBoxInactiveUI(this);
 
         inactiveUI.setVisible(true);
@@ -1082,6 +1087,9 @@ public class VoteBox{
      */
     public static void main(String[] args) {
         String launchCode = "";
+
+        /* Technically this will be replaced by the VoteBoxUI */
+
         while (launchCode == null || launchCode.equals(""))
             launchCode = JOptionPane.showInputDialog(null,
                     "Please enter today's election launch code:", "Launch Code",

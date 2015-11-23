@@ -249,17 +249,14 @@ public class Driver {
     	
     	final Image accept = choices.get("accept");
 
-    	Printable toPrint = new Printable(){
+    	Printable toPrint = (graphics, pageFormat, pageIndex) -> {
 
-			public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
+			if(pageIndex != 0)
+                return Printable.NO_SUCH_PAGE;
 
-                if(pageIndex != 0)
-					return Printable.NO_SUCH_PAGE;
-
-                /* Draw the accept image */
-				graphics.drawImage(accept, (int)pageFormat.getImageableX(), (int)pageFormat.getImageableY(), null);
-				return Printable.PAGE_EXISTS;
-			}
+			/* Draw the accept image */
+            graphics.drawImage(accept, (int)pageFormat.getImageableX(), (int)pageFormat.getImageableY(), null);
+            return Printable.PAGE_EXISTS;
         };
 
         /* Print acceptance */
@@ -279,18 +276,15 @@ public class Driver {
     	
     	final Image spoil = choices.get("spoil");
 
-    	Printable toPrint = new Printable(){
+    	Printable toPrint = (graphics, pageFormat, pageIndex) -> {
 
-			public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
+            if(pageIndex != 0)
+                return Printable.NO_SUCH_PAGE;
 
-				if(pageIndex != 0)
-					return Printable.NO_SUCH_PAGE;
-
-                /* Draw the spoil image */
-				graphics.drawImage(spoil, (int)pageFormat.getImageableX(), (int)pageFormat.getImageableY(), null);
-				return Printable.PAGE_EXISTS;
-			}
-    	};
+			/* Draw the spoil image */
+            graphics.drawImage(spoil, (int)pageFormat.getImageableX(), (int)pageFormat.getImageableY(), null);
+            return Printable.PAGE_EXISTS;
+        };
 
         /* Print rejection */
     	printOnVVPAT(constants, toPrint);
@@ -344,58 +338,54 @@ public class Driver {
 		final List<String> printedChoices = new ArrayList<>();
 
         /* Set up the ballot for printing TODO comment this anonymous class */
-		Printable printedBallot = new Printable(){
+		Printable printedBallot = (graphics, pageFormat, pageIndex) -> {
 
-			public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
+            int numPages = fTotalSize / (int)pageFormat.getImageableHeight();
 
-				int numPages = fTotalSize / (int)pageFormat.getImageableHeight();
+            if(fTotalSize % (int)pageFormat.getImageableHeight() != 0)
+                numPages++;
 
-				if(fTotalSize % (int)pageFormat.getImageableHeight() != 0)
-					numPages++;
-				
-				if(printedChoices.size() == choices.size())
-					return Printable.NO_SUCH_PAGE;
-				
-				int choiceIndex = 0;
-				int totalSize = 0;
-				
-				while(pageIndex != 0){
-					totalSize += choiceToImage.get(choices.get(choiceIndex)).getHeight(null);
-					
-					if(totalSize > pageFormat.getImageableHeight()){
-						totalSize = 0;
-						choiceIndex--;
-						pageIndex--;
-					}
-					
-					choiceIndex++;
-				}
-				
-				totalSize = 0;
-				while(totalSize < pageFormat.getImageableHeight() && choiceIndex < choices.size()){
+            if(printedChoices.size() == choices.size())
+                return Printable.NO_SUCH_PAGE;
 
-					BufferedImage img = (BufferedImage)choiceToImage.get(choices.get(choiceIndex));
+            int choiceIndex = 0;
+            int totalSize1 = 0;
 
-					if(img.getHeight(null) + totalSize > pageFormat.getImageableHeight())
-						break;
-					
-					printedChoices.add(choices.get(choiceIndex));
-					
-					System.out.println("\t\t>>"+img);
-					
-					int x = (int)pageFormat.getImageableX();
-					int y = (int)pageFormat.getImageableY() + totalSize;
-					
-					graphics.drawImage(img, x, y, null);
+            while(pageIndex != 0){
+                totalSize1 += choiceToImage.get(choices.get(choiceIndex)).getHeight(null);
 
-					totalSize += img.getHeight(null);
-					choiceIndex++;
-				}
-				
-				return Printable.PAGE_EXISTS;
-			}
-			
-		};
+                if(totalSize1 > pageFormat.getImageableHeight()){
+                    totalSize1 = 0;
+                    choiceIndex--;
+                    pageIndex--;
+                }
+
+                choiceIndex++;
+            }
+
+            totalSize1 = 0;
+            while(totalSize1 < pageFormat.getImageableHeight() && choiceIndex < choices.size()){
+
+                BufferedImage img = (BufferedImage)choiceToImage.get(choices.get(choiceIndex));
+
+                if(img.getHeight(null) + totalSize1 > pageFormat.getImageableHeight())
+                    break;
+
+                printedChoices.add(choices.get(choiceIndex));
+
+                System.out.println("\t\t>>"+img);
+
+                int x = (int)pageFormat.getImageableX();
+                int y = (int)pageFormat.getImageableY() + totalSize1;
+
+                graphics.drawImage(img, x, y, null);
+
+                totalSize1 += img.getHeight(null);
+                choiceIndex++;
+            }
+
+            return Printable.PAGE_EXISTS;
+        };
 		
 		Driver.printOnVVPAT(constants, printedBallot);
 	}
