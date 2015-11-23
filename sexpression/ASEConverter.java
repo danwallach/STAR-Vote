@@ -29,7 +29,7 @@ public class ASEConverter {
     private static <T> T convertFromASE(ListExpression exp, Class<T> c) throws ConversionException {
 
         if (c==null) return null;
-        if (exp==null) return null;
+        if (exp==null || exp.equals(ListExpression.EMPTY)) return null;
 
         ObjectInstantiator<T> tInstantiator = ObjenesisHelper.getInstantiatorOf(c);
 
@@ -47,7 +47,7 @@ public class ASEConverter {
             return convertBasicType(exp,c);
 
         if (newObj instanceof ASExpression)
-            return (T)convertASE(exp);
+            return c.cast(convertASE(exp));
 
         try {
 
@@ -56,14 +56,12 @@ public class ASEConverter {
              */
 
             if (newObj instanceof Collection) {
-                newObj = c.getDeclaredConstructor().newInstance();
-                T result = (T) convertCollection(exp, (Collection) newObj);
-                return result;
+                Collection col = (Collection) c.getDeclaredConstructor().newInstance();
+                return c.cast(convertCollection(exp, col));
             }
             if (newObj instanceof Map) {
-                newObj = c.getDeclaredConstructor().newInstance();
-                T result = (T) convertMap(exp, (Map<?,?>) newObj);
-                return result;
+                Map m = (Map)c.getDeclaredConstructor().newInstance();
+                return c.cast(convertMap(exp, m));
             }
         }
         catch (Exception e) {
@@ -90,8 +88,7 @@ public class ASEConverter {
                 //System.out.println("Field name: " + fieldName);
 
                 /* Set the field in the blank object to the value in the ASE using reflection */
-                Field f = null;
-                Class curClass = c;
+                Field f;
 
                 /* Get the field with this name */
                 try { f = c.getDeclaredField(fieldName); }
@@ -172,7 +169,7 @@ public class ASEConverter {
         try { return ASEConverter.convertToASE(obj, "object"); }
         catch (ConversionException e) {e.printStackTrace();}
 
-        return null;
+        return ListExpression.EMPTY;
     }
 
     /**
@@ -352,13 +349,12 @@ public class ASEConverter {
      *
      * @param exp       the expression to convert into an object of class c
      * @param m         the blank Map instance created using Objenesis
-     * @param <T>       the type to be returned
      *
      * @return          a filled Map (type T)
      *
      * @throws ConversionException  if there is a casting exception thrown in the method
      */
-    private static <T extends Map<K,V>, K, V> T convertMap (ListExpression exp, T m) throws ConversionException {
+    private static <K,V> Map<K,V> convertMap (ListExpression exp, Map<K,V> m) throws ConversionException {
 
         try {
 
