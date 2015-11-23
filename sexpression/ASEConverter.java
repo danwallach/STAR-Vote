@@ -57,11 +57,11 @@ public class ASEConverter {
 
             if (newObj instanceof Collection) {
                 Collection col = (Collection) c.getDeclaredConstructor().newInstance();
-                return c.cast(convertCollection(exp, col));
+                return (T)convertCollection(exp, col);
             }
             if (newObj instanceof Map) {
                 Map m = (Map)c.getDeclaredConstructor().newInstance();
-                return c.cast(convertMap(exp, m));
+                return (T)convertMap(exp, m);
             }
         }
         catch (Exception e) {
@@ -129,7 +129,7 @@ public class ASEConverter {
      */
     public static <T> T convertFromASE(ListExpression exp) {
 
-        try { return convertFromASE(exp, getClass(exp)); }
+        try { return convertFromASE(exp, (Class<T>)getClass(exp)); }
         catch (ConversionException e){
             System.err.println("Error converting from ASE: " + e.getClass() + " for " + exp);
             e.printStackTrace();
@@ -142,15 +142,14 @@ public class ASEConverter {
      * Returns the class associated with the first string in exp
      *
      * @param exp       the expression to convert into an object of class c
-     * @param <T>       the type
      *
      * @return          the class type associated with this ListExpression
      */
-    private static <T> Class<T> getClass(ListExpression exp) throws ConversionException{
+    private static Class<?> getClass(ListExpression exp) throws ConversionException{
         String className = exp.get(1).toString();
 
         try {
-            return className.equals("NULL") ? null : (Class<T>)(Class.forName(className));
+            return className.equals("NULL") ? null : (Class.forName(className));
         } catch (Exception e) {
             e.printStackTrace();
             throw new ConversionException("Error during casting inferred type: " + e.getMessage());
