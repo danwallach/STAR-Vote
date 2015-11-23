@@ -226,6 +226,7 @@ public class VoteBox{
 
         inactiveUI.setVisible(false);
 
+        /* TODO replace by Liaison */
         /* This driver will need to take messages from the new ui */
         currentDriver = new Driver(location, _factory, _constants.getCastBallotEncryptionEnabled());
         voting = true;
@@ -277,6 +278,7 @@ public class VoteBox{
             }
 
             /* Announce ballot printing and print */
+            /* TODO replace with Liaison call */
             List<List<String>> races = currentDriver.getBallotAdapter().getRaceGroups();
             auditorium.announce(new BallotPrintingEvent(mySerial, bid, nonce));
             printer = new Printer(_currentBallotFile, races);
@@ -300,6 +302,7 @@ public class VoteBox{
 
         });
 
+        /* TODO replace by Liaison call */
         currentDriver.getView().registerForOverrideCancelConfirm((o, arg) -> {
 
             if (voting && override && !finishedVoting && currentDriver != null) {
@@ -307,6 +310,7 @@ public class VoteBox{
                 /* Announce the override */
                 auditorium.announce(new OverrideCancelConfirmEvent(mySerial, nonce));
 
+                /* TODO In Liaison, kill the UI process */
                 /* Kills the voting session */
                 currentDriver.kill();
                 currentDriver = null;
@@ -317,6 +321,7 @@ public class VoteBox{
                 /* Broadcast the new status */
                 broadcastStatus();
 
+                /* TODO simply call Liaison to restart voting process */
                 promptForPin("Enter Voting Authentication PIN");
 
             }
@@ -325,6 +330,7 @@ public class VoteBox{
             }
         });
 
+        /* TODO replace with Liaison call */
         currentDriver.getView().registerForOverrideCancelDeny((o, arg) -> {
 
             if (voting && override && !finishedVoting && currentDriver != null) {
@@ -332,6 +338,8 @@ public class VoteBox{
                 /* Announce the denial of the override and go back */
                 auditorium.announce(new OverrideCancelDenyEvent(mySerial, nonce));
                 override = false;
+
+                /* TODO this logic should exist in the UI */
                 currentDriver.getView().drawPage(pageBeforeOverride, false);
 
             }
@@ -341,6 +349,7 @@ public class VoteBox{
             }
         });
 
+        /* TODO replace with Liaison call */
         currentDriver.getView().registerForOverrideCommitConfirm((o, argTemp) -> {
 
             /* Check to see if voting is still in progress after the override commit selection */
@@ -405,11 +414,14 @@ public class VoteBox{
             }
         });
 
+        /* TODO replace with Liaison call */
         currentDriver.getView().registerForOverrideCommitDeny((o, arg) -> {
             if (voting && override && !finishedVoting && currentDriver != null) {
 
                 auditorium.announce(new OverrideCommitDenyEvent(mySerial, nonce));
                 override = false;
+
+                /* TODO this logic should exist in the UI */
                 currentDriver.getView().drawPage(pageBeforeOverride, false);
 
             }
@@ -612,6 +624,7 @@ public class VoteBox{
                         killVBTimer = null;
 
                         /* Kill voting session */
+                        /* TODO replace with call to Liaison */
                         currentDriver.kill();
                         currentDriver = null;
                     }
@@ -653,6 +666,7 @@ public class VoteBox{
                         byte[] ballot = e.getBallot();
                         fout.write(ballot);
 
+                        /* TODO Handle this... internally? */
                         /* Takes ballot file, unzips, and unloads them into a directory to create temp directory */
                         Driver.unzip(new File(path, "ballot.zip").getAbsolutePath(), new File(path, "data").getAbsolutePath());
 
@@ -687,10 +701,11 @@ public class VoteBox{
                         if (!committedBallot)
                             throw new RuntimeException("Someone said the ballot was received, but this machine hasn't committed it yet. Maybe the supervisor is not configured properly?");
 
+                        /* TODO kill all below pretty much and replace with Liaison call to message for kill */
                         if (isProvisional) {
 
                             try {
-                            /* Show provisional success page */
+                                /* Show provisional success page */
                                 currentDriver.getView().drawPage(currentDriver.getView().getCurrentLayout().getProperties().getInteger(Properties.PROVISIONAL_SUCCESS_PAGE), false);
                             }
                             catch (IncorrectTypeException e1) { e1.printStackTrace(); }
@@ -707,6 +722,7 @@ public class VoteBox{
                         committedBallot = false;
                         broadcastStatus();
 
+                        /* TODO can we value-write this once and just restart when we need it ? */
                         /* Create a timer to kill the runtime after 5 seconds */
                         killVBTimer = new Timer(_constants.getViewRestartTimeout(), arg0 -> {
 
@@ -761,7 +777,8 @@ public class VoteBox{
                 if (mySerial == e.getTargetSerial() && e.getNonce().equals(nonce)) {
 
                     try {
-                        
+
+                        /* TODO replace by Liaison call */
                         /* Make sure voting is in progress */
                         if (voting && !finishedVoting && currentDriver != null) {
 
@@ -794,6 +811,7 @@ public class VoteBox{
 
                     try {
 
+                        /* TODO replace by Liaison call */
                         /* Make sure voting is in progress */
                         if (voting && !finishedVoting && currentDriver != null) {
 
@@ -821,6 +839,7 @@ public class VoteBox{
              * @see votebox.events.PollsOpenEvent
              */
             public void pollsOpen(PollsOpenEvent e) {
+                /* TODO this will be replaced by a Liaison call */
                 if(!voting)
                     promptForPin("Enter Authorization PIN");
             }
@@ -854,6 +873,7 @@ public class VoteBox{
              * @see votebox.events.InvalidPinEvent
              */
             public void invalidPin(InvalidPinEvent e) {
+                /* TODO replace this with a Liaison call */
                 if(e.getTargetSerial() == mySerial)
                     promptForPin("Invalid PIN: Enter Valid PIN");
             }
@@ -864,6 +884,7 @@ public class VoteBox{
              */
             public void pollStatus(PollStatusEvent pollStatusEvent) {
 
+                /* TODO Replace by Liaison call*/
                 /* Check if machine is voting, sitting with polls opened */
                 if(!voting && pollStatusEvent.getPollStatus() == 1)
                     promptForPin("Enter Authorization PIN");
@@ -911,6 +932,8 @@ public class VoteBox{
                     if (voting || currentDriver != null && killVBTimer == null)
                         throw new RuntimeException("VoteBox was authorized-to-cast, but was already voting");
 
+
+                    /* TODO replace with Liaison call which will kill */
                     /* If last VB runtime is on thank you screen and counting  down to when it disappears, kill it prematurely without  showing inactive UI */
                     if (killVBTimer != null && currentDriver != null) {
 
@@ -941,6 +964,7 @@ public class VoteBox{
                         byte[] ballot = e.getBallot();
                         fout.write(ballot);
 
+                        /* TODO replace this... internally? */
                         Driver.unzip(new File(path, "ballot.zip").getAbsolutePath(), new File(path, "data").getAbsolutePath());
                         Driver.deleteRecursivelyOnExit(path.getAbsolutePath());
 
@@ -970,7 +994,7 @@ public class VoteBox{
      * @param message message displayed as the header of the PIN prompt e.g. "Please Enter Your PIN"
      */
     public void promptForPin(String message) {
-
+    /* TODO Just handle this in Liaison */
         /* Avoid prompting for PIN when already prompting */
         if(promptingForPin)
             return;
@@ -1032,6 +1056,7 @@ public class VoteBox{
      * @param type the type of the candidate ("Regular" or "Presidential")
      * @param names the name(s) of the candidate
      */
+    /* TODO kill this -- this can all be done in new UI */
     public static void renderWriteInImages(String uid, String type, String... names)
     {
         /* Render the images for the candidate names. */
