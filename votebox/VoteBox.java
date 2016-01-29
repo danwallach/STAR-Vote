@@ -31,10 +31,7 @@ import crypto.adder.AdderInteger;
 import preptool.model.language.Language;
 import preptool.model.layout.manager.RenderingUtils;
 import printer.Printer;
-import sexpression.ASEConverter;
-import sexpression.ASExpression;
-import sexpression.ListExpression;
-import sexpression.NoMatch;
+import sexpression.*;
 import sexpression.stream.InvalidVerbatimStreamException;
 import supervisor.model.Ballot;
 import votebox.events.*;
@@ -258,7 +255,8 @@ public class VoteBox{
                 //    throw new RuntimeException("Incorrectly expected a cast-ballot");
 
                 /* Convert Ballot from ASE to Ballot object TODO check if this is right, should be able to do something similar */
-                List<PlaintextRaceSelection> ballotForm = ASEConverter.convertFromASE((ListExpression)arg[0]);
+                List<PlaintextRaceSelection> ballotForm = ASEConverter.convertFromASE((ListExpression) arg[0]);
+
 
                 Ballot<PlaintextRaceSelection> ballot = new Ballot<>(bid, ballotForm, nonce.toString());
 
@@ -384,7 +382,7 @@ public class VoteBox{
                     //while (System.currentTimeMillis() - start < 1000);
 
                     /* Convert Ballot from ASE to Ballot object TODO check if this is right, should be able to do something similar */
-                    List<PlaintextRaceSelection> ballotForm = ASEConverter.convertFromASE((ListExpression)arg[0]);
+                    List<PlaintextRaceSelection> ballotForm = ASEConverter.convertFromASE((ListExpression) arg[0]);
 
                     Ballot<PlaintextRaceSelection> ballot = new Ballot<>(bid, ballotForm, nonce.toString());
 
@@ -470,8 +468,9 @@ public class VoteBox{
 
                 ListExpression choice = (ListExpression) x;
 
-                /* If this is who the vote selected in this race, make a short code */
-                if(ASEConverter.convertFromASE((ListExpression) choice.get(1)) == AdderInteger.ONE){
+                AdderInteger num = ASEConverter.convertFromASE((ListExpression) choice.get(1));
+
+                if(num == AdderInteger.ONE){
 
                     ASExpression raceId = null;
 

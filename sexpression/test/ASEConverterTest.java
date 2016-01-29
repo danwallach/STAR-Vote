@@ -133,6 +133,7 @@ public class ASEConverterTest extends TestCase{
 
         System.out.println("These should be equal: ");
         System.out.println("\t" + arrayMap + "\n\t=\n\t" + ASEConverter.convertFromASE(ASEConverter.convertToASE(arrayMap)) + "\n");
+        //noinspection AssertEqualsBetweenInconvertibleTypes
         assertEquals(arrayMap, ASEConverter.convertFromASE(ASEConverter.convertToASE(arrayMap)));
 
         System.out.println("These should be equal: ");

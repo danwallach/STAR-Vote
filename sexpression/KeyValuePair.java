@@ -1,30 +1,23 @@
 package sexpression;
 
+import com.sun.istack.internal.NotNull;
+
 /**
  * Created by Matthew Kindy II on 6/10/2015.
  */
 public class KeyValuePair<K,V> {
 
+    @NotNull
     K key;
-    V value;
 
-    public KeyValuePair(){
-        this(null, null);
-    }
+    V value;
 
     public KeyValuePair(K key, V value) {
         this.key = key;
         this.value = value;
     }
 
-    public void setKey(K key) {
-        this.key = key;
-    }
-
-    public void setValue(V value) {
-        this.value = value;
-    }
-
+    @NotNull
     public K getKey() {
         return key;
     }

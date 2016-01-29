@@ -226,8 +226,11 @@ public class Launcher {
                         printer = new Printer(new File(dest.getAbsolutePath() + ".zip"), _voteBox.getBallotAdapter().getRaceGroups(), true);
 
                         /* Print a bogus ballot if not the last seen ballot? TODO check what this does / is supposed to do */
-                        if(ballot != _lastSeenBallot)
-                            printer.printCommittedBallot(((Ballot<PlaintextRaceSelection>)ASEConverter.convertFromASE(ballot)).getRaceSelections(), "9999999999");
+                        if(ballot != _lastSeenBallot) {
+                            Ballot<PlaintextRaceSelection> bal = ASEConverter.convertFromASE(ballot);
+
+                            printer.printCommittedBallot(bal.getRaceSelections(), "9999999999");
+                        }
 
                         printer.printedReceipt("9999999999");
 
