@@ -134,7 +134,7 @@ public class AuditServer extends Controller {
         String text = request().getQueryString("text");
         String email = request().getQueryString("email");
 
-        return ok(reportConfirmation.render(email, print, text, id));
+        return ok(reportConfirmation.render(email, text, id));
     }
 
 
@@ -593,12 +593,6 @@ public class AuditServer extends Controller {
 
 
     /*-------------------------------------- AUTHORITY METHODS -----------------------------------------------*/
-
-
-
-
-
-
 
     /**
      * @return a Map of the current summed results Ballot for each Precinct by precinct ID

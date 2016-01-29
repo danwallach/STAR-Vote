@@ -8,6 +8,7 @@ function getCheckboxes() {
     var query = "";
 
     for(var i =0; i < types.length; i++) {
+        console.log(types[i])
         if (types[i].checked) {
             query += "&" + types[i].value + "=" + document.getElementById(types[i].value).value;
         }
@@ -63,6 +64,7 @@ function sendNoReceipt(id) {
             <div id="options">
                 <div id="printdiv">
                     <input type="checkbox" name="receipttype" value="print"> Print
+                    <input type="hidden" name="willPrint" value="true" id="print">
                 </div>
                 <br>
                 <div id="textdiv">
