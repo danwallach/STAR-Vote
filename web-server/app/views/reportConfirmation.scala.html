@@ -3,11 +3,12 @@
 @psycMain(true)("Report an Issue") {
 
     <div id = "msg" class = "correct">
-        <img src="../assets/images/transparentCheck.png" id = "correcticon"/>
+        <img src="../assets/images/checkmark.png" id = "correcticon"/>
         <p> Thank you! Your trouble ticket for ballot #@id has been submitted for review.</p>
 
-        <p>
             @if(text != null || email != null) {
+                <p>
+
                 A copy of your ticket has been sent to
                 @if(text != null) {
                     @text
@@ -18,8 +19,8 @@
                 @if(email != null) {
                     @email
                 }.
+                </p>
             }
-        </p>
     </div>
 
 }

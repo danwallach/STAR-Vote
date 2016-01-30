@@ -1,66 +1,83 @@
 @(id: String)
 
-<script type="text/javascript">
-
-function getCheckboxes() {
-    var types = document.getElementsByName("receipttype");
-
-    var query = "";
-
-    for(var i =0; i < types.length; i++) {
-        console.log(types[i])
-        if (types[i].checked) {
-            query += "&" + types[i].value + "=" + document.getElementById(types[i].value).value;
-        }
-    }
-
-    return query;
-}
-
-function getIssue() {
-    var issueVar = document.querySelector('input[name = "issue"]:checked');
-
-    return (issueVar != null) ? issueVar.value : "none";
-}
-
-function toReceipt() {
-    document.getElementById("reportcontainer").style.display = "none";
-    document.getElementById("receiptcontainer").style.display = "block";
-}
-
-function sendReceipt(id) {
-    document.getElementById("reportcontainer").style.display = "block";
-    document.getElementById("receiptcontainer").style.display = "none";
-
-    document.getElementsByName("receiptRequest")[0].action= "/report/" + id + "?issue=" + getIssue() +"&comments=" + document.getElementById("freeresponse").value + getCheckboxes();
-    document.getElementsByName("receiptRequest")[0].submit(); // Submit the page
-}
-
-function sendNoReceipt(id) {
-    document.getElementsByName("receiptRequest")[0].action= "/report/" + id + "?issue=" + getIssue() + "&comments=" + document.getElementById("freeresponse").value;
-    document.getElementsByName("receiptRequest")[0].submit();
-}
-</script>
 
 @psycMain(false)("Report an Issue") {
+
+    <script type="text/javascript">
+
+            function getCheckboxes() {
+                var types = document.getElementsByName("receipttype");
+
+                var query = "";
+
+                for(var i =0; i < types.length; i++) {
+                    if (types[i].checked) {
+                        query += "&" + types[i].value + "=" + document.getElementById(types[i].value).value;
+                    }
+                }
+
+                return query;
+            }
+
+            function getIssue() {
+                var issueVar = document.querySelector('input[name = "issue"]:checked');
+
+                return (issueVar != null) ? issueVar.value : "none";
+            }
+
+
+            function toReceipt() {
+                if(getIssue() != "none") {
+                    document.getElementById("reportcontainer").style.display = "none";
+                    document.getElementById("receiptcontainer").style.opacity = "1";
+                } else {
+                    document.getElementById("ballotProblems").className = "invalid";
+                    document.getElementById("issueNotify").style.opacity = "1";
+                }
+            }
+
+            function sendReceipt(bid) {
+                document.getElementById("receiptRequest").action= "/report/" + bid + "?issue=" + getIssue() +"&comments=" + document.getElementById("freeresponse").value + getCheckboxes();
+                document.getElementById("submitButton").click(); // Submit the page
+            }
+
+            function sendNoReceipt(bid) {
+                document.getElementById("receiptRequest").action= "/report/" + bid + "?issue=" + getIssue() + "&comments=" + document.getElementById("freeresponse").value;
+
+                document.getElementById("receiptRequest").reset();
+                [].forEach.call(document.getElementById("receiptRequest").getElementsByTagName("input"),
+                        function(el) {
+                            el.required = false;
+                            el.noValidate = true;
+                            var clone = el.cloneNode(true);
+                            el.parentNode.replaceChild(clone, el);
+                        });
+
+                document.getElementById("submitButton").click();
+            }
+    </script>
 
 
 
     <div id="reportcontainer" style="display: block">
         <h3>Select your problem:</h3>
-        <input type="radio" name="issue" value="missing"> My ballot is not showing up at all<br>
-        <input type="radio" name="issue" value="uncast"> My ballot says it was never cast<br>
-        <input type="radio" name="issue" value="miscast"> My ballot was cast, but it shouldn't have been<br>
-        <input type="radio" name="issue" value="other"> Other: <input type="text" name="Description"><br>
+        <div id="ballotProblems">
+            <input type="radio" name="issue" value="missing"> My ballot is not showing up at all<br>
+            <input type="radio" name="issue" value="uncast"> My ballot says it was never cast<br>
+            <input type="radio" name="issue" value="miscast"> My ballot was cast, but it shouldn't have been<br>
+            <input type="radio" name="issue" value="other"> Other: <input type="text" name="Description"><br>
+        </div>
+        <br>
+        <label id="issueNotify">Please select an issue above.</label>
         <p id="comments"> Additional comments? <br>
-        <input id="freeresponse" type="text" name="comments" style="width: 300px; height: 75px;"></p>
-        <button id="submit" onclick="toReceipt()"> Submit </button>
+        <textarea id="freeresponse" name="comments"></textarea></p>
+        <button id="problem" class="continue" onclick="toReceipt()"> Submit </button>
     </div>
 
-    <div id="receiptcontainer" style="display:none">
+    <div id="receiptcontainer" style="opacity:0">
         <h3> How would you like to recieve your trouble ticket? </h3>
         <p id="helptext"> Select one or more of the options below </p> <br>
-        <form method="POST" name="receiptRequest">
+        <form method="POST" id="receiptRequest" onsubmit="return formIsValid(this)">
             <div id="options">
                 <div id="printdiv">
                     <input type="checkbox" name="receipttype" value="print"> Print
@@ -70,23 +87,99 @@ function sendNoReceipt(id) {
                 <div id="textdiv">
                     <input type="checkbox" name="receipttype" value="text"> Text<br>
                     <p class="enter"> Enter your phone number: <br>
-                        <input type="text" name="phonenum" id="text"></p>
+                        <input pattern="\d{3}(-)?\d{4}" title="Examples: 123-4567 or 1234567" name="phonenum" id="text"></p>
                 </div>
                 <br>
                 <div id="emaildiv">
                     <input type="checkbox" name="receipttype" value="email"> Email<br>
                     <p class="enter">Enter your email address: <br>
-                        <input type="text" name="emailaddress" id="email"></p><br>
+                        <input pattern="[A-Za-z0-9._%+-]+@@[A-Za-z0-9.-]+\.[A-Za-z]{2,}" title = "Example: myEmail@@website.com" name="emailaddress" id="email"></p><br>
                 </div>
             </div>
             <div id="buttons">
                 <ul>
-                    <li><a id = "send" href="javascript: sendReceipt(@id)"> Submit </a></li>
-                    <li id= "noreceipt"><a href="javascript: sendNoReceipt(@id)"> I don't want to receive<br>a copy of my ticket </a></li>
+                    <li><a id = "send" class="continue" href="javascript: sendReceipt('@id');"> Submit </a></li>
+                    <li id= "noreceipt"><a class="sideButton" href="javascript: sendNoReceipt('@id');"> I don't want to receive<br>a copy of my ticket </a></li>
                 </ul>
+
+                <input type="submit" style="display:none" id="submitButton">
             </div>
 
         </form>
     </div>
+
+    <script type="text/javascript">
+
+            window.addEventListener("load", function() {
+
+                var issues = document.querySelectorAll('input[name = "issue"]');
+                for(var j=0;j<issues.length;j++) {
+                    issues[j].addEventListener("click", function() {
+                        document.getElementById("ballotProblems").className = "";
+                        document.getElementById("issueNotify").style.opacity = "0";
+                    });
+                }
+
+                var inputHandler = function(event) {
+                    if (event.target.validity.valid) {
+                        event.target.className = "valid";
+                    } else {
+                        event.target.className = "";
+                    }
+
+                    if (event.target.validity.customError) {
+                        event.target.setCustomValidity("");
+                    }
+                };
+
+                var emailValidity = function(e) {
+                    e.target.className = "invalid";
+                    if(e.target.validity.valueMissing){
+                        e.target.setCustomValidity("You checked this but didn't provide an email.");
+                    } else if(e.target.validity.patternMismatch) {
+                        e.target.setCustomValidity("Make sure you entered your email correctly.");
+                    }
+                };
+
+                var textValidity = function(e) {
+                    e.target.className = "invalid";
+                    if(e.target.validity.valueMissing){
+                        e.target.setCustomValidity("You checked this but didn't provide a phone number.");
+                    } else if(e.target.validity.patternMismatch) {
+                        e.target.setCustomValidity("Make sure you entered 7 digits for your phone number.");
+                    }
+                };
+
+                var email = document.getElementById("email");
+                var text = document.getElementById("text");
+
+                email.addEventListener('invalid', emailValidity, false);
+                text.addEventListener('invalid', textValidity, false);
+
+                var checkboxes = document.getElementsByName("receipttype");
+
+                for(var i=0; i< checkboxes.length; i++) {
+                    var element = checkboxes[i];
+
+                    element.addEventListener('change', function(event) {
+
+                        var relatedInput = document.getElementById(event.target.value);
+                        var isChecked = event.target.checked;
+
+                        relatedInput.required = isChecked;
+                        relatedInput.className = isChecked && relatedInput.validity.valid? "valid" : "";
+
+                        if(isChecked) {
+                            relatedInput.addEventListener("input", inputHandler, false);
+                        } else {
+                            relatedInput.removeEventListener("input", inputHandler, false);
+                            relatedInput.setCustomValidity("");
+                        }
+
+                    })
+                }
+            });
+
+    </script>
 
 }

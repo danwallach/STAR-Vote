@@ -5,28 +5,28 @@
     @if(status == "cast") {
 
         <div id = "msg" class="correct">
-            <img src="http://i1289.photobucket.com/albums/b518/lNyra/correct_icon_zpsxhugoyjj.png" class = "icon"/>
-            <p> Your ballot #@id was successfully cast and has been counted in the election! </p>
+            <img src="/assets/images/checkmark.png" class = "icon"/>
+            <p> Your ballot (#@id) was successfully cast and has been counted in the election! </p>
         </div>
 
     } else {
         @if(status == "challenged") {
 
             <div id = "msg" class="warning">
-                <img src="http://i1289.photobucket.com/albums/b518/lNyra/warning_icon_zps9h4svtt2.png" class = "icon"/>
-                <p> Your ballot #@id was not placed in the ballot box, so the ballot was not counted in the election tally. </p>
+                <img src="/assets/images/warning.png" class = "icon"/>
+                <p> Your ballot (#@id) was not placed in the ballot box, so the ballot was not counted in the election tally. </p>
             </div>
 
         } else {
             @if(status == "invalid") {
 
                 <div id = "msg" class="invalid">
-                    <img src="http://i1289.photobucket.com/albums/b518/lNyra/error_icon_zpswargj3iq.png" class = "icon"/>
+                    <img src="/assets/images/x.png" class = "icon"/>
                     <p> @if(id != "") {
-                        The ballot number you have entered, #@id, does not exist in the system. Please check that you have entered the correct number and try again.
+                        The ballot number you entered (#@id) does not exist in the system. Please check that you entered the correct code and try again.
                     } else {
                         You did not enter a ballot number.<br>Please try again.
-                    }</p>
+                    }
                 </div>
 
             }

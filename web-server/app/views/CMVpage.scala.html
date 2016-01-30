@@ -1,14 +1,36 @@
 @psycMain(true)("CHECK MY VOTE") {
 
-
-
     <div id="checktext">
-        <br> Enter the Ballot ID found at the ((location))
-        <br> of your ballot in the box below.
+        <br> Enter the unique code on your ballot into the box below.
     </div>
 
     <!-- ID search box + submit button -->
-    <p><input type="text" id="idText" maxlength="10" autofocus></p> <!--size="10px" -->
-    <p><button id="submit" onclick="javascript: location.href = '/check/' + document.getElementById('idText').value;"> Submit </button></p>
+    <p>
+        <input type="text" id="idText" maxlength="19" autofocus><br>
+        <label id="errorLabel">There was a problem with that code.<br>Make sure you entered it correctly.</label><br><br>
+        <a id="submitID" class="continue"> Submit </a>
+    </p>
+
+
+    <script type="text/javascript">
+            document.getElementById("submitID").onclick =
+                    function validateAndSend () {
+
+                        document.getElementById("errorLabel").style.opacity = 0;
+
+                        var bidRegex = /^([A-Z0-9]{3}-){4}[A-Z0-9]{3}$/i;
+                        var input = document.getElementById('idText').value;
+
+                        if (bidRegex.test(input)) {
+                            location.href = '/check/' + input;
+                            input.className = "";
+                        } else {
+                            document.getElementById("errorLabel").style.opacity = 1;
+                            document.getElementById('idText').className = "invalid";
+                            document.getElementById("submitID").style.marginTop = 0;
+                        }
+                    };
+    </script>
+
 }
 

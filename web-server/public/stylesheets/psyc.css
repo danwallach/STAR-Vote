@@ -1,14 +1,37 @@
 body {
-	font-family: Helvetica,Arial,Sans-serif;
+	font-family: Helvetica,Arial,sans-serif;
+    margin: 0;
+
+    -webkit-transition: all 1s ;
+    -moz-transition: all 1s ;
+    -o-transition: all 1s ;
+    -ms-transition: all 1s ;
+    transition: all 1s ;
+}
+
+
+body * {
+    -webkit-transition: all 0.7s ;
+    -moz-transition: all 0.7s ;
+    -o-transition: all 0.7s ;
+    -ms-transition: all 0.7s ;
+    transition: all 0.7s ;
+}
+
+input, a {
+    -webkit-transition: all 0.5s ;
+    -moz-transition: all 0.5s ;
+    -o-transition: all 0.5s ;
+    -ms-transition: all 0.5s ;
+    transition: all 0.5s ;
 }
 
 #header {
 	top:0; left: 0; right: 0;
 	width: 100%; height: 90px;
-	position: fixed; 
-	background-color: rgba(0, 0, 0, 1);
-	background-image: -webkit-linear-gradient(top, rgba(255,255,255,0.3), rgba(255,255,255,0.1)); 
-	display: block; 
+	position: fixed;
+    background: rgba(0, 0, 0, 1) -webkit-linear-gradient(top, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1));
+    display: block;
 	margin: 0; border: 0; padding: 0;
 }
 
@@ -37,6 +60,7 @@ h3 {
 	background-image: -webkit-linear-gradient(top, rgba(255,255,255,0.1), rgba(255,255,255,0.3)); 
 	display: block; 
 }
+
 
 /* body content and formatting, includes navbar and main page content */
 #body {
@@ -82,7 +106,7 @@ h3 {
 	/*background-color: #466D8C; */
 }
 
-a:link, a:visited {
+.sideButton:link, .sideButton:visited {
 	position: relative;
 	margin-left: 5px; margin-right: 5px;
 	width: 140px;
@@ -95,12 +119,10 @@ a:link, a:visited {
 	border: 1px solid gray;
 	padding: 3px 0px 3px 0px;
 	text-align: center;
-	padding: center;
-	font-size: 18px;
+    font-size: 18px;
 	box-shadow: 0 3px 0 #898989;
 }
-
-a:hover {
+.sideButton:hover {
 	font-size: 19px;
 	font-weight: lighter;
 	color: white;
@@ -112,17 +134,44 @@ a:hover {
 	bottom: -400%;
 }
 
+.valid {
+    box-shadow: 0px 0px 6px 2px green !important;
+    background-color: white !important;
+    color: black !important;
+}
+.invalid {
+    box-shadow: 0px 0px 6px 2px red !important;
+    background-color: white !important;
+    color: black !important;
+}
+
+#submitID {
+    margin-top: -45px;
+}
+
+#ballotProblems {
+    border-radius: 5px;
+    width:400px;
+    margin:auto;
+    padding: 10px 20px;
+    text-align:left;
+}
+
+#issueNotify {
+    opacity: 0;
+    color: red;
+}
+
 /* Main webpage content and formatting */
 #content {
 	position: absolute;
 	text-align: center;
 	top: 12px; 
-	height: 500px;
 	width: 800px;
+    margin:auto;
 	right: 0;
 	left: 160px;
 	float: right;
-	overflow: hidden;
 }
 
 #checktext {
@@ -145,8 +194,13 @@ a:hover {
     margin-right: auto;
     display: block;
     font-size: 40px;
-    width: 350px;
+    width: 450px;
     text-align: center;
+}
+
+#errorLabel {
+    opacity: 0;
+    color: red;
 }
 
 .bigtext{
@@ -196,12 +250,17 @@ a:hover {
     position:relative;
     width: 700px;
     left: 10px;
-    margin: 0 3% 0 3%;
+    margin: auto;
     height: auto;
     border: 2px solid;
     top:25px;
     line-height: 35px;
     /*border-radius: 5px;*/
+}
+
+#correcticon {
+    width: 200px;
+    height: auto;
 }
 
 .correct {
@@ -217,6 +276,10 @@ a:hover {
 .warning {
     background-color: #FEEFB3;
     color: #9F6000;
+}
+
+#msg {
+    padding: 2em;
 }
 
 #msg .correct {
@@ -235,13 +298,13 @@ a:hover {
 .icon {
     padding: 5px 10px 5px 10px;
     float: left;
-    width: 115px;
-    height: 115px;
+    width: 150px;
+    height: 150px;
 }
 
 #contentbuttons {
     position: relative;
-    text-align: left;
+    text-align: center;
     left: -10px;
     padding-top: 20px;
 }
@@ -288,13 +351,12 @@ a:hover {
     position: relative;
     text-align: left;
     left: -10px;
-    padding-top: 20px;
+    margin-top: 30px;
+
 }
 
 #buttons ul {
     list-style-type: none;
-    top: 10px;
-    bottom: 10px;
     left: 10px;
     margin: 0 0 0 0;
     padding: 0 0 0 0;
@@ -307,44 +369,45 @@ a:hover {
     display: inline-block;
     list-style-type: none;
     width: 380px;
+    height: 100%;
 }
 
-
-
-#buttons a:link, #buttons a:visited {
+#buttons a {
     text-align: center;
     position: relative;
-    padding-top: 0;
     width: 220px;
-    margin-top: 30px;
-    top: -50px;
-    padding: 10px 0px 10px 0px;
+    height: 100%;
+    padding: 10px 0px;
     margin-left: auto; margin-right: auto;
     background-color: rgba(87,178,34,1);
     color: rgba(255,255,255,0.8);
     border: thin;
     text-decoration: none;
     cursor: pointer;
-    font-family: "Univers",Helvetica,Arial,Sans-serif;
+    font-family: "Univers",Helvetica,Arial,sans-serif;
     font-size: 30px; /*originally set at 20px*/
     line-height: 36px; /*originally set at 36px*/
     font-weight: 600;
     box-shadow: 0 125px 0 -95px rgba(255,255,255,0.3) inset, 0 3px 0 rgba(255,255,255,0.3), 0 3px 0 rgba(0,0,0,0.6);
     border-radius: 6px;
     /* align-items: flex-start; */
-    text-align: center;
     box-sizing: border-box;
     display: block;
     overflow: hidden;
 }
 
-#noreceipt a:link, #noreceipt a:visited {
+#buttons a:hover {
+    opacity: 0.9;
+}
+
+
+#noreceipt a {
     font-size: 20px;
     font-weight: 300;
-    line-height: 1.25em;
     background: rgba(200,200,200,1);
     border: thin;
     color: rgba(0,0,0,0.8);
+    height:  100%;
 }
 
 #comments {
@@ -354,17 +417,19 @@ a:hover {
 
 #freeresponse {
     font-size: 18px;
-    overflow: scroll;
     text-align: left;
+    font-family: "Univers", Helvetica, Arial, sans-serif;
+    width: 400px;
+    height: 100px;
+    overflow: auto;
 }
 
-#submit {
+.continue {
     margin-right: auto; margin-left: auto;
     background-color: rgba(87,178,34,1);
     color: rgba(255,255,255,0.8);
     text-shadow: none;
-    width: 150px; height: 50px;
-    margin-top: 30px;
+    width: 150px;
     top: -10px;
     box-shadow: 0 120px 0 -90px rgba(255,255,255,0.3) inset, 0 3px 0 rgba(255,255,255,0.3), 0 3px 0 rgba(0,0,0,0.6);
     padding: 4px 0 0;
@@ -374,7 +439,7 @@ a:hover {
     border: thin;
     text-decoration: none;
     cursor: pointer;
-    font-family: "Univers",Helvetica,Arial,Sans-serif;
+    font-family: "Univers", Helvetica, Arial, sans-serif;
     font-size: 30px;
     line-height: 54px;
     font-weight: 600;
@@ -382,6 +447,12 @@ a:hover {
     align-items: flex-start;
     text-align: center;
     box-sizing: border-box;
+}
+
+.continue:hover {
+    opacity:0.9;
+    width: 147px;
+    height: 62px;
 }
 
 .enter {

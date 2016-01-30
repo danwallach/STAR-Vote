@@ -1,5 +1,5 @@
 import com.avaje.ebean.Ebean;
-import models.User;
+import models.*;
 import play.Application;
 import play.GlobalSettings;
 import play.libs.Yaml;
@@ -33,6 +33,16 @@ public class Global extends GlobalSettings {
      */
     @Override
     public void onStart(Application app) {
+
+        /* For psyc verification study */
+        if(CastBallot.getBallot("HV1-235-Z75-68R-K84") == null) {
+            CastBallot.create(new CastBallot("HV1-235-Z75-68R-K84", "castHash"));
+            ChallengedBallot.create(new ChallengedBallot("HV2-235-Z75-68R-K84", "thisPrecinct", "challengedHash", "decryptedBallot"));
+        }
+
+        // HV3-235-Z75-68R-K84 (Not in system)
+
+        /* This is all used for election authority + key loading...
 
         System.out.println("Initializing the Ballot Loader");
         BallotLoader.init();
@@ -80,6 +90,6 @@ public class Global extends GlobalSettings {
             System.out.println("Initial data was loaded.");
             Ebean.save((List) Yaml.load("initial-data.yml"));
         }
-
+*/
     }
 }
