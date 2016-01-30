@@ -6,19 +6,21 @@
 
     <!-- ID search box + submit button -->
     <p>
-        <input type="text" id="idText" maxlength="19" autofocus><br>
+        <input type="text" id="idText" maxlength="19" autofocus spellcheck="false"><br>
         <label id="errorLabel">There was a problem with that code.<br>Make sure you entered it correctly.</label><br><br>
         <a id="submitID" class="continue"> Submit </a>
     </p>
 
 
     <script type="text/javascript">
+
+            var bidRegex = /^([A-Z0-9]{3}-){4}[A-Z0-9]{3}$/i;
+
             document.getElementById("submitID").onclick =
                     function validateAndSend () {
 
                         document.getElementById("errorLabel").style.opacity = 0;
 
-                        var bidRegex = /^([A-Z0-9]{3}-){4}[A-Z0-9]{3}$/i;
                         var input = document.getElementById('idText').value;
 
                         if (bidRegex.test(input)) {
@@ -30,6 +32,14 @@
                             document.getElementById("submitID").style.marginTop = 0;
                         }
                     };
+
+            document.getElementById("idText").addEventListener("input", function() {
+                if(bidRegex.test(this.value)) {
+                    this.className = "valid";
+                } else {
+                    this.className = "";
+                }
+            });
     </script>
 
 }

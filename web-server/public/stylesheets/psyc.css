@@ -135,14 +135,14 @@ h3 {
 }
 
 .valid {
-    box-shadow: 0px 0px 6px 2px green !important;
-    background-color: white !important;
-    color: black !important;
+    box-shadow: 0px 0px 6px 2px green;
+    background-color: white;
+    color: black;
 }
 .invalid {
-    box-shadow: 0px 0px 6px 2px red !important;
-    background-color: white !important;
-    color: black !important;
+    box-shadow: 0px 0px 6px 2px red;
+    background-color: white;
+    color: black;
 }
 
 #submitID {
@@ -150,6 +150,7 @@ h3 {
 }
 
 #ballotProblems {
+    line-height: 30px;
     border-radius: 5px;
     width:400px;
     margin:auto;
@@ -268,7 +269,7 @@ h3 {
     color: #4F8A10;
 }
 
-.invalid {
+.notFound {
     background-color: #FFBABA;
     color: #D8000C;
 }
@@ -397,7 +398,7 @@ h3 {
 }
 
 #buttons a:hover {
-    opacity: 0.9;
+    opacity: 0.8;
 }
 
 
