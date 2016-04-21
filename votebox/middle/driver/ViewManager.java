@@ -20,16 +20,18 @@
   * ACCESS OR USE OF THE SOFTWARE.
  */
 
-package votebox.middle.view;
+package votebox.middle.driver;
 
+import crypto.PlaintextRaceSelection;
 import sexpression.ASEConverter;
 import supervisor.model.ObservableEvent;
 import votebox.middle.IncorrectTypeException;
-import votebox.middle.Properties;
 import votebox.middle.ballot.IBallotLookupAdapter;
-import votebox.middle.driver.IAdapter;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observer;
@@ -43,7 +45,9 @@ import java.util.Observer;
 
 public class ViewManager implements IViewManager {
 
-    private final IBallotLookupAdapter _ballotLookupAdapter;
+    private Socket uiConnection;
+    private DataInputStream uiUpdate;
+    private DataOutputStream uiRequest;
     private final ObservableEvent _castBallotEvent;
     private final ObservableEvent _commitEvent;
     private final ObservableEvent _overrideCancelConfirm;
@@ -55,13 +59,9 @@ public class ViewManager implements IViewManager {
     /**
      * This is the public constructor for View Manager.
      *
-     * @param lookupAdapter     adapter used to fetch the state of the ballot.
-     *
      * {@see votebox.middle.view.AView}
      */
-    public ViewManager(IBallotLookupAdapter lookupAdapter) {
-
-        _ballotLookupAdapter = lookupAdapter;
+    public ViewManager() {
 
         _castBallotEvent         = new ObservableEvent();
         _commitEvent             = new ObservableEvent();
@@ -80,6 +80,14 @@ public class ViewManager implements IViewManager {
      * given to the view to use.
      */
     public void run() {
+        try {
+            uiConnection = new Socket("localhost", 0);
+            uiUpdate = new DataInputStream(uiConnection.getInputStream());
+            uiRequest = new DataOutputStream(uiConnection.getOutputStream());
+        }
+        catch (IOException e) {
+            System.out.println(e);
+        }
     }
 
     /**
@@ -136,11 +144,11 @@ public class ViewManager implements IViewManager {
      * releasing, remove the event and put all code in this function, so that an
      * outside party cannot register malicious code.
      */
-    public void castCommittedBallot() {
+    public void castCommittedBallot(List<PlaintextRaceSelection> ballot, List<List<String>> raceGroups) {
 
     	Object[] toPass = new Object[]{
-                ASEConverter.convertToASE(_ballotLookupAdapter.inRaceSelectionForm()),
-    		_ballotLookupAdapter.getRaceGroups()
+                ASEConverter.convertToASE(ballot),
+    		    raceGroups
     	};
 
         _castBallotEvent.notifyObservers(toPass);
@@ -160,12 +168,14 @@ public class ViewManager implements IViewManager {
     /**
      * Call this method if the voter has proceeded past the review screen.
      */
-    public void commitBallot() {
+    public void commitBallot(List<PlaintextRaceSelection> ballot,
+                             List<List<String>> raceGroups,
+                             List<String> raceTitles) {
 
     	Object[] toPass = new Object[]{
-        	ASEConverter.convertToASE(_ballotLookupAdapter.inRaceSelectionForm()),
-        	_ballotLookupAdapter.getRaceGroups(),
-            _ballotLookupAdapter.getTitles()
+        	ASEConverter.convertToASE(ballot),
+        	raceGroups,
+            raceTitles
     	};
 
         _commitEvent.notifyObservers(toPass);
@@ -217,13 +227,14 @@ public class ViewManager implements IViewManager {
     /**
      * Fired when the override-cast operation is confirmed on the booth.
      */
-    public void overrideCommitConfirm() {
-
+    public void overrideCommitConfirm(List<PlaintextRaceSelection> ballot,
+                                      List<List<String>> raceGroups,
+                                      List<String> raceTitles) {
 
         Object[] toPass = new Object[]{
-                ASEConverter.convertToASE(_ballotLookupAdapter.inRaceSelectionForm()),
-                _ballotLookupAdapter.getRaceGroups(),
-                _ballotLookupAdapter.getTitles()
+                ASEConverter.convertToASE(ballot),
+                raceGroups,
+                raceTitles
         };
 
         _overrideCommitConfirm.notifyObservers(toPass);
@@ -281,54 +292,43 @@ public class ViewManager implements IViewManager {
         _reviewScreenEncountered.addObserver(reviewScreenObserver);
     }
 
+    public List<List<String>> getRaceGroups() {
+        return new ArrayList<>();
+    }
+
     /**
      * This method is called when the view needs to be killed. This usually
      * happens as a result of a Kill event.
      */
     public void kill() {
-
+        try {
+            uiConnection.close();
+            uiRequest.close();
+            uiUpdate.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-
-	/**
-	 * Gets the IBallotLookupAdapter for this ViewManager.
-	 * @return the IBallotLookupAdapter
-	 */
-    public IBallotLookupAdapter getBallotLookupAdapter() {
-    	return _ballotLookupAdapter;
-    }
 
     public String readMessage() {
         String msg = "";
-        try {
-            int c, t = 0;
-            for (int i = 0; i <= 3; i++) {
-                t += Math.pow(256.0f, i) * System.in.read();
-            }
 
-            for (int i = 0; i < t; i++) {
-                c = System.in.read();
-                msg += (char) c;
-            }
-        } catch (Exception e) {
-            System.err.println(e.getStackTrace());
+        try {
+            msg = uiUpdate.readUTF();
+            System.out.println(msg);
+            return msg;
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return msg;
     }
 
     public void sendMessage(String msgdata) {
         try {
-            int dataLength = msgdata.length();
-            System.out.write((byte) (dataLength & 0xFF));
-            System.out.write((byte) ((dataLength >> 8) & 0xFF));
-            System.out.write((byte) ((dataLength >> 16) & 0xFF));
-            System.out.write((byte) ((dataLength >> 24) & 0xFF));
-
-            // Writing the message itself
-            System.out.write(msgdata.getBytes());
-            System.out.flush();
+            uiRequest.writeChars(msgdata);
         } catch (IOException e) {
-            System.err.println(e.getStackTrace());
+            e.printStackTrace();
         }
     }
 

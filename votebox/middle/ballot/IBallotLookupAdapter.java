@@ -23,12 +23,8 @@
 package votebox.middle.ballot;
 
 import crypto.PlaintextRaceSelection;
-import sexpression.ASExpression;
-import supervisor.model.Ballot;
-import votebox.middle.driver.UnknownUIDException;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Use an instance of this interface to make queries on the ballot.

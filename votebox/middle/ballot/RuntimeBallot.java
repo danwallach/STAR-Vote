@@ -62,7 +62,6 @@ public final class RuntimeBallot {
     private Properties _properties;
     
     private HashMap<String, SelectableCardElement> _elements;
-    private IViewAdapter _adapter = null;
 
     /**
      * This field holds how many selections have been made in the ballot.

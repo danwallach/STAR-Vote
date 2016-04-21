@@ -269,7 +269,7 @@ public class VoteBox{
             }
 
             /* Announce ballot printing and print */
-            List<List<String>> races = voteboxuiDriver.getBallotAdapter().getRaceGroups();
+            List<List<String>> races = voteboxuiDriver.getView().getRaceGroups();
             auditorium.announce(new BallotPrintingEvent(mySerial, bid, nonce));
 
             /* TODO Printer needs to be refactored to expect the ballot selections, not a path to prerendered images */
@@ -372,7 +372,7 @@ public class VoteBox{
                 broadcastStatus();
 
                 /* Announce a new printing event and print */
-                List<List<String>> races = voteboxuiDriver.getBallotAdapter().getRaceGroups();
+                List<List<String>> races = voteboxuiDriver.getView().getRaceGroups();
                 auditorium.announce(new BallotPrintingEvent(mySerial, bid, nonce));
 
                 /* TODO Printer needs to be refactored to expect the ballot selections, not a path to prerendered images */

@@ -25,8 +25,7 @@ package votebox.middle.view;
 import votebox.middle.IBallotVars;
 import votebox.middle.Properties;
 import votebox.middle.ballot.IBallotLookupAdapter;
-import votebox.middle.driver.IAdapter;
-import votebox.middle.driver.UnknownUIDException;
+import votebox.middle.driver.*;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -176,8 +175,8 @@ public class Layout {
         _pages.get(pagenum).initFromViewManager(vmadapter, lookupadapter, ballotadapter, viewadapter, ballotvars);
     }
 
-    public void initFromViewManager(ViewManager manager, IBallotLookupAdapter lookupAdapter, IAdapter ballotAdapter,
-            IViewFactory factory, IBallotVars ballotvars) {
+    public void initFromViewManager(votebox.middle.driver.ViewManager manager, IBallotLookupAdapter lookupAdapter, IAdapter ballotAdapter,
+                                    IViewFactory factory, IBallotVars ballotvars) {
 
         for (RenderPage rp : _pages)
             rp.initFromViewManager(manager, lookupAdapter, ballotAdapter, factory, ballotvars);
