@@ -24,14 +24,10 @@ package votebox.middle.driver;
 
 import auditorium.IAuditoriumParams;
 import crypto.PlaintextRaceSelection;
-import sexpression.ASExpression;
 import sexpression.ListExpression;
 import tap.BallotImageHelper;
 import votebox.middle.IBallotVars;
-import votebox.middle.Properties;
 import votebox.middle.ballot.*;
-import votebox.middle.view.IView;
-import votebox.middle.view.IViewFactory;
 import votebox.middle.view.ViewManager;
 
 import javax.print.PrintService;
@@ -42,82 +38,16 @@ import java.awt.print.*;
 import java.io.*;
 import java.util.*;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 /* TODO: Documentation by knowledgeable member */
 
 public class Driver {
 
-	private final String _path;
-	private final IViewFactory _factory;
-
+	private String _path;
 	private ViewManager _view;
 	private RuntimeBallot _ballot;
-	private boolean _encryptionEnabled;
-
-	private IViewAdapter _viewAdapter = new IViewAdapter() {
-
-        @Override
-        public void setView(IView view) {
-            _view.setView(view);
-        }
-
-        public boolean select(String uid) throws UnknownUIDException, SelectionException {
-            return _view.select(uid);
-        }
-
-        public boolean deselect(String uid, boolean playSound) throws UnknownUIDException,
-				DeselectionException {
-			return _view.deselect(uid, playSound);
-		}
-
-		public Properties getProperties() {
-			return _view.getCurrentLayout().getProperties();
-		}
-
-        public IView getView() {
-            return _view.getView();
-        }
-
-	};
-
-	private IAdapter _ballotAdapter = new IAdapter() {
-
-		public boolean deselect(String uid, boolean playSound) throws UnknownUIDException,
-				DeselectionException {
-			return _ballot.deselect(uid);
-		}
-
-		public Properties getProperties() {
-			return _ballot.getProperties();
-		}
-
-        public boolean select(String uid) throws UnknownUIDException,
-				SelectionException {
-			return _ballot.select(uid);
-		}
-
-	};
 
 	private IBallotLookupAdapter _ballotLookupAdapter = new IBallotLookupAdapter() {
-
-		public boolean isCard(String UID) throws UnknownUIDException {
-			return _ballot.isCard(UID);
-		}
-
-        public String selectedElement(String UID) throws NonCardException,
-				UnknownUIDException, CardException {
-			return _ballot.selectedElement(UID);
-		}
-
-        public boolean exists(String UID) {
-			return _ballot.exists(UID);
-		}
-
-        public boolean isSelected(String uid) throws UnknownUIDException {
-			return _ballot.isSelected(uid);
-		}
 
 		public List<PlaintextRaceSelection> inRaceSelectionForm() {
 
@@ -136,35 +66,45 @@ public class Driver {
             return _ballot.getRaceTitles();
         }
 
-		public Map<String, List<ASExpression>> getAffectedRaces(List<String> affectedUIDs) {
-			/* TODO: Implement remainder of piecemeal */
-			throw new RuntimeException("Not implemented");
-		}
-
-		public List<String> getRaceGroupContaining(List<ASExpression> uids) {
-			/* TODO: Implement remainder of piecemeal */
-			throw new RuntimeException("Not implemented");
-		}
 	};
 
     /**
      * Constructor for the driver
-     * @param path file path for ballot files
-     * @param factory factory for view construction
-     * @param encryptionEnabled whether or not encryption is enabled
      */
-	public Driver(String path, IViewFactory factory, boolean encryptionEnabled) {
+	public Driver() {}
+
+	/**
+	 * Loads the path of the ballot
+	 * @param path path of ballot configuration and xml file
+     */
+	public void loadPath(String path){
 		_path = path;
-		_factory = factory;
-		_encryptionEnabled = encryptionEnabled;
+	}
+
+	public void launchView(Observer reviewScreenObserver, Observer castBallotObserver) {
+		/* Set up the view */
+		_view = new ViewManager(_ballotLookupAdapter);
+
+        /* Register for cast ballot in the view */
+		if(castBallotObserver != null)
+			_view.registerForCastBallot(castBallotObserver);
+
+        /* Register for review screen in the view */
+		if(reviewScreenObserver != null)
+			_view.registerForReview(reviewScreenObserver);
+
+		/* Execute */
+		_view.run();
+	}
+
+	public void launchView() {
+		launchView(null, null);
 	}
 
     /**
      * Sets up to parse the ballot format and begin voting process
-     * @param reviewScreenObserver observer for the review screen
-     * @param castBallotObserver observer for the castBallotEvent
      */
-	public void run(Observer reviewScreenObserver, Observer castBallotObserver) {
+	public void run() {
 
 		IBallotVars vars;
 
@@ -185,35 +125,14 @@ public class Driver {
 			System.err.println("The ballot's XML file was unable to be parsed.");
 			e.printStackTrace();
 			return;
-
 		}
-
-        /* Set up the view */
-		_ballot.setViewAdapter(_viewAdapter);
-		_view = new ViewManager(_ballotAdapter, _ballotLookupAdapter, vars, _factory);
-
-        /* Register for cast ballot in the view */
-		if(castBallotObserver != null)
-			_view.registerForCastBallot(castBallotObserver);
-
-        /* Register for review screen in the view */
-		if(reviewScreenObserver != null)
-			_view.registerForReview(reviewScreenObserver);
-
-		/* Execute */
-		_view.run();
 	}
 
-    /**
-     * Default implementation of run with no observer variables. This will not register
-     * for cast ballot or review screen.
-     */
-	public void run() { run(null, null); }
 
     /**
      * Terminates the view.
      */
-	public void kill() { _view.dispose(); }
+	public void kill() { _view.kill(); }
     
     /**
      * Gets this VoteBox instance's view.  Used to allow the caller to register for
@@ -237,62 +156,8 @@ public class Driver {
     }
 
     /**
-     * Prints a statement that the ballot has been accepted by the voter on a VVPAT.
-     * 
-     * @param constants - parameters to use for printing
-     * @param currentBallotFile - ballot file to extract images from
-     */
-    public static void printBallotAccepted(IAuditoriumParams constants, File currentBallotFile){
-
-        /* Load the images as a Map(String:Image) for the ballot */
-    	Map<String, Image> choices = BallotImageHelper.loadImagesForVVPAT(currentBallotFile);
-    	
-    	final Image accept = choices.get("accept");
-
-    	Printable toPrint = (graphics, pageFormat, pageIndex) -> {
-
-			if(pageIndex != 0)
-                return Printable.NO_SUCH_PAGE;
-
-			/* Draw the accept image */
-            graphics.drawImage(accept, (int)pageFormat.getImageableX(), (int)pageFormat.getImageableY(), null);
-            return Printable.PAGE_EXISTS;
-        };
-
-        /* Print acceptance */
-    	printOnVVPAT(constants, toPrint);
-    }
-    
-    /**
-     * Prints a statement that the ballot has been rejected by the voter on a VVPAT.
-     * 
-     * @param constants - parameters to use for printing
-     * @param currentBallotFile - ballot file to extract images from
-     */
-    public static void printBallotRejected(IAuditoriumParams constants, File currentBallotFile){
-
-        /* Load the images as a Map(String:Image) for the ballot */
-        Map<String, Image> choices = BallotImageHelper.loadImagesForVVPAT(currentBallotFile);
-    	
-    	final Image spoil = choices.get("spoil");
-
-    	Printable toPrint = (graphics, pageFormat, pageIndex) -> {
-
-            if(pageIndex != 0)
-                return Printable.NO_SUCH_PAGE;
-
-			/* Draw the spoil image */
-            graphics.drawImage(spoil, (int)pageFormat.getImageableX(), (int)pageFormat.getImageableY(), null);
-            return Printable.PAGE_EXISTS;
-        };
-
-        /* Print rejection */
-    	printOnVVPAT(constants, toPrint);
-    }
-    
-    /**
      * Prints a ballot out on a VVPAT.
-     * 
+     *
      * @param constants - parameters to use for printing
      * @param ballot - ballot in the form ((race-id (race-id (... ))))
      * @param currentBallotFile - ballot file to extract images from
@@ -307,7 +172,7 @@ public class Driver {
 			System.out.println("\tPrinting aborted, no VVPAT images");
 			return;
 		}
-		
+
 		final List<String> choices = new ArrayList<>();
 
         /* Get each of the ballots */
@@ -327,13 +192,13 @@ public class Driver {
                     choices.add(check);
             }
 		}
-		
+
 		int totalSize = 0;
 
         /* Get the total size of the ballot */
         for (String choice : choices)
             totalSize += choiceToImage.get(choice).getHeight(null);
-		
+
 		final int fTotalSize = totalSize;
 		final List<String> printedChoices = new ArrayList<>();
 
@@ -386,10 +251,10 @@ public class Driver {
 
             return Printable.PAGE_EXISTS;
         };
-		
+
 		Driver.printOnVVPAT(constants, printedBallot);
 	}
-    
+
     /**
 	 * Prints onto the attached VVPAT printer, if possible.
      *
@@ -459,92 +324,5 @@ public class Driver {
 		t.start();
 	}
 
-    /**
-     * Unzips the source file to the destination directory
-     * @param src the source zip file
-     * @param dest the destination directory into which the unzipped files will be placed
-     * @throws IOException
-     */
-    public static void unzip(String src, String dest) throws IOException {
-
-        if(!(new File(dest)).exists()) (new File(dest)).mkdirs();
-
-        ZipFile zipFile = new ZipFile(src);
-        Enumeration<? extends ZipEntry> entries = zipFile.entries();
-
-        byte[] buf = new byte[1024];
-        int len;
-
-        /* Make all the directories first */
-        while(entries.hasMoreElements()){
-
-            ZipEntry entry = entries.nextElement();
-
-            if (entry.isDirectory()) {
-
-                /* Create the directory using the proper separator for this platform */
-                File newDir = new File(dest, entry.getName().replace('/', File.separatorChar));
-                newDir.mkdirs();
-            }
-        }
-
-        entries = zipFile.entries();
-
-        /* Now copy all the data files */
-        while (entries.hasMoreElements()) {
-
-            ZipEntry entry = entries.nextElement();
-
-            if (!entry.isDirectory())
-            {
-                InputStream in = zipFile.getInputStream(entry);
-
-                /* Create the file path, using the proper separator char */
-                File outFile = new File(dest, entry.getName().replace('/', File.separatorChar));
-
-                OutputStream out = new BufferedOutputStream(new FileOutputStream(outFile));
-
-                while((len = in.read(buf)) >= 0) out.write(buf, 0, len);
-
-                in.close();
-
-                out.flush();
-                out.close();
-            }
-        }
-
-        zipFile.close();
-    }
-
-    /**
-     * Deletes all files in a directory recursively
-     * @param dir the directory to be cleared
-     */
-	public static void deleteRecursivelyOnExit(String dir) {
-
-		Stack<File> dirStack = new Stack<>();
-        dirStack.add( new File(dir) );
-
-        /* While there's still something on the directory stack... */
-        while (!dirStack.isEmpty()) {
-
-            /* Pop a file off the stack, mark for deletion, and get children */
-            File file = dirStack.pop();
-            file.deleteOnExit();
-            File[] children = file.listFiles();
-
-            if (children == null)
-                    children = new File[0];
-
-            /* If a directory, add to the stack -- if not, mark for deletion */
-            for (File f : children) {
-                if (f.isDirectory()) dirStack.add( f );
-                else f.deleteOnExit();
-            }
-
-            /* If the directory is way too nested, just get out of there */
-            if (dirStack.size() > 100)
-                return;
-        }
-	}
 }
+

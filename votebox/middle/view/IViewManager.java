@@ -35,25 +35,6 @@ import votebox.middle.ballot.IBallotLookupAdapter;
 public interface IViewManager {
 
     /**
-     * Flip to the next page.
-     */
-    void nextPage();
-
-    /**
-     * Flip to the previous page.
-     */
-    void previousPage();
-
-    /**
-     * Flip to a particular page.
-     *
-     * @param pagenum   the page to which to flip
-     * @param previous  whether this page came before the most recently used page
-     *                  TODO check this
-     */
-    void drawPage(int pagenum, boolean previous);
-    
-    /**
      * Commit the ballot.
      */
     void commitBallot();
@@ -82,34 +63,6 @@ public interface IViewManager {
      * Fired when the override-cast operation is confirmed on the booth.
      */
     public void overrideCommitDeny();
-
-    /**
-     * Set the language being displayed in the view.
-     * 
-     * @param language  the language to which the view is to be set
-     */
-    void setLanguage(String language);
-
-    /**
-     * Set the size being displayed in the view.
-     * 
-     * @param size      the size to which the view is to be set
-     */
-    void setSize(int size);
-
-    /**
-     * Get the current size.
-     * 
-     * @return      the current size of images that the view manager is asking to have displayed.
-     */
-    int getSize();
-
-    /**
-     * Get the current language.
-     * 
-     * @return      the current language of images that the view manager is asking to have displayed.
-     */
-    String getLanguage();
     
     /**
      * Gets the IBallotLookupAdapter for this IViewManager.

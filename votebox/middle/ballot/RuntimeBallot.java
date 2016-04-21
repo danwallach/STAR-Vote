@@ -119,20 +119,6 @@ public final class RuntimeBallot {
         return _properties;
     }
 
-    /**
-     * @return this ballot's view adapter
-     */
-    public IViewAdapter getViewAdapter() {
-        return _adapter;
-    }
-
-    /**
-     * Sets this ballot's view adapter
-     * @param value new IAdapter to use
-     */
-    public void setViewAdapter(IViewAdapter value) {
-        _adapter = value;
-    }
 
     /**
      * Call this method to get the number of selections that have been made on

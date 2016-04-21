@@ -28,8 +28,6 @@ import auditorium.Event;
 import auditorium.NetworkException;
 import crypto.*;
 import crypto.adder.AdderInteger;
-import preptool.model.language.Language;
-import preptool.model.layout.manager.RenderingUtils;
 import printer.Printer;
 import sexpression.ASEConverter;
 import sexpression.ASExpression;
@@ -39,23 +37,13 @@ import sexpression.stream.InvalidVerbatimStreamException;
 import supervisor.model.Ballot;
 import votebox.events.*;
 import votebox.middle.IncorrectTypeException;
-import votebox.middle.Properties;
 import votebox.middle.driver.Driver;
 import votebox.middle.view.AWTViewFactory;
 import votebox.middle.view.IViewFactory;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.Timer;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.*;
 import java.util.List;
 
@@ -74,12 +62,11 @@ public class VoteBox{
     private final AuditoriumParams _constants;
     private final IViewFactory _factory;
     private VoteBoxAuditoriumConnector auditorium;
-    private Driver currentDriver;
+    private Driver voteboxuiDriver;
     private IVoteBoxInactiveUI inactiveUI;
     private final int mySerial;
     private boolean connected;
     private boolean voting;
-    private boolean promptingForPin;
     private boolean override;
     private boolean committedBallot;
     private boolean finishedVoting;
@@ -105,10 +92,6 @@ public class VoteBox{
 
     private  Printer printer;
     private Random rand;
-    private File _currentBallotFile;
-
-    /** A forced default value only used by the launcher */
-    private static File staticCurrentBallotFile = new File(System.getProperty("user.dir") + "/tmp/ballots/ballot/ballot.zip");
 
     /**
      * Default constructor: Equivalent to new VoteBox(-1) which sets a default serial of -1
@@ -148,7 +131,6 @@ public class VoteBox{
                 auditorium.announce(getStatus());
         });
 
-        /* TODO replace this view */
         /* Run fullscreen on OSX only */
         if (_constants.getViewImplementation().equals("AWT")) {
 
@@ -158,15 +140,22 @@ public class VoteBox{
             throw new RuntimeException("Unknown view implementation defined in configuration");
         }
 
-        /* TODO this is part of the view -- kill it */
-        /* Make sure this boolean is set properly */
-        promptingForPin = false;
-
         /* Destroys any previous commits */
         plaintextAuditCommits = new HashMap<>();
 
-        /* Loads default ballot file */
-        staticCurrentBallotFile = new File(_constants.getBallotFile());
+        killVBTimer = new Timer(_constants.getViewRestartTimeout(), arg0 -> {
+
+            voteboxuiDriver.kill();
+            voteboxuiDriver = null;
+
+                            /* Show inactive screen */
+            inactiveUI.setVisible(true);
+
+            killVBTimer.stop();
+        });
+
+        killVBTimer.setRepeats(false);
+
     }
 
     /**
@@ -215,6 +204,11 @@ public class VoteBox{
         labelChangedEvent.addObserver(obs);
     }
 
+    public void launchChromeUI() {
+        voteboxuiDriver = new Driver();
+        voteboxuiDriver.launchView();
+    }
+
     /**
      * Launch the VoteBox middle. Registers for events that we would want to
      * know about (such as cast ballot, so we can send the message over
@@ -224,21 +218,18 @@ public class VoteBox{
      */
     public void run(String location) {
 
-        inactiveUI.setVisible(false);
-
-        /* TODO replace by Liaison */
         /* This driver will need to take messages from the new ui */
-        currentDriver = new Driver(location, _factory, _constants.getCastBallotEncryptionEnabled());
+        voteboxuiDriver.loadPath(location);
         voting = true;
-        currentDriver.run();
+        voteboxuiDriver.run();
 
         /* Listen for commit UI events.  When received, send out an encrypted vote. */
-        currentDriver.getView().registerForCommit((o, argTemp) -> {
+        voteboxuiDriver.getView().registerForCommit((o, argTemp) -> {
 
             if (!connected)
                 throw new RuntimeException("Attempted to cast ballot when not connected to any machines");
 
-            if (!voting || currentDriver == null)
+            if (!voting || voteboxuiDriver == null)
                 throw new RuntimeException("VoteBox attempted to cast ballot, but was not currently voting");
 
             if (finishedVoting)
@@ -278,10 +269,11 @@ public class VoteBox{
             }
 
             /* Announce ballot printing and print */
-            /* TODO replace with Liaison call */
-            List<List<String>> races = currentDriver.getBallotAdapter().getRaceGroups();
+            List<List<String>> races = voteboxuiDriver.getBallotAdapter().getRaceGroups();
             auditorium.announce(new BallotPrintingEvent(mySerial, bid, nonce));
-            printer = new Printer(_currentBallotFile, races);
+
+            /* TODO Printer needs to be refactored to expect the ballot selections, not a path to prerendered images */
+            printer = new Printer(null, races);
 
             boolean success = printer.printCommittedBallot(ballot.getRaceSelections(), bid);
             printer.printedReceipt(bid);
@@ -302,18 +294,17 @@ public class VoteBox{
 
         });
 
-        /* TODO replace by Liaison call */
-        currentDriver.getView().registerForOverrideCancelConfirm((o, arg) -> {
+        voteboxuiDriver.getView().registerForOverrideCancelConfirm((o, arg) -> {
 
-            if (voting && override && !finishedVoting && currentDriver != null) {
+            if (voting && override && !finishedVoting && voteboxuiDriver != null) {
 
                 /* Announce the override */
                 auditorium.announce(new OverrideCancelConfirmEvent(mySerial, nonce));
 
-                /* TODO In Liaison, kill the UI process */
+                /* TODO In Driver, kill the UI process */
                 /* Kills the voting session */
-                currentDriver.kill();
-                currentDriver = null;
+                voteboxuiDriver.kill();
+                voteboxuiDriver = null;
                 nonce = null;
                 voting = false;
                 override = false;
@@ -321,8 +312,8 @@ public class VoteBox{
                 /* Broadcast the new status */
                 broadcastStatus();
 
-                /* TODO simply call Liaison to restart voting process */
-                promptForPin("Enter Voting Authentication PIN");
+                /* TODO simply call Driver to restart voting process */
+                //promptForPin("Enter Voting Authentication PIN");
 
             }
             else { /* TODO runtime exception */
@@ -330,30 +321,23 @@ public class VoteBox{
             }
         });
 
-        /* TODO replace with Liaison call */
-        currentDriver.getView().registerForOverrideCancelDeny((o, arg) -> {
+        voteboxuiDriver.getView().registerForOverrideCancelDeny((o, arg) -> {
 
-            if (voting && override && !finishedVoting && currentDriver != null) {
+            if (voting && override && !finishedVoting && voteboxuiDriver != null) {
 
                 /* Announce the denial of the override and go back */
                 auditorium.announce(new OverrideCancelDenyEvent(mySerial, nonce));
                 override = false;
-
-                /* TODO this logic should exist in the UI */
-                currentDriver.getView().drawPage(pageBeforeOverride, false);
-
             }
-
             else { /* TODO runtime exception */
                 throw new RuntimeException("Received an override-cancel-deny event at the incorrect time");
             }
         });
 
-        /* TODO replace with Liaison call */
-        currentDriver.getView().registerForOverrideCommitConfirm((o, argTemp) -> {
+        voteboxuiDriver.getView().registerForOverrideCommitConfirm((o, argTemp) -> {
 
             /* Check to see if voting is still in progress after the override commit selection */
-            if (voting && override && !finishedVoting && currentDriver != null) {
+            if (voting && override && !finishedVoting && voteboxuiDriver != null) {
 
 
                 Object[] arg = (Object[]) argTemp;
@@ -388,9 +372,11 @@ public class VoteBox{
                 broadcastStatus();
 
                 /* Announce a new printing event and print */
-                List<List<String>> races = currentDriver.getBallotAdapter().getRaceGroups();
+                List<List<String>> races = voteboxuiDriver.getBallotAdapter().getRaceGroups();
                 auditorium.announce(new BallotPrintingEvent(mySerial, bid, nonce));
-                printer = new Printer(_currentBallotFile, races);
+
+                /* TODO Printer needs to be refactored to expect the ballot selections, not a path to prerendered images */
+                printer = new Printer(null, races);
 
                 /* Check for success */
                 boolean success = printer.printCommittedBallot(ballot.getRaceSelections(), bid);
@@ -414,16 +400,12 @@ public class VoteBox{
             }
         });
 
-        /* TODO replace with Liaison call */
-        currentDriver.getView().registerForOverrideCommitDeny((o, arg) -> {
-            if (voting && override && !finishedVoting && currentDriver != null) {
+        /* TODO replace with Driver call */
+        voteboxuiDriver.getView().registerForOverrideCommitDeny((o, arg) -> {
+            if (voting && override && !finishedVoting && voteboxuiDriver != null) {
 
                 auditorium.announce(new OverrideCommitDenyEvent(mySerial, nonce));
                 override = false;
-
-                /* TODO this logic should exist in the UI */
-                currentDriver.getView().drawPage(pageBeforeOverride, false);
-
             }
 
             else {
@@ -613,30 +595,23 @@ public class VoteBox{
 
                     System.out.println("Currently this machine is " + (voting ? "voting already!" : "not voting already!"));
 
-                    if (voting || (currentDriver != null && killVBTimer == null))
+                    if (voting || (voteboxuiDriver != null && killVBTimer == null))
                         throw new RuntimeException( "VoteBox was authorized-to-cast, but was already voting");
 
-                    /* If last VB runtime is on thank you screen and counting down to when it disappears, kill it prematurely without showing inactive UI */
-                    if (killVBTimer != null && currentDriver != null) {
+                    /* If last VB runtime is on thank you screen and counting down to when it disappears, kill it
+                    prematurely without showing inactive UI */
+                    if (killVBTimer != null && voteboxuiDriver != null) {
 
                         /* Kill the runtime */
                         killVBTimer.stop();
-                        killVBTimer = null;
 
                         /* Kill voting session */
-                        /* TODO replace with call to Liaison */
-                        currentDriver.kill();
-                        currentDriver = null;
+                        /* TODO replace with call to Driver */
+                        voteboxuiDriver.kill();
+                        voteboxuiDriver = null;
                     }
 
                     nonce = e.getNonce();
-
-                    /* Current working directory TODO path construction */
-                    File path   = new File(System.getProperty("user.dir"));
-                    path        = new File(path, "tmp");
-                    path        = new File(path, "ballots");
-                    path        = new File(path, "ballot"/* + protectedCount*/);
-                    path.mkdirs();
 
                     bid = String.valueOf(rand.nextInt(Integer.MAX_VALUE));
                     precinct = e.getPrecinct();
@@ -653,34 +628,20 @@ public class VoteBox{
 
                     System.out.println("Crypto set!");
 
-                    try {
+                    /* TODO path fixing */
+                    //File path   = new File(System.getProperty("user.dir"));
+                    //path        = new File(path, "tmp");
+                    //path        = new File(path, "ballots");
+                    //path        = new File(path, "ballot"/* + protectedCount*/);
+                    //path.mkdirs();
+                    bid = String.valueOf(rand.nextInt(Integer.MAX_VALUE));
 
-                        System.out.println("Setting ballot file!");
+                    byte[] ballot = e.getBallot();
 
-                        /* Set ballot file */
-                    	_currentBallotFile = new File(path, "ballot.zip");
-                        staticCurrentBallotFile = _currentBallotFile;
+                    //run(new File(path, "data").getAbsolutePath());
 
-                        /* Write the ballot to file output */
-                        FileOutputStream fout = new FileOutputStream(_currentBallotFile);
-                        byte[] ballot = e.getBallot();
-                        fout.write(ballot);
-
-                        /* TODO Handle this... internally? */
-                        /* Takes ballot file, unzips, and unloads them into a directory to create temp directory */
-                        Driver.unzip(new File(path, "ballot.zip").getAbsolutePath(), new File(path, "data").getAbsolutePath());
-
-                        /* Sets up to delete temp directory */
-                        Driver.deleteRecursivelyOnExit(path.getAbsolutePath());
-
-                        /* Starts a new voting session */
-                        run(new File(path, "data").getAbsolutePath());
-
-                        /* Broadcast current status */
-                        broadcastStatus();
-
-                    } catch (IOException e1) { throw new RuntimeException(e1); }
-
+                    /* Broadcast current status */
+                    broadcastStatus();
                 }
             }
 
@@ -701,45 +662,24 @@ public class VoteBox{
                         if (!committedBallot)
                             throw new RuntimeException("Someone said the ballot was received, but this machine hasn't committed it yet. Maybe the supervisor is not configured properly?");
 
-                        /* TODO kill all below pretty much and replace with Liaison call to message for kill */
+                        /* TODO kill all below pretty much and replace with Driver call to message for kill */
                         if (isProvisional) {
 
-                            try {
                                 /* Show provisional success page */
-                                currentDriver.getView().drawPage(currentDriver.getView().getCurrentLayout().getProperties().getInteger(Properties.PROVISIONAL_SUCCESS_PAGE), false);
-                            }
-                            catch (IncorrectTypeException e1) { e1.printStackTrace(); }
-
+                                voteboxuiDriver.getView().sendMessage("Provisional Ballot Received");
                         }
                         else
-                            currentDriver.getView().nextPage();
+                            voteboxuiDriver.getView().sendMessage("Ballot Received");
 
                         /* Show printing page */
-
                         nonce = null;
                         voting = false;
                         finishedVoting = false;
                         committedBallot = false;
                         broadcastStatus();
 
-                        /* TODO can we value-write this once and just restart when we need it ? */
                         /* Create a timer to kill the runtime after 5 seconds */
-                        killVBTimer = new Timer(_constants.getViewRestartTimeout(), arg0 -> {
-
-                            currentDriver.kill();
-                            currentDriver = null;
-
-                            /* Show inactive screen */
-                            inactiveUI.setVisible(true);
-
-                            killVBTimer = null;
-
-                        /* Prompt for PIN for next voting session */
-                        promptForPin("Enter Voting Authentication PIN");
-                        });
-
-                        killVBTimer.setRepeats(false);
-                        killVBTimer.start();
+                        killVBTimer.restart();
                     }
                 }
             }
@@ -778,18 +718,13 @@ public class VoteBox{
 
                     try {
 
-                        /* TODO replace by Liaison call */
+                        /* TODO replace by Driver call */
                         /* Make sure voting is in progress */
-                        if (voting && !finishedVoting && currentDriver != null) {
+                        if (voting && !finishedVoting && voteboxuiDriver != null) {
 
                             /* Save the last page the voter was on before the override */
-                            int page = currentDriver.getView().overrideCancel();
+                            voteboxuiDriver.getView().overrideCancel();
 
-                            /* Go back if override is no good */
-                            if (!override) {
-                                pageBeforeOverride = page;
-                                override = true;
-                            }
                         } else { throw new RuntimeException("Received an override-cancel message when the user wasn't voting"); }
 
                     } catch (IncorrectTypeException e1) { Bugout.err("Incorrect type in overrideCancel handler"); }
@@ -811,18 +746,12 @@ public class VoteBox{
 
                     try {
 
-                        /* TODO replace by Liaison call */
+                        /* TODO replace by Driver call */
                         /* Make sure voting is in progress */
-                        if (voting && !finishedVoting && currentDriver != null) {
+                        if (voting && !finishedVoting && voteboxuiDriver != null) {
 
                             /* Saves the last page the voter was on */
-                            int page = currentDriver.getView().overrideCommit();
-
-                            /* Go back if override is no good */
-                            if (!override) {
-                                pageBeforeOverride = page;
-                                override = true;
-                            }
+                            voteboxuiDriver.getView().overrideCommit();
                         }  else { throw new RuntimeException("Received an override-cast message when the user wasn't voting"); }
 
                     } catch (IncorrectTypeException e1) {
@@ -839,9 +768,7 @@ public class VoteBox{
              * @see votebox.events.PollsOpenEvent
              */
             public void pollsOpen(PollsOpenEvent e) {
-                /* TODO this will be replaced by a Liaison call */
-                if(!voting)
-                    promptForPin("Enter Authorization PIN");
+                launchChromeUI();
             }
 
             /**
@@ -873,9 +800,8 @@ public class VoteBox{
              * @see votebox.events.InvalidPinEvent
              */
             public void invalidPin(InvalidPinEvent e) {
-                /* TODO replace this with a Liaison call */
                 if(e.getTargetSerial() == mySerial)
-                    promptForPin("Invalid PIN: Enter Valid PIN");
+                    voteboxuiDriver.getView().sendMessage("Invalid PIN: Enter Valid PIN");
             }
 
             /**
@@ -884,10 +810,10 @@ public class VoteBox{
              */
             public void pollStatus(PollStatusEvent pollStatusEvent) {
 
-                /* TODO Replace by Liaison call*/
+                /* TODO Replace by Driver call*/
                 /* Check if machine is voting, sitting with polls opened */
                 if(!voting && pollStatusEvent.getPollStatus() == 1)
-                    promptForPin("Enter Authorization PIN");
+                    launchChromeUI();
             }
 
             /**
@@ -929,19 +855,18 @@ public class VoteBox{
                     isProvisional = true;
 
                     /* Check if already voting */
-                    if (voting || currentDriver != null && killVBTimer == null)
+                    if (voting || voteboxuiDriver != null && killVBTimer == null)
                         throw new RuntimeException("VoteBox was authorized-to-cast, but was already voting");
 
 
-                    /* TODO replace with Liaison call which will kill */
-                    /* If last VB runtime is on thank you screen and counting  down to when it disappears, kill it prematurely without  showing inactive UI */
-                    if (killVBTimer != null && currentDriver != null) {
+                    /* If last VB runtime is on thank you screen and counting  down to when it disappears,
+                        kill it prematurely without showing inactive UI */
+                    if (killVBTimer != null && voteboxuiDriver != null) {
 
                         killVBTimer.stop();
-                        killVBTimer = null;
 
-                        currentDriver.kill();
-                        currentDriver = null;
+                        voteboxuiDriver.kill();
+                        voteboxuiDriver = null;
                     }
 
                     nonce = e.getNonce();
@@ -956,22 +881,10 @@ public class VoteBox{
 
                     bid = String.valueOf(rand.nextInt(Integer.MAX_VALUE));
 
-                    try {
-                        _currentBallotFile = new File(path, "ballot.zip");
-                        staticCurrentBallotFile = _currentBallotFile;
 
-                        FileOutputStream fout = new FileOutputStream(_currentBallotFile);
-                        byte[] ballot = e.getBallot();
-                        fout.write(ballot);
-
-                        /* TODO replace this... internally? */
-                        Driver.unzip(new File(path, "ballot.zip").getAbsolutePath(), new File(path, "data").getAbsolutePath());
-                        Driver.deleteRecursivelyOnExit(path.getAbsolutePath());
-
-
-                        run(new File(path, "data").getAbsolutePath());
-                        broadcastStatus();
-                    } catch (IOException e1) { throw new RuntimeException(e1); }
+                    byte[] ballot = e.getBallot();
+                    run(new File(path, "data").getAbsolutePath());
+                    broadcastStatus();
                 }
 
             }
@@ -988,57 +901,6 @@ public class VoteBox{
     }
 
     /**
-     * Initializes a GUI dialog through which the user enters their assigned PIN. Returns with no action if
-     * already prompting for PIN.
-     *
-     * @param message message displayed as the header of the PIN prompt e.g. "Please Enter Your PIN"
-     */
-    public void promptForPin(String message) {
-    /* TODO Just handle this in Liaison */
-        /* Avoid prompting for PIN when already prompting */
-        if(promptingForPin)
-            return;
-
-        final PINAuthorizationGUI pinGUI = new PINAuthorizationGUI(_constants.getScreenCenterX(), _constants.getScreenCenterY());
-
-        /* Set the GUI's label to our message. */
-        pinGUI.setLabelText(message);
-
-        /* Add a listener for the OK button so that when it gets clicked, it validates the pin. */
-        pinGUI.okButton.addActionListener(arg0 -> {
-
-            /* Validate the PIN and kill the current prompt */
-            validatePin(pinGUI.getPin());
-            pinGUI.stop();
-
-            /* Tell VoteBox that the PIN is currently not being prompted */
-            promptingForPin = false;
-        });
-
-        /* Add a listener for the pin text field so that when the Enter key gets pressed, it validates the PIN. */
-        pinGUI.pinTextField.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent arg0) {
-                if(arg0.getKeyCode() == KeyEvent.VK_ENTER)
-                {
-                    /* Validate the PIN and kill the current prompt */
-                    validatePin(pinGUI.getPin());
-                    pinGUI.stop();
-
-                    /* Tell VoteBox that the PIN is currently not being prompted */
-                    promptingForPin = false;
-                }
-            }
-        });
-
-        /* Start up the PIN prompt */
-        pinGUI.start();
-
-        /* Tell VoteBox that the PIN is currently being prompted */
-        promptingForPin = true;
-    }
-
-    /**
      * Generates a new PINEnteredEvent and sends over the network for validation by supervisor.
      * @param pin 4-digit, decimal PIN to be validated
      */
@@ -1046,63 +908,6 @@ public class VoteBox{
         auditorium.announce(new PINEnteredEvent(mySerial, pin));
     }
 
-    /**
-     * Renders images for write-in candidates. It gets candidate name(s) from the write-in
-     * prompt, along with the corresponding uid (to get the filename) and type (so that this
-     * method knows how many names to read), and uses the names to render ballot images for
-     * the write-in candidate that contain his/her name.
-     *
-     * @param uid the uid of the candidate
-     * @param type the type of the candidate ("Regular" or "Presidential")
-     * @param names the name(s) of the candidate
-     */
-    /* TODO kill this -- this can all be done in new UI */
-    public static void renderWriteInImages(String uid, String type, String... names)
-    {
-        /* Render the images for the candidate names. */
-        BufferedImage writeInToggleButton                   = RenderingUtils.renderToggleButton(names[0], type.equals("Presidential") ? names[1] : "", "", 20, 600, false, false, false);
-        BufferedImage focusedWriteInToggleButton            = RenderingUtils.renderToggleButton(names[0], type.equals("Presidential") ? names[1] : "", "", 20, 600, false, false, true);
-        BufferedImage selectedWriteInToggleButton           = RenderingUtils.renderToggleButton(names[0], type.equals("Presidential") ? names[1] : "", "", 20, 600, false, true, false);
-        BufferedImage focusedSelectedWriteInToggleButton    = RenderingUtils.renderToggleButton(names[0], type.equals("Presidential") ? names[1] : "", "", 20, 600, false, true, true);
-        BufferedImage printable                             = RenderingUtils.renderPrintButton(uid, names[0], type.equals("Presidential") ? names[1] : "", "", 20, 600, false, true);
-
-        /* TODO Change the hardcoded font sizes? */
-        BufferedImage reviewButton                          = RenderingUtils.renderButton(names[0] + (type.equals("Presidential") ? "\n" + names[1] : ""), 12, false, true, 330, Color.WHITE, false);
-        BufferedImage focusedReviewButton                   = RenderingUtils.renderButton(names[0] + (type.equals("Presidential") ? "\n" + names[1] : ""), 12, false, true, 330, Color.WHITE, true);
-
-        /* Save the images to files, overwriting the previous write-in candidate images for this UID. */
-        String fileSeparator    = System.getProperty("file.separator");
-        String filePath         = staticCurrentBallotFile.getAbsolutePath().substring(0, staticCurrentBallotFile.getAbsolutePath().lastIndexOf(fileSeparator))  + fileSeparator + "media" + fileSeparator;
-
-        for (Language language : Language.getAllLanguages())
-        {
-            try
-            {
-                ImageIO.write(writeInToggleButton,                  "png", new File(filePath + uid + File.separator + uid + "_"                 + language.getShortName() + ".png"));
-                ImageIO.write(focusedWriteInToggleButton,           "png", new File(filePath + uid + File.separator + uid  + "_focused_"        + language.getShortName() + ".png"));
-                ImageIO.write(selectedWriteInToggleButton,          "png", new File(filePath + uid + File.separator + uid + "_selected_"        + language.getShortName() + ".png"));
-                ImageIO.write(focusedSelectedWriteInToggleButton,   "png", new File(filePath + uid + File.separator + uid + "_focusedSelected_" + language.getShortName() + ".png"));
-                ImageIO.write(reviewButton,                         "png", new File(filePath + uid + File.separator + uid + "_review_"          + language.getShortName() + ".png"));
-                ImageIO.write(focusedReviewButton,                  "png", new File(filePath + uid + File.separator + uid + "_review_focused_"  + language.getShortName() + ".png"));
-                ImageIO.write(printable,                            "png", new File(filePath + uid + File.separator + uid + "_printable_"       + language.getShortName() + ".png"));
-            }
-            catch (IOException e)
-            {
-                System.err.println("Unable to render write-in candidate images!");
-                return;
-            }
-        }
-
-    }
-
-    /**
-     * A getter method to send the BallotFile to the printer
-     *
-     * @return _currentBallotFile  - the current ballot
-     */
-     public File getCurrentBallotFile(){
-         return _currentBallotFile;
-     }
 
     /**
      * Main entry point into the program. If an argument is given, it will be
@@ -1112,8 +917,6 @@ public class VoteBox{
      */
     public static void main(String[] args) {
         String launchCode = "";
-
-        /* Technically this will be replaced by the VoteBoxUI */
 
         while (launchCode == null || launchCode.equals(""))
             launchCode = JOptionPane.showInputDialog(null,
