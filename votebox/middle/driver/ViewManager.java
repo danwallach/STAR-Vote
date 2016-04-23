@@ -30,9 +30,11 @@ import votebox.middle.ballot.IBallotLookupAdapter;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Observer;
 
@@ -80,7 +82,15 @@ public class ViewManager implements IViewManager {
      * given to the view to use.
      */
     public void run() {
+
         try {
+            String[] arglist = {"cmd", "/c", "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe\"",
+                    "--profile-directory=Default", "--app-id=jinjkkheinoeggackbhoiggmoegackko","\"%USERPROFILE%\\Desktop\\election.xml\""};
+            List<String> cmd = Arrays.asList(arglist);
+
+            ProcessBuilder pb = new ProcessBuilder(cmd);
+            Process p = pb.start();
+
             uiConnection = new Socket("localhost", 0);
             uiUpdate = new DataInputStream(uiConnection.getInputStream());
             uiRequest = new DataOutputStream(uiConnection.getOutputStream());
