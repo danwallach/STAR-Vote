@@ -26,11 +26,9 @@ import crypto.PlaintextRaceSelection;
 import sexpression.ASEConverter;
 import supervisor.model.ObservableEvent;
 import votebox.middle.IncorrectTypeException;
-import votebox.middle.ballot.IBallotLookupAdapter;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -85,7 +83,7 @@ public class ViewManager implements IViewManager {
 
         try {
             String[] arglist = {"cmd", "/c", "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe\"",
-                    "--profile-directory=Default", "--app-id=jinjkkheinoeggackbhoiggmoegackko","\"%USERPROFILE%\\Desktop\\election.xml\""};
+                    "--profile-directory=Default", "--app-id=pnehmhlafholkpmjccjgiblacpeodhkh","\"%USERPROFILE%\\Desktop\\election.xml\""};
             List<String> cmd = Arrays.asList(arglist);
 
             ProcessBuilder pb = new ProcessBuilder(cmd);
@@ -94,6 +92,9 @@ public class ViewManager implements IViewManager {
             uiConnection = new Socket("localhost", 0);
             uiUpdate = new DataInputStream(uiConnection.getInputStream());
             uiRequest = new DataOutputStream(uiConnection.getOutputStream());
+
+
+            sendMessage("CHECK" + readMessage());
         }
         catch (IOException e) {
             System.out.println(e);
@@ -322,7 +323,7 @@ public class ViewManager implements IViewManager {
 
 
     public String readMessage() {
-        String msg = "";
+        String msg = null;
 
         try {
             msg = uiUpdate.readUTF();
