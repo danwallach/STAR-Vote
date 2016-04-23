@@ -17,5 +17,6 @@
     <orderEntry type="library" name="Supervisor1" level="project" />
     <orderEntry type="library" name="lib3" level="project" />
     <orderEntry type="library" name="lib2" level="project" />
+    <orderEntry type="library" name="lib" level="project" />
   </component>
 </module>

@@ -28,7 +28,6 @@ package printer;
 import auditorium.Bugout;
 import com.princexml.Prince;
 import crypto.PlaintextRaceSelection;
-import tap.BallotImageHelper;
 import votebox.AuditoriumParams;
 
 import javax.imageio.ImageIO;
@@ -129,7 +128,8 @@ public class Printer{
 	@SuppressWarnings("StatementWithEmptyBody")
     public boolean printCommittedBallot(List<PlaintextRaceSelection> ballot, final String bid) {
 
-		final Map<String, Image> choiceToImage = BallotImageHelper.loadImagesForVVPAT(_currentBallotFile);
+        /* TODO fix this for the new, non-prerendered ui (should just use "ballot" and stylise into html)*/
+		final Map<String, Image> choiceToImage = new HashMap<>();//BallotImageHelper.loadImagesForVVPAT(_currentBallotFile);
 
         ArrayList<RaceTitlePair> actualRaceNameImagePairs = getRaceNameImagePairs(choiceToImage);
 

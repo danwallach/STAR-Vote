@@ -23,7 +23,6 @@
 package votebox.middle.driver;
 
 import crypto.PlaintextRaceSelection;
-import votebox.middle.ballot.IBallotLookupAdapter;
 
 import java.util.List;
 

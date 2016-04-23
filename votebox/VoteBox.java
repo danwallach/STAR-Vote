@@ -38,8 +38,6 @@ import supervisor.model.Ballot;
 import votebox.events.*;
 import votebox.middle.IncorrectTypeException;
 import votebox.middle.driver.Driver;
-import votebox.middle.view.AWTViewFactory;
-import votebox.middle.view.IViewFactory;
 
 import javax.swing.*;
 import javax.swing.Timer;
@@ -60,7 +58,6 @@ import java.util.List;
 public class VoteBox{
 
     private final AuditoriumParams _constants;
-    private final IViewFactory _factory;
     private VoteBoxAuditoriumConnector auditorium;
     private Driver voteboxuiDriver;
     private IVoteBoxInactiveUI inactiveUI;
@@ -105,7 +102,6 @@ public class VoteBox{
      * implementation runs in the background, on an auditorium network, and
      * waits to receive an authorization before launching the VoteBox middle.
      * For a standalone implementation, see
-     * {@link votebox.middle.datacollection.Launcher}.
      *
      * @param serial the serial number of the votebox
      */
@@ -130,15 +126,6 @@ public class VoteBox{
             if (connected)
                 auditorium.announce(getStatus());
         });
-
-        /* Run fullscreen on OSX only */
-        if (_constants.getViewImplementation().equals("AWT")) {
-
-            _factory = new AWTViewFactory(_constants.getUseWindowedView(), _constants.getAllowUIScaling());
-        }
-        else {
-            throw new RuntimeException("Unknown view implementation defined in configuration");
-        }
 
         /* Destroys any previous commits */
         plaintextAuditCommits = new HashMap<>();
