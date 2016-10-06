@@ -990,7 +990,7 @@ public class VoteBox{
 
         try {
             auditorium.connect();
-            auditorium.announce(getStatus());
+            //auditorium.announce(getStatus());
         }
         catch (NetworkException e1) { throw new RuntimeException(e1); }
 
